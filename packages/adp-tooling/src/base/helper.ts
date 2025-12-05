@@ -1,12 +1,13 @@
 import type { Editor } from 'mem-fs-editor';
+import type { ReaderCollection } from '@ui5/fs';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
 import type { UI5Config } from '@sap-ux/ui5-config';
 import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
-import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace } from '@sap-ux/project-access';
+import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace, type Manifest } from '@sap-ux/project-access';
 
-import type { DescriptorVariant, AdpPreviewConfig } from '../types';
+import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
 
 /**
  * Get the app descriptor variant.
@@ -84,6 +85,57 @@ export function extractAdpConfig(ui5Conf: UI5Config): AdpPreviewConfig | undefin
         ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
         ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
     return customMiddleware?.configuration?.adp;
+}
+
+/**
+ * Extracts the CF build task from the UI5 configuration.
+ *
+ * @param {UI5Config} ui5Conf - The UI5 configuration.
+ * @returns {UI5YamlCustomTaskConfiguration} The CF build task.
+ */
+export function extractCfBuildTask(ui5Conf: UI5Config): UI5YamlCustomTaskConfiguration {
+    const buildTask =
+        ui5Conf.findCustomTask<UI5YamlCustomTaskConfiguration>('app-variant-bundler-build')?.configuration;
+
+    if (!buildTask) {
+        throw new Error('No CF ADP project found');
+    }
+
+    return buildTask;
+}
+
+/**
+ * Read the manifest from the build output folder.
+ *
+ * @param {string} cfBuildPath - The path to the build output folder.
+ * @returns {Manifest} The manifest.
+ */
+export function readManifestFromBuildPath(cfBuildPath: string): Manifest {
+    const distPath = join(process.cwd(), cfBuildPath);
+    const manifestPath = join(distPath, 'manifest.json');
+    return JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
+}
+
+/**
+ * Load and parse the app variant descriptor.
+ *
+ * @param {ReaderCollection} rootProject - The root project.
+ * @returns {Promise<DescriptorVariant>} The parsed descriptor variant.
+ */
+export async function loadAppVariant(rootProject: ReaderCollection): Promise<DescriptorVariant> {
+    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
+    if (!appVariant) {
+        throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    }
+    try {
+        const content = await appVariant.getString();
+        if (!content || content.trim() === '') {
+            throw new Error('ADP configured but manifest.appdescr_variant file is empty.');
+        }
+        return JSON.parse(content) as DescriptorVariant;
+    } catch (e) {
+        throw new Error(`Failed to parse manifest.appdescr_variant: ${e.message}`);
+    }
 }
 
 /**
