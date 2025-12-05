@@ -308,12 +308,20 @@ export class FlpSandbox {
             : '@sap-ux/preview-middleware';
 
         await this.setApplicationDependencies();
+        const baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, baseUrl);
+        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
+        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
+            this.removeAsyncHintsRequests();
+        }
+
         const config = structuredClone(this.templateConfig);
-        /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
         if (!config.ui5.libs.includes('sap.ui.rta')) {
-            const libs = config.ui5.libs.split(',');
-            libs.push('sap.ui.rta');
-            config.ui5.libs = libs.join(',');
+            // sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects
+            config.ui5.libs += ',sap.ui.rta';
+        }
+        if (editor.developerMode) {
+            config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
         }
         config.flexSettings = {
             layer: rta.layer ?? 'CUSTOMER_BASE',
@@ -323,20 +331,8 @@ export class FlpSandbox {
             pluginScript: editor.pluginScript
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
-        const baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
         config.baseUrl = baseUrl;
 
-        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, baseUrl);
-
-        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
-
-        if (editor.developerMode === true) {
-            config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
-        }
-
-        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
-            this.removeAsyncHintsRequests();
-        }
         return render(this.getSandboxTemplate(ui5Version), config);
     }
 
@@ -630,7 +626,6 @@ export class FlpSandbox {
     private removeAsyncHintsRequests(): void {
         for (const app in this.templateConfig.apps) {
             const appDependencies = this.templateConfig.apps[app].applicationDependencies;
-
             if (appDependencies?.asyncHints.requests) {
                 appDependencies.asyncHints.requests = [];
             }
