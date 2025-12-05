@@ -308,8 +308,8 @@ export class FlpSandbox {
             : '@sap-ux/preview-middleware';
 
         await this.setApplicationDependencies();
-        const baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
-        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, baseUrl);
+        this.templateConfig.baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, this.templateConfig.baseUrl);
         this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
@@ -331,7 +331,6 @@ export class FlpSandbox {
             pluginScript: editor.pluginScript
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
-        config.baseUrl = baseUrl;
 
         return render(this.getSandboxTemplate(ui5Version), config);
     }
@@ -485,19 +484,18 @@ export class FlpSandbox {
             this.logger.info(`HTML file returned at ${filePath} is loaded from the file system.`);
             next();
         } else {
+            this.templateConfig.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
             const ui5Version = await this.getUi5Version(
                 //use protocol from request header referer as fallback for connect API (karma test runner)
                 'protocol' in req
                     ? req.protocol
                     : req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http',
                 req.headers.host,
-                'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
+                this.templateConfig.baseUrl
             );
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             //for consistency reasons, we also add the baseUrl to the html here, although it is only used in editor mode
-            const config = structuredClone(this.templateConfig);
-            config.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
-            const html = render(this.getSandboxTemplate(ui5Version), config);
+            const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
     }
