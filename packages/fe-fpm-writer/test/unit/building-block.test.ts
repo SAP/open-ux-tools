@@ -2045,38 +2045,6 @@ describe('Building Blocks', () => {
     });
 
     describe('updateAggregationPath', () => {
-        test('returns original path when buildingBlockData has no embededFragment', () => {
-            const xmlContent = `
-                <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros">
-                    <macros:FilterBar id="FilterBar"/>
-                </mvc:View>
-            `;
-            const xmlDocument = new DOMParser().parseFromString(xmlContent);
-
-            const buildingBlockData: CustomFilterField = {
-                id: 'testField',
-                buildingBlockType: BuildingBlockType.CustomFilterField,
-                label: 'Test',
-                anchor: 'test',
-                property: 'test',
-                required: false,
-                filterFieldKey: 'test',
-                position: { placement: Placement.After }
-                // No embededFragment
-            };
-
-            const config = {
-                aggregationName: 'filterFields',
-                elementName: 'FilterField',
-                resultPropertyName: 'hasFilterFields'
-            };
-
-            // Access the internal function through generateBuildingBlock workflow
-            // Since updateAggregationPath is not exported, we test it indirectly
-            // For now, this test validates the expected behavior
-            expect(buildingBlockData.embededFragment).toBeUndefined();
-        });
-
         test('updates aggregation path when explicit aggregation exists in target FilterBar', async () => {
             const basePath = join(testAppPath, 'update-aggregation-explicit');
             const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
