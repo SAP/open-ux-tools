@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.8
+
+### Patch Changes
+
+-   d08a64c: fix: mcp server load the latest embeddings package on install/ npx
+
 ## 0.4.7
 
 ### Patch Changes
