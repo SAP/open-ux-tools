@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
 import { join } from 'path';
-import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { readUi5Yaml, FileName } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -342,19 +342,20 @@ async function addBackendProxyMiddleware(basePath: string, simulate: boolean, lo
 
         logger.info(`Configuring backend proxy for ${urlsWithPaths.length} backend URL(s)`);
 
-        // Add a separate middleware instance for each backend URL with its specific paths
-        urlsWithPaths.forEach(({ url, paths }) => {
-            ui5Config.addCustomMiddleware([
-                {
-                    name: 'backend-proxy-middleware-cf',
-                    afterMiddleware: 'compression',
-                    configuration: {
-                        url,
-                        paths
-                    }
+        // Add a single middleware instance with all backends
+        ui5Config.addCustomMiddleware([
+            {
+                name: 'backend-proxy-middleware-cf',
+                afterMiddleware: 'compression',
+                configuration: {
+                    backends: urlsWithPaths
                 }
-            ]);
-            logger.info(`Added backend-proxy-middleware-cf for: ${url} with ${paths.length} path(s)`);
+            }
+        ]);
+
+        // Log each backend configuration
+        urlsWithPaths.forEach(({ url, paths }) => {
+            logger.info(`Configured backend: ${url} with ${paths.length} path(s): ${paths.join(', ')}`);
         });
 
         if (!simulate) {

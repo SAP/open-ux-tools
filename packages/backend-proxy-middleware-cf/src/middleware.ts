@@ -10,7 +10,7 @@ import type { CfOAuthMiddlewareConfig } from './types';
 
 /**
  * UI5 middleware for proxying requests to Cloud Foundry destinations with OAuth2 authentication.
- * Supports one destination URL with multiple OData source paths.
+ * Supports multiple destination URLs with their own OData source paths.
  *
  * @param {MiddlewareParameters<CfOAuthMiddlewareConfig>} params - Input parameters for UI5 middleware.
  * @param {CfOAuthMiddlewareConfig} params.options - Configuration options.
@@ -26,8 +26,14 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
     await validateConfig(config, logger);
 
     const tokenProvider = await createTokenProvider(config, logger);
-    const router = setupProxyRoutes(config.paths, config.url, tokenProvider, logger);
-    logger.info(`Backend proxy middleware (CF) initialized: url=${config.url}, paths=${config.paths.join(', ')}`);
+
+    // Setup proxy routes for all backends
+    const router = setupProxyRoutes(config.backends, tokenProvider, logger);
+
+    // Log initialization
+    config.backends.forEach((backend) => {
+        logger.info(`Backend proxy middleware (CF) initialized: url=${backend.url}, paths=${backend.paths.join(', ')}`);
+    });
 
     return router as unknown as RequestHandler;
 };

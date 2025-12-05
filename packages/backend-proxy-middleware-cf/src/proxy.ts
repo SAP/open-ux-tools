@@ -73,27 +73,29 @@ export function registerProxyRoute(
 }
 
 /**
- * Sets up all proxy routes for the configured paths.
+ * Sets up all proxy routes for the configured backends.
  *
- * @param {string[]} paths - Array of paths to register.
- * @param {string} destinationUrl - Target URL for proxying.
+ * @param {Array<{url: string, paths: string[]}>} backends - Array of backend configurations.
  * @param {OAuthTokenProvider} tokenProvider - Token provider instance.
  * @param {ToolsLogger} logger - Logger instance.
  * @returns {Router} Configured Express router.
  */
 export function setupProxyRoutes(
-    paths: string[],
-    destinationUrl: string,
+    backends: Array<{ url: string; paths: string[] }>,
     tokenProvider: OAuthTokenProvider,
     logger: ToolsLogger
 ): Router {
     const router = Router();
 
-    for (const path of paths) {
-        try {
-            registerProxyRoute(path, destinationUrl, tokenProvider, logger, router);
-        } catch (e) {
-            throw new Error(`Failed to register proxy for ${path}. Check configuration in yaml file. \n\t${e.message}`);
+    for (const backend of backends) {
+        for (const path of backend.paths) {
+            try {
+                registerProxyRoute(path, backend.url, tokenProvider, logger, router);
+            } catch (e) {
+                throw new Error(
+                    `Failed to register proxy for ${path}. Check configuration in yaml file. \n\t${e.message}`
+                );
+            }
         }
     }
 

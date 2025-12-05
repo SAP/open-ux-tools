@@ -1,7 +1,7 @@
 /**
- * Configuration for Cloud Foundry OAuth middleware.
+ * Configuration for a single backend destination.
  */
-export interface CfOAuthMiddlewareConfig {
+export interface BackendDestination {
     /**
      * Destination URL to proxy requests to.
      */
@@ -12,6 +12,17 @@ export interface CfOAuthMiddlewareConfig {
      * Requests matching these paths will have the path prefix removed before forwarding.
      */
     paths: string[];
+}
+
+/**
+ * Configuration for Cloud Foundry OAuth middleware.
+ */
+export interface CfOAuthMiddlewareConfig {
+    /**
+     * Array of backend destinations.
+     * Each destination has its own URL and paths.
+     */
+    backends: BackendDestination[];
     /**
      * Manual OAuth credentials (optional).
      * If not provided, middleware will attempt to auto-detect from Cloud Foundry ADP project.

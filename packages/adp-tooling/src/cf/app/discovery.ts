@@ -1,5 +1,5 @@
 import type AdmZip from 'adm-zip';
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, statSync, type Dirent } from 'fs';
 import { join } from 'path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -46,16 +46,14 @@ export function getBackendUrlsFromServiceKeys(serviceKeys: ServiceKeys[]): strin
     const endpoints = serviceKeys[0]?.credentials?.endpoints as Record<string, string | { url?: string }> | undefined;
     if (endpoints && typeof endpoints === 'object' && endpoints !== null) {
         for (const key in endpoints) {
-            if (Object.prototype.hasOwnProperty.call(endpoints, key)) {
-                const endpoint = endpoints[key];
-                // Handle string endpoints directly
-                if (typeof endpoint === 'string') {
-                    urls.push(endpoint);
-                }
-                // Handle object endpoints with url property
-                else if (endpoint && typeof endpoint === 'object' && endpoint.url && typeof endpoint.url === 'string') {
-                    urls.push(endpoint.url);
-                }
+            const endpoint = endpoints[key];
+            // Handle string endpoints directly
+            if (typeof endpoint === 'string') {
+                urls.push(endpoint);
+            }
+            // Handle object endpoints with url property
+            else if (endpoint && typeof endpoint === 'object' && endpoint.url && typeof endpoint.url === 'string') {
+                urls.push(endpoint.url);
             }
         }
     }
@@ -87,12 +85,10 @@ export function getBackendUrlsWithPaths(
 
     if (endpoints && typeof endpoints === 'object' && endpoints !== null) {
         for (const key in endpoints) {
-            if (Object.prototype.hasOwnProperty.call(endpoints, key)) {
-                const endpoint = endpoints[key];
-                // Handle object endpoints with url and destination properties
-                if (endpoint && typeof endpoint === 'object' && endpoint.url && endpoint.destination) {
-                    destinationToUrl.set(endpoint.destination, endpoint.url);
-                }
+            const endpoint = endpoints[key];
+            // Handle object endpoints with url and destination properties
+            if (endpoint && typeof endpoint === 'object' && endpoint.url && endpoint.destination) {
+                destinationToUrl.set(endpoint.destination, endpoint.url);
             }
         }
     }
@@ -105,7 +101,7 @@ export function getBackendUrlsWithPaths(
         if (existsSync(xsAppPath)) {
             try {
                 const xsAppContent = readFileSync(xsAppPath, 'utf8');
-                const xsApp: XsApp = JSON.parse(xsAppContent);
+                const xsApp = JSON.parse(xsAppContent) as XsApp;
 
                 if (xsApp?.routes) {
                     for (const route of xsApp.routes) {
@@ -117,15 +113,8 @@ export function getBackendUrlsWithPaths(
                             continue;
                         }
 
-                        let path = route.source;
-                        // Remove leading ^ and trailing $
-                        path = path.replace(/^\^/, '').replace(/\$$/, '');
-                        // Remove capture groups like (.*) or $1
-                        path = path.replace(/\([^)]*\)/g, '');
-                        // Remove regex quantifiers
-                        path = path.replace(/\$\d+/g, '');
-                        // Clean up any remaining regex characters at the end
-                        path = path.replace(/\/?\*$/, '');
+                        // Clean regex pattern: remove ^, $, capture groups, quantifiers, and trailing /*
+                        const path = route.source.replace(/^\^|\$$|\([^)]*\)|\$\d+|\/?\*$/g, '');
 
                         if (path) {
                             if (!destinationToPaths.has(destination)) {
@@ -179,11 +168,9 @@ export function readXsAppFromReuseFolder(reuseFolderPath: string): XsApp | undef
         }
 
         // Read all subdirectories in .reuse folder
-        const fs = require('fs');
-        const subdirs = fs
-            .readdirSync(reuseDir, { withFileTypes: true })
-            .filter((dirent: any) => dirent.isDirectory())
-            .map((dirent: any) => dirent.name);
+        const subdirs = readdirSync(reuseDir, { withFileTypes: true })
+            .filter((dirent: Dirent) => dirent.isDirectory())
+            .map((dirent: Dirent) => dirent.name);
 
         // Find the first xs-app.json in any subdirectory
         for (const subdir of subdirs) {
@@ -231,15 +218,8 @@ export function getOAuthPathsFromReuseFolder(reuseFolderPath: string): string[] 
                                 continue;
                             }
 
-                            let path = route.source;
-                            // Remove leading ^ and trailing $
-                            path = path.replace(/^\^/, '').replace(/\$$/, '');
-                            // Remove capture groups like (.*) or $1
-                            path = path.replace(/\([^)]*\)/g, '');
-                            // Remove regex quantifiers
-                            path = path.replace(/\$\d+/g, '');
-                            // Clean up any remaining regex characters at the end
-                            path = path.replace(/\/?\*$/, '');
+                            // Clean regex pattern: remove ^, $, capture groups, quantifiers, and trailing /*
+                            const path = route.source.replace(/^\^|\$$|\([^)]*\)|\$\d+|\/?\*$/g, '');
 
                             if (path) {
                                 pathsSet.add(path);
@@ -279,15 +259,8 @@ export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[]
             continue;
         }
 
-        let path = route.source;
-        // Remove leading ^ and trailing $
-        path = path.replace(/^\^/, '').replace(/\$$/, '');
-        // Remove capture groups like (.*) or $1
-        path = path.replace(/\([^)]*\)/g, '');
-        // Remove regex quantifiers
-        path = path.replace(/\$\d+/g, '');
-        // Clean up any remaining regex characters at the end
-        path = path.replace(/\/?\*$/, '');
+        // Clean regex pattern: remove ^, $, capture groups, quantifiers, and trailing /*
+        const path = route.source.replace(/^\^|\$$|\([^)]*\)|\$\d+|\/?\*$/g, '');
 
         if (path) {
             pathsSet.add(path);
