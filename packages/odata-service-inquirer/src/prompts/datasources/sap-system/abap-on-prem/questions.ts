@@ -55,7 +55,12 @@ export function getAbapOnPremQuestions(
     );
 
     questions.push(
-        ...getSystemServiceQuestion(connectValidator, abapOnPremPromptNamespace, promptOptions?.serviceSelection)
+        ...getSystemServiceQuestion(
+            connectValidator,
+            abapOnPremPromptNamespace,
+            promptOptions?.serviceSelection,
+            promptOptions?.valueHelpDownload?.hide === false
+        )
     );
 
     return questions;

@@ -2,7 +2,8 @@
  * Service selection prompting for SAP systems. Used by new and existing system prompts.
  *
  */
-import type { CatalogService, ODataVersion } from '@sap-ux/axios-extension';
+import type { CatalogService } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
@@ -12,6 +13,7 @@ import {
     extendWithOptions,
     searchChoices,
     type ValidationLink,
+    withCondition,
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -33,22 +35,25 @@ import {
 } from '../service-selection/service-helper';
 import type { SystemSelectionAnswers } from '../system-selection';
 import { type ServiceAnswer } from './types';
+import { getValueHelpDownloadPrompt } from '../external-services/value-help-download';
 
 const cliServicePromptName = 'cliServiceSelection';
 
 /**
  * Get the service selection prompt for an Abap system connection (on-prem or on-btp). The service selection prompt is used to select a service from the system catalog.
  *
- * @param connectValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
- * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
+ * @param connectValidator - A reference to the active connection validator, used to validate the service selection and retrieve service details.
+ * @param promptNamespace - The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  *     This is used to avoid conflicts with other prompts of the same types.
- * @param promptOptions Options for the service selection prompt see {@link OdataServicePromptOptions}
+ * @param promptOptions - Options for the service selection prompt see {@link OdataServicePromptOptions}
+ * @param showValueHelpDownloadPrompt - If true the value help download confirm prompt will be included
  * @returns the service selection prompt
  */
 export function getSystemServiceQuestion(
     connectValidator: ConnectionValidator,
     promptNamespace: string,
-    promptOptions?: ServiceSelectionPromptOptions
+    promptOptions?: ServiceSelectionPromptOptions,
+    showValueHelpDownloadPrompt = false
 ): Question<ServiceAnswer>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
@@ -57,7 +62,12 @@ export function getSystemServiceQuestion(
     let previousService: ServiceAnswer | undefined;
     // State shared across validate and additionalMessages functions
     let hasBackendAnnotations: boolean | undefined;
-    let convertedMetadata: ConvertedMetadata | undefined;
+    // Wrap to allow pass by ref to nested prompts
+    const convertedMetadataRef: {
+        convertedMetadata: ConvertedMetadata | undefined;
+    } = {
+        convertedMetadata: undefined
+    };
 
     const requiredOdataVersion = promptOptions?.requiredOdataVersion;
     const serviceSelectionPromptName = `${promptNamespace}:${promptNames.serviceSelection}`;
@@ -128,10 +138,10 @@ export function getSystemServiceQuestion(
             getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, {
                 requiredOdataVersion,
                 hasAnnotations: hasBackendAnnotations,
-                showCollabDraftWarnOptions: convertedMetadata
+                showCollabDraftWarnOptions: convertedMetadataRef.convertedMetadata
                     ? {
                           showCollabDraftWarning: !!promptOptions?.showCollaborativeDraftWarning,
-                          edmx: convertedMetadata
+                          edmx: convertedMetadataRef.convertedMetadata
                       }
                     : undefined
             }),
@@ -156,11 +166,11 @@ export function getSystemServiceQuestion(
             // Dont re-request the same service details
             if (serviceAnswer && previousService?.servicePath !== serviceAnswer.servicePath) {
                 hasBackendAnnotations = undefined;
-                convertedMetadata = undefined;
+                convertedMetadataRef.convertedMetadata = undefined;
                 previousService = serviceAnswer;
                 const validationResult = await validateService(serviceAnswer, connectValidator, requiredOdataVersion);
                 hasBackendAnnotations = validationResult.hasAnnotations;
-                convertedMetadata = validationResult.convertedMetadata;
+                convertedMetadataRef.convertedMetadata = validationResult.convertedMetadata;
                 return validationResult.validationResult;
             }
             return true;
@@ -187,11 +197,16 @@ export function getSystemServiceQuestion(
             when: async (answers: Answers): Promise<boolean> => {
                 const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];
                 if (selectedService && connectValidator.validatedUrl) {
-                    const { validationResult } = await validateService(selectedService, connectValidator);
+                    const { validationResult, hasAnnotations, convertedMetadata } = await validateService(
+                        selectedService,
+                        connectValidator
+                    );
                     if (typeof validationResult === 'string') {
                         LoggerHelper.logger.error(validationResult);
                         throw new Error(validationResult);
                     }
+                    hasBackendAnnotations = hasAnnotations;
+                    convertedMetadataRef.convertedMetadata = convertedMetadata;
                 }
                 if (serviceChoices.length === 0 && errorHandler.hasError()) {
                     const noServicesError = ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE)!.toString();
@@ -202,6 +217,22 @@ export function getSystemServiceQuestion(
             name: `${promptNamespace}:${cliServicePromptName}`
         } as Question);
     }
+
+    if (showValueHelpDownloadPrompt) {
+        /**
+         * Only show the value help download prompt when a service has been validated (convertedMetadata is set), is odata version v4 and is an abap connection
+         */
+        questions.push(
+            ...withCondition(
+                [getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef)],
+                (answers: { [serviceSelectionPromptName]?: ServiceAnswer }) =>
+                    !!(connectValidator.serviceProvider instanceof AbapServiceProvider) &&
+                    !!convertedMetadataRef.convertedMetadata &&
+                    answers?.[serviceSelectionPromptName]?.serviceODataVersion === ODataVersion.v4
+            )
+        );
+    }
+
     return questions;
 }
 /**
