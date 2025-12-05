@@ -197,14 +197,25 @@ function updateAggregationPath<T extends CustomColumn | CustomFilterField>(
     }
 
     const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
-    const hasAggregation = xpathSelect(`//*[local-name()='${config.aggregationName}']`, xmlDocument);
+
+    // First, get the target element from the aggregationPath
+    const targetElement = xpathSelect(aggregationPath, xmlDocument);
+    if (!targetElement || !Array.isArray(targetElement) || targetElement.length === 0) {
+        return { updatedAggregationPath: aggregationPath, hasElement: false };
+    }
+
+    const targetNode = targetElement[0] as Element;
+
+    // Check if the explicit aggregation exists within the specific target element
+    const hasAggregation = xpathSelect(`./*[local-name()='${config.aggregationName}']`, targetNode);
     if (hasAggregation && Array.isArray(hasAggregation) && hasAggregation.length > 0) {
         return {
             updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:${config.aggregationName}`,
             hasElement: true
         };
     } else {
-        const useDefaultAggregation = xpathSelect(`//*[local-name()='${config.elementName}']`, xmlDocument);
+        // Check if the default aggregation element exists within the specific target element
+        const useDefaultAggregation = xpathSelect(`./*[local-name()='${config.elementName}']`, targetNode);
         if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
             return { updatedAggregationPath: aggregationPath, hasElement: true };
         }
@@ -345,7 +356,6 @@ function processCustomFilterField(
     }
 
     const filterConfig = {
-        controlID: buildingBlockData.filterFieldKey!,
         label: buildingBlockData.label,
         property: buildingBlockData.property,
         required: buildingBlockData.required ?? false,

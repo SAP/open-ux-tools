@@ -1,3 +1,4 @@
+
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`getFunctionalityDetails getFunctionalityDetails 1`] = `
@@ -19,16 +20,20 @@ Object {
         "additionalProperties": false,
         "properties": Object {
           "generateFormAnnotations": Object {
+            "default": true,
+            "description": "Whether to generate form annotations for the main entity if none exist.",
             "type": "boolean",
           },
           "generateLROPAnnotations": Object {
+            "default": true,
+            "description": "Whether to generate LROP annotations for the main entity if none exist.",
             "type": "boolean",
           },
           "mainEntity": Object {
             "additionalProperties": false,
             "properties": Object {
               "entityName": Object {
-                "description": "The name of the main entity. EntitySet Name attribute in OData Metadata",
+                "description": "The name of the main entity. EntitySet Name attribute in OData Metadata.",
                 "examples": Array [
                   "'SalesOrder'",
                   "'PurchaseOrderHeader'",

@@ -49,6 +49,9 @@
       "path": "packages/axios-extension"
     },
     {
+      "path": "packages/backend-proxy-middleware-cf"
+    },
+    {
       "path": "packages/backend-proxy-middleware"
     },
     {

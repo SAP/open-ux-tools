@@ -1,5 +1,36 @@
 # @sap-ux/generator-adp
 
+## 0.7.14
+
+### Patch Changes
+
+-   Updated dependencies [d202c17]
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/inquirer-common@0.9.10
+    -   @sap-ux/adp-tooling@0.18.14
+
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/adp-tooling@0.18.13
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/fiori-generator-shared@0.13.37
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/project-input-validator@0.6.34
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/inquirer-common@0.9.9
+
+## 0.7.12
+
+### Patch Changes
+
+-   324d8ed: feat: Enable Adaptation Editor for CF projects
+-   Updated dependencies [324d8ed]
+    -   @sap-ux/adp-tooling@0.18.12
+
 ## 0.7.11
 
 ### Patch Changes
