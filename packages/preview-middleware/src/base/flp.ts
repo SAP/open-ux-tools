@@ -155,7 +155,13 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
-        const appRoot = await findProjectRoot(process.cwd(), false, true);
+        let appRoot: string;
+        try {
+            appRoot = await findProjectRoot(process.cwd());
+        } catch {
+            //In case we cannot find the absolute path to the project root, we use the relative path of the current working directory.
+            appRoot = '.';
+        }
         this.projectType = await getProjectType(appRoot);
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
@@ -631,9 +637,11 @@ export class FlpSandbox {
     private async addRoutesForAdditionalApps(): Promise<void> {
         for (const app of this.flpConfig.apps) {
             let manifest: Manifest | undefined;
+            let absolutePath: string | undefined;
             if (app.local) {
-                this.fs = this.fs ?? create(createStorage());
-                const webappPath = await getWebappPath(app.local, this.fs);
+                absolutePath = path.resolve(process.cwd(), app.local);
+                this.fs ??= create(createStorage());
+                const webappPath = await getWebappPath(absolutePath, this.fs);
                 manifest = JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest | undefined;
                 this.router.use(app.target, serveStatic(webappPath));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
@@ -646,7 +654,7 @@ export class FlpSandbox {
                 } as Manifest;
             }
             if (manifest) {
-                await addApp(this.templateConfig, manifest, app, this.logger);
+                await addApp(this.templateConfig, manifest, {...app, ...(absolutePath && {local: absolutePath})}, this.logger);
                 this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
             } else {
                 this.logger.info(
@@ -679,7 +687,7 @@ export class FlpSandbox {
     private async flexGetHandler(res: Response): Promise<void> {
         const changes = await readChanges(this.project, this.logger);
         if (this.onChangeRequest) {
-            this.fs = this.fs ?? create(createStorage());
+            this.fs ??= create(createStorage());
             for (const change of Object.values(changes)) {
                 await this.onChangeRequest('read', change, this.fs, this.logger);
             }
@@ -695,7 +703,7 @@ export class FlpSandbox {
      * @private
      */
     private async flexPostHandler(req: Request, res: Response): Promise<void> {
-        this.fs = this.fs ?? create(createStorage());
+        this.fs ??= create(createStorage());
         try {
             const body = req.body;
             if (this.onChangeRequest) {
@@ -1004,7 +1012,7 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            this.fs = this.fs ?? create(createStorage());
+            this.fs ??= create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
@@ -1058,7 +1066,7 @@ export class FlpSandbox {
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            this.fs = this.fs ?? create(createStorage());
+            this.fs ??= create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
             const i18nConfig = this.manifest['sap.app'].i18n;
             let i18nPath = 'i18n/i18n.properties';

@@ -217,11 +217,11 @@ describe('FlpSandbox', () => {
                         apps: [
                             {
                                 target: '/simple/app',
-                                local: join(fixtures, 'simple-app')
+                                local: join(fixtures, 'simple-app') //test with absolute path
                             },
                             {
                                 target: '/yet/another/app',
-                                local: join(fixtures, 'multi-app'),
+                                local: './test/fixtures/multi-app', //test with relative path
                                 intent: {
                                     object: 'myObject',
                                     action: 'action'
