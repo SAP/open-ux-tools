@@ -2340,7 +2340,7 @@ importers:
         specifier: 0.22.0
         version: 0.22.0(apache-arrow@18.1.0)
       '@sap-ux/fiori-docs-embeddings':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../fiori-docs-embeddings
       '@sap-ux/store':
         specifier: workspace:*
