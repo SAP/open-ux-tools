@@ -1,6 +1,6 @@
 import type { ReaderCollection } from '@ui5/fs';
 import { CARD_GENERATOR_DEFAULT, type TemplateConfig } from '../../../src/base/config';
-import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
+import { FlpSandbox as FlpSandboxUnderTest } from '../../../src';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
@@ -1449,7 +1449,7 @@ describe('initAdp', () => {
     test('initAdp: throw an error if no adp project', async () => {
         const flp = new FlpSandbox({}, mockNonAdpProject, {} as MiddlewareUtils, logger);
         try {
-            await initAdp(mockNonAdpProject, {} as AdpPreviewConfig, flp, {} as MiddlewareUtils, logger);
+            await flp.initAdp({} as AdpPreviewConfig);
         } catch (error) {
             expect(error).toBeDefined();
         }
@@ -1461,7 +1461,7 @@ describe('initAdp', () => {
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
+        await flp.initAdp(config.adp);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
     });
@@ -1496,9 +1496,65 @@ describe('initAdp', () => {
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await initAdp(mockAdpProject, config.adp as AdpPreviewConfig, flp, {} as MiddlewareUtils, logger);
+        await flp.initAdp(config.adp as AdpPreviewConfig);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
         expect(flp.rta?.options?.isCloud).toBe(true);
+    });
+
+    test('initAdp with cfBuildPath mode', async () => {
+        const mockManifest = {
+            'sap.app': {
+                id: 'test.app',
+                title: 'Test App',
+                type: 'application',
+                applicationVersion: {
+                    version: '1.0.0'
+                }
+            }
+        } as Manifest;
+        const cfBuildPath = 'dist';
+        const readManifestFromBuildPathMock = jest
+            .spyOn(adpTooling, 'readManifestFromBuildPath')
+            .mockReturnValue(mockManifest);
+        const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: jest.fn().mockResolvedValue('CUSTOMER_BASE'),
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                isCloudProject: false
+            } as unknown as adpTooling.AdpPreview;
+        });
+
+        const config: AdpPreviewConfig = {
+            target: { url },
+            cfBuildPath
+        };
+        const flpConfig = {
+            adp: config,
+            rta: { options: {}, editors: [] }
+        } as unknown as Partial<MiddlewareConfig>;
+        const flp = new FlpSandbox(flpConfig, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+
+        await flp.initAdp(config);
+
+        expect(readManifestFromBuildPathMock).toHaveBeenCalledWith(cfBuildPath);
+        expect(adpToolingMock).toHaveBeenCalled();
+        expect(flpInitMock).toHaveBeenCalledWith(mockManifest, expect.any(String));
+        expect(flp.rta?.options?.isCloud).toBe(false);
     });
 });
