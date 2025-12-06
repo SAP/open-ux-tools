@@ -22,14 +22,24 @@ describe('Test the panel action utils', () => {
     describe('validateSystemInfo', () => {
         it('should return true for valid system info', () => {
             expect(
-                validateSystemInfo({ url: 'https://valid-url.com', name: 'Valid System', systemType: 'OnPrem' })
+                validateSystemInfo({
+                    url: 'https://valid-url.com',
+                    name: 'Valid System',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                })
             ).toBe(true);
         });
 
         it('should throw an error for missing URL', () => {
-            expect(validateSystemInfo({ url: '', name: 'No URL System', systemType: 'OnPrem' })).toBe(
-                'Please provide a valid URL to test the connection.'
-            );
+            expect(
+                validateSystemInfo({
+                    url: '',
+                    name: 'No URL System',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                })
+            ).toBe('Please provide a valid URL to test the connection.');
         });
     });
 

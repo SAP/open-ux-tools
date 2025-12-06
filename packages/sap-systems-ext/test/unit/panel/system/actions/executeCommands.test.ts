@@ -3,6 +3,7 @@ import {
     openOutputChannel,
     openGuidedAnswers
 } from '../../../../../src/panel/system/actions/executeCommads';
+import type { BackendSystem } from '@sap-ux/store';
 import * as vscodeMod from 'vscode';
 import SystemsLogger from '../../../../../src/utils/logger';
 
@@ -15,7 +16,12 @@ describe('Test the executeCommands actions', () => {
 
     it('should run the launch app gen commands', async () => {
         const executeCommandSpy = jest.spyOn(vsCodeCommands, 'executeCommand');
-        const backendSystem = { name: 'Mock system', url: 'https://mock.url.com' };
+        const backendSystem: BackendSystem = {
+            name: 'Mock system',
+            url: 'https://mock.url.com',
+            connectionType: 'abap_catalog',
+            systemType: 'OnPrem'
+        };
         await createFioriProject({} as any, {
             type: 'CREATE_FIORI_PROJECT',
             payload: { system: backendSystem }

@@ -47,7 +47,15 @@ describe('Test the export system action', () => {
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
-            payload: { system: { name: 'Test System', url: 'https://example.com', client: '100' } }
+            payload: {
+                system: {
+                    name: 'Test System',
+                    url: 'https://example.com',
+                    client: '100',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                }
+            }
         });
 
         expect(showSaveDialogSpy).toHaveBeenCalled();
@@ -82,7 +90,15 @@ describe('Test the export system action', () => {
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
-            payload: { system: { name: 'Test System', url: 'https://example.com', client: '100' } }
+            payload: {
+                system: {
+                    name: 'Test System',
+                    url: 'https://example.com',
+                    client: '100',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                }
+            }
         });
 
         expect(showSaveDialogSpy).toHaveBeenCalled();

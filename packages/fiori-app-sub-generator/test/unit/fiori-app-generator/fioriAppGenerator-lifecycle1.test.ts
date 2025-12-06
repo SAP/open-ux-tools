@@ -835,7 +835,9 @@ describe('Test FioriAppGenerator', () => {
                 backendSystem: {
                     name: 'testSystemName',
                     url: 'http:/s4hsystem:1234',
-                    authenticationType: 'reentranceTicket'
+                    authenticationType: 'reentranceTicket',
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
                 }
             }
         };
@@ -869,7 +871,9 @@ describe('Test FioriAppGenerator', () => {
                         backendSystem: {
                             authenticationType: 'reentranceTicket',
                             name: 'testSystemName',
-                            url: 'http:/s4hsystem:1234'
+                            url: 'http:/s4hsystem:1234',
+                            systemType: 'AbapCloud',
+                            connectionType: 'abap_catalog'
                         },
                         serviceProvider: {} as ServiceProvider
                     }

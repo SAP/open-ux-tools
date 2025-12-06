@@ -1,4 +1,5 @@
 import type { WebAppActions } from '@sap-ux/sap-systems-ext-types';
+import type { BackendSystem } from '@sap-ux/store';
 import { initI18n } from '../../../../src/utils';
 import { SystemPanel } from '../../../../src/panel/system/sytemPanel';
 import { SystemPanelViewType } from '../../../../src/utils/constants';
@@ -37,11 +38,12 @@ describe('Test the system panel class', () => {
 
         jest.spyOn(vscodeMod.extensions, 'getExtension').mockReturnValue(undefined);
 
-        const backendSystem = {
+        const backendSystem: BackendSystem = {
             url: 'https://example.com',
             client: '100',
             name: 'Test System',
-            systemType: 'OnPrem'
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         };
         const dispatchPanelActionSpy = jest.spyOn(actions, 'dispatchPanelAction');
 

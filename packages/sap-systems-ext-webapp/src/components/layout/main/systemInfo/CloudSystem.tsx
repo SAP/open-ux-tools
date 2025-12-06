@@ -1,5 +1,5 @@
 import React from 'react';
-import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import type { ReactElement } from 'react';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
@@ -25,11 +25,9 @@ interface CloudSystemProps {
 export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonly<CloudSystemProps>): ReactElement {
     const { t } = useTranslation();
 
-    const authType = systemInfo?.authenticationType as AuthenticationType;
-
     let cloudComponent = <div></div>;
 
-    if (authType === 'reentranceTicket') {
+    if (systemInfo?.authenticationType === 'reentranceTicket') {
         cloudComponent = (
             <div>
                 <div className="store-text-field">

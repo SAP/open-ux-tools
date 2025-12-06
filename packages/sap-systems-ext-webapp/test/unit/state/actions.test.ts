@@ -1,13 +1,16 @@
+import type { BackendSystem } from '@sap-ux/store';
 import * as actions from '../../../src/state/actions';
 import * as types from '@sap-ux/sap-systems-ext-types';
 
 describe('Store redux actions', () => {
-    const system = {
+    const system: BackendSystem = {
         name: '',
         url: '',
         client: '',
         username: '',
-        password: ''
+        password: '',
+        connectionType: 'abap_catalog',
+        systemType: 'OnPrem'
     };
 
     test('Create "storeWebviewReady" action', () => {

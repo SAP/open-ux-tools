@@ -1,5 +1,4 @@
 import * as React from 'react';
-import type { AuthenticationType, SystemType } from '@sap-ux/store';
 import { render } from '@testing-library/react';
 import { fireEvent, screen } from '@testing-library/dom';
 import { LoadingState } from '../../../../../src/types';
@@ -33,12 +32,13 @@ describe('<SystemMain />', () => {
     const defaultMockHookReturn: Partial<ReturnType<typeof useSystemMain>> = {
         systemInfo: {
             name: 'dummy system',
-            systemType: 'OnPrem' satisfies SystemType,
-            authenticationType: 'basic' satisfies AuthenticationType,
+            systemType: 'OnPrem',
+            authenticationType: 'basic',
             url: 'http://dummy',
             client: '000',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            connectionType: 'abap_catalog'
         },
         systemUnSaved: false,
         defaultName: 'http://dummy',

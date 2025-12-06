@@ -1,13 +1,13 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import type { UIDropdownOption } from '@sap-ux/ui-components';
-import type { SystemType } from '@sap-ux/store';
+import type { AuthenticationType, SystemType } from '@sap-ux/store';
 import { UIDropdown } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
 interface SystemTypesProps {
     readonly setType: (type: SystemType) => void;
-    readonly setAuthenticationType: (authType: string) => void;
+    readonly setAuthenticationType: (authType: AuthenticationType) => void;
 }
 
 /**

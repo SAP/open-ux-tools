@@ -14,6 +14,7 @@ import {
     runWritingPhaseGen
 } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
+import { url } from 'node:inspector';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
@@ -176,8 +177,12 @@ describe('Generate v2 apps', () => {
                 source: DatasourceType.sapSystem,
                 connectedSystem: {
                     backendSystem: {
+                        url: 'https://abap.cloud.host',
                         serviceKeys: 'aServiceKey',
-                        authenticationType: 'ReentranceTicket'
+                        authenticationType: 'reentranceTicket',
+                        name: 'aSystemName',
+                        systemType: 'AbapCloud',
+                        connectionType: 'abap_catalog'
                     }
                 },
                 host: 'https://abap.cloud.host',

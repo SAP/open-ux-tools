@@ -195,7 +195,8 @@ export function getUserSystemNameQuestion(
                         systemType: getBackendSystemType({
                             serviceKeys: connectValidator.serviceInfo,
                             authenticationType: connectValidator.systemAuthType
-                        } as BackendSystem)
+                        } as BackendSystem),
+                        connectionType: 'abap_catalog'
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
                     PromptState.odataService.connectedSystem.backendSystem.newOrUpdated = true;
