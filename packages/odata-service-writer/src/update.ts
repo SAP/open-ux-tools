@@ -115,12 +115,18 @@ export async function addServicesData(
             extendBackendMiddleware(fs, service, ui5LocalConfig, paths.ui5LocalYaml);
         }
     }
+    const webappPath = await getWebappPath(basePath, fs);
     if (service.metadata) {
-        const webappPath = await getWebappPath(basePath, fs);
         if (paths.ui5Yaml && ui5Config) {
-            const config = {
-                webappPath: webappPath
+            const config: MockserverConfig = {
+                webappPath: webappPath,
+                ui5MockYamlConfig: {}
             };
+            if (config.ui5MockYamlConfig && service.name && service.externalServices?.length) {
+                config.ui5MockYamlConfig.resolveExternalServiceReferences = {
+                    [service.name]: true
+                };
+            }
             // Generate mockserver middleware for ui5-mock.yaml
             await generateMockserverConfig(basePath, config, fs);
             // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
@@ -141,6 +147,9 @@ export async function addServicesData(
         fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
     }
     await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+    if (service.externalServices && webappPath) {
+        writeExternalServiceMetadata(fs, webappPath, service.externalServices, service.name, service.path);
+    }
 }
 
 /**
