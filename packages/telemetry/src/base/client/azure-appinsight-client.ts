@@ -131,7 +131,7 @@ class ApplicationInsightClient extends Client {
         event: appInsights.Contracts.EventTelemetry
     ): Promise<void> {
         if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
-            return Promise.resolve();
+            return;
         }
 
         return new Promise((resolve, reject) => {

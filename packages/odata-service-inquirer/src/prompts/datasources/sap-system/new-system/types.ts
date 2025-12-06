@@ -1,4 +1,4 @@
-// eslint-disable-next-line
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { promptNames, type SapSystemType } from '../../../../types';
 
 export const newSystemPromptNames = {

@@ -57,7 +57,7 @@ export async function findInstalledPackages(
 
     const matchedPackages = [];
     // Find all matching packages
-    for await (const installPath of npmInstallPaths) {
+    for (const installPath of npmInstallPaths) {
         // Fast-glob search patterns must use forward-slashes, UNC can be used as `cwd`
         const matches = await fastGlob(`**/*${subName}*`, {
             cwd: installPath,
@@ -71,7 +71,7 @@ export async function findInstalledPackages(
     }
 
     // Read package.json
-    for await (const packagePath of matchedPackages) {
+    for (const packagePath of matchedPackages) {
         const genPackageInfo = await getPackageInfo(packagePath, options?.minVersion);
         // Module naming pattern + keyword indicates Fiori gen extension
         if (

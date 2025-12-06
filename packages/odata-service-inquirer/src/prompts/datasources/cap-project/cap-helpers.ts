@@ -58,7 +58,7 @@ export async function getCapProjectChoices(paths: string[]): Promise<CapProjectC
 
     const capChoices: CapProjectChoice[] = [];
 
-    for await (const capProjectPath of capProjectPaths) {
+    for (const capProjectPath of capProjectPaths) {
         const customCapPaths = await getCapCustomPaths(capProjectPath.path);
         const folderCount = folderCounts.get(capProjectPath.folderName) ?? 1;
 

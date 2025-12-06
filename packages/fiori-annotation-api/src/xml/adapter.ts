@@ -235,7 +235,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             }
             workspaceChanges[uri] = edits;
         }
-        return Promise.resolve({ changes: workspaceChanges });
+        return { changes: workspaceChanges };
     }
 
     /**
