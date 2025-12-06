@@ -12,7 +12,7 @@ import type {
 } from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'node:path';
-import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+import { createApplicationAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
@@ -334,10 +334,9 @@ async function getI18nTextFromProperty(
     if (!projectRoot || !propertyI18nKey) {
         return propertyValue;
     }
-    const projectAccess = await createProjectAccess(projectRoot);
-    const applicationIds = projectAccess.getApplicationIds();
     try {
-        const bundle = (await projectAccess.getApplication(applicationIds[0]).getI18nBundles())['sap.app'];
+        const applicationAccess = await createApplicationAccess(projectRoot);
+        const bundle = (await applicationAccess.getI18nBundles())['sap.app'];
         return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
     } catch (e) {
         logger.warn('Failed to load i18n properties bundle');

@@ -157,7 +157,14 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
-        this.projectType = await getProjectType(await findProjectRoot(process.cwd(), true, true));
+        let appRoot: string;
+        try {
+            appRoot = await findProjectRoot(process.cwd());
+        } catch {
+            //In case we cannot find the absolute path to the project root, we use the relative path of the current working directory.
+            appRoot = '.';
+        }
+        this.projectType = await getProjectType(appRoot);
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
@@ -171,7 +178,7 @@ export class FlpSandbox {
             {
                 componentId,
                 target: resources[componentId ?? id] ?? this.templateConfig.basePath,
-                local: '.',
+                local: appRoot,
                 intent: this.flpConfig.intent
             },
             this.logger
@@ -223,21 +230,21 @@ export class FlpSandbox {
             return new Map([
                 // Run application in design time mode
                 // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-                ['xx-designMode', 'true'],
+                ['data-sap-ui-xx-designMode', 'true'],
                 // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-                ['xx-suppressDeactivationOfControllerCode', 'true'],
+                ['data-sap-ui-xx-suppressDeactivationOfControllerCode', 'true'],
                 // Make sure that XML preprocessing results are correctly invalidated
-                ['xx-viewCache', 'false']
+                ['data-sap-ui-xx-viewCache', 'false']
             ]);
         } else {
             return new Map([
                 // Run application in design time mode
                 // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-                ['xx-design-mode', 'true'],
+                ['data-sap-ui-xx-design-mode', 'true'],
                 // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-                ['xx-suppress-deactivation-of-controller-code', 'true'],
+                ['data-sap-ui-xx-suppress-deactivation-of-controller-code', 'true'],
                 // Make sure that XML preprocessing results are correctly invalidated
-                ['xx-view-cache', 'false']
+                ['data-sap-ui-xx-view-cache', 'false']
             ]);
         }
     }
@@ -632,9 +639,11 @@ export class FlpSandbox {
     private async addRoutesForAdditionalApps(): Promise<void> {
         for (const app of this.flpConfig.apps) {
             let manifest: Manifest | undefined;
+            let absolutePath: string | undefined;
             if (app.local) {
-                this.fs = this.fs ?? create(createStorage());
-                const webappPath = await getWebappPath(app.local, this.fs);
+                absolutePath = path.resolve(process.cwd(), app.local);
+                this.fs ??= create(createStorage());
+                const webappPath = await getWebappPath(absolutePath, this.fs);
                 manifest = JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest | undefined;
                 this.router.use(app.target, serveStatic(webappPath));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
@@ -647,7 +656,12 @@ export class FlpSandbox {
                 } as Manifest;
             }
             if (manifest) {
-                await addApp(this.templateConfig, manifest, app, this.logger);
+                await addApp(
+                    this.templateConfig,
+                    manifest,
+                    { ...app, ...(absolutePath && { local: absolutePath }) },
+                    this.logger
+                );
                 this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
             } else {
                 this.logger.info(
@@ -680,7 +694,7 @@ export class FlpSandbox {
     private async flexGetHandler(res: Response): Promise<void> {
         const changes = await readChanges(this.project, this.logger);
         if (this.onChangeRequest) {
-            this.fs = this.fs ?? create(createStorage());
+            this.fs ??= create(createStorage());
             for (const change of Object.values(changes)) {
                 await this.onChangeRequest('read', change, this.fs, this.logger);
             }
@@ -696,7 +710,7 @@ export class FlpSandbox {
      * @private
      */
     private async flexPostHandler(req: Request, res: Response): Promise<void> {
-        this.fs = this.fs ?? create(createStorage());
+        this.fs ??= create(createStorage());
         try {
             const body = req.body;
             if (this.onChangeRequest) {
@@ -1005,7 +1019,7 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            this.fs = this.fs ?? create(createStorage());
+            this.fs ??= create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
@@ -1059,7 +1073,7 @@ export class FlpSandbox {
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            this.fs = this.fs ?? create(createStorage());
+            this.fs ??= create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
             const i18nConfig = this.manifest['sap.app'].i18n;
             let i18nPath = 'i18n/i18n.properties';
@@ -1181,29 +1195,13 @@ export class FlpSandbox {
 }
 
 /**
- * Creates an attribute string that can be added to an HTML element.
- *
- * @param attributes map with attributes and their values
- * @param indent indentation that's inserted before each attribute
- * @param prefix value that should be added at the start of to all attribute names
- * @returns attribute string
- */
-function serializeDataAttributes(attributes: Map<string, string>, indent = '', prefix = 'data'): string {
-    return [...attributes.entries()]
-        .map(([name, value]) => {
-            return `${indent}${prefix}-${name}="${value}"`;
-        })
-        .join('\n');
-}
-
-/**
- * Creates an attribute string that can be added to bootstrap script in a HTML file.
+ * Creates an attribute string that can be added to the UI5 bootstrap script of an HTML file.
  *
  * @param config ui5 configuration options
  * @returns attribute string
  */
 function serializeUi5Configuration(config: Map<string, string>): string {
-    return '\n' + serializeDataAttributes(config, '        ', 'data-sap-ui');
+    return '\n' + [...config.entries()].map(([name, value]) => `        ${name}="${value}"`).join('\n');
 }
 
 /**
