@@ -47,6 +47,8 @@ const getOptions = (values: string[]): UIDropdownOption[] => {
 
 function SectionsExample(props: SectionsExampleProps): JSX.Element {
     const [firstSectionSize, setFirstSectionSize] = useState(props.threeSections ? 200 : 400);
+    const threeSize = [25, undefined, 20];
+    const twoSize = [35, undefined];
     const [sectionsProps, setSectionsProps] = useState<Omit<UISectionsProps, 'children'>>({
         vertical: props.vertical,
         splitterType: UISplitterType.Resize,
@@ -55,8 +57,9 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
         minSectionSize: props.threeSections ? [100, 100, 100] : [300, 300],
         animation: true,
         splitterLayoutType: UISplitterLayoutType.Standard,
-        sizesAsPercents: false,
-        sizes: props.threeSections ? [firstSectionSize, undefined, 200] : [firstSectionSize, undefined]
+        sizesAsPercents: true,
+        sizes: props.threeSections ? threeSize : twoSize
+        // sizes: props.threeSections ? [firstSectionSize, undefined, 200] : [firstSectionSize, undefined]
     });
     const [leftSectionVisible, setLeftSectionVisible] = useState<boolean>(true);
     const [rightSectionVisible, setRightSectionVisible] = useState<boolean>(true);
