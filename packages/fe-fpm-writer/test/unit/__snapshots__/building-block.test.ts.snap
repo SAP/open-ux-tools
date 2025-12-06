@@ -1271,6 +1271,167 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 />"
 `;
 
+exports[`Building Blocks RichTextEditorButtonGroups building block RichTextEditorButtonGroups detects richtexteditor:buttonGroups elements correctly: generate-rte-button-groups-with-existing-button-groups 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block RichTextEditorButtonGroups with all available button groups: generate-rte-all-button-groups 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"bold,italic,underline,strikethrough\\"/>
+                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"fontfamily,fontsize,forecolor,backcolor\\"/>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"bullist,numlist,outdent,indent\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"image,emoticons\\"/>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"link,unlink\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"table\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"styleselect\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditor button groups with empty array: rte-empty-button-groups 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"EdgeCaseRTE\\">
+            <richtexteditor:buttonGroups>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups with complex existing and new button groups: generate-rte-button-groups-complex-replace 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"12\\" buttons=\\"undo\\"/>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"false\\" priority=\\"20\\" buttons=\\"bold,italic,underline,strikethrough\\" id=\\"newFontStyle\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" priority=\\"5\\" buttons=\\"formatselect\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" priority=\\"18\\" buttons=\\"image\\" customToolbarPriority=\\"40\\" row=\\"2\\" id=\\"customInsert\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups with existing button groups: generate-rte-button-groups-replace-existing 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups without richtexteditor:buttonGroups wrapper: generate-rte-button-groups-without-wrapper 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"bold,italic,underline\\"/>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block multiple RichTextEditors with complex button group scenarios: multiple-rtes-step1-update-rte1 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor1\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"15\\" buttons=\\"bold,italic,underline\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" priority=\\"8\\" buttons=\\"table\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" priority=\\"7\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Description\\" id=\\"RichTextEditor2\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"false\\" priority=\\"3\\" buttons=\\"link,unlink\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\"/>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block multiple RichTextEditors with complex button group scenarios: multiple-rtes-step2-update-rte2 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor1\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"15\\" buttons=\\"bold,italic,underline\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" priority=\\"8\\" buttons=\\"table\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" priority=\\"7\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Description\\" id=\\"RichTextEditor2\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"false\\" priority=\\"12\\" buttons=\\"bullist,numlist,outdent,indent\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\"/>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block multiple RichTextEditors with complex button group scenarios: multiple-rtes-step3-add-to-rte3 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor1\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"15\\" buttons=\\"bold,italic,underline\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" priority=\\"8\\" buttons=\\"table\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" priority=\\"7\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Description\\" id=\\"RichTextEditor2\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"false\\" priority=\\"12\\" buttons=\\"bullist,numlist,outdent,indent\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"fontselect,fontsizeselect\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" priority=\\"20\\" buttons=\\"styleselect\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"link\\" customToolbarPriority=\\"40\\" id=\\"customLinkButton\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
 exports[`Building Blocks generate Page building block with replace target locator set: generate-page-block 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <macros:Page id=\\"testPage\\" title=\\"Test Page Title\\" description=\\"Test Page Description\\"/>

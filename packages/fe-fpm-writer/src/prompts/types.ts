@@ -17,7 +17,8 @@ export enum PromptsType {
     Table = 'table',
     Page = 'page',
     BuildingBlocks = 'building-blocks',
-    RichTextEditor = 'rich-text-editor'
+    RichTextEditor = 'rich-text-editor',
+    RichTextEditorButtonGroups = 'rich-text-editor-button-groups'
 }
 
 export interface Prompts<T extends Answers = Answers> {

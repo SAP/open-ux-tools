@@ -34,7 +34,8 @@ export {
     Page,
     CustomColumn,
     CustomFilterField,
-    RichTextEditor
+    RichTextEditor,
+    ButtonGroupConfig
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
