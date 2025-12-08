@@ -48,7 +48,7 @@ import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 import { TargetEnv, type JsonInput, type TargetEnvAnswers } from '../src/app/types';
-import { EventName } from '../src/telemetryEvents';
+import { EventName } from '../src/telemetry';
 import { initI18n, t } from '../src/utils/i18n';
 import * as subgenHelpers from '../src/utils/subgenHelpers';
 import {

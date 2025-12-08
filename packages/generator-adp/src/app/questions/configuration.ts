@@ -38,6 +38,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
 import { t } from '../../utils/i18n';
+import { TelemetryCollector } from '../../telemetry';
 import type {
     AchPromptOptions,
     ApplicationPromptOptions,
@@ -579,7 +580,10 @@ export class ConfigPrompter {
                 return validationResult;
             }
 
+            TelemetryCollector.startTiming('applicationListLoadingTime');
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+            TelemetryCollector.setData('numberOfApplications', this.targetApps.length);
+            TelemetryCollector.endTiming('applicationListLoadingTime');
             this.isLoginSuccessful = true;
             return true;
         } catch (e) {
@@ -622,7 +626,10 @@ export class ConfigPrompter {
                     return validationResult;
                 }
 
+                TelemetryCollector.startTiming('applicationListLoadingTime');
                 this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+                TelemetryCollector.setData('numberOfApplications', this.targetApps.length);
+                TelemetryCollector.endTiming('applicationListLoadingTime');
             }
 
             return true;

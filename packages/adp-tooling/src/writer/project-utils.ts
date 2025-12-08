@@ -1,11 +1,10 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
+
 import {
     type CloudApp,
     type AdpWriterConfig,
-    type CustomConfig,
     type TypesConfig,
     type CfAdpWriterConfig,
     type DescriptorVariant
@@ -22,7 +21,6 @@ import {
 } from './options';
 
 import type { Package } from '@sap-ux/project-access';
-import type { OperationsType } from '@sap-ux/axios-extension';
 import { UI5Config, UI5_DEFAULT, getEsmTypesVersion, getTypesPackage, getTypesVersion } from '@sap-ux/ui5-config';
 
 /**
@@ -68,28 +66,6 @@ export function getTypes(ui5Version?: string): TypesConfig {
     return {
         typesPackage,
         typesVersion
-    };
-}
-
-/**
- * Constructs a custom configuration object for the Adaptation Project (ADP).
- *
- * @param {OperationsType} environment - The operations type ('P' for on-premise or 'C' for cloud ready).
- * @param {object} pkg - The parsed contents of `package.json`.
- * @param {string} pkg.name - The name of the tool or package generating the config.
- * @param {string} pkg.version - The version of the tool generating the config.
- * @returns {CustomConfig} The generated ADP custom configuration object.
- */
-export function getCustomConfig(environment: OperationsType, { name: id, version }: Package): CustomConfig {
-    return {
-        adp: {
-            environment,
-            support: {
-                id: id ?? '',
-                version: version ?? '',
-                toolsId: uuidv4()
-            }
-        }
     };
 }
 

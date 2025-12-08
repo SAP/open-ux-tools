@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
+import { v4 as uuidv4 } from 'uuid';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
 import {
@@ -34,13 +35,13 @@ import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
-import { EventName } from '../telemetryEvents';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import { getPackageInfo, installDependencies } from '../utils/deps';
 import { initI18n, t } from '../utils/i18n';
 import AdpGeneratorLogger from '../utils/logger';
 import { setHeaderTitle } from '../utils/opts';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
+import { TelemetryCollector, EventName } from '../telemetry';
 import {
     getDeployPage,
     getWizardPages,
@@ -173,6 +174,10 @@ export default class extends Generator {
      * Indicates if the CF feature is enabled.
      */
     private readonly isCfFeatureEnabled: boolean;
+    /**
+     * Tools ID.
+     */
+    private toolsId: string;
 
     /**
      * Creates an instance of the generator.
@@ -220,7 +225,7 @@ export default class extends Generator {
         }
 
         await initI18n();
-
+        TelemetryCollector.init();
         this.isCli = isCli();
         this.layer = getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
@@ -331,6 +336,9 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
+            this.toolsId = uuidv4();
+            this._collectTelemetryData();
+
             if (this.isCfEnv) {
                 await this._generateAdpProjectArtifactsCF();
                 return;
@@ -368,7 +376,8 @@ export default class extends Generator {
                 manifest,
                 layer: this.layer,
                 packageJson,
-                logger: this.toolsLogger
+                logger: this.toolsLogger,
+                toolsId: this.toolsId
             });
 
             if (config.options) {
@@ -401,14 +410,17 @@ export default class extends Generator {
             return;
         }
 
+        const adpTelemetryData = TelemetryCollector.getData();
         const telemetryData =
             TelemetryHelper.createTelemetryData({
                 appType: 'generator-adp',
-                ...this.options.telemetryData
+                ...this.options.telemetryData,
+                ...adpTelemetryData
             }) ?? {};
+
         const projectPath = this._getProjectPath();
         if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, projectPath).catch((error) => {
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED_TEST, telemetryData, projectPath).catch((error) => {
                 this.logger.error(t('error.telemetry', { error }));
             });
         }
@@ -445,6 +457,29 @@ export default class extends Generator {
             const path = this.destinationRoot(fs.realpathSync(pathAnswers.projectLocation, 'utf-8'));
             this.logger.log(`Project path information: ${path}`);
         }
+    }
+
+    /**
+     * Collects the telemetry data for the ADP generator.
+     */
+    private _collectTelemetryData(): void {
+        if (this.isCfEnv) {
+            const manifestId = this.cfPrompter.manifest?.['sap.app']?.id;
+            TelemetryCollector.setData('baseAppTechnicalName', manifestId);
+            TelemetryCollector.setData('projectType', 'cf');
+        } else {
+            const isCloud = this.prompter?.isCloud ?? false;
+            TelemetryCollector.setData('projectType', isCloud ? 'cloud' : 'onPremise');
+            TelemetryCollector.setData('baseAppTechnicalName', this.configAnswers.application?.id ?? '');
+        }
+
+        TelemetryCollector.setData('toolsId', this.toolsId);
+        TelemetryCollector.setData('wasExtProjectGenerated', this.shouldCreateExtProject ?? false);
+        TelemetryCollector.setData('systemUI5Version', this.prompter?.ui5?.systemVersion ?? '');
+        TelemetryCollector.setData('ui5VersionSelected', this.attributeAnswers.ui5Version ?? '');
+        TelemetryCollector.setData('wasFlpConfigDone', this.attributeAnswers.addFlpConfig ?? false);
+        TelemetryCollector.setData('wasTypeScriptChosen', this.attributeAnswers.enableTypeScript ?? false);
+        TelemetryCollector.setData('wasDeployConfigDone', this.attributeAnswers.addDeployConfig ?? false);
     }
 
     /**
@@ -635,6 +670,7 @@ export default class extends Generator {
         this.abapProvider = await getConfiguredProvider(providerOptions, this.logger);
 
         const applications = await loadApps(this.abapProvider, this.isCustomerBase);
+        TelemetryCollector.setData('numberOfApplications', applications.length);
         const application = applications.find((application) => application.id === baseApplicationName);
         if (!application) {
             throw new Error(t('error.applicationNotFound', { appName: baseApplicationName }));
