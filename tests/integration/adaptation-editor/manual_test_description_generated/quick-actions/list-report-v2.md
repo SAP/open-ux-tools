@@ -11,6 +11,7 @@
 - [7. Enable Variant Management in Tables and Charts](#7-enable-variant-management-in-tables-and-charts)
 - [8. Change table actions](#8-change-table-actions)
 - [9. Add New Annotation File](#9-add-new-annotation-file)
+- [10. Add Custom Page Action](#10-add-custom-page-action)
 
 <a id="1-enabledisable-clear-filter-bar-button"></a>
 ## 1. Enable/Disable clear filter bar button
@@ -131,7 +132,10 @@
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+    <!-- viewName: sap.suite.ui.generic.template.ListReport.view.ListReport -->
+    <!-- controlType: sap.m.OverflowToolbar -->
+    <!-- targetAggregation: content --> 
+    <!-- add your xml here -->
     <Button text="New Button"  id="btn-<UNIQUE_ID>"></Button>
 </core:FragmentDefinition>
 
@@ -176,7 +180,10 @@
 **table-cell.fragment.xml**
 ```xml
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+    <!-- viewName: sap.suite.ui.generic.template.ListReport.view.ListReport -->
+    <!-- controlType: sap.m.Table -->
+    <!-- targetAggregation: cells --> 
+    <!-- add your xml here -->
     <Text id="cell-text-<UNIQUE_ID>" text="Sample data" />
 </core:FragmentDefinition>
 ```
@@ -185,7 +192,10 @@
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+    <!-- viewName: sap.suite.ui.generic.template.ListReport.view.ListReport -->
+    <!-- controlType: sap.m.Table -->
+    <!-- targetAggregation: columns --> 
+    <!-- add your xml here -->
      <Column id="column-<UNIQUE_ID>"
         width="12em"
         hAlign="Left"
@@ -402,6 +412,52 @@
 7. Click `Show Local Annotation File` button in the Quick Actions Panel
 8. Check filename `adp.fiori.elements.v2/changes/annotations/annotation_<UNIQUE_ID>.xml` is visible in the dialog
 9. Check button `Show File in VSCode` is visible in the dialog
+
+---
+
+<a id="10-add-custom-page-action"></a>
+## 10. Add Custom Page Action
+
+### Steps
+
+1. Check `UIAdaptation` mode in the toolbar is enabled
+2. Click `Add Custom Page Action` button in the Quick Actions Panel
+3. Click `Add Custom Table Action` button in the Quick Actions Panel
+4. Fill `Fragment Name` field with `page-action` in the dialog `Add Custom Page Action`
+5. Click on `Create` button in the dialog `Add Custom Page Action`
+6. Click `Save and Reload` button in the toolBar
+7. Check `Save` button in the toolbar is disabled
+8. Verify changes:
+
+**Fragment(s)**
+
+**page-action.fragment.xml**
+```xml
+<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!-- viewName: sap.suite.ui.generic.template.ListReport.view.ListReport -->
+    <!-- controlType: sap.f.DynamicPageTitle -->
+    <!-- targetAggregation: actions --> 
+    <!-- add your xml here -->
+    <Button text="New Button"  id="btn-<UNIQUE_ID>"></Button>
+</core:FragmentDefinition>
+
+```
+
+**Change(s)**
+
+```json
+{
+  "fileType": "change",
+  "changeType": "addXML",
+  "content": {
+    "targetAggregation": "actions",
+    "fragmentPath": "fragments/page-action.fragment.xml"
+  }
+}
+```
+
+
 
 ---
 

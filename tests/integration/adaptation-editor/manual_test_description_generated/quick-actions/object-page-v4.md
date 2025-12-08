@@ -29,6 +29,9 @@
 **table-column.fragment.xml**
 ```xml
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
+    <!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->
+    <!-- controlType: sap.ui.mdc.Table -->
+    <!-- targetAggregation: columns --> 
     <table:Column
         id="column-<UNIQUE_ID>"
         width="10%"
@@ -214,7 +217,10 @@
 **op-table-action.fragment.xml**
 ```xml
 <core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
-   <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-<UNIQUE_ID>" >
+    <!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->
+    <!-- controlType: sap.ui.mdc.Table -->
+    <!-- targetAggregation: actions --> 
+    <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-<UNIQUE_ID>" >
         <Button xmlns:m="sap.m" id="btn-<UNIQUE_ID>" visible="true" text="New Action" />
     </actiontoolbar:ActionToolbarAction>
 </core:FragmentDefinition>

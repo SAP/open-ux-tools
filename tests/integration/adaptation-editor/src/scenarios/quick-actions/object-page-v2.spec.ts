@@ -189,16 +189,15 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await editor.toolbar.isDisabled();
             await verifyChanges(projectCopy, {
                 fragments: {
-                    'op-table-action.fragment.xml': new RegExp(
-                        `<!-- Use stable and unique IDs!-->\\s*` +
-                            `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
-                            `<!-- viewName: sap.suite.ui.generic.template.(ObjectPage.view.Details|ListReport.view.ListReport) -->\\s*` +
-                            `<!-- controlType: sap.m.OverflowToolbar -->\\s*` +
-                            `<!-- targetAggregation: content -->\\s*` +
-                            `<!-- add your xml here -->\\s*` +
-                            `<Button text="New Button"  id="btn-[a-z0-9]+"><\\/Button>\\s*` +
-                            `<\\/core:FragmentDefinition>`
-                    )
+                    'op-table-action.fragment.xml': `<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.m.OverflowToolbar -->
+    <!-- targetAggregation: content --> 
+    <!-- add your xml here -->
+    <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
+</core:FragmentDefinition>
+`
                 },
                 changes: [
                     {
@@ -269,34 +268,31 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
             await verifyChanges(projectCopy, {
                 fragments: {
-                    'table-cell.fragment.xml': new RegExp(
-                        `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
-                            `<!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->\\s*` +
-                            `<!-- controlType: sap.m.Table -->\\s*` +
-                            `<!-- targetAggregation: cells -->\\s*` +
-                            `<!-- ?add your xml here ?-->\\s*` +
-                            `<Text id="cell-text-[a-z0-9]+" text="Sample data" \/>\\s*` +
-                            `<\/core:FragmentDefinition>`
-                    ),
-                    'table-column.fragment.xml': new RegExp(
-                        `<!-- Use stable and unique IDs!-->\\s*` +
-                            `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
-                            `<!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->\\s*` +
-                            `<!-- controlType: sap.m.Table -->\\s*` +
-                            `<!-- targetAggregation: columns -->\\s*` +
-                            `<!-- ?add your xml here ?-->\\s*` +
-                            `<Column id="column-[a-z0-9]+"\\s*` +
-                            `width="12em"\\s*` +
-                            `hAlign="Left"\\s*` +
-                            `vAlign="Middle">\\s*` +
-                            `<Text id="column-title-[a-z0-9]+" text="New column" \/>\\s*` +
-                            `<customData>\\s*` +
-                            `<core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"\\s*` +
-                            `value='.*"columnKey": "column-[a-z0-9]+", "columnIndex": "3".*' \/>\\s*` +
-                            `<\/customData>\\s*` +
-                            `<\/Column>\\s*` +
-                            `<\/core:FragmentDefinition>`
-                    )
+                    'table-cell.fragment.xml': `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.m.Table -->
+    <!-- targetAggregation: cells --> 
+    <!-- add your xml here -->
+    <Text id="cell-text-[a-z0-9]+" text="Sample data" />
+</core:FragmentDefinition>`,
+                    'table-column.fragment.xml': `<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.m.Table -->
+    <!-- targetAggregation: columns --> 
+    <!-- add your xml here -->
+     <Column id="column-[a-z0-9]+"
+        width="12em"
+        hAlign="Left"
+        vAlign="Middle">
+        <Text id="column-title-[a-z0-9]+" text="New column" />
+
+        <customData>
+            <core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"
+                value='\\\\{"columnKey": "column-[a-z0-9]+", "columnIndex": "3"}' />
+        </customData>
+    </Column>
+</core:FragmentDefinition>`
                 },
                 changes: [
                     {
@@ -365,17 +361,19 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await editor.toolbar.isDisabled();
             await verifyChanges(projectCopy, {
                 fragments: {
-                    'op-header-field.fragment.xml': new RegExp(
-                        `<!-- Use stable and unique IDs!-->\\s*` +
-                            `<core:FragmentDefinition[\\s\\S]*?>\\s*` +
-                            `<!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->\\s*` +
-                            `<!-- controlType: (sap.uxap.ObjectPageLayout|sap.m.FlexBox) -->\\s*` +
-                            `<!-- targetAggregation: (headerContent|items) -->\\s*` +
-                            `<VBox id="vBox-[a-z0-9]+"\\s*>\\s*` +
-                            `<Label id="label-[a-z0-9]+" text="New Field"><\\/Label>\\s*` +
-                            `<\\/VBox>\\s*` +
-                            `<\\/core:FragmentDefinition>`
-                    )
+                    'op-header-field.fragment.xml': `<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition
+    xmlns:uxap="sap.uxap"
+    xmlns:core='sap.ui.core'
+    xmlns='sap.m'
+>
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.uxap.ObjectPageLayout -->
+    <!-- targetAggregation: headerContent --> 
+    <VBox id="vBox-[a-z0-9]+">
+        <Label id="label-[a-z0-9]+" text="New Field"></Label>
+    </VBox>
+</core:FragmentDefinition>`
                 },
                 changes: [
                     {
@@ -412,23 +410,26 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
         await editor.toolbar.isDisabled();
         await verifyChanges(projectCopy, {
             fragments: {
-                ['op-section.fragment.xml']: new RegExp(
-                    `<!-- Use stable and unique IDs!-->\\s*` +
-                        `<core:FragmentDefinition[\\s\\S]*?>\\s*` +
-                        `<!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->\\s*` +
-                        `<!-- controlType: sap\\.uxap\\.ObjectPageLayout -->\\s*` +
-                        `<!-- targetAggregation: sections -->\\s*` +
-                        `<uxap:ObjectPageSection\\s*` +
-                        `id="op-section-[a-z0-9]+"\\s*` +
-                        `title="New Custom Section"\\s*>\\s*` +
-                        `<uxap:ObjectPageSubSection id="op-subsection-[a-z0-9]+">\\s*` +
-                        `<HBox id="hbox-[a-z0-9]+">\\s*` +
-                        `<!-- ?add your xml here ?-->\\s*` +
-                        `<\\/HBox>\\s*` +
-                        `<\\/uxap:ObjectPageSubSection>\\s*` +
-                        `<\\/uxap:ObjectPageSection>\\s*` +
-                        `<\\/core:FragmentDefinition>`
-                )
+                ['op-section.fragment.xml']: `<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition
+    xmlns:uxap="sap.uxap"
+    xmlns:core='sap.ui.core'
+    xmlns='sap.m'
+>
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.uxap.ObjectPageLayout -->
+    <!-- targetAggregation: sections --> 
+    <uxap:ObjectPageSection
+        id="op-section-[a-z0-9]+"
+        title="New Custom Section"
+    >
+        <uxap:ObjectPageSubSection id="op-subsection-[a-z0-9]+">
+            <HBox id="hbox-[a-z0-9]+">
+                <!-- add your xml here -->
+            </HBox>
+        </uxap:ObjectPageSubSection>
+    </uxap:ObjectPageSection>
+</core:FragmentDefinition>`
             },
             changes: [
                 {
