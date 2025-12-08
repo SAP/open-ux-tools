@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.32.12
+
+### Patch Changes
+
+-   45fe64e: feat: support reading path mappings for other types than application
+
 ## 1.32.11
 
 ### Patch Changes
