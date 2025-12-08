@@ -16,7 +16,6 @@ exports[`Readme file generation tests should generate README.md with core proper
 |**Namespace**<br>appNamespace|
 |**UI5 Theme**<br>a_ui5_theme|
 |**UI5 Version**<br>1.2.3|
-|**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
 |**Main Entity**<br>Product|
@@ -53,7 +52,6 @@ exports[`Readme file generation tests should generate README.md with the correct
 |**Namespace**<br>appNamespace|
 |**UI5 Theme**<br>a_ui5_theme|
 |**UI5 Version**<br>1.2.3|
-|**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
 
