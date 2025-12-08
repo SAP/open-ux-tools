@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.38
+
+### Patch Changes
+
+-   d202c17: Remove Code Assist from README file.
+
 ## 0.13.37
 
 ### Patch Changes
