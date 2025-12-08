@@ -11,7 +11,7 @@ import type {
     TestConfig
 } from '../types';
 import { render } from 'ejs';
-import { join, posix } from 'node:path';
+import { resolve, join, posix } from 'node:path';
 import { createApplicationAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
@@ -334,8 +334,9 @@ async function getI18nTextFromProperty(
     if (!projectRoot || !propertyI18nKey) {
         return propertyValue;
     }
+    const absolutePath = resolve(process.cwd(), projectRoot);
     try {
-        const applicationAccess = await createApplicationAccess(projectRoot);
+        const applicationAccess = await createApplicationAccess(absolutePath);
         const bundle = (await applicationAccess.getI18nBundles())['sap.app'];
         return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
     } catch (e) {
