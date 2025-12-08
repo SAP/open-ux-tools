@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import type { ReaderCollection } from '@ui5/fs';
+import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
