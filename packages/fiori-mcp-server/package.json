@@ -75,11 +75,11 @@
         "i18next": "25.3.0",
         "os-name": "4.0.1",
         "zod": "4.1.13",
-        "@sap-ai-sdk/foundation-models": "2.0.0",
-        "@sap-ai-sdk/langchain": "2.0.0",
-        "promptfoo": "0.118.6",
-        "@langchain/mcp-adapters": "0.6.0",
-        "@langchain/core": "0.3.75"
+        "@sap-ai-sdk/foundation-models": "2.3.0",
+        "@sap-ai-sdk/langchain": "2.3.0",
+        "promptfoo": "0.119.14",
+        "@langchain/mcp-adapters": "1.0.2",
+        "@langchain/core": "1.1.1"
     },
     "dependencies": {
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
