@@ -1,5 +1,17 @@
 # @sap-ux/generator-adp
 
+## 0.7.15
+
+### Patch Changes
+
+-   f71a139: fix(adp): Problems with login in the Replace OData Service change editor.
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/adp-tooling@0.18.15
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/system-access@0.6.30
+
 ## 0.7.14
 
 ### Patch Changes

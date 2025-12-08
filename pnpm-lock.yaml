@@ -6180,6 +6180,7 @@ packages:
   /@azure/msal-node@3.8.3:
     resolution: {integrity: sha512-Ul7A4gwmaHzYWj2Z5xBDly/W8JSC1vnKgJ898zPMZr0oSf1ah0tiL15sytjycU/PMhDZAlkWtEL1+MzNMU6uww==}
     engines: {node: '>=16'}
+    requiresBuild: true
     dependencies:
       '@azure/msal-common': 15.13.2
       jsonwebtoken: 9.0.2

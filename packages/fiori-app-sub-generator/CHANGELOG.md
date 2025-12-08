@@ -1,5 +1,15 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.9.10
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/odata-service-inquirer@2.11.15
+    -   @sap-ux/odata-service-writer@0.27.33
+
 ## 0.9.9
 
 ### Patch Changes
