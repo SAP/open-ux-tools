@@ -44,7 +44,28 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                     continue;
                 }
                 for (const [key, value] of Object.entries(settings.controlConfiguration)) {
-                    if (key !== '@' + UI_LINE_ITEM) {
+                    // Parse navigation path and term from key
+                    // Key format: "@com.sap.vocabularies.UI.v1.LineItem" or "_BookSupplement/@com.sap.vocabularies.UI.v1.LineItem"
+                    if (!key.startsWith('@') && !key.includes('/@')) {
+                        continue;
+                    }
+                    
+                    let navigationPath: string | undefined;
+                    let termPart: string;
+                    
+                    if (key.includes('/@')) {
+                        // Navigation-based: "_BookSupplement/@com.sap.vocabularies.UI.v1.LineItem"
+                        const segments = key.split('/@');
+                        navigationPath = segments[0];
+                        termPart = segments[1];
+                    } else {
+                        // Direct: "@com.sap.vocabularies.UI.v1.LineItem"
+                        navigationPath = undefined;
+                        termPart = key.substring(1); // Remove @ prefix
+                    }
+                    
+                    const [term, qualifier] = termPart.split('#');
+                    if (term !== UI_LINE_ITEM) {
                         continue;
                     }
 
@@ -56,7 +77,6 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                     }
                     const targetSegments = contextPath.split('/');
                     if (targetSegments.length !== 2) {
-                        // TODO: support different target paths
                         continue;
                     }
                     const entitySetName = targetSegments[1];
@@ -70,11 +90,35 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                         continue;
                     }
                     // const metadataElement = metadataService.getMetadataElement(fullyQualifiedName);
+                    let targetEntityTypeName = fullyQualifiedName;
+                    
+                    // Resolve navigation path if present
+                    if (navigationPath) {
+                        
+                        let foundNavProperty: any = null;
+                        metadataService.visitMetadataElements((element) => {
+                            if (element.kind === 'NavigationProperty' && 
+                                element.name === navigationPath) {
+                                if (element.path.startsWith(fullyQualifiedName)) {
+                                    foundNavProperty = element;
+                                }
+                            }
+                        });
+                        
+                        if (foundNavProperty && foundNavProperty.structuredType) {
+                            targetEntityTypeName = foundNavProperty.structuredType;
+                        } else {
+                            continue;
+                        }
+                    }
+                    
                     lineItemReferences.push({
-                        entityTypeName: fullyQualifiedName,
+                        entityTypeName: targetEntityTypeName,
                         value,
                         annotationPath: key,
-                        targetName
+                        targetName,
+                        qualifier: qualifier,
+                        navigationPath: navigationPath
                     });
                 }
             }
@@ -94,8 +138,10 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                 const records = elementsWithName(Edm.Record, collection);
                 if (records.length < 6 && records.length > 0) {
                     for (const ref of lineItemReferences) {
-                        if (annotation.target === ref.entityTypeName && annotation.qualifier === undefined) {
-                            if ((ref.value as any)?.tableSettings?.widthIncludingColumnHeader !== true) {
+                        const qualifierMatches = annotation.qualifier === ref.qualifier;
+                        if (annotation.target === ref.entityTypeName && qualifierMatches) {
+                            const hasWidth = (ref.value as any)?.tableSettings?.widthIncludingColumnHeader === true;
+                            if (!hasWidth) {
                                 problems.push({
                                     annotation,
                                     targetName: ref.targetName,
@@ -123,8 +169,7 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
             'settings',
             'controlConfiguration',
             validationResult[0].annotationPath,
-            'tableSettings',
-            'widthIncludingColumnHeader'
+            'tableSettings'
         ];
         return {
             [createMatcherString(path)](node) {
@@ -202,7 +247,6 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
             ['target>element[name="Annotation"]'](node: Element) {
                 const result = validationResult[0];
                 if (node !== result.annotation.top) {
-                    // 
                     return;
                 }
 
