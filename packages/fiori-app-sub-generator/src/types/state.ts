@@ -80,7 +80,6 @@ export interface Service {
     /**
      * Value list references for the service when the user opts to download value helps.
      */
-    valueListReferences?: ExternalService[];
     /**
      * Downloaded external service metadata including value helps with their metadata content.
      * Populated when user opts to download value help metadata during generation.

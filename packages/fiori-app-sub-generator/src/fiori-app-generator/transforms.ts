@@ -221,17 +221,17 @@ export async function transformState<T>(
                     ? await getAnnotations(project.name, service.annotations?.[0], service?.capService)
                     : undefined,
             ignoreCertError: service.ignoreCertError,
-            externalServices: service.valueListReferences || service.valueListMetadata
+            externalServices: service.valueListMetadata
         };
 
         const destinationName = service.destinationName ?? service.connectedSystem?.destination?.Name;
-        if (destinationName && appConfig.service) {
+        if (destinationName) {
             appConfig.service.destination = {
                 name: destinationName
             };
         }
 
-        if (service.capService && appConfig.service) {
+        if (service.capService) {
             const { cdsUi5PluginInfo, ...capServiceInfo } = service.capService;
             appConfig.service.capService = {
                 ...capServiceInfo,
@@ -258,10 +258,8 @@ export async function transformState<T>(
                 service.connectedSystem?.destination &&
                 isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
         ) {
-            if (appConfig.service) {
-                appConfig.service.previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
-            }
-        } else if (service.apiHubConfig && appConfig.service) {
+            appConfig.service.previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
+        } else if (service.apiHubConfig) {
             appConfig.service.previewSettings = { apiHub: true };
         }
     }
