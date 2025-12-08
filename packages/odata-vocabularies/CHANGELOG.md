@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.19
+
+### Patch Changes
+
+-   76742fa: vocabulary update
+
 ## 0.4.18
 
 ### Patch Changes

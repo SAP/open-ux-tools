@@ -21,15 +21,13 @@ type EnvironmentChoice = { name: string; value: TargetEnv };
  * @param {boolean} isCfInstalled - Whether Cloud Foundry is installed.
  * @param {boolean} isCFLoggedIn - Whether Cloud Foundry is logged in.
  * @param {CfConfig} cfConfig - The CF config service instance.
- * @param {any} vscode - The vscode instance.
  * @returns {object[]} The target environment prompt.
  */
 export function getTargetEnvPrompt(
     appWizard: AppWizard,
     isCfInstalled: boolean,
     isCFLoggedIn: boolean,
-    cfConfig: CfConfig,
-    vscode: any
+    cfConfig: CfConfig
 ): TargetEnvQuestion {
     return {
         type: 'list',
@@ -42,7 +40,7 @@ export function getTargetEnvPrompt(
             hint: t('prompts.targetEnvTooltip'),
             breadcrumb: t('prompts.targetEnvBreadcrumb')
         },
-        validate: (value: string) => validateEnvironment(value, isCFLoggedIn, vscode),
+        validate: (value: string) => validateEnvironment(value, isCFLoggedIn),
         additionalMessages: (value: string) => getTargetEnvAdditionalMessages(value, isCFLoggedIn, cfConfig)
     } as ListQuestion<TargetEnvAnswers>;
 }
