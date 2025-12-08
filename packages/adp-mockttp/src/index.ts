@@ -3,12 +3,13 @@ import path from 'path';
 import { getEndpoint, getProxy } from './proxy';
 import { MOCK_DATA_FOLDER_PATH, MOCK_SERVER_PORT } from './server-constants';
 import { getCliParamValueByName } from './utils/cli-utils';
-import { createMockDataFolderIfNeeded } from './utils/file-utils';
+import { createMockDataFolderIfNeeded, normalizeZipFileContent } from './utils/file-utils';
 import { logger } from './utils/logger';
 import { getSapSystemPort } from './utils/sap-system-utils';
 import fs from 'fs';
 import { CompletedRequest, Request } from 'mockttp';
 import { getReplayServer } from './replay-server';
+import AdmZip from 'adm-zip';
 
 const CLI_PARAM_START = 'start';
 const CLI_PARAM_STOP = 'stop';
@@ -34,33 +35,64 @@ async function startInRecordMode(): Promise<void> {
 
     const reqMap = new Map<string, CompletedRequest>();
     await proxy.on('request', (req) => {
+        if (req?.headers['content-type'] === 'application/zip') {
+            // const zipToString = normalizeZipFileContent(req.body.buffer);
+            // logger.info(zipToString + ' ' + req.body.buffer.length / (1024 * 1024));
+            const zip = new AdmZip(req.body.buffer);
+            const manifestEntry = zip.getEntry('manifest.appdescr_variant');
+            if (manifestEntry) {
+                logger.info(manifestEntry.getData().toString());
+            }
+        }
         reqMap.set(req.id, req);
     });
 
     const responsesStream = fs.createWriteStream(`${MOCK_DATA_FOLDER_PATH}/responses.json`, { flags: 'w' });
     responsesStream.write('[\n');
+    let isFirstResposne = true;
     await proxy.on('response', async (response) => {
         const req = reqMap.get(response.id);
         logger.info(`[<=] ${req?.path}`);
+        const url = new URL(req?.path ?? '', 'http://dummy.com');
+        const responseDelimiter = isFirstResposne ? '' : ',\n';
+        isFirstResposne = false;
+
+        // TODO this probably is not needed test with editor and appdescr_ endpoint
+        const reqBody =
+            req?.headers['content-type'] === 'application/zip'
+                ? req.body.buffer.toString('base64')
+                : await req?.body.getText();
+
+        // TODO: images still do not appear when we start the editor
+        const resBody =
+            response.headers['content-type'] === 'image/jpeg'
+                ? response.body.buffer.toString('base64')
+                : await response.body.getText();
+
         responsesStream.write(
-            JSON.stringify({
-                httpRequest: {
-                    path: req?.path,
-                    method: req?.method,
-                    body: await req?.body.getText(),
-                    headers: req?.headers
-                },
-                httpResponse: {
-                    headers: response.headers,
-                    statusCode: response.statusCode,
-                    body: await response.body.getText()
-                }
-            }) + ',\n'
+            responseDelimiter +
+                JSON.stringify({
+                    httpRequest: {
+                        path: url.pathname,
+                        method: req?.method,
+                        // TODO include the body in the reply matchers
+                        body: reqBody,
+                        headers: req?.headers,
+                        queryStringParameters: Object.fromEntries(url.searchParams.entries())
+                    },
+                    httpResponse: {
+                        headers: response.headers,
+                        statusCode: response.statusCode,
+                        // TODO parse the body as string or buffer or leave it as text, not sure.
+                        body: resBody
+                    }
+                })
         );
     });
 
     process.on('SIGINT', async () => {
         responsesStream.end(']');
+        process.exit(0);
     });
 }
 

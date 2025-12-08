@@ -2,6 +2,7 @@ import AdmZip from 'adm-zip';
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
 import { MOCK_DATA_FOLDER_PATH } from '../server-constants';
+import { logger } from './logger';
 
 const SHA256_ALGORITHM = 'sha256';
 
@@ -19,6 +20,7 @@ export function createMockDataFolderIfNeeded(): Promise<string | undefined> {
 export function normalizeZipFileContent(buffer: Buffer): string {
     const zip = new AdmZip(buffer);
     const entries = zip.getEntries();
+    logger.info('zip ' + zip.toBuffer().length / (1024 * 1024));
 
     // Create a deterministic stable representation.
     const fileInfos = entries.map((entry) => ({
