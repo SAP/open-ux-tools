@@ -49,8 +49,8 @@ importers:
         specifier: 9.39.1
         version: 9.39.1
       eslint-config-prettier:
-        specifier: 10.1.8
-        version: 10.1.8(eslint@9.39.1)
+        specifier: 10.1.1
+        version: 10.1.1(eslint@9.39.1)
       eslint-import-resolver-typescript:
         specifier: 4.4.4
         version: 4.4.4(eslint-plugin-import@2.32.0)(eslint@9.39.1)
@@ -62,7 +62,7 @@ importers:
         version: 61.5.0(eslint@9.39.1)
       eslint-plugin-prettier:
         specifier: 5.5.4
-        version: 5.5.4(eslint-config-prettier@10.1.8)(eslint@9.39.1)(prettier@3.6.2)
+        version: 5.5.4(eslint-config-prettier@10.1.1)(eslint@9.39.1)(prettier@3.6.2)
       eslint-plugin-promise:
         specifier: 7.2.1
         version: 7.2.1(eslint@9.39.1)
@@ -20997,8 +20997,8 @@ packages:
       estraverse: 4.3.0
     dev: true
 
-  /eslint-config-prettier@10.1.8(eslint@9.39.1):
-    resolution: {integrity: sha512-82GZUjRS0p/jganf6q1rEO25VSoHH0hKPCTrgillPjdI/3bgBhAE1QzHrHTizjpRvy6pGAvKjDJtk2pF9NDq8w==}
+  /eslint-config-prettier@10.1.1(eslint@9.39.1):
+    resolution: {integrity: sha512-4EQQr6wXwS+ZJSzaR5ZCrYgLxqvUjdXctaEtBqHcbkW944B1NQyO4qpdHQbXBONfwxXdkAY81HH4+LUfrg+zPw==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -21184,7 +21184,7 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8)(eslint@9.39.1)(prettier@3.6.2):
+  /eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.1)(eslint@9.39.1)(prettier@3.6.2):
     resolution: {integrity: sha512-swNtI95SToIz05YINMA6Ox5R057IMAmWZ26GqPxusAp1TZzj+IdY9tXNWWD3vkF/wEqydCONcwjTFpxybBqZsg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -21199,7 +21199,7 @@ packages:
         optional: true
     dependencies:
       eslint: 9.39.1
-      eslint-config-prettier: 10.1.8(eslint@9.39.1)
+      eslint-config-prettier: 10.1.1(eslint@9.39.1)
       prettier: 3.6.2
       prettier-linter-helpers: 1.0.0
       synckit: 0.11.11
