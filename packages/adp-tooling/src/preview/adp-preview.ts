@@ -131,10 +131,14 @@ export class AdpPreview {
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
      *
-     * @param descriptorVariant descriptor variant from the project
-     * @returns the UI5 flex layer for which editing is enabled
+     * @param {DescriptorVariant} descriptorVariant - Descriptor variant from the project.
+     * @returns {Promise<UI5FlexLayer>} The UI5 flex layer for which editing is enabled.
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
+        if (this.config.cfBuildPath) {
+            return this.initCfBuildMode(descriptorVariant);
+        }
+
         this.descriptorVariantId = descriptorVariant.id;
         this.provider = await createAbapServiceProvider(
             this.config.target,
@@ -155,10 +159,26 @@ export class AdpPreview {
     }
 
     /**
+     * Initialize the preview for a CF ADP project using build output.
+     *
+     * @param descriptorVariant descriptor variant from the project
+     * @returns the UI5 flex layer for which editing is enabled
+     */
+    private async initCfBuildMode(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
+        this.descriptorVariantId = descriptorVariant.id;
+        this.isCloud = false;
+        this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);
+        return descriptorVariant.layer;
+    }
+
+    /**
      * Synchronize local changes with the backend.
      * The descriptor is refreshed only if the global flag is set to true.
      */
     async sync(): Promise<void> {
+        if (this.config.cfBuildPath) {
+            return;
+        }
         if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
             return;
         }

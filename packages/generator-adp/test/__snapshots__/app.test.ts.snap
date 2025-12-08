@@ -200,15 +200,27 @@ app.variant_sap.app.title=App Title"
 
 exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 3`] = `
 "---
-specVersion: "2.2"
+specVersion: "3.1"
 type: application
 metadata:
   name: app.variant
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
-    paths:
-      webapp: dist
+builder:
+  customTasks:
+    - name: app-variant-bundler-build
+      beforeTask: escapeNonAsciiCharacters
+      configuration:
+        module: app.variant
+        appHostId: test-app-host-id
+        appName: test-app-name
+        appVersion: test-app-version
+        org: org-guid
+        space: space-guid
+        sapCloudService: test-solution
+        serviceInstanceName: test-service
+        serviceInstanceGuid: test-guid
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -225,36 +237,12 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+        adp:
+          cfBuildPath: dist
 "
 `;
 
 exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 4`] = `
-"---
-specVersion: "2.2"
-type: application
-metadata:
-  name: app.variant
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-builder:
-  customTasks:
-    - name: app-variant-bundler-build
-      beforeTask: escapeNonAsciiCharacters
-      configuration:
-        module: app.variant
-        appHostId: test-app-host-id
-        appName: test-app-name
-        appVersion: test-app-version
-        html5RepoRuntime: test-guid
-        org: org-guid
-        space: space-guid
-        sapCloudService: test-solution
-        serviceInstanceName: test-service
-"
-`;
-
-exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 5`] = `
 "ID: mta-project
 version: 1.0.0
 modules:
@@ -353,7 +341,7 @@ description: Test MTA Project for CF Writer Tests
 "
 `;
 
-exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 6`] = `
+exports[`Adaptation Project Generator Integration Test CF Environment should generate an adaptation project successfully 5`] = `
 "{
 	"name": "app.variant",
 	"version": "1.0.0",
@@ -362,7 +350,8 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 	"scripts": {
 		"prestart": "npm run build",
 		"start": "fiori run --open /test/flp.html#app-preview",
-		"build": "npm run clean && ui5 build --config ui5-build.yaml --include-task=generateCachebusterInfo && npm run zip",
+		"start-editor": "fiori run --open /test/adaptation-editor.html",
+		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",
 		"zip": "cd dist && npx bestzip ../app.variant.zip *",
 		"clean": "npx rimraf app.variant.zip dist",
 		"build-ui5": "npm explore @ui5/task-adaptation -- npm run rollup"
@@ -373,6 +362,7 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 	},
 	"devDependencies": {
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
+		"@sap-ux/backend-proxy-middleware-cf": "^0.0.1",
 		"@sapui5/ts-types": "^1.141.2",
 		"@sap/ux-ui5-tooling": "1",
 		"@ui5/cli": "^4.0.33",
