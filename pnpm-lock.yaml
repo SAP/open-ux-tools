@@ -717,8 +717,8 @@ importers:
   packages/annotation-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.8
-        version: 0.10.8
+        specifier: 0.10.9
+        version: 0.10.9
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -732,8 +732,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.13.2
+        version: 0.13.2
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -867,8 +867,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.13.2
+        version: 0.13.2
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -1757,8 +1757,8 @@ importers:
   packages/fe-fpm-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.8
-        version: 0.10.8
+        specifier: 0.10.9
+        version: 0.10.9
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -1769,8 +1769,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.13.2
+        version: 0.13.2
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
@@ -1839,8 +1839,8 @@ importers:
   packages/fiori-annotation-api:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.8
-        version: 0.10.8
+        specifier: 0.10.9
+        version: 0.10.9
       '@sap-ux/cds-annotation-parser':
         specifier: workspace:*
         version: link:../cds-annotation-parser
@@ -1866,8 +1866,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.13.2
+        version: 0.13.2
       '@sap-ux/xml-odata-annotation-converter':
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
@@ -1906,8 +1906,8 @@ importers:
   packages/fiori-app-sub-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.8
-        version: 0.10.8
+        specifier: 0.10.9
+        version: 0.10.9
       '@sap-ux/annotation-generator':
         specifier: workspace:*
         version: link:../annotation-generator
@@ -2325,8 +2325,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       '@sap-ux/annotation-converter':
-        specifier: 0.10.8
-        version: 0.10.8
+        specifier: 0.10.9
+        version: 0.10.9
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -2674,8 +2674,8 @@ importers:
   packages/inquirer-common:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.8
-        version: 0.10.8
+        specifier: 0.10.9
+        version: 0.10.9
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -2735,8 +2735,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.13.2
+        version: 0.13.2
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -2974,8 +2974,8 @@ importers:
   packages/odata-service-inquirer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.8
-        version: 0.10.8
+        specifier: 0.10.9
+        version: 0.10.9
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -3056,8 +3056,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.13.2
+        version: 0.13.2
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -3074,8 +3074,8 @@ importers:
   packages/odata-service-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.8
-        version: 0.10.8
+        specifier: 0.10.9
+        version: 0.10.9
       '@sap-ux/edmx-parser':
         specifier: 0.9.1
         version: 0.9.1
@@ -3114,8 +3114,8 @@ importers:
         specifier: workspace:*
         version: link:../axios-extension
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.13.2
+        version: 0.13.2
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -11217,10 +11217,10 @@ packages:
       '@sap-ux/vocabularies-types': 0.13.0
     dev: true
 
-  /@sap-ux/annotation-converter@0.10.8:
-    resolution: {integrity: sha512-eUSTT0oPBdyDC/jGay+VVgW9BB80NSpl/HeTo3H+K99or88MR2eHtXH8wCabH55Qgzyrnc7BSWaYXk9AMbYWJg==}
+  /@sap-ux/annotation-converter@0.10.9:
+    resolution: {integrity: sha512-3FZsUB9G/PhxyMuYs6tIcXEvStQl5NXHwLLyy94UGNAwYCYxwrST7UgiirlVCY9Krb03wb8RdPCldTEyyO5iEg==}
     dependencies:
-      '@sap-ux/vocabularies-types': 0.13.1
+      '@sap-ux/vocabularies-types': 0.13.2
 
   /@sap-ux/cds-annotation-parser@0.2.15:
     resolution: {integrity: sha512-m7q1NzY3aMLpRlZ+G4thvXHITrbd96/BLhIR3/Fs4exNNdDBxOluCIk4LdaTdO0HEX3Czuhp/Ais/pexbakyuw==}
@@ -11433,8 +11433,8 @@ packages:
     engines: {node: '>=18.x'}
     dev: true
 
-  /@sap-ux/vocabularies-types@0.13.1:
-    resolution: {integrity: sha512-1FUwupX3jF/oNiRbHRx9JlydVgtuSvqpJJFORrh7cnQ71pCmKRvZL8cVkqMF+TQ0/WL3/TJBiGzYSsoQO5xRUQ==}
+  /@sap-ux/vocabularies-types@0.13.2:
+    resolution: {integrity: sha512-lPFiWVXyA4yUBeQBJePxnqXZ/bMKk6vR3GoLtW/5ayBcQAJxWTpeyK8QX91sR+AajDmzkCF/8ND2ewi8SewySg==}
     engines: {node: '>=18.x'}
 
   /@sap-ux/xml-odata-annotation-converter@0.3.6:
