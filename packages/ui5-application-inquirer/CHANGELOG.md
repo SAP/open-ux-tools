@@ -1,5 +1,62 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.15.41
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.10
+
+## 0.15.40
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/project-input-validator@0.6.34
+    -   @sap-ux/inquirer-common@0.9.9
+
+## 0.15.39
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/project-input-validator@0.6.33
+    -   @sap-ux/inquirer-common@0.9.8
+
+## 0.15.38
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.7
+-   @sap-ux/project-access@1.32.10
+-   @sap-ux/project-input-validator@0.6.32
+
+## 0.15.37
+
+### Patch Changes
+
+-   Updated dependencies [1c45a4d]
+    -   @sap-ux/ui5-info@0.13.3
+    -   @sap-ux/inquirer-common@0.9.6
+
+## 0.15.36
+
+### Patch Changes
+
+-   Updated dependencies [597834f]
+    -   @sap-ux/inquirer-common@0.9.5
+
+## 0.15.35
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/project-input-validator@0.6.31
+    -   @sap-ux/inquirer-common@0.9.4
+
 ## 0.15.34
 
 ### Patch Changes

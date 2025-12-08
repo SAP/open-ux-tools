@@ -1,5 +1,58 @@
 # @sap-ux/inquirer-common
 
+## 0.9.10
+
+### Patch Changes
+
+-   Updated dependencies [d202c17]
+    -   @sap-ux/fiori-generator-shared@0.13.38
+
+## 0.9.9
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.37
+-   @sap-ux/odata-service-writer@0.27.33
+-   @sap-ux/telemetry@0.6.42
+
+## 0.9.8
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.36
+-   @sap-ux/odata-service-writer@0.27.32
+-   @sap-ux/telemetry@0.6.41
+
+## 0.9.7
+
+### Patch Changes
+
+-   Updated dependencies [5d0598d]
+    -   @sap-ux/odata-service-writer@0.27.31
+    -   @sap-ux/fiori-generator-shared@0.13.35
+    -   @sap-ux/telemetry@0.6.40
+
+## 0.9.6
+
+### Patch Changes
+
+-   Updated dependencies [1c45a4d]
+    -   @sap-ux/ui5-info@0.13.3
+
+## 0.9.5
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+
+## 0.9.4
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.34
+-   @sap-ux/odata-service-writer@0.27.30
+-   @sap-ux/telemetry@0.6.39
+
 ## 0.9.3
 
 ### Patch Changes

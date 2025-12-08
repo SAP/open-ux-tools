@@ -38,9 +38,9 @@ export async function validate(
             reason: 'PROJECT_PATH variable is not a string.'
         };
     }
-    const appDir = join(projectPath, 'app');
+    const appDir = projectPath;
     const apps = readdirSync(appDir).filter((dir) => {
-        return dir !== 'managetravels' && statSync(join(appDir, dir)).isDirectory();
+        return statSync(join(appDir, dir)).isDirectory();
     });
     if (apps.length !== 1) {
         return {
@@ -50,7 +50,7 @@ export async function validate(
         };
     }
     const newAppFolder = join(appDir, apps[0]);
-    const expectedFiles = ['package.json', 'annotations.cds', 'webapp'];
+    const expectedFiles = ['package.json', 'webapp'];
     for (const file of expectedFiles) {
         const filePath = join(newAppFolder, file);
         if (!existsSync(filePath)) {

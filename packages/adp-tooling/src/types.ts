@@ -39,6 +39,10 @@ export interface AdpPreviewConfig {
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
+    /**
+     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
+     */
+    cfBuildPath?: string;
 }
 
 export interface OnpremApp {
@@ -424,6 +428,8 @@ export const enum HttpStatusCodes {
     NOT_IMPLEMETED = 501,
     SERVICE_UNAVAILABLE = 503
 }
+
+export type NetworkError = { message?: string; name?: string; code?: string };
 
 export type OperationType = 'read' | 'write' | 'delete';
 
@@ -882,6 +888,8 @@ export interface UI5YamlCustomTaskConfiguration {
     space: string;
     html5RepoRuntime: string;
     sapCloudService: string;
+    serviceInstanceName: string;
+    serviceInstanceGuid: string;
 }
 
 export interface UI5YamlCustomTask {
@@ -1037,6 +1045,18 @@ export interface CfAdpWriterConfig {
         approuter: AppRouterType;
         businessService: string;
         businessSolutionName?: string;
+        /**
+         * GUID of the business service instance.
+         */
+        serviceInstanceGuid?: string;
+        /**
+         * Backend URL from service instance keys.
+         */
+        backendUrl?: string;
+        /**
+         * OAuth paths extracted from xs-app.json routes that have a source property.
+         */
+        oauthPaths?: string[];
     };
     project: {
         name: string;
@@ -1066,6 +1086,9 @@ export interface CreateCfConfigParams {
     layer: FlexLayer;
     manifest: Manifest;
     html5RepoRuntimeGuid: string;
+    serviceInstanceGuid?: string;
+    backendUrl?: string;
+    oauthPaths?: string[];
     projectPath: string;
     addStandaloneApprouter?: boolean;
     publicVersions: UI5Version;
@@ -1135,7 +1158,6 @@ export interface CFApp {
     messages?: string[];
     serviceInstanceGuid?: string;
 }
-
 /**
  * CF services (application sources) prompts
  */

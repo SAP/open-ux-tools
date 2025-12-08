@@ -1,8 +1,8 @@
 import { validateEmptyString } from '@sap-ux/project-input-validator';
+import axios from 'axios';
 
 import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from '../../../src/ui5/format';
 import { validateUI5VersionExists } from '../../../src';
-import { fetchMock } from '../../__mock__/global';
 import { t } from '../../../src/i18n';
 import { initI18n } from '../../../src/i18n';
 
@@ -24,6 +24,9 @@ beforeAll(async () => {
 });
 
 describe('validateUI5VersionExists', () => {
+    // Mock axios.get method
+    const axiosGetMock = jest.spyOn(axios, 'get').mockResolvedValue({ data: {} } as any);
+
     beforeEach(() => {
         jest.resetAllMocks();
     });
@@ -34,7 +37,7 @@ describe('validateUI5VersionExists', () => {
 
         const result = await validateUI5VersionExists('');
         expect(result).toBe(errorMessage);
-        expect(fetchMock).not.toHaveBeenCalled();
+        expect(axiosGetMock).not.toHaveBeenCalled();
     });
 
     it('should return true when fetch succeeds for a non-snapshot version', async () => {
@@ -42,11 +45,11 @@ describe('validateUI5VersionExists', () => {
         getOfficialBaseUI5VersionUrlMock.mockReturnValue('https://sapcdn.com/ui5/1.120.0');
         getFormattedVersionMock.mockReturnValue('1.120.0.min.js');
 
-        fetchMock.mockResolvedValue({});
+        axiosGetMock.mockResolvedValue({});
 
         const version = '1.120.0';
         const result = await validateUI5VersionExists(version);
-        expect(fetchMock).toHaveBeenCalledWith('https://sapcdn.com/ui5/1.120.0/1.120.0.min.js');
+        expect(axiosGetMock).toHaveBeenCalledWith('https://sapcdn.com/ui5/1.120.0/1.120.0.min.js');
         expect(result).toBe(true);
     });
 
@@ -54,7 +57,7 @@ describe('validateUI5VersionExists', () => {
         validateEmptyStringMock.mockReturnValue(null);
         getOfficialBaseUI5VersionUrlMock.mockReturnValue('https://sapcdn.com/ui5/1.120.0-snapshot');
 
-        fetchMock.mockRejectedValue(new Error('Network error'));
+        axiosGetMock.mockRejectedValue(new Error('Network error'));
 
         const version = '1.120.0-snapshot';
         const result = await validateUI5VersionExists(version);
@@ -69,7 +72,7 @@ describe('validateUI5VersionExists', () => {
         getFormattedVersionMock.mockReturnValue('1.120.0.min.js');
 
         const errorWith400 = { response: { status: 400 } };
-        fetchMock.mockRejectedValue(errorWith400);
+        axiosGetMock.mockRejectedValue(errorWith400);
 
         const result = await validateUI5VersionExists('1.120.0');
         expect(result).toBe(t('validators.ui5VersionOutdatedError'));
@@ -81,7 +84,7 @@ describe('validateUI5VersionExists', () => {
         getFormattedVersionMock.mockReturnValue('1.120.0.min.js');
 
         const errorWith404 = { response: { status: 404 } };
-        fetchMock.mockRejectedValue(errorWith404);
+        axiosGetMock.mockRejectedValue(errorWith404);
 
         const result = await validateUI5VersionExists('1.120.0');
         expect(result).toBe(t('validators.ui5VersionOutdatedError'));
@@ -93,7 +96,7 @@ describe('validateUI5VersionExists', () => {
         getFormattedVersionMock.mockReturnValue('1.120.0.min.js');
 
         const errorWith500 = { response: { status: 500 }, message: 'Server error' };
-        fetchMock.mockRejectedValue(errorWith500);
+        axiosGetMock.mockRejectedValue(errorWith500);
 
         const result = await validateUI5VersionExists('1.120.0');
         expect(result).toBe(t('validators.ui5VersionDoesNotExistGeneric', { error: errorWith500.message }));
@@ -105,7 +108,7 @@ describe('validateUI5VersionExists', () => {
         getFormattedVersionMock.mockReturnValue('1.120.0.min.js');
 
         const networkError = { message: 'fetch failed' };
-        fetchMock.mockRejectedValue(networkError);
+        axiosGetMock.mockRejectedValue(networkError);
 
         const result = await validateUI5VersionExists('1.120.0');
         expect(result).toBe(true);

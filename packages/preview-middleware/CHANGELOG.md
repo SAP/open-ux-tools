@@ -1,5 +1,94 @@
 # @sap-ux/preview-middleware
 
+## 0.23.67
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.18.15
+-   @sap-ux/system-access@0.6.30
+
+## 0.23.66
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.18.14
+
+## 0.23.65
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/adp-tooling@0.18.13
+    -   @sap-ux/system-access@0.6.29
+
+## 0.23.64
+
+### Patch Changes
+
+-   324d8ed: feat: Enable Adaptation Editor for CF projects
+-   Updated dependencies [324d8ed]
+    -   @sap-ux/adp-tooling@0.18.12
+
+## 0.23.63
+
+### Patch Changes
+
+-   Updated dependencies [9c66de4]
+    -   @sap-ux/adp-tooling@0.18.11
+
+## 0.23.62
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/adp-tooling@0.18.10
+    -   @sap-ux/system-access@0.6.29
+
+## 0.23.61
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.18.9
+-   @sap-ux/system-access@0.6.29
+-   @sap-ux/project-access@1.32.10
+
+## 0.23.60
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.18.8
+
+## 0.23.59
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.18.7
+
+## 0.23.58
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/adp-tooling@0.18.6
+    -   @sap-ux/system-access@0.6.28
+
+## 0.23.57
+
+### Patch Changes
+
+-   Updated dependencies [6872b31]
+    -   @sap-ux/adp-tooling@0.18.5
+
+## 0.23.56
+
+### Patch Changes
+
+-   d37ad9b: fix: adjust fallback UI5 version
+
 ## 0.23.55
 
 ### Patch Changes
