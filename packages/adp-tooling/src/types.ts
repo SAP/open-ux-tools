@@ -876,6 +876,15 @@ export interface BusinessServiceResource {
     label: string;
 }
 
+export interface CfUi5AppInfo {
+    asyncHints?: {
+        libs?: Array<{
+            name: string;
+            html5AppName?: string;
+            url?: { url: string };
+        }>;
+    };
+}
 /**
  * Cloud Foundry ADP UI5 YAML Types
  */

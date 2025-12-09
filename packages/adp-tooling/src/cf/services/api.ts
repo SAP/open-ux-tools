@@ -18,7 +18,8 @@ import type {
     ServiceInstance,
     CfServiceInstance,
     MtaYaml,
-    ServiceInfo
+    ServiceInfo,
+    CfUi5AppInfo
 } from '../../types';
 import { t } from '../../i18n';
 import { getProjectNameForXsSecurity } from '../project';
@@ -82,11 +83,17 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
     };
 
     let url: string;
+    const isBAS = isAppStudio();
 
     if (endpointParts?.[3]) {
-        // Public cloud - use mTLS enabled domain with "cert" prefix
+        // Public cloud
         const region = endpointParts[1];
-        url = `${fdcUrl}cert.cfapps.${region}.hana.ondemand.com`;
+        // Use mTLS enabled domain with "cert" prefix only in BAS, otherwise use regular domain
+        if (isBAS) {
+            url = `${fdcUrl}cert.cfapps.${region}.hana.ondemand.com`;
+        } else {
+            url = `${fdcUrl}cfapps.${region}.hana.ondemand.com`;
+        }
     } else if (endpointParts?.[4]?.endsWith('.cn')) {
         // China has a special URL pattern
         const parts = endpointParts[4].split('.');
@@ -96,9 +103,7 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
         url = `${fdcUrl}sapui5flex.cfapps${endpointParts?.[4]}`;
     }
 
-    // Add authorization token for non-BAS environments or private cloud
-    // For BAS environments with mTLS, the certificate authentication is handled automatically
-    if (!isAppStudio() || !endpointParts?.[3]) {
+    if (!isBAS || !endpointParts?.[3]) {
         options.headers!['Authorization'] = `Bearer ${cfConfig.token}`;
     }
 
@@ -135,6 +140,45 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
     } catch (error) {
         logger?.error(`Getting FDC apps failed. Request url: ${url}. ${error}`);
         throw new Error(t('error.failedToGetFDCApps', { error: error.message }));
+    }
+}
+
+/**
+ * Get ui5AppInfo.json from FDC service.
+ *
+ * @param {string} appId - The application ID.
+ * @param {string[]} appHostIds - The app host IDs.
+ * @param {CfConfig} cfConfig - The CF config.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<CfUi5AppInfo>} The ui5AppInfo.json content.
+ */
+export async function getCfUi5AppInfo(
+    appId: string,
+    appHostIds: string[],
+    cfConfig: CfConfig,
+    logger: ToolsLogger
+): Promise<CfUi5AppInfo> {
+    const requestArguments = getFDCRequestArguments(cfConfig);
+
+    const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
+    const url = `${requestArguments.url}/discovery/ui5_app_info_json?appId=${encodeURIComponent(
+        appId
+    )}&${appHostIdParams}`;
+
+    logger?.log(`Fetching ui5AppInfo.json from FDC: ${url}`);
+
+    try {
+        const response = await axios.get(url, requestArguments.options);
+
+        if (response.status === 200) {
+            logger?.log('Successfully retrieved ui5AppInfo.json from FDC');
+            return response.data as CfUi5AppInfo;
+        } else {
+            throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
+        }
+    } catch (error) {
+        logger?.error(`Getting ui5AppInfo.json failed. Request url: ${url}. ${error}`);
+        throw new Error(`Failed to get ui5AppInfo.json from FDC: ${error.message}`);
     }
 }
 

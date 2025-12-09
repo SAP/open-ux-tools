@@ -78,7 +78,7 @@ export async function requestCfApi<T = unknown>(url: string): Promise<T> {
             if (!response.stdout || response.stdout.trim() === '') {
                 throw new Error(
                     'Empty response from CF API. This typically indicates an authentication issue. ' +
-                    'Please verify your CF login status with \'cf target\' and re-authenticate if needed with \'cf login\'.'
+                        "Please verify your CF login status with 'cf target' and re-authenticate if needed with 'cf login'."
                 );
             }
             try {

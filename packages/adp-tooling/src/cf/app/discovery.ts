@@ -1,5 +1,5 @@
 import type AdmZip from 'adm-zip';
-import { readFileSync, existsSync, readdirSync, statSync, type Dirent } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -43,22 +43,113 @@ export function getBackendUrlsFromServiceKeys(serviceKeys: ServiceKeys[]): strin
     }
 
     const urls: string[] = [];
-    const endpoints = serviceKeys[0]?.credentials?.endpoints as Record<string, string | { url?: string }> | undefined;
+    const endpoints = serviceKeys[0]?.credentials?.endpoints as Record<string, { url?: string }> | undefined;
     if (endpoints && typeof endpoints === 'object' && endpoints !== null) {
         for (const key in endpoints) {
             const endpoint = endpoints[key];
-            // Handle string endpoints directly
-            if (typeof endpoint === 'string') {
-                urls.push(endpoint);
-            }
-            // Handle object endpoints with url property
-            else if (endpoint && typeof endpoint === 'object' && endpoint.url && typeof endpoint.url === 'string') {
+            if (endpoint?.url) {
                 urls.push(endpoint.url);
             }
         }
     }
 
     return urls;
+}
+
+/**
+ * Extract destination to URL mapping from service key endpoints.
+ *
+ * @param {ServiceKeys[]} serviceKeys - The service keys containing endpoints.
+ * @returns {Map<string, string>} Map of destination names to URLs.
+ */
+function extractDestinationToUrlMap(serviceKeys: ServiceKeys[]): Map<string, string> {
+    const destinationToUrl = new Map<string, string>();
+    const endpoints = serviceKeys[0]?.credentials?.endpoints as
+        | Record<string, { url?: string; destination?: string }>
+        | undefined;
+
+    if (endpoints && typeof endpoints === 'object') {
+        for (const key in endpoints) {
+            const endpoint = endpoints[key];
+            if (endpoint?.url && endpoint.destination) {
+                destinationToUrl.set(endpoint.destination, endpoint.url);
+            }
+        }
+    }
+
+    return destinationToUrl;
+}
+
+/**
+ * Check if a route should be processed for OAuth path extraction.
+ *
+ * @param {any} route - The route object from xs-app.json.
+ * @returns {boolean} True if route should be processed.
+ */
+function shouldProcessRoute(route: any): boolean {
+    const destination = route.destination as string | undefined;
+    const service = route.service as string | undefined;
+    return Boolean(destination && service !== 'html5-apps-repo-rt' && route.source);
+}
+
+/**
+ * Clean regex pattern from route source.
+ *
+ * @param {string} source - The route source pattern.
+ * @returns {string} Cleaned path.
+ */
+function cleanRoutePath(source: string): string {
+    return source.replace(/^\^|\$$|\([^)]*\)|\$\d+|\/?\*$/g, '');
+}
+
+/**
+ * Add path to destination mapping.
+ *
+ * @param {Map<string, Set<string>>} map - The destination to paths map.
+ * @param {string} destination - The destination name.
+ * @param {string} path - The path to add.
+ */
+function addPathToDestination(map: Map<string, Set<string>>, destination: string, path: string): void {
+    if (!map.has(destination)) {
+        map.set(destination, new Set<string>());
+    }
+    map.get(destination)!.add(path);
+}
+
+/**
+ * Extract destination to paths mapping from xs-app.json routes.
+ *
+ * @param {string} xsAppPath - Path to xs-app.json file.
+ * @returns {Map<string, Set<string>>} Map of destination names to path sets.
+ */
+function extractDestinationToPathsMap(xsAppPath: string): Map<string, Set<string>> {
+    const destinationToPaths = new Map<string, Set<string>>();
+
+    if (!existsSync(xsAppPath)) {
+        return destinationToPaths;
+    }
+
+    try {
+        const xsAppContent = readFileSync(xsAppPath, 'utf8');
+        const xsApp = JSON.parse(xsAppContent) as XsApp;
+
+        if (xsApp?.routes) {
+            for (const route of xsApp.routes) {
+                if (!shouldProcessRoute(route)) {
+                    continue;
+                }
+
+                const path = cleanRoutePath(route.source);
+                if (path) {
+                    addPathToDestination(destinationToPaths, route.destination as string, path);
+                }
+            }
+        }
+    } catch (e) {
+        // Skip invalid xs-app.json files
+    }
+
+    return destinationToPaths;
 }
 
 /**
@@ -77,68 +168,10 @@ export function getBackendUrlsWithPaths(
         return [];
     }
 
-    // Build a map of destination -> URL from service keys
-    const destinationToUrl = new Map<string, string>();
-    const endpoints = serviceKeys[0]?.credentials?.endpoints as
-        | Record<string, string | { url?: string; destination?: string }>
-        | undefined;
+    const destinationToUrl = extractDestinationToUrlMap(serviceKeys);
+    const xsAppPath = join(reuseFolderPath, 'xs-app.json');
+    const destinationToPaths = extractDestinationToPathsMap(xsAppPath);
 
-    if (endpoints && typeof endpoints === 'object' && endpoints !== null) {
-        for (const key in endpoints) {
-            const endpoint = endpoints[key];
-            // Handle object endpoints with url and destination properties
-            if (endpoint && typeof endpoint === 'object' && endpoint.url && endpoint.destination) {
-                destinationToUrl.set(endpoint.destination, endpoint.url);
-            }
-        }
-    }
-
-    // Build a map of destination -> paths from xs-app.json routes
-    const destinationToPaths = new Map<string, Set<string>>();
-
-    // Helper function to process xs-app.json file
-    const processXsAppFile = (xsAppPath: string) => {
-        if (existsSync(xsAppPath)) {
-            try {
-                const xsAppContent = readFileSync(xsAppPath, 'utf8');
-                const xsApp = JSON.parse(xsAppContent) as XsApp;
-
-                if (xsApp?.routes) {
-                    for (const route of xsApp.routes) {
-                        const destination = route.destination as string | undefined;
-                        const service = route.service as string | undefined;
-
-                        // Skip routes without destination or with html5-apps-repo-rt service
-                        if (!destination || service === 'html5-apps-repo-rt' || !route.source) {
-                            continue;
-                        }
-
-                        // Clean regex pattern: remove ^, $, capture groups, quantifiers, and trailing /*
-                        const path = route.source.replace(/^\^|\$$|\([^)]*\)|\$\d+|\/?\*$/g, '');
-
-                        if (path) {
-                            if (!destinationToPaths.has(destination)) {
-                                destinationToPaths.set(destination, new Set<string>());
-                            }
-                            destinationToPaths.get(destination)!.add(path);
-                        }
-                    }
-                }
-            } catch (e) {
-                // Skip invalid xs-app.json files
-            }
-        }
-    };
-
-    try {
-        // Process xs-app.json from the root .reuse folder
-        const rootXsAppPath = join(reuseFolderPath, 'xs-app.json');
-        processXsAppFile(rootXsAppPath);
-    } catch (e) {
-        return [];
-    }
-
-    // Match destinations and build result array
     const result: Array<{ url: string; paths: string[] }> = [];
 
     for (const [destination, paths] of destinationToPaths.entries()) {
@@ -152,92 +185,6 @@ export function getBackendUrlsWithPaths(
     }
 
     return result;
-}
-
-/**
- * Reads xs-app.json from local .reuse folder.
- *
- * @param {string} reuseFolderPath - Path to the .reuse folder.
- * @returns {XsApp | undefined} The parsed xs-app.json object.
- */
-export function readXsAppFromReuseFolder(reuseFolderPath: string): XsApp | undefined {
-    try {
-        const reuseDir = reuseFolderPath;
-        if (!existsSync(reuseDir)) {
-            return undefined;
-        }
-
-        // Read all subdirectories in .reuse folder
-        const subdirs = readdirSync(reuseDir, { withFileTypes: true })
-            .filter((dirent: Dirent) => dirent.isDirectory())
-            .map((dirent: Dirent) => dirent.name);
-
-        // Find the first xs-app.json in any subdirectory
-        for (const subdir of subdirs) {
-            const xsAppPath = join(reuseDir, subdir, 'xs-app.json');
-            if (existsSync(xsAppPath)) {
-                const content = readFileSync(xsAppPath, 'utf-8');
-                return JSON.parse(content) as XsApp;
-            }
-        }
-    } catch (error) {
-        // Silently fail and return undefined
-    }
-    return undefined;
-}
-
-/**
- * Reads xs-app.json from a .reuse folder and extracts OAuth paths from all libraries.
- *
- * @param {string} reuseFolderPath - Path to the .reuse folder.
- * @returns {string[]} Array of unique OAuth path patterns from all libraries.
- */
-export function getOAuthPathsFromReuseFolder(reuseFolderPath: string): string[] {
-    if (!existsSync(reuseFolderPath)) {
-        return [];
-    }
-
-    const pathsSet = new Set<string>();
-
-    try {
-        const libraryDirs = readdirSync(reuseFolderPath).filter((item) => {
-            const fullPath = join(reuseFolderPath, item);
-            return statSync(fullPath).isDirectory();
-        });
-
-        for (const libraryDir of libraryDirs) {
-            const xsAppPath = join(reuseFolderPath, libraryDir, 'xs-app.json');
-            if (existsSync(xsAppPath)) {
-                try {
-                    const xsAppContent = readFileSync(xsAppPath, 'utf8');
-                    const xsApp: XsApp = JSON.parse(xsAppContent);
-
-                    if (xsApp?.routes) {
-                        for (const route of xsApp.routes) {
-                            if (route.service === 'html5-apps-repo-rt' || !route.source) {
-                                continue;
-                            }
-
-                            // Clean regex pattern: remove ^, $, capture groups, quantifiers, and trailing /*
-                            const path = route.source.replace(/^\^|\$$|\([^)]*\)|\$\d+|\/?\*$/g, '');
-
-                            if (path) {
-                                pathsSet.add(path);
-                            }
-                        }
-                    }
-                } catch (e) {
-                    // Skip invalid xs-app.json files
-                    continue;
-                }
-            }
-        }
-    } catch (e) {
-        // Return empty array if there's an error reading the directory
-        return [];
-    }
-
-    return Array.from(pathsSet);
 }
 
 /**
