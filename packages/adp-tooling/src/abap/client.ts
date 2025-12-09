@@ -50,6 +50,7 @@ export async function getFlexUISupportedSystem(
  *
  * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
  * @param {ToolsLogger} logger - The logger instance.
+ * @throws Throws exceptions only when the ADT api is used.
  * @returns {string | undefined} System UI5 version.
  */
 export async function getSystemUI5Version(

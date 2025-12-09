@@ -31,6 +31,7 @@ export function getAppHostIds(serviceKeys: ServiceKeys[]): string[] {
 }
 
 /**
+<<<<<<< HEAD
  * Extracts all backend URLs from service key credentials. Iterates through all endpoint keys to find all endpoints with URLs.
  * Handles both string endpoints and object endpoints with url property.
  *
@@ -99,7 +100,20 @@ function shouldProcessRoute(route: any): boolean {
  * @returns {string} Cleaned path.
  */
 function cleanRoutePath(source: string): string {
-    return source.replace(/^\^|\$$|\([^)]*\)|\$\d+|\/?\*$/g, '');
+    let path = source;
+    // Remove leading ^ and trailing $
+    path = path.replace(/^\^/, '').replace(/\$$/, '');
+    // Remove capture groups like (.*) or $1
+    path = path.replace(/\([^)]*\)/g, '');
+    // Remove regex quantifiers
+    path = path.replace(/\$\d+/g, '');
+    // Clean up any remaining regex characters at the end
+    path = path.replace(/\/?\*$/, '');
+    // Normalize multiple consecutive slashes to single slash
+    while (path.includes('//')) {
+        path = path.replaceAll('//', '/');
+    }
+    return path;
 }
 
 /**
@@ -188,6 +202,32 @@ export function getBackendUrlsWithPaths(
 }
 
 /**
+ * Extracts the backend URL from service key credentials. Iterates through all endpoint keys to find the first endpoint with a URL.
+ *
+ * @param {ServiceKeys[]} serviceKeys - The credentials from service keys.
+ * @returns {string | undefined} The backend URL or undefined if not found.
+ */
+export function getBackendUrlFromServiceKeys(serviceKeys: ServiceKeys[]): string | undefined {
+    if (!serviceKeys || serviceKeys.length === 0) {
+        return undefined;
+    }
+
+    const endpoints = serviceKeys[0]?.credentials?.endpoints as Record<string, { url?: string }> | undefined;
+    if (endpoints) {
+        for (const key in endpoints) {
+            if (Object.hasOwn(endpoints, key)) {
+                const endpoint = endpoints[key] as { url?: string } | undefined;
+                if (endpoint && typeof endpoint === 'object' && endpoint.url && typeof endpoint.url === 'string') {
+                    return endpoint.url;
+                }
+            }
+        }
+    }
+
+    return undefined;
+}
+
+/**
  * Extracts OAuth paths from xs-app.json routes that have a source property.
  * These paths should receive OAuth Bearer tokens in the middleware.
  *
@@ -206,8 +246,19 @@ export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[]
             continue;
         }
 
-        // Clean regex pattern: remove ^, $, capture groups, quantifiers, and trailing /*
-        const path = route.source.replace(/^\^|\$$|\([^)]*\)|\$\d+|\/?\*$/g, '');
+        let path = route.source;
+        // Remove leading ^ and trailing $
+        path = path.replace(/^\^/, '').replace(/\$$/, '');
+        // Remove capture groups like (.*) or $1
+        path = path.replace(/\([^)]*\)/g, '');
+        // Remove regex quantifiers
+        path = path.replace(/\$\d+/g, '');
+        // Clean up any remaining regex characters at the end
+        path = path.replace(/\/?\*$/, '');
+        // Normalize multiple consecutive slashes to single slash
+        while (path.includes('//')) {
+            path = path.replaceAll('//', '/');
+        }
 
         if (path) {
             pathsSet.add(path);

@@ -1,5 +1,52 @@
 # @sap-ux/adp-tooling
 
+## 0.18.16
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/nodejs-utils@0.2.9
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/inquirer-common@0.9.11
+    -   @sap-ux/ui5-config@0.29.10
+
+## 0.18.15
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/system-access@0.6.30
+
+## 0.18.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.10
+
+## 0.18.13
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/project-input-validator@0.6.34
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/inquirer-common@0.9.9
+
+## 0.18.12
+
+### Patch Changes
+
+-   324d8ed: feat: Enable Adaptation Editor for CF projects
+
 ## 0.18.11
 
 ### Patch Changes

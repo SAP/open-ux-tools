@@ -27,11 +27,5 @@
     "@ui5/logger": "3.0.0",
     "@ui5/cli": "3.11.0",
     "@sap/ux-ui5-tooling": "1.14.0"
-  },
-  "ui5": {
-    "dependencies": [
-      "@sap/ux-ui5-tooling",
-      "@sap-ux/ui5-middleware-fe-mockserver"
-    ]
   }
 }
