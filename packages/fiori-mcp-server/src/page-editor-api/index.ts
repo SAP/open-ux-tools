@@ -3,9 +3,10 @@ export * from './sapuxFtfsFileIO';
 export {
     TreeNode,
     TreeNodeProperty,
-    PageAnnotations,
+    // todo remove???
+    // PageAnnotations,
     findNodeByAnnotationNodeId,
-    PropertyPath,
     findByPath
 } from './parser';
+export { PropertyPath } from './types';
 export * from './project';

@@ -1,29 +1,17 @@
-import type { ArtifactType, PageConfig } from '@sap/ux-specification/dist/types/src';
+import type { ArtifactType } from '@sap/ux-specification/dist/types/src';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
-import type { AllowedMoveRange, ObjectAggregation, PageAnnotations, PropertyPath, SettingOption } from './model';
-import {
-    isArrayEqual,
-    PageEditModel,
-    SectionAggregation,
-    AggregationNodeType,
-    ActionAggregation,
-    ColumnAggregation,
-    FilterFieldAggregation,
-    ViewsAggregation,
-    RootAggregation,
-    SortingOptions,
-    DATA_FIELD_FOR_INTENT_BASED_NAVIGATION,
-    DATA_FIELD_FOR_ACTION_GROUP
-} from './model';
+import { isArrayEqual } from './utils';
 import type { JSONSchema4, JSONSchema4Type } from 'json-schema';
 import { logger } from '../../utils/logger';
+import type { PropertyPath } from '../types';
 import { TreeModel } from '@sap/ux-specification/dist/types/src/parser';
+import { AllowedMoveRange, ObjectAggregation, SettingOption, SortingOptions } from './types';
 
 interface TraverseNodeData {
     text: string;
     level: number;
     path: string;
-    model: PageEditModel;
+    model: TreeModel;
 }
 
 export interface TreeNode {
@@ -106,7 +94,18 @@ export interface TreeNodeProperty {
 export const BOOLEAN_DISPLAY_TRUE = 'True';
 export const BOOLEAN_DISPLAY_FALSE = 'False';
 
+const DATA_FIELD_FOR_INTENT_BASED_NAVIGATION = 'DataFieldForIntentBasedNavigation';
+const DATA_FIELD_FOR_ACTION_GROUP = 'DataFieldForActionGroup';
 const NOT_ALLOWED_IN_FOOTER_AGGREGATION_NAMES = [DATA_FIELD_FOR_INTENT_BASED_NAVIGATION, DATA_FIELD_FOR_ACTION_GROUP];
+
+enum AggregationNodeType {
+    customAction = 'customAction',
+    customColumn = 'customColumn',
+    customSection = 'customSection',
+    customFilterField = 'customFilterField',
+    rootNode = 'rootNode',
+    views = 'views'
+}
 
 /**
  * Method returns dom id for node.
@@ -368,9 +367,10 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
     }
 
     let annotationNodeId = aggregation.annotationNodeId;
-    if (!annotationNodeId && (aggregation instanceof RootAggregation || aggregation instanceof ViewsAggregation)) {
-        annotationNodeId = [];
-    }
+    // todo
+    // if (!annotationNodeId && (aggregation instanceof RootAggregation || aggregation instanceof ViewsAggregation)) {
+    //     annotationNodeId = [];
+    // }
 
     return {
         id: id,
@@ -395,13 +395,13 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
  * @param aggregation Aggregation object.
  * @returns Movable props.
  */
-function getMovable(model: PageEditModel, aggregation: ObjectAggregation): NodeMoveProps | undefined {
+function getMovable(model: TreeModel, aggregation: ObjectAggregation): NodeMoveProps | undefined {
     // Custom extensions are movable, but annotation nodes depends if annotation support feature is enabled
     if (model.root !== aggregation) {
         const isMovable = true;
         const moveProps: NodeMoveProps = {
             movable: aggregation.sortableItem === SortingOptions.Enabled && isMovable,
-            allowedParents: getAllowedParentPaths(model.root, aggregation),
+            allowedParents: getAllowedParentPaths(aggregation),
             allowedChildTypes:
                 aggregation.sortableList && aggregation.sortableCollection
                     ? [aggregation.sortableCollection]
@@ -419,11 +419,10 @@ function getMovable(model: PageEditModel, aggregation: ObjectAggregation): NodeM
 /**
  * Method returns array of node paths, which are allowed to drop/move in.
  *
- * @param root Root aggregation.
  * @param aggregation Target aggregation to get alowed parents.
  * @returns Array of diagnostic messages for passed aggregation.
  */
-function getAllowedParentPaths(root: ObjectAggregation, aggregation: ObjectAggregation): undefined | AllowedParent[] {
+function getAllowedParentPaths(aggregation: ObjectAggregation): undefined | AllowedParent[] {
     let result: undefined | AllowedParent[];
     if (aggregation.custom) {
         const allowedDropRange = aggregation.parent?.getAllowedDropRange(aggregation);
@@ -434,18 +433,6 @@ function getAllowedParentPaths(root: ObjectAggregation, aggregation: ObjectAggre
                 allowedRanges: allowedDropRange
             });
         }
-    } else if (aggregation.dropUINodes) {
-        let allowedParents = root.findAllowedDropAggregations(aggregation);
-        if (NOT_ALLOWED_IN_FOOTER_AGGREGATION_NAMES.some((aggName) => aggregation.name?.startsWith(aggName))) {
-            // restrict moving navigation node to footer - special case
-            allowedParents = allowedParents.filter(
-                (allowedParent) => !isArrayEqual(allowedParent.path, ['footer', 'actions'])
-            );
-        }
-        result = allowedParents.map((allowedParent) => ({
-            path: allowedParent.path,
-            allowedRanges: allowedParent.range
-        }));
     }
     return result;
 }
@@ -458,60 +445,22 @@ function getAllowedParentPaths(root: ObjectAggregation, aggregation: ObjectAggre
  */
 function getNodeType(aggregation: ObjectAggregation): AggregationNodeType | undefined {
     let type: AggregationNodeType | undefined;
-    if (aggregation.custom) {
-        if (aggregation instanceof ActionAggregation) {
-            type = AggregationNodeType.customAction;
-        } else if (aggregation instanceof ColumnAggregation) {
-            type = AggregationNodeType.customColumn;
-        } else if (aggregation instanceof FilterFieldAggregation) {
-            type = AggregationNodeType.customFilterField;
-        } else if (aggregation instanceof SectionAggregation) {
-            type = AggregationNodeType.customSection;
-        }
-    } else if (aggregation.path.length === 0) {
-        type = AggregationNodeType.rootNode;
-    } else if (aggregation instanceof ViewsAggregation) {
-        type = AggregationNodeType.views;
-    }
+    // if (aggregation.custom) {
+    //     if (aggregation instanceof ActionAggregation) {
+    //         type = AggregationNodeType.customAction;
+    //     } else if (aggregation instanceof ColumnAggregation) {
+    //         type = AggregationNodeType.customColumn;
+    //     } else if (aggregation instanceof FilterFieldAggregation) {
+    //         type = AggregationNodeType.customFilterField;
+    //     } else if (aggregation instanceof SectionAggregation) {
+    //         type = AggregationNodeType.customSection;
+    //     }
+    // } else if (aggregation.path.length === 0) {
+    //     type = AggregationNodeType.rootNode;
+    // } else if (aggregation instanceof ViewsAggregation) {
+    //     type = AggregationNodeType.views;
+    // }
     return type;
-}
-
-/**
- * Method creates tree for passed edit model.
- *
- * @param schema Page or application schema.
- * @param data Configuration file mapped to schema.
- * @param pageType Page type. If pageType is not passed, then considered as application.
- * @param annotation Page annotations.
- * @returns Outline tree.
- */
-export function getTree(
-    schema: string,
-    data: PageConfig,
-    pageType: PageTypeV4,
-    annotation?: PageAnnotations
-): TreeNode {
-    const model = new PageEditModel(
-        'Root',
-        pageType,
-        data,
-        schema,
-        annotation ?? {
-            dynamicNodes: {},
-            nodes: []
-        }
-    );
-
-    const node = traverseTree(model.root, {
-        level: 0,
-        path: '',
-        text: model.name,
-        model
-    });
-    // Update root node
-    node.root = true;
-    node.schema = model.schema;
-    return node;
 }
 
 /**

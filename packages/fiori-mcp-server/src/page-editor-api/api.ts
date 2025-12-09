@@ -1,7 +1,7 @@
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import type { ExportResults } from '@sap/ux-specification/dist/types/src';
-import { getTree, getTree2 } from './parser';
-import type { PageAnnotations, TreeNode, PropertyPath } from './parser';
+import { getTree2 } from './parser';
+import type { TreeNode } from './parser';
+import type { PropertyPath } from './types';
 import { SapuxFtfsFileIO } from './sapuxFtfsFileIO';
 import type { AppData } from './sapuxFtfsFileIO';
 import type { ApplicationAccess } from '@sap-ux/project-access';
