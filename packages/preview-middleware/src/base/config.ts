@@ -351,7 +351,7 @@ async function getI18nTextFromProperty(
     const absolutePath = resolve(process.cwd(), projectRoot);
     try {
         const projectAccess = await createProjectAccess(absolutePath);
-        const appPath = await projectAccess.getApplicationIdFromManifestId(appId ?? '');
+        const appPath = await projectAccess.getApplicationIdByManifestAppId(appId ?? '');
         const applicationAccess = projectAccess.getApplication(appPath ?? '');
         const bundle = (await applicationAccess.getI18nBundles())['sap.app'];
         return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;

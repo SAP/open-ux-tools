@@ -157,7 +157,7 @@ describe('FlpSandbox', () => {
         test('i18n manifest', async () => {
             const projectAccessMock = jest.spyOn(projectAccess, 'createProjectAccess').mockImplementation(() => {
                 return Promise.resolve({
-                    getApplicationIdFromManifestId: () => {
+                    getApplicationIdByManifestAppId: () => {
                         return Promise.resolve(['my\\id']);
                     },
                     getApplication: () => {

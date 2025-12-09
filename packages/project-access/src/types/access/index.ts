@@ -154,5 +154,5 @@ export interface ProjectAccessOptions {
 export interface ProjectAccess extends BaseAccess {
     getApplicationIds: () => string[];
     getApplication: (appId: string) => ApplicationAccess;
-    getApplicationIdFromManifestId: (manifestId: string) => Promise<string | undefined>;
+    getApplicationIdByManifestAppId: (manifestId: string) => Promise<string | undefined>;
 }
