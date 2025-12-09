@@ -209,7 +209,6 @@ describe('getValueHelpDownloadPrompt', () => {
             expect(mockSendTelemetryEvent).toHaveBeenCalledWith(
                 'VALUE_HELP_DOWNLOAD_PROMPTED',
                 expect.objectContaining({
-                    valueHelpCount: 2,
                     userChoseToDownload: false
                 })
             );
@@ -226,7 +225,6 @@ describe('getValueHelpDownloadPrompt', () => {
             expect(mockSendTelemetryEvent).toHaveBeenCalledWith(
                 'VALUE_HELP_DOWNLOAD_PROMPTED',
                 expect.objectContaining({
-                    valueHelpCount: 2,
                     userChoseToDownload: true
                 })
             );
@@ -234,11 +232,10 @@ describe('getValueHelpDownloadPrompt', () => {
                 expect.objectContaining({
                     eventName: 'VALUE_HELP_DOWNLOAD_SUCCESS',
                     properties: expect.objectContaining({
-                        valueHelpCount: 2,
                         userChoseToDownload: true
                     }),
                     measurements: expect.objectContaining({
-                        fetchedCount: 2,
+                        valueHelpCount: 2,
                         downloadTimeMs: expect.any(Number)
                     })
                 }),
@@ -270,7 +267,6 @@ describe('getValueHelpDownloadPrompt', () => {
             expect(mockSendTelemetryEvent).toHaveBeenCalledWith(
                 'VALUE_HELP_DOWNLOAD_PROMPTED',
                 expect.objectContaining({
-                    valueHelpCount: 2,
                     userChoseToDownload: true
                 })
             );
@@ -278,7 +274,6 @@ describe('getValueHelpDownloadPrompt', () => {
                 expect.objectContaining({
                     eventName: 'VALUE_HELP_DOWNLOAD_FAILED',
                     properties: expect.objectContaining({
-                        valueHelpCount: 2,
                         userChoseToDownload: true,
                         error: 'Network error'
                     }),
@@ -309,7 +304,6 @@ describe('getValueHelpDownloadPrompt', () => {
             expect(mockSendTelemetryEvent).toHaveBeenCalledWith(
                 'VALUE_HELP_DOWNLOAD_PROMPTED',
                 expect.objectContaining({
-                    valueHelpCount: 2,
                     userChoseToDownload: true
                 })
             );

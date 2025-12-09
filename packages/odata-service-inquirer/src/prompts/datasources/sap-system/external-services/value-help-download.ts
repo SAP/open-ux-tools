@@ -23,24 +23,20 @@ const telemEventValueHelpDownloadFailed = 'VALUE_HELP_DOWNLOAD_FAILED';
  * Separates measurements (numeric values) from properties (dimensions).
  *
  * @param params - telemetry parameters
- * @param params.valueHelpCount - count of value help items
  * @param params.userChoseToDownload - whether user chose to download
- * @param params.fetchedCount - count of fetched items
+ * @param params.valueHelpCount - count of value help items
  * @param params.downloadTimeMs - download time in milliseconds
  * @param params.error - error message if download failed
  * @returns telemetry data object with properties and measurements
  */
 function createValueHelpTelemetryData(params: {
-    valueHelpCount: number;
     userChoseToDownload?: boolean;
-    fetchedCount?: number;
+    valueHelpCount?: number;
     downloadTimeMs?: number;
     error?: string;
 }): { properties: Record<string, any>; measurements: Record<string, number> } {
     // Build property object for TelemetryHelper
-    const propertyData: Record<string, any> = {
-        valueHelpCount: params.valueHelpCount
-    };
+    const propertyData: Record<string, any> = {};
     if (params.userChoseToDownload !== undefined) {
         propertyData.userChoseToDownload = params.userChoseToDownload;
     }
@@ -53,8 +49,8 @@ function createValueHelpTelemetryData(params: {
 
     // Build measurements object for numeric metrics
     const measurements: Record<string, number> = {};
-    if (params.fetchedCount !== undefined) {
-        measurements.fetchedCount = params.fetchedCount;
+    if (params.valueHelpCount !== undefined) {
+        measurements.valueHelpCount = params.valueHelpCount;
     }
     if (params.downloadTimeMs !== undefined) {
         measurements.downloadTimeMs = params.downloadTimeMs;
@@ -107,7 +103,6 @@ export function getValueHelpDownloadPrompt(
 
             // Send telemetry when prompt is answered
             const telemetryData = createValueHelpTelemetryData({
-                valueHelpCount: externalServiceRefs.length,
                 userChoseToDownload: downloadMetadata
             });
             sendTelemetryEvent(telemEventValueHelpDownloadPrompted, telemetryData.properties);
@@ -128,9 +123,8 @@ export function getValueHelpDownloadPrompt(
 
                     // Send telemetry with measurements for numeric metrics
                     const telemetryData = createValueHelpTelemetryData({
-                        valueHelpCount: externalServiceRefs.length,
                         userChoseToDownload: true,
-                        fetchedCount: externalServiceMetadata.length,
+                        valueHelpCount: externalServiceMetadata.length,
                         downloadTimeMs
                     });
                     const telemetryClient = getTelemetryClient();
@@ -149,7 +143,6 @@ export function getValueHelpDownloadPrompt(
                     LoggerHelper.logger.error(`Failed to fetch external service metadata: ${error}`);
                     // Send telemetry with measurements for numeric metrics
                     const telemetryData = createValueHelpTelemetryData({
-                        valueHelpCount: externalServiceRefs.length,
                         userChoseToDownload: true,
                         downloadTimeMs,
                         error: error instanceof Error ? error.message : 'Unknown error'
