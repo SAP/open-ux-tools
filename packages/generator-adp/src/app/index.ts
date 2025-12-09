@@ -480,11 +480,13 @@ export default class extends Generator {
             );
         }
 
-        TelemetryCollector.setData('systemUI5Version', this.prompter?.ui5?.systemVersion ?? '');
-        TelemetryCollector.setData('wasFlpConfigDone', this.attributeAnswers?.addFlpConfig ?? false);
-        TelemetryCollector.setData('wasTypeScriptChosen', this.attributeAnswers?.enableTypeScript ?? false);
-        TelemetryCollector.setData('wasDeployConfigDone', this.attributeAnswers?.addDeployConfig ?? false);
-        TelemetryCollector.setData('wasExtProjectGenerated', this.shouldCreateExtProject ?? false);
+        TelemetryCollector.setBatch({
+            systemUI5Version: this.prompter?.ui5?.systemVersion ?? '',
+            wasFlpConfigDone: this.attributeAnswers?.addFlpConfig ?? false,
+            wasTypeScriptChosen: this.attributeAnswers?.enableTypeScript ?? false,
+            wasDeployConfigDone: this.attributeAnswers?.addDeployConfig ?? false,
+            wasExtProjectGenerated: this.shouldCreateExtProject ?? false
+        });
     }
 
     /**

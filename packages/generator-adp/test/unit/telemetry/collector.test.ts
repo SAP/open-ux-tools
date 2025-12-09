@@ -35,6 +35,18 @@ describe('TelemetryCollector', () => {
         });
     });
 
+    describe('setBatch', () => {
+        it('should set batch data', () => {
+            TelemetryCollector.setBatch({
+                baseAppTechnicalName: 'test-app-id',
+                wasExtProjectGenerated: true
+            });
+            const data = TelemetryCollector.getData();
+            expect(data?.baseAppTechnicalName).toBe('test-app-id');
+            expect(data?.wasExtProjectGenerated).toBe(true);
+        });
+    });
+
     describe('setData', () => {
         it('should set string values', () => {
             TelemetryCollector.setData('baseAppTechnicalName', 'test-app-id');

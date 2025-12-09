@@ -2,26 +2,41 @@ import { PerformanceMeasurementAPI } from '@sap-ux/telemetry';
 
 import type { AdpTelemetryData, AdpTelemetryTimerProperties } from '../types';
 
+const DEFAULT_DATA: AdpTelemetryData = {
+    wasExtProjectGenerated: false,
+    wasFlpConfigDone: false,
+    wasDeployConfigDone: false,
+    wasTypeScriptChosen: false
+};
+
 /**
- * Telemetry collector for ADP generator.
- * Tracks telemetry data throughout the generation process.
- * Uses a static class pattern to maintain state across the generator lifecycle.
+ * Telemetry collector for ADP generator. Tracks telemetry data throughout the generation process.
  */
 export class TelemetryCollector {
+    /**
+     * Map of timing mark names.
+     */
     private static readonly timingMarkNames: Map<string, string> = new Map();
-    private static data: AdpTelemetryData = {
-        wasExtProjectGenerated: false,
-        wasFlpConfigDone: false,
-        wasDeployConfigDone: false,
-        wasTypeScriptChosen: false
-    };
+    /**
+     * Telemetry data.
+     */
+    private static data: AdpTelemetryData = { ...DEFAULT_DATA };
 
     /**
-     * Initializes the telemetry collector for a new generation session.
      * Resets all timing marks and telemetry data to default values.
      */
-    public static init(): void {
+    static init(): void {
         this.timingMarkNames.clear();
+        this.data = { ...DEFAULT_DATA };
+    }
+
+    /**
+     * Sets a batch of telemetry data.
+     *
+     * @param {Partial<AdpTelemetryData>} data - The data to set.
+     */
+    static setBatch(data: Partial<AdpTelemetryData>): void {
+        Object.assign(this.data, data);
     }
 
     /**
@@ -30,16 +45,16 @@ export class TelemetryCollector {
      * @param key - The key of the telemetry data property to set.
      * @param value - The value to set.
      */
-    public static setData<K extends keyof AdpTelemetryData>(key: K, value: AdpTelemetryData[K]): void {
+    static setData<K extends keyof AdpTelemetryData>(key: K, value: AdpTelemetryData[K]): void {
         this.data[key] = value;
     }
 
     /**
      * Starts timing for a specific timer property. Call endTiming with the same key to record the duration.
      *
-     * @param key - The timer property name that will store the duration (e.g., 'applicationListLoadingTime').
+     * @param {keyof AdpTelemetryTimerProperties} key - The timer property name that will store the duration (e.g., 'applicationListLoadingTime').
      */
-    public static startTiming(key: keyof AdpTelemetryTimerProperties): void {
+    static startTiming(key: keyof AdpTelemetryTimerProperties): void {
         const markName = PerformanceMeasurementAPI.startMark(key);
         this.timingMarkNames.set(key, markName);
     }
@@ -48,9 +63,9 @@ export class TelemetryCollector {
      * Ends timing for a specific timer property and sets the duration in the telemetry data.
      * The duration is calculated using PerformanceMeasurementAPI and stored in milliseconds.
      *
-     * @param key - The timer property name where the duration should be stored (must match the key used in startTiming).
+     * @param {keyof AdpTelemetryTimerProperties} key - The timer property name where the duration should be stored (must match the key used in startTiming).
      */
-    public static endTiming(key: keyof AdpTelemetryTimerProperties): void {
+    static endTiming(key: keyof AdpTelemetryTimerProperties): void {
         const markName = this.timingMarkNames.get(key);
         if (markName !== undefined) {
             PerformanceMeasurementAPI.endMark(markName);
@@ -63,11 +78,10 @@ export class TelemetryCollector {
 
     /**
      * Gets all collected telemetry data.
-     * Returns a shallow copy to prevent external modifications.
      *
-     * @returns A copy of the telemetry data object, or undefined if no data exists.
+     * @returns {AdpTelemetryData | undefined} A copy of the telemetry data object, or undefined if no data exists.
      */
-    public static getData(): AdpTelemetryData | undefined {
+    static getData(): AdpTelemetryData | undefined {
         return this.data ? { ...this.data } : undefined;
     }
 }
