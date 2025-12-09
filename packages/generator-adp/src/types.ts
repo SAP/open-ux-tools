@@ -25,13 +25,9 @@ export interface AdpTelemetryTimerProperties {
  */
 export interface AdpTelemetryProperties {
     /**
-     * Unique identifier for this generation session (toolsId).
-     */
-    toolsId?: string;
-    /**
      * Project type: onprem, cloud, or cf.
      */
-    projectType?: 'onPremise' | 'cloud' | 'cf';
+    projectType?: 'onPremise' | 'cloudReady' | 'cf';
     /**
      * Base app technical name (SAP app ID).
      */

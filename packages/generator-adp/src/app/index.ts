@@ -14,6 +14,8 @@ import {
     getCfConfig,
     getConfig,
     getConfiguredProvider,
+    getFormattedVersion,
+    getLatestVersion,
     getYamlContent,
     isCfInstalled,
     isLoggedInCf,
@@ -337,15 +339,15 @@ export default class extends Generator {
     async writing(): Promise<void> {
         try {
             this.toolsId = uuidv4();
+            if (this.jsonInput) {
+                await this._initFromJson();
+            }
+
             this._collectTelemetryData();
 
             if (this.isCfEnv) {
                 await this._generateAdpProjectArtifactsCF();
                 return;
-            }
-
-            if (this.jsonInput) {
-                await this._initFromJson();
             }
 
             if (this.shouldCreateExtProject) {
@@ -406,10 +408,6 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
-        if (this.shouldCreateExtProject) {
-            return;
-        }
-
         const adpTelemetryData = TelemetryCollector.getData();
         const telemetryData =
             TelemetryHelper.createTelemetryData({
@@ -420,12 +418,12 @@ export default class extends Generator {
 
         const projectPath = this._getProjectPath();
         if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED_TEST, telemetryData, projectPath).catch((error) => {
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, projectPath).catch((error) => {
                 this.logger.error(t('error.telemetry', { error }));
             });
         }
 
-        if (this.isCli || this.isCfEnv) {
+        if (this.isCli || this.isCfEnv || this.shouldCreateExtProject) {
             return;
         }
 
@@ -464,22 +462,21 @@ export default class extends Generator {
      */
     private _collectTelemetryData(): void {
         if (this.isCfEnv) {
-            const manifestId = this.cfPrompter.manifest?.['sap.app']?.id;
+            const manifestId = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
             TelemetryCollector.setData('baseAppTechnicalName', manifestId);
             TelemetryCollector.setData('projectType', 'cf');
         } else {
             const isCloud = this.prompter?.isCloud ?? false;
-            TelemetryCollector.setData('projectType', isCloud ? 'cloud' : 'onPremise');
-            TelemetryCollector.setData('baseAppTechnicalName', this.configAnswers.application?.id ?? '');
+            TelemetryCollector.setData('projectType', isCloud ? 'cloudReady' : 'onPremise');
+            TelemetryCollector.setData('baseAppTechnicalName', this.configAnswers?.application?.id ?? '');
         }
 
-        TelemetryCollector.setData('toolsId', this.toolsId);
         TelemetryCollector.setData('wasExtProjectGenerated', this.shouldCreateExtProject ?? false);
         TelemetryCollector.setData('systemUI5Version', this.prompter?.ui5?.systemVersion ?? '');
-        TelemetryCollector.setData('ui5VersionSelected', this.attributeAnswers.ui5Version ?? '');
-        TelemetryCollector.setData('wasFlpConfigDone', this.attributeAnswers.addFlpConfig ?? false);
-        TelemetryCollector.setData('wasTypeScriptChosen', this.attributeAnswers.enableTypeScript ?? false);
-        TelemetryCollector.setData('wasDeployConfigDone', this.attributeAnswers.addDeployConfig ?? false);
+        TelemetryCollector.setData('ui5VersionSelected', getFormattedVersion(this.attributeAnswers?.ui5Version ?? ''));
+        TelemetryCollector.setData('wasFlpConfigDone', this.attributeAnswers?.addFlpConfig ?? false);
+        TelemetryCollector.setData('wasTypeScriptChosen', this.attributeAnswers?.enableTypeScript ?? false);
+        TelemetryCollector.setData('wasDeployConfigDone', this.attributeAnswers?.addDeployConfig ?? false);
     }
 
     /**
@@ -574,6 +571,7 @@ export default class extends Generator {
     private async _generateAdpProjectArtifactsCF(): Promise<void> {
         const projectPath = this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
+        TelemetryCollector.setData('ui5VersionSelected', getLatestVersion(publicVersions));
 
         const manifest = this.cfPrompter.manifest;
         if (!manifest) {
@@ -595,7 +593,9 @@ export default class extends Generator {
             backendUrl,
             oauthPaths,
             projectPath,
-            publicVersions
+            publicVersions,
+            packageJson: getPackageInfo(),
+            toolsId: this.toolsId
         });
 
         if (config.options) {
@@ -613,6 +613,9 @@ export default class extends Generator {
     private _getProjectPath(): string {
         if (this.isCfEnv) {
             return join(this.destinationPath(), this.attributeAnswers.projectName);
+        }
+        if (this.shouldCreateExtProject) {
+            return join(process.cwd(), this.attributeAnswers.projectName);
         }
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
     }

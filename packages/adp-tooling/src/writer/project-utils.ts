@@ -154,7 +154,7 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
         const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
         ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
-        enhanceUI5YamlWithCustomConfig(ui5Config, data);
+        enhanceUI5YamlWithCustomConfig(ui5Config, data.customConfig);
         enhanceUI5YamlWithTranspileMiddleware(ui5Config, data);
         enhanceUI5Yaml(ui5Config, data);
         enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
@@ -179,7 +179,7 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
         const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
         ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
-
+        enhanceUI5YamlWithCustomConfig(ui5Config, data.customConfig);
         /** Builder task */
         enhanceUI5YamlWithCfCustomTask(ui5Config, data);
         /** Middlewares */

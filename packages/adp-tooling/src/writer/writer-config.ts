@@ -11,6 +11,7 @@ import type {
     CloudApp,
     ConfigAnswers,
     CreateCfConfigParams,
+    CustomConfig,
     OnpremApp,
     UI5Version
 } from '../types';
@@ -220,6 +221,15 @@ export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
             path: params.projectPath,
             folder: join(params.projectPath, params.attributeAnswers.projectName)
         },
+        customConfig: {
+            adp: {
+                support: {
+                    id: params.packageJson?.name ?? '',
+                    version: params.packageJson?.version ?? '',
+                    toolsId: params.toolsId ?? ''
+                }
+            }
+        } as CustomConfig,
         ui5: {
             version: ui5Version
         },

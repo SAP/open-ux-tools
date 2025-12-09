@@ -415,7 +415,14 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect.any(Object),
                 expect.any(Object)
             );
-            expect(sendTelemetryMock).toHaveBeenCalledTimes(0);
+            expect(sendTelemetryMock).toHaveBeenCalledWith(
+                EventName.ADAPTATION_PROJECT_CREATED,
+                expect.objectContaining({
+                    OperatingSystem: 'testOS',
+                    Platform: 'testPlatform'
+                }),
+                expect.any(String)
+            );
             expect(executeCommandSpy).toHaveBeenCalledTimes(0);
             expect(showWorkspaceFolderWarningMock).toHaveBeenCalledTimes(0);
         });
