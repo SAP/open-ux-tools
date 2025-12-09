@@ -142,7 +142,6 @@ export class UI5Config {
      * Get the type in the yaml file.
      *
      * @returns {Ui5Document['type']} the type
-     * @memberof Ui5Document['type']
      */
     public getType(): Ui5Document['type'] {
         const type = this.document.getNode({ path: 'type' });

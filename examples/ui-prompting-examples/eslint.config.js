@@ -1,14 +1,14 @@
 const base = require('../../eslint.config.js');
 const reactPlugin = require('eslint-plugin-react');
 const globals = require('globals');
-const storybookPlugin = require('eslint-plugin-storybook');
+// const storybookPlugin = require('eslint-plugin-storybook');
 const tsParser = require('@typescript-eslint/parser');
 const { parser } = require('typescript-eslint');
 
 module.exports = [
     ...base,
     reactPlugin.configs.flat.recommended,
-    ...storybookPlugin.configs['flat/recommended'],
+    // ...storybookPlugin.configs['flat/recommended'],
     {
         plugins: {
             reactPlugin

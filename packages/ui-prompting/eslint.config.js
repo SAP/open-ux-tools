@@ -1,13 +1,13 @@
 const base = require('../../eslint.config.js');
 const reactPlugin = require('eslint-plugin-react');
 const globals = require('globals');
-const storybook = require('eslint-plugin-storybook/dist/configs/flat/recommended');
+// const storybook = require('eslint-plugin-storybook/dist/configs/flat/recommended');
 
 module.exports = [
     { ignores: ['stories', 'storybook', 'test'] },
     ...base,
     reactPlugin.configs.flat.recommended,
-    ...storybook,
+    //   ...storybook,
     {
         ignores: ['stories', './test/**/*.tsx'],
         plugins: {
