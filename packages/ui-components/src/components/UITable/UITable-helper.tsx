@@ -154,7 +154,7 @@ export function scrollToRow(idx = 0, table: IDetailsList | null = null) {
  */
 export async function waitFor(selector: string, count = 10): Promise<Element | void> {
     if (count === 0) {
-        return Promise.reject(new Error('Element for selector not found: ' + selector));
+        throw new Error('Element for selector not found: ' + selector);
     }
     await sleep();
     const el = document.querySelector(selector);

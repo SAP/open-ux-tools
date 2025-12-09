@@ -1,5 +1,13 @@
 # @sap-ux/odata-cli
 
+## 0.17.23
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+
 ## 0.17.22
 
 ### Patch Changes
