@@ -549,6 +549,7 @@ describe('Test function createProjectAccess()', () => {
             [join('apps/one'), join('apps/two'), join('apps/freestyle')].sort()
         );
         expect(projectAccess.getApplication(join('apps/one')).getAppId()).toBe(join('apps/one'));
+        expect(await projectAccess.getApplicationIdFromManifestId('two')).toBe(join('apps/two'));
     });
 
     test('Standalone app', async () => {
