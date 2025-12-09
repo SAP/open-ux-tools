@@ -6169,17 +6169,6 @@ packages:
     engines: {node: '>=0.8.0'}
     requiresBuild: true
     dev: true
-    optional: true
-
-  /@azure/msal-node@3.8.0:
-    resolution: {integrity: sha512-23BXm82Mp5XnRhrcd4mrHa0xuUNRp96ivu3nRatrfdAqjoeWAGyD0eEAafxAOHAEWWmdlyFK4ELFcdziXyw2sA==}
-    engines: {node: '>=16'}
-    requiresBuild: true
-    dependencies:
-      '@azure/msal-common': 15.13.2
-      jsonwebtoken: 9.0.2
-      uuid: 8.3.2
-    dev: true
 
   /@azure/msal-node@3.8.3:
     resolution: {integrity: sha512-Ul7A4gwmaHzYWj2Z5xBDly/W8JSC1vnKgJ898zPMZr0oSf1ah0tiL15sytjycU/PMhDZAlkWtEL1+MzNMU6uww==}
@@ -6190,7 +6179,6 @@ packages:
       jsonwebtoken: 9.0.2
       uuid: 8.3.2
     dev: true
-    optional: true
 
   /@azure/openai-assistants@1.0.0-beta.6:
     resolution: {integrity: sha512-gINKKcqTpR0neF+36Owe0Q1u1JO3IK6clBzWTfZ+9V/TkQq+LoUgp5F8dKvSv/YChfwEpZA2r1DWCwNE07eYIQ==}
