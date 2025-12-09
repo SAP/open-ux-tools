@@ -169,6 +169,11 @@ describe('ui5-test-writer', () => {
                 description: 'Fullscreen with 2 Sub-OP using "contextPath"',
                 dirPath: 'FullScreenSubOPContextPath',
                 scriptName: undefined
+            },
+            {
+                description: 'LROP v4 app with annotations and metadata"',
+                dirPath: 'LROPv4',
+                scriptName: undefined
             }
         ];
 
@@ -236,6 +241,24 @@ describe('ui5-test-writer', () => {
             expect(error).toEqual(
                 'Validation error: Cannot determine the application type from the `manifest.json` file or it uses an unsupported type.'
             );
+        });
+
+        it('generates filter tests for LROPv4 app', async () => {
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, fs);
+
+            const firstJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/FirstJourney.js'].contents;
+            expect(firstJourneyContent).toContain('iCheckFilterField');
+        });
+
+        it('generates column tests for LROPv4 app', async () => {
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, fs);
+
+            const firstJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/FirstJourney.js'].contents;
+            expect(firstJourneyContent).toContain('iCheckColumns');
         });
     });
 });
