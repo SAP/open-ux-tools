@@ -471,12 +471,20 @@ export default class extends Generator {
             TelemetryCollector.setData('baseAppTechnicalName', this.configAnswers?.application?.id ?? '');
         }
 
-        TelemetryCollector.setData('wasExtProjectGenerated', this.shouldCreateExtProject ?? false);
+        if (this.jsonInput) {
+            TelemetryCollector.setData('ui5VersionSelected', getLatestVersion(this.publicVersions));
+        } else {
+            TelemetryCollector.setData(
+                'ui5VersionSelected',
+                getFormattedVersion(this.attributeAnswers?.ui5Version ?? '')
+            );
+        }
+
         TelemetryCollector.setData('systemUI5Version', this.prompter?.ui5?.systemVersion ?? '');
-        TelemetryCollector.setData('ui5VersionSelected', getFormattedVersion(this.attributeAnswers?.ui5Version ?? ''));
         TelemetryCollector.setData('wasFlpConfigDone', this.attributeAnswers?.addFlpConfig ?? false);
         TelemetryCollector.setData('wasTypeScriptChosen', this.attributeAnswers?.enableTypeScript ?? false);
         TelemetryCollector.setData('wasDeployConfigDone', this.attributeAnswers?.addDeployConfig ?? false);
+        TelemetryCollector.setData('wasExtProjectGenerated', this.shouldCreateExtProject ?? false);
     }
 
     /**
