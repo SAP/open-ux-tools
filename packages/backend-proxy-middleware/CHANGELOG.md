@@ -1,5 +1,33 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.18
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/store@1.3.4
+
+## 0.10.17
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+
+## 0.10.16
+
+### Patch Changes
+
+-   67e2b43: add 'express' as peerDependency
+
+## 0.10.15
+
+### Patch Changes
+
+-   ce69893: fix: simplify type usage
+
 ## 0.10.14
 
 ### Patch Changes

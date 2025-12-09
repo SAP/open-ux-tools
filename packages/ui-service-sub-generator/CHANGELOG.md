@@ -1,5 +1,48 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.124
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/ui-service-inquirer@0.2.61
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/telemetry@0.6.43
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+
+## 0.1.123
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/system-access@0.6.30
+    -   @sap-ux/ui-service-inquirer@0.2.60
+
+## 0.1.122
+
+### Patch Changes
+
+-   Updated dependencies [d202c17]
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/inquirer-common@0.9.10
+    -   @sap-ux/ui-service-inquirer@0.2.59
+
+## 0.1.121
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.24.3
+-   @sap-ux/fiori-generator-shared@0.13.37
+-   @sap-ux/system-access@0.6.29
+-   @sap-ux/telemetry@0.6.42
+-   @sap-ux/inquirer-common@0.9.9
+-   @sap-ux/ui-service-inquirer@0.2.58
+
 ## 0.1.120
 
 ### Patch Changes

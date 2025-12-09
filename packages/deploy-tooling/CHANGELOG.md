@@ -1,5 +1,39 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.9
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/inquirer-common@0.9.11
+    -   @sap-ux/ui5-config@0.29.10
+
+## 0.17.8
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/system-access@0.6.30
+
+## 0.17.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.10
+
+## 0.17.6
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.24.3
+-   @sap-ux/project-input-validator@0.6.34
+-   @sap-ux/system-access@0.6.29
+-   @sap-ux/inquirer-common@0.9.9
+
 ## 0.17.5
 
 ### Patch Changes

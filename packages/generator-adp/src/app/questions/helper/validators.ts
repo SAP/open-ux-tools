@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 
-import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getMtaServices, isExternalLoginEnabled, isMtaProject, type SystemLookup } from '@sap-ux/adp-tooling';
+import { getMtaServices, isMtaProject, type SystemLookup } from '@sap-ux/adp-tooling';
 import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
@@ -92,23 +91,11 @@ export async function validateJsonInput(
  *
  * @param {string} value - The value to validate.
  * @param {boolean} isCFLoggedIn - Whether Cloud Foundry is logged in.
- * @param {any} vscode - The vscode instance.
  * @returns {Promise<string | boolean>} Returns true if the environment is valid, otherwise returns an error message.
  */
-export async function validateEnvironment(
-    value: string,
-    isCFLoggedIn: boolean,
-    vscode: any
-): Promise<string | boolean> {
+export async function validateEnvironment(value: string, isCFLoggedIn: boolean): Promise<string | boolean> {
     if (value === 'CF' && !isCFLoggedIn) {
         return t('error.cfNotLoggedIn');
-    }
-
-    if (value === 'CF' && !isAppStudio()) {
-        const isExtLoginEnabled = await isExternalLoginEnabled(vscode);
-        if (!isExtLoginEnabled) {
-            return t('error.cfLoginCannotBeDetected');
-        }
     }
 
     return true;
