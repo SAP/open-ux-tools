@@ -6,6 +6,11 @@ const tsParser = require('@typescript-eslint/parser');
 const { parser } = require('typescript-eslint');
 
 module.exports = [
+    {
+        languageOptions: {
+            'parser': tsParser
+        }
+    },
     ...base,
     reactPlugin.configs.flat.recommended,
     // ...storybookPlugin.configs['flat/recommended'],
@@ -36,18 +41,12 @@ module.exports = [
         }
     },
     {
-        languageOptions: {
-            'parser': tsParser
-        },
         files: ['./test/**/*.tsx'],
         rules: {
             'no-loop-func': 'off'
         }
     },
     {
-        languageOptions: {
-            parser: tsParser
-        },
         files: ['./src/**/*.tsx'],
         rules: {
             '@typescript-eslint/no-unused-vars': [
