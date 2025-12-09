@@ -1,5 +1,18 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.16
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/nodejs-utils@0.2.9
+    -   @sap-ux/telemetry@0.6.43
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+
 ## 2.11.15
 
 ### Patch Changes
