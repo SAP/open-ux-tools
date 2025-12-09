@@ -15,7 +15,7 @@ import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification
 import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import { readFlexChanges } from '@sap-ux/project-access';
-import { getFlexChangeLayer, getManifest, getUI5Version, readAnnotationFiles } from './project';
+import { getFlexChangeLayer, getManifest, getUI5Version } from './project';
 import { logger } from '../utils/logger';
 import { mergeChanges, writeFlexChanges } from './flex';
 import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
@@ -96,10 +96,11 @@ export class SapuxFtfsFileIO {
      *
      * @returns A promise that resolves to an array of File objects
      */
-    private async getApplicationModel(): Promise<ApplicationModel | undefined> {
+    public async getApplicationModel(skipParsing?: boolean): Promise<ApplicationModel | undefined> {
         const specification = await this.getSpecification();
         const app = await specification.readApp({
-            app: this.appAccess
+            app: this.appAccess,
+            skipParsing
         });
         return app.applicationModel;
     }

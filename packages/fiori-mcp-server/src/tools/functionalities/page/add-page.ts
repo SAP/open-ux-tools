@@ -49,7 +49,7 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
             buildPageCreationSchema(
                 navigationOptions.navigations,
                 navigationOptions.entities,
-                getFioriElementsVersion(appData)
+                getFioriElementsVersion(appData.config)
             )
         )
     };
@@ -85,7 +85,7 @@ async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<
     const schema = buildPageCreationSchema(
         navigationOptions.navigations,
         navigationOptions.entities,
-        getFioriElementsVersion(appData)
+        getFioriElementsVersion(appData.config)
     );
     const addPageParameters = validateWithSchema(schema, parameters);
     const pageType = addPageParameters.pageType ?? PageTypeV4.ObjectPage;

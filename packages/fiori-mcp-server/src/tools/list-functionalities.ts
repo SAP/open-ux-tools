@@ -3,6 +3,7 @@ import type { Functionality, ListFunctionalitiesInput, ListFunctionalitiesOutput
 import { FUNCTIONALITIES_DETAILS } from './functionalities';
 import { resolveApplication } from '../utils';
 import type { ApplicationAccess } from '@sap-ux/project-access';
+import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 
 /**
  * Lists all functionalities for a given application.
@@ -29,11 +30,15 @@ export async function listFunctionalities(
         if (project?.applicationAccess && Object.keys(apps).length) {
             const { applicationAccess } = project;
             const ftfsFileIo = new SapuxFtfsFileIO(applicationAccess);
-            const appData = await ftfsFileIo.readApp();
-            functionalities = functionalities.concat(await getAppFunctionalities(applicationAccess));
-            const pages = Object.keys(appData.config?.pages ?? {});
-            for (const pageId of pages) {
-                functionalities = functionalities.concat(await getPageFunctionalities(applicationAccess, pageId));
+            const application = await ftfsFileIo.getApplicationModel();
+            if (application) {
+                functionalities = functionalities.concat(await getAppFunctionalities(applicationAccess, application));
+                const pages = Object.keys(application?.pages ?? {});
+                for (const pageId of pages) {
+                    functionalities = functionalities.concat(
+                        await getPageFunctionalities(applicationAccess, application, pageId)
+                    );
+                }
             }
         }
     } catch (error) {
@@ -51,8 +56,11 @@ export async function listFunctionalities(
  * @param appAccess - The ApplicationAccess object for accessing the application.
  * @returns A promise that resolves to an array of Functionality objects.
  */
-async function getAppFunctionalities(appAccess: ApplicationAccess): Promise<Functionality[]> {
-    const pageEditorApi = new PageEditorApi(appAccess, undefined);
+async function getAppFunctionalities(
+    appAccess: ApplicationAccess,
+    application: ApplicationModel
+): Promise<Functionality[]> {
+    const pageEditorApi = new PageEditorApi(appAccess, application);
     const tree = await pageEditorApi.getPageTree();
 
     const settingsNode = tree.children.find((node) => node.path[node.path.length - 1] === 'settings');
@@ -75,8 +83,12 @@ async function getAppFunctionalities(appAccess: ApplicationAccess): Promise<Func
  * @param pageId - Optional. The ID of the page to retrieve functionalities for.
  * @returns A promise that resolves to an array of Functionality objects.
  */
-async function getPageFunctionalities(appAccess: ApplicationAccess, pageId?: string): Promise<Functionality[]> {
-    const pageEditorApi = new PageEditorApi(appAccess, pageId);
+async function getPageFunctionalities(
+    appAccess: ApplicationAccess,
+    application: ApplicationModel,
+    pageId?: string
+): Promise<Functionality[]> {
+    const pageEditorApi = new PageEditorApi(appAccess, application, pageId);
     const pageTree = await pageEditorApi.getPageTree();
     return getFunctionalitiesFromPageTree(pageTree, undefined, pageId);
 }

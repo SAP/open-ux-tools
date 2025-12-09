@@ -1,17 +1,19 @@
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import type { ExportResults } from '@sap/ux-specification/dist/types/src';
-import { getTree } from './parser';
+import { getTree, getTree2 } from './parser';
 import type { PageAnnotations, TreeNode, PropertyPath } from './parser';
 import { SapuxFtfsFileIO } from './sapuxFtfsFileIO';
 import type { AppData } from './sapuxFtfsFileIO';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { updateProperty } from './json-helper';
+import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 
 /**
  * Class representing the Page Editor API
  */
 export class PageEditorApi {
     private readonly ftfsIO;
+    private appModel: ApplicationModel;
 
     /**
      * Creates an instance of PageEditorApi.
@@ -19,17 +21,17 @@ export class PageEditorApi {
      * @param appAccess - The application access object
      * @param pageId - Optional page identifier
      */
-    constructor(public appAccess: ApplicationAccess, public pageId?: string) {
+    constructor(public appAccess: ApplicationAccess, appModel: ApplicationModel, public pageId?: string) {
         this.ftfsIO = new SapuxFtfsFileIO(appAccess);
+        this.appModel = appModel;
     }
 
     /**
      * Retrieves the page tree structure.
      *
-     * @param annotation - Optional page annotations
      * @returns Promise resolving to the TreeNode structure
      */
-    public async getPageTree(annotation?: PageAnnotations): Promise<TreeNode> {
+    public async getPageTree(): Promise<TreeNode> {
         let tree: TreeNode = {
             children: [],
             path: [],
@@ -38,14 +40,19 @@ export class PageEditorApi {
             schema: {}
         };
         if (this.pageId) {
-            const pageData = await this.ftfsIO.readPageData(this.pageId);
-            if (pageData) {
-                tree = getTree(pageData.schema, pageData.config, pageData.pageType as PageTypeV4, annotation);
+            const pageModel = this.appModel.pages[this.pageId].model;
+            if (pageModel) {
+                tree = getTree2(pageModel);
             }
         } else {
-            const pageData = await this.ftfsIO.readApp();
-            if (pageData) {
-                tree = getTree(pageData.schema, pageData.config, PageTypeV4.ListReport);
+            const appModel = this.appModel.model;
+            if (appModel) {
+                // Mark settings as view node to parse it as tree node - in future should be adjusted in specification
+                const appSettings = appModel.root.aggregations.settings as { isViewNode?: boolean };
+                if (appSettings) {
+                    appSettings.isViewNode = true;
+                }
+                tree = getTree2(appModel);
             }
         }
 

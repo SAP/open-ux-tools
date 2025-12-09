@@ -17,6 +17,7 @@ import {
 } from './model';
 import type { JSONSchema4, JSONSchema4Type } from 'json-schema';
 import { logger } from '../../utils/logger';
+import { TreeModel } from '@sap/ux-specification/dist/types/src/parser';
 
 interface TraverseNodeData {
     text: string;
@@ -506,6 +507,40 @@ export function getTree(
         path: '',
         text: model.name,
         model
+    });
+    // Update root node
+    node.root = true;
+    node.schema = model.schema;
+    return node;
+}
+
+/**
+ * Method creates tree for passed edit model.
+ *
+ * @param schema Page or application schema.
+ * @param data Configuration file mapped to schema.
+ * @param pageType Page type. If pageType is not passed, then considered as application.
+ * @param annotation Page annotations.
+ * @returns Outline tree.
+ */
+export function getTree2(model: TreeModel): TreeNode {
+    // const model = new PageEditModel(
+    //     'Root',
+    //     pageType,
+    //     data,
+    //     schema,
+    //     annotation ?? {
+    //         dynamicNodes: {},
+    //         nodes: []
+    //     }
+    // );
+    // ToDo
+    const root = model.root as any;
+    const node = traverseTree(root, {
+        level: 0,
+        path: '',
+        text: model.name,
+        model: model as any
     });
     // Update root node
     node.root = true;
