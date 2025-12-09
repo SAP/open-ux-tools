@@ -422,12 +422,11 @@
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Add Custom Page Action` button in the Quick Actions Panel
-3. Click `Add Custom Table Action` button in the Quick Actions Panel
-4. Fill `Fragment Name` field with `page-action` in the dialog `Add Custom Page Action`
-5. Click on `Create` button in the dialog `Add Custom Page Action`
-6. Click `Save and Reload` button in the toolBar
-7. Check `Save` button in the toolbar is disabled
-8. Verify changes:
+3. Fill `Fragment Name` field with `page-action` in the dialog `Add Custom Page Action`
+4. Click on `Create` button in the dialog `Add Custom Page Action`
+5. Click `Save and Reload` button in the toolBar
+6. Check `Save` button in the toolbar is disabled
+7. Verify changes:
 
 **Fragment(s)**
 

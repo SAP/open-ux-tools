@@ -479,7 +479,6 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
 
         await editor.reloadCompleted();
         await editor.quickActions.addCustomPageAction.click();
-        await editor.quickActions.addCustomTableAction.click();
 
         await dialog.fillField('Fragment Name', 'page-action');
         await dialog.clickCreateButton();
