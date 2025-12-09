@@ -1,12 +1,22 @@
 import type { Command } from 'commander';
 import { join } from 'path';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { execSync } from 'child_process';
 import { readUi5Yaml, FileName } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
-import { getBackendUrlsWithPaths, getServiceInstanceKeys } from '@sap-ux/adp-tooling';
+import {
+    getBackendUrlsWithPaths,
+    getServiceInstanceKeys,
+    getCfUi5AppInfo,
+    loadCfConfig,
+    getAppHostIds,
+    getVariant,
+    type CfUi5AppInfo
+} from '@sap-ux/adp-tooling';
+import type { CfConfig } from '@sap-ux/adp-tooling';
 
 /**
  * Add the "setup adaptation-project-cf" command to a passed command.
@@ -20,14 +30,12 @@ export function addSetupAdaptationProjectCFCommand(cmd: Command): void {
 Example:
     \`npx --yes @sap-ux/create@latest setup adaptation-project-cf\``
         )
-        .option('-s, --simulate', 'Simulate only. Do not write or build. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
-        .option('--endpoint <string>', 'CF endpoint URL to fetch reusable libraries from.')
         .action(async (path, options) => {
-            if (options.verbose === true || options.simulate) {
+            if (options.verbose === true) {
                 setLogLevelVerbose();
             }
-            await setupAdaptationProjectCF(path || process.cwd(), options.simulate, options.endpoint);
+            await setupAdaptationProjectCF(path || process.cwd());
         });
 }
 
@@ -35,10 +43,8 @@ Example:
  * Setup a Cloud Foundry adaptation project.
  *
  * @param basePath - path to application root
- * @param simulate - simulate only, do not write
- * @param _endpoint - CF endpoint URL to fetch libraries from (currently unused)
  */
-async function setupAdaptationProjectCF(basePath: string, simulate: boolean, _endpoint?: string): Promise<void> {
+async function setupAdaptationProjectCF(basePath: string): Promise<void> {
     const logger = getLogger();
     await validateBasePath(basePath);
 
@@ -52,22 +58,18 @@ async function setupAdaptationProjectCF(basePath: string, simulate: boolean, _en
         }
 
         // Step 2: Process ui5AppInfo.json and extract reusable libraries
-        await processUi5AppInfo(basePath, simulate, logger);
+        await processUi5AppInfo(basePath, logger);
 
         // Step 3: Add serve-static-middleware configuration to ui5.yaml
-        await addServeStaticMiddleware(basePath, simulate, logger);
+        await addServeStaticMiddleware(basePath, logger);
 
         // Step 4: Build the project
-        await buildProject(basePath, simulate, logger);
+        await buildProject(basePath, logger);
 
         // Step 5: Add backend-proxy-middleware-cf configuration to ui5.yaml
-        await addBackendProxyMiddleware(basePath, simulate, logger);
+        await addBackendProxyMiddleware(basePath, logger);
 
-        if (simulate) {
-            logger.info('Simulation complete. No changes were written.');
-        } else {
-            logger.info('CF adaptation project setup complete!');
-        }
+        logger.info('CF adaptation project setup complete!');
     } catch (error) {
         logger.error(`Failed to setup CF adaptation project: ${(error as Error).message}`);
         throw error;
@@ -78,64 +80,31 @@ async function setupAdaptationProjectCF(basePath: string, simulate: boolean, _en
  * Process ui5AppInfo.json and extract reusable library information to .reuse folder.
  *
  * @param basePath - path to application root
- * @param simulate - simulate only, do not write
  * @param logger - logger instance
  */
-async function processUi5AppInfo(basePath: string, simulate: boolean, logger: any): Promise<void> {
+async function processUi5AppInfo(basePath: string, logger: any): Promise<void> {
     try {
-        const ui5AppInfoPath = join(__dirname, 'ui5AppInfo.json');
+        const cfConfig = getCfConfig(logger);
+        const serviceKeys = await fetchServiceKeys(basePath, logger);
+        const appId = await getAppId(basePath, logger);
+        const appHostIds = getAppHostIds(serviceKeys);
 
-        if (!existsSync(ui5AppInfoPath)) {
-            logger.warn('ui5AppInfo.json not found in command directory, skipping reusable library processing');
-            return;
+        if (appHostIds.length === 0) {
+            throw new Error('No app host IDs found in service keys.');
         }
 
-        logger.info('Processing ui5AppInfo.json...');
-        const ui5AppInfo = JSON.parse(readFileSync(ui5AppInfoPath, 'utf-8')) as {
-            asyncHints?: {
-                libs?: Array<{
-                    name: string;
-                    html5AppName?: string;
-                    html5AppVersion?: string;
-                    html5AppHostId?: string;
-                    html5CacheToken?: string;
-                    url?: { url: string };
-                }>;
-            };
-        };
+        logger.info(`Fetching ui5AppInfo.json from FDC for appId: ${appId}, appHostIds: ${appHostIds.join(', ')}`);
 
-        // Extract reusable libraries from asyncHints.libs (filter out standard UI5 libraries)
-        const reusableLibs =
-            ui5AppInfo.asyncHints?.libs?.filter(
-                (lib) =>
-                    lib.html5AppName &&
-                    lib.url &&
-                    // Only include libraries with custom URL (reuse libraries)
-                    typeof lib.url === 'object' &&
-                    lib.url.url !== undefined
-            ) ?? [];
+        const ui5AppInfo: CfUi5AppInfo = await getCfUi5AppInfo(appId, appHostIds, cfConfig, logger);
 
-        if (reusableLibs.length === 0) {
-            logger.info('No reusable libraries found in ui5AppInfo.json');
-            return;
-        }
-
-        logger.info(`Found ${reusableLibs.length} reusable libraries`);
-
-        // Write ui5AppInfo.json to webapp folder
         const webappPath = join(basePath, 'webapp');
         if (!existsSync(webappPath)) {
             throw new Error('webapp folder not found in project');
         }
 
         const ui5AppInfoTargetPath = join(webappPath, 'ui5AppInfo.json');
-
-        if (!simulate) {
-            writeFileSync(ui5AppInfoTargetPath, JSON.stringify(ui5AppInfo, null, 2), 'utf-8');
-            logger.info(`Written ui5AppInfo.json to ${webappPath}`);
-        } else {
-            logger.info('[Simulate] Would write ui5AppInfo.json to webapp folder');
-        }
+        writeFileSync(ui5AppInfoTargetPath, JSON.stringify(ui5AppInfo, null, 2), 'utf-8');
+        logger.info(`Written ui5AppInfo.json to ${webappPath}`);
     } catch (error) {
         logger.error(`Failed to process ui5AppInfo.json: ${(error as Error).message}`);
         throw error;
@@ -146,47 +115,26 @@ async function processUi5AppInfo(basePath: string, simulate: boolean, logger: an
  * Build the project using npm run build.
  *
  * @param basePath - path to application root
- * @param simulate - simulate only, do not build
  * @param logger - logger instance
  */
-async function buildProject(basePath: string, simulate: boolean, logger: any): Promise<void> {
+async function buildProject(basePath: string, logger: any): Promise<void> {
     try {
-        if (simulate) {
-            logger.info('[Simulate] Would run: npm run build');
-            return;
-        }
-
         logger.info('Building the project...');
 
-        const { spawn } = await import('child_process');
-
-        await new Promise<void>((resolve, reject) => {
-            const buildProcess = spawn('npm', ['run', 'build'], {
-                cwd: basePath,
-                stdio: 'inherit',
-                shell: true,
-                env: {
-                    ...process.env,
-                    ADP_BUILDER_MODE: 'preview'
-                }
-            });
-
-            buildProcess.on('close', (code) => {
-                if (code === 0) {
-                    logger.info('Project built successfully');
-                    resolve();
-                } else {
-                    reject(new Error(`Build process exited with code ${code}`));
-                }
-            });
-
-            buildProcess.on('error', (error) => {
-                reject(new Error(`Failed to start build process: ${error.message}`));
-            });
+        execSync('npm run build', {
+            cwd: basePath,
+            stdio: 'inherit',
+            env: {
+                ...process.env,
+                ADP_BUILDER_MODE: 'preview'
+            }
         });
+
+        logger.info('Project built successfully');
     } catch (error) {
+        const exitCode = (error as any).status ?? 'unknown';
         logger.error(`Build failed: ${(error as Error).message}`);
-        throw error;
+        throw new Error(`Build process exited with code ${exitCode}`);
     }
 }
 
@@ -194,64 +142,40 @@ async function buildProject(basePath: string, simulate: boolean, logger: any): P
  * Add serve-static-middleware configuration to ui5.yaml if not already present.
  *
  * @param basePath - path to application root
- * @param simulate - simulate only, do not write
  * @param logger - logger instance
  */
-async function addServeStaticMiddleware(basePath: string, simulate: boolean, logger: any): Promise<void> {
+async function addServeStaticMiddleware(basePath: string, logger: any): Promise<void> {
     try {
         const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
-
-        // Check if serve-static-middleware already exists and remove it
         const existingMiddleware = ui5Config.findCustomMiddleware('serve-static-middleware');
 
         if (existingMiddleware) {
-            logger.info('serve-static-middleware already exists in ui5.yaml, replacing it');
             ui5Config.removeCustomMiddleware('serve-static-middleware');
         }
 
-        // Read ui5AppInfo.json from webapp folder
         const ui5AppInfoPath = join(basePath, 'webapp', 'ui5AppInfo.json');
         if (!existsSync(ui5AppInfoPath)) {
             logger.warn('ui5AppInfo.json not found in webapp folder, skipping serve-static-middleware configuration');
             return;
         }
 
-        const ui5AppInfo = JSON.parse(readFileSync(ui5AppInfoPath, 'utf-8')) as {
-            asyncHints?: {
-                libs?: Array<{
-                    name: string;
-                    html5AppName?: string;
-                    url?: { url: string };
-                }>;
-            };
-        };
-
-        // Extract reusable libraries from asyncHints.libs (filter out standard UI5 libraries)
+        const ui5AppInfo = JSON.parse(readFileSync(ui5AppInfoPath, 'utf-8')) as CfUi5AppInfo;
         const reusableLibs =
             ui5AppInfo.asyncHints?.libs?.filter(
-                (lib) =>
-                    lib.html5AppName &&
-                    lib.url &&
-                    // Only include libraries with custom URL (reuse libraries)
-                    typeof lib.url === 'object' &&
-                    lib.url.url !== undefined
+                (lib) => lib.html5AppName && lib.url && typeof lib.url === 'object' && lib.url.url !== undefined
             ) ?? [];
 
         if (reusableLibs.length === 0) {
-            logger.warn(
+            logger.info(
                 'No reusable libraries found in ui5AppInfo.json, skipping serve-static-middleware configuration'
             );
             return;
         }
 
-        logger.info('Adding serve-static-middleware configuration to ui5.yaml');
-
-        // Build paths configuration from reusable libraries
         const paths = reusableLibs.map((lib) => {
             const libName = String(lib.name);
             const html5AppName = String(lib.html5AppName);
-            // Convert library name to resource path (e.g., "com.sap.apm.reusablecontrols.ui" -> "/resources/com/sap/apm/reusablecontrols/ui")
             const resourcePath = '/resources/' + libName.replace(/\./g, '/');
 
             return {
@@ -272,24 +196,20 @@ async function addServeStaticMiddleware(basePath: string, simulate: boolean, log
             }
         ]);
 
-        if (!simulate) {
-            // Write the updated configuration back to the file
-            const fs = create(createStorage());
-            fs.write(ui5YamlPath, ui5Config.toString());
-            await new Promise<void>((resolve, reject) => {
-                fs.commit([], (err: Error | null) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
+        // Write the updated configuration back to the file
+        const fs = create(createStorage());
+        fs.write(ui5YamlPath, ui5Config.toString());
+        await new Promise<void>((resolve, reject) => {
+            fs.commit([], (err: Error | null) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
             });
-            await traceChanges(fs);
-            logger.info('Successfully added serve-static-middleware to ui5.yaml');
-        } else {
-            logger.info('[Simulate] Would add serve-static-middleware to ui5.yaml');
-        }
+        });
+        await traceChanges(fs);
+        logger.info('Successfully added serve-static-middleware to ui5.yaml');
     } catch (error) {
         logger.warn(`Could not add serve-static-middleware configuration: ${(error as Error).message}`);
         throw error;
@@ -300,49 +220,26 @@ async function addServeStaticMiddleware(basePath: string, simulate: boolean, log
  * Add backend-proxy-middleware-cf configuration to ui5.yaml.
  *
  * @param basePath - path to application root
- * @param simulate - simulate only, do not write
  * @param logger - logger instance
  */
-async function addBackendProxyMiddleware(basePath: string, simulate: boolean, logger: any): Promise<void> {
+async function addBackendProxyMiddleware(basePath: string, logger: any): Promise<void> {
     try {
         const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
 
-        // Remove all existing backend-proxy-middleware-cf instances
         while (ui5Config.findCustomMiddleware('backend-proxy-middleware-cf')) {
             ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
         }
 
-        // Get service keys from Cloud Foundry
         const serviceKeys = await fetchServiceKeys(basePath, logger);
         if (!serviceKeys || serviceKeys.length === 0) {
             logger.warn('No service keys found. Backend proxy middleware will not be configured.');
             return;
         }
 
-        // Extract backend URLs mapped to their corresponding paths based on destination matching
         const reusePath = join(basePath, '.reuse');
-
-        // Debug logging
-        logger.debug(`Reuse path: ${reusePath}`);
-        logger.debug(`Reuse path exists: ${existsSync(reusePath)}`);
-        logger.debug(`xs-app.json exists: ${existsSync(join(reusePath, 'xs-app.json'))}`);
-        logger.debug(`Service keys endpoints: ${JSON.stringify(serviceKeys[0]?.credentials?.endpoints, null, 2)}`);
-
         const urlsWithPaths = getBackendUrlsWithPaths(serviceKeys, reusePath);
 
-        if (urlsWithPaths.length === 0) {
-            logger.warn('No backend URLs with matching destinations found');
-            logger.warn('Please check:');
-            logger.warn('1. .reuse/xs-app.json exists and contains routes with destinations');
-            logger.warn('2. Service keys endpoints have matching destination names');
-            logger.warn('3. xs-app.json routes have source paths defined');
-            return;
-        }
-
-        logger.info(`Configuring backend proxy for ${urlsWithPaths.length} backend URL(s)`);
-
-        // Add a single middleware instance with all backends
         ui5Config.addCustomMiddleware([
             {
                 name: 'backend-proxy-middleware-cf',
@@ -353,31 +250,68 @@ async function addBackendProxyMiddleware(basePath: string, simulate: boolean, lo
             }
         ]);
 
-        // Log each backend configuration
-        urlsWithPaths.forEach(({ url, paths }) => {
-            logger.info(`Configured backend: ${url} with ${paths.length} path(s): ${paths.join(', ')}`);
-        });
-
-        if (!simulate) {
-            // Write the updated configuration back to the file
-            const fs = create(createStorage());
-            fs.write(ui5YamlPath, ui5Config.toString());
-            await new Promise<void>((resolve, reject) => {
-                fs.commit([], (err: Error | null) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
+        const fs = create(createStorage());
+        fs.write(ui5YamlPath, ui5Config.toString());
+        await new Promise<void>((resolve, reject) => {
+            fs.commit([], (err: Error | null) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
             });
-            await traceChanges(fs);
-            logger.info('Successfully added backend-proxy-middleware-cf to ui5.yaml');
-        } else {
-            logger.info('[Simulate] Would add backend-proxy-middleware-cf to ui5.yaml');
-        }
+        });
+        await traceChanges(fs);
+        logger.info('Successfully added backend-proxy-middleware-cf to ui5.yaml');
     } catch (error) {
         logger.warn(`Could not add backend-proxy-middleware-cf configuration: ${(error as Error).message}`);
+    }
+}
+
+/**
+ * Get CF configuration from Cloud Foundry CLI.
+ *
+ * @param logger - logger instance
+ * @returns CF configuration
+ */
+function getCfConfig(logger: any): CfConfig {
+    try {
+        const cfConfig = loadCfConfig(logger);
+
+        if (!cfConfig.org || !cfConfig.space || !cfConfig.token || !cfConfig.url) {
+            throw new Error('Incomplete CF configuration. Make sure you are logged in to Cloud Foundry.');
+        }
+
+        logger.info(`Using CF org: ${cfConfig.org.Name}, space: ${cfConfig.space.Name}`);
+
+        return cfConfig;
+    } catch (error) {
+        logger.error(`Failed to get CF configuration: ${(error as Error).message}`);
+        throw new Error('Unable to get CF configuration. Make sure you are logged in to Cloud Foundry.');
+    }
+}
+
+/**
+ * Get application ID (reference) from manifest.appdescr_variant.
+ *
+ * @param basePath - path to application root
+ * @param logger - logger instance
+ * @returns App ID (reference)
+ */
+async function getAppId(basePath: string, logger: any): Promise<string> {
+    try {
+        const variant = await getVariant(basePath);
+
+        if (!variant.reference) {
+            throw new Error('No reference found in manifest.appdescr_variant');
+        }
+
+        logger.info(`App ID: ${variant.reference}`);
+
+        return variant.reference;
+    } catch (error) {
+        logger.error(`Failed to get app ID: ${(error as Error).message}`);
+        throw error;
     }
 }
 
@@ -389,24 +323,15 @@ async function addBackendProxyMiddleware(basePath: string, simulate: boolean, lo
  * @param logger - logger instance
  * @returns Service keys array or null if not found
  */
-async function fetchServiceKeys(basePath: string, logger: any): Promise<Array<{ credentials: any }> | null> {
+async function fetchServiceKeys(basePath: string, logger: any): Promise<Array<{ credentials: any }>> {
     try {
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
         const bundlerTask = ui5Config.findCustomTask<{ serviceInstanceName?: string }>('app-variant-bundler-build');
-
-        if (!bundlerTask) {
-            logger.warn('No app-variant-bundler-build task found in ui5.yaml');
-            return null;
-        }
-
-        const serviceInstanceName = bundlerTask.configuration?.serviceInstanceName;
+        const serviceInstanceName = bundlerTask?.configuration?.serviceInstanceName;
 
         if (!serviceInstanceName) {
-            logger.warn('No serviceInstanceName found in app-variant-bundler-build configuration');
-            return null;
+            throw new Error('No serviceInstanceName found in app-variant-bundler-build configuration');
         }
-
-        logger.info(`Fetching service keys for: ${serviceInstanceName}`);
 
         // Get service keys from Cloud Foundry
         const serviceInfo = await getServiceInstanceKeys(
@@ -417,14 +342,12 @@ async function fetchServiceKeys(basePath: string, logger: any): Promise<Array<{ 
         );
 
         if (!serviceInfo?.serviceKeys || serviceInfo.serviceKeys.length === 0) {
-            logger.warn(`No service keys found for service instance: ${serviceInstanceName}`);
-            return null;
+            throw new Error(`No service keys found for service instance: ${serviceInstanceName}`);
         }
 
-        logger.info(`Retrieved ${serviceInfo.serviceKeys.length} service key(s) from CF`);
         return serviceInfo.serviceKeys;
     } catch (error) {
-        logger.warn(`Could not fetch service keys: ${(error as Error).message}`);
-        return null;
+        logger.error(`Could not fetch service keys: ${(error as Error).message}`);
+        throw error;
     }
 }
