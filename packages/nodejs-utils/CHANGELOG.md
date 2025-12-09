@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.9
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+
 ## 0.2.8
 
 ### Patch Changes

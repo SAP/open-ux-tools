@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.24.5
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+
 ## 1.24.4
 
 ### Patch Changes
