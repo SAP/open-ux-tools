@@ -76,9 +76,15 @@ export const entityConfig = z.object({
     mainEntity: z.object({
         entityName: z
             .string()
-            .describe('The name of the main entity. EntitySet Name attribute in OData Metadata')
+            .describe('The name of the main entity. EntitySet Name attribute in OData Metadata.')
             .meta({ examples: ["'SalesOrder'", "'PurchaseOrderHeader'", "'MyEntity'"] })
     }),
-    generateFormAnnotations: z.boolean(),
-    generateLROPAnnotations: z.boolean()
+    generateFormAnnotations: z
+        .boolean()
+        .describe('Whether to generate form annotations for the main entity if none exist.')
+        .default(true),
+    generateLROPAnnotations: z
+        .boolean()
+        .describe('Whether to generate LROP annotations for the main entity if none exist.')
+        .default(true)
 });

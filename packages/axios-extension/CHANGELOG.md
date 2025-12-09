@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.24.5
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+
+## 1.24.4
+
+### Patch Changes
+
+-   f71a139: fix(adp): Problems with login in the Replace OData Service change editor.
+
 ## 1.24.3
 
 ### Patch Changes

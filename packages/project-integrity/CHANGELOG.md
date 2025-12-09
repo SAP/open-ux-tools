@@ -1,5 +1,18 @@
 # @sap-ux/project-integrity
 
+## 0.2.30
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+
+## 0.2.29
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+
 ## 0.2.28
 
 ### Patch Changes

@@ -37,6 +37,7 @@ export {
     getMockServerConfig,
     getMockDataPath,
     getNodeModulesPath,
+    getPathMappings,
     getProject,
     getProjectType,
     getWebappPath,

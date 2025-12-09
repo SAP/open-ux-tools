@@ -1,5 +1,61 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.127
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/flp-config-inquirer@0.4.75
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/adp-tooling@0.18.16
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+
+## 0.1.126
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/adp-tooling@0.18.15
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/flp-config-inquirer@0.4.74
+    -   @sap-ux/system-access@0.6.30
+
+## 0.1.125
+
+### Patch Changes
+
+-   Updated dependencies [d202c17]
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/flp-config-inquirer@0.4.73
+    -   @sap-ux/inquirer-common@0.9.10
+    -   @sap-ux/adp-tooling@0.18.14
+
+## 0.1.124
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/adp-tooling@0.18.13
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/fiori-generator-shared@0.13.37
+    -   @sap-ux/flp-config-inquirer@0.4.72
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/inquirer-common@0.9.9
+
+## 0.1.123
+
+### Patch Changes
+
+-   Updated dependencies [324d8ed]
+    -   @sap-ux/adp-tooling@0.18.12
+    -   @sap-ux/flp-config-inquirer@0.4.71
+
 ## 0.1.122
 
 ### Patch Changes

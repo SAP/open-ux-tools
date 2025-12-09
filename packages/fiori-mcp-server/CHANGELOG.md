@@ -1,5 +1,37 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.9
+
+### Patch Changes
+
+-   Updated dependencies [037a430]
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-docs-embeddings@0.4.5
+
+## 0.4.8
+
+### Patch Changes
+
+-   d08a64c: fix: mcp server load the latest embeddings package on install/ npx
+
+## 0.4.7
+
+### Patch Changes
+
+-   3dd6b06: version bump for mcp sdk and specification
+
+## 0.4.6
+
+### Patch Changes
+
+-   4f7aa43: fix(fiori-mcp): improve non-cap app-gen input schema
+
+## 0.4.5
+
+### Patch Changes
+
+-   9d0c8e0: fix(fiori-mcp): fix missing dependency
+
 ## 0.4.4
 
 ### Patch Changes

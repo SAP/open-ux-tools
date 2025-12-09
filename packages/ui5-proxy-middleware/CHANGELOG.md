@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.7
+
+### Patch Changes
+
+-   67e2b43: add 'express' as peerDependency
+
 ## 1.6.6
 
 ### Patch Changes

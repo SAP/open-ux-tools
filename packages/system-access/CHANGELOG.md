@@ -1,5 +1,21 @@
 # @sap-ux/system-access
 
+## 0.6.31
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/store@1.3.4
+
+## 0.6.30
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+
 ## 0.6.29
 
 ### Patch Changes
