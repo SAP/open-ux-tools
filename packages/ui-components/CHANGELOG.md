@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.16
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+
 ## 1.26.15
 
 ### Patch Changes

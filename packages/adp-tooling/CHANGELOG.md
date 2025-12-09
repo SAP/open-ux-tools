@@ -1,5 +1,117 @@
 # @sap-ux/adp-tooling
 
+## 0.18.16
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/nodejs-utils@0.2.9
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/inquirer-common@0.9.11
+    -   @sap-ux/ui5-config@0.29.10
+
+## 0.18.15
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/system-access@0.6.30
+
+## 0.18.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.10
+
+## 0.18.13
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/project-input-validator@0.6.34
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/inquirer-common@0.9.9
+
+## 0.18.12
+
+### Patch Changes
+
+-   324d8ed: feat: Enable Adaptation Editor for CF projects
+
+## 0.18.11
+
+### Patch Changes
+
+-   9c66de4: fix: remove hard coded usage of webapp folder name
+
+## 0.18.10
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/odata-service-writer@0.27.32
+    -   @sap-ux/project-input-validator@0.6.33
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/inquirer-common@0.9.8
+
+## 0.18.9
+
+### Patch Changes
+
+-   Updated dependencies [5d0598d]
+    -   @sap-ux/odata-service-writer@0.27.31
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/ui5-config@0.29.10
+    -   @sap-ux/inquirer-common@0.9.7
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/project-access@1.32.10
+    -   @sap-ux/project-input-validator@0.6.32
+
+## 0.18.8
+
+### Patch Changes
+
+-   Updated dependencies [1c45a4d]
+    -   @sap-ux/ui5-info@0.13.3
+    -   @sap-ux/inquirer-common@0.9.6
+
+## 0.18.7
+
+### Patch Changes
+
+-   Updated dependencies [597834f]
+    -   @sap-ux/inquirer-common@0.9.5
+
+## 0.18.6
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/axios-extension@1.24.2
+    -   @sap-ux/odata-service-writer@0.27.30
+    -   @sap-ux/project-input-validator@0.6.31
+    -   @sap-ux/system-access@0.6.28
+    -   @sap-ux/inquirer-common@0.9.4
+
+## 0.18.5
+
+### Patch Changes
+
+-   6872b31: fix: System SAPUI5 version not available for selection in ADP generator
+
 ## 0.18.4
 
 ### Patch Changes

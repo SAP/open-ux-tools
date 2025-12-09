@@ -1,11 +1,13 @@
 import { create as createStorage } from 'mem-fs';
+import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
+
 import type { BuildingBlockConfig, Chart, Field, FilterBar, Table, CustomColumn, CustomFilterField } from '../../src';
+
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
 import { BUILDING_BLOCK_CONFIG } from '../../src/building-block';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
-import { promises as fsPromises } from 'node:fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
 import {
     bindingContextAbsolute,
@@ -2040,6 +2042,246 @@ describe('Building Blocks', () => {
                     expect(config.processor.length).toBeLessThanOrEqual(5);
                 }
             });
+        });
+    });
+
+    describe('updateAggregationPath', () => {
+        test('detects explicit aggregation (filterFields) in target FilterBar', async () => {
+            const basePath = join(testAppPath, 'update-aggregation-explicit');
+            const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
+    <macros:FilterBar id="FilterBar1">
+        <macros:filterFields>
+            <macros:FilterField id="existingField"/>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id="FilterBar2"/>
+</mvc:View>`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlContent);
+
+            const buildingBlockData: CustomFilterField = {
+                id: 'newField',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'New Field',
+                anchor: 'existingField',
+                property: 'testProperty',
+                required: false,
+                filterFieldKey: 'newFieldKey',
+                position: { placement: Placement.After },
+                embededFragment: {
+                    name: 'TestFragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><Input /></core:FragmentDefinition>'
+                }
+            };
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: "//*[@id='FilterBar1']",
+                    buildingBlockData
+                },
+                fs
+            );
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toMatchSnapshot();
+            await writeFilesForDebugging(fs);
+        });
+
+        test('detects default aggregation when no explicit filterFields element exists', async () => {
+            const basePath = join(testAppPath, 'update-aggregation-default');
+            const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
+    <macros:FilterBar id="FilterBar1">
+        <macros:FilterField id="existingField"/>
+    </macros:FilterBar>
+    <macros:FilterBar id="FilterBar2"/>
+</mvc:View>`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlContent);
+
+            const buildingBlockData: CustomFilterField = {
+                id: 'newField',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'New Field',
+                anchor: 'existingField',
+                property: 'testProperty',
+                required: false,
+                filterFieldKey: 'newFieldKey',
+                position: { placement: Placement.After },
+                embededFragment: {
+                    name: 'TestFragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><Input /></core:FragmentDefinition>'
+                }
+            };
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: "//*[@id='FilterBar1']",
+                    buildingBlockData
+                },
+                fs
+            );
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toMatchSnapshot();
+            await writeFilesForDebugging(fs);
+        });
+
+        test('scopes aggregation search to target FilterBar when multiple FilterBars exist', async () => {
+            const basePath = join(testAppPath, 'multiple-filterbars');
+            const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
+    <macros:FilterBar id="FilterBar1">
+        <macros:filterFields>
+            <macros:FilterField id="field1"/>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id="FilterBar2">
+        <macros:filterFields>
+            <macros:FilterField id="field2"/>
+        </macros:filterFields>
+    </macros:FilterBar>
+</mvc:View>`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlContent);
+
+            const buildingBlockDataForFilterBar2: CustomFilterField = {
+                id: 'newFieldInBar2',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'New Field in Bar 2',
+                anchor: 'field2',
+                property: 'testProperty',
+                required: false,
+                filterFieldKey: 'newFieldKey',
+                position: { placement: Placement.After },
+                embededFragment: {
+                    name: 'TestFragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><Input /></core:FragmentDefinition>'
+                }
+            };
+
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: "//*[@id='FilterBar2']",
+                    buildingBlockData: buildingBlockDataForFilterBar2
+                },
+                fs
+            );
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toMatchSnapshot();
+            await writeFilesForDebugging(fs);
+        });
+
+        test('scopes aggregation search to target Table when multiple Tables exist', async () => {
+            const basePath = join(testAppPath, 'multiple-tables');
+            const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
+    <macros:Table id="Table1">
+        <macros:Column id="column1"/>
+    </macros:Table>
+    <macros:Table id="Table2">
+        <macros:Column id="column2"/>
+    </macros:Table>
+</mvc:View>`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlContent);
+
+            const buildingBlockDataForTable2: CustomColumn = {
+                id: 'newColumnInTable2',
+                buildingBlockType: BuildingBlockType.CustomColumn,
+                title: 'New Column in Table 2',
+                position: { placement: Placement.After },
+                embededFragment: {
+                    name: 'TestColumnFragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><Text text="Sample" /></core:FragmentDefinition>'
+                }
+            };
+
+            await generateBuildingBlock<CustomColumn>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: "//*[@id='Table2']",
+                    buildingBlockData: buildingBlockDataForTable2
+                },
+                fs
+            );
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toMatchSnapshot();
+            await writeFilesForDebugging(fs);
+        });
+
+        test('does not incorrectly detect filterFields from other FilterBar', async () => {
+            const basePath = join(testAppPath, 'filterbar-scoping-bug');
+
+            // FilterBar1 has explicit filterFields, FilterBar2 does not
+            const xmlContent = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns:core="sap.ui.core">
+    <macros:FilterBar id="FilterBar1">
+        <macros:filterFields>
+            <macros:FilterField id="field1"/>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id="FilterBar2">
+        <macros:FilterField id="field2"/>
+    </macros:FilterBar>
+</mvc:View>`;
+
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlContent);
+
+            const buildingBlockData: CustomFilterField = {
+                id: 'newFieldInBar2',
+                buildingBlockType: BuildingBlockType.CustomFilterField,
+                label: 'New Field',
+                anchor: 'field2',
+                property: 'testProperty',
+                required: false,
+                filterFieldKey: 'newFieldKey',
+                position: { placement: Placement.After },
+                embededFragment: {
+                    name: 'TestFragment',
+                    folder: 'ext/fragment',
+                    typescript: false,
+                    content:
+                        '<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><Input /></core:FragmentDefinition>'
+                }
+            };
+
+            // Targeting FilterBar2 which uses default aggregation
+            await generateBuildingBlock<CustomFilterField>(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: "//*[@id='FilterBar2']",
+                    buildingBlockData
+                },
+                fs
+            );
+
+            const viewContent = fs.read(join(basePath, xmlViewFilePath));
+            expect(viewContent).toMatchSnapshot();
+            await writeFilesForDebugging(fs);
         });
     });
 });

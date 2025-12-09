@@ -1,5 +1,11 @@
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
+import type { ExternalService } from '@sap-ux/axios-extension';
+
+export interface ExternalServiceCollectionOptions {
+    valueListReferences: boolean;
+    codeLists: boolean;
+}
 
 export enum OdataVersion {
     v2 = '2',
@@ -69,6 +75,7 @@ export interface OdataService {
     name?: string;
     model?: string;
     metadata?: string;
+    externalServices?: ExternalService[];
     /**
      * Annotations can either be EDMX annotations or CDS annotations.
      */

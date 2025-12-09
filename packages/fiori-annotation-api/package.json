@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-annotation-api",
-    "version": "0.7.12",
+    "version": "0.7.19",
     "description": "Library that provides API for reading and writing annotations in SAP Fiori elements projects.",
     "publisher": "SAPSE",
     "author": "SAP SE",
@@ -23,7 +23,7 @@
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.10.3",
+        "@sap-ux/annotation-converter": "0.10.8",
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/cds-odata-annotation-converter": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
@@ -32,7 +32,7 @@
         "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.13.0",
+        "@sap-ux/vocabularies-types": "0.13.1",
         "@sap-ux/xml-odata-annotation-converter": "workspace:*",
         "@sap/ux-cds-compiler-facade": "1.19.0",
         "@xml-tools/ast": "5.0.5",

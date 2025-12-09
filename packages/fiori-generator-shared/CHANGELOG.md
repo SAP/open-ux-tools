@@ -1,5 +1,50 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.39
+
+### Patch Changes
+
+-   Updated dependencies [037a430]
+    -   @sap-ux/telemetry@0.6.43
+
+## 0.13.38
+
+### Patch Changes
+
+-   d202c17: Remove Code Assist from README file.
+
+## 0.13.37
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/telemetry@0.6.42
+
+## 0.13.36
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/telemetry@0.6.41
+
+## 0.13.35
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.32.10
+-   @sap-ux/telemetry@0.6.40
+
+## 0.13.34
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/telemetry@0.6.39
+
 ## 0.13.33
 
 ### Patch Changes

@@ -1,0 +1,154 @@
+
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`getFunctionalityDetails getFunctionalityDetails 1`] = `
+Object {
+  "description": "Creates (generates) a new SAP Fiori UI application within an existing CAP project.
+                To populate parameters, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
+                As a fallback, only if no such tool is available, you should manually read and parse all .cds files in the projectPath to extract this information.
+                The data obtained from either method must then be formatted into a JSON object and passed as the parameters.
+                The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the tool.
+                The configuration **MUST** be based on the project files in the projectPath.",
+  "functionalityId": "generate-fiori-ui-application-cap",
+  "name": "Generate SAP Fiori UI Application",
+  "parameters": Object {
+    "additionalProperties": false,
+    "description": "The configuration that will be used for the Application UI generation.
+            The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the functionality.",
+    "properties": Object {
+      "entityConfig": Object {
+        "additionalProperties": false,
+        "properties": Object {
+          "generateFormAnnotations": Object {
+            "default": true,
+            "description": "Whether to generate form annotations for the main entity if none exist.",
+            "type": "boolean",
+          },
+          "generateLROPAnnotations": Object {
+            "default": true,
+            "description": "Whether to generate LROP annotations for the main entity if none exist.",
+            "type": "boolean",
+          },
+          "mainEntity": Object {
+            "additionalProperties": false,
+            "properties": Object {
+              "entityName": Object {
+                "description": "The name of the main entity. EntitySet Name attribute in OData Metadata.",
+                "examples": Array [
+                  "'SalesOrder'",
+                  "'PurchaseOrderHeader'",
+                  "'MyEntity'",
+                ],
+                "type": "string",
+              },
+            },
+            "required": Array [
+              "entityName",
+            ],
+            "type": "object",
+          },
+        },
+        "required": Array [
+          "mainEntity",
+          "generateFormAnnotations",
+          "generateLROPAnnotations",
+        ],
+        "type": "object",
+      },
+      "floorplan": Object {
+        "description": "SAP Fiori Elements floor plan type.",
+        "enum": Array [
+          "FE_FPM",
+          "FE_LROP",
+          "FE_OVP",
+          "FE_ALP",
+          "FE_FEOP",
+          "FE_WORKLIST",
+          "FF_SIMPLE",
+        ],
+        "type": "string",
+      },
+      "project": Object {
+        "additionalProperties": false,
+        "properties": Object {
+          "description": Object {
+            "type": "string",
+          },
+          "name": Object {
+            "pattern": "^[a-z0-9-]+$",
+            "type": "string",
+          },
+          "targetFolder": Object {
+            "description": "Absolute path to the project folder (projectPath).",
+            "type": "string",
+          },
+          "title": Object {
+            "type": "string",
+          },
+          "ui5Version": Object {
+            "default": "1.136.7",
+            "type": "string",
+          },
+        },
+        "required": Array [
+          "name",
+          "description",
+          "targetFolder",
+          "ui5Version",
+        ],
+        "type": "object",
+      },
+      "service": Object {
+        "additionalProperties": false,
+        "properties": Object {
+          "capService": Object {
+            "additionalProperties": false,
+            "properties": Object {
+              "capType": Object {
+                "enum": Array [
+                  "Node.js",
+                  "Java",
+                ],
+                "type": "string",
+              },
+              "projectPath": Object {
+                "type": "string",
+              },
+              "serviceCdsPath": Object {
+                "description": "The path to the service cds file",
+                "examples": Array [
+                  "srv/service.cds",
+                  "srv/my-service.cds",
+                  "path/to/srv/service.cds",
+                  "path/to/srv/my-service.cds",
+                ],
+                "type": "string",
+              },
+              "serviceName": Object {
+                "type": "string",
+              },
+            },
+            "required": Array [
+              "projectPath",
+              "serviceName",
+              "serviceCdsPath",
+            ],
+            "type": "object",
+          },
+        },
+        "required": Array [
+          "capService",
+        ],
+        "type": "object",
+      },
+    },
+    "required": Array [
+      "entityConfig",
+      "floorplan",
+      "project",
+      "service",
+    ],
+    "type": "object",
+  },
+}
+`;
