@@ -241,7 +241,8 @@ describe('Test FioriAppGenerator', () => {
                 EnableEslint: undefined,
                 EnableTypeScript: undefined,
                 EnableCodeAssist: undefined,
-                ToolsId: 'abcd1234'
+                ToolsId: 'abcd1234',
+                ValueHelpCount: 0
             });
             expect(writeAppGenInfoFiles).toHaveBeenCalledWith(
                 {
