@@ -1,4 +1,5 @@
 import type { ConfirmQuestion } from '@sap-ux/inquirer-common';
+import { sendTelemetryEvent, getTelemetryClient } from '@sap-ux/inquirer-common';
 import { promptNames } from '../../../../types';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import type { ExternalService, ExternalServiceReference } from '@sap-ux/axios-extension';
@@ -10,7 +11,7 @@ import LoggerHelper from '../../../logger-helper';
 import { t } from '../../../../i18n';
 import { PromptState } from '../../../../utils';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
-import { sendTelemetryEvent } from '@sap-ux/inquirer-common';
+import { SampleRate } from '@sap-ux/telemetry';
 
 // Telemetry event names
 const telemEventValueHelpDownloadPrompted = 'VALUE_HELP_DOWNLOAD_PROMPTED';
@@ -19,6 +20,7 @@ const telemEventValueHelpDownloadFailed = 'VALUE_HELP_DOWNLOAD_FAILED';
 
 /**
  * Create telemetry data for value help download events.
+ * Separates measurements (numeric values) from properties (dimensions).
  *
  * @param params - telemetry parameters
  * @param params.valueHelpCount - count of value help items
@@ -26,7 +28,7 @@ const telemEventValueHelpDownloadFailed = 'VALUE_HELP_DOWNLOAD_FAILED';
  * @param params.fetchedCount - count of fetched items
  * @param params.downloadTimeMs - download time in milliseconds
  * @param params.error - error message if download failed
- * @returns telemetry data object
+ * @returns telemetry data object with properties and measurements
  */
 function createValueHelpTelemetryData(params: {
     valueHelpCount: number;
@@ -34,8 +36,31 @@ function createValueHelpTelemetryData(params: {
     fetchedCount?: number;
     downloadTimeMs?: number;
     error?: string;
-}): Record<string, any> {
-    return TelemetryHelper.createTelemetryData(params) ?? {};
+}): { properties: Record<string, any>; measurements: Record<string, number> } {
+    // Build property object for TelemetryHelper
+    const propertyData: Record<string, any> = {
+        valueHelpCount: params.valueHelpCount
+    };
+    if (params.userChoseToDownload !== undefined) {
+        propertyData.userChoseToDownload = params.userChoseToDownload;
+    }
+    if (params.error !== undefined) {
+        propertyData.error = params.error;
+    }
+
+    // Use TelemetryHelper to add standard properties (Platform, OperatingSystem, etc.)
+    const properties = TelemetryHelper.createTelemetryData(propertyData) ?? {};
+
+    // Build measurements object for numeric metrics
+    const measurements: Record<string, number> = {};
+    if (params.fetchedCount !== undefined) {
+        measurements.fetchedCount = params.fetchedCount;
+    }
+    if (params.downloadTimeMs !== undefined) {
+        measurements.downloadTimeMs = params.downloadTimeMs;
+    }
+
+    return { properties, measurements };
 }
 
 /**
@@ -81,13 +106,11 @@ export function getValueHelpDownloadPrompt(
             delete PromptState.odataService.valueListMetadata;
 
             // Send telemetry when prompt is answered
-            sendTelemetryEvent(
-                telemEventValueHelpDownloadPrompted,
-                createValueHelpTelemetryData({
-                    valueHelpCount: externalServiceRefs.length,
-                    userChoseToDownload: downloadMetadata
-                })
-            );
+            const telemetryData = createValueHelpTelemetryData({
+                valueHelpCount: externalServiceRefs.length,
+                userChoseToDownload: downloadMetadata
+            });
+            sendTelemetryEvent(telemEventValueHelpDownloadPrompted, telemetryData.properties);
 
             if (downloadMetadata && connectionValidator.serviceProvider instanceof AbapServiceProvider) {
                 const startTime = Date.now();
@@ -103,27 +126,45 @@ export function getValueHelpDownloadPrompt(
                         LoggerHelper.logger.info(t('warnings.noExternalServiceMetdataFetched'));
                     }
 
-                    sendTelemetryEvent(
-                        telemEventValueHelpDownloadSuccess,
-                        createValueHelpTelemetryData({
-                            valueHelpCount: externalServiceRefs.length,
-                            userChoseToDownload: true,
-                            fetchedCount: externalServiceMetadata.length,
-                            downloadTimeMs
-                        })
-                    );
+                    // Send telemetry with measurements for numeric metrics
+                    const telemetryData = createValueHelpTelemetryData({
+                        valueHelpCount: externalServiceRefs.length,
+                        userChoseToDownload: true,
+                        fetchedCount: externalServiceMetadata.length,
+                        downloadTimeMs
+                    });
+                    const telemetryClient = getTelemetryClient();
+                    if (telemetryClient) {
+                        await telemetryClient.reportEvent(
+                            {
+                                eventName: telemEventValueHelpDownloadSuccess,
+                                properties: telemetryData.properties,
+                                measurements: telemetryData.measurements
+                            },
+                            SampleRate.NoSampling
+                        );
+                    }
                 } catch (error) {
                     const downloadTimeMs = Date.now() - startTime;
                     LoggerHelper.logger.error(`Failed to fetch external service metadata: ${error}`);
-                    sendTelemetryEvent(
-                        telemEventValueHelpDownloadFailed,
-                        createValueHelpTelemetryData({
-                            valueHelpCount: externalServiceRefs.length,
-                            userChoseToDownload: true,
-                            downloadTimeMs,
-                            error: error instanceof Error ? error.message : 'Unknown error'
-                        })
-                    );
+                    // Send telemetry with measurements for numeric metrics
+                    const telemetryData = createValueHelpTelemetryData({
+                        valueHelpCount: externalServiceRefs.length,
+                        userChoseToDownload: true,
+                        downloadTimeMs,
+                        error: error instanceof Error ? error.message : 'Unknown error'
+                    });
+                    const telemetryClient = getTelemetryClient();
+                    if (telemetryClient) {
+                        await telemetryClient.reportEvent(
+                            {
+                                eventName: telemEventValueHelpDownloadFailed,
+                                properties: telemetryData.properties,
+                                measurements: telemetryData.measurements
+                            },
+                            SampleRate.NoSampling
+                        );
+                    }
                 }
             }
 

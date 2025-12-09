@@ -11,9 +11,15 @@ import { PromptState } from '../../../../../src/utils';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
 
+const mockReportEvent = jest.fn();
+const mockTelemetryClient = {
+    reportEvent: mockReportEvent
+};
+
 jest.mock('@sap-ux/inquirer-common', () => ({
     ...jest.requireActual('@sap-ux/inquirer-common'),
-    sendTelemetryEvent: jest.fn()
+    sendTelemetryEvent: jest.fn(),
+    getTelemetryClient: jest.fn(() => mockTelemetryClient)
 }));
 
 jest.mock('@sap-ux/odata-service-writer', () => ({
@@ -216,24 +222,27 @@ describe('getValueHelpDownloadPrompt', () => {
             const result = typeof prompt.validate === 'function' ? await prompt.validate(true) : true;
 
             expect(result).toBe(true);
-            expect(mockSendTelemetryEvent).toHaveBeenCalledTimes(2);
-            expect(mockSendTelemetryEvent).toHaveBeenNthCalledWith(
-                1,
+            expect(mockSendTelemetryEvent).toHaveBeenCalledTimes(1);
+            expect(mockSendTelemetryEvent).toHaveBeenCalledWith(
                 'VALUE_HELP_DOWNLOAD_PROMPTED',
                 expect.objectContaining({
                     valueHelpCount: 2,
                     userChoseToDownload: true
                 })
             );
-            expect(mockSendTelemetryEvent).toHaveBeenNthCalledWith(
-                2,
-                'VALUE_HELP_DOWNLOAD_SUCCESS',
+            expect(mockReportEvent).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    valueHelpCount: 2,
-                    userChoseToDownload: true,
-                    fetchedCount: 2,
-                    downloadTimeMs: expect.any(Number)
-                })
+                    eventName: 'VALUE_HELP_DOWNLOAD_SUCCESS',
+                    properties: expect.objectContaining({
+                        valueHelpCount: 2,
+                        userChoseToDownload: true
+                    }),
+                    measurements: expect.objectContaining({
+                        fetchedCount: 2,
+                        downloadTimeMs: expect.any(Number)
+                    })
+                }),
+                expect.any(Number) // SampleRate
             );
             expect(PromptState.odataService.valueListMetadata).toEqual(mockExternalServiceMetadata);
         });
@@ -257,24 +266,27 @@ describe('getValueHelpDownloadPrompt', () => {
             const result = typeof prompt.validate === 'function' ? await prompt.validate(true) : true;
 
             expect(result).toBe(true);
-            expect(mockSendTelemetryEvent).toHaveBeenCalledTimes(2);
-            expect(mockSendTelemetryEvent).toHaveBeenNthCalledWith(
-                1,
+            expect(mockSendTelemetryEvent).toHaveBeenCalledTimes(1);
+            expect(mockSendTelemetryEvent).toHaveBeenCalledWith(
                 'VALUE_HELP_DOWNLOAD_PROMPTED',
                 expect.objectContaining({
                     valueHelpCount: 2,
                     userChoseToDownload: true
                 })
             );
-            expect(mockSendTelemetryEvent).toHaveBeenNthCalledWith(
-                2,
-                'VALUE_HELP_DOWNLOAD_FAILED',
+            expect(mockReportEvent).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    valueHelpCount: 2,
-                    userChoseToDownload: true,
-                    downloadTimeMs: expect.any(Number),
-                    error: 'Network error'
-                })
+                    eventName: 'VALUE_HELP_DOWNLOAD_FAILED',
+                    properties: expect.objectContaining({
+                        valueHelpCount: 2,
+                        userChoseToDownload: true,
+                        error: 'Network error'
+                    }),
+                    measurements: expect.objectContaining({
+                        downloadTimeMs: expect.any(Number)
+                    })
+                }),
+                expect.any(Number) // SampleRate
             );
             expect(LoggerHelper.logger.error).toHaveBeenCalledWith(
                 expect.stringContaining('Failed to fetch external service metadata')
@@ -362,12 +374,13 @@ describe('getValueHelpDownloadPrompt', () => {
 
             // Check that downloadTimeMs is >= 100ms
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const successCall = mockSendTelemetryEvent.mock.calls.find(
-                (call: unknown[]) => call[0] === 'VALUE_HELP_DOWNLOAD_SUCCESS'
+            const successCall = mockReportEvent.mock.calls.find(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+                (call: any[]) => call[0]?.eventName === 'VALUE_HELP_DOWNLOAD_SUCCESS'
             );
             expect(successCall).toBeDefined();
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            expect(successCall?.[1].downloadTimeMs).toBeGreaterThanOrEqual(100);
+            expect(successCall?.[0]?.measurements?.downloadTimeMs).toBeGreaterThanOrEqual(100);
         });
     });
 });
