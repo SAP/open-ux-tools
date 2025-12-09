@@ -58,6 +58,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.8",
+        "@sap-ux/edmx-parser": "0.9.6",
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/logger": "workspace:*",
