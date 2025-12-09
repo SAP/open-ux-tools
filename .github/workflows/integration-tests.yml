@@ -175,6 +175,18 @@ jobs:
                   path: tests/integration/adaptation-editor/versions.json
                   key: ui5-versions-
                   restore-keys: ui5-versions-
+            - name: Verify versions.json exists
+              run: |
+                  if (Test-Path "tests/integration/adaptation-editor/versions.json") {
+                    Write-Output "✅ versions.json found"
+                    Get-Content "tests/integration/adaptation-editor/versions.json"
+                  } else {
+                    Write-Error "❌ versions.json not found!"
+                    Write-Output "Available files in directory:"
+                    Get-ChildItem "tests/integration/adaptation-editor/"
+                    exit 1
+                  }
+              shell: powershell
             - name: Run playwright tests
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=Windows-${{ matrix.ui5-version }} --reporter=blob
               env:
