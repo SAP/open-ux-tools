@@ -39,7 +39,7 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     }
     const { appId, applicationAccess } = appDetails;
     const ftfsFileIo = new SapuxFtfsFileIO(applicationAccess);
-    const appData = await ftfsFileIo.readApp();
+    const appData = await ftfsFileIo.readAppData();
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
     const navigationOptions = await application.getCreationNavigationOptions();
@@ -77,7 +77,7 @@ async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<
     }
     const { appId, applicationAccess } = appDetails;
     const ftfsFileIo = new SapuxFtfsFileIO(applicationAccess);
-    const appData = await ftfsFileIo.readApp();
+    const appData = await ftfsFileIo.readAppData();
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
     // Parse page creation parameters

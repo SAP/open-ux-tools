@@ -9,7 +9,8 @@ import type {
     Specification,
     Application,
     PageType,
-    ExportParametersV2Type
+    ExportParametersV2Type,
+    ReadAppResult
 } from '@sap/ux-specification/dist/types/src';
 import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification/dist/types/src';
 import { basename, join } from 'node:path';
@@ -83,12 +84,13 @@ export class SapuxFtfsFileIO {
      *
      * @returns A promise that resolves to an array of File objects
      */
-    private async getVirtualFiles(): Promise<File[]> {
+    // todo -> readApp???
+    private async readApp(skipParsing?: boolean): Promise<ReadAppResult> {
         const specification = await this.getSpecification();
-        const app = await specification.readApp({
-            app: this.appAccess
+        return specification.readApp({
+            app: this.appAccess,
+            skipParsing
         });
-        return app.files;
     }
 
     /**
@@ -96,12 +98,9 @@ export class SapuxFtfsFileIO {
      *
      * @returns A promise that resolves to an array of File objects
      */
+    // todo -> readApplicationModel???
     public async getApplicationModel(skipParsing?: boolean): Promise<ApplicationModel | undefined> {
-        const specification = await this.getSpecification();
-        const app = await specification.readApp({
-            app: this.appAccess,
-            skipParsing
-        });
+        const app = await this.readApp(skipParsing);
         return app.applicationModel;
     }
 
@@ -111,19 +110,15 @@ export class SapuxFtfsFileIO {
      * @param files - Optional array of File objects
      * @returns A promise that resolves to an AppData object
      */
-    public async readApp(files?: File[]): Promise<AppData> {
-        files ??= await this.getVirtualFiles();
+    public async readAppData(files?: File[]): Promise<AppData> {
+        if (!files) {
+            const appData = await this.readApp(true);
+            files = appData.files;
+        }
         const appJson = files.find((file) => file.dataSourceUri === FileName.App);
         const appConfig = JSON.parse(appJson?.fileContent ?? '{}') as Application;
         const schemaPath = join('.schemas', basename(join(appConfig?.$schema ?? '')));
         const schemaFile = files.find((file) => join(file.dataSourceUri) === schemaPath);
-        if (schemaFile) {
-            const schema = JSON.parse(schemaFile.fileContent);
-            if (schema.properties?.settings) {
-                schema.properties.settings.isViewNode = true;
-            }
-            schemaFile.fileContent = JSON.stringify(schema);
-        }
         return {
             config: appConfig,
             schema: schemaFile?.fileContent ?? '{}'
@@ -138,14 +133,15 @@ export class SapuxFtfsFileIO {
      */
     public async readPageData(pageId: string): Promise<PageData | undefined> {
         try {
-            const files = await this.getVirtualFiles();
+            const app = await this.readApp(true);
+            const { files } = app;
             const pagePath = join(DirName.Pages, `${pageId}.json`);
             const pageFile = files.find((file) => join(file.dataSourceUri) === pagePath);
             const pageConfig = pageFile?.fileContent ? (JSON.parse(pageFile.fileContent) as PageConfig) : undefined;
             const schemaPath = join('.schemas', basename(join(pageConfig?.$schema ?? '')));
             const schema = files.find((file) => join(file.dataSourceUri) === schemaPath);
             if (pageConfig && schema) {
-                const application = await this.readApp(files);
+                const application = await this.readAppData(files);
                 const page = application.config.pages?.[pageId];
                 if (page) {
                     const pageType = page.pageType;

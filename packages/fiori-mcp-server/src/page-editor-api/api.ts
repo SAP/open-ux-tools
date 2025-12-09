@@ -13,7 +13,7 @@ import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
  */
 export class PageEditorApi {
     private readonly ftfsIO;
-    private appModel: ApplicationModel;
+    private appModel?: ApplicationModel;
 
     /**
      * Creates an instance of PageEditorApi.
@@ -21,7 +21,7 @@ export class PageEditorApi {
      * @param appAccess - The application access object
      * @param pageId - Optional page identifier
      */
-    constructor(public appAccess: ApplicationAccess, appModel: ApplicationModel, public pageId?: string) {
+    constructor(public appAccess: ApplicationAccess, appModel?: ApplicationModel, public pageId?: string) {
         this.ftfsIO = new SapuxFtfsFileIO(appAccess);
         this.appModel = appModel;
     }
@@ -39,20 +39,25 @@ export class PageEditorApi {
             text: '',
             schema: {}
         };
-        if (this.pageId) {
-            const pageModel = this.appModel.pages[this.pageId].model;
-            if (pageModel) {
-                tree = getTree2(pageModel);
-            }
-        } else {
-            const appModel = this.appModel.model;
-            if (appModel) {
-                // Mark settings as view node to parse it as tree node - in future should be adjusted in specification
-                const appSettings = appModel.root.aggregations.settings as { isViewNode?: boolean };
-                if (appSettings) {
-                    appSettings.isViewNode = true;
+        if (!this.appModel) {
+            this.appModel = await this.ftfsIO.getApplicationModel();
+        }
+        if (this.appModel) {
+            if (this.pageId) {
+                const pageModel = this.appModel.pages[this.pageId].model;
+                if (pageModel) {
+                    tree = getTree2(pageModel);
                 }
-                tree = getTree2(appModel);
+            } else {
+                const appModel = this.appModel.model;
+                if (appModel) {
+                    // Mark settings as view node to parse it as tree node - in future should be adjusted in specification
+                    const appSettings = appModel.root.aggregations.settings as { isViewNode?: boolean };
+                    if (appSettings) {
+                        appSettings.isViewNode = true;
+                    }
+                    tree = getTree2(appModel);
+                }
             }
         }
 
@@ -74,7 +79,7 @@ export class PageEditorApi {
                 return this.ftfsIO.writePage(pageData);
             }
         } else {
-            const appData = await this.ftfsIO.readApp();
+            const appData = await this.ftfsIO.readAppData();
             updateProperty(appData.config, path, value);
             return this.ftfsIO.writeApp(appData);
         }
@@ -86,7 +91,7 @@ export class PageEditorApi {
      * @returns Promise resolving to application data
      */
     public async getApplication(): Promise<AppData> {
-        return this.ftfsIO.readApp();
+        return this.ftfsIO.readAppData();
     }
 
     /**
