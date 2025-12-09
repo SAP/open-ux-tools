@@ -85,6 +85,73 @@ function extendBackendMiddleware(
 }
 
 /**
+ * Updates UI5 YAML configurations with backend middleware.
+ *
+ * @param fs - the memfs editor instance
+ * @param service - the OData service instance
+ * @param paths - paths to the project files
+ * @returns Object containing ui5Config and ui5LocalConfig instances
+ */
+async function updateUI5YamlConfigs(
+    fs: Editor,
+    service: EdmxOdataService,
+    paths: ProjectPaths
+): Promise<{ ui5Config?: UI5Config; ui5LocalConfig?: UI5Config }> {
+    let ui5Config: UI5Config | undefined;
+    let ui5LocalConfig: UI5Config | undefined;
+
+    if (paths.ui5Yaml) {
+        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+        extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
+
+        if (paths.ui5LocalYaml) {
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
+            extendBackendMiddleware(fs, service, ui5LocalConfig, paths.ui5LocalYaml);
+        }
+    }
+
+    return { ui5Config, ui5LocalConfig };
+}
+
+/**
+ * Generates mockserver configuration and updates related YAML files.
+ *
+ * @param basePath - the root path of an existing UI5 application
+ * @param paths - paths to the project files
+ * @param service - the OData service instance
+ * @param webappPath - path to webapp folder
+ * @param ui5LocalConfig - ui5-local.yaml configuration
+ * @param fs - the memfs editor instance
+ */
+async function generateAndUpdateMockserverConfig(
+    basePath: string,
+    paths: ProjectPaths,
+    service: EdmxOdataService,
+    webappPath: string,
+    ui5LocalConfig: UI5Config | undefined,
+    fs: Editor
+): Promise<void> {
+    const config: MockserverConfig = {
+        webappPath: webappPath,
+        ui5MockYamlConfig: {}
+    };
+
+    if (config.ui5MockYamlConfig && service.name && service.externalServices?.length) {
+        config.ui5MockYamlConfig.resolveExternalServiceReferences = {
+            [service.name]: true
+        };
+    }
+
+    await generateMockserverConfig(basePath, config, fs);
+    await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml!, paths.ui5LocalYaml, ui5LocalConfig);
+
+    if (paths.ui5MockYaml) {
+        const ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+        extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml);
+    }
+}
+
+/**
  * Adds services data to ui5-*.yaml files.
  * Mockserver configuration for services and annotations are written using dataSources from manifest.json.
  * At the end, XML files for service annotations are created.
@@ -102,51 +169,26 @@ export async function addServicesData(
     service: EdmxOdataService,
     fs: Editor
 ): Promise<void> {
-    let ui5Config: UI5Config | undefined;
-    let ui5LocalConfig: UI5Config | undefined;
-    let ui5MockConfig: UI5Config | undefined;
-    if (paths.ui5Yaml) {
-        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
-        // Update ui5.yaml with backend middleware
-        extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
-        // Update ui5-local.yaml with backend middleware
-        if (paths.ui5LocalYaml) {
-            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
-            extendBackendMiddleware(fs, service, ui5LocalConfig, paths.ui5LocalYaml);
-        }
-    }
+    const { ui5Config, ui5LocalConfig } = await updateUI5YamlConfigs(fs, service, paths);
     const webappPath = await getWebappPath(basePath, fs);
+
     if (service.metadata) {
         if (paths.ui5Yaml && ui5Config) {
-            const config: MockserverConfig = {
-                webappPath: webappPath,
-                ui5MockYamlConfig: {}
-            };
-            if (config.ui5MockYamlConfig && service.name && service.externalServices?.length) {
-                config.ui5MockYamlConfig.resolveExternalServiceReferences = {
-                    [service.name]: true
-                };
-            }
-            // Generate mockserver middleware for ui5-mock.yaml
-            await generateMockserverConfig(basePath, config, fs);
-            // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
-            await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, paths.ui5LocalYaml, ui5LocalConfig);
-            // Update ui5-mock.yaml with backend middleware
-            if (paths.ui5MockYaml) {
-                ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
-                extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml);
-            }
+            await generateAndUpdateMockserverConfig(basePath, paths, service, webappPath, ui5LocalConfig, fs);
         }
         await writeLocalServiceAnnotationXMLFiles(fs, webappPath, templateRoot, service);
     }
-    // Service is being added - update the package.json update as well, service update should not run the updates of the package.json
+
     if (paths.packageJson && paths.ui5Yaml) {
         updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
+
     if (paths.ui5LocalYaml && ui5LocalConfig) {
         fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
     }
+
     await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+
     if (service.externalServices && webappPath) {
         writeExternalServiceMetadata(fs, webappPath, service.externalServices, service.name, service.path);
     }
