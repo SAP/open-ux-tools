@@ -12,12 +12,7 @@ import type {
 } from '../types';
 import { render } from 'ejs';
 import { resolve, join, posix } from 'node:path';
-import {
-    createProjectAccess,
-    getWebappPath,
-    type Manifest,
-    type UI5FlexLayer
-} from '@sap-ux/project-access';
+import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
@@ -303,7 +298,8 @@ export async function addApp(
             (await getI18nTextFromProperty(
                 app.local,
                 manifest['sap.app']?.description,
-                manifest['sap.app']?.id, logger
+                manifest['sap.app']?.id,
+                logger
             )) ?? '',
         additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
         applicationType: 'URL',
