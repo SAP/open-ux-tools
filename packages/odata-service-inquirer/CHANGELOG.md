@@ -1,5 +1,46 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.16
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/nodejs-utils@0.2.9
+    -   @sap-ux/telemetry@0.6.43
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+
+## 2.11.15
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/fiori-generator-shared@0.13.38
+
+## 2.11.14
+
+### Patch Changes
+
+-   Updated dependencies [d202c17]
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/inquirer-common@0.9.10
+
+## 2.11.13
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/fiori-generator-shared@0.13.37
+    -   @sap-ux/project-input-validator@0.6.34
+    -   @sap-ux/telemetry@0.6.42
+    -   @sap-ux/inquirer-common@0.9.9
+
 ## 2.11.12
 
 ### Patch Changes

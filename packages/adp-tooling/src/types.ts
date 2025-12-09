@@ -40,9 +40,9 @@ export interface AdpPreviewConfig {
      */
     ignoreCertErrors?: boolean;
     /**
-     * For CF ADP projects: when set to 'dist', serve resources from local dist instead of backend merge.
+     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
      */
-    useLocal?: string;
+    cfBuildPath?: string;
 }
 
 export interface OnpremApp {

@@ -1,5 +1,28 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.39
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/ui5-config@0.29.10
+
+## 0.2.38
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.30
+
+## 0.2.37
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/system-access@0.6.29
+
 ## 0.2.36
 
 ### Patch Changes

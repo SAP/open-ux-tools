@@ -1,5 +1,78 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.171
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/abap-deploy-config-writer@0.2.39
+    -   @sap-ux/odata-service-inquirer@2.11.16
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+    -   @sap-ux/fiori-elements-writer@2.8.14
+
+## 0.3.170
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/odata-service-inquirer@2.11.15
+    -   @sap-ux/system-access@0.6.30
+    -   @sap-ux/abap-deploy-config-writer@0.2.38
+
+## 0.3.169
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.8.13
+-   @sap-ux/odata-service-inquirer@2.11.14
+
+## 0.3.168
+
+### Patch Changes
+
+-   Updated dependencies [d202c17]
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/fiori-elements-writer@2.8.12
+    -   @sap-ux/inquirer-common@0.9.10
+    -   @sap-ux/odata-service-inquirer@2.11.14
+
+## 0.3.167
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/abap-deploy-config-writer@0.2.37
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/fiori-generator-shared@0.13.37
+    -   @sap-ux/launch-config@0.10.39
+    -   @sap-ux/odata-service-inquirer@2.11.13
+    -   @sap-ux/project-input-validator@0.6.34
+    -   @sap-ux/system-access@0.6.29
+    -   @sap-ux/fiori-elements-writer@2.8.11
+    -   @sap-ux/inquirer-common@0.9.9
+
+## 0.3.166
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.8.10
+-   @sap-ux/odata-service-inquirer@2.11.12
+
+## 0.3.165
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.8.9
+-   @sap-ux/odata-service-inquirer@2.11.12
+
 ## 0.3.164
 
 ### Patch Changes
