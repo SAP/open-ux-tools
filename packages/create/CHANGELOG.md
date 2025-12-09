@@ -1,5 +1,22 @@
 # @sap-ux/create
 
+## 0.14.7
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.55
+    -   @sap-ux/abap-deploy-config-writer@0.2.39
+    -   @sap-ux/flp-config-inquirer@0.4.75
+    -   @sap-ux/preview-middleware@0.23.68
+    -   @sap-ux/app-config-writer@0.6.62
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/adp-tooling@0.18.16
+    -   @sap-ux/odata-service-writer@0.27.33
+    -   @sap-ux/ui5-config@0.29.10
+    -   @sap-ux/cap-config-writer@0.12.30
+
 ## 0.14.6
 
 ### Patch Changes
