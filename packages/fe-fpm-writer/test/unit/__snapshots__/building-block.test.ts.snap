@@ -1316,7 +1316,7 @@ exports[`Building Blocks RichTextEditorButtonGroups building block generate Rich
 </core:FragmentDefinition>"
 `;
 
-exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups with complex existing and new button groups: generate-rte-button-groups-complex-replace 1`] = `
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups - override existing element's attributes when new attributes provided: generate-rte-button-groups-complex-replace 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
@@ -1327,6 +1327,20 @@ exports[`Building Blocks RichTextEditorButtonGroups building block generate Rich
                 <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" priority=\\"5\\" buttons=\\"formatselect\\"/>
                 <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" priority=\\"18\\" buttons=\\"image\\" customToolbarPriority=\\"40\\" row=\\"2\\" id=\\"customInsert\\"/>
                 <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\"/>
+            </richtexteditor:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups - preserve existing element's attributes when no new attributes provided: generate-rte-button-groups-preserve-existing-attributes 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <richtexteditor:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"false\\" priority=\\"15\\" buttons=\\"cut,copy,paste\\" id=\\"existingClipboard\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"12\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"50\\" row=\\"3\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"bullist,numlist,outdent,indent\\"/>
             </richtexteditor:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>

@@ -41,6 +41,7 @@ export {
     TablePromptsAnswer,
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer,
+    RichTextEditorButtonGroupsPromptsAnswer,
     BuildingBlockTypePromptsAnswer
 } from './building-block/prompts/questions';
 export {

@@ -9,8 +9,6 @@ import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
 
 import { getMinimumUI5Version } from '@sap-ux/project-access';
-
-import type { RichTextEditorButtonGroups, ButtonGroupConfig } from './types';
 import {
     BuildingBlockType,
     type BuildingBlock,
@@ -21,7 +19,9 @@ import {
     bindingContextAbsolute,
     type TemplateConfig,
     type CustomFilterField,
-    type EmbededFragment
+    type EmbededFragment,
+    type RichTextEditorButtonGroups,
+    type ButtonGroupConfig
 } from './types';
 import type { Manifest, InternalCustomElement } from '../common/types';
 
@@ -358,51 +358,92 @@ function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, con
     const { xmlDocument, updatedAggregationPath, hasAggregation } = context;
     const rteButtonGroups = buildingBlockData as RichTextEditorButtonGroups;
 
+    // Map to store existing button groups with their attributes
+    const existingButtonGroupsMap = new Map<string, ButtonGroupConfig>();
+
     if (hasAggregation && xmlDocument && updatedAggregationPath) {
         const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
-        const buttonGroupsElements = xpathSelect(`${updatedAggregationPath}`, xmlDocument) as Node[];
+        // Example: [<Element: richtexteditor:buttonGroups>] containing all ButtonGroup children
+        const buttonGroupsElements = xpathSelect(updatedAggregationPath, xmlDocument) as Element[];
 
         if (buttonGroupsElements.length > 0) {
-            /**
-             * Remove the existing <buttonGroups> block before re-rendering.
-             *
-             * Why:
-             * - The user can re-open the multiselect and add OR unselect existing button groups.
-             *   This means the new selection may not match what was previously in the XML.
-             * - Trying to merge old button groups with the new selection is messy, error-prone,
-             *   and hard to maintain. Instead, we let the user’s latest selection define the
-             *   clean final state.
-             *
-             * What happens if we don't remove it:
-             * - The template will generate a new <buttonGroups> wrapper, causing two wrappers
-             *   in the XML → INVALID XML.
-             * - We also cannot append button groups directly because XML cannot have multiple
-             *   top-level elements.
-             *
-             * Therefore:
-             * - Always remove the old <buttonGroups> element.
-             * - Then let the template create one fresh, clean <buttonGroups> block based on
-             *   the user’s current selection.
-             */
-            const buttonGroupsElement = buttonGroupsElements[0];
-            (buttonGroupsElement as Element).parentNode?.removeChild(buttonGroupsElement);
+            const buttonGroupsWrapper = buttonGroupsElements[0];
+            const config = getBuildingBlockConfig(BuildingBlockType.RichTextEditorButtonGroups);
+            // Read all existing <ButtonGroup> child elements and store their attributes
+            const existingButtonGroupElements = Array.from(buttonGroupsWrapper.childNodes).filter(
+                (node) => node.nodeType === 1 && (node as Element).localName === config.aggregationConfig.elementName
+            ) as Element[];
+
+            // Build map of existing button groups with their custom attributes
+            existingButtonGroupElements.forEach((element) => {
+                const name = element.getAttribute('name');
+                // extract attributes
+                const buttons = element.getAttribute('buttons');
+                if (!name || !buttons) {
+                    return;
+                }
+
+                const buttonGroupConfig: ButtonGroupConfig = { 
+                    name, 
+                    buttons 
+                };
+                
+                if (buttons) buttonGroupConfig.buttons = buttons;
+                
+                const visible = element.getAttribute('visible');
+                if (visible) buttonGroupConfig.visible = visible === 'true';
+                
+                const priority = element.getAttribute('priority');
+                if (priority) buttonGroupConfig.priority = parseInt(priority, 10);
+                
+                const customToolbarPriority = element.getAttribute('customToolbarPriority');
+                if (customToolbarPriority) buttonGroupConfig.customToolbarPriority = parseInt(customToolbarPriority, 10);
+                
+                const row = element.getAttribute('row');
+                if (row) buttonGroupConfig.row = parseInt(row, 10);
+                
+                const id = element.getAttribute('id');
+                if (id) buttonGroupConfig.id = id;
+                
+                existingButtonGroupsMap.set(name, buttonGroupConfig);
+                
+            });
+             // Remove existing <buttonGroups> wrapper - will be recreated with merged data
+            const buttonGroupsElement = buttonGroupsElements[0] as Element;
+            // @xmldom/xmldom doesn't support Element.remove(), must use removeChild()
+            // eslint-disable-next-line sonarjs/prefer-immediate-return
+            buttonGroupsElement.parentNode?.removeChild(buttonGroupsElement);
         }
     }
 
-    const btnGroups = rteButtonGroups.buttonGroups.map((buttonGroup: ButtonGroupConfig) => {
-        const defaultConfig = BUTTON_GROUP_CONFIGS[buttonGroup.name];
+    // Merge new selection with existing selections 
+    const btnGroups = rteButtonGroups.buttonGroups.map((selectedButtonGroup: ButtonGroupConfig) => {
+        const defaultConfig = BUTTON_GROUP_CONFIGS[selectedButtonGroup.name];
         if (!defaultConfig) {
-            throw new Error(`Unknown button group: ${buttonGroup.name}`);
+            throw new Error(`Unknown button group: ${selectedButtonGroup.name}`);
         }
 
+         const existingConfig = existingButtonGroupsMap.get(selectedButtonGroup.name);
+        
+        // Check if user provided any new attributes (other than just 'name')
+        const hasNewAttributes = Object.keys(selectedButtonGroup).some(
+            key => key !== 'name' && selectedButtonGroup[key as keyof ButtonGroupConfig] !== undefined
+        );
+
+        if (existingConfig && !hasNewAttributes) {
+            // Preserve existing attributes if no new attributes provided
+            return existingConfig;
+        } 
+
+        // Use new attributes or defaults (for both existing with new attrs and new button groups)
         return {
-            name: buttonGroup.name,
-            buttons: buttonGroup.buttons || defaultConfig.buttons,
-            visible: buttonGroup.visible,
-            priority: buttonGroup.priority,
-            customToolbarPriority: buttonGroup.customToolbarPriority,
-            row: buttonGroup.row,
-            id: buttonGroup.id
+            name: selectedButtonGroup.name,
+            buttons: selectedButtonGroup.buttons ?? defaultConfig.buttons,
+            visible: selectedButtonGroup.visible,
+            priority: selectedButtonGroup.priority,
+            customToolbarPriority: selectedButtonGroup.customToolbarPriority,
+            row: selectedButtonGroup.row,
+            id: selectedButtonGroup.id
         };
     });
 

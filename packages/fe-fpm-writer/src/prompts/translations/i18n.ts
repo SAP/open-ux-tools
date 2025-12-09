@@ -239,6 +239,7 @@ const ns1 = {
                 'table': 'Table Operations',
                 'styleSelect': 'Style Selection'
             },
+            'aggregation': 'Aggregation Path',
             'replaceDefaultButtonGroupsHint':
                 'Adding button groups will replace the default button groups in the Rich Text Editor with your chosen configuration.'
         },

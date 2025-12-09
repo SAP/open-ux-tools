@@ -107,7 +107,7 @@ export class PromptsAPI {
         try {
             const prompt = this.cache[type] ?? (await this.getPrompts(type));
             const question = prompt.questions.find((question) => question.name === fieldName);
-            if (question && question.type === 'list') {
+            if (question && (question.type === 'list' || question.type === 'checkbox')) {
                 const choices =
                     typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
                 return choices ?? [];
