@@ -15,7 +15,6 @@
         "lint": "eslint .",
         "lint:summary": "eslint . -f summary",
         "lint:fix": "eslint . --fix",
-        "lint:fix:all": "eslint . --fix",
         "lint:report": "eslint . -f multiple ",
         "test": "jest  --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "watch": "tsc  --build ./ -watch"

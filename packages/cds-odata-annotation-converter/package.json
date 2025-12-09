@@ -19,7 +19,6 @@
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
         "lint": "eslint .",
         "lint:fix": "eslint --fix",
-        "lint:fix:all": "eslint . --fix",
         "lint:report": "eslint . -f multiple ",
         "lint:summary": "eslint . -f summary",
         "pre-commit": "lint-staged --quiet",

@@ -22,7 +22,6 @@
         "lint": "eslint .",
         "lint:summary": "eslint . -f summary",
         "lint:fix": "eslint . --fix",
-        "lint:fix:all": "eslint . --fix",
         "lint:report": "eslint . -f multiple ",
         "pre-commit": "lint-staged --quiet",
         "test": "jest --ci --forceExit --detectOpenHandles --maxWorkers=2",
