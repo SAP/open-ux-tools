@@ -16,7 +16,6 @@
 '@sap-ux-private/adaptation-editor-tests': patch
 '@sap-ux/abap-deploy-config-writer': patch
 '@sap-ux/cf-deploy-config-inquirer': patch
-'@sap-ux/eslint-plugin-fiori-tools': patch
 '@sap-ux-private/preview-middleware-client': patch
 '@sap-ux/ui5-library-sub-generator': patch
 '@sap-ux/backend-proxy-middleware': patch
