@@ -334,7 +334,7 @@ export async function generateOPAFiles(
     const appSpec = await specification.readApp({ app: editorAppAccess, fs: editor });
 
     // get page model from ux specification
-    const listReportPage = getListReportPage(appSpec.applicationModel.pages);
+    const listReportPage = getListReportPage(appSpec);
 
     // Common test files
     editor.copyTpl(
