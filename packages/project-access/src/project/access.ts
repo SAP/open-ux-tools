@@ -322,9 +322,24 @@ class ProjectAccessImp implements ProjectAccess {
     }
 
     /**
+     * Get application manifest ID (the sap.app.id from the manifest) for a given application ID (the relative path from project root to app root).
+     *
+     * @param manifestId - application manifest ID (the sap.app.id from the manifest)
+     */
+    async getApplicationIdFromManifestId(manifestId: string): Promise<string | undefined> {
+        for (const [appId, { manifest: manifestPath }] of Object.entries(this._project.apps)) {
+            const manifestContent = await readJSON<Manifest>(manifestPath, this.options?.memFs);
+            if (manifestContent['sap.app']?.id === manifestId) {
+                return appId;
+            }
+        }
+        return undefined;
+    }
+
+    /**
      * Returns an instance of an application for a given application ID. The contains information about the application, like paths and services.
      *
-     * @param appId - application ID
+     * @param appId - application ID (the relative path from project root to app root) - this is NOT the sap.app.id from the manifest
      * @returns - Instance of ApplicationAccess that contains information about the application, like paths and services
      */
     getApplication(appId: string): ApplicationAccess {

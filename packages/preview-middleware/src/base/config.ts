@@ -12,7 +12,12 @@ import type {
 } from '../types';
 import { render } from 'ejs';
 import { resolve, join, posix } from 'node:path';
-import { createApplicationAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+import {
+    createProjectAccess,
+    getWebappPath,
+    type Manifest,
+    type UI5FlexLayer
+} from '@sap-ux/project-access';
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
@@ -291,8 +296,15 @@ export async function addApp(
     const appName = getAppName(manifest, app.intent);
     templateConfig.ui5.resources[id] = app.target;
     templateConfig.apps[appName] = {
-        title: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, logger)) ?? id,
-        description: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.description, logger)) ?? '',
+        title:
+            (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, manifest['sap.app']?.id, logger)) ??
+            id,
+        description:
+            (await getI18nTextFromProperty(
+                app.local,
+                manifest['sap.app']?.description,
+                manifest['sap.app']?.id, logger
+            )) ?? '',
         additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
         applicationType: 'URL',
         url: app.target
@@ -322,12 +334,14 @@ export function getAppName(manifest: Partial<Manifest>, intent?: Intent): string
  *
  * @param projectRoot absolute path to the project root
  * @param propertyValue value of the property
+ * @param appId application id
  * @param logger logger instance
  * @returns i18n text of the property
  */
 async function getI18nTextFromProperty(
     projectRoot: string | undefined,
     propertyValue: string | undefined,
+    appId: string | undefined,
     logger: Logger
 ): Promise<string | undefined> {
     const propertyI18nKey = extractDoubleCurlyBracketsKey(propertyValue ?? '');
@@ -336,7 +350,9 @@ async function getI18nTextFromProperty(
     }
     const absolutePath = resolve(process.cwd(), projectRoot);
     try {
-        const applicationAccess = await createApplicationAccess(absolutePath);
+        const projectAccess = await createProjectAccess(absolutePath);
+        const appPath = await projectAccess.getApplicationIdFromManifestId(appId ?? '');
+        const applicationAccess = projectAccess.getApplication(appPath ?? '');
         const bundle = (await applicationAccess.getI18nBundles())['sap.app'];
         return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
     } catch (e) {

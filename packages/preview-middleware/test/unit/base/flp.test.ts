@@ -155,26 +155,31 @@ describe('FlpSandbox', () => {
         });
 
         test('i18n manifest', async () => {
-            const applicationAccessMock = jest
-                .spyOn(projectAccess, 'createApplicationAccess')
-                .mockImplementation((path) => {
-                    return Promise.resolve({
-                        getI18nBundles: () => {
-                            return Promise.resolve({
-                                'sap.app': {
-                                    'myTitle': [{ value: { value: 'My App' } } as I18nEntry],
-                                    'myDescription': [{ value: { value: 'My App Description' } } as I18nEntry]
-                                }
-                            }) as unknown as I18nBundles;
-                        }
-                    }) as unknown as Promise<ApplicationAccess>;
-                });
+            const projectAccessMock = jest.spyOn(projectAccess, 'createProjectAccess').mockImplementation(() => {
+                return Promise.resolve({
+                    getApplicationIdFromManifestId: () => {
+                        return Promise.resolve(['my\\id']);
+                    },
+                    getApplication: () => {
+                        return {
+                            getI18nBundles: () => {
+                                return Promise.resolve({
+                                    'sap.app': {
+                                        'myTitle': [{ value: { value: 'My App' } } as I18nEntry],
+                                        'myDescription': [{ value: { value: 'My App Description' } } as I18nEntry]
+                                    } as I18nBundles['sap.app']
+                                }) as unknown as I18nBundles;
+                            }
+                        };
+                    }
+                }) as unknown as Promise<ProjectAccess>;
+            });
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {
                 'sap.app': { id: 'my.id', title: '{{myTitle}}', description: '{{myDescription}}' }
             } as Manifest;
             await flp.init(manifest);
-            expect(applicationAccessMock).toHaveBeenCalled();
+            expect(projectAccessMock).toHaveBeenCalled();
             expect(flp.templateConfig).toMatchSnapshot();
         });
 

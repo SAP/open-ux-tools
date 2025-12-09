@@ -157,7 +157,8 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
-        this.projectType = await getProjectType(await findProjectRoot(process.cwd(), true, true));
+        const projectRoot = await findProjectRoot(process.cwd(), false, true);
+        this.projectType = await getProjectType(projectRoot);
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
