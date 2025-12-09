@@ -1,5 +1,20 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.13
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.104
+    -   @sap-ux/odata-service-inquirer@2.11.16
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/deploy-config-generator-shared@0.1.58
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+    -   @sap-ux/ui5-config@0.29.10
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.89
+
 ## 0.5.12
 
 ### Patch Changes

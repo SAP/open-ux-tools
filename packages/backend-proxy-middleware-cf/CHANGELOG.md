@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.6
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/adp-tooling@0.18.16
+
 ## 0.0.5
 
 ### Patch Changes

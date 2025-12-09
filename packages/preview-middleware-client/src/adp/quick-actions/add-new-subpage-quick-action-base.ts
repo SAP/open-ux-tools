@@ -96,18 +96,18 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
 
         const metaModel = this.getODataMetaModel();
         if (!metaModel || !control) {
-            return Promise.resolve();
+            return;
         }
 
         const modifiedControl = getControlById<ObjectPageLayout>(control.controlId);
         if (!modifiedControl) {
-            return Promise.resolve();
+            return;
         }
 
         const component = Component.getOwnerComponentFor(modifiedControl);
         const entitySetName = await this.getEntitySetNameFromPageComponent(component, metaModel);
         if (!entitySetName) {
-            return Promise.resolve();
+            return;
         }
         this.entitySet = entitySetName;
 
@@ -118,8 +118,6 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
             await this.prepareNavigationData(metaModel);
         }
         this.control = modifiedControl;
-
-        return Promise.resolve();
     }
 
     async execute(): Promise<FlexCommand[]> {
