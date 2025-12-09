@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.3.4
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+
 ## 1.3.3
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @sap-ux/app-config-writer
 
+## 0.6.62
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/ui5-config@0.29.10
+
+## 0.6.61
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+
 ## 0.6.60
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # @sap-ux/preview-middleware
 
+## 0.23.68
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/adp-tooling@0.18.16
+
+## 0.23.67
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.18.15
+-   @sap-ux/system-access@0.6.30
+
 ## 0.23.66
 
 ### Patch Changes
