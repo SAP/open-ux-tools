@@ -10,14 +10,12 @@ import {
     FileName,
     DirName,
     getListReportPage,
-    getObjectPages,
     getSpecification,
     getFilterFields,
     createApplicationAccess,
     getTableColumns
 } from '@sap-ux/project-access';
-import pageModel from './sampleListReportModel.json';
-import { Logger } from '@sap-ux/logger/src/types';
+import type { Logger } from '@sap-ux/logger/src/types';
 
 /**
  * Reads the manifest for an app.
@@ -262,6 +260,18 @@ function writePageObject(
     );
 }
 
+/**
+ * Gets identifier of a column for OPA5 tests.
+ * If the column is custom, the identifier is taken from the 'Key' entry in the schema keys.
+ * If the column is not custom, the identifier is taken from the 'Value' entry in the schema keys.
+ * If no such entry is found, undefined is returned.
+ *
+ * @param column - column module from ux specification
+ * @param column.custom boolean indicating whether the column is custom
+ * @param column.schema schema of the column
+ * @param column.schema.keys keys of the column; expected to have an entry with the name 'Key' or 'Value'
+ * @returns identifier of the column for OPA5 tests; can be the name or index
+ */
 function getColumnIdentifier(column: {
     custom: boolean;
     schema: { keys: { name: string; value: string }[] };
@@ -271,6 +281,12 @@ function getColumnIdentifier(column: {
     return keyEntry?.value;
 }
 
+/**
+ * Transforms column aggregations from the ux specification model into a map of columns for OPA5 tests.
+ *
+ * @param columnAggregations column aggregations from the ux specification model
+ * @returns a map of columns for OPA5 tests
+ */
 function transformTableColumns(columnAggregations: Record<string, any>): Record<string, any> {
     const columns: Record<string, any> = {};
     Object.values(columnAggregations).map((columnAggregation, index) => {
@@ -316,10 +332,9 @@ export async function generateOPAFiles(
     // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
     const editorAppAccess = await createApplicationAccess(basePath, { fs: editor });
     const appSpec = await specification.readApp({ app: editorAppAccess, fs: editor });
-    // pageModel based on description https://github.wdf.sap.corp/ux-engineering/tools-suite/issues/36325, needs to be confirmed/changed
-    // get pages
+
+    // get page model from ux specification
     const listReportPage = getListReportPage(appSpec.applicationModel.pages);
-    // const objectPages = getObjectPages(appSpec.applicationModel.pages);
 
     // Common test files
     editor.copyTpl(
@@ -355,7 +370,7 @@ export async function generateOPAFiles(
     let filterBarItems: string[] = [];
     try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        filterBarItems = getFilterFields(listReportPage.model as { root: any });
+        filterBarItems = getFilterFields(listReportPage?.model);
     } catch (error) {
         // If anything goes wrong, we just don't add filter bar items
     }
@@ -363,7 +378,7 @@ export async function generateOPAFiles(
 
     let tableColumns: Record<string, any> = {};
     try {
-        const columnAggregations = getTableColumns(listReportPage.model as { root: any });
+        const columnAggregations = getTableColumns(listReportPage?.model);
         tableColumns = transformTableColumns(columnAggregations);
     } catch (error) {
         // no columns
