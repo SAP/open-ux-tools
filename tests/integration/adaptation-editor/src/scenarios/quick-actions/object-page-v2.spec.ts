@@ -359,6 +359,8 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await editor.toolbar.saveAndReloadButton.click();
 
             await editor.toolbar.isDisabled();
+            const controlType = lt(ui5Version, '1.130.0') ? 'sap.m.FlexBox' : 'sap.uxap.ObjectPageLayout';
+            const targetAggregation = lt(ui5Version, '1.130.0') ? 'items' : 'headerContent';
             await verifyChanges(projectCopy, {
                 fragments: {
                     'op-header-field.fragment.xml': `<!-- Use stable and unique IDs!-->
@@ -368,8 +370,8 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
     xmlns='sap.m'
 >
     <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
-    <!-- controlType: sap.uxap.ObjectPageLayout -->
-    <!-- targetAggregation: headerContent --> 
+    <!-- controlType: ${controlType} -->
+    <!-- targetAggregation: ${targetAggregation} --> 
     <VBox id="vBox-[a-z0-9]+">
         <Label id="label-[a-z0-9]+" text="New Field"></Label>
     </VBox>
