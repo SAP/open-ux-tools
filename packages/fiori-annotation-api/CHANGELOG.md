@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.7.19
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+
 ## 0.7.18
 
 ### Patch Changes

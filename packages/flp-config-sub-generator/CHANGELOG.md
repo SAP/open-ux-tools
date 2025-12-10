@@ -1,5 +1,17 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.77
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/flp-config-inquirer@0.4.75
+    -   @sap-ux/app-config-writer@0.6.62
+    -   @sap-ux/deploy-config-generator-shared@0.1.58
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+
 ## 0.3.76
 
 ### Patch Changes
