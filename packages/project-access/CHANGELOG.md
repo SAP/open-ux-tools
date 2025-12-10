@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.32.13
+
+### Patch Changes
+
+-   985223a: fix loading i18n bundle for CAP projects
+
 ## 1.32.12
 
 ### Patch Changes
