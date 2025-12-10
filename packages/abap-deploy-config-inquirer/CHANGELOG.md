@@ -1,5 +1,37 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.57
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.24.5
+-   @sap-ux/fiori-generator-shared@0.13.41
+-   @sap-ux/system-access@0.6.31
+-   @sap-ux/inquirer-common@0.9.13
+
+## 1.6.56
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.24.5
+-   @sap-ux/fiori-generator-shared@0.13.40
+-   @sap-ux/system-access@0.6.31
+-   @sap-ux/inquirer-common@0.9.12
+
+## 1.6.55
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/nodejs-utils@0.2.9
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+    -   @sap-ux/ui5-config@0.29.10
+
 ## 1.6.54
 
 ### Patch Changes

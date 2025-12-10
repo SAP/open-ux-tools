@@ -1,5 +1,27 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.7.21
+
+### Patch Changes
+
+-   Updated dependencies [4bdced0]
+    -   @sap-ux/project-access@1.32.14
+    -   @sap-ux/cds-odata-annotation-converter@0.6.15
+
+## 0.7.20
+
+### Patch Changes
+
+-   Updated dependencies [985223a]
+    -   @sap-ux/project-access@1.32.13
+    -   @sap-ux/cds-odata-annotation-converter@0.6.15
+
+## 0.7.19
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+
 ## 0.7.18
 
 ### Patch Changes

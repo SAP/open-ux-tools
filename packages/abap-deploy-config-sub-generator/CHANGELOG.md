@@ -1,5 +1,39 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.106
+
+### Patch Changes
+
+-   Updated dependencies [4bdced0]
+    -   @sap-ux/project-access@1.32.14
+    -   @sap-ux/abap-deploy-config-writer@0.2.41
+    -   @sap-ux/fiori-generator-shared@0.13.41
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.57
+    -   @sap-ux/deploy-config-generator-shared@0.1.60
+
+## 0.1.105
+
+### Patch Changes
+
+-   Updated dependencies [985223a]
+    -   @sap-ux/project-access@1.32.13
+    -   @sap-ux/abap-deploy-config-writer@0.2.40
+    -   @sap-ux/fiori-generator-shared@0.13.40
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.56
+    -   @sap-ux/deploy-config-generator-shared@0.1.59
+
+## 0.1.104
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.55
+    -   @sap-ux/abap-deploy-config-writer@0.2.39
+    -   @sap-ux/deploy-config-generator-shared@0.1.58
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/ui5-config@0.29.10
+
 ## 0.1.103
 
 ### Patch Changes

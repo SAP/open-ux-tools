@@ -1,5 +1,33 @@
 # @sap-ux/preview-middleware
 
+## 0.23.70
+
+### Patch Changes
+
+-   Updated dependencies [4bdced0]
+    -   @sap-ux/project-access@1.32.14
+    -   @sap-ux/adp-tooling@0.18.18
+    -   @sap-ux/system-access@0.6.31
+
+## 0.23.69
+
+### Patch Changes
+
+-   985223a: fix loading i18n bundle for CAP projects
+-   Updated dependencies [985223a]
+    -   @sap-ux/project-access@1.32.13
+    -   @sap-ux/adp-tooling@0.18.17
+    -   @sap-ux/system-access@0.6.31
+
+## 0.23.68
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/adp-tooling@0.18.16
+
 ## 0.23.67
 
 ### Patch Changes

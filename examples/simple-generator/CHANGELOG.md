@@ -1,5 +1,34 @@
 # @sap-ux/generator-simple-fe
 
+## 1.1.126
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.24.5
+-   @sap-ux/system-access@0.6.31
+-   @sap-ux/fiori-elements-writer@2.8.16
+-   @sap-ux/fiori-freestyle-writer@2.5.9
+
+## 1.1.125
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.24.5
+-   @sap-ux/system-access@0.6.31
+-   @sap-ux/fiori-elements-writer@2.8.15
+-   @sap-ux/fiori-freestyle-writer@2.5.8
+
+## 1.1.124
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/fiori-elements-writer@2.8.14
+    -   @sap-ux/fiori-freestyle-writer@2.5.7
+
 ## 1.1.123
 
 ### Patch Changes
