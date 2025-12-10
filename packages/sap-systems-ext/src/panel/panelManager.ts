@@ -7,35 +7,18 @@ import type { Disposable } from 'vscode';
 export class PanelManager<T extends Disposable> {
     readonly panels = new Map<string, T>();
 
-    /**
-     *
-     * @param key
-     */
     get(key: string): T | undefined {
         return this.panels.get(key);
     }
 
-    /**
-     *
-     * @param key
-     * @param panel
-     */
     set(key: string, panel: T): void {
         this.panels.set(key, panel);
     }
 
-    /**
-     *
-     * @param key
-     */
     has(key: string): boolean {
         return this.panels.has(key);
     }
 
-    /**
-     *
-     * @param key
-     */
     deleteAndDispose(key: string): void {
         const panel = this.panels.get(key);
         if (panel) {
@@ -44,11 +27,6 @@ export class PanelManager<T extends Disposable> {
         }
     }
 
-    /**
-     *
-     * @param key
-     * @param factory
-     */
     getOrCreateNewPanel(key: string, factory: () => T): T {
         let panel = this.get(key);
         if (!panel) {
