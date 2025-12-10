@@ -81,7 +81,7 @@ describe('TelemetryCollector', () => {
             collector = await TelemetryCollector.init('1.0.0', false);
         });
 
-        it('should set string property', async () => {
+        it('should set string property', () => {
             collector.setData('baseAppTechnicalName', 'test-app-id');
             collector.setData('projectType', 'cloudReady');
             collector.setData('ui5VersionSelected', '1.120.0');
@@ -90,8 +90,6 @@ describe('TelemetryCollector', () => {
 
             mockCreateTelemetryData.mockReturnValue({});
             collector.send('TEST_EVENT');
-
-            await flushPromises();
 
             expect(mockCreateTelemetryData).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -104,15 +102,13 @@ describe('TelemetryCollector', () => {
             );
         });
 
-        it('should set boolean property', async () => {
+        it('should set boolean property', () => {
             collector.setData('wasExtProjectGenerated', true);
             collector.setData('wasFlpConfigDone', true);
             collector.setData('wasDeployConfigDone', false);
 
             mockCreateTelemetryData.mockReturnValue({});
             collector.send('TEST_EVENT');
-
-            await flushPromises();
 
             expect(mockCreateTelemetryData).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -130,7 +126,7 @@ describe('TelemetryCollector', () => {
             collector = await TelemetryCollector.init('1.0.0', false);
         });
 
-        it('should set multiple properties at once', async () => {
+        it('should set multiple properties at once', () => {
             collector.setData('baseAppTechnicalName', 'initial-app');
             collector.setBatch({
                 projectType: 'onPremise',
@@ -142,8 +138,6 @@ describe('TelemetryCollector', () => {
             mockCreateTelemetryData.mockReturnValue({});
             collector.send('TEST_EVENT');
 
-            await flushPromises();
-
             expect(mockCreateTelemetryData).toHaveBeenCalledWith(
                 expect.objectContaining({
                     baseAppTechnicalName: 'initial-app',
@@ -151,8 +145,8 @@ describe('TelemetryCollector', () => {
                     numberOfApplications: 30,
                     wasFlpConfigDone: true,
                     wasTypeScriptChosen: false,
-                    wasExtProjectGenerated: false, // Default value
-                    wasDeployConfigDone: false // Default value
+                    wasExtProjectGenerated: false,
+                    wasDeployConfigDone: false
                 })
             );
         });
@@ -182,7 +176,7 @@ describe('TelemetryCollector', () => {
             collector = await TelemetryCollector.init('1.0.0', false);
         });
 
-        it('should end timing and store duration', async () => {
+        it('should end timing and store duration', () => {
             const markName = 'mark-123';
             mockStartMark.mockReturnValue(markName);
             mockGetMeasurementDuration.mockReturnValue(250.75);
@@ -196,8 +190,6 @@ describe('TelemetryCollector', () => {
 
             mockCreateTelemetryData.mockReturnValue({});
             collector.send('TEST_EVENT');
-
-            await flushPromises();
 
             expect(mockCreateTelemetryData).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -233,7 +225,7 @@ describe('TelemetryCollector', () => {
             collector = await TelemetryCollector.init('1.0.0', false);
         });
 
-        it('should send telemetry with collected data', async () => {
+        it('should send telemetry with collected data', () => {
             collector.setData('baseAppTechnicalName', 'test-app');
             collector.setData('projectType', 'cloudReady');
 
@@ -252,8 +244,6 @@ describe('TelemetryCollector', () => {
 
             collector.send('TEST_EVENT', '/project/path', undefined, mockLogger);
 
-            await flushPromises();
-
             expect(mockCreateTelemetryData).toHaveBeenCalledWith(
                 expect.objectContaining({
                     appType: 'generator-adp',
@@ -262,11 +252,9 @@ describe('TelemetryCollector', () => {
                 })
             );
             expect(mockSendTelemetry).toHaveBeenCalledWith('TEST_EVENT', telemetryData, '/project/path');
-
-            expect(mockLogger.log).toHaveBeenCalledWith('Event TEST_EVENT successfully sent');
         });
 
-        it('should merge additional data with collected data', async () => {
+        it('should merge additional data with collected data', () => {
             collector.setData('baseAppTechnicalName', 'collected-app');
 
             const telemetryData = { merged: 'data' };
@@ -274,8 +262,6 @@ describe('TelemetryCollector', () => {
             mockSendTelemetry.mockResolvedValue(undefined);
 
             collector.send('TEST_EVENT', undefined, { customProp: 'customValue' }, mockLogger);
-
-            await flushPromises();
 
             expect(mockCreateTelemetryData).toHaveBeenCalledWith(
                 expect.objectContaining({

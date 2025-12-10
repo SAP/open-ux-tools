@@ -73,6 +73,11 @@ jest.mock('@sap-ux/axios-extension', () => ({
     isAxiosError: jest.fn()
 }));
 
+jest.mock('@sap-ux/telemetry', () => ({
+    ...jest.requireActual('@sap-ux/telemetry'),
+    initTelemetrySettings: jest.fn().mockResolvedValue(undefined)
+}));
+
 const logger: ToolsLogger = {
     error: jest.fn(),
     info: jest.fn(),
