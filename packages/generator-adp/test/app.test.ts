@@ -126,7 +126,6 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
     sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
     TelemetryHelper: {
-        initTelemetrySettings: jest.fn(),
         createTelemetryData: jest.fn().mockReturnValue({
             OperatingSystem: 'testOS',
             Platform: 'testPlatform'
@@ -136,6 +135,11 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: jest.fn(),
     isCli: jest.fn(),
     getDefaultTargetFolder: jest.fn().mockReturnValue(undefined)
+}));
+
+jest.mock('@sap-ux/telemetry', () => ({
+    ...jest.requireActual('@sap-ux/telemetry'),
+    initTelemetrySettings: jest.fn().mockResolvedValue(undefined)
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({
