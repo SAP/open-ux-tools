@@ -4,12 +4,46 @@ import { createMixedRule } from '../language/rule-factory';
 import type { FioriMixedRuleDefinition } from '../types';
 import { IndexedAnnotation } from '../project-context/facets/services';
 import { Edm, elementsWithName, Element } from '@sap-ux/odata-annotation-core';
-import type { ObjectNode } from '@humanwhocodes/momoa';
+import type { ObjectNode, MemberNode, StringNode } from '@humanwhocodes/momoa';
 
 export type RequireWidthIncludingColumnHeader = 'require-width-including-column-header';
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
 };
+
+interface ValidationProblem {
+    annotation: IndexedAnnotation;
+    targetName: string;
+    annotationPath: string;
+}
+
+interface LineItemReference {
+    entityTypeName: string;
+    value: unknown;
+    annotationPath: string;
+    targetName: string;
+    qualifier?: string;
+    navigationPath?: string;
+}
+
+interface ManifestTarget {
+    type?: string;
+    name?: string;
+    options?: {
+        settings?: {
+            contextPath?: string;
+            entitySet?: string;
+            controlConfiguration?: Record<string, {
+                tableSettings?: {
+                    widthIncludingColumnHeader?: boolean;
+                    type?: string;
+                    [key: string]: unknown;
+                };
+                [key: string]: unknown;
+            }>;
+        };
+    };
+}
 
 const rule: FioriMixedRuleDefinition = createMixedRule({
     meta: {
@@ -27,14 +61,14 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
         fixable: 'code'
     },
     check(context) {
-        const problems: any[] = [];
+        const problems: ValidationProblem[] = [];
         const smallTables: IndexedAnnotation[] = [];
         const manifest = context.sourceCode.projectContext.getManifest();
         if (!manifest) {
             return problems;
         }
-        const targets = manifest['sap.ui5']?.routing?.targets ?? {};
-        const lineItemReferences = [];
+        const targets = (manifest['sap.ui5']?.routing?.targets as Record<string, ManifestTarget> | undefined) ?? {};
+        const lineItemReferences: LineItemReference[] = [];
         for (const [targetName, target] of Object.entries(targets)) {
             if (target.type === 'Component' && target.name === 'sap.fe.templates.ListReport') {
                 const settings = target.options?.settings;
@@ -173,7 +207,7 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
             'tableSettings'
         ];
         return {
-            [createMatcherString(path)](node: { value: ObjectNode }) {
+            [createMatcherString(path)](node: MemberNode) {
                 // The selector matches a Member node, we need its value (the Object)
                 const tableSettingsObject = node.value;
                 
@@ -185,8 +219,8 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                 
                 // Check if widthIncludingColumnHeader already exists
                 const hasProperty = objectNode.members.some(
-                    member => member.name.type === 'String' && 
-                             member.name.value === 'widthIncludingColumnHeader'
+                    (member: MemberNode) => member.name.type === 'String' && 
+                             (member.name as StringNode).value === 'widthIncludingColumnHeader'
                 );
                 
                 if (hasProperty) {
