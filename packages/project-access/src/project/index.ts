@@ -16,7 +16,8 @@ export {
     toReferenceUri,
     getWorkspaceInfo,
     hasMinCdsVersion,
-    checkCdsUi5PluginEnabled
+    checkCdsUi5PluginEnabled,
+    processServices
 } from './cap';
 export { filterDataSourcesByType } from './service';
 export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies';

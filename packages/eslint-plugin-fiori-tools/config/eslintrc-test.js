@@ -4,7 +4,7 @@ const babelParser = require('@babel/eslint-parser');
 module.exports = defineConfig([
     {
         files: ['webapp/test/**/*.js', 'webapp/test/**/*.ts'],
-        ignores: ['**/*.d.ts'],
+        ignores: ['**/*.d.ts', '**/*.json'],
 
         languageOptions: {
             parser: babelParser,

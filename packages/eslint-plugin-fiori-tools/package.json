@@ -10,6 +10,7 @@
     "main": "./lib/index.js",
     "scripts": {
         "build": "tsc --build",
+        "watch": "tsc --build --watch",
         "clean": "rimraf --glob lib coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
@@ -27,9 +28,20 @@
     "dependencies": {
         "@babel/core": "^7.28.5",
         "@babel/eslint-parser": "^7.28.5",
+        "@sap-ux/fiori-annotation-api": "workspace:*",
+        "@sap-ux/odata-annotation-core": "workspace:*",
+        "@sap-ux/odata-vocabularies": "workspace:*",
+        "@sap-ux/odata-entity-model": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/vocabularies-types": "0.13.1",
+        "@xml-tools/ast": "5.0.5",
+        "@xml-tools/parser": "1.0.11",
+        "@eslint/plugin-kit": "0.5.0",
         "@eslint/js": "^9",
         "lodash": "4.17.21",
-        "yaml": "2.2.2"
+        "yaml": "2.2.2",
+        "requireindex": "^1.2.0",
+        "synckit": "0.11.11"
     },
     "peerDependencies": {
         "eslint": "^9",

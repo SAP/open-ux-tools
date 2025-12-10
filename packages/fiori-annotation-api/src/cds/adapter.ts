@@ -33,7 +33,7 @@ import type {
 
 import { MetadataService } from '@sap-ux/odata-entity-model';
 import type { Project } from '@sap-ux/project-access';
-import type { Record } from '@sap-ux/cds-annotation-parser';
+import type { Record as RecordNode} from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
     ANNOTATION_GROUP_TYPE,
@@ -65,6 +65,7 @@ import { logger } from '../logger';
 import {
     type CompiledService,
     type TextFile,
+    type ServiceArtifacts,
     type AnnotationServiceAdapter,
     type AnnotationFileChange,
     type CDSService,
@@ -246,6 +247,14 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         this.metadataService = new MetadataService({ uriMap: facade?.getUriMap() || new Map() });
         this.metadataService.import(metadataElements, 'DummyMetadataFileUri');
         return new Map();
+    }
+
+    public getDocuments(): Record<string, AnnotationFile> {
+        const annotationFiles: Record<string, AnnotationFile> = {};
+        for (const [uri, document] of this.documents.entries()) {
+            annotationFiles[uri] = document.annotationFile;
+        }
+        return annotationFiles;
     }
 
     /**
@@ -721,7 +730,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
 
-    private insertRecord(writer: CDSWriter, change: InsertElement, pointer: string, record: Record): void {
+    private insertRecord(writer: CDSWriter, change: InsertElement, pointer: string, record: RecordNode): void {
         if (change.element.name === Edm.PropertyValue) {
             const index = adaptRecordPropertyIndex(record, change.index);
             const modifiedPointer = [...pointer.split('/'), 'properties'].join('/'); // pointer is record
@@ -1005,7 +1014,7 @@ function buildElement(node: Element): Element {
     return result;
 }
 
-function adaptRecordPropertyIndex(record: Record, currentIndex?: number): number | undefined {
+function adaptRecordPropertyIndex(record: RecordNode, currentIndex?: number): number | undefined {
     if (currentIndex === undefined) {
         return currentIndex;
     }

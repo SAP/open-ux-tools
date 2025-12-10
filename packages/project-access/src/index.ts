@@ -1,5 +1,6 @@
 export { FileName, DirName, FioriToolsSettings, MinCdsPluginUi5Version, MinCdsVersion } from './constants';
 export { getFilePaths } from './file';
+export { normalizePath } from './path';
 export {
     addPackageDevDependency,
     clearCdsModuleCache,
@@ -53,7 +54,8 @@ export {
     getWorkspaceInfo,
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled,
-    readFlexChanges
+    readFlexChanges,
+    processServices
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';

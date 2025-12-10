@@ -1,8 +1,9 @@
 import type { Linter } from 'eslint';
+import type { Plugin } from '@eslint/config-helpers';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { rules } from './rules';
-import { FioriElementsLanguage } from './language/fiori-elements-language';
+import { FioriLanguage } from './language/fiori-language';
 
 // Read package.json to get version
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8')) as {
@@ -17,7 +18,20 @@ export const meta = {
 };
 
 export const languages = {
-    fioriElements: new FioriElementsLanguage()
+    fiori: new FioriLanguage()
+};
+
+const plugin: Plugin = {
+    meta: {
+        name: '@sap-ux/eslint-plugin-fiori-tools',
+        version: '0.0.1',
+        namespace: '@sap-ux/fiori-tools'
+    },
+    languages: {
+        fiori: new FioriLanguage()
+    },
+    rules: rules as Record<string, any>,
+    processors: {}
 };
 
 // Named configs for easy consumption
@@ -33,7 +47,22 @@ export const configs = {
         const prodConfig = require('../config/eslintrc-prod.js') as Linter.Config[];
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const testConfig = require('../config/eslintrc-test.js') as Linter.Config[];
-        return [...commonConfig, ...prodConfig, ...testConfig];
+        return [
+            // ...commonConfig,
+            // ...prodConfig,
+            // ...testConfig,
+            {
+                files: ['**/manifest.json', '**/*.xml', '**/*.cds'],
+                language: '@sap-ux/eslint-plugin-fiori-tools/fiori',
+                plugins: {
+                    '@sap-ux/eslint-plugin-fiori-tools': plugin
+                },
+                rules: {
+                    '@sap-ux/eslint-plugin-fiori-tools/flex-enabled': 'warn',
+                    '@sap-ux/eslint-plugin-fiori-tools/require-width-including-column-header': 'warn'
+                }
+            }
+        ];
     },
     // Recommended config for TypeScript projects (prod + test)
     get 'recommended-typescript'(): Linter.Config[] {
@@ -134,13 +163,6 @@ export const config = {
     }
 };
 
-// Default export following ESLint 9 plugin structure
-// This is the recommended way to export plugins in ESLint 9
-const plugin = {
-    meta,
-    configs,
-    rules,
-    languages
-};
+plugin.configs = configs;
 
 export default plugin;

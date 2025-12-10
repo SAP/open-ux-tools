@@ -220,7 +220,8 @@ export const toAnnotationFile = (
     cdsAnnotationFile: CdsAnnotationFile,
     metadataCollector: MetadataCollector,
     position?: Position,
-    propagationMap?: PropagatedTargetMap
+    propagationMap?: PropagatedTargetMap,
+    mergePropagatedAnnotations = false
 ): { file: AnnotationFile; pointer?: PositionPointer; nodeRange?: Range; diagnostics?: ExtendedDiagnostic[] } => {
     const supportedVocabularies = [...vocabularyService.getVocabularies().values()];
     const returnValue: ReturnValue = {
@@ -276,7 +277,7 @@ export const toAnnotationFile = (
         };
     });
     returnValue.diagnostics = diagnostics;
-    checkGhostTarget(returnValue, propagationMap);
+    checkGhostTarget(returnValue, propagationMap, mergePropagatedAnnotations);
 
     return returnValue;
 };
@@ -377,7 +378,11 @@ function convertTargetAnnotations(
  * @param returnValue - The return value containing file targets.
  * @param [propagationMap] - The map of propagated targets.
  */
-function checkGhostTarget(returnValue: ReturnValue, propagationMap?: PropagatedTargetMap): void {
+function checkGhostTarget(
+    returnValue: ReturnValue,
+    propagationMap?: PropagatedTargetMap,
+    mergePropagatedAnnotations?: boolean
+): void {
     if (propagationMap) {
         const sourceTargets = returnValue.file.targets;
         const ghostTargets: TargetType[] = [];
@@ -386,12 +391,18 @@ function checkGhostTarget(returnValue: ReturnValue, propagationMap?: PropagatedT
                 Object.keys(propagationMap[target.name]).forEach((propagatedTargetName) => {
                     const ghostTarget = { ...target };
                     ghostTarget.name = propagatedTargetName;
-                    ghostTargets.push(ghostTarget);
+                    if (mergePropagatedAnnotations) {
+                        returnValue.file.targets.push(ghostTarget);
+                    } else {
+                        ghostTargets.push(ghostTarget);
+                    }
                 });
             }
         });
 
-        returnValue.file.targets = ghostTargets;
+        if (!mergePropagatedAnnotations) {
+            returnValue.file.targets = ghostTargets;
+        }
     }
 }
 

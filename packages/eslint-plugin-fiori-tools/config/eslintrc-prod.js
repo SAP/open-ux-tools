@@ -7,6 +7,7 @@ module.exports = defineConfig([
         files: ['./webapp/**/*.js', './webapp/**/*.ts'],
 
         ignores: [
+            '**/*.json',
             'target/**',
             'webapp/test/**',
             'webapp/localservice/**',

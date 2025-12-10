@@ -135,6 +135,9 @@ function getMinUI5Version(node: ValueNode): string | null {
 function checkMinUI5VersionApplicable(ruleMinUI5Version: string | undefined, node: ValueNode): boolean {
     if (ruleMinUI5Version) {
         const sapui5Version = getMinUI5Version(node);
+        if (sapui5Version === '${sap.ui5.dist.version}') {
+            return true;
+        }
         if (!sapui5Version || !compareVersions(sapui5Version, ruleMinUI5Version)) {
             return false;
         }
@@ -250,6 +253,26 @@ function findMember(objectNode: any, name: string): MemberNode | undefined {
         return node;
     }
     return undefined;
+}
+
+/**
+ * Get the indentation for a given node in the source code.
+ * This function assumes that the source code is well-formed and that the targetNode is part of the source code.
+ * It returns the indentation of the first line of the targetNode, which is typically the first member of an object.
+ * If the targetNode is not an object or does not have members, it returns a default indentation of four spaces.
+ *
+ * @param text - The source text from ESLint context.
+ * @param targetNode - The AST node for which to get the indentation.
+ * @returns The indentation string.
+ */
+export function getIndentation(text: string, targetNode: ObjectNode): string {
+    const lines = text.split('\n');
+    let line = 0;
+    if (targetNode.members[0]) {
+        line = targetNode.members[0].loc.start.line - 1;
+    }
+    const match = lines?.[line]?.match(/^(\s*)/u);
+    return match ? match[1] : '    ';
 }
 
 export default {

@@ -1753,9 +1753,42 @@ importers:
       '@eslint/js':
         specifier: ^9
         version: 9.22.0
+      '@eslint/plugin-kit':
+        specifier: 0.5.0
+        version: 0.5.0
+      '@sap-ux/fiori-annotation-api':
+        specifier: workspace:*
+        version: link:../fiori-annotation-api
+      '@sap-ux/odata-annotation-core':
+        specifier: workspace:*
+        version: link:../odata-annotation-core
+      '@sap-ux/odata-entity-model':
+        specifier: workspace:*
+        version: link:../odata-entity-model
+      '@sap-ux/odata-vocabularies':
+        specifier: workspace:*
+        version: link:../odata-vocabularies
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.1
+        version: 0.13.1
+      '@xml-tools/ast':
+        specifier: 5.0.5
+        version: 5.0.5
+      '@xml-tools/parser':
+        specifier: 1.0.11
+        version: 1.0.11
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      requireindex:
+        specifier: ^1.2.0
+        version: 1.2.0
+      synckit:
+        specifier: 0.11.11
+        version: 0.11.11
       typescript-eslint:
         specifier: ^8.46.2
         version: 8.46.2(eslint@9.36.0)(typescript@5.9.3)
@@ -1900,8 +1933,8 @@ importers:
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.19.0
-        version: 1.19.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: ../../../../../cds-compiler-facade
+        version: link:../../../../../cds-compiler-facade
       '@xml-tools/ast':
         specifier: 5.0.5
         version: 5.0.5
@@ -2323,7 +2356,7 @@ importers:
         version: 0.22.0(apache-arrow@18.1.0)
       '@sap-ux/fiori-docs-embeddings':
         specifier: '*'
-        version: link:../fiori-docs-embeddings
+        version: 0.4.5
       '@xenova/transformers':
         specifier: 2.17.2
         version: 2.17.2
@@ -9637,6 +9670,13 @@ packages:
       '@types/json-schema': 7.0.15
     dev: true
 
+  /@eslint/core@1.0.0:
+    resolution: {integrity: sha512-PRfWP+8FOldvbApr6xL7mNCw4cJcSTq4GA7tYbgq15mRb0kWKO/wEB2jr+uwjFH3sZvEZneZyCUGTxsv4Sahyw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+    dependencies:
+      '@types/json-schema': 7.0.15
+    dev: false
+
   /@eslint/eslintrc@2.1.4:
     resolution: {integrity: sha512-269Z39MS6wVJtsoUl10L60WdkhJVdPG24Q4eZTH3nnF6lpvSShEK3wQjDX9JRWAUPvPh7COouPpU9IrqaZFvtQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -9720,6 +9760,14 @@ packages:
     dependencies:
       '@eslint/core': 0.15.2
       levn: 0.4.1
+
+  /@eslint/plugin-kit@0.5.0:
+    resolution: {integrity: sha512-rSXBsAcmx80jI9OUevyNBU0f5pZRQJkNmk4bLX6hCbm1qKe5Z/TcU7vwXc2nR8814mhRlgbZIHL1+HSiYS0VkQ==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+    dependencies:
+      '@eslint/core': 1.0.0
+      levn: 0.4.1
+    dev: false
 
   /@fal-ai/client@1.7.2:
     resolution: {integrity: sha512-RZ1Qz2Kza4ExKPy2D+2UUWthNApe+oZe8D1Wcxqleyn4F344MOm8ibgqG2JSVmybEcJAD4q44078WYfb6Q9c6w==}
@@ -11858,7 +11906,6 @@ packages:
   /@pkgr/core@0.2.9:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
-    dev: true
 
   /@playwright/browser-chromium@1.56.1:
     resolution: {integrity: sha512-n4xzZpOn4qOtZJylpIn8co2QDoWczfJ068sEeky3EE5Vvy+lHX2J3WAcC4MbXzcpfoBee1lJm8JtXuLZ9HBCBA==}
@@ -12566,6 +12613,10 @@ packages:
       - debug
       - typescript
     dev: true
+
+  /@sap-ux/fiori-docs-embeddings@0.4.5:
+    resolution: {integrity: sha512-SofwCTRqzAenZZSq13P75ZS50Y4YWYcLmwC3TxP44fysSyj5mIEjhEELgM5/QJNHHdd/CvnPilZkHk8DcWUOXw==}
+    dev: false
 
   /@sap-ux/i18n@0.3.3:
     resolution: {integrity: sha512-/h5h0oPYKXuEohZ/5KduoY0oTPSHgq/FzXrTrNtkaF+pRoroLB2ctKTyG6AzM7EarVwUCeb/DmYqHXXmJrXBrQ==}
@@ -28743,7 +28794,6 @@ packages:
   /requireindex@1.2.0:
     resolution: {integrity: sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==}
     engines: {node: '>=0.10.5'}
-    dev: true
 
   /requires-port@1.0.0:
     resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
@@ -30614,7 +30664,6 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     dependencies:
       '@pkgr/core': 0.2.9
-    dev: true
 
   /synckit@0.9.3:
     resolution: {integrity: sha512-JJoOEKTfL1urb1mDoEblhD9NhEbWmq9jHEMEnxoC4ujUaZ4itA8vKgwkFAyNClgxplLi9tsUKX+EduK0p/l7sg==}
