@@ -19,7 +19,7 @@ import { readFlexChanges } from '@sap-ux/project-access';
 import { getFlexChangeLayer, getManifest, getUI5Version } from './project';
 import { logger } from '../utils/logger';
 import { mergeChanges, writeFlexChanges } from './flex';
-import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 
 export interface PageData {
     pageId: string;
@@ -61,7 +61,7 @@ export class SapuxFtfsFileIO {
     private async getSpecification(): Promise<Specification> {
         const specification = await this.appAccess.getSpecification<Specification>();
         const apiVersion = specification.getApiVersion();
-        const version = typeof apiVersion?.fpmWriter === 'string' ? parseInt(apiVersion.fpmWriter) : 0;
+        const version = typeof apiVersion?.fpmWriter === 'string' ? parseInt(apiVersion.fpmWriter, 10) : 0;
         if (version < 35) {
             // resolved spec is outdated - load latest from global cache
             // ToDo - force from global cache
@@ -82,9 +82,9 @@ export class SapuxFtfsFileIO {
     /**
      * Retrieves virtual files for the project.
      *
+     * @param skipParsing If true, skips parsing the application modeler within the specification.
      * @returns A promise that resolves to an array of File objects
      */
-    // todo -> readApp???
     private async readApp(skipParsing?: boolean): Promise<ReadAppResult> {
         const specification = await this.getSpecification();
         return specification.readApp({
@@ -96,9 +96,9 @@ export class SapuxFtfsFileIO {
     /**
      * Retrieves virtual files for the project.
      *
+     * @param skipParsing If true, skips parsing the application modeler within the specification.
      * @returns A promise that resolves to an array of File objects
      */
-    // todo -> readApplicationModel???
     public async getApplicationModel(skipParsing?: boolean): Promise<ApplicationModel | undefined> {
         const app = await this.readApp(skipParsing);
         return app.applicationModel;

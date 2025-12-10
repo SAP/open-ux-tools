@@ -1,6 +1,7 @@
-import { ArtifactType, PropertyMessage } from '@sap/ux-specification/dist/types/src';
-import { JSONSchema4 } from 'json-schema';
-import { PropertyPath } from '../types';
+import type { ArtifactType, PropertyMessage } from '@sap/ux-specification/dist/types/src';
+import type { JSONSchema4 } from 'json-schema';
+
+export type PropertyPath = Array<string | number>;
 
 export enum SortingOptions {
     Enabled = 'Enabled',

@@ -1,13 +1,6 @@
-import {
-    FileName,
-    getCapServiceName,
-    getMinimumUI5Version,
-    getWebappPath,
-    readCapServiceMetadataEdmx
-} from '@sap-ux/project-access';
+import { FileName, getCapServiceName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
 import type { ApplicationAccess, Manifest, Package } from '@sap-ux/project-access';
 import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
-import type { FileData } from '@sap/ux-specification/dist/types/src';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';

@@ -3,9 +3,9 @@ import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import { isArrayEqual } from './utils';
 import type { JSONSchema4, JSONSchema4Type } from 'json-schema';
 import { logger } from '../../utils/logger';
-import type { PropertyPath } from '../types';
-import { TreeModel } from '@sap/ux-specification/dist/types/src/parser';
-import { AllowedMoveRange, ObjectAggregation, SettingOption, SortingOptions } from './types';
+import type { TreeModel } from '@sap/ux-specification/dist/types/src/parser';
+import { SortingOptions } from './types';
+import type { AllowedMoveRange, ObjectAggregation, SettingOption, PropertyPath } from './types';
 
 interface TraverseNodeData {
     text: string;
@@ -93,10 +93,6 @@ export interface TreeNodeProperty {
 
 export const BOOLEAN_DISPLAY_TRUE = 'True';
 export const BOOLEAN_DISPLAY_FALSE = 'False';
-
-const DATA_FIELD_FOR_INTENT_BASED_NAVIGATION = 'DataFieldForIntentBasedNavigation';
-const DATA_FIELD_FOR_ACTION_GROUP = 'DataFieldForActionGroup';
-const NOT_ALLOWED_IN_FOOTER_AGGREGATION_NAMES = [DATA_FIELD_FOR_INTENT_BASED_NAVIGATION, DATA_FIELD_FOR_ACTION_GROUP];
 
 enum AggregationNodeType {
     customAction = 'customAction',
@@ -367,10 +363,12 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
     }
 
     let annotationNodeId = aggregation.annotationNodeId;
-    // todo
-    // if (!annotationNodeId && (aggregation instanceof RootAggregation || aggregation instanceof ViewsAggregation)) {
-    //     annotationNodeId = [];
-    // }
+    if (
+        !annotationNodeId &&
+        (aggregation.constructor.name === 'RootAggregation' || aggregation.constructor.name === 'ViewsAggregation')
+    ) {
+        annotationNodeId = [];
+    }
 
     return {
         id: id,
@@ -445,46 +443,32 @@ function getAllowedParentPaths(aggregation: ObjectAggregation): undefined | Allo
  */
 function getNodeType(aggregation: ObjectAggregation): AggregationNodeType | undefined {
     let type: AggregationNodeType | undefined;
-    // if (aggregation.custom) {
-    //     if (aggregation instanceof ActionAggregation) {
-    //         type = AggregationNodeType.customAction;
-    //     } else if (aggregation instanceof ColumnAggregation) {
-    //         type = AggregationNodeType.customColumn;
-    //     } else if (aggregation instanceof FilterFieldAggregation) {
-    //         type = AggregationNodeType.customFilterField;
-    //     } else if (aggregation instanceof SectionAggregation) {
-    //         type = AggregationNodeType.customSection;
-    //     }
-    // } else if (aggregation.path.length === 0) {
-    //     type = AggregationNodeType.rootNode;
-    // } else if (aggregation instanceof ViewsAggregation) {
-    //     type = AggregationNodeType.views;
-    // }
+    if (aggregation.custom) {
+        if (aggregation.constructor.name === 'ActionAggregation') {
+            type = AggregationNodeType.customAction;
+        } else if (aggregation.constructor.name === 'ColumnAggregation') {
+            type = AggregationNodeType.customColumn;
+        } else if (aggregation.constructor.name === 'FilterFieldAggregation') {
+            type = AggregationNodeType.customFilterField;
+        } else if (aggregation.constructor.name === 'SectionAggregation') {
+            type = AggregationNodeType.customSection;
+        }
+    } else if (aggregation.path.length === 0) {
+        type = AggregationNodeType.rootNode;
+    } else if (aggregation.constructor.name === 'ViewsAggregation') {
+        type = AggregationNodeType.views;
+    }
     return type;
 }
 
 /**
  * Method creates tree for passed edit model.
  *
- * @param schema Page or application schema.
- * @param data Configuration file mapped to schema.
- * @param pageType Page type. If pageType is not passed, then considered as application.
- * @param annotation Page annotations.
+ * @param model Tree model from speficiation API.
  * @returns Outline tree.
  */
-export function getTree2(model: TreeModel): TreeNode {
-    // const model = new PageEditModel(
-    //     'Root',
-    //     pageType,
-    //     data,
-    //     schema,
-    //     annotation ?? {
-    //         dynamicNodes: {},
-    //         nodes: []
-    //     }
-    // );
-    // ToDo
-    const root = model.root as any;
+export function getTree(model: TreeModel): TreeNode {
+    const root = model.root as ObjectAggregation;
     const node = traverseTree(root, {
         level: 0,
         path: '',

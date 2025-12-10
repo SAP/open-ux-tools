@@ -1,12 +1,4 @@
 export * from './api';
 export * from './sapuxFtfsFileIO';
-export {
-    TreeNode,
-    TreeNodeProperty,
-    // todo remove???
-    // PageAnnotations,
-    findNodeByAnnotationNodeId,
-    findByPath
-} from './parser';
-export { PropertyPath } from './types';
+export { TreeNode, TreeNodeProperty, findNodeByAnnotationNodeId, findByPath, PropertyPath } from './tree';
 export * from './project';

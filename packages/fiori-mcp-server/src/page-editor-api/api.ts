@@ -1,12 +1,10 @@
 import type { ExportResults } from '@sap/ux-specification/dist/types/src';
-import { getTree2 } from './parser';
-import type { TreeNode } from './parser';
-import type { PropertyPath } from './types';
+import { type TreeNode, type PropertyPath, getTree } from './tree';
 import { SapuxFtfsFileIO } from './sapuxFtfsFileIO';
 import type { AppData } from './sapuxFtfsFileIO';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { updateProperty } from './json-helper';
-import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 
 /**
  * Class representing the Page Editor API
@@ -19,6 +17,7 @@ export class PageEditorApi {
      * Creates an instance of PageEditorApi.
      *
      * @param appAccess - The application access object
+     * @param appModel - Optional application model  from specification.
      * @param pageId - Optional page identifier
      */
     constructor(public appAccess: ApplicationAccess, appModel?: ApplicationModel, public pageId?: string) {
@@ -46,7 +45,7 @@ export class PageEditorApi {
             if (this.pageId) {
                 const pageModel = this.appModel.pages[this.pageId].model;
                 if (pageModel) {
-                    tree = getTree2(pageModel);
+                    tree = getTree(pageModel);
                 }
             } else {
                 const appModel = this.appModel.model;
@@ -56,7 +55,7 @@ export class PageEditorApi {
                     if (appSettings) {
                         appSettings.isViewNode = true;
                     }
-                    tree = getTree2(appModel);
+                    tree = getTree(appModel);
                 }
             }
         }

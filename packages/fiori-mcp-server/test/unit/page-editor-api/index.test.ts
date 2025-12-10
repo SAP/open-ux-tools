@@ -1,6 +1,6 @@
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
-import { getTree } from '../../../src/page-editor-api/parser';
-import type { PageAnnotations, TreeNode, TreeNodeProperty } from '../../../src/page-editor-api/parser';
+import { getTree } from '../../../src/page-editor-api/tree';
+import type { PageAnnotations, TreeNode, TreeNodeProperty } from '../../../src/page-editor-api/tree';
 import applicationSchema from './test-data/schema/App.json';
 import applicationConfig from './test-data/config/App.json';
 import listReportSchema from './test-data/schema/ListReport.json';

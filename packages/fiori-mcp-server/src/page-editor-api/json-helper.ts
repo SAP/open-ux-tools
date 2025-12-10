@@ -1,4 +1,4 @@
-import type { PropertyPath } from './types';
+import type { PropertyPath } from './tree';
 
 /**
  * Static method updates object for passed path.

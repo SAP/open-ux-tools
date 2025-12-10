@@ -3,7 +3,7 @@ import type { Functionality, ListFunctionalitiesInput, ListFunctionalitiesOutput
 import { FUNCTIONALITIES_DETAILS } from './functionalities';
 import { resolveApplication } from '../utils';
 import type { ApplicationAccess } from '@sap-ux/project-access';
-import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 
 /**
  * Lists all functionalities for a given application.
@@ -54,6 +54,7 @@ export async function listFunctionalities(
  * Retrieves functionalities for the application settings.
  *
  * @param appAccess - The ApplicationAccess object for accessing the application.
+ * @param application - Application model from specification.
  * @returns A promise that resolves to an array of Functionality objects.
  */
 async function getAppFunctionalities(
@@ -80,6 +81,7 @@ async function getAppFunctionalities(
  * Retrieves functionalities for a specific page in the application.
  *
  * @param appAccess - The ApplicationAccess object for accessing the application.
+ * @param application - Application model from specification.
  * @param pageId - Optional. The ID of the page to retrieve functionalities for.
  * @returns A promise that resolves to an array of Functionality objects.
  */
