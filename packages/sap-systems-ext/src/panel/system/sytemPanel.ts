@@ -22,15 +22,6 @@ export class SystemPanel implements Disposable {
     readonly isGuidedAnswersEnabled: boolean = !!extensions.getExtension(GUIDED_ANSWERS_EXTENSION_ID);
     readonly disposeCallback?: DisposeCallback;
 
-    /**
-     *
-     * @param root0
-     * @param root0.extensionPath
-     * @param root0.systemPanelViewType
-     * @param root0.disposeCallback
-     * @param root0.backendSystem
-     * @param root0.systemStatusMessage
-     */
     constructor({
         extensionPath,
         systemPanelViewType,
