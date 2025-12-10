@@ -1,5 +1,31 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.171
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/abap-deploy-config-writer@0.2.39
+    -   @sap-ux/odata-service-inquirer@2.11.16
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/system-access@0.6.31
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+    -   @sap-ux/fiori-elements-writer@2.8.14
+
+## 0.3.170
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/odata-service-inquirer@2.11.15
+    -   @sap-ux/system-access@0.6.30
+    -   @sap-ux/abap-deploy-config-writer@0.2.38
+
 ## 0.3.169
 
 ### Patch Changes

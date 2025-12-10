@@ -1,5 +1,22 @@
 # @sap-ux/environment-check
 
+## 0.18.54
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/ui5-config@0.29.10
+
+## 0.18.53
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+
 ## 0.18.52
 
 ### Patch Changes

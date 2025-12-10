@@ -1,5 +1,25 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.75
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/adp-tooling@0.18.16
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+
+## 0.4.74
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/adp-tooling@0.18.15
+    -   @sap-ux/fiori-generator-shared@0.13.38
+
 ## 0.4.73
 
 ### Patch Changes

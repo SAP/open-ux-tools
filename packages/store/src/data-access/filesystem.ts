@@ -45,13 +45,13 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('read: Entity Type is falsy - ' + entityName);
-            return Promise.resolve(undefined);
+            return undefined;
         }
 
         const { entities, error } = this._readAll(name);
         if (error) {
             if (error.code === 'ENOENT') {
-                return Promise.resolve(undefined);
+                return undefined;
             } else {
                 throw error;
             }
@@ -60,7 +60,7 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
             this.logger.debug(`read: After parsing, entities is falsy. Entity: ${name}, parsed value: ${entities}`);
             return undefined;
         }
-        return Promise.resolve(entities[id]);
+        return entities[id];
     }
 
     /**
@@ -72,22 +72,22 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('read: Entity Type is falsy - ' + entityName);
-            return Promise.resolve([]);
+            return [];
         }
 
         const { entities, error } = this._readAll(name);
         if (error) {
             if (error.code === 'ENOENT') {
-                return Promise.resolve([]);
+                return [];
             } else {
                 throw error;
             }
         }
         if (!entities) {
             this.logger.debug(`read: After parsing, entities is falsy. Entity: ${name}, parsed value: ${entities}`);
-            return Promise.resolve([]);
+            return [];
         }
-        return Promise.resolve(Object.values(entities));
+        return Object.values(entities);
     }
 
     /**
@@ -99,22 +99,22 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('read: Entity Type is falsy - ' + entityName);
-            return Promise.resolve({});
+            return {};
         }
 
         const { entities, error } = this._readAll(name);
         if (error) {
             if (error.code === 'ENOENT') {
-                return Promise.resolve({});
+                return {};
             } else {
                 throw error;
             }
         }
         if (!entities) {
             this.logger.debug(`read: After parsing, entities is falsy. Entity: ${name}, parsed value: ${entities}`);
-            return Promise.resolve({});
+            return {};
         }
-        return Promise.resolve(entities);
+        return entities;
     }
 
     /**
@@ -136,7 +136,7 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('write: Entity is falsy - ' + name);
-            return Promise.resolve(undefined);
+            return undefined;
         }
 
         const { entities = {}, error } = this._readAll(name);
@@ -146,7 +146,7 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
 
         entities[id] = entity;
         this.writeToFile(name, entities);
-        return Promise.resolve(entity);
+        return entity;
     }
 
     /**
@@ -199,7 +199,7 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('delete: Entity is falsy - ' + name);
-            return Promise.resolve(false);
+            return false;
         }
 
         const { entities = {}, error } = this._readAll(name);
@@ -214,10 +214,10 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
             this.logger.debug(`delete: entity found  for id - ${id}. Deleting`);
             delete entities[id];
             this.writeToFile(name, entities);
-            return Promise.resolve(true);
+            return true;
         } else {
             this.logger.debug('delete: entity not found');
-            return Promise.resolve(false);
+            return false;
         }
     }
 

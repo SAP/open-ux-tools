@@ -23,7 +23,7 @@ export class DummyStore implements SecureStore {
      */
     public async save<T>(service: string, key: string, _value: T): Promise<boolean> {
         this.log.warn(`Dummy store. Trying to save for service: ${service}, key: ${key}`);
-        return Promise.resolve(true);
+        return true;
     }
 
     /**
@@ -33,7 +33,7 @@ export class DummyStore implements SecureStore {
      */
     public async retrieve<T>(service: string, key: string): Promise<T | undefined> {
         this.log.warn(`Dummy store. Trying to retrieve for service: ${service}, key: ${key}`);
-        return Promise.resolve(undefined);
+        return undefined;
     }
 
     /**
@@ -43,7 +43,7 @@ export class DummyStore implements SecureStore {
      */
     public async delete(service: string, key: string): Promise<boolean> {
         this.log.warn(`Dummy store. Trying to delete for service: ${service}, key: ${key}`);
-        return Promise.resolve(true);
+        return true;
     }
 
     /**
@@ -52,6 +52,6 @@ export class DummyStore implements SecureStore {
      */
     public async getAll<T>(service: string): Promise<{ [key: string]: T }> {
         this.log.warn(`Dummy store. Trying to get all values for service: [${service}]`);
-        return Promise.resolve({});
+        return {};
     }
 }

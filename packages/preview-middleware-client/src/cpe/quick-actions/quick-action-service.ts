@@ -185,6 +185,6 @@ export class QuickActionService implements Service {
         if (payload.kind === NESTED_QUICK_ACTION_KIND && actionInstance.kind === NESTED_QUICK_ACTION_KIND) {
             return actionInstance.execute(payload.path);
         }
-        return Promise.resolve([]);
+        return [];
     }
 }

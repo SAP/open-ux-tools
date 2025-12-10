@@ -100,7 +100,7 @@ export default function init(
             return service.init(CommunicationService.sendAction, subscribe)?.catch((error) => {
                 Log.error('Service Initialization Failed: ', getError(error));
             });
-        });
+        }).filter((p): p is Promise<void> => p !== undefined);
         Promise.all(allPromises)
             .then(() => {
                 CommunicationService.sendAction(appLoaded());
