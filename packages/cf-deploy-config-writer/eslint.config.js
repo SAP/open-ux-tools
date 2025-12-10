@@ -10,9 +10,6 @@ module.exports = [
                 tsconfigRootDir: __dirname,
                 project: './tsconfig.eslint.json'
             }
-        },
-        rules: {
-            '@typescript-eslint/no-use-before-define': ['off']
         }
     }
 ];
