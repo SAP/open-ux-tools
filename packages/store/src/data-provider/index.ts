@@ -8,23 +8,13 @@ import type { ServiceOptions } from '../types';
  * could be written to the filesystem/OS secure store/network share, the client does not need to know this.
  */
 export interface DataProvider<E, K extends EntityKey> {
-    /**
-     *
-     */
     read(key: K): Promise<E | undefined>;
-    /**
-     *
-     */
     write(entity: E): Promise<E | undefined>;
-    /**
-     *
-     */
     delete(entity: E): Promise<boolean>;
     /**
      * Returns the data as an array related to the entity.
      *
-     * @param options If true and relevant for the entity, sensitive data will be returned - defaults to true.
-     * @param options.includeSensitiveData If set to true, sensitive data will be included in the result.
+     * @param includeSensitiveData If true and relevant for the entity, sensitive data will be returned - defaults to true.
      */
     getAll(options?: { includeSensitiveData?: boolean }): Promise<E[] | []>;
 }

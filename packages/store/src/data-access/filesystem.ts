@@ -18,29 +18,15 @@ export const basedir = ({ baseDirectory }: { baseDirectory?: string } = {}): str
     }
 };
 
-/**
- *
- */
 class FilesystemStore<E extends object> implements DataAccess<E> {
     private readonly logger: Logger;
     private readonly storeDirectory: string;
 
-    /**
-     *
-     * @param logger
-     * @param options
-     */
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
         this.storeDirectory = basedir(options);
     }
 
-    /**
-     *
-     * @param root0
-     * @param root0.entityName
-     * @param root0.id
-     */
     public async read({ entityName, id }: { entityName: string; id: string }): Promise<undefined | E> {
         const name = toPersistenceName(entityName);
         if (!name) {
@@ -63,11 +49,6 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return entities[id];
     }
 
-    /**
-     *
-     * @param root0
-     * @param root0.entityName
-     */
     public async getAll({ entityName }: { entityName: string }): Promise<E[] | []> {
         const name = toPersistenceName(entityName);
         if (!name) {
@@ -90,11 +71,6 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return Object.values(entities);
     }
 
-    /**
-     *
-     * @param root0
-     * @param root0.entityName
-     */
     public async readAll({ entityName }: { entityName: string }): Promise<{ [key: string]: E }> {
         const name = toPersistenceName(entityName);
         if (!name) {
@@ -117,13 +93,6 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return entities;
     }
 
-    /**
-     *
-     * @param root0
-     * @param root0.entityName
-     * @param root0.id
-     * @param root0.entity
-     */
     public async write({
         entityName,
         id,
@@ -149,13 +118,6 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return entity;
     }
 
-    /**
-     *
-     * @param root0
-     * @param root0.entityName
-     * @param root0.id
-     * @param root0.entity
-     */
     public async partialUpdate({
         entityName,
         id,
@@ -179,22 +141,11 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return this.write({ entityName, id, entity: updatedEntity });
     }
 
-    /**
-     *
-     * @param update
-     * @param existingSystem
-     */
     private mergeProperties(update: Partial<E>, existingSystem: E): E {
         const updatedEntity = { ...existingSystem, ...update };
         return { ...updatedEntity };
     }
 
-    /**
-     *
-     * @param root0
-     * @param root0.entityName
-     * @param root0.id
-     */
     async del({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
         const name = toPersistenceName(entityName);
         if (!name) {
@@ -221,10 +172,6 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         }
     }
 
-    /**
-     *
-     * @param entityName
-     */
     private _readAll(entityName: string): { entities?: { [key: string]: E }; error?: Error & { code?: string } } {
         let rawContents: string;
         try {
@@ -254,10 +201,6 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return { entities };
     }
 
-    /**
-     *
-     * @param entityName
-     */
     private writeToFile(entityName: string, entities: { [key: string]: E }): void {
         const data = JSON.stringify({ [entityName]: entities }, null, 2);
         const filename = getEntityFileName(entityName);
@@ -276,13 +219,8 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
     }
 }
 
-/**
- * Return an FSWatcher for a given entity name
- * The client is responsible for disposing of the FSWatcher
- *
- * @param entityName
- * @param callback
- * @param options
+/** Return an FSWatcher for a given entity name
+ *  The client is responsible for disposing of the FSWatcher
  */
 export function getFilesystemWatcherFor(
     entityName: Entity,
@@ -304,9 +242,6 @@ export function getFilesystemWatcherFor(
  * Filesystem store. The entity is stored in JSON format (don't depend on the format, this could change).
  * The entity is stored in a file named with the plural form of the entity name in the base directory. Again, this is an
  * implementation detail, please don't depend on it.
- *
- * @param logger
- * @param options
  */
 export function getFilesystemStore<E extends object>(logger: Logger, options?: ServiceOptions): DataAccess<E> {
     return new FilesystemStore<E>(logger, options);

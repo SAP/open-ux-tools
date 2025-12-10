@@ -2,12 +2,7 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { plural } from 'pluralize';
 
-/**
- * Pick the properties listed and return a new object with a shallow-copy
- *
- * @param target
- * @param {...any} props
- */
+/** Pick the properties listed and return a new object with a shallow-copy */
 export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undefined => {
     return (
         (target &&
@@ -20,11 +15,7 @@ export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undef
     );
 };
 
-/**
- * Given an `Error` or any other object thrown, returns an `Error` instance
- *
- * @param e
- */
+/** Given an `Error` or any other object thrown, returns an `Error` instance */
 export function errorInstance(e: Error | unknown): NodeJS.ErrnoException {
     if (e instanceof Error) {
         return e;
@@ -33,11 +24,8 @@ export function errorInstance(e: Error | unknown): NodeJS.ErrnoException {
     }
 }
 
-/**
- * If input in an instance of `Error` return the message property,
- * otherwise convert the input to its string representation
- *
- * @param e
+/** If input in an instance of `Error` return the message property,
+ *  otherwise convert the input to its string representation
  */
 export function errorString(e: Error | unknown): string {
     return e instanceof Error ? e.message : String(e);
@@ -69,10 +57,6 @@ export function toPersistenceName(s: string): string | undefined {
     return t && plural(t);
 }
 
-/**
- *
- * @param entityName
- */
 export function getEntityFileName(entityName: string): string {
     return toPersistenceName(entityName) + '.json';
 }

@@ -4,18 +4,10 @@ import type { SecureStore } from './types';
 import type { keyring } from '@zowe/secrets-for-zowe-sdk';
 
 type Entities<T> = { [key: string]: T };
-/**
- *
- */
 export class KeyStoreManager implements SecureStore {
     private readonly log: Logger;
     private readonly keyring: typeof keyring;
 
-    /**
-     *
-     * @param log
-     * @param zoweSecretSdk
-     */
     constructor(log: Logger, zoweSecretSdk: typeof keyring) {
         this.log = log;
         this.keyring = zoweSecretSdk;
@@ -23,8 +15,6 @@ export class KeyStoreManager implements SecureStore {
 
     /**
      * Helper function for serializing objects
-     *
-     * @param value
      */
     private serialize<T>(value: T): string {
         try {
@@ -36,8 +26,6 @@ export class KeyStoreManager implements SecureStore {
 
     /**
      * Helper function for deserializing objects
-     *
-     * @param serialized
      */
     private deserialize<T>(serialized: string): T {
         try {
@@ -49,9 +37,6 @@ export class KeyStoreManager implements SecureStore {
 
     /**
      * Validate input parameters for service and key
-     *
-     * @param service
-     * @param key
      */
     private validateInput(service: string, key: string): boolean {
         if (!service || !key) {
@@ -63,10 +48,6 @@ export class KeyStoreManager implements SecureStore {
 
     /**
      * Save credentials to the keyring
-     *
-     * @param service
-     * @param key
-     * @param value
      */
     public async save<T>(service: string, key: string, value: T): Promise<boolean> {
         if (!this.validateInput(service, key)) {
@@ -86,9 +67,6 @@ export class KeyStoreManager implements SecureStore {
 
     /**
      * Retrieve credentials from the keyring
-     *
-     * @param service
-     * @param key
      */
     public async retrieve<T>(service: string, key: string): Promise<T | undefined> {
         if (!this.validateInput(service, key)) {
@@ -119,9 +97,6 @@ export class KeyStoreManager implements SecureStore {
 
     /**
      * Delete credentials from the keyring
-     *
-     * @param service
-     * @param key
      */
     public async delete(service: string, key: string): Promise<boolean> {
         if (!this.validateInput(service, key)) {
@@ -146,8 +121,6 @@ export class KeyStoreManager implements SecureStore {
 
     /**
      * Retrieve all credentials for a given service
-     *
-     * @param service
      */
     public async getAll<T>(service: string): Promise<Entities<T>> {
         const results: Entities<T> = {};

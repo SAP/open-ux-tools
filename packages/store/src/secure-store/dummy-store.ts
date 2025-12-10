@@ -1,55 +1,28 @@
 import type { SecureStore } from './types';
 import type { Logger } from '@sap-ux/logger';
 
-/**
- *
- */
 export class DummyStore implements SecureStore {
     private readonly log: Logger;
 
-    /**
-     *
-     * @param log
-     */
     constructor(log: Logger) {
         this.log = log;
     }
 
-    /**
-     *
-     * @param service
-     * @param key
-     * @param _value
-     */
     public async save<T>(service: string, key: string, _value: T): Promise<boolean> {
         this.log.warn(`Dummy store. Trying to save for service: ${service}, key: ${key}`);
         return true;
     }
 
-    /**
-     *
-     * @param service
-     * @param key
-     */
     public async retrieve<T>(service: string, key: string): Promise<T | undefined> {
         this.log.warn(`Dummy store. Trying to retrieve for service: ${service}, key: ${key}`);
         return undefined;
     }
 
-    /**
-     *
-     * @param service
-     * @param key
-     */
     public async delete(service: string, key: string): Promise<boolean> {
         this.log.warn(`Dummy store. Trying to delete for service: ${service}, key: ${key}`);
         return true;
     }
 
-    /**
-     *
-     * @param service
-     */
     public async getAll<T>(service: string): Promise<{ [key: string]: T }> {
         this.log.warn(`Dummy store. Trying to get all values for service: [${service}]`);
         return {};
