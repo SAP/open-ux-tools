@@ -207,13 +207,11 @@ describe('ui5-test-writer', () => {
             expect(error).toEqual('Validation error: Cannot read `appID` in the `manifest.json` file.');
         });
 
-        // TODO revisit this test
-        // project-access is failing to read this project, possibly due to the missing Id - skipping for now
-        /*it('Providing an app ID', async () => {
+        it('Providing an app ID', async () => {
             const projectDir = prepareTestFiles('MissingAppId');
             fs = await generateOPAFiles(projectDir, { appID: 'test.ui5-test-writer' }, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
-        });*/
+        });
 
         it('Freestyle app not supported', async () => {
             const projectDir = prepareTestFiles('FreeStyle');
