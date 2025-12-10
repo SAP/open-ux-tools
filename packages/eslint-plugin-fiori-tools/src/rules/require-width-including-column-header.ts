@@ -4,13 +4,19 @@ import { createMixedRule } from '../language/rule-factory';
 import type { FioriMixedRuleDefinition } from '../types';
 import { IndexedAnnotation } from '../project-context/facets/services';
 import { Edm, elementsWithName, Element } from '@sap-ux/odata-annotation-core';
+import {
+    REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+    RequireWidthIncludingColumnHeaderDiagnostic
+} from '../language/diagnostics';
+import { AnyNode } from '@humanwhocodes/momoa';
+import { RuleVisitor } from '@eslint/core';
 
-export type RequireWidthIncludingColumnHeader = 'require-width-including-column-header';
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
 };
 
 const rule: FioriMixedRuleDefinition = createMixedRule({
+    ruleId: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     meta: {
         type: 'suggestion',
         docs: {
@@ -26,10 +32,9 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
         fixable: 'code'
     },
     check(context) {
-        const problems: any[] = [];
-        const smallTables: IndexedAnnotation[] = [];
+        const problems: RequireWidthIncludingColumnHeaderDiagnostic[] = [];
 
-        for (const [key, app] of Object.entries(context.sourceCode.projectContext.index.apps)) {
+        for (const [, app] of Object.entries(context.sourceCode.projectContext.index.apps)) {
             const manifest = app.manifestObject;
             const indexedService = context.sourceCode.projectContext.getIndexedServiceForMainService(app);
             if (!indexedService) {
@@ -96,15 +101,30 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                         for (const ref of lineItemReferences) {
                             if (annotation.target === ref.entityTypeName && annotation.qualifier === undefined) {
                                 if ((ref.value as any)?.tableSettings?.widthIncludingColumnHeader !== true) {
+                                    const path = [
+                                        'sap.ui5',
+                                        'routing',
+                                        'targets',
+                                        ref.targetName,
+                                        'options',
+                                        'settings',
+                                        'controlConfiguration',
+                                        ref.annotationPath,
+                                        'tableSettings',
+                                        'widthIncludingColumnHeader'
+                                    ];
                                     problems.push({
-                                        annotation,
-                                        targetName: ref.targetName,
-                                        annotationPath: ref.annotationPath
+                                        type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+                                        manifestPropertyPath: path,
+                                        annotation: {
+                                            file: annotation.source,
+                                            annotationPath: ref.annotationPath,
+                                            annotation: annotation.top
+                                        }
                                     });
                                 }
                             }
                         }
-                        smallTables.push(annotation);
                     }
                 }
             }
@@ -112,99 +132,34 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
 
         return problems;
     },
-    createJson(context, validationResult) {
-        if (validationResult.length === 0) {
+    createJson(context, diagnostics) {
+        if (diagnostics.length === 0) {
             return {};
         }
-        const path = [
-            'sap.ui5',
-            'routing',
-            'targets',
-            validationResult[0].targetName,
-            'options',
-            'settings',
-            'controlConfiguration',
-            validationResult[0].annotationPath,
-            'tableSettings',
-            'widthIncludingColumnHeader'
-        ];
-        return {
-            [createMatcherString(path)](node) {
-                // const ancestors = context.sourceCode.getAncestors(node);
-
-                context.report({
-                    node,
-                    messageId: 'require-width-including-column-header'
-                });
-            }
-        };
-    },
-    createXml(context, validationResult) {
-        if (validationResult.length === 0) {
-            return {};
+        const matchers: RuleVisitor = {};
+        function report(node: AnyNode) {
+            context.report({
+                node,
+                messageId: 'require-width-including-column-header'
+            });
         }
-        const aliasMap = context.sourceCode.getAliasMap();
-
-        return {
-            ['XMLElement[name="Annotation"]'](node: XMLElement) {
-                const result = validationResult[0];
-
-                if (node.attributes.length === 0) {
-                    return;
-                }
-
-                const termAttribute = node.attributes.find((attr) => attr.key === 'Term');
-                if (!termAttribute) {
-                    return;
-                }
-                const qualifier = node.attributes.find((attr) => attr.key === 'Qualifier');
-                if (qualifier) {
-                    // TODO: check if empty qualifier is ok
-                    return; // skip qualified annotations
-                }
-                const fullyQualifiedTermName = getFullyQualifiedName(aliasMap, termAttribute.value ?? '');
-                if (fullyQualifiedTermName !== result.annotation.term) {
-                    return;
-                }
-
-                if (node.parent?.type !== 'XMLElement') {
-                    return;
-                }
-                const targetPath = node.parent.attributes.find((attribute) => attribute.key === 'Target')?.value ?? '';
-                if (!targetPath) {
-                    return;
-                }
-
-                const [targetName, ...rest] = targetPath.split('/');
-                if (rest.length > 0) {
-                    return; // line item can only be on entity
-                }
-                const fullyQualifiedTargetName = getFullyQualifiedName(aliasMap, targetName);
-
-                if (fullyQualifiedTargetName !== result.annotation.target) {
-                    return;
-                }
-
-                if (node.syntax?.openBody !== undefined) {
-                    context.report({
-                        node: node.syntax.openBody,
-                        messageId: 'require-width-including-column-header'
-                    });
-                }
-            }
-        };
+        for (const diagnostic of diagnostics) {
+            matchers[createMatcherString(diagnostic.manifestPropertyPath)] = report;
+        }
+        return matchers;
     },
     createAnnotations(context, validationResult) {
         if (validationResult.length === 0) {
             return {};
         }
         const aliasMap = context.sourceCode.getAliasMap();
-        // const path =
+        const lookup = new Set<Element>();
+        for (const diagnostic of validationResult) {
+            lookup.add(diagnostic.annotation.annotation);
+        }
         return {
             ['target>element[name="Annotation"]'](node: Element) {
-                const result = validationResult[0];
-                if (node !== result.annotation.top) {
-                    //
+                if (!lookup.has(node)) {
                     return;
                 }
 

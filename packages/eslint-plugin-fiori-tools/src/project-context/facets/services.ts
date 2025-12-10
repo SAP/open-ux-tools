@@ -174,11 +174,11 @@ export function indexCachedServiceWithLocalData(
     }
     const artifacts = getXmlServiceArtifacts(
         service.version,
+        uniformUrl(service.path),
         { uri: service.metadata.uri, isReadOnly: true },
         service.annotationFiles.map((file) => ({ uri: file.uri, isReadOnly: file.type === 'remote' })),
         fileCache
     );
-    artifacts.path = uniformUrl(service.path);
     return buildServiceIndex('local-cap', projectRoot, artifacts, documents);
 }
 

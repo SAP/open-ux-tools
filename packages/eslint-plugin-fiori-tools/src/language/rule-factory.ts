@@ -8,6 +8,8 @@ import type { XMLAstNode, XMLToken } from '@xml-tools/ast';
 import { FioriMixedRuleDefinition } from '../types';
 import { FioriAnnotationSourceCode } from './annotations/source-code';
 import { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
+import { DiagnosticCache } from './diagnostic-cache';
+import { Diagnostic } from './diagnostics';
 
 type FioriRuleLanguageSpecificOptions = {
     LangOptions: FioriLanguageOptions;
@@ -42,21 +44,28 @@ type AnnotationRuleContext<MessageIds extends string, RuleOptions extends unknow
 export function createMixedRule<
     MessageIds extends string,
     RuleOptions extends unknown[],
-    ValidationResult,
     ExtRuleDocs extends Record<string, unknown> = {}
 >({
+    ruleId,
     meta,
     check,
     createJson,
     createXml,
     createAnnotations
 }: {
+    ruleId: Diagnostic['type'];
     meta?: RulesMeta<MessageIds, RuleOptions, ExtRuleDocs>;
-    createJson?: (context: JSONRuleContext<MessageIds, RuleOptions>, validationResult: ValidationResult) => RuleVisitor;
-    createXml?: (context: XMLRuleContext<MessageIds, RuleOptions>, validationResult: ValidationResult) => RuleVisitor;
+    createJson?: (
+        context: JSONRuleContext<MessageIds, RuleOptions>,
+        validationResult: Extract<Diagnostic, { type: typeof ruleId }>[]
+    ) => RuleVisitor;
+    createXml?: (
+        context: XMLRuleContext<MessageIds, RuleOptions>,
+        validationResult: Extract<Diagnostic, { type: typeof ruleId }>[]
+    ) => RuleVisitor;
     createAnnotations?: (
         context: AnnotationRuleContext<MessageIds, RuleOptions>,
-        validationResult: ValidationResult
+        validationResult: Extract<Diagnostic, { type: typeof ruleId }>[]
     ) => RuleVisitor;
     check: (
         context: RuleContext<{
@@ -66,7 +75,7 @@ export function createMixedRule<
             Node: Node;
             MessageIds: MessageIds;
         }>
-    ) => ValidationResult;
+    ) => Extract<Diagnostic, { type: typeof ruleId }>[];
 }): FioriMixedRuleDefinition<{ MessageIds: MessageIds; RuleOptions: RuleOptions }> {
     return {
         meta,
@@ -79,15 +88,22 @@ export function createMixedRule<
                 MessageIds: MessageIds;
             }>
         ): RuleVisitor {
-            const validationResult = check(context);
+            let cachedDiagnostics = DiagnosticCache.getMessages(ruleId);
+            if (cachedDiagnostics) {
+                console.log('Using cached diagnostics for rule', ruleId);
+            } else {
+                console.log('Computing diagnostics for rule', ruleId);
+                cachedDiagnostics = check(context);
+                DiagnosticCache.addMessages(ruleId, cachedDiagnostics);
+            }
             if (context.sourceCode instanceof JSONSourceCode && createJson) {
-                return createJson(context as JSONRuleContext<MessageIds, RuleOptions>, validationResult);
+                return createJson(context as JSONRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
             }
             if (context.sourceCode instanceof FioriXMLSourceCode && createXml) {
-                return createXml(context as XMLRuleContext<MessageIds, RuleOptions>, validationResult);
+                return createXml(context as XMLRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
             }
             if (context.sourceCode instanceof FioriAnnotationSourceCode && createAnnotations) {
-                return createAnnotations(context as AnnotationRuleContext<MessageIds, RuleOptions>, validationResult);
+                return createAnnotations(context as AnnotationRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
             }
             return {};
         }

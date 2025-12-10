@@ -19,6 +19,7 @@ import { FioriJSONSourceCode } from './json/source-code';
 import { FioriXMLSourceCode, visitorKeys as xmlVisitorKeys } from './xml/source-code';
 import { ProjectContext } from '../project-context/project-context';
 import { FioriAnnotationSourceCode, visitorKeys as annotationVisitorKeys } from './annotations/source-code';
+import { DiagnosticCache } from './diagnostic-cache';
 
 export type FioriLanguageOptions = {};
 export type FioriSourceCode = FioriJSONSourceCode | FioriXMLSourceCode | FioriAnnotationSourceCode;
@@ -79,6 +80,7 @@ export class FioriLanguage
         const text = typeof file.body === 'string' ? file.body : new TextDecoder().decode(file.body);
         const path = normalizePath(file.path);
         const uri = pathToFileURL(path).toString();
+        DiagnosticCache.clear(uri); // currently this does not work well in ESLint extension, because it triggers this on window focus change
         const projectContext = ProjectContext.updateFile(uri, text);
         const document = projectContext.index.documents[uri];
         if (!document) {
