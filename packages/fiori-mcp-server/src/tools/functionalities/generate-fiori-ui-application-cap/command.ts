@@ -53,14 +53,10 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
 
         const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`.trim();
         const { stderr } = await runCmd(command, { cwd: targetDir });
-        // logger.info(stdout);
         if (stderr) {
-            // logger.error(stderr);
             throw new Error(stderr);
         }
     } catch (error) {
-        // logger.error(`Error generating application: ${error}`);
-
         return {
             functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
             status: 'Error',

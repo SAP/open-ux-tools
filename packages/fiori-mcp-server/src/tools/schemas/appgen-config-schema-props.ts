@@ -39,9 +39,7 @@ export const serviceOdata = z.object({
                 'odata/v4/<servicename>/',
                 'odata/v4/MyRiskService/',
                 'odata/v4/MyOdataV4Service/',
-                "odata/v4/<relative '@path' annotation from service cds file>/",
-                "<absolute '@path' annotation from service cds file>/",
-                'myAbsolutePathFromServiceCdsFile/'
+                'sap/opu/odata/sap/<servicename>/'
             ]
         }),
     host: z
@@ -59,12 +57,12 @@ export const serviceCap = z.object({
         .describe('The odata endpoint. If the parameter is not provided, the agent should ask the user for it.')
         .meta({
             examples: [
-                'odata/v4/<servicename>/',
-                'odata/v4/MyRiskService/',
-                'odata/v4/MyOdataV4Service/',
-                "odata/v4/<relative '@path' annotation from service cds file>/",
-                "<absolute '@path' annotation from service cds file>/",
-                'myAbsolutePathFromServiceCdsFile/'
+                '/odata/v4/<servicename>/',
+                '/odata/v4/MyRiskService/',
+                '/odata/v4/MyOdataV4Service/',
+                "/odata/v4/<relative '@path' annotation from service cds file>/",
+                "/<absolute '@path' annotation from service cds file>/",
+                '/myAbsolutePathFromServiceCdsFile/'
             ]
         }),
     capService: z.object({
