@@ -360,7 +360,6 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
                 module: project.name,
                 appHostId: baseApp.appHostId,
                 appName: baseApp.appName,
-                appVersion: baseApp.appVersion,
                 html5RepoRuntime: cf.html5RepoRuntimeGuid,
                 org: cf.org.GUID,
                 space: cf.space.GUID,
