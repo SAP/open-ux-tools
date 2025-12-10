@@ -17,7 +17,7 @@
         "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo  ./reports",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
-        "lint": "eslint .",
+        "lint": "eslint",
         "lint:fix": "eslint --fix",
         "lint:report": "eslint . -f multiple ",
         "lint:summary": "eslint . -f summary",

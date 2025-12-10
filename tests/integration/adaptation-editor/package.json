@@ -8,8 +8,8 @@
     "private": true,
     "scripts": {
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint .",
-        "lint:fix": "eslint . --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test:clean": "rimraf --glob playwright-report",
         "test:run": "playwright test",
         "test:integration": "npm-run-all -l -s test:clean test:run",

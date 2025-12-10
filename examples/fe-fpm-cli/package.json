@@ -11,8 +11,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf dist coverage",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
-        "lint": "eslint .",
-        "lint:fix": "eslint . --fix"
+        "lint": "eslint",
+        "lint:fix": "eslint --fix"
     },
     "dependencies": {
         "@sap-ux/fe-fpm-writer": "workspace:*",
