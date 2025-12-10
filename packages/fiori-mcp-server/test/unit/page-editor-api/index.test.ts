@@ -1,28 +1,17 @@
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import { getTree } from '../../../src/page-editor-api/tree';
-import type { PageAnnotations, TreeNode, TreeNodeProperty } from '../../../src/page-editor-api/tree';
-import applicationSchema from './test-data/schema/App.json';
-import applicationConfig from './test-data/config/App.json';
-import listReportSchema from './test-data/schema/ListReport.json';
-import listReportConfig from './test-data/config/ListReport.json';
-import objectPageSchema from './test-data/schema/ObjectPage.json';
-import objectPageConfig from './test-data/config/ObjectPage.json';
-import multiViewListReportSchema from './test-data/schema/MultiViewListReport.json';
-import multiViewListReportConfig from './test-data/config/MultiViewListReport.json';
-import chartListReportSchema from './test-data/schema/ChartListReport.json';
-import chartListReportConfig from './test-data/config/ChartListReport.json';
-import listReportV2Schema from './test-data/schema/ListReportV2.json';
-import listReportV2Config from './test-data/config/ListReportV2.json';
-import objectPageV2Schema from './test-data/schema/ObjectPageV2.json';
-import objectPageV2Config from './test-data/config/ObjectPageV2.json';
-import visualFiltersSchema from './test-data/schema/VisualFilters.json';
-import visualFiltersConfig from './test-data/config/VisualFilters.json';
-import visualFiltersAnnotations from './test-data/annotations/VisualFilters.json';
-import customPageSchema from './test-data/schema/CustomPage.json';
-import customPageConfig from './test-data/config/CustomPage.json';
+import type { TreeNode, TreeNodeProperty } from '../../../src/page-editor-api/tree';
+import { join } from 'path';
+import { createApplicationAccess } from '@sap-ux/project-access';
+import type { ApplicationAccess } from '@sap-ux/project-access';
+import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
+
+const appPathLropV2 = join(__dirname, '../../test-data/original/lrop-v2');
+const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
 
 describe('getTree', () => {
     beforeEach(async () => {});
+
+    const applications: { [key: string]: ApplicationAccess } = {};
 
     function cleanupSchema(obj: TreeNode | TreeNodeProperty): void {
         if (obj && typeof obj === 'object' && 'schema' in obj) {
@@ -36,76 +25,66 @@ describe('getTree', () => {
         }
     }
 
-    test('getTree - Application', async () => {
-        const data = getTree(JSON.stringify(applicationSchema), applicationConfig, PageTypeV4.ListReport);
-        cleanupSchema(data);
-        expect(data).toMatchSnapshot();
-    });
-
-    test('getTree - ListReport page', async () => {
-        const data = getTree(JSON.stringify(listReportSchema), listReportConfig, PageTypeV4.ListReport);
-        cleanupSchema(data);
-        expect(data).toMatchSnapshot();
-    });
-
-    test('getTree - multiview ListReport page', async () => {
-        const data = getTree(
-            JSON.stringify(multiViewListReportSchema),
-            multiViewListReportConfig,
-            PageTypeV4.ListReport
+    async function loadAppModel(path: string): Promise<ApplicationModel> {
+        const moduleName = '@sap/ux-specification';
+        // Workaround loading issue with '@sap-ux/odata-annotation-core-types'
+        jest.mock(
+            '@sap-ux/odata-annotation-core-types',
+            () => ({
+                DiagnosticSeverity: {}
+            }),
+            { virtual: true }
         );
-        cleanupSchema(data);
-        expect(data).toMatchSnapshot();
-    });
-
-    test('getTree - chart ListReport page', async () => {
-        const data = getTree(JSON.stringify(chartListReportSchema), chartListReportConfig, PageTypeV4.ListReport, {
-            dynamicNodes: {},
-            nodes: [],
-            dialogsContext: {
-                analyticalChartSupport: {
-                    creationEnabled: true,
-                    creationTooltip: 'Add chart',
-                    addToMultiViewEnabled: true,
-                    deletionEnabled: true
-                }
-            }
+        const specification = await import(moduleName);
+        const result = await specification.readApp({
+            app: applications[path] ?? path
         });
+        return result.applicationModel;
+    }
+
+    beforeAll(async () => {
+        applications[appPathLropV2] = await createApplicationAccess(appPathLropV2);
+        applications[appPathLropV4] = await createApplicationAccess(appPathLropV4);
+    });
+
+    test('getTree - Application V4', async () => {
+        const applicationModel = await loadAppModel(appPathLropV4);
+        const data = getTree(applicationModel.model);
         cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
-    test('getTree - ObjectPage page', async () => {
-        const data = getTree(JSON.stringify(objectPageSchema), objectPageConfig, PageTypeV4.ObjectPage);
+    test('getTree - ListReport V4', async () => {
+        const applicationModel = await loadAppModel(appPathLropV4);
+        const data = getTree(applicationModel.pages['TravelList'].model);
         cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
-    test('getTree - ListReport page V2', async () => {
-        const data = getTree(JSON.stringify(listReportV2Schema), listReportV2Config, PageTypeV4.ListReport);
+    test('getTree - ObjectPage V4', async () => {
+        const applicationModel = await loadAppModel(appPathLropV4);
+        const data = getTree(applicationModel.pages['TravelObjectPage'].model);
         cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
-    test('getTree - ObjectPage page V2', async () => {
-        const data = getTree(JSON.stringify(objectPageV2Schema), objectPageV2Config, PageTypeV4.ObjectPage);
+    test('getTree - Application V2', async () => {
+        const applicationModel = await loadAppModel(appPathLropV2);
+        const data = getTree(applicationModel.model);
         cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
-    test('getTree - ListReport page Visual Filters', async () => {
-        const data = getTree(
-            JSON.stringify(visualFiltersSchema),
-            visualFiltersConfig,
-            PageTypeV4.ListReport,
-            visualFiltersAnnotations as PageAnnotations
-        );
+    test('getTree - ListReport V2', async () => {
+        const applicationModel = await loadAppModel(appPathLropV2);
+        const data = getTree(applicationModel.pages['ListReport_SEPMRA_C_PD_Product'].model);
         cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
 
-    test('getTree - CustomPage', async () => {
-        const data = getTree(JSON.stringify(customPageSchema), customPageConfig, PageTypeV4.FPMCustomPage);
+    test('getTree - ObjectPage V2', async () => {
+        const applicationModel = await loadAppModel(appPathLropV2);
+        const data = getTree(applicationModel.pages['ObjectPage_SEPMRA_C_PD_Product'].model);
         cleanupSchema(data);
         expect(data).toMatchSnapshot();
     });
