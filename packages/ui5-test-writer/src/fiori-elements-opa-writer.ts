@@ -10,14 +10,13 @@ import {
     FileName,
     DirName,
     getListReportPage,
-    getObjectPages,
     getSpecification,
     getFilterFields,
     createApplicationAccess,
     getTableColumns
 } from '@sap-ux/project-access';
-import pageModel from './sampleListReportModel.json';
-import { Logger } from '@sap-ux/logger/src/types';
+import type { Logger } from '@sap-ux/logger/src/types';
+import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
 
 /**
  * Reads the manifest for an app.
@@ -312,15 +311,6 @@ export async function generateOPAFiles(
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
     const testOutDirPath = join(basePath, 'webapp/test');
 
-    const specification: any = await getSpecification(basePath);
-    // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
-    const editorAppAccess = await createApplicationAccess(basePath, { fs: editor });
-    const appSpec = await specification.readApp({ app: editorAppAccess, fs: editor });
-    // pageModel based on description https://github.wdf.sap.corp/ux-engineering/tools-suite/issues/36325, needs to be confirmed/changed
-    // get pages
-    const listReportPage = getListReportPage(appSpec.applicationModel.pages);
-    // const objectPages = getObjectPages(appSpec.applicationModel.pages);
-
     // Common test files
     editor.copyTpl(
         join(rootCommonTemplateDirPath),
@@ -352,21 +342,28 @@ export async function generateOPAFiles(
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
-    let filterBarItems: string[] = [];
-    try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        filterBarItems = getFilterFields(listReportPage.model as { root: any });
-    } catch (error) {
-        // If anything goes wrong, we just don't add filter bar items
-    }
-    log?.error(`Filter bar items for OPA tests: ${JSON.stringify(filterBarItems)}`);
 
+    let filterBarItems: string[] = [];
     let tableColumns: Record<string, any> = {};
+    // Read application model to extract control information needed for test generation
+    // specification and readApp might not be available due to specification version, fail gracefully
     try {
-        const columnAggregations = getTableColumns(listReportPage.model as { root: any });
-        tableColumns = transformTableColumns(columnAggregations);
+        const specification: Specification = await getSpecification(basePath);
+        // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
+        const appAccess = await createApplicationAccess(basePath, { fs: editor });
+        const appResult: ReadAppResult = await specification.readApp({ app: appAccess, fs: editor });
+        const listReportPage = appResult.applicationModel ? getListReportPage(appResult.applicationModel) : undefined;
+
+        if (listReportPage?.model) {
+            filterBarItems = getFilterFields(listReportPage.model);
+        }
+
+        if (listReportPage?.model) {
+            const columnAggregations = getTableColumns(listReportPage.model);
+            tableColumns = transformTableColumns(columnAggregations);
+        }
     } catch (error) {
-        // no columns
+        log?.warn('Error analyzing project model using specification. No dynamic tests will be generated.');
     }
 
     const journeyParams = {
