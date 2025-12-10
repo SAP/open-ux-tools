@@ -638,7 +638,7 @@ function convertCollection(
         .filter((child): child is Element => child.type === ELEMENT_TYPE)
         .forEach((collectionEntryElement: Element) => {
             const value = convertExpression(namespaceMap, currentNamespace, collectionEntryElement, options);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
             let entry = value as any;
             if (value && value.type) {
                 // record and string can be used directly as collection entries

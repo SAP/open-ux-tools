@@ -258,7 +258,7 @@ function mergeDeletionRanges(tokens: CompilerToken[], deletionRanges: DeletionRa
         do {
             doMerge = false;
             const next = rangeIndex + 1 < deletionRanges.length ? deletionRanges[rangeIndex + 1] : null;
-            if (next && current.termRange.end + 1 === next.termRange.start) {
+            if (current.termRange.end + 1 === next?.termRange.start) {
                 // merge possible if at most a single separator token is between deletion ranges
                 const nonCommentTokenIndexes: number[] = [];
                 let nextIndex = current.tokenRange.end;
@@ -922,7 +922,7 @@ function includeSiblingSeparator(
     const nextToken = tokens[nextTokenIndex];
     let siblingSeparatorFound = false;
     let previousSeparatorIncluded = false;
-    if (nextToken && nextToken.text === separator) {
+    if (nextToken?.text === separator) {
         // extend deletion range to include separator
         deletionRange.tokenRange.end = nextTokenIndex;
         siblingSeparatorFound = true;
