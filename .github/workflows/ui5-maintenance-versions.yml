@@ -39,9 +39,9 @@ jobs:
               uses: actions/cache/restore@v4
               with:
                   path: tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions-
+                  key: ui5-versions-latest
                   restore-keys: |
-                      ui5-versions-
+                      ui5-versions-latest
             - name: List previously cached UI5 maintenance versions
               id: previous-ui5-versions
               run: |
@@ -60,8 +60,8 @@ jobs:
               id: output-ui5-versions  
               run: |
                   echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
-            - name: Cache ui5-versions modules
+            - name: Save UI5 versions to cache
               uses: actions/cache/save@v4
               with:
                   path: tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions-${{fromJson(steps.current-ui5-versions.outputs.versions)[0]}}
+                  key: ui5-versions-latest
