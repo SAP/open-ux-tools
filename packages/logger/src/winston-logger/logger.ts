@@ -33,15 +33,6 @@ class BaseWinstonLogger implements Logger {
     protected metadataOverride?: Metadata;
     // Maintain of map of transports. This is useful for adding/removing transports
     protected transportMap: Map<Transport, WinstonTransport>;
-    /**
-     *
-     * @param root0
-     * @param root0.logger
-     * @param root0.transportMap
-     * @param root0.metadataOverride
-     * @param root0.winstonLevel
-     * @param root0.logPrefix
-     */
     protected initialize({ logger, transportMap, metadataOverride, winstonLevel, logPrefix }: BaseLoggerOptions): void {
         this._logger = logger;
         this.transportMap = transportMap;
@@ -50,38 +41,18 @@ class BaseWinstonLogger implements Logger {
         this.metadataOverride = metadataOverride;
     }
 
-    /**
-     *
-     * @param message
-     */
     info(message: string | object): void {
         this.log({ level: LogLevel.Info, message });
     }
-    /**
-     *
-     * @param message
-     */
     warn(message: string | object): void {
         this.log({ level: LogLevel.Warn, message });
     }
-    /**
-     *
-     * @param message
-     */
     error(message: string | object): void {
         this.log({ level: LogLevel.Error, message });
     }
-    /**
-     *
-     * @param message
-     */
     debug(message: string | object): void {
         this.log({ level: LogLevel.Debug, message });
     }
-    /**
-     *
-     * @param data
-     */
     log(data: string | Log): void {
         if (!this.transportMap.size) {
             // Nothing to do
@@ -94,13 +65,6 @@ class BaseWinstonLogger implements Logger {
             this.winstonLog({ level, message: data.message, metadata: this.metadataOverride });
         }
     }
-    /**
-     *
-     * @param root0
-     * @param root0.level
-     * @param root0.message
-     * @param root0.metadata
-     */
     private winstonLog({
         level,
         message,
@@ -113,11 +77,6 @@ class BaseWinstonLogger implements Logger {
         const msg = typeof message === 'string' ? message : inspect(message);
         this._logger.log(level, msg, metadata);
     }
-    /**
-     *
-     * @param transportMap
-     * @param transport
-     */
     protected addToMap(
         transportMap: Map<Transport, WinstonTransport>,
         transport: Transport
@@ -129,10 +88,7 @@ class BaseWinstonLogger implements Logger {
         }
         return undefined;
     }
-    /**
-     *
-     * @param transport
-     */
+
     add(transport: Transport) {
         const winstonTransport = this.addToMap(this.transportMap, transport);
 
@@ -141,10 +97,6 @@ class BaseWinstonLogger implements Logger {
         }
         return this;
     }
-    /**
-     *
-     * @param transport
-     */
     remove(transport: Transport) {
         const winstonTransport = this.transportMap.get(transport);
         if (winstonTransport) {
@@ -155,17 +107,10 @@ class BaseWinstonLogger implements Logger {
             throw new Error('Cannot remove non-existent transport');
         }
     }
-    /**
-     *
-     */
     transports(): Transport[] {
         return Array.from(this.transportMap.keys());
     }
-    /**
-     *
-     * @param root0
-     * @param root0.logPrefix
-     */
+
     child({ logPrefix }: ChildLoggerOptions): Logger {
         const childLogPrefix = `${this.logPrefix}.${logPrefix}`;
         const metadataOverride = { label: childLogPrefix, labelColor: nextColor() };
@@ -186,13 +131,6 @@ class BaseWinstonLogger implements Logger {
  *  Winston implementation of the @type {Logger} interface
  */
 export class WinstonLogger extends BaseWinstonLogger {
-    /**
-     *
-     * @param root0
-     * @param root0.logLevel
-     * @param root0.transports
-     * @param root0.logPrefix
-     */
     constructor({
         logLevel = LogLevel.Info,
         transports = [],
