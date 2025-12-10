@@ -38,10 +38,6 @@ export function collectComments(tokens: CompilerToken[]): Comment[] {
     return comments;
 }
 
-/**
- *
- * @param token
- */
 function getCommentRangeAndValue(token: CompilerToken): { value: string; range?: Range } {
     if (isOldToken(token)) {
         // 32 line comment // 31 block comment // 30 doc comment

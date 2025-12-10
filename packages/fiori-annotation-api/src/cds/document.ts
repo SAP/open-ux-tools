@@ -88,13 +88,6 @@ export function getDocument(
     };
 }
 
-/**
- *
- * @param fileCache
- * @param file
- * @param facade
- * @param ignoreComments
- */
 function getComments(
     fileCache: Map<string, string>,
     file: TextFile,
@@ -161,11 +154,6 @@ export function getGhostFileDocument(
     };
 }
 
-/**
- *
- * @param serviceName
- * @param annotationFile
- */
 function filterTargets(serviceName: string, annotationFile: AnnotationFile): void {
     // only allow targets pointing to current service
     const serviceNamespace = annotationFile.namespace?.name === serviceName ? annotationFile.namespace : undefined;

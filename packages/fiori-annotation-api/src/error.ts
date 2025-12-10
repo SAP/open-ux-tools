@@ -52,9 +52,6 @@ export class ApiError extends Error {
         return baseMessage;
     }
 
-    /**
-     *
-     */
     private convertMessages(): string {
         let text = 'Other messages:';
         for (const [key, messages] of this.messageMap.entries()) {

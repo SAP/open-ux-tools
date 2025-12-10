@@ -225,10 +225,6 @@ export class CDSWriter implements ChangeHandler {
         this.uniqueInserts = new Set();
     }
 
-    /**
-     *
-     * @param pointer
-     */
     private getIndentLevel(pointer: string): number {
         const cachedValue = this.indentLevelCache[pointer];
         if (cachedValue !== undefined) {
@@ -241,12 +237,6 @@ export class CDSWriter implements ChangeHandler {
 
     //#region Inserts
 
-    /**
-     *
-     * @param pointer
-     * @param node
-     * @param index
-     */
     private isFirstInsert(pointer: string, node: ContainerNode, index: number = -1): boolean {
         const childCount = getChildCount(node);
         const i = index > -1 ? Math.min(index, childCount) : childCount;
@@ -424,11 +414,6 @@ export class CDSWriter implements ChangeHandler {
 
     //#region Deletes
 
-    /**
-     *
-     * @param pointer
-     * @param reversePath
-     */
     private deleteNode(pointer: string, reversePath: AstNode[]): void {
         const [astNode, parent] = reversePath;
         const segments = pointer.split('/');
@@ -501,12 +486,6 @@ export class CDSWriter implements ChangeHandler {
         // preprocessor converts these changes to DeleteAnnotationGroup
     };
 
-    /**
-     *
-     * @param annotation
-     * @param target
-     * @param index
-     */
     private getDeletionRange(annotation: Annotation, target: Target, index: number): DeletionRange | undefined {
         const { edmxPath } = this.facade.collectMetadataForAbsolutePath(
             target.name,
@@ -747,15 +726,6 @@ export class CDSWriter implements ChangeHandler {
         }
     };
 
-    /**
-     *
-     * @param content
-     * @param parent
-     * @param change
-     * @param indentLevel
-     * @param firstInsert
-     * @param referenceNode
-     */
     private insertIntoNodeWithContent<T extends ElementInserts>(
         content: ContainerContentBlock[],
         parent: ContainerNode,
@@ -811,13 +781,6 @@ export class CDSWriter implements ChangeHandler {
         }
     }
 
-    /**
-     *
-     * @param range
-     * @param text
-     * @param indentLevel
-     * @param firstInsert
-     */
     private insertText(range: Range, text: string, indentLevel: number, firstInsert: boolean): void {
         if (firstInsert) {
             this.edits.push(TextEdit.replace(range, text + indent('\n', { level: indentLevel, skipFirstLine: true })));
@@ -833,14 +796,6 @@ export class CDSWriter implements ChangeHandler {
         }
     }
 
-    /**
-     *
-     * @param content
-     * @param parent
-     * @param change
-     * @param childIndentLevel
-     * @param firstInsert
-     */
     private convertInsertNodeToTextEdits<T extends ElementInserts>(
         content: ContainerContentBlock[],
         parent: ContainerNode | CDSDocument,
@@ -856,13 +811,6 @@ export class CDSWriter implements ChangeHandler {
         }
     }
 
-    /**
-     *
-     * @param content
-     * @param parent
-     * @param insertionPointer
-     * @param index
-     */
     private findInsertPosition(
         content: ContainerContentBlock[],
         parent: ContainerNode,
@@ -901,11 +849,6 @@ export class CDSWriter implements ChangeHandler {
     }
 }
 
-/**
- *
- * @param changes
- * @param pointer
- */
 function willTargetAnnotationIncreaseIndent(changes: CDSDocumentChange[], pointer: string): boolean {
     const targetPointer = pointer.split('/').slice(0, 3).join('/');
     const conversionChange = changes.find(
@@ -915,13 +858,6 @@ function willTargetAnnotationIncreaseIndent(changes: CDSDocumentChange[], pointe
     return !!conversionChange;
 }
 
-/**
- *
- * @param tokens
- * @param node
- * @param indentLevel
- * @param indentContent
- */
 function convertToCompoundAnnotation(
     tokens: CompilerToken[],
     node: Target,
@@ -988,12 +924,6 @@ function convertToCompoundAnnotation(
     ];
 }
 
-/**
- *
- * @param edits
- * @param content
- * @param blockIndex
- */
 function deleteBlock(edits: TextEdit[], content: ContainerContentBlock[], blockIndex: number): void {
     const block = content[blockIndex];
     if (block?.type !== 'element') {
@@ -1012,14 +942,6 @@ function deleteBlock(edits: TextEdit[], content: ContainerContentBlock[], blockI
     }
 }
 
-/**
- *
- * @param edits
- * @param content
- * @param blockIndex
- * @param block
- * @param next
- */
 function removeWhitespaceForConsequentDeletes(
     edits: TextEdit[],
     content: ContainerContentBlock[],
@@ -1044,12 +966,6 @@ function removeWhitespaceForConsequentDeletes(
     }
 }
 
-/**
- *
- * @param previousElement
- * @param currentBlock
- * @param edits
- */
 function deletePreviousElementWhiteSpaces(
     previousElement: ContainerContentBlock,
     currentBlock: ContainerContentBlock,
@@ -1062,16 +978,6 @@ function deletePreviousElementWhiteSpaces(
     }
 }
 
-/**
- *
- * @param edits
- * @param pointer
- * @param astNode
- * @param parent
- * @param comments
- * @param tokens
- * @param lastIndex
- */
 function deleteValue(
     edits: TextEdit[],
     pointer: string,
@@ -1111,11 +1017,6 @@ function deleteValue(
     }
 }
 
-/**
- *
- * @param parent
- * @param referenceNode
- */
 function printChange(parent: ContainerNode | undefined, referenceNode?: Annotation) {
     return function (change: ElementInserts): string {
         if (change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE) {
@@ -1140,22 +1041,12 @@ function printChange(parent: ContainerNode | undefined, referenceNode?: Annotati
     };
 }
 
-/**
- *
- * @param containerSize
- * @param insertionIndex
- */
 function getIndexForInsertion(containerSize: number, insertionIndex?: number): number {
     return insertionIndex !== undefined && insertionIndex > -1
         ? Math.min(insertionIndex, containerSize)
         : containerSize;
 }
 
-/**
- *
- * @param container
- * @param tokens
- */
 function getCommas(container: ContainerNode, tokens: CompilerToken[]): Token[] {
     if (container.type === TARGET_TYPE) {
         if (!container.range) {
@@ -1167,12 +1058,6 @@ function getCommas(container: ContainerNode, tokens: CompilerToken[]): Token[] {
     }
 }
 
-/**
- *
- * @param range
- * @param items
- * @param tokens
- */
 function extractCommasFromCompilerTokens<T extends { range?: Range }>(
     range: Range,
     items: T[],
@@ -1206,13 +1091,6 @@ function extractCommasFromCompilerTokens<T extends { range?: Range }>(
     return result;
 }
 
-/**
- *
- * @param content
- * @param parent
- * @param previous
- * @param index
- */
 function getStartAnchor(
     content: ContainerContentBlock[],
     parent: ContainerNode,
@@ -1245,10 +1123,6 @@ function getStartAnchor(
     return startPosition;
 }
 
-/**
- *
- * @param data
- */
 function serializeReference(data: NoUndefinedNamespaceData): string {
     if (data.namespace) {
         if (data.alias) {
@@ -1261,12 +1135,6 @@ function serializeReference(data: NoUndefinedNamespaceData): string {
     }
 }
 
-/**
- *
- * @param missingReferences
- * @param fileUri
- * @param projectRoot
- */
 async function getTextEditForMissingRefs(
     missingReferences: string[],
     fileUri: string,
@@ -1281,11 +1149,6 @@ async function getTextEditForMissingRefs(
     return missingReferencesTexts.join('\n') + '\n';
 }
 
-/**
- *
- * @param range1
- * @param range2
- */
 function isRangesEqual(range1: Range | undefined, range2: Range | undefined): boolean {
     if (!range1 || !range2) {
         return false;
@@ -1299,10 +1162,6 @@ function isRangesEqual(range1: Range | undefined, range2: Range | undefined): bo
     );
 }
 
-/**
- *
- * @param kind
- */
 function convertCDSAstToEdmType(kind: string): Edm | undefined {
     switch (kind) {
         case 'time':
@@ -1328,10 +1187,6 @@ function convertCDSAstToEdmType(kind: string): Edm | undefined {
     }
 }
 
-/**
- *
- * @param text
- */
 function deIndent(text: string): string {
     return text
         .split('\n')
@@ -1339,10 +1194,6 @@ function deIndent(text: string): string {
         .join('\n');
 }
 
-/**
- *
- * @param references
- */
 function getInsertReferencePosition(references: Reference[]): { position: Position; prependNewLine: boolean } {
     const range = references[references.length - 1]?.uriRange;
     if (!range) {
@@ -1361,12 +1212,6 @@ interface CutRange {
     end: number;
 }
 
-/**
- *
- * @param document
- * @param tokens
- * @param pointers
- */
 function createElementRanges(document: CDSDocument, tokens: CompilerToken[], pointers: string[]): CutRange[] {
     const ranges: CutRange[] = [];
     const groups = pointers.reduce((acc, pointer) => {
@@ -1407,17 +1252,6 @@ function createElementRanges(document: CDSDocument, tokens: CompilerToken[], poi
     return ranges;
 }
 
-/**
- *
- * @param document
- * @param comments
- * @param tokens
- * @param changes
- * @param cdsDocument
- * @param position
- * @param ranges
- * @param indentLevel
- */
 function getTextEditsForMove(
     document: TextDocument,
     comments: Comment[],
@@ -1438,13 +1272,6 @@ function getTextEditsForMove(
     return edits;
 }
 
-/**
- *
- * @param content
- * @param start
- * @param end
- * @param nodeType
- */
 function findContentIndices(
     content: ContainerContentBlock[],
     start: number,
@@ -1482,20 +1309,10 @@ function findContentIndices(
     };
 }
 
-/**
- *
- * @param token
- */
 function isComma(token: AstNode | Comment | ContainerContentBlock | undefined): token is Token {
     return token?.type === 'token' && token.value === ',';
 }
 
-/**
- *
- * @param document
- * @param changes
- * @param range
- */
 function findDeletionChange(document: CDSDocument, changes: CDSDocumentChange[], range: Range): boolean {
     return changes.some((change) => {
         if (change.type.startsWith('delete-')) {
@@ -1508,17 +1325,6 @@ function findDeletionChange(document: CDSDocument, changes: CDSDocumentChange[],
     });
 }
 
-/**
- *
- * @param textDocument
- * @param changes
- * @param cdsDocument
- * @param content
- * @param cutRange
- * @param indentLevel
- * @param text
- * @param edits
- */
 function cutRange(
     textDocument: TextDocument,
     changes: CDSDocumentChange[],
@@ -1573,13 +1379,6 @@ function cutRange(
     }
 }
 
-/**
- *
- * @param originalText
- * @param suffix
- * @param cutRange
- * @param indentLevel
- */
 function makeCut(originalText: string, suffix: string | undefined, cutRange: CutRange, indentLevel: number): string {
     let cut = originalText;
     const difference = indentLevel - cutRange.indentLevel;
@@ -1597,11 +1396,6 @@ function makeCut(originalText: string, suffix: string | undefined, cutRange: Cut
     }
 }
 
-/**
- *
- * @param a
- * @param b
- */
 function updatePosition(a: Position, b: Position): void {
     a.line = b.line;
     a.character = b.character;
@@ -1619,12 +1413,6 @@ interface ElementWithComments {
     range: Range;
 }
 
-/**
- *
- * @param collection
- * @param comments
- * @param tokens
- */
 function getContainerContent(
     collection: ContainerNode,
     comments: Comment[],
@@ -1648,11 +1436,6 @@ function getContainerContent(
     return content;
 }
 
-/**
- *
- * @param content
- * @param item
- */
 function processNode(content: ContainerContentBlock[], item: Comment | AstNode): void {
     const previousItem = content[content.length - 1];
 
@@ -1692,13 +1475,6 @@ function processNode(content: ContainerContentBlock[], item: Comment | AstNode):
         content.push(element);
     }
 }
-/**
- *
- * @param changes
- * @param content
- * @param document
- * @param insertAfterIndex
- */
 function skipCommaInsertion(
     changes: CDSDocumentChange[],
     content: ContainerContentBlock[],

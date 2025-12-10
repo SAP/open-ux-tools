@@ -37,11 +37,6 @@ export function collectUsedNamespaces(element: AnyNode, namespacesOrAliases: Set
 
 const PATH_LIKE_VALUES: string[] = [Edm.Path, Edm.PropertyPath, Edm.NavigationPropertyPath, Edm.AnnotationPath];
 
-/**
- *
- * @param element
- * @param namespacesOrAliases
- */
 function processElement(element: Element, namespacesOrAliases: Set<string>): void {
     if (element.name === Edm.Annotation) {
         const term = element.attributes[Edm.Term];
@@ -64,11 +59,6 @@ function processElement(element: Element, namespacesOrAliases: Set<string>): voi
     processPathLikeElement(element, namespacesOrAliases);
 }
 
-/**
- *
- * @param element
- * @param namespacesOrAliases
- */
 function processPathLikeElement(element: Element, namespacesOrAliases: Set<string>): void {
     if (PATH_LIKE_VALUES.includes(element.name)) {
         const textNode = element.content.find((node): node is TextNode => node.type === TEXT_TYPE);
@@ -88,11 +78,6 @@ function processPathLikeElement(element: Element, namespacesOrAliases: Set<strin
     }
 }
 
-/**
- *
- * @param rawPath
- * @param namespacesOrAliases
- */
 function processPath(rawPath: string, namespacesOrAliases: Set<string>): void {
     const path = parsePath(rawPath);
     for (const segment of path.segments) {
