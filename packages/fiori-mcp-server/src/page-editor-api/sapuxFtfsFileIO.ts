@@ -10,7 +10,8 @@ import type {
     Application,
     PageType,
     ExportParametersV2Type,
-    ReadAppResult
+    ReadAppResult,
+    Parser
 } from '@sap/ux-specification/dist/types/src';
 import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification/dist/types/src';
 import { basename, join } from 'node:path';
@@ -19,7 +20,6 @@ import { getSpecificationModuleFromCache, readFlexChanges } from '@sap-ux/projec
 import { getFlexChangeLayer, getManifest, getUI5Version } from './project';
 import { logger } from '../utils/logger';
 import { mergeChanges, writeFlexChanges } from './flex';
-import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 
 export interface PageData {
     pageId: string;
@@ -99,7 +99,7 @@ export class SapuxFtfsFileIO {
      * @param skipParsing If true, skips parsing the application modeler within the specification.
      * @returns A promise that resolves to an array of File objects
      */
-    public async getApplicationModel(skipParsing?: boolean): Promise<ApplicationModel | undefined> {
+    public async getApplicationModel(skipParsing?: boolean): Promise<Parser.ApplicationModel | undefined> {
         const app = await this.readApp(skipParsing);
         return app.applicationModel;
     }

@@ -1,8 +1,9 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
 import type { ListFunctionalitiesOutput } from '../../../src/types';
 import { listFunctionalities } from '../../../src/tools';
-import { mockSpecificationImport } from '../utils';
+import { mockSpecificationReadAppWithModel } from '../utils';
 import * as projectUtils from '../../../src/page-editor-api/project';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
@@ -10,17 +11,24 @@ jest.mock('@sap-ux/project-access', () => ({
     ...(jest.requireActual('@sap-ux/project-access') as object)
 }));
 
+const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
+
 describe('listFunctionalities', () => {
     const appPath = 'testApplicationPath';
-    let importProjectMock = jest.fn();
+    let readAppMock = jest.fn();
     const findProjectRootSpy: jest.SpyInstance = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
     const getManifestSpy: jest.SpyInstance = jest.spyOn(projectUtils, 'getManifest');
     const createApplicationAccessSpy: jest.SpyInstance = jest.spyOn(
         openUxProjectAccessDependency,
         'createApplicationAccess'
     );
+    const applications: { [key: string]: openUxProjectAccessDependency.ApplicationAccess } = {};
+    beforeAll(async () => {
+        // Create application access can take more time on slower machines
+        applications[appPathLropV4] = await openUxProjectAccessDependency.createApplicationAccess(appPathLropV4);
+    }, 10000);
     beforeEach(async () => {
-        importProjectMock = jest.fn().mockResolvedValue([]);
+        readAppMock = jest.fn().mockResolvedValue({ files: [] });
         getManifestSpy.mockResolvedValue({ manifest: true });
         findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
         createApplicationAccessSpy.mockImplementation((rootPath: string) => {
@@ -36,7 +44,8 @@ describe('listFunctionalities', () => {
                     }
                 },
                 getSpecification: () => ({
-                    importProject: importProjectMock
+                    readApp: readAppMock,
+                    getApiVersion: () => ({ version: '99' })
                 })
             };
         });
@@ -65,14 +74,14 @@ describe('listFunctionalities', () => {
                     apps: {}
                 },
                 getSpecification: () => ({
-                    importProject: importProjectMock
+                    readApp: readAppMock
                 })
             };
         });
         const functionalities = (await listFunctionalities({
             appPath
         })) as ListFunctionalitiesOutput;
-        expect(importProjectMock).toHaveBeenCalledTimes(0);
+        expect(readAppMock).toHaveBeenCalledTimes(0);
         expect(functionalities.applicationPath).toEqual(appPath);
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
@@ -85,36 +94,16 @@ describe('listFunctionalities', () => {
     });
 
     test('call with valid app and data', async () => {
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const result = (await listFunctionalities({
             appPath
         })) as ListFunctionalitiesOutput;
         expect(result.functionalities).toMatchSnapshot();
-        expect(importProjectMock).toHaveBeenCalledWith({
-            manifest: { manifest: true },
-            annotations: [],
-            flex: []
-        });
-    });
-
-    test('call with valid app and flex changes', async () => {
-        jest.spyOn(openUxProjectAccessDependency, 'readFlexChanges').mockResolvedValue({
-            file1: 'change1',
-            file2: 'change2'
-        });
-        mockSpecificationImport(importProjectMock);
-        await listFunctionalities({
-            appPath
-        });
-        expect(importProjectMock).toHaveBeenCalledWith({
-            manifest: { manifest: true },
-            annotations: [],
-            flex: ['change1', 'change2']
-        });
+        expect(readAppMock).toHaveBeenCalledTimes(1);
     });
 
     test('Error during reading functionalities', async () => {
-        importProjectMock.mockImplementation(() => {
+        readAppMock.mockImplementation(() => {
             throw new Error('Dummy');
         });
         const result = (await listFunctionalities({

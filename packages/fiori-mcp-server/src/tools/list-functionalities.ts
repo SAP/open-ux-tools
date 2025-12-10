@@ -3,7 +3,7 @@ import type { Functionality, ListFunctionalitiesInput, ListFunctionalitiesOutput
 import { FUNCTIONALITIES_DETAILS } from './functionalities';
 import { resolveApplication } from '../utils';
 import type { ApplicationAccess } from '@sap-ux/project-access';
-import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { Parser } from '@sap/ux-specification/dist/types/src';
 
 /**
  * Lists all functionalities for a given application.
@@ -59,7 +59,7 @@ export async function listFunctionalities(
  */
 async function getAppFunctionalities(
     appAccess: ApplicationAccess,
-    application: ApplicationModel
+    application: Parser.ApplicationModel
 ): Promise<Functionality[]> {
     const pageEditorApi = new PageEditorApi(appAccess, application);
     const tree = await pageEditorApi.getPageTree();
@@ -87,7 +87,7 @@ async function getAppFunctionalities(
  */
 async function getPageFunctionalities(
     appAccess: ApplicationAccess,
-    application: ApplicationModel,
+    application: Parser.ApplicationModel,
     pageId?: string
 ): Promise<Functionality[]> {
     const pageEditorApi = new PageEditorApi(appAccess, application, pageId);

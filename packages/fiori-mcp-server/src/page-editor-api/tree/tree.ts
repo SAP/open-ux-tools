@@ -1,9 +1,8 @@
-import type { ArtifactType } from '@sap/ux-specification/dist/types/src';
+import type { ArtifactType, Parser } from '@sap/ux-specification/dist/types/src';
 import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import { isArrayEqual } from './utils';
 import type { JSONSchema4, JSONSchema4Type } from 'json-schema';
 import { logger } from '../../utils/logger';
-import type { TreeModel } from '@sap/ux-specification/dist/types/src/parser';
 import { SortingOptions } from './types';
 import type { AllowedMoveRange, ObjectAggregation, SettingOption, PropertyPath } from './types';
 
@@ -11,7 +10,7 @@ interface TraverseNodeData {
     text: string;
     level: number;
     path: string;
-    model: TreeModel;
+    model: Parser.TreeModel;
 }
 
 export interface TreeNode {
@@ -393,7 +392,7 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
  * @param aggregation Aggregation object.
  * @returns Movable props.
  */
-function getMovable(model: TreeModel, aggregation: ObjectAggregation): NodeMoveProps | undefined {
+function getMovable(model: Parser.TreeModel, aggregation: ObjectAggregation): NodeMoveProps | undefined {
     // Custom extensions are movable, but annotation nodes depends if annotation support feature is enabled
     if (model.root !== aggregation) {
         const isMovable = true;
@@ -467,7 +466,7 @@ function getNodeType(aggregation: ObjectAggregation): AggregationNodeType | unde
  * @param model Tree model from speficiation API.
  * @returns Outline tree.
  */
-export function getTree(model: TreeModel): TreeNode {
+export function getTree(model: Parser.TreeModel): TreeNode {
     const root = model.root as ObjectAggregation;
     const node = traverseTree(root, {
         level: 0,

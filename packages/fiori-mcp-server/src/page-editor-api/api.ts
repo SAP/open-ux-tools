@@ -1,17 +1,16 @@
-import type { ExportResults } from '@sap/ux-specification/dist/types/src';
+import type { ExportResults, Parser } from '@sap/ux-specification/dist/types/src';
 import { type TreeNode, type PropertyPath, getTree } from './tree';
 import { SapuxFtfsFileIO } from './sapuxFtfsFileIO';
 import type { AppData } from './sapuxFtfsFileIO';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { updateProperty } from './json-helper';
-import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
 
 /**
  * Class representing the Page Editor API
  */
 export class PageEditorApi {
     private readonly ftfsIO;
-    private appModel?: ApplicationModel;
+    private appModel?: Parser.ApplicationModel;
 
     /**
      * Creates an instance of PageEditorApi.
@@ -20,7 +19,7 @@ export class PageEditorApi {
      * @param appModel - Optional application model  from specification.
      * @param pageId - Optional page identifier
      */
-    constructor(public appAccess: ApplicationAccess, appModel?: ApplicationModel, public pageId?: string) {
+    constructor(public appAccess: ApplicationAccess, appModel?: Parser.ApplicationModel, public pageId?: string) {
         this.ftfsIO = new SapuxFtfsFileIO(appAccess);
         this.appModel = appModel;
     }

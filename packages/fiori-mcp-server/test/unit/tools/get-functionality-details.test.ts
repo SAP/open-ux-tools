@@ -1,9 +1,9 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
 import { getFunctionalityDetails } from '../../../src/tools';
-import { mockSpecificationImport } from '../utils';
-import applicationConfig from '../page-editor-api/test-data/config/App.json';
+import { mockSpecificationReadAppWithModel } from '../utils';
 import * as addPageDependency from '../../../src/tools/functionalities/page';
 import * as projectUtils from '../../../src/page-editor-api/project';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
@@ -11,17 +11,24 @@ jest.mock('@sap-ux/project-access', () => ({
     ...(jest.requireActual('@sap-ux/project-access') as object)
 }));
 
+const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
+
 describe('getFunctionalityDetails', () => {
     const appPath = 'testApplicationPath';
-    let importProjectMock = jest.fn();
+    let readAppMock = jest.fn();
     const findProjectRootSpy: jest.SpyInstance = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
     const getManifestSpy: jest.SpyInstance = jest.spyOn(projectUtils, 'getManifest');
     const createApplicationAccessSpy: jest.SpyInstance = jest.spyOn(
         openUxProjectAccessDependency,
         'createApplicationAccess'
     );
+    const applications: { [key: string]: openUxProjectAccessDependency.ApplicationAccess } = {};
+    beforeAll(async () => {
+        // Create application access can take more time on slower machines
+        applications[appPathLropV4] = await openUxProjectAccessDependency.createApplicationAccess(appPathLropV4);
+    }, 10000);
     beforeEach(async () => {
-        importProjectMock = jest.fn().mockResolvedValue([]);
+        readAppMock = jest.fn().mockResolvedValue({ files: [] });
         getManifestSpy.mockResolvedValue({});
         findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
         createApplicationAccessSpy.mockImplementation((rootPath: string) => {
@@ -37,7 +44,8 @@ describe('getFunctionalityDetails', () => {
                     }
                 },
                 getSpecification: () => ({
-                    importProject: importProjectMock
+                    readApp: readAppMock,
+                    getApiVersion: () => ({ version: '99' })
                 })
             };
         });
@@ -54,7 +62,7 @@ describe('getFunctionalityDetails', () => {
     });
 
     test('call atomic property', async () => {
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const details = await getFunctionalityDetails({
             appPath,
             functionalityId: ['settings', 'flexEnabled']
@@ -78,132 +86,77 @@ describe('getFunctionalityDetails', () => {
     });
 
     test('Get page property', async () => {
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const details = await getFunctionalityDetails({
             appPath,
-            functionalityId: [
-                'TravelObjectPage',
-                'sections',
-                'GroupSection',
-                'subsections',
-                'CustomSubSection',
-                'title'
-            ]
+            functionalityId: ['TravelObjectPage', 'header', 'actions', 'RelatedApps', 'showRelatedApps']
         });
         expect(details).toEqual({
-            description:
+            'description':
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: [
-                'TravelObjectPage',
-                'sections',
-                'GroupSection',
-                'subsections',
-                'CustomSubSection',
-                'title'
-            ],
-            name: 'Change property',
-            pageName: 'TravelObjectPage',
-            parameters: {
-                type: 'object',
-                properties: {
-                    title: {
-                        artifactType: 'Manifest',
-                        description: 'The label of a custom section, preferably as an i18n key.',
-                        i18nClassification: 'TIT: Custom section title',
-                        type: 'string'
+            'functionalityId': ['TravelObjectPage', 'header', 'actions', 'RelatedApps', 'showRelatedApps'],
+            'name': 'Change property',
+            'pageName': 'TravelObjectPage',
+            'parameters': {
+                'properties': {
+                    'showRelatedApps': {
+                        'artifactType': 'Manifest',
+                        'description': 'Set showRelatedApps to true to show the navigation button for related apps.',
+                        'type': 'boolean'
                     }
-                }
+                },
+                'type': 'object'
             }
         });
     });
 
     test('Get page node properties', async () => {
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const details = await getFunctionalityDetails({
             appPath,
-            functionalityId: ['TravelObjectPage', 'sections', 'GroupSection', 'subsections', 'CustomSubSection']
+            functionalityId: ['TravelObjectPage', 'header', 'actions', 'DeleteAction']
         });
         expect(details).toEqual({
-            description:
+            'description':
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: ['TravelObjectPage', 'sections', 'GroupSection', 'subsections', 'CustomSubSection'],
-            name: 'Change property',
-            pageName: 'TravelObjectPage',
-            parameters: {
-                type: 'object',
-                properties: {
-                    CustomSubSection: {
-                        actionType: 'Custom',
-                        additionalProperties: false,
-                        description: 'Custom Sub Section',
-                        isViewNode: true,
-                        keys: [
+            'functionalityId': ['TravelObjectPage', 'header', 'actions', 'DeleteAction'],
+            'name': 'Change property',
+            'pageName': 'TravelObjectPage',
+            'parameters': {
+                'properties': {
+                    'DeleteAction': {
+                        'actionType': 'Standard',
+                        'additionalProperties': true,
+                        'annotationPath':
+                            '/com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.Container/Travel/@com.sap.vocabularies.UI.v1.DeleteHidden',
+                        'description': 'Delete',
+                        'isViewNode': true,
+                        'keys': [
                             {
-                                name: 'Key',
-                                value: 'CustomSubSection'
+                                'name': 'Action',
+                                'value': 'Delete'
                             }
                         ],
-                        properties: {
-                            controls: {
-                                type: 'object'
-                            },
-                            fragmentName: {
-                                artifactType: 'Manifest',
-                                description: 'The path to the XML template containing the section control.',
-                                type: 'string'
-                            },
-                            relatedFacet: {
-                                artifactType: 'Manifest',
-                                description: 'Use the key of another section as a placement anchor.',
-                                displayName: 'Anchor',
-                                oneOf: [
-                                    {
-                                        bundle: 'ui5',
-                                        const: 'SubSection1',
-                                        description: 'Sub Section 1',
-                                        hidden: true
-                                    },
-                                    {
-                                        bundle: 'ui5',
-                                        const: 'CustomSubSection',
-                                        custom: true,
-                                        description: 'Custom Sub Section'
-                                    }
-                                ],
-                                type: 'string'
-                            },
-                            relativePosition: {
-                                displayName: 'Placement',
-                                enum: ['After', 'Before'],
-                                type: 'string',
-                                artifactType: 'Manifest',
-                                description: 'Define the placement, either before or after the anchor section.'
-                            },
-                            title: {
-                                artifactType: 'Manifest',
-                                description: 'The label of a custom section, preferably as an i18n key.',
-                                i18nClassification: 'TIT: Custom section title',
-                                type: 'string'
+                        'properties': {
+                            'group': {
+                                'artifactType': 'Manifest',
+                                'description':
+                                    "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+                                'descriptionSrcURL': 'https://ui5.sap.com/#/topic/cbf16c599f2d4b8796e3702f7d4aae6c',
+                                'type': 'string'
                             }
                         },
-                        propertyIndex: 1,
-                        required: ['fragmentName', 'title'],
-                        type: 'object'
+                        'propertyIndex': 1,
+                        'type': 'object'
                     }
-                }
+                },
+                'type': 'object'
             }
         });
     });
 
     test('Get application complex property details', async () => {
-        // Mock data with value to test how "currentValue" is resolved
-        const appConfigTemp = JSON.parse(JSON.stringify(applicationConfig));
-        appConfigTemp.settings.flexibleColumnLayout = {
-            defaultTwoColumnLayoutType: 'ThreeColumnsBeginExpandedEndHidden'
-        };
-        mockSpecificationImport(importProjectMock, [
-            { dataSourceUri: 'app.json', fileContent: JSON.stringify(appConfigTemp) }
-        ]);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const details = await getFunctionalityDetails({
             appPath,
             functionalityId: ['settings', 'flexibleColumnLayout']

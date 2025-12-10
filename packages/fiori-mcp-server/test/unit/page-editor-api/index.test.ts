@@ -3,7 +3,8 @@ import type { TreeNode, TreeNodeProperty } from '../../../src/page-editor-api/tr
 import { join } from 'path';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { ApplicationAccess } from '@sap-ux/project-access';
-import { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { Parser } from '@sap/ux-specification/dist/types/src';
+import { readAppWithModel } from '../utils';
 
 const appPathLropV2 = join(__dirname, '../../test-data/original/lrop-v2');
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
@@ -25,27 +26,16 @@ describe('getTree', () => {
         }
     }
 
-    async function loadAppModel(path: string): Promise<ApplicationModel> {
-        const moduleName = '@sap/ux-specification';
-        // Workaround loading issue with '@sap-ux/odata-annotation-core-types'
-        jest.mock(
-            '@sap-ux/odata-annotation-core-types',
-            () => ({
-                DiagnosticSeverity: {}
-            }),
-            { virtual: true }
-        );
-        const specification = await import(moduleName);
-        const result = await specification.readApp({
-            app: applications[path] ?? path
-        });
-        return result.applicationModel;
+    async function loadAppModel(path: string): Promise<Parser.ApplicationModel> {
+        const result = await readAppWithModel(path, applications);
+        return result.applicationModel as Parser.ApplicationModel;
     }
 
     beforeAll(async () => {
+        // Create application access can take more time on slower machines
         applications[appPathLropV2] = await createApplicationAccess(appPathLropV2);
         applications[appPathLropV4] = await createApplicationAccess(appPathLropV4);
-    });
+    }, 10000);
 
     test('getTree - Application V4', async () => {
         const applicationModel = await loadAppModel(appPathLropV4);
