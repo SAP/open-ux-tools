@@ -130,11 +130,6 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
      * @param control - Flexible Column Layout control.
      * @returns A list of visible pages.
      */
-
-    /**
-     *
-     * @param control
-     */
     private getVisibleFlexibleColumnLayoutPages(control: FlexibleColumnLayout): (Control | undefined)[] {
         const layout = control.getLayout();
         switch (layout) {

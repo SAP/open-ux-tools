@@ -9,11 +9,9 @@ declare module 'sap/fe/core/TemplateComponent' {
     import type UIComponent from 'sap/ui/core/UIComponent';
     import type AppComponent from 'sap/fe/core/AppComponent';
     interface TemplateComponent extends UIComponent {
-        /**
-         *
-         */
         getAppComponent(): AppComponent;
     }
 
     export default TemplateComponent;
 }
+

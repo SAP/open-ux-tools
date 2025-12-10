@@ -64,17 +64,10 @@ export function preprocessActionExecution(
     }
 }
 
-/**
- *
- */
 export class AddTableCustomColumnQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(
             CREATE_TABLE_CUSTOM_COLUMN,
@@ -88,10 +81,6 @@ export class AddTableCustomColumnQuickAction
         );
     }
 
-    /**
-     *
-     * @param path
-     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {

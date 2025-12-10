@@ -20,9 +20,6 @@ import { reportTelemetry } from '@sap-ux-private/control-property-editor-common'
 import Log from 'sap/base/Log';
 
 type BaseDialogModel = JSONModel & {
-    /**
-     *
-     */
     getProperty(sPath: '/fragmentList'): Fragments;
 };
 

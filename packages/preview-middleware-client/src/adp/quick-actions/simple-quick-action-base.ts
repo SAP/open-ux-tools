@@ -14,23 +14,12 @@ import { QuickActionDefinitionBase } from './quick-action-base';
 export abstract class SimpleQuickActionDefinitionBase<
     T extends UI5Element = UI5Element
 > extends QuickActionDefinitionBase<typeof SIMPLE_QUICK_ACTION_KIND> {
-    /**
-     *
-     */
     public get isApplicable(): boolean {
         return this.control !== undefined;
     }
 
     protected control: T | undefined;
 
-    /**
-     *
-     * @param type
-     * @param controlTypes
-     * @param defaultTextKey
-     * @param context
-     * @param enablementValidators
-     */
     constructor(
         public readonly type: string,
         protected readonly controlTypes: string[],
@@ -41,9 +30,6 @@ export abstract class SimpleQuickActionDefinitionBase<
         super(type, SIMPLE_QUICK_ACTION_KIND, defaultTextKey, context, enablementValidators);
     }
 
-    /**
-     *
-     */
     initialize(): Promise<void> {
         this.control = getRelevantControlFromActivePage<T>(
             this.context.controlIndex,
@@ -53,9 +39,6 @@ export abstract class SimpleQuickActionDefinitionBase<
         return Promise.resolve();
     }
 
-    /**
-     *
-     */
     getActionObject(): SimpleQuickAction {
         return {
             kind: SIMPLE_QUICK_ACTION_KIND,

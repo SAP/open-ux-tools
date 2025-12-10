@@ -7,9 +7,6 @@ import { getError } from '../utils/error';
 
 import type { ActionHandler } from './types';
 
-/**
- *
- */
 export class CommunicationService {
     /**
      * Sends an action to the CPE.

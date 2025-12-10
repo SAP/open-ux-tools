@@ -43,9 +43,6 @@ export abstract class QuickActionDefinitionBase<T extends string> {
     }
 
     protected validationResult: EnablementValidatorResult[] | undefined;
-    /**
-     *
-     */
     protected get isDisabled(): boolean {
         if (this.validationResult === undefined) {
             return false;
@@ -54,21 +51,10 @@ export abstract class QuickActionDefinitionBase<T extends string> {
         return validationErrors.length > 0;
     }
 
-    /**
-     *
-     */
     protected get textKey(): string {
         return this.defaultTextKey;
     }
 
-    /**
-     *
-     * @param type
-     * @param kind
-     * @param defaultTextKey
-     * @param context
-     * @param enablementValidators
-     */
     constructor(
         public readonly type: string,
         public readonly kind: T,

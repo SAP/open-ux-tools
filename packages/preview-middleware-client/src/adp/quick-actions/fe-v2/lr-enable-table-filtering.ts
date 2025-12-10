@@ -26,10 +26,6 @@ export class EnableTableFilteringQuickAction
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context, [
             {
@@ -84,9 +80,6 @@ export class EnableTableFilteringQuickAction
         }
     }
 
-    /**
-     *
-     */
     async execute(): Promise<FlexCommand[]> {
         if (!this.control) {
             return [];

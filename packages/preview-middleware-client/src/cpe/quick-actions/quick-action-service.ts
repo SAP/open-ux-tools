@@ -151,11 +151,6 @@ export class QuickActionService implements Service {
         this.sendAction(quickActionListChanged(groups));
     }
 
-    /**
-     *
-     * @param group
-     * @param instance
-     */
     private async addAction(group: QuickActionGroup, instance: QuickActionDefinition): Promise<void> {
         if (instance.isApplicable) {
             await instance.runEnablementValidators();

@@ -45,13 +45,7 @@ import BaseDialog from './BaseDialog.controller';
 const radix = 10;
 
 type AddTableColumnsFragmentsModel = AddFragmentModel & {
-    /**
-     *
-     */
     getProperty(sPath: '/newColumnFragmentName'): string;
-    /**
-     *
-     */
     getProperty(sPath: '/newCellFragmentName'): string;
 };
 

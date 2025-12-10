@@ -47,21 +47,9 @@ type ControllerList = {
 type ControllerModel = JSONModel & {
     getProperty(sPath: '/controllersList'): ControllerList;
     getProperty(sPath: '/controllerExists'): boolean;
-    /**
-     *
-     */
     getProperty(sPath: '/newControllerName'): string;
-    /**
-     *
-     */
     getProperty(sPath: '/viewId'): string;
-    /**
-     *
-     */
     getProperty(sPath: '/controllerPath'): string;
-    /**
-     *
-     */
     getProperty(sPath: '/controllerExtension'): string;
 };
 

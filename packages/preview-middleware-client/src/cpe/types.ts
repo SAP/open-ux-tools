@@ -39,9 +39,6 @@ export type UnSubscribeFunction = (handler: ActionHandler) => void;
 export type IsReuseComponentApi = (controlId: string) => boolean;
 
 export interface Service {
-    /**
-     *
-     */
     init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void | Promise<void>;
 }
 

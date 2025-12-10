@@ -42,9 +42,6 @@ type DialogData = ExtensionPointData | AddFragmentData | ExtendControllerData;
 
 export const OPEN_DIALOG_STATUS_CHANGED = 'OPEN_DIALOG_STATUS_CHANGED';
 
-/**
- *
- */
 export class DialogFactory {
     private static readonly eventTarget = new EventTarget();
     private static isDialogOpen = false;
@@ -52,9 +49,6 @@ export class DialogFactory {
      * Only one dialog can be open at a time. This flag indicates if a new dialog can be opened.
      */
 
-    /**
-     *
-     */
     public static get canOpenDialog(): boolean {
         return !this.isDialogOpen;
     }

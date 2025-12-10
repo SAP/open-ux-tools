@@ -18,8 +18,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 export class RtaService {
     /**
      *
-     * @param options ui5 adaptation options.
-     * @param rta
+     * @param rta Runtime Authoring Instance
      */
     constructor(private readonly rta: RuntimeAuthoring) {}
 
@@ -65,9 +64,6 @@ export class RtaService {
         });
     }
 
-    /**
-     *
-     */
     private save(): Promise<void> {
         if (this.rta.save) {
             // v1.107.x and above
@@ -79,11 +75,6 @@ export class RtaService {
     }
 }
 
-/**
- *
- * @param sendAction
- * @param rta
- */
 export function modeAndStackChangeHandler(sendAction: (action: ExternalAction) => void, rta: RuntimeAuthoring) {
     return () => {
         const canUndo = rta.canUndo();

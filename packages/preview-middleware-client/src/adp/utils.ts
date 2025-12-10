@@ -36,6 +36,7 @@ export function resetReuseComponentChecker(): void {
  * Defers the resolution of the promise, stores resolve/reject functions so that they can be accessed at a later stage.
  *
  * @description A Deferred object contains an unresolved promise along with the functions to resolve or reject that promise.
+ *
  * @returns {Deferred} Deferred object
  */
 export function createDeferred<T>(): Deferred<T> {
@@ -142,10 +143,6 @@ export function getControllerInfoForControl(control: ManagedObject): ControllerI
  * @returns The controller name and view ID.
  */
 
-/**
- *
- * @param overlayControl
- */
 export function getControllerInfo(overlayControl: ElementOverlay): ControllerInfo {
     const control = overlayControl.getElement();
     return getControllerInfoForControl(control);

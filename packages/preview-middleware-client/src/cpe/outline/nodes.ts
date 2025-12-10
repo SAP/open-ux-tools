@@ -96,11 +96,6 @@ function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
     }
 }
 
-/**
- *
- * @param node
- * @param propertyIdMap
- */
 function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string[]>): void {
     const control = getControlById(node.controlId);
     if (control) {

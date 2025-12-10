@@ -21,19 +21,12 @@ const UNSUPPORTED_TABLES = [ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
 const CREATION_ROWS_MODE = 'creationRows';
 const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
 
-/**
- *
- */
 export class EnableTableEmptyRowModeQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
     readonly forceRefreshAfterExecution = true;
 
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(ENABLE_TABLE_EMPTY_ROW_MODE, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_EMPTY_ROW_MODE', context);
     }
@@ -76,10 +69,6 @@ export class EnableTableEmptyRowModeQuickAction
         this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
     }
 
-    /**
-     *
-     * @param path
-     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];
         if (!table) {

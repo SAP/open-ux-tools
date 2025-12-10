@@ -25,11 +25,6 @@ import { ODataHealthChecker } from './odata-health/odata-health-checker';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
 import { ODataUpStatus } from './odata-health/odata-health-status';
 
-/**
- *
- * @param rta
- * @param registries
- */
 export default function init(
     rta: RuntimeAuthoring,
     registries: QuickActionDefinitionRegistry<string>[] = []
@@ -105,7 +100,7 @@ export default function init(
             .then(() => {
                 CommunicationService.sendAction(appLoaded());
             })
-
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             .catch(Log.error);
         const icons = getIcons();
         CommunicationService.sendAction(iconsLoaded(icons));

@@ -90,11 +90,6 @@ export function getRelevantControlFromActivePage<T extends UI5Element = UI5Eleme
     return relevantControls;
 }
 
-/**
- *
- * @param control
- * @param type
- */
 export function getParentContainer<T extends ManagedObject>(
     control: ManagedObject | null | undefined,
     type: string

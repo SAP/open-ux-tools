@@ -1,15 +1,15 @@
-import type ManagedObject from 'sap/ui/base/ManagedObject';
-import type TemplateComponent from 'sap/fe/core/TemplateComponent';
+import ManagedObject from 'sap/ui/base/ManagedObject';
+import TemplateComponent from 'sap/fe/core/TemplateComponent';
 import Component from 'sap/ui/core/Component';
-import type AppComponent from 'sap/fe/core/AppComponent';
-import type XMLView from 'sap/ui/core/mvc/XMLView';
+import AppComponent from 'sap/fe/core/AppComponent';
+import XMLView from 'sap/ui/core/mvc/XMLView';
 import type { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 import { isA } from './core';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getOverlay } from '../cpe/utils';
-import type UI5Element from 'sap/ui/core/Element';
-import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import UI5Element from 'sap/ui/core/Element';
+import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 /**
  * Gets app component of a v4 project.
@@ -73,11 +73,6 @@ export function getPageName(control: ManagedObject): string | undefined {
     return view.getId().split('::').pop();
 }
 
-/**
- *
- * @param page
- * @param propertyPathSegments
- */
 export function getConfigMapControlIdMap(page: string | undefined, propertyPathSegments: string[]): string {
     if (page && !propertyPathSegments.length) {
         return page;
@@ -91,11 +86,11 @@ export function getConfigMapControlIdMap(page: string | undefined, propertyPathS
 
 /**
  * Get the modified value for a control.
- *
  * @param modifiedControl - The modified control.
  * @param flexSettings - Flex Settings of the control.
  * @param propertyChanges - The change object
  * @param propertyPathExtraSegments - optional path segments which are added to the default modified control manifest path
+ *
  * @returns  A Promise resolving to an array of FlexCommand objects.
  */
 export async function createManifestPropertyChange(

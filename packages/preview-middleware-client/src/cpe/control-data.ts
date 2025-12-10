@@ -111,7 +111,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
         // enum values are created differently and use DataType as prototype, which only has stubs for instance functions -> getName returns undefined
         // array and base types also return undefined, but we have already handled those above
         // https://github.com/SAP/openui5/blob/203ce22763a76e28b7a422f6c635a42480f733f1/src/sap.ui.core/src/sap/ui/base/DataType.js#L430
-
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         const name = (Object.getPrototypeOf(propertyDataType) as DataType).getName();
         if (!name) {
             analyzedType.primitiveType = 'enum';
@@ -129,10 +129,6 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
     return analyzedType;
 }
 
-/**
- *
- * @param property
- */
 function analyzeManifestProperty(property: MergedSetting): AnalyzedType | undefined {
     const analyzedType: AnalyzedType = {
         primitiveType: 'any',

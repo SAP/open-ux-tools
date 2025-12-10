@@ -22,19 +22,12 @@ export class ToggleClearFilterBarQuickAction
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(ENABLE_CLEAR_FILTER_BAR_TYPE, [], '', context);
     }
     readonly forceRefreshAfterExecution = true;
     private isClearButtonEnabled = false;
 
-    /**
-     *
-     */
     initialize(): Promise<void> {
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
@@ -52,18 +45,12 @@ export class ToggleClearFilterBarQuickAction
         return Promise.resolve();
     }
 
-    /**
-     *
-     */
     protected get textKey() {
         return this.isClearButtonEnabled
             ? 'V4_QUICK_ACTION_LR_DISABLE_CLEAR_FILTER_BAR'
             : 'V4_QUICK_ACTION_LR_ENABLE_CLEAR_FILTER_BAR';
     }
 
-    /**
-     *
-     */
     async execute(): Promise<FlexCommand[]> {
         const command = await executeToggleAction(this.context, this.isClearButtonEnabled, CONTROL_TYPE, PROPERTY_PATH);
         if (command.length) {

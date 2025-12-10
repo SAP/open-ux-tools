@@ -1,5 +1,5 @@
 import { sapMock } from 'mock/window';
-import type { Window } from 'types/global';
+import { Window } from 'types/global';
 import initCdm from '../../../src/flp/initCdm';
 
 describe('flp/initCdm', () => {

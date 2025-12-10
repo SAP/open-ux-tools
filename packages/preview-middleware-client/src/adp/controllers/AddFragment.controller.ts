@@ -38,25 +38,10 @@ import BaseDialog from './BaseDialog.controller';
 const radix = 10;
 
 export type AddFragmentModel = JSONModel & {
-    /**
-     *
-     */
     getProperty(sPath: '/title'): string;
-    /**
-     *
-     */
     getProperty(sPath: '/completeView'): boolean;
-    /**
-     *
-     */
     getProperty(sPath: '/newFragmentName'): string;
-    /**
-     *
-     */
     getProperty(sPath: '/selectedIndex'): number;
-    /**
-     *
-     */
     getProperty(sPath: '/selectedAggregation/value'): string;
 };
 
