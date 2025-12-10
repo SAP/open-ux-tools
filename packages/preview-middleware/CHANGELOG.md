@@ -1,5 +1,15 @@
 # @sap-ux/preview-middleware
 
+## 0.23.69
+
+### Patch Changes
+
+-   985223a: fix loading i18n bundle for CAP projects
+-   Updated dependencies [985223a]
+    -   @sap-ux/project-access@1.32.13
+    -   @sap-ux/adp-tooling@0.18.17
+    -   @sap-ux/system-access@0.6.31
+
 ## 0.23.68
 
 ### Patch Changes
