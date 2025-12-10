@@ -40,6 +40,9 @@ function createValueHelpTelemetryData(params: {
     if (params.userChoseToDownload !== undefined) {
         propertyData.userChoseToDownload = params.userChoseToDownload;
     }
+    if (params.valueHelpCount !== undefined) {
+        propertyData.valueHelpCount = params.valueHelpCount;
+    }
     if (params.error !== undefined) {
         propertyData.error = params.error;
     }
@@ -49,9 +52,6 @@ function createValueHelpTelemetryData(params: {
 
     // Build measurements object for numeric metrics
     const measurements: Record<string, number> = {};
-    if (params.valueHelpCount !== undefined) {
-        measurements.valueHelpCount = params.valueHelpCount;
-    }
     if (params.downloadTimeMs !== undefined) {
         measurements.downloadTimeMs = params.downloadTimeMs;
     }

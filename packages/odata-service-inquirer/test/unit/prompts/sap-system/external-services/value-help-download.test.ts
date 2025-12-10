@@ -232,10 +232,10 @@ describe('getValueHelpDownloadPrompt', () => {
                 expect.objectContaining({
                     eventName: 'VALUE_HELP_DOWNLOAD_SUCCESS',
                     properties: expect.objectContaining({
-                        userChoseToDownload: true
+                        userChoseToDownload: true,
+                        valueHelpCount: 2
                     }),
                     measurements: expect.objectContaining({
-                        valueHelpCount: 2,
                         downloadTimeMs: expect.any(Number)
                     })
                 }),
