@@ -24,7 +24,7 @@ import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 
-jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
+jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
 jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
 
 jest.mock('@sap-ux/adp-tooling', () => {
@@ -157,8 +157,8 @@ describe('FlpSandbox', () => {
         test('i18n manifest', async () => {
             const projectAccessMock = jest.spyOn(projectAccess, 'createProjectAccess').mockImplementation(() => {
                 return Promise.resolve({
-                    getApplicationIds: () => {
-                        return Promise.resolve(['my.id']);
+                    getApplicationIdByManifestAppId: () => {
+                        return Promise.resolve(['my\\id']);
                     },
                     getApplication: () => {
                         return {
@@ -224,11 +224,11 @@ describe('FlpSandbox', () => {
                         apps: [
                             {
                                 target: '/simple/app',
-                                local: join(fixtures, 'simple-app')
+                                local: join(fixtures, 'simple-app') //test with absolute path
                             },
                             {
                                 target: '/yet/another/app',
-                                local: join(fixtures, 'multi-app'),
+                                local: './test/fixtures/multi-app', //test with relative path
                                 intent: {
                                     object: 'myObject',
                                     action: 'action'
