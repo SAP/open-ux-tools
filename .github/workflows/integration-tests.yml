@@ -21,6 +21,7 @@ jobs:
                   path: tests/integration/adaptation-editor/versions.json
                   key: ui5-versions-latest
                   restore-keys: ui5-versions-latest
+                  enableCrossOsArchive: true
             - name: Output UI5 versions
               id: output-ui5-versions
               run: |
@@ -175,6 +176,7 @@ jobs:
                   path: tests/integration/adaptation-editor/versions.json
                   key: ui5-versions-latest
                   restore-keys: ui5-versions-latest
+                  enableCrossOsArchive: true
             - name: Debug cache restore on Windows
               run: |
                   Write-Output "=== CACHE DEBUG INFO ==="
