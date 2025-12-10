@@ -177,35 +177,6 @@ jobs:
                   key: ui5-versions-latest
                   restore-keys: ui5-versions-latest
                   enableCrossOsArchive: true
-            - name: Debug cache restore on Windows
-              run: |
-                  Write-Output "=== CACHE DEBUG INFO ==="
-                  Write-Output "Current working directory: $(Get-Location)"
-                  Write-Output "Looking for file at: tests\integration\adaptation-editor\versions.json"
-                  Write-Output "Also checking: tests/integration/adaptation-editor/versions.json"
-                  
-                  # Check both path formats
-                  if (Test-Path "tests\integration\adaptation-editor\versions.json") {
-                    Write-Output "✅ Found with backslashes"
-                    Get-Content "tests\integration\adaptation-editor\versions.json"
-                  } elseif (Test-Path "tests/integration/adaptation-editor/versions.json") {
-                    Write-Output "✅ Found with forward slashes"
-                    Get-Content "tests/integration/adaptation-editor/versions.json"
-                  } else {
-                    Write-Output "❌ File not found with either path format"
-                  }
-                  
-                  Write-Output "=== DIRECTORY CONTENTS ==="
-                  if (Test-Path "tests") {
-                    Write-Output "tests/ directory contents:"
-                    Get-ChildItem -Recurse "tests" | Select-Object FullName
-                  } else {
-                    Write-Output "tests/ directory does not exist"
-                  }
-                  
-                  Write-Output "=== ROOT DIRECTORY ==="
-                  Get-ChildItem . | Select-Object Name, Mode
-              shell: powershell
             - name: Run playwright tests
               run: cd tests/integration/adaptation-editor && pnpm exec playwright test --project=Windows-${{ matrix.ui5-version }} --reporter=blob
               env:
