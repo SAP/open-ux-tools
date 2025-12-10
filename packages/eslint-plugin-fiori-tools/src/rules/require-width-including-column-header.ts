@@ -4,6 +4,7 @@ import { createMixedRule } from '../language/rule-factory';
 import type { FioriMixedRuleDefinition } from '../types';
 import { IndexedAnnotation } from '../project-context/facets/services';
 import { Edm, elementsWithName, Element } from '@sap-ux/odata-annotation-core';
+import type { ObjectNode } from '@humanwhocodes/momoa';
 
 export type RequireWidthIncludingColumnHeader = 'require-width-including-column-header';
 export type RequireWidthIncludingColumnHeaderOptions = {
@@ -172,12 +173,75 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
             'tableSettings'
         ];
         return {
-            [createMatcherString(path)](node) {
-                // const ancestors = context.sourceCode.getAncestors(node);
+            [createMatcherString(path)](node: { value: ObjectNode }) {
+                // The selector matches a Member node, we need its value (the Object)
+                const tableSettingsObject = node.value;
+                
+                if (tableSettingsObject.type !== 'Object') {
+                    return;
+                }
+
+                const objectNode = tableSettingsObject as ObjectNode;
+                
+                // Check if widthIncludingColumnHeader already exists
+                const hasProperty = objectNode.members.some(
+                    member => member.name.type === 'String' && 
+                             member.name.value === 'widthIncludingColumnHeader'
+                );
+                
+                if (hasProperty) {
+                    return; // Already configured correctly
+                }
 
                 context.report({
-                    node,
-                    messageId: 'require-width-including-column-header'
+                    node: tableSettingsObject,
+                    messageId: 'require-width-including-column-header',
+                    fix(fixer) {
+                        // Check if required properties exist
+                        if (!objectNode.loc || !objectNode.range) {
+                            return null;
+                        }
+                        
+                        // Calculate indentation from the first member or use object position + 2 spaces
+                        let propertyIndent = '';
+                        let baseIndent = '';
+                        
+                        if (objectNode.members.length > 0 && objectNode.members[0].loc) {
+                            // Use existing member's indentation
+                            propertyIndent = ' '.repeat(objectNode.members[0].loc.start.column);
+                            // Base indent is 2 spaces less than property indent
+                            baseIndent = ' '.repeat(Math.max(0, objectNode.members[0].loc.start.column - 2));
+                        } else {
+                            // Fallback: calculate from object position
+                            baseIndent = ' '.repeat(objectNode.loc.start.column);
+                            propertyIndent = baseIndent + '  ';
+                        }
+                        
+                        if (objectNode.members.length === 0) {
+                            // Empty object
+                            return fixer.replaceTextRange(
+                                objectNode.range,
+                                `{\n${propertyIndent}"widthIncludingColumnHeader": true\n${baseIndent}}`
+                            );
+                        }
+                        
+                        // Build new object with existing properties + widthIncludingColumnHeader
+                        const properties: string[] = [];
+                        for (const member of objectNode.members) {
+                            // Preserve all existing properties by extracting their raw text
+                            if (!member.range) {
+                                continue;
+                            }
+                            const memberStart = member.range[0];
+                            const memberEnd = member.range[1];
+                            const memberText = context.sourceCode.text.substring(memberStart, memberEnd);
+                            properties.push(`${propertyIndent}${memberText.trim()}`);
+                        }
+                        properties.push(`${propertyIndent}"widthIncludingColumnHeader": true`);
+                        
+                        const newContent = `{\n${properties.join(',\n')}\n${baseIndent}}`;
+                        return fixer.replaceTextRange(objectNode.range, newContent);
+                    }
                 });
             }
         };
