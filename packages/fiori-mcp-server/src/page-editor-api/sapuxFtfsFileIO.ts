@@ -15,7 +15,7 @@ import type {
 import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification/dist/types/src';
 import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
-import { readFlexChanges } from '@sap-ux/project-access';
+import { getSpecificationModuleFromCache, readFlexChanges } from '@sap-ux/project-access';
 import { getFlexChangeLayer, getManifest, getUI5Version } from './project';
 import { logger } from '../utils/logger';
 import { mergeChanges, writeFlexChanges } from './flex';
@@ -59,12 +59,12 @@ export class SapuxFtfsFileIO {
      * @returns A promise that resolves to a Specification object
      */
     private async getSpecification(): Promise<Specification> {
-        const specification = await this.appAccess.getSpecification<Specification>();
+        let specification = await this.appAccess.getSpecification<Specification>();
         const apiVersion = specification.getApiVersion();
-        const version = typeof apiVersion?.fpmWriter === 'string' ? parseInt(apiVersion.fpmWriter, 10) : 0;
-        if (version < 35) {
-            // resolved spec is outdated - load latest from global cache
-            // ToDo - force from global cache
+        const version = typeof apiVersion?.version === 'string' ? parseInt(apiVersion.version, 10) : 0;
+        if (version < 24) {
+            // resolved spec is outdated - load latest specification from global cache(it must contain latest API)
+            specification = await getSpecificationModuleFromCache(this.appAccess.app.appRoot);
         }
         return specification;
     }
