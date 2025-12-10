@@ -5,14 +5,16 @@ import * as i18nMock from '../../src/project/i18n/write';
 import * as specMock from '../../src/project/specification';
 import * as capMock from '../../src/project/cap';
 import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
+import { create, type Editor } from 'mem-fs-editor';
 import { promises } from 'node:fs';
 import { readFile, readJSON } from '../../src/file';
 
 describe('Test function createApplicationAccess()', () => {
-    const memFs = create(createStorage());
+    let memFs: Editor;
+
     beforeEach(() => {
         jest.restoreAllMocks();
+        memFs = create(createStorage());
     });
 
     const sampleRoot = join(__dirname, '../test-data/project/info');
@@ -347,7 +349,12 @@ describe('Test function createApplicationAccess()', () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
         const updateFileContent = { 'sap.app': {} } as unknown as Manifest;
         const manifestPath = join(appRoot, 'webapp', 'manifest.json');
-        memFs.writeJSON(manifestPath, { 'sap.app': { id: 'single_apps-fiori_elements' } }, undefined, 4);
+        memFs.writeJSON(
+            manifestPath,
+            { 'sap.app': { id: 'single_apps-fiori_elements', type: 'application' } },
+            undefined,
+            4
+        );
         // Test execution
         const appAccess = await createApplicationAccess(appRoot, memFs);
         await appAccess.updateManifestJSON(updateFileContent);
