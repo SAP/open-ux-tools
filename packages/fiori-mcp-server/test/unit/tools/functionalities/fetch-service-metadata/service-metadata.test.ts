@@ -330,7 +330,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
                 'Failed to parse service metadata. The service may not be a valid OData V4 service.'
@@ -354,7 +354,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
                 'Failed to parse service metadata. The service may not be a valid OData V4 service.'
@@ -378,7 +378,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
                 'Failed to parse service metadata. The service may not be a valid OData V4 service.'
@@ -399,7 +399,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
 
@@ -418,7 +418,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await getServiceMetadata(sapSystem, 'https://test.example.com/sap/opu/odata4/service1?param=value');
 
@@ -443,7 +443,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow('Network error');
         });
@@ -460,7 +460,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: undefined as any
-            };
+            } as BackendSystem;
 
             await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
 
