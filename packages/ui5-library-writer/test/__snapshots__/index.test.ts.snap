@@ -1645,8 +1645,8 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"1.113.0\\",
-    \\"@eslint\\": \\"^9.38.0\\",
-    \\"@typescript-eslint\\": \\"^8.27.0\\",
+    \\"eslint\\": \\"^9.38.0\\",
+    \\"typescript-eslint\\": \\"^8.27.0\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
@@ -2025,8 +2025,7 @@ new Example({
     "state": "modified",
   },
   "com.sap.myui5tslib113/test/com/sap/myui5tslib113/qunit/Example.qunit.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 
 /*global QUnit */
 // eslint-disable-next-line no-undef
@@ -2276,8 +2275,8 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"1.102.19\\",
-    \\"@eslint\\": \\"^9.38.0\\",
-    \\"@typescript-eslint\\": \\"^8.27.0\\",
+    \\"eslint\\": \\"^9.38.0\\",
+    \\"typescript-eslint\\": \\"^8.27.0\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
@@ -2656,8 +2655,7 @@ new Example({
     "state": "modified",
   },
   "com.sap.myui5tslib/test/com/sap/myui5tslib/qunit/Example.qunit.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 
 /*global QUnit */
 // eslint-disable-next-line no-undef
@@ -2907,8 +2905,8 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"1.121.0\\",
-    \\"@eslint\\": \\"^9.38.0\\",
-    \\"@typescript-eslint\\": \\"^8.27.0\\",
+    \\"eslint\\": \\"^9.38.0\\",
+    \\"typescript-eslint\\": \\"^8.27.0\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
     \\"typescript\\": \\"^5.1.6\\",
@@ -3262,8 +3260,7 @@ new Example({
     "state": "modified",
   },
   "com.sap.myui5tslib121/test/com/sap/myui5tslib121/qunit/Example.qunit.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 
 /*global QUnit */
 // eslint-disable-next-line no-undef
