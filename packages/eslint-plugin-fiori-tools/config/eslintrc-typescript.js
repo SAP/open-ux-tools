@@ -4,9 +4,6 @@ const {
 
 const typescriptEslint = require("@typescript-eslint/eslint-plugin");
 const tsParser = require("@typescript-eslint/parser");
-const js = require("@eslint/js");
-const tseslint = require('typescript-eslint');
-
 
 
 module.exports = defineConfig([
