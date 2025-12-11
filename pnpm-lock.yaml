@@ -1084,6 +1084,9 @@ importers:
       '@sap-ux/odata-annotation-core':
         specifier: workspace:*
         version: link:../odata-annotation-core
+      '@sap-ux/odata-annotation-core-types':
+        specifier: workspace:*
+        version: link:../odata-annotation-core-types
       '@sap-ux/odata-vocabularies':
         specifier: workspace:*
         version: link:../odata-vocabularies
@@ -1097,9 +1100,6 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.3)
     devDependencies:
-      '@sap-ux/odata-annotation-core-types':
-        specifier: workspace:*
-        version: link:../odata-annotation-core-types
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access

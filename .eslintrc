@@ -180,7 +180,7 @@
         "valid-typeof": "error",
         "accessor-pairs": "error",
         "block-scoped-var": "warn",
-        "consistent-return": "warn",
+        "consistent-return": "off",
         "curly": ["error", "all"],
         "default-case": "warn",
         "no-alert": "error",
@@ -279,7 +279,7 @@
         "import/no-extraneous-dependencies": [
             "error",
             {
-                "devDependencies": true,
+                "devDependencies": false,
                 "optionalDependencies": true,
                 "peerDependencies": true,
                 "bundledDependencies": false
