@@ -34,8 +34,6 @@ export interface TreeNode {
     properties: TreeNodeProperty[];
     // Annotation node id
     annotationNodeId?: number[];
-    // Special node type
-    type?: AggregationNodeType;
     value?: unknown;
     schema: JSONSchema4;
 }
@@ -92,15 +90,6 @@ export interface TreeNodeProperty {
 
 export const BOOLEAN_DISPLAY_TRUE = 'True';
 export const BOOLEAN_DISPLAY_FALSE = 'False';
-
-enum AggregationNodeType {
-    customAction = 'customAction',
-    customColumn = 'customColumn',
-    customSection = 'customSection',
-    customFilterField = 'customFilterField',
-    rootNode = 'rootNode',
-    views = 'views'
-}
 
 /**
  * Method returns dom id for node.
@@ -379,7 +368,7 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
         title: aggregation.getTechnicalName(),
         properties: getProperties(aggregation),
         annotationNodeId,
-        type: getNodeType(aggregation),
+        // type: getNodeType(aggregation),
         value: aggregation.value,
         schema: aggregation.schema ?? {}
     };
@@ -432,32 +421,6 @@ function getAllowedParentPaths(aggregation: ObjectAggregation): undefined | Allo
         }
     }
     return result;
-}
-
-/**
- * Determines the aggregation node type for a given `ObjectAggregation`.
- *
- * @param aggregation - The aggregation instance to evaluate.
- * @returns The corresponding node type, or `undefined` if not recognized.
- */
-function getNodeType(aggregation: ObjectAggregation): AggregationNodeType | undefined {
-    let type: AggregationNodeType | undefined;
-    if (aggregation.custom) {
-        if (aggregation.constructor.name === 'ActionAggregation') {
-            type = AggregationNodeType.customAction;
-        } else if (aggregation.constructor.name === 'ColumnAggregation') {
-            type = AggregationNodeType.customColumn;
-        } else if (aggregation.constructor.name === 'FilterFieldAggregation') {
-            type = AggregationNodeType.customFilterField;
-        } else if (aggregation.constructor.name === 'SectionAggregation') {
-            type = AggregationNodeType.customSection;
-        }
-    } else if (aggregation.path.length === 0) {
-        type = AggregationNodeType.rootNode;
-    } else if (aggregation.constructor.name === 'ViewsAggregation') {
-        type = AggregationNodeType.views;
-    }
-    return type;
 }
 
 /**
