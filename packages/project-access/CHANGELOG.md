@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 1.32.14
+
+### Patch Changes
+
+-   4bdced0: fix: usage of mem-fs-editor when creating application access instance
+
+## 1.32.13
+
+### Patch Changes
+
+-   985223a: fix loading i18n bundle for CAP projects
+
 ## 1.32.12
 
 ### Patch Changes
