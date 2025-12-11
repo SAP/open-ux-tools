@@ -441,7 +441,7 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
             ...options.promptOptions?.systemSelection
         },
         [odataServiceInquirerPromptNames.valueHelpDownload]: {
-            hide: false, // Enabled by default for Fiori generator
+            hide: true,
             ...options.promptOptions?.valueHelpDownload
         }
     };
