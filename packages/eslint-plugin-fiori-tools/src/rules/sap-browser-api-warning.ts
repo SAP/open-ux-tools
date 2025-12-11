@@ -231,6 +231,9 @@ const rule: Rule.RuleModule = {
             // (true?history.back():''); || if(true) history.back(); || if(true){history.back();} || if(true){}else{history.back();}
             if (maxDepth > 0) {
                 const parent = node.parent;
+                if (!parent) {
+                    return false;
+                }
                 return isCondition(parent) || isInCondition(parent, maxDepth - 1);
             }
             return false;
@@ -418,6 +421,9 @@ const rule: Rule.RuleModule = {
          * @param node The member expression node
          */
         function handleCallExpressionMember(node: ASTNode): void {
+            if (!node.parent) {
+                return;
+            }
             const methodName = getRightestMethodName(node.parent);
             if (typeof methodName !== 'string') {
                 return;
