@@ -4,6 +4,7 @@ import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux
 import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import { getService } from '@sap-ux/store';
 import { ToolsLogger } from '@sap-ux/logger';
+import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 
 /**
  * Fetches SAP backend systems.
@@ -161,6 +162,24 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
 }
 
 /**
+ * Checks if the provided metadata is a valid (parseable, and not error).
+ *
+ * @param metadata - The EDMX metadata XML as string.
+ * @throws An error if the metadata is not valid.
+ */
+function checkMetadata(metadata: string): void {
+    let parsedMetadata: unknown;
+    try {
+        parsedMetadata = parseEdmx(metadata);
+    } catch {
+        /* error handled below */
+    }
+    if (!parsedMetadata) {
+        throw new Error('Failed to parse service metadata. The service may not be a valid OData V4 service.');
+    }
+}
+
+/**
  * Fetches the service metadata for a given SAP system and service path.
  *
  * @param sapSystem - The SAP system object.
@@ -169,5 +188,7 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
  */
 export async function getServiceMetadata(sapSystem: BackendSystem, servicePath: string): Promise<string> {
     const service = await getServiceFromSystem(sapSystem, servicePath);
-    return service.metadata();
+    const metadata = await service.metadata();
+    checkMetadata(metadata);
+    return metadata;
 }

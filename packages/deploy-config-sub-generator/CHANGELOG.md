@@ -1,5 +1,55 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.15
+
+### Patch Changes
+
+-   Updated dependencies [4bdced0]
+    -   @sap-ux/project-access@1.32.14
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.106
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.91
+    -   @sap-ux/fiori-generator-shared@0.13.41
+    -   @sap-ux/odata-service-inquirer@2.11.18
+    -   @sap-ux/deploy-config-generator-shared@0.1.60
+    -   @sap-ux/inquirer-common@0.9.13
+
+## 0.5.14
+
+### Patch Changes
+
+-   Updated dependencies [985223a]
+    -   @sap-ux/project-access@1.32.13
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.105
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.90
+    -   @sap-ux/fiori-generator-shared@0.13.40
+    -   @sap-ux/odata-service-inquirer@2.11.17
+    -   @sap-ux/deploy-config-generator-shared@0.1.59
+    -   @sap-ux/inquirer-common@0.9.12
+
+## 0.5.13
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.104
+    -   @sap-ux/odata-service-inquirer@2.11.16
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/deploy-config-generator-shared@0.1.58
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+    -   @sap-ux/ui5-config@0.29.10
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.89
+
+## 0.5.12
+
+### Patch Changes
+
+-   @sap-ux/deploy-config-generator-shared@0.1.57
+-   @sap-ux/fiori-generator-shared@0.13.38
+-   @sap-ux/odata-service-inquirer@2.11.15
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.103
+
 ## 0.5.11
 
 ### Patch Changes

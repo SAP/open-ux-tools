@@ -1,5 +1,29 @@
 # @sap-ux/telemetry
 
+## 0.6.45
+
+### Patch Changes
+
+-   Updated dependencies [4bdced0]
+    -   @sap-ux/project-access@1.32.14
+
+## 0.6.44
+
+### Patch Changes
+
+-   Updated dependencies [985223a]
+    -   @sap-ux/project-access@1.32.13
+
+## 0.6.43
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/nodejs-utils@0.2.9
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/ui5-config@0.29.10
+
 ## 0.6.42
 
 ### Patch Changes
