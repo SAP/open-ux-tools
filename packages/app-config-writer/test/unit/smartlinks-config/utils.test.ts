@@ -148,7 +148,7 @@ describe('utils', () => {
                 fail('Error should have been thrown');
             } catch (error) {
                 expect(debugMock.mock.calls.length).toBe(1);
-                expect(debugMock).toHaveBeenCalledWith(`Request failed: ${errorMsg}`);
+                expect(debugMock).toHaveBeenCalledWith(`Request failed. Error: ${errorMsg}`);
                 expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
             }
         });

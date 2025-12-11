@@ -107,7 +107,7 @@ export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): P
         }
         return JSON.parse(response.data) as SystemDetailsResponse;
     } catch (error) {
-        logger?.debug(`Request failed: ${error?.message}`);
+        logger?.debug(`Request failed. ${error}`);
         throw Error(error.message || 'Unknown error occurred');
     }
 }
