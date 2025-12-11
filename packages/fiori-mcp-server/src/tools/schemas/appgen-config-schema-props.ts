@@ -52,19 +52,22 @@ export const serviceOdata = z.object({
 });
 
 export const serviceCap = z.object({
-    servicePath: z
-        .string()
-        .describe('The odata endpoint. If the parameter is not provided, the agent should ask the user for it.')
-        .meta({
-            examples: [
-                '/odata/v4/<servicename>/',
-                '/odata/v4/MyRiskService/',
-                '/odata/v4/MyOdataV4Service/',
-                "/odata/v4/<relative '@path' annotation from service cds file>/",
-                "/<absolute '@path' annotation from service cds file>/",
-                '/myAbsolutePathFromServiceCdsFile/'
-            ]
-        }),
+servicePath: z
+            .string()
+            .describe(
+                'The odata endpoint as provided by the cds mcp or as fallback in case that tool is not available from the service cds file.'
+            )
+            .meta({
+                examples: [
+                    '/odata/v4/<servicename>/',
+                    '/odata/v4/MyRiskService/',
+                    '/odata/v2/MyOdataV2Service/',
+                    '/odata/v4/MyOdataV4Service/',
+                    "/odata/v4/<relative '@path' annotation from service cds file>/",
+                    "<absolute '@path' annotation from service cds file>/",
+                    '/myAbsolutePathFromServiceCdsFile/'
+                ]
+            }),
     capService: z.object({
         projectPath: z.string(),
         serviceName: z.string(),
