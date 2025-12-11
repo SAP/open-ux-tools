@@ -37,9 +37,6 @@ export class PageEditorApi {
             text: '',
             schema: {}
         };
-        if (!this.appModel) {
-            this.appModel = await this.ftfsIO.getApplicationModel();
-        }
         if (this.appModel) {
             if (this.pageId) {
                 const pageModel = this.appModel.pages[this.pageId].model;
