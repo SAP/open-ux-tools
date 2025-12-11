@@ -16,7 +16,7 @@ module.exports = defineConfig([
             'coverage/**'
         ]
     },
-    ...fioriTools.config.defaultTS,
+    ...fioriTools.configs.erp,
     {
         languageOptions: {
             parser: tsParser,
