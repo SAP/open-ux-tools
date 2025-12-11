@@ -5,7 +5,7 @@ import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { generatorConfigCAP, PREDEFINED_GENERATOR_VALUES } from '../../schemas';
 import { GENERATE_FIORI_UI_APPLICATION_CAP_ID } from '../../../constant';
-import { checkIfGeneratorInstalled, runCmd, validateWithSchema } from '../../../utils';
+import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../../../utils';
 
 /**
  * Method to generate fiori app.
@@ -51,12 +51,14 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
         await FSpromises.mkdir(dirname(outputPath), { recursive: true });
         await FSpromises.writeFile(outputPath, content, { encoding: 'utf8' });
 
-        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`;
-        const { stderr } = await runCmd(command, { cwd: targetDir });
+        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`.trim();
+        const { stdout, stderr } = await runCmd(command, { cwd: targetDir });
+        logger.info(stdout);
         if (stderr) {
-            throw new Error(String(stderr));
+            logger.error(stderr);
         }
     } catch (error) {
+        logger.error(`Error generating application: ${error}`);
         return {
             functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP_ID,
             status: 'Error',
