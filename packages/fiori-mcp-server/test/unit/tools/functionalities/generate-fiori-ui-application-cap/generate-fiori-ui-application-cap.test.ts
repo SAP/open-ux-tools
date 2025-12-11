@@ -1,7 +1,9 @@
-import { join } from 'node:path';
-import type { ExecuteFunctionalityInput } from '../../../../../src/types';
-import type { GeneratorConfigCAPWithAPI } from '../../../../../src/tools/schemas';
-import packageJson from '../../../../../package.json';
+// Mock runCmd directly
+const mockRunCmd = jest.fn();
+jest.mock('../../../../../src/utils/utils', () => ({
+    checkIfGeneratorInstalled: jest.fn().mockResolvedValue(undefined),
+    runCmd: mockRunCmd
+}));
 
 const mockFindInstalledPackages = jest.fn().mockResolvedValue([
     {
@@ -19,19 +21,18 @@ jest.mock('@sap-ux/nodejs-utils', () => ({
     findInstalledPackages: mockFindInstalledPackages
 }));
 
+import { join } from 'node:path';
+import type { ExecuteFunctionalityInput } from '../../../../../src/types';
+import type { GeneratorConfigCAPWithAPI } from '../../../../../src/tools/schemas';
+import packageJson from '../../../../../package.json';
+
 import {
     GENERATE_FIORI_UI_APPLICATION_CAP,
     generateFioriUIApplicationCapHandlers
 } from '../../../../../src/tools/functionalities/generate-fiori-ui-application-cap';
 import { existsSync, promises as fsPromises } from 'node:fs';
 
-// Mock child_process.exec
-const mockExec = jest.fn();
 const testOutputDir = join(__dirname, '../../../../test-output/');
-
-jest.mock('child_process', () => ({
-    exec: (...args: any) => mockExec(...args)
-}));
 
 describe('getFunctionalityDetails', () => {
     test('getFunctionalityDetails', async () => {
@@ -88,9 +89,7 @@ const mockFileWrite = (cb: (content: string) => void) => {
 describe('executeFunctionality', () => {
     test('executeFunctionality - success', async () => {
         let generatedConfigContent: string;
-        mockExec.mockImplementation((_cmd, _opts, callback) => {
-            callback(null, 'mock stdout', 'mock stderr');
-        });
+        mockRunCmd.mockResolvedValue({ stdout: 'mock stdout', stderr: '' });
         // Mock fs.writeFile to capture the generated config
         mockFileWrite((content) => {
             generatedConfigContent = content;
@@ -185,9 +184,7 @@ describe('executeFunctionality', () => {
 
     test('executeFunctionality - success with floorplan="FF_SIMPLE"', async () => {
         let generatedConfigContent: string;
-        mockExec.mockImplementation((_cmd, _opts, callback) => {
-            callback(null, 'mock stdout', 'mock stderr');
-        });
+        mockRunCmd.mockResolvedValue({ stdout: 'mock stdout', stderr: '' });
         // Mock fs.writeFile to capture the generated config
         mockFileWrite((content) => {
             generatedConfigContent = content;
@@ -205,9 +202,7 @@ describe('executeFunctionality', () => {
     });
 
     test('executeFunctionality - unsuccess', async () => {
-        mockExec.mockImplementation((cmd, opts, callback) => {
-            throw new Error('Dummy');
-        });
+        mockRunCmd.mockRejectedValue(new Error('Dummy'));
         const result = await generateFioriUIApplicationCapHandlers.executeFunctionality({
             appPath: join(testOutputDir, 'app1'),
             functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
@@ -226,10 +221,28 @@ describe('executeFunctionality', () => {
         expect(existsSync(join(testOutputDir, 'app1', 'default-generator-config.json'))).toBeFalsy();
     });
 
-    test('executeFunctionality - empty parameters', async () => {
-        mockExec.mockImplementation((cmd, opts, callback) => {
-            throw new Error('Dummy');
+    test('executeFunctionality - stderr from command should result in error', async () => {
+        mockRunCmd.mockResolvedValue({ stdout: '', stderr: 'Command failed with error' });
+        const result = await generateFioriUIApplicationCapHandlers.executeFunctionality({
+            appPath: join(testOutputDir, 'app1'),
+            functionalityId: GENERATE_FIORI_UI_APPLICATION_CAP.functionalityId,
+            parameters: paramTest
         });
+        expect(result).toEqual(
+            expect.objectContaining({
+                appPath: join(testOutputDir, 'app1/app/app1'),
+                changes: [],
+                functionalityId: 'generate-fiori-ui-application-cap',
+                message: `Error generating application: Command failed with error`,
+                parameters: paramTest,
+                status: 'Error'
+            })
+        );
+        expect(existsSync(join(testOutputDir, 'app1', 'default-generator-config.json'))).toBeFalsy();
+    });
+
+    test('executeFunctionality - empty parameters', async () => {
+        mockRunCmd.mockRejectedValue(new Error('Dummy'));
         await expect(
             generateFioriUIApplicationCapHandlers.executeFunctionality({
                 appPath: '',
@@ -283,9 +296,7 @@ describe('executeFunctionality', () => {
     });
 
     test('executeFunctionality - parameters as non object', async () => {
-        mockExec.mockImplementation((cmd, opts, callback) => {
-            throw new Error('Dummy');
-        });
+        mockRunCmd.mockRejectedValue(new Error('Dummy'));
         await expect(
             generateFioriUIApplicationCapHandlers.executeFunctionality({
                 appPath: 'app1',
@@ -305,9 +316,7 @@ describe('executeFunctionality', () => {
     });
 
     test('executeFunctionality called without parameters (unexpected in real use case)', async () => {
-        mockExec.mockImplementation((cmd, opts, callback) => {
-            throw new Error('Dummy');
-        });
+        mockRunCmd.mockRejectedValue(new Error('Dummy'));
         await expect(
             generateFioriUIApplicationCapHandlers.executeFunctionality(
                 undefined as unknown as ExecuteFunctionalityInput

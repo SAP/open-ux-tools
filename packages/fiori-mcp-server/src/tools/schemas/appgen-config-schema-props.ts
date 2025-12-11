@@ -35,12 +35,7 @@ export const serviceOdata = z.object({
         .string()
         .describe('The odata endpoint. If the parameter is not provided, the agent should ask the user for it.')
         .meta({
-            examples: [
-                'odata/v4/<servicename>/',
-                'odata/v4/MyRiskService/',
-                'odata/v4/MyOdataV4Service/',
-                'sap/opu/odata/sap/<servicename>/'
-            ]
+            examples: ['/sap/opu/odata/sap/<servicename>/', '/<servicename>/']
         }),
     host: z
         .url()

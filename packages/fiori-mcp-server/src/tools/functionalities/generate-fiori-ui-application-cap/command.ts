@@ -51,10 +51,10 @@ export async function command(params: ExecuteFunctionalityInput): Promise<Execut
         await FSpromises.mkdir(dirname(outputPath), { recursive: true });
         await FSpromises.writeFile(outputPath, content, { encoding: 'utf8' });
 
-        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`.trim();
+        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`;
         const { stderr } = await runCmd(command, { cwd: targetDir });
         if (stderr) {
-            throw new Error(stderr);
+            throw new Error(String(stderr));
         }
     } catch (error) {
         return {
