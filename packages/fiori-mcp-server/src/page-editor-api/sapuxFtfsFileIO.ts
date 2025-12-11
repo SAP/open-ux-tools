@@ -61,7 +61,7 @@ export class SapuxFtfsFileIO {
     private async getSpecification(): Promise<Specification> {
         let specification = await this.appAccess.getSpecification<Specification>();
         const apiVersion = specification.getApiVersion();
-        const version = typeof apiVersion?.version === 'string' ? parseInt(apiVersion.version, 10) : 0;
+        const version = typeof apiVersion?.version === 'string' ? Number.parseInt(apiVersion.version, 10) : 0;
         if (version < 24) {
             // resolved spec is outdated - load latest specification from global cache(it must contain latest API)
             specification = await getSpecificationModuleFromCache(this.appAccess.app.appRoot);

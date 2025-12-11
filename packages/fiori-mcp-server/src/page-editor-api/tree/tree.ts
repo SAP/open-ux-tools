@@ -98,7 +98,7 @@ export const BOOLEAN_DISPLAY_FALSE = 'False';
  * @returns Outline node id.
  */
 export function getNodeId(path: string): string {
-    return `outline-node${path.replace(/\//g, '-')}`;
+    return `outline-node${path.replaceAll('/', '-')}`;
 }
 
 /**
@@ -162,9 +162,10 @@ const getEnumOptions = (entries: JSONSchema4Type[]): NodePropertyOptions[] => {
                 text: optionDisplay
             });
         } else if (typeof option === 'string') {
-            if (isNumber(parseFloat(option))) {
+            const optionAsDecimal = Number.parseFloat(option);
+            if (isNumber(optionAsDecimal)) {
                 options.push({
-                    key: parseFloat(option),
+                    key: optionAsDecimal,
                     text: option?.toString()
                 });
             } else {
