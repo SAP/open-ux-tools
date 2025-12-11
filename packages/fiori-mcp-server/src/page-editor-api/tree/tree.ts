@@ -369,7 +369,6 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
         title: aggregation.getTechnicalName(),
         properties: getProperties(aggregation),
         annotationNodeId,
-        // type: getNodeType(aggregation),
         value: aggregation.value,
         schema: aggregation.schema ?? {}
     };
