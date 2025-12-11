@@ -209,7 +209,7 @@
         },
         "valueHelpDownload": {
             "message": "The service contains references to value help services. Do you want to download the associated metadata during generation (this may increase generation time)?",
-            "hint": "Download value help metadata for improved user experience with dropdowns and search helps."
+            "hint": "Download metadata for value help to improve the user experience with dropdowns and search."
         }
     },
     "errors": {
