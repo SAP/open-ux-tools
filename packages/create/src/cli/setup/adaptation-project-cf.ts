@@ -5,6 +5,7 @@ import { execSync } from 'child_process';
 import { readUi5Yaml, FileName } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import type { ToolsLogger } from '@sap-ux/logger';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import {
@@ -14,6 +15,7 @@ import {
     loadCfConfig,
     getAppHostIds,
     getVariant,
+    type ServiceKeys,
     type CfUi5AppInfo
 } from '@sap-ux/adp-tooling';
 import type { CfConfig } from '@sap-ux/adp-tooling';
@@ -57,17 +59,15 @@ async function setupAdaptationProjectCF(basePath: string): Promise<void> {
             throw new Error('Not an adaptation project. manifest.appdescr_variant not found.');
         }
 
-        // Step 2: Process ui5AppInfo.json and extract reusable libraries
-        await processUi5AppInfo(basePath, logger);
+        const serviceKeys = await fetchServiceKeys(basePath, logger);
 
-        // Step 3: Add serve-static-middleware configuration to ui5.yaml
+        await fetchUi5AppInfo(basePath, logger, serviceKeys);
+
         await addServeStaticMiddleware(basePath, logger);
 
-        // Step 4: Build the project
         await buildProject(basePath, logger);
 
-        // Step 5: Add backend-proxy-middleware-cf configuration to ui5.yaml
-        await addBackendProxyMiddleware(basePath, logger);
+        await addBackendProxyMiddleware(basePath, logger, serviceKeys);
 
         logger.info('CF adaptation project setup complete!');
     } catch (error) {
@@ -81,12 +81,12 @@ async function setupAdaptationProjectCF(basePath: string): Promise<void> {
  *
  * @param basePath - path to application root
  * @param logger - logger instance
+ * @param serviceKeys - service keys from Cloud Foundry
  */
-async function processUi5AppInfo(basePath: string, logger: any): Promise<void> {
+async function fetchUi5AppInfo(basePath: string, logger: ToolsLogger, serviceKeys: ServiceKeys[]): Promise<void> {
     try {
         const cfConfig = getCfConfig(logger);
-        const serviceKeys = await fetchServiceKeys(basePath, logger);
-        const appId = await getAppId(basePath, logger);
+        const appId = await getBaseAppId(basePath, logger);
         const appHostIds = getAppHostIds(serviceKeys);
 
         if (appHostIds.length === 0) {
@@ -117,7 +117,7 @@ async function processUi5AppInfo(basePath: string, logger: any): Promise<void> {
  * @param basePath - path to application root
  * @param logger - logger instance
  */
-async function buildProject(basePath: string, logger: any): Promise<void> {
+async function buildProject(basePath: string, logger: ToolsLogger): Promise<void> {
     try {
         logger.info('Building the project...');
 
@@ -144,7 +144,7 @@ async function buildProject(basePath: string, logger: any): Promise<void> {
  * @param basePath - path to application root
  * @param logger - logger instance
  */
-async function addServeStaticMiddleware(basePath: string, logger: any): Promise<void> {
+async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): Promise<void> {
     try {
         const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
@@ -221,8 +221,13 @@ async function addServeStaticMiddleware(basePath: string, logger: any): Promise<
  *
  * @param basePath - path to application root
  * @param logger - logger instance
+ * @param serviceKeys - service keys from Cloud Foundry
  */
-async function addBackendProxyMiddleware(basePath: string, logger: any): Promise<void> {
+async function addBackendProxyMiddleware(
+    basePath: string,
+    logger: ToolsLogger,
+    serviceKeys: ServiceKeys[]
+): Promise<void> {
     try {
         const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
@@ -231,7 +236,6 @@ async function addBackendProxyMiddleware(basePath: string, logger: any): Promise
             ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
         }
 
-        const serviceKeys = await fetchServiceKeys(basePath, logger);
         if (!serviceKeys || serviceKeys.length === 0) {
             logger.warn('No service keys found. Backend proxy middleware will not be configured.');
             return;
@@ -274,7 +278,7 @@ async function addBackendProxyMiddleware(basePath: string, logger: any): Promise
  * @param logger - logger instance
  * @returns CF configuration
  */
-function getCfConfig(logger: any): CfConfig {
+function getCfConfig(logger: ToolsLogger): CfConfig {
     try {
         const cfConfig = loadCfConfig(logger);
 
@@ -292,21 +296,19 @@ function getCfConfig(logger: any): CfConfig {
 }
 
 /**
- * Get application ID (reference) from manifest.appdescr_variant.
+ * Get base application ID from variant.
  *
  * @param basePath - path to application root
  * @param logger - logger instance
  * @returns App ID (reference)
  */
-async function getAppId(basePath: string, logger: any): Promise<string> {
+async function getBaseAppId(basePath: string, logger: ToolsLogger): Promise<string> {
     try {
         const variant = await getVariant(basePath);
 
         if (!variant.reference) {
             throw new Error('No reference found in manifest.appdescr_variant');
         }
-
-        logger.info(`App ID: ${variant.reference}`);
 
         return variant.reference;
     } catch (error) {
@@ -323,7 +325,7 @@ async function getAppId(basePath: string, logger: any): Promise<string> {
  * @param logger - logger instance
  * @returns Service keys array or null if not found
  */
-async function fetchServiceKeys(basePath: string, logger: any): Promise<Array<{ credentials: any }>> {
+async function fetchServiceKeys(basePath: string, logger: ToolsLogger): Promise<ServiceKeys[]> {
     try {
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
         const bundlerTask = ui5Config.findCustomTask<{ serviceInstanceName?: string }>('app-variant-bundler-build');

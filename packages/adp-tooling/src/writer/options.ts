@@ -407,7 +407,7 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
                     theme: 'sap_horizon'
                 },
                 adp: {
-                    useLocal: 'dist'
+                    cfBuildPath: 'dist'
                 }
             }
         }
@@ -467,7 +467,7 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, confi
                     theme: 'sap_horizon'
                 },
                 adp: {
-                    useLocal: 'dist'
+                    cfBuildPath: 'dist'
                 }
             }
         }

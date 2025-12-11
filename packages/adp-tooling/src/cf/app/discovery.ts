@@ -7,7 +7,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { t } from '../../i18n';
 import { extractXSApp } from '../utils';
 import { getFDCApps } from '../services/api';
-import type { CfConfig, CFApp, ServiceKeys, XsApp } from '../../types';
+import type { CfConfig, CFApp, ServiceKeys, XsApp, XsAppRoute } from '../../types';
 
 /**
  * Get the app host ids.
@@ -31,7 +31,6 @@ export function getAppHostIds(serviceKeys: ServiceKeys[]): string[] {
 }
 
 /**
-<<<<<<< HEAD
  * Extracts all backend URLs from service key credentials. Iterates through all endpoint keys to find all endpoints with URLs.
  * Handles both string endpoints and object endpoints with url property.
  *
@@ -82,18 +81,6 @@ function extractDestinationToUrlMap(serviceKeys: ServiceKeys[]): Map<string, str
 }
 
 /**
- * Check if a route should be processed for OAuth path extraction.
- *
- * @param {any} route - The route object from xs-app.json.
- * @returns {boolean} True if route should be processed.
- */
-function shouldProcessRoute(route: any): boolean {
-    const destination = route.destination as string | undefined;
-    const service = route.service as string | undefined;
-    return Boolean(destination && service !== 'html5-apps-repo-rt' && route.source);
-}
-
-/**
  * Clean regex pattern from route source.
  *
  * @param {string} source - The route source pattern.
@@ -117,17 +104,26 @@ function cleanRoutePath(source: string): string {
 }
 
 /**
- * Add path to destination mapping.
+ * Process a route and add its cleaned path to the destination mapping.
  *
- * @param {Map<string, Set<string>>} map - The destination to paths map.
- * @param {string} destination - The destination name.
- * @param {string} path - The path to add.
+ * @param {XsApp['routes'][number]} route - The route object from xs-app.json.
+ * @param {Map<string, Set<string>>} destinationToPaths - Map to store destination to paths mapping.
  */
-function addPathToDestination(map: Map<string, Set<string>>, destination: string, path: string): void {
-    if (!map.has(destination)) {
-        map.set(destination, new Set<string>());
+function processRouteForDestination(route: XsAppRoute, destinationToPaths: Map<string, Set<string>>): void {
+    const destination = route.destination as string | undefined;
+    const service = route.service;
+
+    if (!destination || service === 'html5-apps-repo-rt' || !route.source) {
+        return;
     }
-    map.get(destination)!.add(path);
+
+    const path = cleanRoutePath(route.source);
+    if (path) {
+        if (!destinationToPaths.has(destination)) {
+            destinationToPaths.set(destination, new Set<string>());
+        }
+        destinationToPaths.get(destination)!.add(path);
+    }
 }
 
 /**
@@ -149,14 +145,7 @@ function extractDestinationToPathsMap(xsAppPath: string): Map<string, Set<string
 
         if (xsApp?.routes) {
             for (const route of xsApp.routes) {
-                if (!shouldProcessRoute(route)) {
-                    continue;
-                }
-
-                const path = cleanRoutePath(route.source);
-                if (path) {
-                    addPathToDestination(destinationToPaths, route.destination as string, path);
-                }
+                processRouteForDestination(route, destinationToPaths);
             }
         }
     } catch (e) {
@@ -186,7 +175,7 @@ export function getBackendUrlsWithPaths(
     const xsAppPath = join(reuseFolderPath, 'xs-app.json');
     const destinationToPaths = extractDestinationToPathsMap(xsAppPath);
 
-    const result: Array<{ url: string; paths: string[] }> = [];
+    const result = [];
 
     for (const [destination, paths] of destinationToPaths.entries()) {
         const url = destinationToUrl.get(destination);
@@ -199,32 +188,6 @@ export function getBackendUrlsWithPaths(
     }
 
     return result;
-}
-
-/**
- * Extracts the backend URL from service key credentials. Iterates through all endpoint keys to find the first endpoint with a URL.
- *
- * @param {ServiceKeys[]} serviceKeys - The credentials from service keys.
- * @returns {string | undefined} The backend URL or undefined if not found.
- */
-export function getBackendUrlFromServiceKeys(serviceKeys: ServiceKeys[]): string | undefined {
-    if (!serviceKeys || serviceKeys.length === 0) {
-        return undefined;
-    }
-
-    const endpoints = serviceKeys[0]?.credentials?.endpoints as Record<string, { url?: string }> | undefined;
-    if (endpoints) {
-        for (const key in endpoints) {
-            if (Object.hasOwn(endpoints, key)) {
-                const endpoint = endpoints[key] as { url?: string } | undefined;
-                if (endpoint && typeof endpoint === 'object' && endpoint.url && typeof endpoint.url === 'string') {
-                    return endpoint.url;
-                }
-            }
-        }
-    }
-
-    return undefined;
 }
 
 /**
@@ -246,20 +209,7 @@ export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[]
             continue;
         }
 
-        let path = route.source;
-        // Remove leading ^ and trailing $
-        path = path.replace(/^\^/, '').replace(/\$$/, '');
-        // Remove capture groups like (.*) or $1
-        path = path.replace(/\([^)]*\)/g, '');
-        // Remove regex quantifiers
-        path = path.replace(/\$\d+/g, '');
-        // Clean up any remaining regex characters at the end
-        path = path.replace(/\/?\*$/, '');
-        // Normalize multiple consecutive slashes to single slash
-        while (path.includes('//')) {
-            path = path.replaceAll('//', '/');
-        }
-
+        const path = cleanRoutePath(route.source);
         if (path) {
             pathsSet.add(path);
         }
