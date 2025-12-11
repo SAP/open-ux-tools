@@ -1,5 +1,12 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.6.27
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.36
+-   @sap-ux/inquirer-common@0.9.13
+
 ## 0.6.26
 
 ### Patch Changes
