@@ -273,10 +273,9 @@ describe('Prompt Generation Tests', () => {
             const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
             expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
-            expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.None);
+            expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.Managed);
             expect((routerTypePrompt?.message as Function)()).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
-                { name: t('prompts.routerType.none'), value: RouterModuleType.None },
                 { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },
                 { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront }
             ]);
