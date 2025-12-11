@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { createSyncFn } from 'synckit';
 import { DocumentNode } from '@humanwhocodes/momoa';
 
-import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
+import { normalizePath, type FoundFioriArtifacts, type Manifest } from '@sap-ux/project-access';
 import { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import { XMLDocument } from '@xml-tools/ast';
 
@@ -109,7 +109,8 @@ export class ProjectContext {
     private static projectArtifactCache = new Map<string, FoundFioriArtifacts>();
 
     private static findFioriArtifacts(uri: string): FoundFioriArtifacts {
-        const root = process.cwd(); // TODO: check if root detection is needed? seems to work also with workspaces
+        // potential issue when called from application modeler or via ESLint API
+        const root = normalizePath(process.cwd()); // TODO: check if root detection is needed? seems to work also with workspaces 
         console.log('ProjectContext.findFioriArtifacts - searching for artifacts for', uri, 'with root', root);
         try {
             const cachedValue = this.projectArtifactCache.get(root);

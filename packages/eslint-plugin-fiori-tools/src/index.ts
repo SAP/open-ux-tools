@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { rules } from './rules';
 import { FioriLanguage } from './language/fiori-language';
+export { DiagnosticCache } from './language/diagnostic-cache';
 
 // Read package.json to get version
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8')) as {
