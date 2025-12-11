@@ -1,5 +1,19 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.10
+
+### Patch Changes
+
+-   8e8e7ce: fix(fiori-mcp): add service metadata validation
+
+## 0.4.9
+
+### Patch Changes
+
+-   Updated dependencies [037a430]
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-docs-embeddings@0.4.5
+
 ## 0.4.8
 
 ### Patch Changes
