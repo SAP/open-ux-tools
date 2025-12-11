@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.50
+
+### Patch Changes
+
+-   d4291ec: Remove `None` as a CF router option
+
 ## 0.5.49
 
 ### Patch Changes
