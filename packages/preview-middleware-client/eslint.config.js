@@ -35,14 +35,6 @@ module.exports = defineConfig([
         },
         rules: {
             'quotes': ['error', 'single', { 'allowTemplateLiterals': true }],
-            'valid-jsdoc': [
-                'error',
-                {
-                    requireParamType: false,
-                    requireReturn: false,
-                    requireReturnType: false
-                }
-            ],
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 {
