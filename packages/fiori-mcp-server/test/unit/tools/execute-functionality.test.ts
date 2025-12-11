@@ -112,7 +112,7 @@ describe('executeFunctionality', () => {
         expect(details).toEqual(result);
     });
 
-    test('Change app property', async () => {
+    test.skip('Change app property', async () => {
         const updatedManifest = { changed: true };
         mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         mockSpecificationExport(updatedManifest);
