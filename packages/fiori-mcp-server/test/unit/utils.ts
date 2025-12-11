@@ -112,7 +112,9 @@ export async function readAppWithModel(
         }),
         { virtual: true }
     );
+    console.time('importSpec');
     const specification = await import(moduleName);
+    console.timeEnd('importSpec');
     const result = await specification.readApp({
         app: applications[path] ?? path
     });
