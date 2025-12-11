@@ -15,17 +15,10 @@ import { M_TABLE_TYPE, SMART_TABLE_TYPE } from '../control-types';
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const CONTROL_TYPES = [SMART_TABLE_TYPE];
 
-/**
- *
- */
 export class ChangeTableColumnsQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(
             CHANGE_TABLE_COLUMNS,
@@ -39,10 +32,6 @@ export class ChangeTableColumnsQuickAction
             [DIALOG_ENABLEMENT_VALIDATOR]
         );
     }
-    /**
-     *
-     * @param path
-     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, changeColumnActionId, sectionInfo } = this.tableMap[path];
         if (!table) {
@@ -81,11 +70,6 @@ export class ChangeTableColumnsQuickAction
         return [];
     }
 
-    /**
-     *
-     * @param element
-     * @param aggregationName
-     */
     private isAbsoluteAggregationBinding(element: ManagedObject, aggregationName: string): boolean {
         const mBindingInfo = element.getBindingInfo(aggregationName);
         const path = mBindingInfo?.path;

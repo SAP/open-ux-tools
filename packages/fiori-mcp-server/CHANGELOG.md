@@ -1,5 +1,61 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.10
+
+### Patch Changes
+
+-   8e8e7ce: fix(fiori-mcp): add service metadata validation
+
+## 0.4.9
+
+### Patch Changes
+
+-   Updated dependencies [037a430]
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-docs-embeddings@0.4.5
+
+## 0.4.8
+
+### Patch Changes
+
+-   d08a64c: fix: mcp server load the latest embeddings package on install/ npx
+
+## 0.4.7
+
+### Patch Changes
+
+-   3dd6b06: version bump for mcp sdk and specification
+
+## 0.4.6
+
+### Patch Changes
+
+-   4f7aa43: fix(fiori-mcp): improve non-cap app-gen input schema
+
+## 0.4.5
+
+### Patch Changes
+
+-   9d0c8e0: fix(fiori-mcp): fix missing dependency
+
+## 0.4.4
+
+### Patch Changes
+
+-   66ca93f: chore(fiori-mcp): fix pipeline
+
+## 0.4.3
+
+### Patch Changes
+
+-   00c7a0a: feat: add generate-fiori-ui-application functionality and rename existing generate-fiori-ui-app to generate-fiori-ui-application-cap
+
+## 0.4.2
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+
 ## 0.4.1
 
 ### Patch Changes
@@ -145,7 +201,7 @@
 
 ### Patch Changes
 
--   5b06421: Simplify "generate-fiori-ui-app" input params by removing the "appGenConfig" nesting level and unnecessary properties such as "appGenConfig.telemetryData" and "projectPath".
+-   5b06421: Simplify "generate-fiori-ui-application-cap" input params by removing the "appGenConfig" nesting level and unnecessary properties such as "appGenConfig.telemetryData" and "projectPath".
 
 ## 0.0.8
 

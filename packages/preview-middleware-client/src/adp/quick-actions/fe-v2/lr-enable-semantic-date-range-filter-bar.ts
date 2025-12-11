@@ -23,10 +23,6 @@ export class ToggleSemanticDateRangeFilterBar
     extends SimpleQuickActionDefinitionBase<SmartFilterBar>
     implements SimpleQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR, [], '', context);
     }
@@ -59,18 +55,12 @@ export class ToggleSemanticDateRangeFilterBar
         }
     }
 
-    /**
-     *
-     */
     protected get textKey() {
         return this.isUseDateRangeTypeEnabled
             ? 'QUICK_ACTION_LR_DISABLE_SEMANTIC_DATE_RANGE_FILTER_BAR'
             : 'QUICK_ACTION_LR_ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR';
     }
 
-    /**
-     *
-     */
     async execute(): Promise<FlexCommand[]> {
         const version = await getUi5Version();
         const isLowerMinimalVersion = isLowerThanMinimalUi5Version(version, { major: 1, minor: 126 });

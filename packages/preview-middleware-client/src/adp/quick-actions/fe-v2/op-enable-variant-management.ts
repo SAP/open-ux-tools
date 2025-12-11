@@ -18,19 +18,12 @@ const CONTROL_TYPES = [SMART_TABLE_TYPE];
 
 const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
 
-/**
- *
- */
 export class EnableObjectPageVariantManagementQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
     readonly forceRefreshAfterExecution = true;
 
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(
             ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS,
@@ -88,10 +81,6 @@ export class EnableObjectPageVariantManagementQuickAction
         this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
     }
 
-    /**
-     *
-     * @param path
-     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];
         if (!table) {

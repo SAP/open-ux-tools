@@ -1,4 +1,4 @@
-import { Authentication } from '@sap-ux/btp-utils'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { Authentication } from '@sap-ux/btp-utils';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { FloorplanKey } from './app-gen';
 import type { CapRuntime } from './cap';
@@ -96,6 +96,7 @@ export interface AppConfig {
         readonly localUI5Version?: string;
         readonly sapux?: boolean;
         readonly skipAnnotations?: boolean;
+        /** @deprecated Code assist prompt is hidden and this property is no longer used */
         readonly enableCodeAssist?: boolean;
         readonly enableEslint?: boolean;
         readonly enableTypeScript?: boolean;

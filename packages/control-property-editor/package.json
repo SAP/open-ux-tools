@@ -3,7 +3,7 @@
     "displayName": "Control Property Editor",
     "description": "Control Property Editor",
     "license": "Apache-2.0",
-    "version": "0.7.2",
+    "version": "0.7.3",
     "main": "dist/app.js",
     "repository": {
         "type": "git",
@@ -20,8 +20,8 @@
         "watch:webapp": "node esbuild.js --watch --minify=false",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --colors",
-        "lint": "eslint . ",
-        "lint:fix": "eslint . --fix"
+        "lint": "eslint",
+        "lint:fix": "eslint --fix"
     },
     "devDependencies": {
         "@fluentui/react": "8.120.5",
@@ -38,7 +38,7 @@
         "@types/source-map-support": "0.5.0",
         "@types/react": "16.14.55",
         "body-parser": "1.20.3",
-        "eslint-plugin-react": "7.37.4",
+        "eslint-plugin-react": "7.37.5",
         "http-proxy-middleware": "2.0.9",
         "i18next": "25.3.0",
         "jest-scss-transform": "1.0.4",

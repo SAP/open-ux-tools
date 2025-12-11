@@ -1,0 +1,419 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`CustomAction appendActionsToActionMenu basic case 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "TestMenu": Object {
+                      "menu": Array [
+                        "DummyAction",
+                        "Action1",
+                        "Action2",
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction appendActionsToActionMenu custom section as target 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "body": Object {
+                  "sections": Object {
+                    "CustomSectionOne": Object {
+                      "actions": Object {
+                        "TestMenu": Object {
+                          "menu": Array [
+                            "DummyAction",
+                            "Action1",
+                            "Action2",
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction appendActionsToActionMenu specific control as target 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "TestItems/@com.sap.vocabularies.UI.v1.LineItem#MyQualifier": Object {
+                  "actions": Object {
+                    "TestMenu": Object {
+                      "menu": Array [
+                        "DummyAction",
+                        "Action1",
+                        "Action2",
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateActionMenu Test 'position' property. Create with anchor 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "MyCustomActionMenu": Object {
+                      "menu": Array [
+                        "Action1",
+                        "Action2",
+                      ],
+                      "position": Object {
+                        "anchor": "Dummy",
+                        "placement": "Before",
+                      },
+                      "text": "My custom action menu text",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateActionMenu Test 'position' property. Create without anchor 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "MyCustomActionMenu": Object {
+                      "menu": Array [
+                        "Action1",
+                        "Action2",
+                      ],
+                      "position": Object {
+                        "placement": "Before",
+                      },
+                      "text": "My custom action menu text",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateActionMenu Test 'position' property. Create without position 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "MyCustomActionMenu": Object {
+                      "menu": Array [
+                        "Action1",
+                        "Action2",
+                      ],
+                      "text": "My custom action menu text",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateActionMenu basic case 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "MyCustomActionMenu": Object {
+                      "menu": Array [
+                        "Action1",
+                        "Action2",
+                      ],
+                      "text": "My custom action menu text",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateActionMenu custom section as target 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "body": Object {
+                  "sections": Object {
+                    "CustomSectionOne": Object {
+                      "actions": Object {
+                        "MyCustomActionMenu": Object {
+                          "menu": Array [
+                            "Action1",
+                            "Action2",
+                          ],
+                          "text": "My custom action menu text",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateActionMenu specific control as target 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "TestItems/@com.sap.vocabularies.UI.v1.LineItem#MyQualifier": Object {
+                  "actions": Object {
+                    "MyCustomActionMenu": Object {
+                      "menu": Array [
+                        "Action1",
+                        "Action2",
+                      ],
+                      "text": "My custom action menu text",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateActionMenu update position information for existing custom actions 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "body": Object {
+                  "sections": Object {
+                    "CustomSectionOne": Object {
+                      "actions": Object {
+                        "Action1": Object {},
+                        "Action2": Object {},
+                        "Action3": Object {
+                          "position": Object {
+                            "anchor": "AnnoAction",
+                            "placement": "After",
+                          },
+                        },
+                        "AnnoAction": Object {},
+                        "MyCustomActionMenu": Object {
+                          "menu": Array [
+                            "Action1",
+                            "Action2",
+                          ],
+                          "text": "My custom action menu text",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;

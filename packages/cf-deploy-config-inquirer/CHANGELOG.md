@@ -1,5 +1,72 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.50
+
+### Patch Changes
+
+-   d4291ec: Remove `None` as a CF router option
+
+## 0.5.49
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.13
+
+## 0.5.48
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.12
+
+## 0.5.47
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.11
+
+## 0.5.46
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.10
+
+## 0.5.45
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.9
+
+## 0.5.44
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.8
+
+## 0.5.43
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.7
+
+## 0.5.42
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.6
+
+## 0.5.41
+
+### Patch Changes
+
+-   Updated dependencies [597834f]
+    -   @sap-ux/inquirer-common@0.9.5
+
+## 0.5.40
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.4
+
 ## 0.5.39
 
 ### Patch Changes

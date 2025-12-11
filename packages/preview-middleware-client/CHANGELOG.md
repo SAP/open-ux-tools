@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.4
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+
+## 0.18.3
+
+### Patch Changes
+
+-   07725fe: Bump @sap/manifest version
+
 ## 0.18.2
 
 ### Patch Changes

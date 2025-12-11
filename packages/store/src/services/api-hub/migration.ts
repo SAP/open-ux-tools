@@ -9,11 +9,6 @@ export const LEGACY_API_HUB_API_KEY = 'API_HUB_API_KEY';
 
 /**
  * Do NOT export to the outside world
- *
- * @param root0
- * @param root0.dataProvider
- * @param root0.secureStore
- * @param root0.logger
  */
 export async function migrateToLatestVersion({
     dataProvider,

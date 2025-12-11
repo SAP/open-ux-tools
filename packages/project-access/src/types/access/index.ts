@@ -4,7 +4,7 @@ import type { I18nBundles } from '../i18n';
 import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '../package';
-import type { Manifest } from '../webapp';
+import type { AnnotationFile, Manifest } from '../webapp';
 
 interface BaseAccess {
     readonly project: Project;
@@ -118,6 +118,32 @@ export interface ApplicationAccess extends BaseAccess {
      * @param memFs - optional mem-fs-editor instance
      */
     updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void>;
+
+    /**
+     * Reads and returns the parsed `manifest.json` file for the application.
+     *
+     * @param memFs - optional mem-fs-editor instance
+     * @returns A promise resolving to the parsed `manifest.json` content.
+     */
+    readManifest(memFs?: Editor): Promise<Manifest>;
+
+    /**
+     * Reads and returns all Flex Changes (`*.change` files) associated with the application.
+     *
+     * @param memFs - optional mem-fs-editor instance
+     * @returns A promise that resolves to an array of flex change files.
+     */
+    readFlexChanges(memFs?: Editor): Promise<{
+        [key: string]: string;
+    }>;
+
+    /**
+     * Reads and returns all annotation files associated with the application's main service.
+     *
+     * @param memFs - optional mem-fs-editor instance
+     * @returns A promise resolving to an array of annotation file descriptors.
+     */
+    readAnnotationFiles(memFs?: Editor): Promise<AnnotationFile[]>;
 }
 
 export interface ProjectAccessOptions {
@@ -126,6 +152,25 @@ export interface ProjectAccessOptions {
 }
 
 export interface ProjectAccess extends BaseAccess {
+    /**
+     * Returns list of application IDs.
+     *
+     * @returns - array of application IDs. For single application projects it will return ['']
+     */
     getApplicationIds: () => string[];
+    /**
+     * Returns an instance of an application for a given application ID (the relative path from project root to app root, NOT the 'sap.app.id' from the manifest).
+     * It contains information about the application, like paths and services.
+     *
+     * @param appId - application ID (the relative path from project root to app root, NOT the 'sap.app.id' from the manifest)
+     * @returns - Instance of ApplicationAccess that contains information about the application, like paths and services
+     */
     getApplication: (appId: string) => ApplicationAccess;
+    /**
+     * Get application ID (the relative path from project root to app root) for a given 'sap.app.id' from the manifest.
+     *
+     * @param manifestAppId - The 'sap.app.id' from the manifest
+     * @returns - application ID (the relative path from project root to app root) or undefined if not found
+     */
+    getApplicationIdByManifestAppId: (manifestAppId: string) => Promise<string | undefined>;
 }

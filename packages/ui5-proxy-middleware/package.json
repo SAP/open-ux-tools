@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-proxy-middleware"
     },
-    "version": "1.6.5",
+    "version": "1.6.7",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -18,8 +18,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
@@ -32,6 +32,9 @@
         "!dist/*.map",
         "!dist/**/*.map"
     ],
+    "peerDependencies": {
+        "express": "4"
+    },
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
@@ -50,9 +53,6 @@
         "nock": "13.4.0",
         "supertest": "7.1.4",
         "yaml": "2.2.2"
-    },
-    "ui5": {
-        "dependencies": []
     },
     "engines": {
         "node": ">=20.x"

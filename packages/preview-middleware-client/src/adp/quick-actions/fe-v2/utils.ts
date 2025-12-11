@@ -35,6 +35,7 @@ export function getV2AppComponent(control: ManagedObject): AppComponent | undefi
  * @param component - component name e.g list report or object page.
  * @param entitySet - Entity Set name.
  * @param propertyValue - The value to be set for the property.
+ *
  * @returns  A Promise resolving to an array of FlexCommand objects.
  */
 export async function prepareManifestChange(
@@ -75,7 +76,6 @@ export async function prepareManifestChange(
 
 /**
  * Checks whether the manifest has array structured page definitions
- *
  * @param manifest - manifest object
  * @returns true if pages are defined as array, false if defined as object
  */
@@ -93,6 +93,7 @@ export function isManifestArrayStructured(manifest: Manifest): boolean {
  *  - If the manifest is structured is an array and is below version 1.134
  *  - If the UI5 version is not supported
  * Otherwise, returns `true`.
+ *
  */
 export async function areManifestChangesSupported(manifest: Manifest): Promise<boolean> {
     const version = await getUi5Version();

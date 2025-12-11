@@ -25,10 +25,6 @@ export class EnableVariantManagementQuickAction
 {
     private pageSmartVariantManagementMode = '';
     private ownerComponent: ListReportComponent;
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(
             ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS,
@@ -82,9 +78,6 @@ export class EnableVariantManagementQuickAction
         }
     }
 
-    /**
-     *
-     */
     async execute(): Promise<FlexCommand[]> {
         if (!this.control) {
             return [];

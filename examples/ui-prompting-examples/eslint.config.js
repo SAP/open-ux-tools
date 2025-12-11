@@ -1,14 +1,19 @@
 const base = require('../../eslint.config.js');
 const reactPlugin = require('eslint-plugin-react');
 const globals = require('globals');
-const storybookPlugin = require('eslint-plugin-storybook');
+// const storybookPlugin = require('eslint-plugin-storybook');
 const tsParser = require('@typescript-eslint/parser');
 const { parser } = require('typescript-eslint');
 
 module.exports = [
+    {
+        languageOptions: {
+            'parser': tsParser
+        }
+    },
     ...base,
     reactPlugin.configs.flat.recommended,
-    ...storybookPlugin.configs['flat/recommended'],
+    // ...storybookPlugin.configs['flat/recommended'],
     {
         plugins: {
             reactPlugin
@@ -36,18 +41,12 @@ module.exports = [
         }
     },
     {
-        languageOptions: {
-            'parser': tsParser
-        },
         files: ['./test/**/*.tsx'],
         rules: {
             'no-loop-func': 'off'
         }
     },
     {
-        languageOptions: {
-            parser: tsParser
-        },
         files: ['./src/**/*.tsx'],
         rules: {
             '@typescript-eslint/no-unused-vars': [

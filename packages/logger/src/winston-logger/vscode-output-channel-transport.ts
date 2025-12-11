@@ -23,11 +23,6 @@ export class VSCodeTransport extends Transport {
         ['debug', 'debug'],
         ['silly', 'trace']
     ]);
-
-    /**
-     *
-     * @param options
-     */
     public constructor(
         options: Transport.TransportStreamOptions & {
             channelName: string;
@@ -36,11 +31,6 @@ export class VSCodeTransport extends Transport {
         super(options);
         this.channel = getVSCodeInstance().window.createOutputChannel(options.channelName, { log: true });
     }
-    /**
-     *
-     * @param data
-     * @param callback
-     */
     public log(data: DataLog, callback: () => void): void {
         setImmediate(() => {
             const logFunction = this.winstonToVSCodeMap.get(data.level) ?? 'info';
@@ -53,9 +43,6 @@ export class VSCodeTransport extends Transport {
     }
 }
 
-/**
- *
- */
 function getVSCodeInstance(): any {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     return require('vscode');

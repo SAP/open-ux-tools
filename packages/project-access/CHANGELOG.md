@@ -1,5 +1,46 @@
 # @sap-ux/project-access
 
+## 1.32.14
+
+### Patch Changes
+
+-   4bdced0: fix: usage of mem-fs-editor when creating application access instance
+
+## 1.32.13
+
+### Patch Changes
+
+-   985223a: fix loading i18n bundle for CAP projects
+
+## 1.32.12
+
+### Patch Changes
+
+-   45fe64e: feat: support reading path mappings for other types than application
+
+## 1.32.11
+
+### Patch Changes
+
+-   07725fe: Bump @sap/manifest version
+
+## 1.32.10
+
+### Patch Changes
+
+-   Updated dependencies [5d0598d]
+    -   @sap-ux/ui5-config@0.29.10
+
+## 1.32.9
+
+### Patch Changes
+
+-   7c09c8e: New public method for `ApplicationAccess`
+    -   `readManifest` - reads and returns the parsed `manifest.json` file for the application.
+    -   `readFlexChanges` - reads and returns all Flex Changes (`*.change` files) associated with the application.
+    -   `readAnnotationFiles` - reads and returns all annotation files associated with the application's main service.
+-   1c13c9c: fix: min cds version
+
 ## 1.32.8
 
 ### Patch Changes

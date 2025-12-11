@@ -14,6 +14,7 @@ export interface CustomActionTarget {
     customSectionKey?: string;
     navProperty?: string;
     qualifier?: string;
+    menuId?: string;
 }
 
 export interface CustomAction extends CustomElement, EventHandler {

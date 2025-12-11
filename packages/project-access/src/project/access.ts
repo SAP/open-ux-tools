@@ -11,7 +11,8 @@ import type {
     ProjectType,
     ApplicationStructure,
     Package,
-    Manifest
+    Manifest,
+    AnnotationFile
 } from '../types';
 
 import {
@@ -27,9 +28,11 @@ import { getProject } from './info';
 import { findAllApps } from './search';
 
 import type { Editor } from 'mem-fs-editor';
-import { updateManifestJSON, updatePackageJSON } from '../file';
+import { readFile, readJSON, updateManifestJSON, updatePackageJSON } from '../file';
 import { FileName } from '../constants';
 import { getSpecification } from './specification';
+import { readFlexChanges } from './flex-changes';
+import { readCapServiceMetadataEdmx } from './cap';
 
 /**
  *
@@ -44,9 +47,9 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param options.fs - optional `mem-fs-editor` instance
      */
     constructor(
-        private _project: Project,
-        private appId: string,
-        private options?: ApplicationAccessOptions
+        private readonly _project: Project,
+        private readonly appId: string,
+        private readonly options?: ApplicationAccessOptions
     ) {}
 
     /**
@@ -207,6 +210,72 @@ class ApplicationAccessImp implements ApplicationAccess {
     }
 
     /**
+     * Reads and returns the parsed `manifest.json` file for the application.
+     *
+     * @param memFs - optional mem-fs-editor instance
+     * @returns A promise resolving to the parsed `manifest.json` content.
+     */
+    async readManifest(memFs?: Editor): Promise<Manifest> {
+        return readJSON<Manifest>(this.app.manifest, memFs ?? this.options?.fs);
+    }
+
+    /**
+     * Reads and returns all Flex Changes (`*.change` files) associated with the application.
+     *
+     * @param memFs - optional mem-fs-editor instance
+     * @returns A promise that resolves to an array of flex change files.
+     */
+    async readFlexChanges(memFs?: Editor): Promise<{
+        [key: string]: string;
+    }> {
+        return readFlexChanges(this.app.changes, memFs ?? this.options?.fs);
+    }
+
+    /**
+     * Reads and returns all annotation files associated with the application's main service.
+     *
+     * @param memFs - optional mem-fs-editor instance
+     * @returns A promise resolving to an array of annotation file descriptors.
+     */
+    async readAnnotationFiles(memFs?: Editor): Promise<AnnotationFile[]> {
+        const annotationData: AnnotationFile[] = [];
+        const mainServiceName = this.app.mainService ?? 'mainService';
+        const mainService = this.app?.services?.[mainServiceName];
+        if (!mainService) {
+            return [];
+        }
+        if (mainService.uri && (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs')) {
+            const serviceUri = mainService?.uri ?? '';
+            if (serviceUri) {
+                const edmx = await readCapServiceMetadataEdmx(this.root, serviceUri);
+                annotationData.push({
+                    fileContent: edmx,
+                    dataSourceUri: serviceUri
+                });
+            }
+        } else {
+            if (mainService.local) {
+                const serviceFile = await readFile(mainService.local, memFs ?? this.options?.fs);
+                annotationData.push({
+                    dataSourceUri: mainService.local,
+                    fileContent: serviceFile.toString()
+                });
+            }
+            const { annotations = [] } = mainService;
+            for (const annotation of annotations) {
+                if (annotation.local) {
+                    const annotationFile = await readFile(annotation.local, memFs ?? this.options?.fs);
+                    annotationData.push({
+                        dataSourceUri: annotation.local,
+                        fileContent: annotationFile.toString()
+                    });
+                }
+            }
+        }
+        return annotationData;
+    }
+
+    /**
      * Project structure.
      *
      * @returns - Project structure
@@ -246,8 +315,8 @@ class ProjectAccessImp implements ProjectAccess {
      * @param options - optional options, like logger
      */
     constructor(
-        private _project: Project,
-        private options?: ProjectAccessOptions
+        private readonly _project: Project,
+        private readonly options?: ProjectAccessOptions
     ) {}
 
     /**
@@ -260,9 +329,26 @@ class ProjectAccessImp implements ProjectAccess {
     }
 
     /**
-     * Returns an instance of an application for a given application ID. The contains information about the application, like paths and services.
+     * Get application ID (the relative path from project root to app root) for a given 'sap.app.id' from the manifest.
      *
-     * @param appId - application ID
+     * @param manifestAppId - The 'sap.app.id' from the manifest
+     * @returns - application ID (the relative path from project root to app root) or undefined if not found
+     */
+    async getApplicationIdByManifestAppId(manifestAppId: string): Promise<string | undefined> {
+        for (const [appId, { manifest: manifestPath }] of Object.entries(this._project.apps)) {
+            const manifestContent = await readJSON<Manifest>(manifestPath, this.options?.memFs);
+            if (manifestContent['sap.app']?.id === manifestAppId) {
+                return appId;
+            }
+        }
+        return undefined;
+    }
+
+    /**
+     * Returns an instance of an application for a given application ID (the relative path from project root to app root, NOT the 'sap.app.id' from the manifest).
+     * It contains information about the application, like paths and services.
+     *
+     * @param appId - application ID (the relative path from project root to app root, NOT the 'sap.app.id' from the manifest)
      * @returns - Instance of ApplicationAccess that contains information about the application, like paths and services
      */
     getApplication(appId: string): ApplicationAccess {
@@ -324,14 +410,14 @@ export async function createApplicationAccess(
     fs?: Editor | ApplicationAccessOptions
 ): Promise<ApplicationAccess> {
     try {
-        const apps = await findAllApps([appRoot]);
-        const app = apps.find((app) => app.appRoot === appRoot);
-        if (!app) {
-            throw new Error(`Could not find app with root ${appRoot}`);
-        }
         let options: ApplicationAccessOptions | undefined;
         if (fs) {
             options = isEditor(fs) ? { fs } : fs;
+        }
+        const apps = await findAllApps([appRoot], options?.fs);
+        const app = apps.find((app) => app.appRoot === appRoot);
+        if (!app) {
+            throw new Error(`Could not find app with root ${appRoot}`);
         }
         const project = await getProject(app.projectRoot, options?.fs);
         const appId = relative(project.root, appRoot);

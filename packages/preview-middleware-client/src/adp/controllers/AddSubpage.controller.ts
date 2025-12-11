@@ -58,17 +58,8 @@ export interface AddSubpageOptions {
 
 export type AddSubpageModel = JSONModel & {
     getProperty(sPath: '/title'): string;
-    /**
-     *
-     */
     getProperty(sPath: '/navigationData'): { navProperty: string; entitySet: string }[];
-    /**
-     *
-     */
     getProperty(sPath: '/selectedPageType/key'): SubpageType;
-    /**
-     *
-     */
     getProperty(sPath: '/selectedNavigation/key'): string;
 };
 
@@ -103,7 +94,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
 
         this.setEscapeHandler();
 
-        await this.buildDialogData();
+        this.buildDialogData();
         const resourceModel = await getResourceModel('open.ux.preview.client');
 
         this.dialog.setModel(resourceModel, 'i18n');
@@ -116,10 +107,6 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         // TODO: to be supported in future releases
     }
 
-    /**
-     *
-     * @param event
-     */
     onNavigationChange(event: Event) {
         const source = event.getSource<ComboBox>();
         const selectedKey = source.getSelectedKey();
@@ -209,7 +196,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
     /**
      * Builds data that is used in the dialog
      */
-    async buildDialogData(): Promise<void> {
+    buildDialogData(): void {
         this.getControlMetadata(); // is called to fill this.runtimeControl
 
         const pageTypeOptions: { key: string; value: string }[] = [
@@ -228,7 +215,5 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         });
         this.model.setProperty('/navigationOptions', navigationOptions);
         this.model.setProperty('/selectedNavigation', navigationOptions[0]);
-
-        return Promise.resolve();
     }
 }

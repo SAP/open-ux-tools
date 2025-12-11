@@ -50,6 +50,11 @@ type ControllerInfo = { controllerName: string };
  */
 export default class RoutesHandler {
     /**
+     * Whether this is running in build path mode (CF ADP using build output).
+     */
+    private readonly isBuildPathMode: boolean;
+
+    /**
      * Constructor taking project as input.
      *
      * @param project Reference to the root of the project
@@ -62,7 +67,9 @@ export default class RoutesHandler {
         private readonly util: MiddlewareUtils,
         private readonly provider: AbapServiceProvider,
         private readonly logger: ToolsLogger
-    ) {}
+    ) {
+        this.isBuildPathMode = !provider || typeof provider.getLayeredRepository !== 'function';
+    }
 
     /**
      * Reads files from workspace by given search pattern.
@@ -289,6 +296,16 @@ export default class RoutesHandler {
     ): Promise<void> => {
         try {
             const isRunningInBAS = isAppStudio();
+
+            if (this.isBuildPathMode) {
+                // In build path mode (CF ADP), skip ManifestService as it requires ABAP backend
+                const apiResponse: AnnotationDataSourceResponse = {
+                    isRunningInBAS,
+                    annotationDataSourceMap: {}
+                };
+                this.sendFilesResponse(res, apiResponse);
+                return;
+            }
 
             const manifestService = await this.getManifestService();
             const dataSources = manifestService.getManifestDataSources();

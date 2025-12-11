@@ -1,5 +1,86 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.9
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.12.32
+-   @sap-ux/fiori-generator-shared@0.13.41
+-   @sap-ux/odata-service-writer@0.27.35
+-   @sap-ux/ui5-application-writer@1.6.3
+-   @sap-ux/ui5-test-writer@0.7.41
+
+## 2.5.8
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.12.31
+-   @sap-ux/fiori-generator-shared@0.13.40
+-   @sap-ux/odata-service-writer@0.27.34
+-   @sap-ux/ui5-application-writer@1.6.3
+-   @sap-ux/ui5-test-writer@0.7.40
+
+## 2.5.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.39
+-   @sap-ux/odata-service-writer@0.27.33
+-   @sap-ux/ui5-config@0.29.10
+-   @sap-ux/cap-config-writer@0.12.30
+
+## 2.5.6
+
+### Patch Changes
+
+-   Updated dependencies [d202c17]
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/cap-config-writer@0.12.29
+
+## 2.5.5
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.12.28
+-   @sap-ux/fiori-generator-shared@0.13.37
+-   @sap-ux/odata-service-writer@0.27.33
+-   @sap-ux/ui5-application-writer@1.6.3
+-   @sap-ux/ui5-test-writer@0.7.39
+
+## 2.5.4
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/ui5-application-writer@1.6.3
+    -   @sap-ux/ui5-test-writer@0.7.38
+    -   @sap-ux/cap-config-writer@0.12.27
+    -   @sap-ux/fiori-generator-shared@0.13.36
+    -   @sap-ux/odata-service-writer@0.27.32
+
+## 2.5.3
+
+### Patch Changes
+
+-   Updated dependencies [5d0598d]
+    -   @sap-ux/odata-service-writer@0.27.31
+    -   @sap-ux/ui5-config@0.29.10
+    -   @sap-ux/fiori-generator-shared@0.13.35
+    -   @sap-ux/ui5-application-writer@1.6.2
+    -   @sap-ux/cap-config-writer@0.12.26
+    -   @sap-ux/ui5-test-writer@0.7.37
+
+## 2.5.2
+
+### Patch Changes
+
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/cap-config-writer@0.12.25
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/odata-service-writer@0.27.30
+    -   @sap-ux/ui5-application-writer@1.6.1
+    -   @sap-ux/ui5-test-writer@0.7.36
+
 ## 2.5.1
 
 ### Patch Changes

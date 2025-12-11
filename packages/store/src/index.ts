@@ -18,13 +18,6 @@ const services: {
     'api-hub': getApiHubSettingsService
 };
 
-/**
- *
- * @param root0
- * @param root0.logger
- * @param root0.entityName
- * @param root0.options
- */
 export async function getService<Entity, Key>({
     logger = getDefaultLogger(),
     entityName,

@@ -66,11 +66,6 @@ function getPropertyDocument(
           } as PropertiesInfo);
 }
 
-/**
- *
- * @param control
- * @param controlData
- */
 async function addDocumentationForProperties(control: ManagedObject, controlData: Control): Promise<void> {
     try {
         const controlMetadata = control.getMetadata();
@@ -103,7 +98,7 @@ export class SelectionService implements Service {
      *
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
-     * @param changeService
+     * @param changeService - change service instance.
      */
     constructor(
         private readonly rta: RuntimeAuthoring,
@@ -168,12 +163,6 @@ export class SelectionService implements Service {
         });
     }
 
-    /**
-     *
-     * @param control
-     * @param sendAction
-     * @param overlay
-     */
     private async buildProperties(
         control: ManagedObject,
         sendAction: ActionSenderFunction,

@@ -25,11 +25,6 @@ import { ODataHealthChecker } from './odata-health/odata-health-checker';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
 import { ODataUpStatus } from './odata-health/odata-health-status';
 
-/**
- *
- * @param rta
- * @param registries
- */
 export default function init(
     rta: RuntimeAuthoring,
     registries: QuickActionDefinitionRegistry<string>[] = []
@@ -100,8 +95,7 @@ export default function init(
             return service.init(CommunicationService.sendAction, subscribe)?.catch((error) => {
                 Log.error('Service Initialization Failed: ', getError(error));
             });
-        });
-        // eslint-disable-next-line @typescript-eslint/await-thenable
+        }).filter((p): p is Promise<void> => p !== undefined);
         Promise.all(allPromises)
             .then(() => {
                 CommunicationService.sendAction(appLoaded());

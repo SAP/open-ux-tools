@@ -25,10 +25,6 @@ export class EnableListReportVariantManagementQuickAction
     private ownerComponent: ListReportComponent;
     readonly forceRefreshAfterExecution = true;
 
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(
             ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS,
@@ -80,9 +76,6 @@ export class EnableListReportVariantManagementQuickAction
         }
     }
 
-    /**
-     *
-     */
     async execute(): Promise<FlexCommand[]> {
         if (!this.control) {
             return [];

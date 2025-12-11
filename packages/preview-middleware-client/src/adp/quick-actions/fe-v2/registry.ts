@@ -39,10 +39,6 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
         [OBJECT_PAGE_TYPE]: 'objectPage',
         [ANALYTICAL_LIST_PAGE_TYPE]: 'analyticalListPage'
     };
-    /**
-     *
-     * @param context
-     */
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
 
@@ -114,10 +110,6 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
         return definitionGroups;
     }
 
-    /**
-     *
-     * @param page
-     */
     protected getComponentContainerFromPage(page: Control): ComponentContainer | undefined {
         // in ui5 version 1.71 there is no XMLView wrapper around ComponentContainer
         const componentContainer = page instanceof XMLView ? page.getContent()[0] : page;

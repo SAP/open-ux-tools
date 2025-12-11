@@ -147,11 +147,6 @@ export class ChangeConverter {
         return this.annotationFileChanges;
     }
 
-    /**
-     *
-     * @param compiledService
-     * @param uri
-     */
     private getFile(compiledService: CompiledService, uri: string): AnnotationFile {
         const file = compiledService.annotationFiles.find((file) => file.uri === uri);
         if (!file) {
@@ -168,12 +163,6 @@ export class ChangeConverter {
         return file;
     }
 
-    /**
-     *
-     * @param compiledService
-     * @param aliasInfo
-     * @param change
-     */
     private insertAnnotation(
         compiledService: CompiledService,
         aliasInfo: AliasInformation,
@@ -213,13 +202,6 @@ export class ChangeConverter {
         }
     }
 
-    /**
-     *
-     * @param file
-     * @param fileMergeMaps
-     * @param aliasInfo
-     * @param change
-     */
     private insertEmbeddedAnnotation(
         file: AnnotationFile,
         fileMergeMaps: Record<string, Record<string, string>>,
@@ -247,13 +229,6 @@ export class ChangeConverter {
         this.annotationFileChanges.push(internal);
     }
 
-    /**
-     *
-     * @param file
-     * @param fileMergeMaps
-     * @param aliasInfo
-     * @param change
-     */
     private convertInsert(
         file: AnnotationFile,
         fileMergeMaps: Record<string, Record<string, string>>,
@@ -311,15 +286,6 @@ export class ChangeConverter {
         }
     }
 
-    /**
-     *
-     * @param file
-     * @param aliasInfoMod
-     * @param pointer
-     * @param change
-     * @param content
-     * @param index
-     */
     private convertInsertExpression(
         file: AnnotationFile,
         aliasInfoMod: AliasInformation,
@@ -377,16 +343,6 @@ export class ChangeConverter {
         }
     }
 
-    /**
-     *
-     * @param element
-     * @param aliasInfoMod
-     * @param pointer
-     * @param internalPointer
-     * @param change
-     * @param content
-     * @param index
-     */
     private convertInsertPrimitive(
         element: Element,
         aliasInfoMod: AliasInformation,
@@ -436,13 +392,6 @@ export class ChangeConverter {
         }
     }
 
-    /**
-     *
-     * @param file
-     * @param fileMergeMaps
-     * @param aliasInfo
-     * @param change
-     */
     private convertDelete(
         file: AnnotationFile,
         fileMergeMaps: Record<string, Record<string, string>>,
@@ -494,14 +443,6 @@ export class ChangeConverter {
         }
     }
 
-    /**
-     *
-     * @param file
-     * @param fileMergeMaps
-     * @param aliasInfo
-     * @param schemaProvider
-     * @param change
-     */
     private convertUpdate(
         file: AnnotationFile,
         fileMergeMaps: Record<string, Record<string, string>>,
@@ -578,15 +519,6 @@ export class ChangeConverter {
         }
     }
 
-    /**
-     *
-     * @param aliasInfo
-     * @param attributeName
-     * @param property
-     * @param pointer
-     * @param internalPointer
-     * @param change
-     */
     private convertUpdateAttribute(
         aliasInfo: AliasInformation,
         attributeName: string,
@@ -610,10 +542,6 @@ export class ChangeConverter {
         }
     }
 
-    /**
-     *
-     * @param content
-     */
     private getPrimitiveValueType(content: UpdateContent): string | undefined {
         if (content.type === 'primitive') {
             if (content.expressionType === ExpressionType.Unknown) {
@@ -630,10 +558,6 @@ export class ChangeConverter {
         return undefined;
     }
 
-    /**
-     *
-     * @param content
-     */
     private getAttributeValue(content: UpdateContent): string | number | boolean | undefined {
         if (content.type === 'primitive') {
             return content.value;
@@ -644,23 +568,10 @@ export class ChangeConverter {
         return undefined;
     }
 
-    /**
-     *
-     * @param content
-     */
     private getExpressionValue(content: ExpressionUpdateContent): string | number | boolean {
         return (content.value as any)[content.value.type]; // There is always a property with on the object as type name, Typescript does not infer this case as expected
     }
 
-    /**
-     *
-     * @param file
-     * @param aliasInfo
-     * @param content
-     * @param pointer
-     * @param valueType
-     * @param targetName
-     */
     private convertUpdateExpression(
         file: AnnotationFile,
         aliasInfo: AliasInformation,
@@ -724,15 +635,6 @@ export class ChangeConverter {
         }
     }
 
-    /**
-     *
-     * @param fileUri
-     * @param targetName
-     * @param valueType
-     * @param content
-     * @param pointer
-     * @param newValue
-     */
     private convertUpdateExpressionForAttrributeType(
         fileUri: string,
         targetName: string,
@@ -776,14 +678,6 @@ export class ChangeConverter {
         }
     }
 
-    /**
-     *
-     * @param file
-     * @param aliasInfo
-     * @param content
-     * @param pointer
-     * @param replaceTextPointer
-     */
     private convertUpdatePrimitiveValue(
         file: AnnotationFile,
         aliasInfo: AliasInformation,
@@ -849,13 +743,6 @@ export class ChangeConverter {
         this.annotationFileChanges.push(internal);
     }
 
-    /**
-     *
-     * @param file
-     * @param fileMergeMaps
-     * @param aliasInfo
-     * @param change
-     */
     private convertMove(
         file: AnnotationFile,
         fileMergeMaps: Record<string, Record<string, string>>,
@@ -897,10 +784,6 @@ export class ChangeConverter {
         this.annotationFileChanges.push(internal);
     }
 
-    /**
-     *
-     * @param compiledService
-     */
     private addTargetChanges(compiledService: CompiledService): void {
         const insertTargetChanges: InsertTarget[] = [];
         for (const [uri, changesForUri] of this.newTargetChanges) {
@@ -920,11 +803,6 @@ export class ChangeConverter {
         this.annotationFileChanges.unshift(...insertTargetChanges);
     }
 
-    /**
-     *
-     * @param schemaProvider
-     * @param change
-     */
     private getValueType(schemaProvider: SchemaProvider, change: UpdateChange): string | undefined {
         const { content } = change;
         if (content.type === 'expression') {
@@ -942,11 +820,6 @@ export class ChangeConverter {
         return undefined;
     }
 
-    /**
-     *
-     * @param schemaProvider
-     * @param change
-     */
     private getValueTypeFromSchema(schemaProvider: SchemaProvider, change: UpdateChange): string | undefined {
         const { reference, uri, pointer } = change;
         const annotationLists = schemaProvider().schema.annotations[uri] ?? [];
@@ -970,18 +843,10 @@ export class ChangeConverter {
         return undefined;
     }
 
-    /**
-     *
-     * @param node
-     */
     private isExpression(node: AVTNode): node is Expression {
         return typeof (node as any).type !== 'undefined' && typeof (node as any).propertyValues === 'undefined';
     }
 
-    /**
-     *
-     * @param file
-     */
     private getAliasInformation(file: AnnotationFile): AliasInformation {
         const cachedValue = this.aliasInfoCache[file.uri];
         if (cachedValue) {
@@ -1008,10 +873,6 @@ export class ChangeConverter {
     }
 }
 
-/**
- *
- * @param changes
- */
 function mergeChanges(changes: Change[]): Change[] {
     const result: Change[] = [];
 
@@ -1049,11 +910,6 @@ function mergeChanges(changes: Change[]): Change[] {
     return result;
 }
 
-/**
- *
- * @param target
- * @param source
- */
 function mergeChange(target: InsertAnnotationChange, source: Exclude<Change, InsertAnnotationChange>): void {
     const reference = annotationReferenceToString(source.reference, source.uri);
     switch (source.kind) {
@@ -1095,12 +951,6 @@ function mergeChange(target: InsertAnnotationChange, source: Exclude<Change, Ins
     );
 }
 
-/**
- *
- * @param aliasInfoMod
- * @param file
- * @param change
- */
 function convertChangeToElement(
     aliasInfoMod: AliasInformation,
     file: AnnotationFile,
@@ -1128,10 +978,6 @@ function convertChangeToElement(
     return undefined;
 }
 
-/**
- *
- * @param pointer
- */
 function getAttributeNameFromPointer(pointer: JsonPointer): string | undefined {
     const lastSegment = pointer.split('/').slice(-1)[0];
     // new primitive value: can always be added as attributes, namespaces are already replaced

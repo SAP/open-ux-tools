@@ -3,7 +3,7 @@ import { fetchMock, sapCoreMock } from 'mock/window';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type Dialog from 'sap/m/Dialog';
 import FileExistsDialog from '../../../../src/adp/controllers/FileExistsDialog.controller';
-import type JSONModel from 'sap/ui/model/json/JSONModel';
+import JSONModel from 'sap/ui/model/json/JSONModel';
 
 describe('FileExistsDialog', () => {
     beforeAll(() => {

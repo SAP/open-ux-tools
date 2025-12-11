@@ -8,7 +8,9 @@ import type {
     CollectionExpression,
     Expression,
     PropertyValue,
-    RawAnnotation
+    RawAnnotation,
+    RecordExpression,
+    StringExpression
 } from '@sap-ux/vocabularies-types';
 import {
     toFullyQualifiedName,
@@ -147,14 +149,6 @@ export function convertAnnotationFile(
 // all of these values are flattened
 // There should not be duplicate values (last encountered will be used)
 
-/**
- *
- * @param mergeMap
- * @param targetPath
- * @param sourcePath
- * @param target
- * @param source
- */
 function mergeAnnotation(
     mergeMap: Record<string, string>,
     targetPath: string,
@@ -180,15 +174,6 @@ function mergeAnnotation(
     }
 }
 
-/**
- *
- * @param mergeMap
- * @param targetPath
- * @param sourcePath
- * @param target
- * @param source
- * @param directTermValue
- */
 function mergeRecord(
     mergeMap: Record<string, string>,
     targetPath: string,
@@ -224,17 +209,6 @@ function mergeRecord(
     }
 }
 
-/**
- *
- * @param mergeMap
- * @param targetPath
- * @param sourcePath
- * @param target
- * @param source
- * @param mergedPaths
- * @param propertyName
- * @param offset
- */
 function mergeProperties(
     mergeMap: Record<string, string>,
     targetPath: string,
@@ -275,14 +249,6 @@ function mergeProperties(
     }
 }
 
-/**
- *
- * @param mergeMap
- * @param targetPath
- * @param sourcePath
- * @param target
- * @param source
- */
 function mergeAnnotationAnnotations(
     mergeMap: Record<string, string>,
     targetPath: string,
@@ -320,15 +286,6 @@ function mergeAnnotationAnnotations(
         }
     }
 }
-/**
- *
- * @param mergeMap
- * @param targetPath
- * @param sourcePath
- * @param target
- * @param source
- * @param directTermValue
- */
 function mergeRecordAnnotations(
     mergeMap: Record<string, string>,
     targetPath: string,
@@ -369,10 +326,6 @@ function mergeRecordAnnotations(
     }
 }
 
-/**
- *
- * @param references
- */
 function getNamespaceMap(references: Reference[]): NamespaceMap {
     const namespaceMap: NamespaceMap = {};
     for (const reference of references) {
@@ -390,13 +343,6 @@ type ConversionOptions = {
     mergeSplitAnnotations: boolean;
     mergeMap: Record<string, string>;
 };
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param annotationElement
- * @param options
- */
 function convertAnnotation(
     namespaceMap: NamespaceMap,
     currentNamespace: string,
@@ -449,13 +395,6 @@ function convertAnnotation(
     return annotation;
 }
 
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param element
- * @param options
- */
 function convertEmbeddedAnnotations(
     namespaceMap: NamespaceMap,
     currentNamespace: string,
@@ -484,13 +423,6 @@ const EXPRESSION_TYPES = new Set<string>([
     Edm.Null
 ]);
 
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param element
- * @param options
- */
 function convertExpression(
     namespaceMap: NamespaceMap,
     currentNamespace: string,
@@ -528,13 +460,6 @@ function convertExpression(
     return expressionValues[0];
 }
 
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param name
- * @param value
- */
 function createExpression(
     namespaceMap: NamespaceMap,
     currentNamespace: string,
@@ -652,13 +577,6 @@ function convertExpressionValue(
     }
 }
 
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param recordElement
- * @param options
- */
 function convertRecord(
     namespaceMap: NamespaceMap,
     currentNamespace: string,
@@ -710,13 +628,6 @@ function convertRecord(
     return record;
 }
 
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param collectionElement
- * @param options
- */
 function convertCollection(
     namespaceMap: NamespaceMap,
     currentNamespace: string,
@@ -729,17 +640,16 @@ function convertCollection(
         .filter((child): child is Element => child.type === ELEMENT_TYPE)
         .forEach((collectionEntryElement: Element) => {
             const value = convertExpression(namespaceMap, currentNamespace, collectionEntryElement, options);
-
-            let entry = value as any;
-            if (value && value.type) {
-                // record and string can be used directly as collection entries
-                if (value.type === 'Record') {
-                    entry = value.Record;
-                } else if (value.type === 'String') {
-                    entry = value.String;
+            let entry: Expression | AnnotationRecord | string = value;
+            if (value && typeof value === 'object' && 'type' in value) {
+                if (value.type === 'Record' && 'Record' in value) {
+                    entry = (value as RecordExpression).Record;
+                } else if (value.type === 'String' && 'String' in value) {
+                    entry = (value as StringExpression).String;
                 }
             }
-            collection.push(entry);
+            // TypeScript cannot infer the complex Collection union type, so we cast to unknown first
+            (collection as unknown as (Expression | AnnotationRecord | string)[]).push(entry);
             if (options?.addOrigins && collectionEntryElement.range) {
                 collectionOrigins.push(collectionEntryElement.range);
             }
@@ -747,12 +657,6 @@ function convertCollection(
     return { collection, collectionOrigins };
 }
 
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param element
- */
 function convertApply(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): ApplyExpression {
     // use internal representation (without alias) to represent Apply value
     const clone = structuredClone(element);
@@ -765,12 +669,6 @@ function convertApply(namespaceMap: NamespaceMap, currentNamespace: string, elem
     };
 }
 
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param element
- */
 function replaceAliasInElement(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): Element {
     const result = element;
     // replace aliased in all attributes/sub nodes with full namespaces (reverse = true ? vice versa):
@@ -799,12 +697,6 @@ function replaceAliasInElement(namespaceMap: NamespaceMap, currentNamespace: str
     return result;
 }
 
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param element
- */
 function replaceAliasInElementContent(namespaceMap: NamespaceMap, currentNamespace: string, element: Element) {
     for (const subNode of element.content || []) {
         if (subNode.type === ELEMENT_TYPE) {

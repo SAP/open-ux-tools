@@ -151,11 +151,6 @@ export class QuickActionService implements Service {
         this.sendAction(quickActionListChanged(groups));
     }
 
-    /**
-     *
-     * @param group
-     * @param instance
-     */
     private async addAction(group: QuickActionGroup, instance: QuickActionDefinition): Promise<void> {
         if (instance.isApplicable) {
             await instance.runEnablementValidators();
@@ -185,6 +180,6 @@ export class QuickActionService implements Service {
         if (payload.kind === NESTED_QUICK_ACTION_KIND && actionInstance.kind === NESTED_QUICK_ACTION_KIND) {
             return actionInstance.execute(payload.path);
         }
-        return Promise.resolve([]);
+        return [];
     }
 }

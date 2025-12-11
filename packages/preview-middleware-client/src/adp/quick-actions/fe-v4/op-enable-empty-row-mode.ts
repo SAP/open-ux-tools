@@ -25,10 +25,6 @@ export class EnableTableEmptyRowModeQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(ENABLE_TABLE_EMPTY_ROW_MODE, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_EMPTY_ROW_MODE', context);
     }
@@ -65,10 +61,6 @@ export class EnableTableEmptyRowModeQuickAction
         this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
     }
 
-    /**
-     *
-     * @param path
-     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { flexSettings } = this.context;
         const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];

@@ -1,10 +1,6 @@
 import Log from 'sap/base/Log';
 import type { Logger } from '@sap-ux-private/control-property-editor-common';
 
-/**
- *
- * @param message
- */
 function getString(message: string | object): string {
     if (typeof message === 'object') {
         return JSON.stringify(message).toString();

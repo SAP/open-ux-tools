@@ -34,10 +34,6 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
         [OBJECT_PAGE_TYPE]: 'objectPage'
     };
 
-    /**
-     *
-     * @param context
-     */
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
         const definitionGroups: QuickActionDefinitionGroup[] = [];
