@@ -96,7 +96,9 @@ export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): P
     try {
         const provider = createSmartLinksProvider(config);
         logger?.info(`${cyan(t('info.connectTo'))} ${target}`);
-        const response = (await provider.get('/sap/bc/ui2/start_up', { params: UrlParameters })) as AxiosResponse<string | undefined>;
+        const response = (await provider.get('/sap/bc/ui2/start_up', { params: UrlParameters })) as AxiosResponse<
+            string | undefined
+        >;
         logger?.info(cyan(t('info.connectSuccess')));
         if (response.status !== 200 || !response.data) {
             throw Error(
