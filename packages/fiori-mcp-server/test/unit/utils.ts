@@ -7,7 +7,7 @@ import objectPageSchema from './page-editor-api/test-data/schema/ObjectPage.json
 import objectPageConfig from './page-editor-api/test-data/config/ObjectPage.json';
 import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import type { FlexChange } from '../../src/page-editor-api/flex';
-import type { ReadAppResult } from '@sap/ux-specification/dist/types/src';
+import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 
 const getDataFile = (
@@ -99,12 +99,9 @@ export function generateFlexChanges(
     };
 }
 
-export async function readAppWithModel(
-    path: string,
-    applications: { [key: string]: ApplicationAccess } = {}
-): Promise<ReadAppResult> {
+async function getLocalSpecification(): Promise<Specification> {
     const moduleName = '@sap/ux-specification';
-    // Workaround loading issue with '@sap-ux/odata-annotation-core-types'
+    // Workaround loading issue with '@sap-ux/odata-annotation-core-types' - it will be fixed in new spec version
     jest.mock(
         '@sap-ux/odata-annotation-core-types',
         () => ({
@@ -112,11 +109,21 @@ export async function readAppWithModel(
         }),
         { virtual: true }
     );
-    console.time('importSpec');
-    const specification = await import(moduleName);
-    console.timeEnd('importSpec');
+    return import(moduleName);
+}
+
+export async function readAppWithModel(
+    path: string,
+    applications: { [key: string]: ApplicationAccess } = {}
+): Promise<ReadAppResult> {
+    const specification = await getLocalSpecification();
     const result = await specification.readApp({
         app: applications[path] ?? path
     });
     return result;
+}
+
+export async function ensureSpecificationLoaded(): Promise<void> {
+    await getLocalSpecification();
+    process.env.MCP_SPEC_LOADED = '1';
 }

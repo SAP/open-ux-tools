@@ -4,7 +4,7 @@ import { join } from 'path';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import type { Parser } from '@sap/ux-specification/dist/types/src';
-import { readAppWithModel } from '../utils';
+import { ensureSpecificationLoaded, readAppWithModel } from '../utils';
 
 const appPathLropV2 = join(__dirname, '../../test-data/original/lrop-v2');
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
@@ -35,6 +35,8 @@ describe('getTree', () => {
         // Create application access can take more time on slower machines
         applications[appPathLropV2] = await createApplicationAccess(appPathLropV2);
         applications[appPathLropV4] = await createApplicationAccess(appPathLropV4);
+        // Ensure spec is loaded - first import is most costly
+        await ensureSpecificationLoaded();
     }, 10000);
 
     test('getTree - Application V4', async () => {

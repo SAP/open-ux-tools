@@ -1,7 +1,7 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
 import type { ListFunctionalitiesOutput } from '../../../src/types';
 import { listFunctionalities } from '../../../src/tools';
-import { mockSpecificationReadAppWithModel } from '../utils';
+import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils';
 import * as projectUtils from '../../../src/page-editor-api/project';
 import { join } from 'node:path';
 
@@ -26,6 +26,8 @@ describe('listFunctionalities', () => {
     beforeAll(async () => {
         // Create application access can take more time on slower machines
         applications[appPathLropV4] = await openUxProjectAccessDependency.createApplicationAccess(appPathLropV4);
+        // Ensure spec is loaded - first import is most costly
+        await ensureSpecificationLoaded();
     }, 10000);
     beforeEach(async () => {
         readAppMock = jest.fn().mockResolvedValue({ files: [] });

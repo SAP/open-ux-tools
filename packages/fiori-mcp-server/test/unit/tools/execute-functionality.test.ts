@@ -1,7 +1,12 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
 import { readFile } from 'node:fs/promises';
 import { executeFunctionality } from '../../../src/tools';
-import { mockSpecificationReadApp, mockSpecificationReadAppWithModel } from '../utils';
+import {
+    ensureSpecificationLoaded,
+    mockSpecificationReadApp,
+    mockSpecificationReadAppWithModel,
+    readAppWithModel
+} from '../utils';
 import * as addPageDependency from '../../../src/tools/functionalities/page';
 import * as projectUtils from '../../../src/page-editor-api/project';
 import * as flexUtils from '../../../src/page-editor-api/flex';
@@ -45,6 +50,8 @@ describe('executeFunctionality', () => {
     beforeAll(async () => {
         // Create application access can take more time on slower machines
         applications[appPathLropV4] = await openUxProjectAccessDependency.createApplicationAccess(appPathLropV4);
+        // Ensure spec is loaded - first import is most costly
+        await ensureSpecificationLoaded();
     }, 10000);
     beforeEach(async () => {
         getManifestSpy = jest
@@ -112,7 +119,7 @@ describe('executeFunctionality', () => {
         expect(details).toEqual(result);
     });
 
-    test.skip('Change app property', async () => {
+    test('Change app property', async () => {
         const updatedManifest = { changed: true };
         mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         mockSpecificationExport(updatedManifest);
