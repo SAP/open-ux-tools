@@ -7,7 +7,8 @@ import type {
     AppRouterType,
     CfConfig,
     CFApp,
-    ServiceInfo
+    ServiceInfo,
+    HTML5Content
 } from '@sap-ux/adp-tooling';
 import {
     cfServicesPromptNames,
@@ -20,7 +21,9 @@ import {
     downloadAppContent,
     validateSmartTemplateApplication,
     validateODataEndpoints,
-    getBusinessServiceInfo
+    getBusinessServiceInfo,
+    getOAuthPathsFromXsApp,
+    getBackendUrlFromServiceKeys
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
@@ -68,6 +71,10 @@ export class CFServicesPrompter {
      * The manifest.
      */
     private appManifest: Manifest | undefined;
+    /**
+     * The zip entries from the downloaded app content.
+     */
+    private appContentEntries: HTML5Content['entries'] | undefined;
 
     /**
      * Returns the loaded application manifest.
@@ -79,12 +86,43 @@ export class CFServicesPrompter {
     }
 
     /**
-     * Returns the service instance GUID.
+     * Returns the HTML5 repo service instance GUID.
      *
-     * @returns Service instance GUID.
+     * @returns {string} HTML5 repo service instance GUID.
      */
-    public get serviceInstanceGuid(): string {
+    public get html5RepoRuntimeGuid(): string {
         return this.html5RepoServiceInstanceGuid;
+    }
+
+    /**
+     * Returns the business service instance GUID.
+     *
+     * @returns {string | undefined} Business service instance GUID.
+     */
+    public get serviceInstanceGuid(): string | undefined {
+        return this.businessServiceInfo?.serviceInstance?.guid;
+    }
+
+    /**
+     * Returns the backend URL from service keys endpoints.
+     *
+     * @returns {string | undefined} Backend URL from the first endpoint that has a url property, or undefined.
+     */
+    public get backendUrl(): string | undefined {
+        const serviceKeys = this.businessServiceInfo?.serviceKeys ?? [];
+        return getBackendUrlFromServiceKeys(serviceKeys);
+    }
+
+    /**
+     * Returns the OAuth paths extracted from xs-app.json routes that have a source property.
+     *
+     * @returns {string[]} Array of path patterns that should receive OAuth Bearer tokens.
+     */
+    public get oauthPaths(): string[] {
+        if (!this.appContentEntries) {
+            return [];
+        }
+        return getOAuthPathsFromXsApp(this.appContentEntries);
     }
 
     /**
@@ -236,6 +274,7 @@ export class CFServicesPrompter {
                     );
                     this.appManifest = manifest;
                     this.html5RepoServiceInstanceGuid = serviceInstanceGuid;
+                    this.appContentEntries = entries;
 
                     await validateSmartTemplateApplication(manifest);
                     await validateODataEndpoints(entries, this.businessServiceInfo!.serviceKeys, this.logger);

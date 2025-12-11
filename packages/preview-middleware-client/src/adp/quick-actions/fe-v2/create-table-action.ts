@@ -19,14 +19,7 @@ export const CREATE_TABLE_ACTION = 'create-table-action';
 
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, TREE_TABLE_TYPE, GRID_TABLE_TYPE];
 
-/**
- *
- */
 export class AddTableActionQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(CREATE_TABLE_ACTION, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context, undefined, [
             DIALOG_ENABLEMENT_VALIDATOR
@@ -52,10 +45,6 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         // disable nested actions based on conditions
         this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
     }
-    /**
-     *
-     * @param path
-     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {
@@ -97,10 +86,6 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         return [];
     }
 
-    /**
-     *
-     * @param table
-     */
     getHeaderToolbar(table: UI5Element): ManagedObject | ManagedObject[] | OverflowToolbar | null | undefined {
         let headerToolbar;
         if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {

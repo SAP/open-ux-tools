@@ -515,7 +515,7 @@ export class ChangeService extends EventTarget {
                     continue;
                 }
                 return result;
-            } catch {
+            } catch (error) {
                 continue;
             }
         }
@@ -545,7 +545,7 @@ export class ChangeService extends EventTarget {
     private getCommandSelectorId(command: FlexCommand): string | undefined {
         return this.retryOperations([
             () => command.getSelector().id,
-
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             () => command.getElement().getProperty('persistencyKey'),
             () => command.getElement().getId(),
             () => command.getParent()?.getElement().getId()
@@ -568,10 +568,6 @@ export class ChangeService extends EventTarget {
         this.updateStack();
     }
 
-    /**
-     *
-     * @param handler
-     */
     public onStackChange(handler: (event: CustomEvent<StackChangedEventDetail>) => void | Promise<void>): void {
         this.addEventListener(STACK_CHANGE_EVENT, handler as EventListener);
     }

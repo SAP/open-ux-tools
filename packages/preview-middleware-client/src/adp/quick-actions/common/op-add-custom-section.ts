@@ -21,19 +21,12 @@ export class AddCustomSectionQuickAction
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(OP_ADD_CUSTOM_SECTION, CONTROL_TYPES, 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION', context, [
             DIALOG_ENABLEMENT_VALIDATOR
         ]);
     }
 
-    /**
-     *
-     */
     async execute(): Promise<FlexCommand[]> {
         const objectPageLayout = getRelevantControlFromActivePage(
             this.context.controlIndex,

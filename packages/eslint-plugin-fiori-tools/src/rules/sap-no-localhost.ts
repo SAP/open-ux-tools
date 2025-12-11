@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { isString, containsString } from '../utils/ast-helpers';
+import { isString, containsString } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
@@ -19,7 +19,7 @@ const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Fiori custom ESLint rule',
+            description: 'fiori tools (fiori custom) ESLint rule',
             category: 'Best Practices',
             recommended: false
         },

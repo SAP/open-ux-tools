@@ -18,7 +18,7 @@ const errorMessage = 'Hardcoded (non relative) URL found.' as const;
 ruleTester.run('sap-no-hardcoded-url', rule, {
     valid: [
         "document.createElementNS('http://www.w3.org/2000/svg', 'line')",
-        "constantsTx1['SAP_NAMESPACE'] = 'http://www.sap.com/Protocols/SAPData'",
+        "constantsTx1['SAP_NAMESPACE'] = 'https://www.sap.com/Protocols/SAPData'",
         "'http://localhost/offline/my_contacts/ContactCollection(contactID='",
         'var x = 4'
     ],

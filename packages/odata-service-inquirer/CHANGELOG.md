@@ -1,5 +1,121 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.18
+
+### Patch Changes
+
+-   Updated dependencies [4bdced0]
+    -   @sap-ux/project-access@1.32.14
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/fiori-generator-shared@0.13.41
+    -   @sap-ux/project-input-validator@0.6.36
+    -   @sap-ux/telemetry@0.6.45
+    -   @sap-ux/inquirer-common@0.9.13
+
+## 2.11.17
+
+### Patch Changes
+
+-   Updated dependencies [985223a]
+    -   @sap-ux/project-access@1.32.13
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/fiori-generator-shared@0.13.40
+    -   @sap-ux/project-input-validator@0.6.35
+    -   @sap-ux/telemetry@0.6.44
+    -   @sap-ux/inquirer-common@0.9.12
+
+## 2.11.16
+
+### Patch Changes
+
+-   037a430: fix high severity Sonar issues
+-   Updated dependencies [037a430]
+    -   @sap-ux/axios-extension@1.24.5
+    -   @sap-ux/nodejs-utils@0.2.9
+    -   @sap-ux/telemetry@0.6.43
+    -   @sap-ux/store@1.3.4
+    -   @sap-ux/fiori-generator-shared@0.13.39
+    -   @sap-ux/inquirer-common@0.9.11
+
+## 2.11.15
+
+### Patch Changes
+
+-   Updated dependencies [f71a139]
+    -   @sap-ux/axios-extension@1.24.4
+    -   @sap-ux/fiori-generator-shared@0.13.38
+
+## 2.11.14
+
+### Patch Changes
+
+-   Updated dependencies [d202c17]
+    -   @sap-ux/fiori-generator-shared@0.13.38
+    -   @sap-ux/inquirer-common@0.9.10
+
+## 2.11.13
+
+### Patch Changes
+
+-   Updated dependencies [45fe64e]
+    -   @sap-ux/project-access@1.32.12
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/fiori-generator-shared@0.13.37
+    -   @sap-ux/project-input-validator@0.6.34
+    -   @sap-ux/telemetry@0.6.42
+    -   @sap-ux/inquirer-common@0.9.9
+
+## 2.11.12
+
+### Patch Changes
+
+-   Updated dependencies [07725fe]
+    -   @sap-ux/project-access@1.32.11
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/fiori-generator-shared@0.13.36
+    -   @sap-ux/project-input-validator@0.6.33
+    -   @sap-ux/telemetry@0.6.41
+    -   @sap-ux/inquirer-common@0.9.8
+
+## 2.11.11
+
+### Patch Changes
+
+-   Updated dependencies [5d0598d]
+    -   @sap-ux/axios-extension@1.24.3
+    -   @sap-ux/inquirer-common@0.9.7
+    -   @sap-ux/fiori-generator-shared@0.13.35
+    -   @sap-ux/project-access@1.32.10
+    -   @sap-ux/telemetry@0.6.40
+    -   @sap-ux/project-input-validator@0.6.32
+
+## 2.11.10
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.6
+
+## 2.11.9
+
+### Patch Changes
+
+-   597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+-   Updated dependencies [597834f]
+    -   @sap-ux/inquirer-common@0.9.5
+
+## 2.11.8
+
+### Patch Changes
+
+-   Updated dependencies [7c09c8e]
+-   Updated dependencies [1c13c9c]
+    -   @sap-ux/project-access@1.32.9
+    -   @sap-ux/axios-extension@1.24.2
+    -   @sap-ux/fiori-generator-shared@0.13.34
+    -   @sap-ux/project-input-validator@0.6.31
+    -   @sap-ux/telemetry@0.6.39
+    -   @sap-ux/inquirer-common@0.9.4
+
 ## 2.11.7
 
 ### Patch Changes

@@ -6,7 +6,7 @@ import {
     apiGetServicesInstancesFilteredByType,
     cfGetInstanceKeyParameters,
     cfGetTarget,
-    type ServiceInstanceInfo // eslint-disable-line @typescript-eslint/no-unused-vars
+    type ServiceInstanceInfo
 } from '@sap/cf-tools';
 import axios from 'axios';
 import { ENV } from './app-studio.env';

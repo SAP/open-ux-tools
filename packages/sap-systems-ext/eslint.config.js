@@ -1,5 +1,7 @@
 const { ignores } = require('eslint-plugin-prettier/recommended');
 const base = require('../../eslint.config.js');
+const tsParser = require('@typescript-eslint/parser');
+
 module.exports = [
     {
         ignores: ['dist', 'prebuilds'],
@@ -8,7 +10,7 @@ module.exports = [
     {
         languageOptions: {
             parserOptions: {
-                parser: '@typescript-eslint/parser',
+                parser: tsParser,
                 tsconfigRootDir: __dirname,
                 project: './tsconfig.eslint.json',
             },

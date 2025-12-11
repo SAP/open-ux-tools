@@ -33,10 +33,6 @@ const SETTINGS_ID = 'CTX_SETTINGS';
 const REARRANGE_TOOLBAR_SETTINGS_ID = 'CTX_SETTINGS0';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
 
-/**
- *
- * @param table
- */
 async function getActionId(table: UI5Element): Promise<string[]> {
     const { major, minor } = await getUi5Version();
 
@@ -91,24 +87,12 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
     > = {};
     public iconTabBar: IconTabBar | undefined;
 
-    /**
-     *
-     */
     protected get textKey(): string {
         return this.defaultTextKey;
     }
 
     protected control: UI5Element | undefined;
 
-    /**
-     *
-     * @param type
-     * @param controlTypes
-     * @param defaultTextKey
-     * @param context
-     * @param options
-     * @param enablementValidators
-     */
     constructor(
         public readonly type: string,
         protected readonly controlTypes: string[],

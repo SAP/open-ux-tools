@@ -332,7 +332,7 @@ describe('FE V2 quick actions', () => {
                     actionName: 'add-controller-to-page',
                     telemetryEventIdentifier,
                     quickActionSteps: 2,
-                    ui5Version: '1.130.0',
+                    ui5Version: '1.130.9',
                     appType: 'fe-v2'
                 });
             });

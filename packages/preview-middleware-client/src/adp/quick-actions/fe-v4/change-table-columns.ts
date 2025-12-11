@@ -22,10 +22,6 @@ export class ChangeTableColumnsQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(CHANGE_TABLE_COLUMNS, [MDC_TABLE_TYPE], 'V4_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context, undefined, [
             DIALOG_ENABLEMENT_VALIDATOR
@@ -81,10 +77,6 @@ export class ChangeTableColumnsQuickAction
         }
     }
 
-    /**
-     *
-     * @param path
-     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table } = this.tableMap[path];
         if (!table) {

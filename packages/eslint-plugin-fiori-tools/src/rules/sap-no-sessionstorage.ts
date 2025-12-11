@@ -3,7 +3,14 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, type IdentifierNode, type MemberExpressionNode, buildCalleePath } from '../utils/ast-helpers';
+import {
+    type ASTNode,
+    type IdentifierNode,
+    type MemberExpressionNode,
+    buildCalleePath,
+    contains,
+    isForbiddenObviousApi
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -16,7 +23,7 @@ const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Fiori custom ESLint rule',
+            description: 'fiori tools (fiori custom) ESLint rule',
             category: 'Best Practices',
             recommended: false
         },
@@ -32,30 +39,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a: string[], obj: string): boolean {
-            return a.includes(obj);
-        }
-
-        /**
-         * Check if the callee path represents a forbidden API.
-         *
-         * @param calleePath The path string to analyze
-         * @returns The last element of the path
-         */
-        function isForbiddenObviousApi(calleePath: string): string {
-            const elementArray = calleePath.split('.');
-            const lastElement = elementArray[elementArray.length - 1];
-
-            return lastElement;
-        }
 
         /**
          * Process variable declarator nodes for sessionStorage references.

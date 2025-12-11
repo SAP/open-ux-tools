@@ -25,8 +25,8 @@ export class NewModelWriter implements IWriter<NewModelData> {
      * @param {string} projectPath - The root path of the project.
      */
     constructor(
-        private fs: Editor,
-        private projectPath: string
+        private readonly fs: Editor,
+        private readonly projectPath: string
     ) {}
 
     /**
@@ -85,6 +85,6 @@ export class NewModelWriter implements IWriter<NewModelData> {
         const content = this.constructContent(data);
         const change = getChange(data.variant, timestamp, content, ChangeType.ADD_NEW_MODEL);
 
-        writeChangeToFolder(this.projectPath, change, this.fs);
+        await writeChangeToFolder(this.projectPath, change, this.fs);
     }
 }

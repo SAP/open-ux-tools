@@ -86,4 +86,9 @@ export interface ServeStaticPath {
     fallthrough: boolean;
 }
 
-export type DataSourceConfig = { serviceName: string; servicePath: string; metadataPath?: string };
+export type DataSourceConfig = {
+    serviceName: string;
+    servicePath: string;
+    metadataPath?: string;
+    resolveExternalServiceReferences?: boolean;
+};

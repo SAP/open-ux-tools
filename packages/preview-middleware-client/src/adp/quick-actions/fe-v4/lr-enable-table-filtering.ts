@@ -28,10 +28,6 @@ export class EnableTableFilteringQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(ENABLE_TABLE_FILTERING, [MDC_TABLE_TYPE], 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
     }
@@ -74,10 +70,6 @@ export class EnableTableFilteringQuickAction
         }
     }
 
-    /**
-     *
-     * @param path
-     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { flexSettings } = this.context;
         const { table } = this.tableMap[path];

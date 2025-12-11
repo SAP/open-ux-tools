@@ -14,28 +14,15 @@ export const ApiHubSettingsProvider: DataProviderConstructor<ApiHubSettings, Api
     private readonly entityName = Entities.ApiHub;
     private readonly logger: Logger;
 
-    /**
-     *
-     * @param logger
-     * @param options
-     */
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
         this.dataAccessor = getHybridStore(this.logger, options);
     }
 
-    /**
-     *
-     * @param key
-     */
     public read(key: ApiHubSettingsKey): Promise<ApiHubSettings | undefined> {
         return this.dataAccessor.read({ entityName: this.entityName, id: key.getId() });
     }
 
-    /**
-     *
-     * @param entity
-     */
     public write(entity: ApiHubSettings): Promise<ApiHubSettings | undefined> {
         return this.dataAccessor.write({
             entityName: this.entityName,
@@ -44,10 +31,6 @@ export const ApiHubSettingsProvider: DataProviderConstructor<ApiHubSettings, Api
         });
     }
 
-    /**
-     *
-     * @param _entity
-     */
     public delete(_entity: ApiHubSettings): Promise<boolean> {
         return this.dataAccessor.del({
             entityName: this.entityName,
@@ -55,9 +38,6 @@ export const ApiHubSettingsProvider: DataProviderConstructor<ApiHubSettings, Api
         });
     }
 
-    /**
-     *
-     */
     public getAll(): Promise<ApiHubSettings[] | []> {
         return this.dataAccessor.getAll({ entityName: this.entityName });
     }

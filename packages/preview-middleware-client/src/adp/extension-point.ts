@@ -40,9 +40,6 @@ export interface ExtensionPointData {
     info: ExtensionPointInfo[];
 }
 
-/**
- *
- */
 export default class ExtensionPointService {
     private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
     private selectedExtensionPointName: string;

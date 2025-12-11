@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fe-fpm-writer",
     "description": "SAP Fiori elements flexible programming model writer",
-    "version": "0.39.19",
+    "version": "0.39.31",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -17,8 +17,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "files": [
@@ -29,11 +29,11 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.10.3",
+        "@sap-ux/annotation-converter": "0.10.8",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.13.0",
+        "@sap-ux/vocabularies-types": "0.13.1",
         "@xmldom/xmldom": "0.8.10",
         "ejs": "3.1.10",
         "i18next": "25.3.0",

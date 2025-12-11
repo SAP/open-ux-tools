@@ -13,7 +13,7 @@ import {
     resolveIdentifierPath,
     createVariableDeclaratorProcessor,
     hasUnderscore
-} from '../utils/ast-helpers';
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

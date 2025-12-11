@@ -120,14 +120,6 @@ export function findAnnotationByReference(
     throw new ApiError(`Term '${path}' does not exist`, ApiErrorCode.General);
 }
 
-/**
- *
- * @param file
- * @param mergeMap
- * @param id
- * @param pointer
- * @param valueType
- */
 function searchInMergedAnnotations(
     file: AnnotationFile,
     mergeMap: Record<string, string>,
@@ -161,12 +153,6 @@ function searchInMergedAnnotations(
     return undefined;
 }
 
-/**
- *
- * @param namespaceMap
- * @param currentNamespace
- * @param path
- */
 function resolvePath(namespaceMap: NamespaceMap, currentNamespace: string, path: string): string {
     const parsedPath = parsePath(path);
     parsedPath.segments = parsedPath.segments.map((segment, i) => {

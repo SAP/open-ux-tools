@@ -2,7 +2,7 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
-import { type EnhancedRouter, FlpSandbox, initAdp } from '../base/flp';
+import { type EnhancedRouter, FlpSandbox } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
 import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
@@ -30,7 +30,7 @@ async function createRouter(
     const flp = new FlpSandbox(config, resources.rootProject, middlewareUtil, logger);
 
     if (config.adp) {
-        await initAdp(resources.rootProject, config.adp, flp, middlewareUtil, logger);
+        await flp.initAdp(config.adp);
     } else {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const manifest = await resources.rootProject.byPath('/manifest.json');

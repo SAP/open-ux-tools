@@ -7,25 +7,10 @@ export interface ServiceRetrievalOptions {
  * auxillary functions (migration/logging/authorization, etc)
  */
 export interface Service<Entity, EntityKey> {
-    /**
-     *
-     */
     read(key: EntityKey): Promise<Entity | undefined>;
-    /**
-     *
-     */
     write(entity: Entity, options?: unknown): Promise<Entity | undefined>;
-    /**
-     *
-     */
     partialUpdate(key: EntityKey, entity: Partial<Entity>): Promise<Entity | undefined>;
-    /**
-     *
-     */
     delete(entity: Entity): Promise<boolean>;
-    /**
-     *
-     */
     getAll(options?: ServiceRetrievalOptions): Promise<Entity[] | []>;
 }
 

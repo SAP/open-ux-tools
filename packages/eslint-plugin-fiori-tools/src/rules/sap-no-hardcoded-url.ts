@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-
+import { type ASTNode } from '../utils/helpers';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Fiori custom ESLint rule',
+            description: 'fiori tools (fiori custom) ESLint rule',
             category: 'Best Practices',
             recommended: false
         },
@@ -28,11 +28,8 @@ const rule: Rule.RuleModule = {
             // While this is not a true domain, adding the 'http version' here
             // is way easier and safer than trying to modify the regexp.
             'HTTP/1.1',
-            // https://jtrack/browse/CAINFRAANA-4
-            'http://www.sap.com/Protocols/',
-            // Used for the https://projectportal.neo.ondemand.com/projects/nw.core.extcfl project
-            // Contact: Sandro Schiefner
-            'http://www.sap.com/adt',
+            'https://www.sap.com/Protocols/',
+            'https://www.sap.com/adt',
             // localhost
             'http://localhost/offline/',
             'https://localhost/offline/'
@@ -53,7 +50,7 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'Literal': function (node: Rule.Node): void {
+            'Literal': function (node: ASTNode): void {
                 const literalNode = node as { value: string | number | boolean | null | RegExp };
                 const val = literalNode.value;
                 let result;

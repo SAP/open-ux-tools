@@ -50,10 +50,6 @@ export type Inserts = ElementInserts | InsertCollection;
 
 type InsertByType<Union, Type> = Union extends { type: Type } ? Union : never;
 
-/**
- *
- * @param type
- */
 function insertElementChangeFactory<T extends Inserts['type']>(type: T) {
     return function (pointer: JsonPointer, element: Element, index?: number): InsertByType<ElementInserts, T> {
         return {
@@ -208,10 +204,6 @@ export type Deletes =
     | DeletePrimitiveValue
     | DeleteQualifier;
 
-/**
- *
- * @param type
- */
 function deleteChangeFactory<T extends Deletes['type']>(type: T) {
     return function (pointer: JsonPointer): InsertByType<Deletes, T> {
         return {

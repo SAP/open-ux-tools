@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/cds-annotation-parser",
-    "version": "0.2.21",
+    "version": "0.2.22",
     "description": "Annotation Parser for CDS",
     "repository": {
         "type": "git",
@@ -17,9 +17,8 @@
         "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
-        "lint": "eslint . --ext .ts,.tsx",
-        "lint:fix": "eslint . --ext .ts --fix",
-        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --maxWorkers=2",
         "test:update": "node scripts/updateTestData.js",
         "test:create": "node scripts/createTestData.js",

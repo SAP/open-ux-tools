@@ -14,7 +14,8 @@ import type {
     MockserverConfig,
     ServeStaticPath,
     DataSourceConfig,
-    AbapDeployConfig
+    AbapDeployConfig,
+    MockserverService
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -141,7 +142,6 @@ export class UI5Config {
      * Get the type in the yaml file.
      *
      * @returns {Ui5Document['type']} the type
-     * @memberof Ui5Document['type']
      */
     public getType(): Ui5Document['type'] {
         const type = this.document.getNode({ path: 'type' });
@@ -541,12 +541,15 @@ export class UI5Config {
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
             if (mockserverMiddlewareConfig?.services) {
                 const urlPath = dataSourceConfig.servicePath.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
-                const newServiceData = {
+                const newServiceData: MockserverService = {
                     urlPath,
                     metadataPath: dataSourceConfig.metadataPath ?? `${serviceRoot}/metadata.xml`,
                     mockdataPath: `${serviceRoot}/data`,
                     generateMockData: true
                 };
+                if (dataSourceConfig.resolveExternalServiceReferences === true) {
+                    newServiceData.resolveExternalServiceReferences = true;
+                }
                 const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
                     (existingService) => existingService.urlPath === urlPath
                 );

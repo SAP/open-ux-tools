@@ -12,8 +12,8 @@
         "build": "tsc --build",
         "clean": "rimraf --glob lib coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
@@ -29,8 +29,9 @@
         "yaml": "2.2.2"
     },
     "peerDependencies": {
-        "eslint": "^9",
-        "typescript-eslint": "^8.46.2"
+        "eslint": ">=8",
+        "@typescript-eslint/eslint-plugin": ">=7.1.1",
+        "@typescript-eslint/parser": ">=5.62.0"
     },
     "engines": {
         "node": ">=20.x"

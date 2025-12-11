@@ -3,6 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -11,7 +12,7 @@ const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Fiori custom ESLint rule',
+            description: 'fiori tools (fiori custom) ESLint rule',
             category: 'Best Practices',
             recommended: false
         },
@@ -63,7 +64,7 @@ const rule: Rule.RuleModule = {
          * @param type The type to check for
          * @returns True if the node is of the specified type
          */
-        function isType(node: Rule.Node | undefined, type: string): boolean {
+        function isType(node: ASTNode | undefined, type: string): boolean {
             return node?.type === type;
         }
         /**
@@ -72,7 +73,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is an Identifier
          */
-        function isIdentifier(node: Rule.Node | undefined): boolean {
+        function isIdentifier(node: ASTNode | undefined): boolean {
             return isType(node, 'Identifier');
         }
         /**
@@ -81,7 +82,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a MemberExpression
          */
-        function isMember(node: Rule.Node | undefined): boolean {
+        function isMember(node: ASTNode | undefined): boolean {
             return isType(node, 'MemberExpression');
         }
         /**
@@ -90,7 +91,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node is a CallExpression
          */
-        function isCall(node: Rule.Node | undefined): boolean {
+        function isCall(node: ASTNode | undefined): boolean {
             return isType(node, 'CallExpression');
         }
 
@@ -100,7 +101,7 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to analyze
          * @returns The rightmost method name
          */
-        function getRightestMethodName(node: Rule.Node): string {
+        function getRightestMethodName(node: ASTNode): string {
             const callee = (node as any).callee;
             return isMember(callee) ? callee.property.name : callee.name;
         }
@@ -111,7 +112,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the global window object
          */
-        function isWindow(node: Rule.Node | undefined): boolean {
+        function isWindow(node: ASTNode | undefined): boolean {
             // true if node is the global variable 'window'
             return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
         }
@@ -122,7 +123,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the window object or a reference to it
          */
-        function isWindowObject(node: Rule.Node | undefined): boolean {
+        function isWindowObject(node: ASTNode | undefined): boolean {
             // true if node is the global variable 'window' or a reference to it
             return !!(
                 isWindow(node) ||
@@ -136,7 +137,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the navigator object
          */
-        function isNavigator(node: Rule.Node | undefined): boolean {
+        function isNavigator(node: ASTNode | undefined): boolean {
             // true if node id the global variable 'navigator', 'window.navigator' or '<windowReference>.navigator'
             return (
                 (isIdentifier(node) && node && 'name' in node && node.name === 'navigator') ||
@@ -150,7 +151,7 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the navigator object or a reference to it
          */
-        function isNavigatorObject(node: Rule.Node | undefined): boolean {
+        function isNavigatorObject(node: ASTNode | undefined): boolean {
             // true if node is the global variable 'navigator'/'window.navigator' or a reference to it
             return !!(
                 isNavigator(node) ||
@@ -165,7 +166,7 @@ const rule: Rule.RuleModule = {
          * @param right The right-hand side of the assignment
          * @returns True if the assignment was remembered
          */
-        function rememberWindow(left: Rule.Node, right: Rule.Node): boolean {
+        function rememberWindow(left: ASTNode, right: ASTNode): boolean {
             if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
                 WINDOW_OBJECTS.push(left.name);
                 return true;
@@ -180,7 +181,7 @@ const rule: Rule.RuleModule = {
          * @param right The right-hand side of the assignment
          * @returns True if the assignment was remembered
          */
-        function rememberNavigator(left: Rule.Node, right: Rule.Node): boolean {
+        function rememberNavigator(left: ASTNode, right: ASTNode): boolean {
             if (isNavigatorObject(right) && isIdentifier(left) && 'name' in left) {
                 NAVIGATOR_OBJECTS.push(left.name);
                 return true;

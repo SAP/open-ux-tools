@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/ast-helpers';
+import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -16,7 +16,7 @@ const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Fiori custom ESLint rule',
+            description: 'fiori tools (fiori custom) ESLint rule',
             category: 'Best Practices',
             recommended: false
         },

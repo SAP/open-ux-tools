@@ -3,7 +3,7 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode, isIdentifier, contains, createIsWindowObject, createRememberWindow } from '../utils/ast-helpers';
+import { type ASTNode, isIdentifier, contains, createIsWindowObject, createRememberWindow } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -19,7 +19,7 @@ const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Fiori custom ESLint rule',
+            description: 'fiori tools (fiori custom) ESLint rule',
             category: 'Best Practices',
             recommended: false
         },

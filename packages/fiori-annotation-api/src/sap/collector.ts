@@ -35,17 +35,8 @@ function findProperty(name: string, properties: Element[]): Element | undefined 
  */
 class ODataAnnotationCollector implements CollectorDefinition {
     readonly annotations: ODataAnnotations[] = [];
-    /**
-     *
-     * @param uri
-     */
     constructor(private readonly uri: string) {}
 
-    /**
-     *
-     * @param target
-     * @param term
-     */
     [UI_LINE_ITEM](target: Target, term: Element): void {
         const collection = elementsWithName(Edm.Collection, term)[0];
         if (!collection) {
@@ -76,11 +67,6 @@ class ODataAnnotationCollector implements CollectorDefinition {
         this.annotations.push(lineItems);
     }
 
-    /**
-     *
-     * @param target
-     * @param term
-     */
     [UI_FIELD_GROUP](target: Target, term: Element): void {
         const qualifier = term.attributes[Edm.Qualifier]?.value;
         const record = elementsWithName(Edm.Record, term)?.[0];
@@ -123,11 +109,6 @@ class ODataAnnotationCollector implements CollectorDefinition {
         this.annotations.push(annotation);
     }
 
-    /**
-     *
-     * @param target
-     * @param term
-     */
     [UI_FACETS](target: Target, term: Element): void {
         const collection = elementsWithName(Edm.Collection, term)[0];
         if (!collection) {
@@ -185,21 +166,10 @@ class ODataAnnotationCollector implements CollectorDefinition {
         this.annotations.push(annotation);
     }
 
-    /**
-     *
-     * @param value
-     * @param range
-     */
     private createValue<T>(value: T, range?: Range): ValueWithOrigin<T> {
         return createValue(value, this.uri, range);
     }
 
-    /**
-     *
-     * @param propertyName
-     * @param valueType
-     * @param properties
-     */
     private createValueFromPrimitiveRecordProperty(
         propertyName: string,
         valueType: Edm,
@@ -209,12 +179,6 @@ class ODataAnnotationCollector implements CollectorDefinition {
         return this.createValueFromAttribute(element, valueType);
     }
 
-    /**
-     *
-     * @param propertyName
-     * @param valueTypes
-     * @param properties
-     */
     private createValueFromPrimitiveRecordPropertyWithFirstMatchingType(
         propertyName: string,
         valueTypes: Edm[],
@@ -231,11 +195,6 @@ class ODataAnnotationCollector implements CollectorDefinition {
         return undefined;
     }
 
-    /**
-     *
-     * @param element
-     * @param attributeName
-     */
     private createValueFromAttribute(
         element: Element | undefined,
         attributeName: Edm
@@ -249,10 +208,6 @@ class ODataAnnotationCollector implements CollectorDefinition {
         return undefined;
     }
 
-    /**
-     *
-     * @param dataField
-     */
     private processDataField(dataField: Element): UIDataFieldDefinition | undefined {
         const properties = elementsWithName(Edm.PropertyValue, dataField);
         const value = this.createValueFromPrimitiveRecordPropertyWithFirstMatchingType(

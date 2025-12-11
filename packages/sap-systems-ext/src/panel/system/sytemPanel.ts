@@ -23,13 +23,14 @@ export class SystemPanel implements Disposable {
     readonly disposeCallback?: DisposeCallback;
 
     /**
+     * Creates a new SystemPanel instance.
      *
-     * @param root0
-     * @param root0.extensionPath
-     * @param root0.systemPanelViewType
-     * @param root0.disposeCallback
-     * @param root0.backendSystem
-     * @param root0.systemStatusMessage
+     * @param options - Configuration options for the system panel
+     * @param options.extensionPath - The absolute path to the extension directory
+     * @param options.systemPanelViewType - The type of system panel view to display
+     * @param options.disposeCallback - Callback function to be invoked when the panel is disposed
+     * @param options.backendSystem - Optional backend system configuration
+     * @param options.systemStatusMessage - Optional status message to display in the system panel
      */
     constructor({
         extensionPath,

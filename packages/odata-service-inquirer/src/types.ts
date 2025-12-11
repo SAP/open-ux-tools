@@ -1,4 +1,4 @@
-import type { Annotations, ServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import type { Annotations, ServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';

@@ -73,35 +73,22 @@ export function removeMicroPart(version: string): string {
 }
 
 /**
- * Removes the timestamp part from a version string, typically used to clean up snapshot versions that include a timestamp.
- * Converts a version string like '1.95.0.34566363464' to '1.95.0'.
+ * Removes the timestamp and '-snapshot' suffix from a version string.
+ * Converts a version string like '1.95.0.123456789' or '1.95.0-snapshot' to '1.95.0'.
  *
- * @param {string} version - The version string that may include a timestamp as part of a snapshot version.
- * @returns {string} The version string without the timestamp, including only the major, minor, and micro version numbers.
- */
-export function removeTimestampFromVersion(version: string): string {
-    const versionParts = version.split('.');
-    return `${versionParts[0]}.${versionParts[1]}.${versionParts[2]}`;
-}
-
-/**
- * Removes the '-snapshot' suffix from a version string's patch number.
- * Converts version strings like '1.96.0-snapshot' to '1.96.0' by cleaning
- * the patch part of any snapshot designation.
- *
- * @param {string} version - The version string that may include '-snapshot' in the patch number.
- * @returns {string} The version string with the snapshot suffix removed from the patch number.
+ * @param {string} version - The version string that may include a timestamp and '-snapshot' suffix.
+ * @returns {string} The cleaned version string without the timestamp and snapshot designation.
  * @example
  * ```typescript
- * removeSnapshotFromVersion('1.96.0-snapshot'); // Returns '1.96.0'
- * removeSnapshotFromVersion('1.87.3-SNAPSHOT'); // Returns '1.87.3' (case-insensitive)
- * removeSnapshotFromVersion('1.120.1');         // Returns '1.120.1' (no change)
+ * formatUi5Version('1.95.0.123456789'); // returns '1.95.0'
+ * formatUi5Version('1.95.0-snapshot');   // returns '1.95.0'
+ * formatUi5Version('1.95.0-SNAPSHOT');   // returns '1.95.0'
+ * formatUi5Version('1.95.0');            // returns '1.95.0'
  * ```
  */
-export function removeSnapshotFromVersion(version: string): string {
+export function formatUi5Version(version: string): string {
     const versionParts = version.split('.');
-    const patchNumber = versionParts[2].toLowerCase().replace('-snapshot', '');
-    return `${versionParts[0]}.${versionParts[1]}.${patchNumber}`;
+    return `${versionParts[0]}.${versionParts[1]}.${versionParts[2].toLowerCase().replace('-snapshot', '')}`;
 }
 
 /**
@@ -115,7 +102,10 @@ export function removeSnapshotFromVersion(version: string): string {
  */
 export function addSnapshot(version: string, latestVersion: string): string {
     const versionParts = version.split('.');
-    return versionParts[2] && removeTimestampFromVersion(version) != latestVersion ? '-snapshot' : '';
+    return (versionParts[3] || version.toLowerCase().includes('-snapshot')) &&
+        formatUi5Version(version) !== latestVersion
+        ? '-snapshot'
+        : '';
 }
 
 /**

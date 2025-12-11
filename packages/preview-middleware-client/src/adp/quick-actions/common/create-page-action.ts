@@ -20,10 +20,6 @@ const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader', 's
  */
 export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase implements SimpleQuickActionDefinition {
     private readonly appType: ApplicationType;
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(ADD_PAGE_ACTION, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION', context, [
             DIALOG_ENABLEMENT_VALIDATOR
@@ -39,9 +35,6 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
         await super.initialize();
     }
 
-    /**
-     *
-     */
     async execute(): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];

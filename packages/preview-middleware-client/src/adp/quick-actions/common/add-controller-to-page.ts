@@ -26,10 +26,6 @@ export class AddControllerToPageQuickAction
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(ADD_CONTROLLER_TO_PAGE_TYPE, CONTROL_TYPES, '', context, [
             DIALOG_ENABLEMENT_VALIDATOR,
@@ -75,16 +71,10 @@ export class AddControllerToPageQuickAction
         }
     }
 
-    /**
-     *
-     */
     protected get textKey() {
         return this.controllerExists ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER' : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
     }
 
-    /**
-     *
-     */
     async execute(): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];

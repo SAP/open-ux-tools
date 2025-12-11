@@ -24,10 +24,6 @@ export class AddHeaderFieldQuickAction
     extends SimpleQuickActionDefinitionBase<ObjectPageLayout>
     implements SimpleQuickActionDefinition
 {
-    /**
-     *
-     * @param context
-     */
     constructor(context: QuickActionContext) {
         super(OP_ADD_HEADER_FIELD_TYPE, CONTROL_TYPES, 'QUICK_ACTION_OP_ADD_HEADER_FIELD', context, [
             DIALOG_ENABLEMENT_VALIDATOR,
@@ -46,9 +42,6 @@ export class AddHeaderFieldQuickAction
         ]);
     }
 
-    /**
-     *
-     */
     async execute(): Promise<FlexCommand[]> {
         if (!this.control) {
             return [];

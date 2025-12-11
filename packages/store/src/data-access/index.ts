@@ -6,19 +6,10 @@ import type { Logger } from '@sap-ux/logger';
  * related to the medium used (locking, buffering, etc)
  */
 export interface DataAccess<Entity> {
-    /**
-     *
-     */
     read(options: { entityName: string; id: string }): Promise<undefined | Entity>;
 
-    /**
-     *
-     */
     write(options: { entityName: string; id: string; entity: Entity }): Promise<undefined | Entity>;
 
-    /**
-     *
-     */
     del(options: { entityName: string; id: string }): Promise<boolean>;
 
     /** Return an array of entities */

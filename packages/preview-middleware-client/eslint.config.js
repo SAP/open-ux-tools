@@ -34,32 +34,15 @@ module.exports = defineConfig([
             'fiori-custom': fioriTools // backward compatibility
         },
         rules: {
-            quotes: [
+            'quotes': ['error', 'single', { 'allowTemplateLiterals': true }],
+            'valid-jsdoc': [
                 'error',
-                'single',
                 {
-                    allowTemplateLiterals: true
+                    requireParamType: false,
+                    requireReturn: false,
+                    requireReturnType: false
                 }
             ],
-
-            // Replace valid-jsdoc with eslint-plugin-jsdoc rules
-            'jsdoc/check-alignment': 'warn',
-            'jsdoc/check-param-names': 'warn',
-            'jsdoc/check-tag-names': 'warn',
-            'jsdoc/check-types': 'warn',
-            'jsdoc/implements-on-classes': 'warn',
-            // "jsdoc/newline-after-description": 'error',
-            'jsdoc/no-types': 'warn',
-            'jsdoc/require-description': 'warn',
-            'jsdoc/require-param': 'warn',
-            'jsdoc/require-param-description': 'warn',
-            'jsdoc/require-param-name': 'error',
-            'jsdoc/require-param-type': 'off',
-            'jsdoc/require-returns': 'off',
-            'jsdoc/require-returns-check': 'error',
-            'jsdoc/require-returns-description': 'error',
-            'jsdoc/require-returns-type': 'off',
-
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 {
@@ -67,7 +50,6 @@ module.exports = defineConfig([
                     argsIgnorePattern: '^_'
                 }
             ],
-
             '@typescript-eslint/no-unsafe-argument': 'warn',
             '@typescript-eslint/no-unsafe-member-access': 'warn',
             '@typescript-eslint/no-unsafe-assignment': 'warn',
@@ -82,7 +64,6 @@ module.exports = defineConfig([
     },
     {
         files: ['types/*.*'],
-
         rules: {
             '@typescript-eslint/no-namespace': 'off',
             'jsdoc/require-jsdoc': 'off',

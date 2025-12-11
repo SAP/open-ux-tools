@@ -1,6 +1,6 @@
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
-import { getUI5Versions } from '@sap-ux/ui5-info';
+const { writeFile } = require('fs/promises');
+const { join } = require('path');
+const { getUI5Versions } = require('@sap-ux/ui5-info');
 
 getUI5Versions({
     minSupportedUI5Version: '1.71',
