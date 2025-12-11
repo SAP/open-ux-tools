@@ -396,7 +396,7 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
         },
         'compression'
     );
-    
+
     // Add fiori-tools-preview (for local preview)
     ui5Config.addCustomMiddleware([
         {
