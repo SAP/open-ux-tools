@@ -908,7 +908,6 @@ Object {
   "root": true,
   "text": "Root",
   "title": undefined,
-  "type": "rootNode",
   "value": undefined,
 }
 `;
@@ -2511,7 +2510,6 @@ To ensure a consistent experience, set this and 'Stay On Current Page After Save
   "root": true,
   "text": "Root",
   "title": undefined,
-  "type": "rootNode",
   "value": undefined,
 }
 `;
@@ -2577,7 +2575,6 @@ Object {
               ],
               "text": "Share",
               "title": "Share",
-              "type": undefined,
               "value": Object {},
             },
           ],
@@ -2597,7 +2594,6 @@ Object {
           "properties": Array [],
           "text": "Actions",
           "title": undefined,
-          "type": undefined,
           "value": Object {
             "Share": Object {},
           },
@@ -2616,7 +2612,6 @@ Object {
       "properties": Array [],
       "text": "Header",
       "title": undefined,
-      "type": undefined,
       "value": Object {
         "actions": Object {
           "Share": Object {},
@@ -2650,7 +2645,6 @@ Object {
               "properties": Array [],
               "text": "Availability",
               "title": "to_ProductStock/StockAvailability",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -2672,7 +2666,6 @@ Object {
               "properties": Array [],
               "text": "Category",
               "title": "ProductCategory",
-              "type": undefined,
               "value": undefined,
             },
           ],
@@ -2690,7 +2683,6 @@ Object {
           "properties": Array [],
           "text": "Filter Fields",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
       ],
@@ -2983,7 +2975,6 @@ If the exclude property is set to False, the application shows only selected val
       ],
       "text": "Filter Bar",
       "title": undefined,
-      "type": undefined,
       "value": Object {
         "dateSettings": Object {
           "useDateRange": true,
@@ -3148,7 +3139,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                   ],
                   "text": "Copy",
                   "title": undefined,
-                  "type": undefined,
                   "value": undefined,
                 },
               ],
@@ -3169,7 +3159,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               "properties": Array [],
               "text": "Actions",
               "title": undefined,
-              "type": undefined,
               "value": undefined,
             },
           ],
@@ -3187,7 +3176,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
           "properties": Array [],
           "text": "Tool Bar",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
         Object {
@@ -3272,7 +3260,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Image",
               "title": "ProductPictureURL",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -3353,7 +3340,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Product",
               "title": "ProductForEdit",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -3434,7 +3420,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Main Category",
               "title": "to_ProductCategory/MainProductCategory",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -3515,7 +3500,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Category",
               "title": "ProductCategory",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -3596,7 +3580,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Supplier",
               "title": "sTarget::to_Supplier/@com.sap.vocabularies.Communication.v1.Contact",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -3677,7 +3660,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Availability",
               "title": "to_ProductStock/StockAvailability",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -3758,7 +3740,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Average Rating",
               "title": "sTarget::to_CollaborativeReview/@com.sap.vocabularies.UI.v1.DataPoint#AverageRatingValue",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -3839,7 +3820,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Price per Unit",
               "title": "Price",
-              "type": undefined,
               "value": undefined,
             },
           ],
@@ -3859,7 +3839,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
           "properties": Array [],
           "text": "Columns",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
       ],
@@ -4689,7 +4668,6 @@ For multi-view scenarios, you can change the enableAutobinding property to False
       ],
       "text": "Table",
       "title": undefined,
-      "type": undefined,
       "value": Object {
         "condensedTableLayout": true,
         "enableTableFilterInPageVariant": true,
@@ -4720,7 +4698,6 @@ For multi-view scenarios, you can change the enableAutobinding property to False
           "properties": Array [],
           "text": "Actions",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
       ],
@@ -4737,7 +4714,6 @@ For multi-view scenarios, you can change the enableAutobinding property to False
       "properties": Array [],
       "text": "Footer",
       "title": undefined,
-      "type": undefined,
       "value": undefined,
     },
   ],
@@ -4774,7 +4750,6 @@ For multi-view scenarios, you can change the enableAutobinding property to False
   "root": true,
   "text": "Root",
   "title": undefined,
-  "type": "rootNode",
   "value": undefined,
 }
 `;
@@ -4808,7 +4783,6 @@ Object {
           "properties": Array [],
           "text": "Actions",
           "title": undefined,
-          "type": undefined,
           "value": Object {},
         },
       ],
@@ -4825,7 +4799,6 @@ Object {
       "properties": Array [],
       "text": "Header",
       "title": undefined,
-      "type": undefined,
       "value": Object {
         "actions": Object {},
       },
@@ -4857,7 +4830,6 @@ Object {
               "properties": Array [],
               "text": "Agency ID",
               "title": "AgencyID",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -4879,7 +4851,6 @@ Object {
               "properties": Array [],
               "text": "Customer ID",
               "title": "CustomerID",
-              "type": undefined,
               "value": undefined,
             },
           ],
@@ -4897,7 +4868,6 @@ Object {
           "properties": Array [],
           "text": "Filter Fields",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
       ],
@@ -4941,7 +4911,6 @@ Object {
       ],
       "text": "Filter Bar",
       "title": undefined,
-      "type": undefined,
       "value": Object {},
     },
     Object {
@@ -4968,7 +4937,6 @@ Object {
           "properties": Array [],
           "text": "Views",
           "title": undefined,
-          "type": "views",
           "value": undefined,
         },
         Object {
@@ -5121,7 +5089,6 @@ Object {
                   ],
                   "text": "Create Draft Travel",
                   "title": "createDraftTravel",
-                  "type": undefined,
                   "value": undefined,
                 },
                 Object {
@@ -5266,7 +5233,6 @@ Object {
                   ],
                   "text": "Create Active Travel",
                   "title": "createActiveTravel",
-                  "type": undefined,
                   "value": undefined,
                 },
                 Object {
@@ -5411,7 +5377,6 @@ Object {
                   ],
                   "text": "Set Status Booked",
                   "title": undefined,
-                  "type": undefined,
                   "value": undefined,
                 },
               ],
@@ -5432,7 +5397,6 @@ Object {
               "properties": Array [],
               "text": "Actions",
               "title": undefined,
-              "type": undefined,
               "value": undefined,
             },
           ],
@@ -5450,7 +5414,6 @@ Object {
           "properties": Array [],
           "text": "Tool Bar",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
         Object {
@@ -5555,7 +5518,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
               ],
               "text": "Travel ID",
               "title": "TravelID",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -5656,7 +5618,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
               ],
               "text": "Agency ID",
               "title": "AgencyID",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -5757,7 +5718,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
               ],
               "text": "Customer ID",
               "title": "CustomerID",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -5858,7 +5818,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
               ],
               "text": "Starting Date",
               "title": "BeginDate",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -5959,7 +5918,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
               ],
               "text": "End Date",
               "title": "EndDate",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -6060,7 +6018,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
               ],
               "text": "Total Price",
               "title": "TotalPrice",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -6161,7 +6118,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
               ],
               "text": "Overall Status",
               "title": "TravelStatus",
-              "type": undefined,
               "value": undefined,
             },
           ],
@@ -6181,7 +6137,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
           "properties": Array [],
           "text": "Columns",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
       ],
@@ -6779,7 +6734,6 @@ If this is not set with a value, the default value is 'NewPage'.",
       ],
       "text": "Table",
       "title": undefined,
-      "type": undefined,
       "value": Object {},
     },
   ],
@@ -6822,7 +6776,6 @@ If this is not set with a value, the default value is 'NewPage'.",
   "root": true,
   "text": "Root",
   "title": undefined,
-  "type": "rootNode",
   "value": undefined,
 }
 `;
@@ -6994,7 +6947,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Copy",
               "title": "SEPMRA_C_PD_ProductCopy",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -7045,7 +6997,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Up and Down Navigation",
               "title": "UpAndDownNavigation",
-              "type": undefined,
               "value": Object {},
             },
             Object {
@@ -7096,7 +7047,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Share",
               "title": "Share",
-              "type": undefined,
               "value": Object {},
             },
           ],
@@ -7116,7 +7066,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
           "properties": Array [],
           "text": "Actions",
           "title": undefined,
-          "type": undefined,
           "value": Object {
             "Share": Object {},
             "UpAndDownNavigation": Object {},
@@ -7160,7 +7109,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "General Information",
               "title": undefined,
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -7197,7 +7145,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Description",
               "title": undefined,
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -7234,7 +7181,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Availability",
               "title": undefined,
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -7271,7 +7217,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               ],
               "text": "Price",
               "title": undefined,
-              "type": undefined,
               "value": undefined,
             },
           ],
@@ -7291,7 +7236,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
           "properties": Array [],
           "text": "Header Sections",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
       ],
@@ -7439,7 +7383,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
       ],
       "text": "Header",
       "title": undefined,
-      "type": undefined,
       "value": Object {
         "actions": Object {
           "Share": Object {},
@@ -7555,7 +7498,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
       ],
       "text": "Page Layout",
       "title": undefined,
-      "type": undefined,
       "value": undefined,
     },
     Object {
@@ -7592,7 +7534,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                   "properties": Array [],
                   "text": "Actions",
                   "title": undefined,
-                  "type": undefined,
                   "value": undefined,
                 },
                 Object {
@@ -7637,7 +7578,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Base Unit",
                       "title": "ProductBaseUnit",
-                      "type": undefined,
                       "value": undefined,
                     },
                     Object {
@@ -7678,7 +7618,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Height",
                       "title": "Height",
-                      "type": undefined,
                       "value": undefined,
                     },
                     Object {
@@ -7719,7 +7658,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Width",
                       "title": "Width",
-                      "type": undefined,
                       "value": undefined,
                     },
                     Object {
@@ -7760,7 +7698,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Depth",
                       "title": "Depth",
-                      "type": undefined,
                       "value": undefined,
                     },
                     Object {
@@ -7801,7 +7738,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Weight",
                       "title": "Weight",
-                      "type": undefined,
                       "value": undefined,
                     },
                   ],
@@ -7823,7 +7759,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                   "properties": Array [],
                   "text": "Fields",
                   "title": undefined,
-                  "type": undefined,
                   "value": undefined,
                 },
               ],
@@ -7842,7 +7777,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
               "properties": Array [],
               "text": "Form",
               "title": undefined,
-              "type": undefined,
               "value": undefined,
             },
           ],
@@ -7874,7 +7808,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
           ],
           "text": "Technical Data",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
         Object {
@@ -7912,7 +7845,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       "properties": Array [],
                       "text": "Actions",
                       "title": undefined,
-                      "type": undefined,
                       "value": undefined,
                     },
                   ],
@@ -7932,7 +7864,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                   "properties": Array [],
                   "text": "Tool Bar",
                   "title": undefined,
-                  "type": undefined,
                   "value": undefined,
                 },
                 Object {
@@ -8023,7 +7954,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Rating",
                       "title": "sTarget::@com.sap.vocabularies.UI.v1.DataPoint#ReviewRatingValue",
-                      "type": undefined,
                       "value": undefined,
                     },
                     Object {
@@ -8110,7 +8040,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Person",
                       "title": "ContactPerson",
-                      "type": undefined,
                       "value": undefined,
                     },
                     Object {
@@ -8197,7 +8126,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Date",
                       "title": "ReviewDate",
-                      "type": undefined,
                       "value": undefined,
                     },
                     Object {
@@ -8284,7 +8212,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Review Text",
                       "title": "ReviewPostText",
-                      "type": undefined,
                       "value": undefined,
                     },
                     Object {
@@ -8371,7 +8298,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                       ],
                       "text": "Helpful",
                       "title": "sTarget::@com.sap.vocabularies.UI.v1.DataPoint#NumberOfAffirmativeAnswers",
-                      "type": undefined,
                       "value": undefined,
                     },
                   ],
@@ -8393,7 +8319,6 @@ This can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test
                   "properties": Array [],
                   "text": "Columns",
                   "title": undefined,
-                  "type": undefined,
                   "value": undefined,
                 },
               ],
@@ -8980,7 +8905,6 @@ By default, the Copy to Clipboard button is displayed in the table toolbar if th
               ],
               "text": "Table",
               "title": "ProductReviewFacetID",
-              "type": undefined,
               "value": Object {},
             },
           ],
@@ -9012,7 +8936,6 @@ By default, the Copy to Clipboard button is displayed in the table toolbar if th
           ],
           "text": "Reviews",
           "title": "ProductReviewFacetID",
-          "type": undefined,
           "value": Object {
             "table": Object {},
           },
@@ -9069,7 +8992,6 @@ By default, the Copy to Clipboard button is displayed in the table toolbar if th
               ],
               "text": "Chart",
               "title": undefined,
-              "type": undefined,
               "value": Object {},
             },
           ],
@@ -9101,7 +9023,6 @@ By default, the Copy to Clipboard button is displayed in the table toolbar if th
           ],
           "text": "Sales Data",
           "title": "ProductSmartChartFacetID",
-          "type": undefined,
           "value": Object {
             "chart": Object {},
           },
@@ -9122,7 +9043,6 @@ By default, the Copy to Clipboard button is displayed in the table toolbar if th
       "properties": Array [],
       "text": "Sections",
       "title": undefined,
-      "type": undefined,
       "value": Object {
         "ProductReviewFacetID": Object {
           "table": Object {},
@@ -9156,7 +9076,6 @@ By default, the Copy to Clipboard button is displayed in the table toolbar if th
           "properties": Array [],
           "text": "Actions",
           "title": undefined,
-          "type": undefined,
           "value": undefined,
         },
       ],
@@ -9173,7 +9092,6 @@ By default, the Copy to Clipboard button is displayed in the table toolbar if th
       "properties": Array [],
       "text": "Footer",
       "title": undefined,
-      "type": undefined,
       "value": Object {},
     },
   ],
@@ -9548,7 +9466,6 @@ By default, the Copy to Clipboard button is displayed in the table toolbar if th
   "root": true,
   "text": "Root",
   "title": undefined,
-  "type": "rootNode",
   "value": undefined,
 }
 `;
@@ -9600,7 +9517,6 @@ Object {
               ],
               "text": "Edit",
               "title": "EditAction",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -9637,7 +9553,6 @@ Object {
               ],
               "text": "Delete",
               "title": "DeleteAction",
-              "type": undefined,
               "value": undefined,
             },
             Object {
@@ -9664,7 +9579,6 @@ Object {
                   "properties": Array [],
                   "text": "Additional Semantic Objects.",
                   "title": undefined,
-                  "type": undefined,
                   "value": undefined,
                 },
               ],
@@ -9712,7 +9626,6 @@ Object {
               ],
               "text": "Related Apps",
               "title": "RelatedApps",
-              "type": undefined,
               "value": undefined,
             },
           ],
@@ -9732,7 +9645,6 @@ Object {
           "properties": Array [],
           "text": "Actions",
           "title": undefined,
-          "type": undefined,
           "value": Object {},
         },
         Object {
@@ -9755,7 +9667,6 @@ Object {
           "properties": Array [],
           "text": "Header Sections",
           "title": undefined,
-          "type": undefined,
           "value": Object {},
         },
       ],
@@ -9851,7 +9762,6 @@ Object {
       ],
       "text": "Header",
       "title": undefined,
-      "type": undefined,
       "value": Object {
         "actions": Object {},
         "sections": Object {},
@@ -9903,7 +9813,6 @@ Object {
       ],
       "text": "Page Layout",
       "title": undefined,
-      "type": undefined,
       "value": Object {},
     },
     Object {
@@ -9928,7 +9837,6 @@ Object {
           "properties": Array [],
           "text": "Dummy",
           "title": "DummyFacet",
-          "type": undefined,
           "value": undefined,
         },
       ],
@@ -9947,7 +9855,6 @@ Object {
       "properties": Array [],
       "text": "Sections",
       "title": undefined,
-      "type": undefined,
       "value": Object {},
     },
     Object {
@@ -9974,7 +9881,6 @@ Object {
           "properties": Array [],
           "text": "Actions",
           "title": undefined,
-          "type": undefined,
           "value": Object {},
         },
       ],
@@ -9991,7 +9897,6 @@ Object {
       "properties": Array [],
       "text": "Footer",
       "title": undefined,
-      "type": undefined,
       "value": Object {
         "actions": Object {},
       },
@@ -10032,7 +9937,6 @@ Object {
   "root": true,
   "text": "Root",
   "title": undefined,
-  "type": "rootNode",
   "value": undefined,
 }
 `;
