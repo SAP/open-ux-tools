@@ -1,4 +1,4 @@
 export * from './api';
 export * from './sapuxFtfsFileIO';
-export { TreeNode, TreeNodeProperty, findNodeByAnnotationNodeId, findByPath, PropertyPath } from './tree';
+export { TreeNode, TreeNodeProperty, findByPath, PropertyPath } from './tree';
 export * from './project';

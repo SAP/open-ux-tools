@@ -444,32 +444,6 @@ export function getTree(model: Parser.TreeModel): TreeNode {
 }
 
 /**
- * Method finds node by passed annotation nodeId.
- *
- * @param tree Nodes tree to lookup.
- * @param nodeId Annotation node id.
- * @returns Found node information.
- */
-export function findNodeByAnnotationNodeId(tree: TreeNode[], nodeId: number[]): TreeNode | undefined {
-    for (const node of tree) {
-        if (isArrayEqual(node.annotationNodeId, nodeId)) {
-            // If the current node is the target, return it and its parent as null
-            return node;
-        } else if (node.children) {
-            // If the current node has children, search for the target in each child
-            const foundNode = findNodeByAnnotationNodeId(node.children, nodeId);
-            if (foundNode) {
-                // If the target is found in a child, return the child as the node and the current node as the parent
-                return foundNode;
-            }
-        }
-    }
-
-    // If the target is not found
-    return undefined;
-}
-
-/**
  * Finds a node or property in a tree by its property path.
  *
  * @param tree - The tree of nodes to search.
