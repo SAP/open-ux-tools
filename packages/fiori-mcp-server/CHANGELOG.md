@@ -1,5 +1,12 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.4.11
+
+### Patch Changes
+
+-   63eec1e: fix(fiori-mcp): fix cap service schema and logger errors in stdio
+    -   @sap-ux/fiori-docs-embeddings@0.4.5
+
 ## 0.4.10
 
 ### Patch Changes
