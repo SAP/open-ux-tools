@@ -20,7 +20,7 @@ export class TelemetryCollector {
     /**
      * Telemetry data.
      */
-    private data: AdpTelemetryData = { ...DEFAULT_DATA };
+    private readonly data: AdpTelemetryData = { ...DEFAULT_DATA };
 
     /**
      * Gets the telemetry data.
