@@ -310,6 +310,8 @@ async function getBaseAppId(basePath: string, logger: ToolsLogger): Promise<stri
             throw new Error('No reference found in manifest.appdescr_variant');
         }
 
+        logger.info(`Read appId from manifest.appdescr_variant: ${variant.reference}`);
+
         return variant.reference;
     } catch (error) {
         logger.error(`Failed to get app ID: ${(error as Error).message}`);

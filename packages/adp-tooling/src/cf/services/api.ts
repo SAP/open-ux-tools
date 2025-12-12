@@ -161,7 +161,7 @@ export async function getCfUi5AppInfo(
     const requestArguments = getFDCRequestArguments(cfConfig);
 
     const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
-    const url = `${requestArguments.url}/discovery/ui5_app_info_json?appId=${encodeURIComponent(
+    const url = `${requestArguments.url}/api/business-service/ui5appinfo?appId=${encodeURIComponent(
         appId
     )}&${appHostIdParams}`;
 
