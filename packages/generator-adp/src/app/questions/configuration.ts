@@ -218,7 +218,11 @@ export class ConfigPrompter {
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - Instance of the logger.
      */
-    constructor(private readonly systemLookup: SystemLookup, layer: FlexLayer, private readonly logger: ToolsLogger) {
+    constructor(
+        private readonly systemLookup: SystemLookup,
+        layer: FlexLayer,
+        private readonly logger: ToolsLogger
+    ) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 

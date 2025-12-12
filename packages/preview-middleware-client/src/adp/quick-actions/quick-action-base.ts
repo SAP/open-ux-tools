@@ -1,4 +1,4 @@
-import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
 
 import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator';
 import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator';

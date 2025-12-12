@@ -107,7 +107,7 @@ async function updateScripts(
     addCdsUi5Plugin?: boolean
 ): Promise<void> {
     let cdsScripts: { [x: string]: string } = {};
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     if (addCdsUi5Plugin) {
         // If the project has the cds-plugin-ui5 then the project is served using the appId
         // Update existing watch scripts if they exist

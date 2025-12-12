@@ -5,7 +5,7 @@ import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { BackendMiddlewareConfig } from './base/types';
 import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
-import type { MiddlewareParameters } from '@ui5/server';
+import type { MiddlewareParameters } from '@ui5/server'; // eslint-disable-line sonarjs/no-implicit-dependencies
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.

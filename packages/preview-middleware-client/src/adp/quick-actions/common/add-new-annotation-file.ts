@@ -1,4 +1,4 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import {
     NESTED_QUICK_ACTION_KIND,

@@ -31,7 +31,6 @@ type Class<T> = new (...args: any[]) => T;
 /**
  * PatchedHttpsProxyAgent is a custom implementation of HttpsProxyAgent that allows to pass additional options, currently not supported by the original implementation when calling tls.connect
  */
-// eslint-disable-next-line jsdoc/require-jsdoc
 export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<Uri> {
     private readonly extraOptions: any;
 

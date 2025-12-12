@@ -1,10 +1,13 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    NestedQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { ANALYTICAL_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
 
-import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { isA } from '../../../utils/core';

@@ -77,7 +77,6 @@ async function runHeadlessGen(
 
     // Replace CAP project paths in test files with an absolute path to test CAP project
     if (appConfig.service?.capService?.projectPath && capProjectRoot) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error - assigning to a read-only property for testing
         appConfig.service.capService.projectPath = capProjectRoot;
     }
@@ -123,11 +122,8 @@ describe('Headless generation', () => {
                 cleanTestDir(testDir);
             }
             process.chdir(originalCwd);
-        } catch {
-            () => {
-                // Needed for lint
-            };
-        }
+            // eslint-disable-next-line no-empty
+        } catch {}
     });
 
     it('LROP v2', async () => {

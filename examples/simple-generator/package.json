@@ -12,8 +12,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob generators coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix"
+        "lint": "eslint",
+        "lint:fix": "eslint --fix"
     },
     "dependencies": {
         "@sap-ux/fiori-elements-writer": "workspace:*",

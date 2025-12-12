@@ -28,7 +28,7 @@ const mockInstanceSettings = {
     clientsecret: 'CLIENT_SECRET'
 };
 
-let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [
+const cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [
     { label: 'system1', serviceName: 'service1' },
     { label: 'system2', serviceName: 'service2' }
 ];

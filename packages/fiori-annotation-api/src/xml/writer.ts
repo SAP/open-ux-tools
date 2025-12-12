@@ -55,7 +55,11 @@ export class XMLWriter {
      * @param comments - Array of all the comments in the document.
      * @param textDocument - TextDocument instance.
      */
-    constructor(private document: XMLDocument, private comments: Comment[], private textDocument: TextDocument) {}
+    constructor(
+        private readonly document: XMLDocument,
+        private readonly comments: Comment[],
+        private readonly textDocument: TextDocument
+    ) {}
     /**
      *  Adds a new change to the change stack.
      *

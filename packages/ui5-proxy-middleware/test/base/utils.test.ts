@@ -19,6 +19,7 @@ import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 
 describe('utils', () => {
@@ -597,7 +598,9 @@ describe('utils', () => {
             };
             const ui5Ver = '';
             const rewrite = getPathRewrite(config, ui5Ver);
-            expect((rewrite as Function)('/chicken.js')).toEqual('this/path/should/rewrite/mypath/resources/chicken.js');
+            expect((rewrite as Function)('/chicken.js')).toEqual(
+                'this/path/should/rewrite/mypath/resources/chicken.js'
+            );
         });
     });
 });

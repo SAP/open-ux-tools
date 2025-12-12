@@ -22,6 +22,9 @@ interface BaseLoggerOptions {
     metadataOverride?: Metadata;
 }
 
+/**
+ *
+ */
 class BaseWinstonLogger implements Logger {
     protected _logger: winston.Logger;
     protected logPrefix: string;
@@ -85,6 +88,7 @@ class BaseWinstonLogger implements Logger {
         }
         return undefined;
     }
+
     add(transport: Transport) {
         const winstonTransport = this.addToMap(this.transportMap, transport);
 
@@ -106,6 +110,7 @@ class BaseWinstonLogger implements Logger {
     transports(): Transport[] {
         return Array.from(this.transportMap.keys());
     }
+
     child({ logPrefix }: ChildLoggerOptions): Logger {
         const childLogPrefix = `${this.logPrefix}.${logPrefix}`;
         const metadataOverride = { label: childLogPrefix, labelColor: nextColor() };

@@ -1,12 +1,12 @@
 import NavContainer from 'sap/m/NavContainer';
 import FlexibleColumnLayout from 'sap/f/FlexibleColumnLayout';
 import { LayoutType } from 'sap/f/library';
-import Control from 'sap/ui/core/Control';
-import XMLView from 'sap/ui/core/mvc/XMLView';
+import type Control from 'sap/ui/core/Control';
+import type XMLView from 'sap/ui/core/mvc/XMLView';
 import Log from 'sap/base/Log';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 
-import { QuickActionActivationContext, QuickActionDefinitionGroup } from './quick-action-definition';
+import type { QuickActionActivationContext, QuickActionDefinitionGroup } from './quick-action-definition';
 
 import type { ControlTreeIndex } from '../types';
 import { getControlById } from '../../utils/core';
@@ -126,10 +126,10 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
 
     /**
      * Finds the visible Flexible Column Layout pages.
+     *
      * @param control - Flexible Column Layout control.
      * @returns A list of visible pages.
      */
-
     private getVisibleFlexibleColumnLayoutPages(control: FlexibleColumnLayout): (Control | undefined)[] {
         const layout = control.getLayout();
         switch (layout) {

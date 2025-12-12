@@ -19,13 +19,11 @@ export const deleteSystemCommandHandler =
         const backendSystem = await systemService.read(backendSystemKey);
 
         if (!backendSystem) {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             window.showErrorMessage(t('error.systemNotFound', { backendKey: backendSystemKey.getId() }));
             return;
         }
 
         if (!(await confirmPrompt(ConfirmationPromptType.Delete, backendSystem.name))) {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             window.showWarningMessage(t('warn.deletionCancelled', { system: backendSystem.name }));
             return;
         }
@@ -52,7 +50,7 @@ function deletionSuccessHandler(
 ): void {
     panelManager.deleteAndDispose(panelKey);
     logTelemetry(SystemActionStatus.DELETED_SUCCESS, backendSystem.systemType);
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
     window.showInformationMessage(t('info.systemDeleted', geti18nOpts(backendSystem.name)));
 }
 
@@ -62,7 +60,6 @@ function deletionSuccessHandler(
  * @param system - the backend system that failed to be deleted
  */
 function deletionFailureHandler(system: BackendSystem): void {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     window.showWarningMessage(t('error.deletingSystem', geti18nOpts(system.name)));
     logTelemetry(SystemActionStatus.DELETED_FAIL, system.systemType);
 }

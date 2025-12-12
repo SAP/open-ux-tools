@@ -1,5 +1,5 @@
 /** sap.m */
-import Button from 'sap/m/Button';
+import type Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 
 /** sap.ui.core */
@@ -18,7 +18,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
 /** sap.ui.fl */
-import { AddTableCellFragmentChangeContentType } from 'sap/ui/fl/Change';
+import type { AddTableCellFragmentChangeContentType } from 'sap/ui/fl/Change';
 
 /** sap.ui.layout */
 import { type SimpleForm } from 'sap/ui/layout/form';

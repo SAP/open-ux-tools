@@ -38,9 +38,9 @@ jest.mock('@sap-ux/project-access', () => {
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -64,7 +64,6 @@ jest.mock('@sap/mta-lib', () => {
 const mockGetHostEnvironment = jest.fn();
 const mockSendTelemetry = jest.fn();
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: () => mockSendTelemetry(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),

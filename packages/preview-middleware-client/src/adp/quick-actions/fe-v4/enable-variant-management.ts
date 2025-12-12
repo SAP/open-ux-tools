@@ -1,12 +1,15 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import Component from 'sap/ui/core/Component';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { createManifestPropertyChange } from '../../../utils/fe-v4';
-import ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
+import type ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 

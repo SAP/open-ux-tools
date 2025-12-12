@@ -192,7 +192,7 @@ class PropertiesTokenizer {
             this.next();
         }
         let type: TokenType = 'whitespace';
-        if (!isSeparator(this.peek()) && token && token.type === 'key') {
+        if (!isSeparator(this.peek()) && token?.type === 'key') {
             // whitespace can also serve as separator
             type = 'separator';
         }

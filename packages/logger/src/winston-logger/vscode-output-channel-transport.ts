@@ -23,7 +23,6 @@ export class VSCodeTransport extends Transport {
         ['debug', 'debug'],
         ['silly', 'trace']
     ]);
-
     public constructor(
         options: Transport.TransportStreamOptions & {
             channelName: string;
@@ -45,5 +44,6 @@ export class VSCodeTransport extends Transport {
 }
 
 function getVSCodeInstance(): any {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     return require('vscode');
 }
