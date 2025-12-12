@@ -197,6 +197,7 @@ export async function promptOdataServiceAnswers(
         serviceId: answers.serviceId,
         edmx: answers.metadata,
         annotations: answers.annotations,
+        valueListMetadata: answers.valueListMetadata,
         version: answers.odataVersion,
         capService: answers.capService,
         source: answers.datasourceType,
@@ -438,6 +439,10 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
             useAutoComplete: !isYUI,
             includeCloudFoundryAbapEnvChoice: true,
             ...options.promptOptions?.systemSelection
+        },
+        [odataServiceInquirerPromptNames.valueHelpDownload]: {
+            hide: true,
+            ...options.promptOptions?.valueHelpDownload
         }
     };
 }

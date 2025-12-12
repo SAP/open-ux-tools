@@ -410,7 +410,8 @@ export class FioriAppGenerator extends Generator {
                 EnableEslint: project.enableEslint,
                 EnableTypeScript: project.enableTypeScript,
                 EnableVirtualEndpoints: project.enableVirtualEndpoints,
-                ToolsId: appConfig.app.sourceTemplate?.toolsId
+                ToolsId: appConfig.app.sourceTemplate?.toolsId,
+                ValueHelpCount: service.valueListMetadata?.length ?? 0
             });
 
             if (service.apiHubConfig && isAppStudio()) {

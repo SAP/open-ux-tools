@@ -780,4 +780,41 @@ describe('Test new system prompt', () => {
             { name: 'http://abap01:1234/path/to/odata/service', value: { servicePath: '/path/to/odata/service' } }
         ]);
     });
+
+    test('Should include value help download prompt when showValueHelpDownloadPrompt is true', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = { authenticated: true, reachable: true };
+
+        const systemServiceQuestions = getSystemServiceQuestion(
+            connectValidator,
+            promptNamespace,
+            undefined,
+            true // showValueHelpDownloadPrompt = true
+        );
+
+        const valueHelpPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.valueHelpDownload}`
+        );
+
+        expect(valueHelpPrompt).toBeDefined();
+        expect(valueHelpPrompt?.type).toBe('confirm');
+    });
+
+    test('Should not include value help download prompt when showValueHelpDownloadPrompt is false', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = { authenticated: true, reachable: true };
+
+        const systemServiceQuestions = getSystemServiceQuestion(
+            connectValidator,
+            promptNamespace,
+            undefined,
+            false // showValueHelpDownloadPrompt = false
+        );
+
+        const valueHelpPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.valueHelpDownload}`
+        );
+
+        expect(valueHelpPrompt).toBeUndefined();
+    });
 });
