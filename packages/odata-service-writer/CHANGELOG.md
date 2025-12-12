@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.36
+
+### Patch Changes
+
+-   e1647fe: fix: write external service metadata during project generation.
+
 ## 0.27.35
 
 ### Patch Changes
