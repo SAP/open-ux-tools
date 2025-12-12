@@ -1,5 +1,12 @@
 # @sap-ux/inquirer-common
 
+## 0.9.14
+
+### Patch Changes
+
+-   Updated dependencies [e1647fe]
+    -   @sap-ux/odata-service-writer@0.27.36
+
 ## 0.9.13
 
 ### Patch Changes
