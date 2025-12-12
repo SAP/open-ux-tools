@@ -1,5 +1,14 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.80
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.9.14
+-   @sap-ux/flp-config-inquirer@0.4.78
+-   @sap-ux/deploy-config-generator-shared@0.1.60
+-   @sap-ux/app-config-writer@0.6.64
+
 ## 0.3.79
 
 ### Patch Changes
