@@ -1,0 +1,65 @@
+/**
+ * @file Detect the access of the innerHTML property.
+ */
+
+import type { Rule } from 'eslint';
+import { type ASTNode, type IdentifierNode, type LiteralNode, isIdentifier, isLiteral } from '../utils/helpers';
+
+// ------------------------------------------------------------------------------
+// Rule Disablement
+// ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
+// Invoking global form of strict mode syntax for whole script
+// ------------------------------------------------------------------------------
+
+// ------------------------------------------------------------------------------
+// Rule Definition
+// ------------------------------------------------------------------------------
+const rule: Rule.RuleModule = {
+    meta: {
+        type: 'problem',
+        docs: {
+            description: 'fiori tools (fiori custom) ESLint rule',
+            category: 'Best Practices',
+            recommended: false
+        },
+        messages: {
+            innerHtmlAccess: 'Accessing the inner html is not recommended.'
+        },
+        schema: []
+    },
+    create(context: Rule.RuleContext) {
+        // --------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------
+
+        /**
+         * Check if a property access is valid (not innerHTML).
+         *
+         * @param property The property node to validate
+         * @returns True if the property access is valid
+         */
+        function isValid(property: ASTNode): boolean {
+            // anything is valid, except 'innerHTML'
+            if (isIdentifier(property)) {
+                return (property as IdentifierNode).name !== 'innerHTML';
+            } else if (isLiteral(property)) {
+                return (property as LiteralNode).value !== 'innerHTML';
+            }
+            return true;
+        }
+
+        // --------------------------------------------------------------------------
+        // Public
+        // --------------------------------------------------------------------------
+        return {
+            'MemberExpression'(node: ASTNode): void {
+                if (!isValid((node as any).property)) {
+                    context.report({ node: node, messageId: 'innerHtmlAccess' });
+                }
+            }
+        };
+    }
+};
+
+export default rule;
