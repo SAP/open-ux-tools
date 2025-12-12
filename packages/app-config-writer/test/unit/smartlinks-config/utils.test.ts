@@ -277,6 +277,10 @@ describe('utils', () => {
             }
         };
 
+        beforeEach(() => {
+            nock.cleanAll();
+        });
+
         test('Add fioriSandboxConfig.json - none existing', async () => {
             nock(url).get(service).query(params).reply(200, targetResults);
             sandboxExistsSpy.mockReturnValueOnce(false);
