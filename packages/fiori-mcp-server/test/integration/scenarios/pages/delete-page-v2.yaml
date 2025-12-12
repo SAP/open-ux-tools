@@ -1,0 +1,11 @@
+config:
+    project: 'lrop-v2'
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: 'Delete Product ObjectPage page in {{appPath}}'
+assert:
+    - type: javascript
+      value: file://../assertions/snapshots.ts:validate
+      config:
+          file: webapp/manifest.json
+          snapshot: delete-page-v2
