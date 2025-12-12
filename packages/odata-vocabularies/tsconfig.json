@@ -7,7 +7,7 @@
         "outDir": "dist",
         "rootDir": "src"
     },
-    "include": ["src", "types"],
+    "include": ["src"],
     "references": [
         {
             "path": "../odata-annotation-core-types"

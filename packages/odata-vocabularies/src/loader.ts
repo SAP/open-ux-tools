@@ -7,7 +7,7 @@ import type {
     ComplexType as CSDLComplexType,
     Term as CSDLTerm,
     CSDL
-} from '@sap-ux/vocabularies/CSDL';
+} from './csdl';
 
 import type { VocabularyAlias, VocabularyNamespace } from './resources';
 import VOCABULARIES, { ALIAS_TO_NAMESPACE, NAMESPACE_TO_ALIAS } from './resources';

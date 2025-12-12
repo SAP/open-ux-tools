@@ -1,5 +1,5 @@
-// Last content update: Wed Dec 03 2025 11:11:43 GMT+0100 (Central European Standard Time)
-import type { CSDL } from '@sap-ux/vocabularies/CSDL';
+// Last content update: Fri Dec 12 2025 13:11:50 GMT+0200 (Eastern European Standard Time)
+import type { Schema } from '../csdl';
 
 export default {
     '$Version': '4.0',
@@ -88,4 +88,4 @@ export default {
             '@Org.OData.Core.V1.Description': 'The annotated entity type is the root type of a composition tree.'
         }
     }
-} as CSDL;
+} satisfies Schema;

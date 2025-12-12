@@ -3,7 +3,7 @@ import path from 'node:path';
 import fs from 'fs/promises';
 import axios from 'axios';
 import prettier from 'prettier';
-import type { CSDL, CSDLAnnotations, SchemaElement } from '@sap-ux/vocabularies/CSDL';
+import type { CSDL, CSDLAnnotations, SchemaElement } from '../src/csdl';
 
 export interface SupportedVocabularies {
     [key: string]: VocabularyConfig;
@@ -118,9 +118,9 @@ const updateVocabulary = async (namespace: string, config: VocabularyConfig, dat
     const contentStringified = JSON.stringify(contentUglified, null, 4);
     const contentFile = [
         `// Last content update: ${date}`,
-        `import type { CSDL } from '@sap-ux/vocabularies/CSDL';`,
+        `import type { Schema } from '../csdl';`,
         '',
-        `export default ${contentStringified} as CSDL;`
+        `export default ${contentStringified} satisfies Schema;`
     ].join('\n');
 
     // prettify

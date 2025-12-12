@@ -1,5 +1,5 @@
-// Last content update: Wed Dec 03 2025 11:11:43 GMT+0100 (Central European Standard Time)
-import type { CSDL } from '@sap-ux/vocabularies/CSDL';
+// Last content update: Fri Dec 12 2025 13:11:50 GMT+0200 (Eastern European Standard Time)
+import type { Schema } from '../csdl';
 
 export default {
     '$Version': '4.0',
@@ -217,4 +217,4 @@ export default {
                 'Sensitive personal data is a category of personal data that needs special handling. The determination which personal data is sensitive may differ for different legal areas or industries. Examples of sensitive personal data:\n                      - Special categories of personal data, such as data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, data concerning health or sex life or sexual orientation.\n                      - Personal data subject to professional secrecy. \n                      - Personal data relating to criminal or administrative offences.\n                      - Personal data concerning insurances and bank or credit card accounts.\n          '
         }
     }
-} as CSDL;
+} satisfies Schema;
