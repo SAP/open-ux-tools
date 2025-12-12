@@ -11,14 +11,14 @@ sap.ui.define([
             Given.iStartMyApp();
 <% startPages.forEach(function(pageName) { %>
             Then.onThe<%- pageName%>.iSeeThisPage();
-            <% if (filterBarItems) { %>
+            <% if (filterBarItems && filterBarItems.length > 0) { %>
                 <% filterBarItems.forEach(function(item) { %>
             Then.onThe<%- pageName%>.onFilterBar().iCheckFilterField("<%- item %>");
                 <% }); %>
             <% } %>
 
-            <% if (tableColumns) { %>
-            Then.onThe<%- pageName %>.onTable().iCheckColumns(<%- Object.values(tableColumns).length %>, <%- JSON.stringify(tableColumns) %>);
+            <% if (tableColumns && Object.keys(tableColumns).length > 0) { %>
+            Then.onThe<%- pageName %>.onTable().iCheckColumns(<%- Object.keys(tableColumns).length %>, <%- JSON.stringify(tableColumns) %>);
             <% } %>
 <% });%>
         });
