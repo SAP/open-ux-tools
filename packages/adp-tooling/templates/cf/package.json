@@ -4,9 +4,11 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"prestart": "npm run build",
-		"start": "fiori run --open /test/flp.html#app-preview",
-		"start-editor": "fiori run --open /test/adaptation-editor.html",
+		"start": "npm run setup-cf && npm run build && ui5 serve --open /test/flp.html#app-preview --verbose",
+		"start-nobuild": "ui5 serve --open /test/flp.html#app-preview --verbose",
+		"setup-cf": "sap-ux setup adaptation-project-cf",
+		"start-editor-nobuild": "ui5 serve --open /local/editor.html --verbose",
+		"start-editor": "npm run setup-cf && ui5 serve --open /local/editor.html --verbose",
 		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",
 		"zip": "cd dist && npx bestzip ../<%= module %>.zip *",
 		"clean": "npx rimraf <%= module %>.zip dist",
@@ -17,6 +19,7 @@
 		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
 	},
 	"devDependencies": {
+		"@sap-ux/create": "file:/home/milkov/Desktop/CF-reuse-setup/open-ux-tools/packages/create",
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
 		"@sap-ux/backend-proxy-middleware-cf": "^0.0.1",
 		"@sapui5/ts-types": "^1.141.2",

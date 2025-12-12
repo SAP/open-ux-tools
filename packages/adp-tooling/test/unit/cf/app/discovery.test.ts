@@ -4,12 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { initI18n, t } from '../../../../src/i18n';
 import { getFDCApps } from '../../../../src/cf/services/api';
 import { extractXSApp } from '../../../../src/cf/utils/validation';
-import {
-    getAppHostIds,
-    getBackendUrlFromServiceKeys,
-    getCfApps,
-    getOAuthPathsFromXsApp
-} from '../../../../src/cf/app/discovery';
+import { getAppHostIds, getCfApps, getOAuthPathsFromXsApp } from '../../../../src/cf/app/discovery';
 import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types';
 
 jest.mock('../../../../src/cf/services/api', () => ({
@@ -330,91 +325,6 @@ describe('CF App Discovery', () => {
             mockGetFDCApps.mockRejectedValue(error);
 
             await expect(getCfApps(serviceKeys, mockCfConfig, mockLogger)).rejects.toThrow('API Error');
-        });
-    });
-
-    describe('getBackendUrlFromServiceKeys', () => {
-        test('should extract backend URL from first endpoint with URL', () => {
-            const serviceKeys: ServiceKeys[] = [
-                {
-                    credentials: {
-                        uaa: {} as Uaa,
-                        uri: 'test-uri',
-                        endpoints: {
-                            endpoint1: {
-                                url: '/backend.example'
-                            },
-                            endpoint2: {
-                                url: '/another-backend.example'
-                            }
-                        }
-                    }
-                }
-            ];
-
-            const result = getBackendUrlFromServiceKeys(serviceKeys);
-
-            expect(result).toBe('/backend.example');
-        });
-
-        test('should return first endpoint with URL when multiple endpoints exist', () => {
-            const serviceKeys: ServiceKeys[] = [
-                {
-                    credentials: {
-                        uaa: {} as Uaa,
-                        uri: 'test-uri',
-                        endpoints: {
-                            endpoint1: {},
-                            endpoint2: {
-                                url: '/backend.example'
-                            },
-                            endpoint3: {
-                                url: '/another-backend.example'
-                            }
-                        }
-                    }
-                }
-            ];
-
-            const result = getBackendUrlFromServiceKeys(serviceKeys);
-
-            expect(result).toBe('/backend.example');
-        });
-
-        test('should return undefined when no endpoints have URL', () => {
-            const serviceKeys: ServiceKeys[] = [
-                {
-                    credentials: {
-                        uaa: {} as Uaa,
-                        uri: 'test-uri',
-                        endpoints: {
-                            endpoint1: {},
-                            endpoint2: {}
-                        }
-                    }
-                }
-            ];
-
-            const result = getBackendUrlFromServiceKeys(serviceKeys);
-
-            expect(result).toBeUndefined();
-        });
-
-        test('should return undefined for various edge cases', () => {
-            expect(getBackendUrlFromServiceKeys([])).toBeUndefined();
-            expect(getBackendUrlFromServiceKeys(null as any)).toBeUndefined();
-            expect(getBackendUrlFromServiceKeys(undefined as any)).toBeUndefined();
-            expect(
-                getBackendUrlFromServiceKeys([
-                    {
-                        credentials: {
-                            uaa: {} as Uaa,
-                            uri: 'test-uri',
-                            endpoints: {}
-                        }
-                    }
-                ])
-            ).toBeUndefined();
         });
     });
 

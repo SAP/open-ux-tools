@@ -1,16 +1,13 @@
-import type connect from 'connect';
+import { Router } from 'express';
 import type { Url } from 'node:url';
 import type { Socket } from 'node:net';
-import { type Request, Router } from 'express';
 import type { Options } from 'http-proxy-middleware';
-import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { IncomingMessage, ServerResponse } from 'http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { OAuthTokenProvider } from './token';
-
-export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'originalUrl'>) | connect.IncomingMessage;
 
 /**
  * Creates proxy options for http-proxy-middleware.
@@ -23,24 +20,26 @@ export function createProxyOptions(targetUrl: string, logger: ToolsLogger): Opti
     return {
         target: targetUrl,
         changeOrigin: true,
-        pathRewrite: (path: string, req: EnhancedIncomingMessage): string => {
+        pathRewrite: (strippedPath: string, req: IncomingMessage) => {
             // Express router.use() strips the matched path from req.url,
             // use originalUrl to get the full path before Express stripped it
-            const originalUrl = req.originalUrl ?? req.url ?? path;
-            const urlPath = originalUrl.split('?')?.[0];
+            const originalUrl = (req as any).originalUrl || req.url || strippedPath;
+            const urlPath = originalUrl.split('?')[0];
             const queryString = originalUrl.includes('?') ? originalUrl.substring(originalUrl.indexOf('?')) : '';
             const fullPath = urlPath + queryString;
-            logger.debug(`Rewrite path ${path} > ${fullPath}`);
+            logger.debug(
+                `Forwarding full path: ${fullPath} (originalUrl=${originalUrl}, req.url=${req.url}, strippedPath=${strippedPath})`
+            );
             return fullPath;
         },
         on: {
             error: (
                 err: Error & { code?: string },
-                req: EnhancedIncomingMessage & { next?: Function },
+                req: IncomingMessage & { next?: Function; originalUrl?: string },
                 _res: ServerResponse | Socket,
                 _target: string | Partial<Url> | undefined
-            ): void => {
-                logger.error(`Proxy error for ${req.originalUrl ?? req.url}: ${err.message}`);
+            ) => {
+                logger.error(`Proxy error for ${req.originalUrl || req.url}: ${err.message}`);
                 if (typeof req.next === 'function') {
                     req.next(err);
                 }
@@ -74,27 +73,29 @@ export function registerProxyRoute(
 }
 
 /**
- * Sets up all proxy routes for the configured paths.
+ * Sets up all proxy routes for the configured backends.
  *
- * @param {string[]} paths - Array of paths to register.
- * @param {string} destinationUrl - Target URL for proxying.
+ * @param {Array<{url: string, paths: string[]}>} backends - Array of backend configurations.
  * @param {OAuthTokenProvider} tokenProvider - Token provider instance.
  * @param {ToolsLogger} logger - Logger instance.
  * @returns {Router} Configured Express router.
  */
 export function setupProxyRoutes(
-    paths: string[],
-    destinationUrl: string,
+    backends: Array<{ url: string; paths: string[] }>,
     tokenProvider: OAuthTokenProvider,
     logger: ToolsLogger
 ): Router {
     const router = Router();
 
-    for (const path of paths) {
-        try {
-            registerProxyRoute(path, destinationUrl, tokenProvider, logger, router);
-        } catch (e) {
-            throw new Error(`Failed to register proxy for ${path}. Check configuration in yaml file. \n\t${e.message}`);
+    for (const backend of backends) {
+        for (const path of backend.paths) {
+            try {
+                registerProxyRoute(path, backend.url, tokenProvider, logger, router);
+            } catch (e) {
+                throw new Error(
+                    `Failed to register proxy for ${path}. Check configuration in yaml file. \n\t${e.message}`
+                );
+            }
         }
     }
 

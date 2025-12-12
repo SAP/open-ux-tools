@@ -7,8 +7,7 @@ import type {
     AppRouterType,
     CfConfig,
     CFApp,
-    ServiceInfo,
-    HTML5Content
+    ServiceInfo
 } from '@sap-ux/adp-tooling';
 import {
     cfServicesPromptNames,
@@ -23,8 +22,9 @@ import {
     validateODataEndpoints,
     getBusinessServiceInfo,
     getOAuthPathsFromXsApp,
-    getBackendUrlFromServiceKeys
+    getBackendUrlsFromServiceKeys
 } from '@sap-ux/adp-tooling';
+import type { HTML5Content } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
@@ -104,13 +104,13 @@ export class CFServicesPrompter {
     }
 
     /**
-     * Returns the backend URL from service keys endpoints.
+     * Returns all backend URLs from service keys endpoints.
      *
-     * @returns {string | undefined} Backend URL from the first endpoint that has a url property, or undefined.
+     * @returns {string[]} Array of backend URLs from all endpoints.
      */
-    public get backendUrl(): string | undefined {
+    public get backendUrls(): string[] {
         const serviceKeys = this.businessServiceInfo?.serviceKeys ?? [];
-        return getBackendUrlFromServiceKeys(serviceKeys);
+        return getBackendUrlsFromServiceKeys(serviceKeys);
     }
 
     /**

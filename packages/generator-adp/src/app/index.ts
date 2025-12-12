@@ -197,6 +197,11 @@ export default class extends Generator {
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
 
+        // Force the generator to overwrite existing files without additional prompting
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
+
         if (!this.jsonInput) {
             this.env.lookup({
                 packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
@@ -214,11 +219,6 @@ export default class extends Generator {
     }
 
     async initializing(): Promise<void> {
-        // Force the generator to overwrite existing files without additional prompting
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
-
         await initI18n();
 
         this.isCli = isCli();
@@ -385,7 +385,7 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
-        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
+        if (!this.shouldInstallDeps || this.shouldCreateExtProject || this.isCfEnv) {
             return;
         }
 
@@ -397,7 +397,7 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
-        if (this.shouldCreateExtProject) {
+        if (this.shouldCreateExtProject || this.isCfEnv) {
             return;
         }
 
@@ -413,7 +413,7 @@ export default class extends Generator {
             });
         }
 
-        if (this.isCli || this.isCfEnv) {
+        if (this.isCli) {
             return;
         }
 
@@ -537,7 +537,7 @@ export default class extends Generator {
      * Generates the ADP project artifacts for the CF environment.
      */
     private async _generateAdpProjectArtifactsCF(): Promise<void> {
-        const projectPath = this.destinationPath();
+        const projectPath = this.isMtaYamlFound ? process.cwd() : this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
 
         const manifest = this.cfPrompter.manifest;
@@ -547,7 +547,7 @@ export default class extends Generator {
 
         const html5RepoRuntimeGuid = this.cfPrompter.html5RepoRuntimeGuid;
         const serviceInstanceGuid = this.cfPrompter.serviceInstanceGuid;
-        const backendUrl = this.cfPrompter.backendUrl;
+        const backendUrls = this.cfPrompter.backendUrls;
         const oauthPaths = this.cfPrompter.oauthPaths;
         const config = getCfConfig({
             attributeAnswers: this.attributeAnswers,
@@ -557,7 +557,7 @@ export default class extends Generator {
             manifest,
             html5RepoRuntimeGuid,
             serviceInstanceGuid,
-            backendUrl,
+            backendUrls,
             oauthPaths,
             projectPath,
             publicVersions
@@ -576,9 +576,6 @@ export default class extends Generator {
      * @returns {string} The project path from the answers.
      */
     private _getProjectPath(): string {
-        if (this.isCfEnv) {
-            return join(this.destinationPath(), this.attributeAnswers.projectName);
-        }
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
     }
 

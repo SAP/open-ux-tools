@@ -970,9 +970,6 @@ importers:
         specifier: 3.0.5
         version: 3.0.5
     devDependencies:
-      '@types/connect':
-        specifier: ^3.4.38
-        version: 3.4.38
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
@@ -982,9 +979,6 @@ importers:
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
-      connect:
-        specifier: ^3.7.0
-        version: 3.7.0
       express:
         specifier: 4.21.2
         version: 4.21.2

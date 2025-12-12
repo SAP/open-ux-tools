@@ -56,9 +56,7 @@ const cfData = {
         space: { Name: 'test-space', GUID: 'space-guid' },
         html5RepoRuntimeGuid: 'runtime-guid',
         approuter: AppRouterType.MANAGED,
-        businessService: 'business-service',
-        backendUrl: '/backend.example',
-        oauthPaths: ['/sap/opu/odata', '/api/v1']
+        businessService: 'business-service'
     },
     project: {
         name: 'my-test-cf-project',
@@ -324,7 +322,7 @@ metadata:
             );
             expect(writeFilesSpy).toHaveBeenCalledWith(
                 path.join(projectPath, 'ui5.yaml'),
-                expect.stringContaining('cfBuildPath: dist')
+                expect.stringContaining('useLocal: dist')
             );
         });
 
