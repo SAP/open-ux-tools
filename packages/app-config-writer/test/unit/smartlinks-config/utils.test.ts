@@ -137,7 +137,19 @@ describe('utils', () => {
             expectDebugInfo(infoMock.mock.calls);
             expect(result).toEqual(targetResponseMock);
         });
-
+        test('empty data response', async () => {
+            nock(config.target.url).get(service).query(params).reply(200, undefined);
+            try {
+                await sendRequest({ target: { url } }, loggerMock);
+                fail('Error should have been thrown');
+            } catch (error) {
+                expect(debugMock.mock.calls.length).toBe(1);
+                expect(debugMock).toHaveBeenCalledWith(
+                    `Request failed. Error: Invalid response from http://sap.example: status: 200. data: ''.`
+                );
+                expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
+            }
+        });
         test('Connection error - throw error', async () => {
             const errorMsg = 'Connection Error';
             nock(config.target.url)
@@ -148,7 +160,21 @@ describe('utils', () => {
                 fail('Error should have been thrown');
             } catch (error) {
                 expect(debugMock.mock.calls.length).toBe(1);
-                expect(debugMock).toHaveBeenCalledWith(Error(errorMsg));
+                expect(debugMock).toHaveBeenCalledWith(`Request failed. Error: ${errorMsg}`);
+                expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
+            }
+        });
+        test('Connection error - status 404', async () => {
+            nock(config.target.url)
+                .get(() => true)
+                .query(params)
+                .reply(404);
+            try {
+                await sendRequest(config, loggerMock);
+                fail('Error should have been thrown');
+            } catch (error) {
+                expect(debugMock.mock.calls.length).toBe(1);
+                expect(debugMock.mock.calls[0][0]).toContain(`Request failed. Error:`);
                 expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
             }
         });
@@ -250,6 +276,10 @@ describe('utils', () => {
                 }
             }
         };
+
+        beforeEach(() => {
+            nock.cleanAll();
+        });
 
         test('Add fioriSandboxConfig.json - none existing', async () => {
             nock(url).get(service).query(params).reply(200, targetResults);
