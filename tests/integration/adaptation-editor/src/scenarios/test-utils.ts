@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:
 interface Changes {
     annotations: Record<string, string>;
     coding: Record<string, string | RegExp>;
-    fragments: Record<string, string | RegExp>;
+    fragments: Record<string, string>;
     changes: object[];
 }
 
@@ -2291,8 +2291,8 @@ export async function verifyChanges(projectCopy: any, expected: Partial<Changes>
  * @param input - string to sanitize
  * @returns sanitized string
  */
-function sanitizeIds(input: string): string {
-    return String(input)
+function sanitize(input: string): string {
+    return input
         .replace(/\[a-z0-9\]\+/g, '<UNIQUE_ID>')
         .replace(/\[0-9\]\+/g, '<UNIQUE_ID>')
         .replace(/\\\[a-z0-9\\\]\+/g, '<UNIQUE_ID>')
@@ -2312,7 +2312,7 @@ function formatFragmentsForMarkdown(fragments: Record<string, string>): string {
 
     let result = '**Fragment(s)**\n\n';
     for (const [filename, content] of Object.entries(fragments)) {
-        const sanitized = sanitizeIds(content);
+        const sanitized = sanitize(content.toString());
         result += `**${filename}**\n\`\`\`xml\n${sanitized}\n\`\`\`\n\n`;
     }
     return result;
@@ -2332,7 +2332,7 @@ function formatAnnotationsForMarkdown(annotations: Record<string, string> | unde
     let result = '**Annotations**\n';
     if (Object.keys(annotations).length > 0) {
         for (const [_filename, content] of Object.entries(annotations)) {
-            result += `\`\`\`xml\n${sanitizeIds(content)}\n\`\`\`\n\n`;
+            result += `\`\`\`xml\n${sanitize(content)}\n\`\`\`\n\n`;
         }
     }
     return result;
@@ -2353,7 +2353,7 @@ function formatCodingForMarkdown(coding: Record<string, string | RegExp> | undef
     if (Object.keys(coding).length > 0) {
         for (const [filename, content] of Object.entries(coding)) {
             const text = typeof content === 'string' ? content : String(content);
-            result += `**${filename}**\n\`\`\`js\n${sanitizeIds(text)}\n\`\`\`\n\n`;
+            result += `**${filename}**\n\`\`\`js\n${sanitize(text)}\n\`\`\`\n\n`;
         }
     }
     return result;

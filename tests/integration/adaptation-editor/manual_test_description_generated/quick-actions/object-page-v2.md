@@ -87,7 +87,7 @@
 
 **TestController.js**
 ```js
-/ControllerExtension\.extend\("adp\.fiori\.elements\.v2\.TestController"/
+ControllerExtension\.extend\("adp\.fiori\.elements\.v2\.TestController"
 ```
 
 **Change(s)**
@@ -132,9 +132,13 @@
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.m.OverflowToolbar -->
+    <!-- targetAggregation: content --> 
+    <!-- add your xml here -->
     <Button text="New Button"  id="btn-<UNIQUE_ID>"></Button>
 </core:FragmentDefinition>
+
 ```
 
 **Change(s)**
@@ -192,7 +196,10 @@
 **table-cell.fragment.xml**
 ```xml
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.m.Table -->
+    <!-- targetAggregation: cells --> 
+    <!-- add your xml here -->
     <Text id="cell-text-<UNIQUE_ID>" text="Sample data" />
 </core:FragmentDefinition>
 ```
@@ -201,7 +208,10 @@
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.m.Table -->
+    <!-- targetAggregation: columns --> 
+    <!-- add your xml here -->
      <Column id="column-<UNIQUE_ID>"
         width="12em"
         hAlign="Left"
@@ -276,8 +286,11 @@
     xmlns:core='sap.ui.core'
     xmlns='sap.m'
 >
-     <VBox id="vBox-<UNIQUE_ID>">
-         <Label id="label-<UNIQUE_ID>" text="New Field"></Label>
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.uxap.ObjectPageLayout -->
+    <!-- targetAggregation: headerContent --> 
+    <VBox id="vBox-<UNIQUE_ID>">
+        <Label id="label-<UNIQUE_ID>" text="New Field"></Label>
     </VBox>
 </core:FragmentDefinition>
 ```
@@ -326,13 +339,16 @@
     xmlns:core='sap.ui.core'
     xmlns='sap.m'
 >
+    <!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->
+    <!-- controlType: sap.uxap.ObjectPageLayout -->
+    <!-- targetAggregation: sections --> 
     <uxap:ObjectPageSection
         id="op-section-<UNIQUE_ID>"
         title="New Custom Section"
     >
         <uxap:ObjectPageSubSection id="op-subsection-<UNIQUE_ID>">
             <HBox id="hbox-<UNIQUE_ID>">
-                <!--  add your xml here -->
+                <!-- add your xml here -->
             </HBox>
         </uxap:ObjectPageSubSection>
     </uxap:ObjectPageSection>
