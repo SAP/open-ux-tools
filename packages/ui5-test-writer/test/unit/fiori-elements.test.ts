@@ -4,6 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import fileSystem from 'node:fs';
+import type { Logger } from '@sap-ux/logger/src/types';
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
@@ -169,6 +170,26 @@ describe('ui5-test-writer', () => {
                 description: 'Fullscreen with 2 Sub-OP using "contextPath"',
                 dirPath: 'FullScreenSubOPContextPath',
                 scriptName: undefined
+            },
+            {
+                description: 'LROP v4 app with annotations and metadata"',
+                dirPath: 'LROPv4',
+                scriptName: undefined
+            },
+            {
+                description: 'LROP v4 app with annotations and metadata, missing SelectionFields annotation"',
+                dirPath: 'LROPv4NoFilters',
+                scriptName: undefined
+            },
+            {
+                description: 'LROP v4 app with annotations and metadata, missing LineItem annotation"',
+                dirPath: 'LROPv4NoColumns',
+                scriptName: undefined
+            },
+            {
+                description: 'LROP v4 app with annotations and metadata, package.json has no sapux: true"',
+                dirPath: 'LROPv4IncorrectPackageJson',
+                scriptName: undefined
             }
         ];
 
@@ -233,6 +254,77 @@ describe('ui5-test-writer', () => {
 
             expect(error).toEqual(
                 'Validation error: Cannot determine the application type from the `manifest.json` file or it uses an unsupported type.'
+            );
+        });
+
+        it('generates filter tests for LROPv4 app', async () => {
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, fs);
+
+            const firstJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/FirstJourney.js'].contents;
+            expect(firstJourneyContent).toContain('iCheckFilterField');
+        });
+
+        it('generates column tests for LROPv4 app', async () => {
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, fs);
+
+            const firstJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/FirstJourney.js'].contents;
+            expect(firstJourneyContent).toContain('iCheckColumns');
+        });
+
+        it('generates tests for LROPv4 app that has no filters in filter bar', async () => {
+            const projectDir = prepareTestFiles('LROPv4NoFilters');
+            const mockLogger = {
+                warn: jest.fn()
+            };
+
+            fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
+
+            const firstJourneyContent =
+                fs.dump()['test/test-output/LROPv4NoFilters/webapp/test/integration/FirstJourney.js'].contents;
+            expect(firstJourneyContent).not.toContain('iCheckFilterField');
+            expect(firstJourneyContent).toContain('iCheckColumns');
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
+                )
+            );
+        });
+
+        it('generates tests for LROPv4 app that has no columns in the table', async () => {
+            const projectDir = prepareTestFiles('LROPv4NoColumns');
+            const mockLogger = {
+                warn: jest.fn()
+            };
+
+            fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
+
+            const firstJourneyContent =
+                fs.dump()['test/test-output/LROPv4NoColumns/webapp/test/integration/FirstJourney.js'].contents;
+            expect(firstJourneyContent).toContain('iCheckFilterField');
+            expect(firstJourneyContent).not.toContain('iCheckColumns');
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    'Unable to extract table columns from project model using specification. No table column tests will be generated.'
+                )
+            );
+        });
+
+        it('fails gracefully for app that has no package.json', async () => {
+            const projectDir = prepareTestFiles('LROPv4IncorrectPackageJson');
+            const mockLogger = {
+                warn: jest.fn()
+            };
+
+            fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
+
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    'Error analyzing project model using specification. No dynamic tests will be generated.'
+                )
             );
         });
     });

@@ -41,6 +41,7 @@
         "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
+        "@sap/ux-specification": "1.139.2",
         "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
         "@types/mem-fs": "1.1.2",
