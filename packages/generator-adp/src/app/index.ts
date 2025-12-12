@@ -69,6 +69,7 @@ import {
     type JsonInput
 } from './types';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
+import type { AdpTelemetryData } from '../types';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -467,31 +468,28 @@ export default class extends Generator {
      * Collects the telemetry data for the ADP generator.
      */
     private _collectTelemetryData(): void {
-        if (this.isCfEnv) {
-            const manifestId = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
-            this.telemetryCollector.setBatch({ baseAppTechnicalName: manifestId });
-            this.telemetryCollector.setBatch({ projectType: 'cf' });
-        } else {
-            const isCloud = this.prompter?.isCloud ?? false;
-            this.telemetryCollector.setBatch({ projectType: isCloud ? 'cloudReady' : 'onPremise' });
-            this.telemetryCollector.setBatch({ baseAppTechnicalName: this.configAnswers?.application?.id ?? '' });
-        }
-
-        if (this.jsonInput) {
-            this.telemetryCollector.setBatch({ ui5VersionSelected: getLatestVersion(this.publicVersions) });
-        } else {
-            this.telemetryCollector.setBatch({
-                ui5VersionSelected: getFormattedVersion(this.attributeAnswers?.ui5Version ?? '')
-            });
-        }
-
-        this.telemetryCollector.setBatch({
-            systemUI5Version: this.prompter?.ui5?.systemVersion ?? '',
+        const telemetryData: AdpTelemetryData = {
             wasFlpConfigDone: this.attributeAnswers?.addFlpConfig ?? false,
             wasTypeScriptChosen: this.attributeAnswers?.enableTypeScript ?? false,
             wasDeployConfigDone: this.attributeAnswers?.addDeployConfig ?? false,
             wasExtProjectGenerated: this.shouldCreateExtProject ?? false
-        });
+        };
+        if (this.isCfEnv) {
+            telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
+            telemetryData.projectType = 'cf';
+        } else {
+            const isCloud = this.prompter?.isCloud ?? false;
+            telemetryData.projectType = isCloud ? 'cloudReady' : 'onPremise';
+            telemetryData.baseAppTechnicalName = this.configAnswers?.application?.id ?? '';
+        }
+        if (this.jsonInput) {
+            telemetryData.ui5VersionSelected = getLatestVersion(this.publicVersions);
+        } else {
+            telemetryData.ui5VersionSelected = getFormattedVersion(this.attributeAnswers?.ui5Version ?? '');
+        }
+        telemetryData.systemUI5Version = this.prompter?.ui5?.systemVersion ?? '';
+
+        this.telemetryCollector.setBatch(telemetryData);
     }
 
     /**
