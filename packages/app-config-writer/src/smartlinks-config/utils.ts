@@ -102,7 +102,7 @@ export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): P
             throw Error(
                 `Invalid response from ${config.target.url ?? config.target.destination}: status: ${
                     response.status
-                }. data: ${response.data}`
+                }. data: '${response.data}'.`
             );
         }
         return JSON.parse(response.data) as SystemDetailsResponse;
