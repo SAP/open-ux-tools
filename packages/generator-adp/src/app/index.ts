@@ -485,7 +485,9 @@ export default class extends Generator {
         if (this.jsonInput) {
             telemetryData.ui5VersionSelected = getLatestVersion(this.publicVersions);
         } else {
-            telemetryData.ui5VersionSelected = getFormattedVersion(this.attributeAnswers?.ui5Version ?? '');
+            const version =
+                this.attributeAnswers?.ui5Version ?? getLatestVersion(this.prompter?.ui5?.publicVersions) ?? '';
+            telemetryData.ui5VersionSelected = getFormattedVersion(version);
         }
         telemetryData.systemUI5Version = this.prompter?.ui5?.systemVersion ?? '';
 
