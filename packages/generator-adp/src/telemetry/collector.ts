@@ -32,14 +32,6 @@ export class TelemetryCollector {
     }
 
     /**
-     * Private constructor to enforce initialization via init().
-     */
-    constructor() {
-        this.timingMarkNames.clear();
-        this.data = { ...DEFAULT_DATA };
-    }
-
-    /**
      * Sets a batch of telemetry data.
      *
      * @param {Partial<AdpTelemetryData>} data - The data to set.
