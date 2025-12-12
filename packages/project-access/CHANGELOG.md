@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.32.15
+
+### Patch Changes
+
+-   7217d7d: Export method `getSpecificationModuleFromCache` to allow loading the specification directly from the global cache.
+
 ## 1.32.14
 
 ### Patch Changes
