@@ -1,5 +1,5 @@
-// Last content update: Fri Dec 12 2025 13:11:50 GMT+0200 (Eastern European Standard Time)
-import type { Schema } from '../csdl';
+// Last content update: Wed Dec 03 2025 11:11:43 GMT+0100 (Central European Standard Time)
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
     '$Version': '4.0',
@@ -119,4 +119,4 @@ export default {
                 'In order to achieve a good user experience the respective columns should be sorted.\n            Applicability of this term is governed by [`Validation.ApplicableTerms`](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Validation.V1.html#ApplicableTerms) annotations.\n          '
         }
     }
-} satisfies Schema;
+} as CSDL;

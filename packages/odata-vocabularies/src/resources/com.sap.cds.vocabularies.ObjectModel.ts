@@ -1,4 +1,3 @@
-import type { Schema } from '../csdl';
 export default {
     'com.sap.cds.vocabularies.ObjectModel': {
         '$Alias': 'ObjectModel',
@@ -70,4 +69,4 @@ export default {
                 '(CDS annotation) Most specific element of the primary key. It is the key element for which the entity serves as a value list.'
         }
     }
-} satisfies Schema;
+};

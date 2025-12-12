@@ -11,6 +11,9 @@ module.exports = [
                 tsconfigRootDir: __dirname,
                 project: './tsconfig.eslint.json',
             },
+        },
+        rules: {
+            "sonarjs/no-implicit-dependencies": "warn",
         }
     },
 ];

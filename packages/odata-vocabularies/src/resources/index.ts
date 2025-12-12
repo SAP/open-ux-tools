@@ -1,4 +1,4 @@
-import type { Schema } from '../csdl';
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 import Aggregation from './Org.OData.Aggregation.V1';
 import Auth from './Org.OData.Authorization.V1';
@@ -150,7 +150,7 @@ export const ALIAS_TO_NAMESPACE: Map<VocabularyAlias, VocabularyNamespace> = new
     ['AnalyticsDetails', 'com.sap.cds.vocabularies.AnalyticsDetails']
 ]);
 
-const vocabularies: Record<string, Schema> = {
+const vocabularies: Record<string, CSDL> = {
     'Org.OData.Aggregation.V1': Aggregation,
     'Org.OData.Authorization.V1': Auth,
     'Org.OData.Capabilities.V1': Capabilities,

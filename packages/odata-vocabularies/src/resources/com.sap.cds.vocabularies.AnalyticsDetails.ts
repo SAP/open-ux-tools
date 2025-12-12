@@ -1,4 +1,3 @@
-import type { Schema } from '../csdl';
 export default {
     'com.sap.cds.vocabularies.AnalyticsDetails': {
         '$Alias': 'AnalyticsDetails',
@@ -199,4 +198,4 @@ export default {
             'LT@Org.OData.Core.V1.Description': 'Less than'
         }
     }
-} satisfies Schema;
+};

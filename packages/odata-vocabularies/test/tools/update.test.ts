@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import fs from 'fs/promises';
 import axios from 'axios';
 import prettier from 'prettier';
-import type { Schema, CSDLAnnotations } from '../../src/csdl';
+import type { CSDL, CSDLAnnotations } from '@sap-ux/vocabularies/CSDL';
 
 describe('vocabularies', () => {
     beforeEach(() => {
@@ -17,7 +17,7 @@ describe('vocabularies', () => {
 
     it('getNamespaceAliasMapping', () => {
         // Arrange
-        const vocabularies: Schema = {
+        const vocabularies: CSDL = {
             $Version: '4.0',
             $Reference: {
                 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.json': {
@@ -132,7 +132,7 @@ describe('vocabularies', () => {
 
     it('uglify', () => {
         // Arrange
-        const vocabularies: Schema = {
+        const vocabularies: CSDL = {
             $Version: '4.0',
             $Reference: {
                 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.json': {

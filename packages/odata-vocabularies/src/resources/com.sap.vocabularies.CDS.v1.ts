@@ -1,4 +1,4 @@
-import type { Schema } from '../csdl';
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 export default {
     $Version: '4.0',
     $Reference: {
@@ -120,7 +120,7 @@ export default {
                 'State store on the server, so user can intrrupt and continue later on. See: https://experience.sap.com/fiori-design-web/draft-handling'
         }
     }
-} satisfies Schema;
+} as CSDL;
 
 /**
  * proposal Daniel
