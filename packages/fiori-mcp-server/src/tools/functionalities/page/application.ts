@@ -50,7 +50,7 @@ export class Application {
         this.appData = appData;
         this.appId = appId;
         this.applicationAccess = applicationAccess;
-        this.version = getFioriElementsVersion(appData);
+        this.version = getFioriElementsVersion(appData.config);
     }
 
     /**
