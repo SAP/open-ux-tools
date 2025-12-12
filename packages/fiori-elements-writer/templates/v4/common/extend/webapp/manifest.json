@@ -1,0 +1,7 @@
+{
+    "sap.fe": {
+        "app": {
+            "enableLazyLoading": true
+        }
+    }
+}

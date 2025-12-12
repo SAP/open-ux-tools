@@ -10642,6 +10642,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -14336,6 +14341,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",

@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:feop",
-      "version": "2.1.35",
-      "toolsId": "848ae738-bf2c-48db-a50b-62001aac9892"
+      "version": "2.8.16",
+      "toolsId": "0ae1d1b4-e5d3-4d76-9105-1fea27446b1f"
     },
     "dataSources": {
       "mainService": {
@@ -114,5 +114,10 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.fe": {
+    "app": {
+      "enableLazyLoading": true
+    }
   }
 }

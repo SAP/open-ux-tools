@@ -11669,6 +11669,11 @@ appDescription=A Fiori application.",
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"analytical\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
