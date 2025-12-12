@@ -18,7 +18,7 @@ import {
 import type { Logger } from '@sap-ux/logger/src/types';
 import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
-import { TreeModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { TreeModel } from '@sap/ux-specification/dist/types/src/parser';
 
 type FeatureData = {
     filterBarItems?: string[];
