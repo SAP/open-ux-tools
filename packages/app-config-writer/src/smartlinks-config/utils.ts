@@ -91,7 +91,7 @@ function createSmartLinksProvider(config: TargetConfig) {
 export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): Promise<SystemDetailsResponse> {
     const target = isAppStudio() && config.target.destination ? config.target.destination : config.target.url;
     if (!target) {
-        throw Error(t('error.target'));
+        throw new Error(t('error.target'));
     }
     try {
         const provider = createSmartLinksProvider(config);
@@ -101,7 +101,7 @@ export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): P
         >;
         logger?.info(cyan(t('info.connectSuccess')));
         if (response.status !== 200 || !response.data) {
-            throw Error(
+            throw new Error(
                 `Invalid response from ${config.target.url ?? config.target.destination}: status: ${
                     response.status
                 }. data: '${response.data}'.`
@@ -110,7 +110,7 @@ export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): P
         return JSON.parse(response.data) as SystemDetailsResponse;
     } catch (error) {
         logger?.debug(`Request failed. ${error}`);
-        throw Error(error.message || 'Unknown error occurred');
+        throw new Error(error.message || 'Unknown error occurred');
     }
 }
 
@@ -147,7 +147,7 @@ async function getTargetMappings(
 ): Promise<{ [key: string]: TargetMapping }> {
     const response: SystemDetailsResponse | undefined = await sendRequest(config, logger);
     if (!response?.targetMappings) {
-        throw Error(t('error.noTarget', { file: `${config.target.destination ?? config.target.url}` }));
+        throw new Error(t('error.noTarget', { file: `${config.target.destination ?? config.target.url}` }));
     }
     return response.targetMappings;
 }
