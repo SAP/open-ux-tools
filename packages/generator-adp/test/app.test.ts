@@ -48,7 +48,7 @@ import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 import { TargetEnv, type JsonInput, type TargetEnvAnswers } from '../src/app/types';
-import { EventName } from '../src/telemetryEvents';
+import { EventName } from '../src/telemetry';
 import { initI18n, t } from '../src/utils/i18n';
 import * as subgenHelpers from '../src/utils/subgenHelpers';
 import {
@@ -126,7 +126,6 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
     sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
     TelemetryHelper: {
-        initTelemetrySettings: jest.fn(),
         createTelemetryData: jest.fn().mockReturnValue({
             OperatingSystem: 'testOS',
             Platform: 'testPlatform'
@@ -136,6 +135,11 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: jest.fn(),
     isCli: jest.fn(),
     getDefaultTargetFolder: jest.fn().mockReturnValue(undefined)
+}));
+
+jest.mock('@sap-ux/telemetry', () => ({
+    ...jest.requireActual('@sap-ux/telemetry'),
+    initTelemetrySettings: jest.fn().mockResolvedValue(undefined)
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -415,7 +419,14 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect.any(Object),
                 expect.any(Object)
             );
-            expect(sendTelemetryMock).toHaveBeenCalledTimes(0);
+            expect(sendTelemetryMock).toHaveBeenCalledWith(
+                EventName.ADAPTATION_PROJECT_CREATED,
+                expect.objectContaining({
+                    OperatingSystem: 'testOS',
+                    Platform: 'testPlatform'
+                }),
+                expect.any(String)
+            );
             expect(executeCommandSpy).toHaveBeenCalledTimes(0);
             expect(showWorkspaceFolderWarningMock).toHaveBeenCalledTimes(0);
         });

@@ -72,7 +72,8 @@ const baseConfig: ConfigOptions = {
     systemVersion: '1.137.0',
     packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
     logger: {} as ToolsLogger,
-    manifest
+    manifest,
+    toolsId: 'test-tools-id'
 };
 
 describe('getConfig', () => {
@@ -99,7 +100,7 @@ describe('getConfig', () => {
                     environment: 'P',
                     support: {
                         id: '@sap-ux/generator-adp',
-                        toolsId: expect.any(String),
+                        toolsId: 'test-tools-id',
                         version: '0.0.1'
                     }
                 }
@@ -153,6 +154,8 @@ describe('getCfConfig', () => {
             businessService: 'test-service',
             businessSolutionName: 'test-solution'
         } as CfServicesAnswers,
+        packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
+        toolsId: 'test-tools-id',
         html5RepoRuntimeGuid: 'runtime-guid',
         publicVersions: { latest: { version: '1.135.0' } as VersionDetail }
     };

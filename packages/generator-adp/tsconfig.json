@@ -47,6 +47,9 @@
     },
     {
       "path": "../system-access"
+    },
+    {
+      "path": "../telemetry"
     }
   ]
 }

@@ -52,6 +52,7 @@
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
         "i18next": "25.3.0",
         "yeoman-generator": "5.10.0",
         "uuid": "10.0.0"

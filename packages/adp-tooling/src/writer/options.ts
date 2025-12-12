@@ -16,7 +16,8 @@ import type {
     InternalInboundNavigation,
     CloudCustomTaskConfig,
     CloudCustomTaskConfigTarget,
-    CfAdpWriterConfig
+    CfAdpWriterConfig,
+    CustomConfig
 } from '../types';
 import { UI5_CDN_URL } from '../base/constants';
 
@@ -72,10 +73,10 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
  * Generate custom configuration required for the ui5.yaml.
  *
  * @param ui5Config configuration representing the ui5.yaml
- * @param config full project configuration
+ * @param customConfig custom configuration
  */
-export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config: AdpWriterConfig) {
-    const adp = config.customConfig?.adp;
+export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, customConfig?: CustomConfig): void {
+    const adp = customConfig?.adp;
     if (adp) {
         const { support } = adp;
         ui5Config.addCustomConfiguration('adp', { support });

@@ -28,6 +28,7 @@ import { configPromptNames } from '../../../src/app/types';
 import { initI18n, t } from '../../../src/utils/i18n';
 import { getSystemAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
 import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
+import { TelemetryCollector } from '../../../src/telemetry/collector';
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showApplicationQuestion: jest.fn().mockResolvedValue(true),
@@ -70,6 +71,11 @@ jest.mock('@sap-ux/btp-utils', () => ({
 jest.mock('@sap-ux/axios-extension', () => ({
     ...jest.requireActual('@sap-ux/axios-extension'),
     isAxiosError: jest.fn()
+}));
+
+jest.mock('@sap-ux/telemetry', () => ({
+    ...jest.requireActual('@sap-ux/telemetry'),
+    initTelemetrySettings: jest.fn().mockResolvedValue(undefined)
 }));
 
 const logger: ToolsLogger = {
@@ -116,6 +122,7 @@ const getSystemUI5VersionMock = getSystemUI5Version as jest.Mock;
 
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
+    let telemetryCollector: TelemetryCollector;
     const layer = FlexLayer.CUSTOMER_BASE;
     const systemAdditionalMessage: IMessageSeverity = {
         message: 'System additional message',
@@ -124,13 +131,14 @@ describe('ConfigPrompter Integration Tests', () => {
 
     beforeAll(async () => {
         await initI18n();
+        telemetryCollector = new TelemetryCollector();
     });
 
     beforeEach(() => {
         getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
         loadAppsMock.mockResolvedValue(dummyApps);
         getConfiguredProviderMock.mockResolvedValue(provider);
-        configPrompter = new ConfigPrompter(sourceSystems, layer, logger);
+        configPrompter = new ConfigPrompter(sourceSystems, layer, logger, telemetryCollector);
     });
 
     afterEach(() => {
@@ -214,7 +222,7 @@ describe('ConfigPrompter Integration Tests', () => {
                 getSystemRequiresAuth: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true)
             } as unknown as SystemLookup;
             isAbapCloudMock.mockResolvedValue(true);
-            configPrompter = new ConfigPrompter(systemLookup, layer, logger);
+            configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
             expect(systemPrompt).toBeDefined();
