@@ -38,11 +38,12 @@ export const PROPERTY_DEFINITIONS: {
 } = {
     flexEnabled: {
         name: 'Flex Enabled',
-        description: 'Enables UI adaptation and key user adaptation features',
+        description:
+            '"flexEnabled" flag in the manifest.json indicates that your application is enabled for UI adaptation.',
         applicableToV2: true,
         applicableToV4: true,
         applicableToFreestyle: true,
-        message: 'flexEnabled must be true',
+        message: '"flexEnabled" should be set to true to enable UI adaptation features',
         defaultValue: true,
         expectedValue: true,
         minUI5Version: '1.56.0',
@@ -51,13 +52,13 @@ export const PROPERTY_DEFINITIONS: {
             V4: [true, false],
             freestyle: [true, false]
         },
-        type: 'problem',
+        type: 'suggestion',
         manifestPaths: {
             V2: ['sap.ui5', 'flexEnabled'],
             V4: ['sap.ui5', 'flexEnabled'],
             freestyle: ['sap.ui5', 'flexEnabled']
         },
-        documentationUrl: 'https://ui5.sap.com/sdk/#/topic/ccd45ba3f0b446a0901b2c9d42b8ad53',
+        documentationUrl: 'https://ui5.sap.com/sdk/#/topic/f1430c0337534d469da3a56307ff76af',
         availableInPageEditor: true,
         fixable: 'code'
     }

@@ -116,6 +116,7 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                                     problems.push({
                                         type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
                                         manifestPropertyPath: path,
+                                        propertyName: 'widthIncludingColumnHeader',
                                         annotation: {
                                             file: annotation.source,
                                             annotationPath: ref.annotationPath,
@@ -155,7 +156,7 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
         const aliasMap = context.sourceCode.getAliasMap();
         const lookup = new Set<Element>();
         for (const diagnostic of validationResult) {
-            lookup.add(diagnostic.annotation.annotation);
+            lookup.add((diagnostic as RequireWidthIncludingColumnHeaderDiagnostic).annotation?.annotation);
         }
         return {
             ['target>element[name="Annotation"]'](node: Element) {

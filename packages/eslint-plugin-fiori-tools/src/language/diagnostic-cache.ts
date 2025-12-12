@@ -29,7 +29,7 @@ export class DiagnosticCache {
      */
     public static addMessage(key: Diagnostic['type'], diagnostic: Diagnostic): void {
         this.cache[key] ??= [];
-        this.cache[key].push(diagnostic);
+        this.cache[key].push(diagnostic as any);
     }
 
     /**
@@ -41,7 +41,7 @@ export class DiagnosticCache {
     public static addMessages(key: Diagnostic['type'], diagnostics: Diagnostic[]): void {
         this.cache[key] ??= [];
         for (const diagnostic of diagnostics) {
-            this.cache[key].push(diagnostic);
+            this.cache[key].push(diagnostic as any);
         }
     }
 
