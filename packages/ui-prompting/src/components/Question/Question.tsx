@@ -19,6 +19,7 @@ export interface QuestionProps {
 
 export const Question = (props: QuestionProps) => {
     const { question, onChange, answers, choices, pending, validation = {}, id, isI18nInputSupported } = props;
+    console.log('---choices', choices, typeof choices);
     let questionInput: JSX.Element;
     let errorMessage = '';
     const value: AnswerValue = getAnswer(answers, question.name) as AnswerValue;

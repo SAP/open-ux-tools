@@ -4,7 +4,8 @@ import {
     type TablePromptsAnswer,
     type PagePromptsAnswer,
     type Prompts,
-    type RichTextEditorPromptsAnswer
+    type RichTextEditorPromptsAnswer,
+    type RichTextEditorButtonGroupsPromptsAnswer
 } from '@sap-ux/fe-fpm-writer';
 import { PromptsType } from '@sap-ux/fe-fpm-writer/dist/prompts/types';
 import type { AddonActions } from '../addons/types';
@@ -19,6 +20,7 @@ export type Actions =
     | SetChartQuestions
     | SetFilterBarQuestions
     | SetRichTextEditorQuestions
+    | SetRichTextEditorButtonGroupsQuestions
     | GetChoices
     | SetChoices
     | ApplyAnswers
@@ -36,6 +38,7 @@ export const SET_TABLE_QUESTIONS = 'SET_TABLE_QUESTIONS';
 export const SET_PAGE_QUESTIONS = 'SET_PAGE_QUESTIONS';
 export const SET_CHART_QUESTIONS = 'SET_CHART_QUESTIONS';
 export const SET_RICH_TEXT_EDITOR_QUESTIONS = 'SET_RICH_TEXT_EDITOR_QUESTIONS';
+export const SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS = 'SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS';
 export const SET_FILTERBAR_QUESTIONS = 'SET_FILTERBAR_QUESTIONS';
 export const GET_CHOICES = 'GET_CHOICES';
 export const SET_CHOICES = 'SET_CHOICES';
@@ -89,6 +92,10 @@ export interface SetChartQuestions extends Prompts<ChartPromptsAnswer> {
 
 export interface SetRichTextEditorQuestions extends Prompts<RichTextEditorPromptsAnswer> {
     type: typeof SET_RICH_TEXT_EDITOR_QUESTIONS;
+}
+
+export interface SetRichTextEditorButtonGroupsQuestions extends Prompts<RichTextEditorButtonGroupsPromptsAnswer> {
+    type: typeof SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS;
 }
 
 export interface SetFilterBarQuestions extends Prompts<FilterBarPromptsAnswer> {

@@ -1,5 +1,6 @@
 import { DOMParser } from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
+import * as xpath from 'xpath';
 
 /**
  * Method validates if passed id is available.
@@ -120,6 +121,70 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
         id && ids.push(id);
     }
     return ids;
+}
+
+/**
+ * Reads existing button groups from XML file using the aggregation path.
+ *
+ * @param xmlFilePath - Path to the XML file
+ * @param aggregationPath - The XPath to the RichTextEditor element
+ * @param fs - File system instance
+ * @returns Set of existing button group names
+ */
+export async function getExistingButtonGroups(
+    xmlFilePath: string, 
+    aggregationPath: string,
+    fs: Editor
+): Promise<Set<string>> {
+    const existingButtonGroups = new Set<string>();
+    
+    try {
+        const xmlContent = fs.read(xmlFilePath);
+        const errorHandler = (level: string, message: string): void => {
+            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
+        };
+        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent, 'text/xml');
+        
+        // Get namespace map and create xpath selector
+        const nsMap = (xmlDocument.firstChild as any)?._nsMap || {};
+        const xpathSelect = xpath.useNamespaces(nsMap);
+        
+        // Query the RichTextEditor element using the aggregation path
+        const rteElements = xpathSelect(aggregationPath, xmlDocument) as Element[];
+        
+        if (rteElements.length === 0) {
+            return existingButtonGroups;
+        }
+        
+        const rteElement = rteElements[0];
+        
+        // Find the buttonGroups child element inside the RTE
+        const buttonGroupsElement = Array.from(rteElement.childNodes).find(
+            (child) => child.nodeType === 1 && (child as Element).localName === 'buttonGroups'
+        ) as Element | undefined;
+        
+        if (!buttonGroupsElement) {
+            return existingButtonGroups;
+        }
+        
+        // Get all ButtonGroup children from the buttonGroups element
+        const buttonGroupElements = Array.from(buttonGroupsElement.childNodes).filter(
+            (child) => child.nodeType === 1 && (child as Element).localName === 'ButtonGroup'
+        ) as Element[];
+        
+        // Extract the 'name' attribute from each ButtonGroup
+        buttonGroupElements.forEach((element) => {
+            const name = element.getAttribute('name');
+            if (name) {
+                existingButtonGroups.add(name);
+            }
+        });
+        
+    } catch (error) {
+        throw new Error(`An error occurred while reading button groups. Details: ${getErrorMessage(error)}`);
+    }
+    
+    return existingButtonGroups;
 }
 
 /**

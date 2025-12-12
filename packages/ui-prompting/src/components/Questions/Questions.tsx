@@ -68,6 +68,7 @@ export const Questions = (props: QuestionsProps) => {
         validation = {},
         translationProps = { bundle: {} }
     } = props;
+    console.log('--- choices render ---', choices);
     const componentId = useId(id);
     const [localAnswers, setLocalAnswers] = useAnswers(questions, answers, (answers: Answers) => {
         onChange?.(answers);
@@ -125,6 +126,8 @@ export const Questions = (props: QuestionsProps) => {
     const renderQuestions = (questions: PromptQuestion[]) =>
         questions.map((question: PromptQuestion, index: number) => {
             const name = question.name;
+            console.log('--- question render', question, name);
+            debugger;
             const externalChoices = choices[name];
             const id = formatDomId(`${componentId}--${question.name}`);
             return (
