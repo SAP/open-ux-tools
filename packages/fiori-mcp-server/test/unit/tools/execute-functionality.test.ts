@@ -1,7 +1,12 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
 import { readFile } from 'node:fs/promises';
 import { executeFunctionality } from '../../../src/tools';
-import { mockSpecificationImport } from '../utils';
+import {
+    ensureSpecificationLoaded,
+    mockSpecificationReadApp,
+    mockSpecificationReadAppWithModel,
+    readAppWithModel
+} from '../utils';
 import * as addPageDependency from '../../../src/tools/functionalities/page';
 import * as projectUtils from '../../../src/page-editor-api/project';
 import * as flexUtils from '../../../src/page-editor-api/flex';
@@ -16,9 +21,11 @@ jest.mock('@sap-ux/project-access', () => ({
     ...(jest.requireActual('@sap-ux/project-access') as object)
 }));
 
+const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
+
 describe('executeFunctionality', () => {
     const appPath = 'testApplicationPath';
-    let importProjectMock = jest.fn();
+    let readAppMock = jest.fn();
     let exportProjectMock = jest.fn();
     let updateManifestJSONMock = jest.fn();
     let findProjectRootSpy: jest.SpyInstance;
@@ -39,6 +46,13 @@ describe('executeFunctionality', () => {
     let createApplicationAccessSpy: jest.SpyInstance;
     let writeFlexChangesSpy: jest.SpyInstance;
     let getUI5VersionSpy: jest.SpyInstance;
+    const applications: { [key: string]: openUxProjectAccessDependency.ApplicationAccess } = {};
+    beforeAll(async () => {
+        // Create application access can take more time on slower machines
+        applications[appPathLropV4] = await openUxProjectAccessDependency.createApplicationAccess(appPathLropV4);
+        // Ensure spec is loaded - first import is most costly
+        await ensureSpecificationLoaded();
+    }, 10000);
     beforeEach(async () => {
         getManifestSpy = jest
             .spyOn(projectUtils, 'getManifest')
@@ -51,7 +65,9 @@ describe('executeFunctionality', () => {
             .spyOn(openUxProjectAccessDependency, 'findProjectRoot')
             .mockImplementation(async (path: string): Promise<string> => path);
         writeFlexChangesSpy = jest.spyOn(flexUtils, 'writeFlexChanges').mockResolvedValue(fsEditor);
-        importProjectMock = jest.fn().mockResolvedValue([]);
+        readAppMock = jest.fn().mockResolvedValue({
+            files: []
+        });
         exportProjectMock = jest.fn();
         updateManifestJSONMock = jest.fn();
         mockSpecificationExport();
@@ -71,8 +87,9 @@ describe('executeFunctionality', () => {
                     },
                     updateManifestJSON: updateManifestJSONMock,
                     getSpecification: () => ({
-                        importProject: importProjectMock,
-                        exportConfig: exportProjectMock
+                        readApp: readAppMock,
+                        exportConfig: exportProjectMock,
+                        getApiVersion: () => ({ version: '99' })
                     })
                 } as unknown as openUxProjectAccessDependency.ApplicationAccess;
             });
@@ -104,7 +121,7 @@ describe('executeFunctionality', () => {
 
     test('Change app property', async () => {
         const updatedManifest = { changed: true };
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         mockSpecificationExport(updatedManifest);
         const details = await executeFunctionality({
             appPath,
@@ -137,44 +154,30 @@ describe('executeFunctionality', () => {
 
     test('Change page property', async () => {
         const updatedManifest = { changed: true };
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         mockSpecificationExport(updatedManifest);
         const details = await executeFunctionality({
             appPath,
-            functionalityId: [
-                'TravelObjectPage',
-                'sections',
-                'GroupSection',
-                'subsections',
-                'CustomSubSection',
-                'title'
-            ],
+            functionalityId: ['TravelObjectPage', 'header', 'actions', 'RelatedApps', 'showRelatedApps'],
             parameters: {
-                title: 'dumme title'
+                showRelatedApps: 'dummy value'
             }
         });
         expect(details).toEqual(
             expect.objectContaining({
                 appPath: 'testApplicationPath',
                 changes: ['Modified webapp/manifest.json'],
-                functionalityId: [
-                    'TravelObjectPage',
-                    'sections',
-                    'GroupSection',
-                    'subsections',
-                    'CustomSubSection',
-                    'title'
-                ],
+                functionalityId: ['TravelObjectPage', 'header', 'actions', 'RelatedApps', 'showRelatedApps'],
                 message: "Successfully executed 'Change property'",
                 parameters: {
-                    title: 'dumme title'
+                    showRelatedApps: 'dummy value'
                 },
                 status: 'success'
             })
         );
         expect(exportProjectMock).toHaveBeenCalledTimes(1);
         const modifiedConfig = exportProjectMock.mock.calls[0][0].v4.ObjectPage.page.config;
-        expect(modifiedConfig.sections.GroupSection.subsections.CustomSubSection.title).toEqual('dumme title');
+        expect(modifiedConfig.header.actions.RelatedApps.showRelatedApps).toEqual('dummy value');
         expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
         expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
     });
@@ -207,7 +210,7 @@ describe('executeFunctionality', () => {
     ];
     test.each(objectUpdateTestCases)('$name', async ({ parameters, expectedResult }) => {
         const updatedManifest = { changed: true };
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         mockSpecificationExport(updatedManifest);
         const details = await executeFunctionality({
             appPath,
@@ -233,24 +236,21 @@ describe('executeFunctionality', () => {
 
     test('Property change is received through node', async () => {
         const updatedManifest = { changed: true };
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         mockSpecificationExport(updatedManifest);
         const parameters = {
-            controls: {},
-            title: 'test1',
-            id: 'dummy',
-            fragmentName: 'project1.ext.fragment.CustomSubSection'
+            showRelatedApps: 'test value'
         };
         const details = await executeFunctionality({
             appPath,
-            functionalityId: ['TravelObjectPage', 'sections', 'GroupSection', 'subsections', 'CustomSubSection'],
+            functionalityId: ['TravelObjectPage', 'header', 'actions', 'RelatedApps'],
             parameters
         });
         expect(details).toEqual(
             expect.objectContaining({
                 appPath: 'testApplicationPath',
                 changes: ['Modified webapp/manifest.json'],
-                functionalityId: ['TravelObjectPage', 'sections', 'GroupSection', 'subsections', 'CustomSubSection'],
+                functionalityId: ['TravelObjectPage', 'header', 'actions', 'RelatedApps'],
                 message: "Successfully executed 'Change property'",
                 parameters,
                 status: 'success'
@@ -258,11 +258,8 @@ describe('executeFunctionality', () => {
         );
         expect(exportProjectMock).toHaveBeenCalledTimes(1);
         const modifiedConfig = exportProjectMock.mock.calls[0][0].v4.ObjectPage.page.config;
-        expect(modifiedConfig.sections.GroupSection.subsections.CustomSubSection).toEqual({
-            controls: {},
-            fragmentName: 'project1.ext.fragment.CustomSubSection',
-            title: 'test1',
-            id: 'dummy'
+        expect(modifiedConfig.header.actions.RelatedApps).toEqual({
+            showRelatedApps: 'test value'
         });
         expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
         expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
@@ -301,19 +298,12 @@ describe('executeFunctionality', () => {
             join(__dirname, '../page-editor-api/test-data/flex-changes', flexChangeFileName),
             'utf8'
         );
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         mockSpecificationExport(undefined, 'NoChange', [file]);
         getFlexChangeLayerSpy.mockResolvedValue(FlexChangeLayer.Vendor);
         const details = await executeFunctionality({
             appPath,
-            functionalityId: [
-                'TravelObjectPage',
-                'sections',
-                'GroupSection',
-                'subsections',
-                'CustomSubSection',
-                'title'
-            ],
+            functionalityId: ['TravelObjectPage', 'header', 'actions', 'RelatedApps', 'showRelatedApps'],
             parameters: {
                 title: 'dummy title'
             }
@@ -332,14 +322,7 @@ describe('executeFunctionality', () => {
             expect.objectContaining({
                 appPath: 'testApplicationPath',
                 changes: [`Modified ${flexChangeFileName}`],
-                functionalityId: [
-                    'TravelObjectPage',
-                    'sections',
-                    'GroupSection',
-                    'subsections',
-                    'CustomSubSection',
-                    'title'
-                ],
+                functionalityId: ['TravelObjectPage', 'header', 'actions', 'RelatedApps', 'showRelatedApps'],
                 message: "Successfully executed 'Change property'",
                 parameters: {
                     title: 'dummy title'

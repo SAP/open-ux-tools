@@ -5,8 +5,10 @@ import listReportSchema from './page-editor-api/test-data/schema/ListReport.json
 import listReportConfig from './page-editor-api/test-data/config/ListReport.json';
 import objectPageSchema from './page-editor-api/test-data/schema/ObjectPage.json';
 import objectPageConfig from './page-editor-api/test-data/config/ObjectPage.json';
-import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, rmSync, unlinkSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import type { FlexChange } from '../../src/page-editor-api/flex';
+import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
+import type { ApplicationAccess } from '@sap-ux/project-access';
 
 const getDataFile = (
     dataSourceUri: string,
@@ -34,19 +36,31 @@ const getDataFile = (
     };
 };
 
-export const mockSpecificationImport = (
-    importProjectMock: jest.Mock<Promise<{ dataSourceUri: string; fileContent: string }[]>>,
+export const mockSpecificationReadApp = (
+    readAppMock: jest.Mock<Promise<{ files: { dataSourceUri: string; fileContent: string }[] }>>,
     overwriteFiles: { dataSourceUri: string; fileContent: string }[] = []
 ) => {
-    importProjectMock.mockResolvedValue([
-        // Application config and schema
-        getDataFile('app.json', overwriteFiles),
-        getDataFile(join('.schemas', 'App.json'), overwriteFiles),
-        getDataFile(join('pages', 'TravelList.json'), overwriteFiles),
-        getDataFile(join('.schemas', 'ListReport_TravelList.json'), overwriteFiles),
-        getDataFile(join('pages', 'TravelObjectPage.json'), overwriteFiles),
-        getDataFile(join('.schemas', 'ObjectPage_TravelObjectPage.json'), overwriteFiles)
-    ]);
+    readAppMock.mockResolvedValue({
+        files: [
+            // Application config and schema
+            getDataFile('app.json', overwriteFiles),
+            getDataFile(join('.schemas', 'App.json'), overwriteFiles),
+            getDataFile(join('pages', 'TravelList.json'), overwriteFiles),
+            getDataFile(join('.schemas', 'ListReport_TravelList.json'), overwriteFiles),
+            getDataFile(join('pages', 'TravelObjectPage.json'), overwriteFiles),
+            getDataFile(join('.schemas', 'ObjectPage_TravelObjectPage.json'), overwriteFiles)
+        ]
+    });
+};
+
+export const mockSpecificationReadAppWithModel = (
+    readAppMock: jest.Mock<Promise<{ files: { dataSourceUri: string; fileContent: string }[] }>>,
+    appPath: string,
+    applications: { [key: string]: ApplicationAccess } = {}
+) => {
+    readAppMock.mockImplementation(async (): Promise<ReadAppResult> => {
+        return readAppWithModel(appPath, applications);
+    });
 };
 
 export function copyDirectory(src: string, dest: string): void {
@@ -83,4 +97,33 @@ export function generateFlexChanges(
             'id': 'project::sap.suite.ui.generic.template.ListReport.view.ListReport::Travel--listReport-TravelID'
         }
     };
+}
+
+async function getLocalSpecification(): Promise<Specification> {
+    const moduleName = '@sap/ux-specification';
+    // Workaround loading issue with '@sap-ux/odata-annotation-core-types' - it will be fixed in new spec version
+    jest.mock(
+        '@sap-ux/odata-annotation-core-types',
+        () => ({
+            DiagnosticSeverity: {}
+        }),
+        { virtual: true }
+    );
+    return import(moduleName);
+}
+
+export async function readAppWithModel(
+    path: string,
+    applications: { [key: string]: ApplicationAccess } = {}
+): Promise<ReadAppResult> {
+    const specification = await getLocalSpecification();
+    const result = await specification.readApp({
+        app: applications[path] ?? path
+    });
+    return result;
+}
+
+export async function ensureSpecificationLoaded(): Promise<void> {
+    await getLocalSpecification();
+    process.env.MCP_SPEC_LOADED = '1';
 }
