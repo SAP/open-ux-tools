@@ -1,12 +1,14 @@
-import type { ServiceOptions } from '../types';
-import type { DataProvider, DataProviderConstructor } from '.';
+import type { BackendSerializableKeys, ServiceOptions } from '../types';
+import type { BackendProviderRetrievalOptions, BackendSystemFilter, DataProvider, DataProviderConstructor } from '.';
 import type { DataAccess } from '../data-access';
+import type { Logger } from '@sap-ux/logger';
 import { getHybridStore } from '../data-access/hybrid';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
-import type { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
-import { getBackendSystemType } from '../utils';
-import { getFilesystemStore } from '../data-access/filesystem';
+import { ConnectionType } from '../types';
+import { getBackendSystemType, getSapToolsDirectory } from '../utils';
+import { join } from 'node:path';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class
     implements DataProvider<BackendSystem, BackendSystemKey>
@@ -46,94 +48,126 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         });
     }
 
-    public async getAll({
-        includeSensitiveData = true
-    }: {
-        includeSensitiveData?: boolean;
-    } = {}): Promise<BackendSystem[] | []> {
-        let systems = await this.dataAccessor.readAll({ entityName: this.entityName, includeSensitiveData });
-        if (!includeSensitiveData) {
-            const allMigrated = await this.ensureSystemTypesExist(systems);
-            if (!allMigrated) {
-                // Re-read to ensure we have the updated data
-                systems = await this.dataAccessor.readAll({
-                    entityName: this.entityName,
-                    includeSensitiveData
-                });
-            }
+    public async getAll(providerRetrievalOptions?: BackendProviderRetrievalOptions): Promise<BackendSystem[]> {
+        const migrationRequired = this.isMigrationRequired();
+        const { includeSensitiveData = true, backendSystemFilter } = providerRetrievalOptions ?? {};
+
+        // Always fetch sensitive data if migration is pending
+        let systems = await this.dataAccessor.readAll({
+            entityName: this.entityName,
+            includeSensitiveData: migrationRequired ? true : includeSensitiveData
+        });
+
+        const migrationComplete = await this.migrateBackendSystems(systems, includeSensitiveData);
+
+        // If migration occurred, re-read to get the fully updated dataset
+        if (!migrationComplete) {
+            systems = await this.dataAccessor.readAll({
+                entityName: this.entityName,
+                includeSensitiveData
+            });
         }
 
-        for (const id of Object.keys(systems)) {
-            const system: BackendSystem | undefined = systems[id];
-            if (!system?.url?.trim()) {
-                // attempt to recover the system URL from the ID
-                const backendSystem = await this.recoverBackendSystemFromId(id);
-                if (backendSystem?.url?.trim()) {
-                    systems[id] = { ...system, ...backendSystem };
-                    // requires to write directly to the filesystem
-                    const fileSystem = getFilesystemStore(this.logger);
-                    await fileSystem.write({ entityName: this.entityName, id, entity: backendSystem });
-                } else {
-                    this.logger.warn(`Filtering system with ID [${id}] as it seems corrupt. Run repair`);
-                    delete systems[id];
-                }
-            }
+        const systemList = Object.values(systems);
+
+        if (!backendSystemFilter) {
+            return systemList;
         }
-        return Object.values(systems);
+
+        return this.applyFilters(systemList, backendSystemFilter);
     }
 
     /**
-     * Recover the URL from the system ID and write it to the file.
-     *
-     * @param systemId - the specific system ID to recover
-     * @returns the recovered partial backend system (a default name with the url and client if present)
+     * Determines whether a migration is required based on a local marker file.
      */
-    private async recoverBackendSystemFromId(systemId: string): Promise<Partial<BackendSystem>> {
-        let backendSystem: Partial<BackendSystem> = {};
+    private isMigrationRequired(): boolean {
+        const migrationFilePath = join(getSapToolsDirectory(), '.systemsMigrated');
         try {
-            const urlObj = new URL(systemId);
-            const client =
-                urlObj.pathname && /^\d{3}$/.test(urlObj.pathname.slice(1)) ? urlObj.pathname.slice(1) : undefined;
-            backendSystem = {
-                name: urlObj.origin + (client ? ', client ' + client : ''),
-                url: urlObj.origin,
-                ...(client ? { client } : {})
-            };
+            const raw = readFileSync(migrationFilePath, 'utf-8');
+            const data = JSON.parse(raw);
+            return !data?.backendSystemMigrationV1;
         } catch {
-            this.logger.error(`Error while writing recovered entries from the secure store to the file.`);
+            // If anything fails (file missing, parse error), treat as not migrated
+            return true;
         }
-        return backendSystem;
     }
 
-    private async ensureSystemTypesExist(systems: Record<string, BackendSystem>): Promise<boolean> {
-        let allSystemsHaveType = true;
+    /**
+     * Applies filter objects to a list of backend systems.
+     */
+    private applyFilters(systems: BackendSystem[], filters: BackendSystemFilter = {}): BackendSystem[] {
+        return systems.filter((system) =>
+            Object.entries(filters).every(([key, value]) => system[key as BackendSerializableKeys] === value)
+        );
+    }
+
+    /**
+     * Ensures all stored backend systems are migrated to the latest structure.
+     */
+    private async migrateBackendSystems(
+        systems: Record<string, BackendSystem>,
+        containsSensitiveData: boolean
+    ): Promise<boolean> {
+        let allMigrated = true;
 
         for (const [id, system] of Object.entries(systems)) {
-            if (!system?.systemType) {
-                allSystemsHaveType = false;
-                await this.assignSystemType(id);
+            // Skip already-migrated entries
+            const alreadyMigrated =
+                system?.hasSensitiveData !== undefined &&
+                system?.systemType !== undefined &&
+                system?.connectionType !== undefined;
+
+            if (alreadyMigrated) {
+                continue;
             }
+
+            allMigrated = false;
+
+            const migratedSystem = await this.buildMigratedSystem(system, containsSensitiveData, id);
+
+            await this.dataAccessor.partialUpdate({
+                entityName: this.entityName,
+                id,
+                entity: {
+                    hasSensitiveData: migratedSystem.hasSensitiveData,
+                    systemType: migratedSystem.systemType,
+                    connectionType: migratedSystem.connectionType
+                }
+            });
         }
 
-        return allSystemsHaveType;
+        if (!allMigrated) {
+            // Write migration marker file
+            const filePath = join(getSapToolsDirectory(), '.systemsMigrated');
+            const marker = { backendSystemMigrationV1: new Date().toISOString() };
+            writeFileSync(filePath, JSON.stringify(marker, null, 2));
+        }
+
+        return allMigrated;
     }
 
     /**
-     * Temporary migration function to infer and assign a systemType to a system by ID.
-     *
-     * @param systemId ID of the system to migrate
+     * Builds a fully migrated BackendSystem instance.
      */
-    private async assignSystemType(systemId: string): Promise<void> {
-        const system = await this.dataAccessor.read({ entityName: this.entityName, id: systemId });
-        if (system) {
-            const inferredType = getBackendSystemType(system);
-            if (inferredType) {
-                await this.dataAccessor.partialUpdate({
-                    entityName: this.entityName,
-                    id: systemId,
-                    entity: { systemType: inferredType }
-                });
-            }
+    private async buildMigratedSystem(
+        system: BackendSystem,
+        containsSensitiveData: boolean,
+        id: string
+    ): Promise<BackendSystem> {
+        let fullSystem = system;
+        // Ensure sensitive data available if needed
+        if (!containsSensitiveData) {
+            fullSystem = await this.dataAccessor.read({
+                entityName: this.entityName,
+                id
+            });
         }
+        const inferredSystemType = fullSystem.systemType ?? getBackendSystemType(fullSystem) ?? 'OnPrem';
+        const connectionType = fullSystem?.connectionType ?? ConnectionType.AbapCatalog; // will need to be removed once adding different connection types is possible
+        return new BackendSystem({
+            ...fullSystem,
+            systemType: inferredSystemType,
+            connectionType
+        });
     }
 };

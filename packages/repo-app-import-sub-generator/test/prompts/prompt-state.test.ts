@@ -31,7 +31,9 @@ describe('PromptState', () => {
                 backendSystem: {
                     url: 'https://mock.sap-system.com',
                     client: '100',
-                    name: 'Mock SAP System'
+                    name: 'Mock SAP System',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
                 }
             }
         };

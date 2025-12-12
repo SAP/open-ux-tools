@@ -1,11 +1,10 @@
 import { updateSystem } from '../../../../../src/panel/system/actions/updateSystem';
 import type { PanelContext } from '../../../../../src/types';
+import type { BackendSystem } from '@sap-ux/store';
 import { initI18n } from '../../../../../src/utils';
 import { SystemPanelViewType } from '../../../../../src/utils/constants';
 import * as extUtils from '../../../../../src/utils';
 import * as panelUtils from '../../../../../src/panel/system/utils';
-import * as uxStore from '@sap-ux/store';
-import exp from 'constants';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
@@ -37,13 +36,14 @@ describe('Test Update System Action', () => {
         jest.clearAllMocks();
     });
 
-    const backendSystem = {
+    const backendSystem: BackendSystem = {
         name: 'Test System',
         systemType: 'OnPrem',
         url: 'https://test-system.example.com',
         client: '100',
         username: 'testuser',
-        password: 'password'
+        password: 'password',
+        connectionType: 'abap_catalog'
     };
 
     const postMessageMock = jest.fn();
@@ -86,7 +86,7 @@ describe('Test Update System Action', () => {
             updateSystem(panelContext, {
                 type: 'UPDATE_SYSTEM',
                 payload: {
-                    system: { ...backendSystem, systemType: undefined, username: undefined, password: undefined }
+                    system: { ...backendSystem, username: undefined, password: undefined }
                 }
             })
         ).resolves.toBeUndefined();
@@ -94,7 +94,7 @@ describe('Test Update System Action', () => {
         expect(disposePanelMock).toHaveBeenCalled();
         expect(postMessageMock).not.toHaveBeenCalled();
         expect(systemServiceWriteMock).toHaveBeenCalledWith(
-            { ...backendSystem, systemType: undefined, username: undefined, password: undefined },
+            { ...backendSystem, username: undefined, password: undefined },
             { force: false }
         );
     });
@@ -200,8 +200,9 @@ describe('Test Update System Action', () => {
                 url: 'https://old-system.example.com',
                 client: '200',
                 username: 'olduser',
-                password: 'oldpassword'
-            }
+                password: 'oldpassword',
+                connectionType: 'abap_catalog'
+            } as BackendSystem
         };
 
         await expect(

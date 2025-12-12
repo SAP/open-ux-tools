@@ -1,5 +1,5 @@
 import { getFilesystemStore as dataAccessFilesystem } from './filesystem';
-import { pick } from '../utils';
+import { hasAnyValue, pick } from '../utils';
 import type { Logger } from '@sap-ux/logger';
 import type { SecureStore } from '../secure-store';
 import { getSecureStore } from '../secure-store';
@@ -113,7 +113,7 @@ class HybridStore<E extends object> implements DataAccess<E> {
 
         const serializable: E = pick(entity, ...serializableProps) as E;
 
-        if (serializable) {
+        if (hasAnyValue(entity, serializableProps)) {
             this.logger.debug(`hybrid/write - writing serializable properties: ${inspect(serializable)}`);
             await this.filesystem.write({ entityName, id, entity: serializable });
         } else {
@@ -121,7 +121,7 @@ class HybridStore<E extends object> implements DataAccess<E> {
         }
 
         const sensitiveData = pick(entity, ...sensitiveProps);
-        if (sensitiveData) {
+        if (hasAnyValue(sensitiveData, sensitiveProps)) {
             this.logger.debug(`hybrid/write - writing sensitive properties to secure store. ID: [${id}]`);
             await this.secureStore.save(getFullyQualifiedServiceName(entityName), id, sensitiveData);
         } else {

@@ -12,7 +12,8 @@ describe('<ActionButtons />', () => {
         url: 'https://dummy.com',
         client: '000',
         username: 'user',
-        password: 'password'
+        password: 'password',
+        connectionType: 'abap_catalog'
     };
     it('Test Export button', () => {
         render(<ExternalActionBtns systemInfo={systemInfo} systemUnSaved={false} />);

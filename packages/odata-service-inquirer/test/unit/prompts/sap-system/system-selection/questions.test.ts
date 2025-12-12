@@ -34,18 +34,20 @@ const backendSystemBasic: BackendSystem = {
     url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1',
-    systemType: 'OnPrem'
+    systemType: 'OnPrem',
+    connectionType: 'abap_catalog'
 };
 const backendSystemReentrance: BackendSystem = {
     name: 'http://s4hc:1234',
     url: 'http:/s4hc:1234',
     authenticationType: 'reentranceTicket',
-    systemType: 'S4HC'
+    systemType: 'AbapCloud',
+    connectionType: 'abap_catalog'
 };
 const backendSystemServiceKeys: BackendSystem = {
     name: 'http://abap.on.btp:1234',
     url: 'http:/abap.on.btp:1234',
-    authenticationType: 'serviceKeys',
+    authenticationType: 'oauth2',
     serviceKeys: {
         uaa: {
             clientid: 'clientid',
@@ -55,7 +57,8 @@ const backendSystemServiceKeys: BackendSystem = {
         url: 'https://example.com/uaa',
         systemid: 'abap_btp_001'
     },
-    systemType: 'BTP'
+    systemType: 'AbapCloud',
+    connectionType: 'abap_catalog'
 };
 
 const backendSystems: BackendSystem[] = [backendSystemBasic];

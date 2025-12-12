@@ -5,15 +5,18 @@ import {
     getCredentialsFromEnvVariables,
     storeCredentials
 } from '../../../src/base/credentials';
-import type { BackendSystemKey } from '@sap-ux/store';
+import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { mockedStoreService } from '../../__mocks__';
 
 describe('base/credentials', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
-    const target = {
+    const target: BackendSystem = {
+        name: 'Target System',
         url: 'http://target.example',
-        client: '001'
+        client: '001',
+        systemType: 'OnPrem',
+        connectionType: 'abap_catalog'
     };
     const username = '~user';
     const password = '~pass';
@@ -40,7 +43,7 @@ describe('base/credentials', () => {
 
         test('fallback read without client parameter', async () => {
             mockedStoreService.read.mockImplementation((key: BackendSystemKey) =>
-                key.getId().includes(target.client) ? undefined : {}
+                key.getId().includes(target.client as string) ? undefined : {}
             );
             const credentials = await getCredentialsFromStore(target, logger);
             expect(credentials).toBeDefined();
