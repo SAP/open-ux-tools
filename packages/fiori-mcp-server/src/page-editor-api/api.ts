@@ -10,7 +10,7 @@ import { updateProperty } from './json-helper';
  */
 export class PageEditorApi {
     private readonly ftfsIO;
-    private appModel?: Parser.ApplicationModel;
+    private readonly appModel?: Parser.ApplicationModel;
 
     /**
      * Creates an instance of PageEditorApi.
