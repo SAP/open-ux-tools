@@ -1,10 +1,4 @@
-import {
-    PerformanceMeasurementAPI,
-    initTelemetrySettings,
-    type ToolsSuiteTelemetryInitSettings
-} from '@sap-ux/telemetry';
-import type { ToolsLogger } from '@sap-ux/logger';
-import { TelemetryHelper, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import { PerformanceMeasurementAPI } from '@sap-ux/telemetry';
 
 import type { AdpTelemetryData, AdpTelemetryTimerProperties } from '../types';
 
@@ -29,33 +23,20 @@ export class TelemetryCollector {
     private data: AdpTelemetryData = { ...DEFAULT_DATA };
 
     /**
-     * Private constructor to enforce initialization via init().
+     * Gets the telemetry data.
+     *
+     * @returns {AdpTelemetryData} The telemetry data.
      */
-    private constructor() {
-        this.timingMarkNames.clear();
-        this.data = { ...DEFAULT_DATA };
+    get telemetryData(): AdpTelemetryData {
+        return this.data;
     }
 
     /**
-     * Initializes the telemetry collector with settings and resets data to default values.
-     *
-     * @param {string} generatorVersion - The version of the generator.
-     * @param {boolean} internalFeature - Whether the generator is used internally.
-     * @returns {Promise<TelemetryCollector>} A new instance of TelemetryCollector.
+     * Private constructor to enforce initialization via init().
      */
-    static async init(generatorVersion: string, internalFeature: boolean): Promise<TelemetryCollector> {
-        const settings: ToolsSuiteTelemetryInitSettings = {
-            consumerModule: {
-                name: '@sap/generator-fiori:generator-adp',
-                version: generatorVersion
-            },
-            internalFeature,
-            watchTelemetrySettingStore: false
-        };
-
-        const instance = new TelemetryCollector();
-        await initTelemetrySettings(settings);
-        return instance;
+    constructor() {
+        this.timingMarkNames.clear();
+        this.data = { ...DEFAULT_DATA };
     }
 
     /**
@@ -65,16 +46,6 @@ export class TelemetryCollector {
      */
     setBatch(data: Partial<AdpTelemetryData>): void {
         Object.assign(this.data, data);
-    }
-
-    /**
-     * Sets a telemetry data value by key.
-     *
-     * @param key - The key of the telemetry data property to set.
-     * @param value - The value to set.
-     */
-    setData<K extends keyof AdpTelemetryData>(key: K, value: AdpTelemetryData[K]): void {
-        this.data[key] = value;
     }
 
     /**
@@ -88,8 +59,7 @@ export class TelemetryCollector {
     }
 
     /**
-     * Ends timing for a specific timer property and sets the duration in the telemetry data.
-     * The duration is calculated using PerformanceMeasurementAPI and stored in milliseconds.
+     * Ends timing for a specific timer property and sets the duration in the telemetry data in milliseconds.
      *
      * @param {keyof AdpTelemetryTimerProperties} key - The timer property name where the duration should be stored (must match the key used in startTiming).
      */
@@ -99,48 +69,8 @@ export class TelemetryCollector {
             PerformanceMeasurementAPI.endMark(markName);
             PerformanceMeasurementAPI.measure(markName);
             const duration = PerformanceMeasurementAPI.getMeasurementDuration(markName);
-            this.setData(key, duration as AdpTelemetryData[typeof key]);
+            this.setBatch({ [key]: duration as AdpTelemetryData[typeof key] });
             this.timingMarkNames.delete(key);
-        }
-    }
-
-    /**
-     * Gets all collected telemetry data.
-     *
-     * @returns {AdpTelemetryData | undefined} A copy of the telemetry data object, or undefined if no data exists.
-     */
-    private getData(): AdpTelemetryData | undefined {
-        return this.data ? { ...this.data } : undefined;
-    }
-
-    /**
-     * Sends telemetry data by merging collected data with additional properties.
-     *
-     * @param {string} eventName - The name of the telemetry event.
-     * @param {string} projectPath - Optional project path.
-     * @param {Record<string, unknown>} additionalData - Optional additional telemetry data to merge.
-     * @param {ToolsLogger} logger - Optional logger for error handling.
-     */
-    send(
-        eventName: string,
-        projectPath?: string,
-        additionalData?: Record<string, unknown>,
-        logger?: ToolsLogger
-    ): void {
-        const data = TelemetryHelper.createTelemetryData({
-            appType: 'generator-adp',
-            ...additionalData,
-            ...this.getData()
-        });
-
-        if (data) {
-            sendTelemetry(eventName, data, projectPath)
-                .then(() => {
-                    logger?.log(`Event ${eventName} successfully sent`);
-                })
-                .catch((error) => {
-                    logger?.error(`Failed to send telemetry: ${error}`);
-                });
         }
     }
 }

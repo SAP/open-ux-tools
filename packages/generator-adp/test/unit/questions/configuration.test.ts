@@ -131,7 +131,7 @@ describe('ConfigPrompter Integration Tests', () => {
 
     beforeAll(async () => {
         await initI18n();
-        telemetryCollector = await TelemetryCollector.init('1.0.0', false);
+        telemetryCollector = new TelemetryCollector();
     });
 
     beforeEach(() => {

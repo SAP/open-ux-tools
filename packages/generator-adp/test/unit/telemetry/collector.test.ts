@@ -1,6 +1,4 @@
-import { PerformanceMeasurementAPI, initTelemetrySettings } from '@sap-ux/telemetry';
-import { TelemetryHelper, sendTelemetry } from '@sap-ux/fiori-generator-shared';
-import type { ToolsLogger } from '@sap-ux/logger';
+import { PerformanceMeasurementAPI } from '@sap-ux/telemetry';
 
 import { TelemetryCollector } from '../../../src/telemetry/collector';
 
@@ -10,88 +8,50 @@ jest.mock('@sap-ux/telemetry', () => ({
         endMark: jest.fn(),
         measure: jest.fn(),
         getMeasurementDuration: jest.fn()
-    },
-    initTelemetrySettings: jest.fn()
+    }
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    TelemetryHelper: {
-        createTelemetryData: jest.fn()
-    },
-    sendTelemetry: jest.fn()
-}));
-
-const mockSendTelemetry = sendTelemetry as jest.Mock;
 const mockEndMark = PerformanceMeasurementAPI.endMark as jest.Mock;
 const mockMeasure = PerformanceMeasurementAPI.measure as jest.Mock;
-const mockInitTelemetrySettings = initTelemetrySettings as jest.Mock;
 const mockStartMark = PerformanceMeasurementAPI.startMark as jest.Mock;
-const mockCreateTelemetryData = TelemetryHelper.createTelemetryData as jest.Mock;
 const mockGetMeasurementDuration = PerformanceMeasurementAPI.getMeasurementDuration as jest.Mock;
-
-/**
- * Flushes all pending promises in the event loop.
- * This ensures all microtasks and macrotasks are processed. More reliable than setTimeout(0) in CI/CD environments.
- */
-const flushPromises = async (): Promise<void> => {
-    // Flush microtasks (Promise callbacks)
-    await Promise.resolve();
-    // Flush macrotasks (setTimeout, setImmediate, etc.)
-    return new Promise((resolve) => {
-        if (typeof setImmediate !== 'undefined') {
-            setImmediate(resolve);
-        } else {
-            setTimeout(resolve, 0);
-        }
-    });
-};
 
 describe('TelemetryCollector', () => {
     let collector: TelemetryCollector;
-    let mockLogger: ToolsLogger;
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockInitTelemetrySettings.mockResolvedValue(undefined);
-        mockSendTelemetry.mockResolvedValue(undefined);
-        mockLogger = {
-            log: jest.fn(),
-            error: jest.fn()
-        } as unknown as ToolsLogger;
     });
 
-    describe('init', () => {
-        it('should create instance and initialize telemetry settings', async () => {
-            collector = await TelemetryCollector.init('1.0.0', false);
+    describe('constructor', () => {
+        it('should create instance with default data', () => {
+            collector = new TelemetryCollector();
 
-            expect(mockInitTelemetrySettings).toHaveBeenCalledWith({
-                consumerModule: {
-                    name: '@sap/generator-fiori:generator-adp',
-                    version: '1.0.0'
-                },
-                internalFeature: false,
-                watchTelemetrySettingStore: false
-            });
             expect(collector).toBeInstanceOf(TelemetryCollector);
+            expect(collector.telemetryData).toEqual({
+                wasExtProjectGenerated: false,
+                wasFlpConfigDone: false,
+                wasDeployConfigDone: false,
+                wasTypeScriptChosen: false
+            });
         });
     });
 
-    describe('setData', () => {
-        beforeEach(async () => {
-            collector = await TelemetryCollector.init('1.0.0', false);
+    describe('setBatch', () => {
+        beforeEach(() => {
+            collector = new TelemetryCollector();
         });
 
-        it('should set string property', () => {
-            collector.setData('baseAppTechnicalName', 'test-app-id');
-            collector.setData('projectType', 'cloudReady');
-            collector.setData('ui5VersionSelected', '1.120.0');
-            collector.setData('applicationListLoadingTime', 150.5);
-            collector.setData('wasTypeScriptChosen', true);
+        it('should set multiple properties at once', () => {
+            collector.setBatch({
+                baseAppTechnicalName: 'test-app-id',
+                projectType: 'cloudReady',
+                ui5VersionSelected: '1.120.0',
+                applicationListLoadingTime: 150.5,
+                wasTypeScriptChosen: true
+            });
 
-            mockCreateTelemetryData.mockReturnValue({});
-            collector.send('TEST_EVENT');
-
-            expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+            expect(collector.telemetryData).toEqual(
                 expect.objectContaining({
                     baseAppTechnicalName: 'test-app-id',
                     projectType: 'cloudReady',
@@ -102,59 +62,30 @@ describe('TelemetryCollector', () => {
             );
         });
 
-        it('should set boolean property', () => {
-            collector.setData('wasExtProjectGenerated', true);
-            collector.setData('wasFlpConfigDone', true);
-            collector.setData('wasDeployConfigDone', false);
-
-            mockCreateTelemetryData.mockReturnValue({});
-            collector.send('TEST_EVENT');
-
-            expect(mockCreateTelemetryData).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    wasExtProjectGenerated: true,
-                    wasFlpConfigDone: true,
-                    wasDeployConfigDone: false,
-                    wasTypeScriptChosen: false
-                })
-            );
-        });
-    });
-
-    describe('setBatch', () => {
-        beforeEach(async () => {
-            collector = await TelemetryCollector.init('1.0.0', false);
-        });
-
-        it('should set multiple properties at once', () => {
-            collector.setData('baseAppTechnicalName', 'initial-app');
+        it('should merge with existing data', () => {
             collector.setBatch({
-                projectType: 'onPremise',
-                numberOfApplications: 30,
-                wasFlpConfigDone: true,
-                wasTypeScriptChosen: false
+                baseAppTechnicalName: 'initial-app',
+                projectType: 'onPremise'
             });
 
-            mockCreateTelemetryData.mockReturnValue({});
-            collector.send('TEST_EVENT');
+            collector.setBatch({
+                projectType: 'cloudReady',
+                ui5VersionSelected: '1.120.0'
+            });
 
-            expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+            expect(collector.telemetryData).toEqual(
                 expect.objectContaining({
                     baseAppTechnicalName: 'initial-app',
-                    projectType: 'onPremise',
-                    numberOfApplications: 30,
-                    wasFlpConfigDone: true,
-                    wasTypeScriptChosen: false,
-                    wasExtProjectGenerated: false,
-                    wasDeployConfigDone: false
+                    projectType: 'cloudReady',
+                    ui5VersionSelected: '1.120.0'
                 })
             );
         });
     });
 
     describe('startTiming', () => {
-        beforeEach(async () => {
-            collector = await TelemetryCollector.init('1.0.0', false);
+        beforeEach(() => {
+            collector = new TelemetryCollector();
         });
 
         it('should start timing and store mark name', () => {
@@ -172,8 +103,8 @@ describe('TelemetryCollector', () => {
     });
 
     describe('endTiming', () => {
-        beforeEach(async () => {
-            collector = await TelemetryCollector.init('1.0.0', false);
+        beforeEach(() => {
+            collector = new TelemetryCollector();
         });
 
         it('should end timing and store duration', () => {
@@ -188,10 +119,7 @@ describe('TelemetryCollector', () => {
             expect(mockMeasure).toHaveBeenCalledWith(markName);
             expect(mockGetMeasurementDuration).toHaveBeenCalledWith(markName);
 
-            mockCreateTelemetryData.mockReturnValue({});
-            collector.send('TEST_EVENT');
-
-            expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+            expect(collector.telemetryData).toEqual(
                 expect.objectContaining({
                     applicationListLoadingTime: 250.75
                 })
@@ -217,82 +145,6 @@ describe('TelemetryCollector', () => {
 
             expect(mockEndMark).not.toHaveBeenCalled();
             expect(mockMeasure).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('send', () => {
-        beforeEach(async () => {
-            collector = await TelemetryCollector.init('1.0.0', false);
-        });
-
-        it('should send telemetry with collected data', () => {
-            collector.setData('baseAppTechnicalName', 'test-app');
-            collector.setData('projectType', 'cloudReady');
-
-            const telemetryData = {
-                appType: 'generator-adp',
-                baseAppTechnicalName: 'test-app',
-                projectType: 'cloudReady',
-                wasExtProjectGenerated: false,
-                wasFlpConfigDone: false,
-                wasDeployConfigDone: false,
-                wasTypeScriptChosen: false
-            };
-
-            mockCreateTelemetryData.mockReturnValue(telemetryData);
-            mockSendTelemetry.mockResolvedValue(undefined);
-
-            collector.send('TEST_EVENT', '/project/path', undefined, mockLogger);
-
-            expect(mockCreateTelemetryData).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    appType: 'generator-adp',
-                    baseAppTechnicalName: 'test-app',
-                    projectType: 'cloudReady'
-                })
-            );
-            expect(mockSendTelemetry).toHaveBeenCalledWith('TEST_EVENT', telemetryData, '/project/path');
-        });
-
-        it('should merge additional data with collected data', () => {
-            collector.setData('baseAppTechnicalName', 'collected-app');
-
-            const telemetryData = { merged: 'data' };
-            mockCreateTelemetryData.mockReturnValue(telemetryData);
-            mockSendTelemetry.mockResolvedValue(undefined);
-
-            collector.send('TEST_EVENT', undefined, { customProp: 'customValue' }, mockLogger);
-
-            expect(mockCreateTelemetryData).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    appType: 'generator-adp',
-                    customProp: 'customValue',
-                    baseAppTechnicalName: 'collected-app'
-                })
-            );
-
-            expect(mockSendTelemetry).toHaveBeenCalledWith('TEST_EVENT', telemetryData, undefined);
-        });
-
-        it('should not send if createTelemetryData returns undefined', () => {
-            mockCreateTelemetryData.mockReturnValue(undefined);
-
-            collector.send('TEST_EVENT');
-
-            expect(mockSendTelemetry).not.toHaveBeenCalled();
-        });
-
-        it('should handle sendTelemetry rejection', async () => {
-            collector.setData('baseAppTechnicalName', 'test-app');
-            const error = new Error('Network error');
-            mockCreateTelemetryData.mockReturnValue({ data: 'test' });
-            mockSendTelemetry.mockRejectedValue(error);
-
-            collector.send('TEST_EVENT', undefined, undefined, mockLogger);
-
-            await flushPromises();
-
-            expect(mockLogger.error).toHaveBeenCalledWith(`Failed to send telemetry: ${error}`);
         });
     });
 });

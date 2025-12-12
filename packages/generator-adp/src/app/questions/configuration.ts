@@ -588,7 +588,7 @@ export class ConfigPrompter {
 
             this.telemetryCollector.startTiming('applicationListLoadingTime');
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
-            this.telemetryCollector.setData('numberOfApplications', this.targetApps.length);
+            this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
             this.telemetryCollector.endTiming('applicationListLoadingTime');
             this.isLoginSuccessful = true;
             return true;
@@ -634,7 +634,7 @@ export class ConfigPrompter {
 
                 this.telemetryCollector.startTiming('applicationListLoadingTime');
                 this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
-                this.telemetryCollector.setData('numberOfApplications', this.targetApps.length);
+                this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
                 this.telemetryCollector.endTiming('applicationListLoadingTime');
             }
 

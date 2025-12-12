@@ -23,12 +23,19 @@ import {
     loadApps,
     loadCfConfig
 } from '@sap-ux/adp-tooling';
-import { getDefaultTargetFolder, isCli, isExtensionInstalled } from '@sap-ux/fiori-generator-shared';
+import {
+    getDefaultTargetFolder,
+    isCli,
+    isExtensionInstalled,
+    sendTelemetry,
+    TelemetryHelper
+} from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
@@ -236,7 +243,15 @@ export default class extends Generator {
         this.logger.info(`isCfInstalled: ${this.cfInstalled}`);
 
         const isInternalUsage = isInternalFeaturesSettingEnabled();
-        this.telemetryCollector = await TelemetryCollector.init(this.rootGeneratorVersion(), isInternalUsage);
+        await initTelemetrySettings({
+            consumerModule: {
+                name: '@sap/generator-fiori:generator-adp',
+                version: this.rootGeneratorVersion()
+            },
+            internalFeature: isInternalUsage,
+            watchTelemetrySettingStore: false
+        });
+        this.telemetryCollector = new TelemetryCollector();
         if (!this.jsonInput) {
             const shouldShowTargetEnv = this.cfInstalled && this.isCfFeatureEnabled;
             this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
@@ -398,12 +413,21 @@ export default class extends Generator {
 
     async end(): Promise<void> {
         const projectPath = this._getProjectPath();
-        this.telemetryCollector.send(
-            EventName.ADAPTATION_PROJECT_CREATED,
-            projectPath,
-            this.options.telemetryData,
-            this.logger
-        );
+        const data = TelemetryHelper.createTelemetryData({
+            appType: 'generator-adp',
+            ...this.options.telemetryData,
+            ...this.telemetryCollector.telemetryData
+        });
+
+        if (data) {
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, data, projectPath)
+                .then(() => {
+                    this.logger.log(`Event ${EventName.ADAPTATION_PROJECT_CREATED} successfully sent`);
+                })
+                .catch((error) => {
+                    this.logger.error(`Failed to send telemetry: ${error}`);
+                });
+        }
 
         if (this.isCli || this.isCfEnv || this.shouldCreateExtProject) {
             return;
@@ -445,21 +469,20 @@ export default class extends Generator {
     private _collectTelemetryData(): void {
         if (this.isCfEnv) {
             const manifestId = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
-            this.telemetryCollector.setData('baseAppTechnicalName', manifestId);
-            this.telemetryCollector.setData('projectType', 'cf');
+            this.telemetryCollector.setBatch({ baseAppTechnicalName: manifestId });
+            this.telemetryCollector.setBatch({ projectType: 'cf' });
         } else {
             const isCloud = this.prompter?.isCloud ?? false;
-            this.telemetryCollector.setData('projectType', isCloud ? 'cloudReady' : 'onPremise');
-            this.telemetryCollector.setData('baseAppTechnicalName', this.configAnswers?.application?.id ?? '');
+            this.telemetryCollector.setBatch({ projectType: isCloud ? 'cloudReady' : 'onPremise' });
+            this.telemetryCollector.setBatch({ baseAppTechnicalName: this.configAnswers?.application?.id ?? '' });
         }
 
         if (this.jsonInput) {
-            this.telemetryCollector.setData('ui5VersionSelected', getLatestVersion(this.publicVersions));
+            this.telemetryCollector.setBatch({ ui5VersionSelected: getLatestVersion(this.publicVersions) });
         } else {
-            this.telemetryCollector.setData(
-                'ui5VersionSelected',
-                getFormattedVersion(this.attributeAnswers?.ui5Version ?? '')
-            );
+            this.telemetryCollector.setBatch({
+                ui5VersionSelected: getFormattedVersion(this.attributeAnswers?.ui5Version ?? '')
+            });
         }
 
         this.telemetryCollector.setBatch({
@@ -563,7 +586,7 @@ export default class extends Generator {
     private async _generateAdpProjectArtifactsCF(): Promise<void> {
         const projectPath = this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
-        this.telemetryCollector.setData('ui5VersionSelected', getLatestVersion(publicVersions));
+        this.telemetryCollector.setBatch({ ui5VersionSelected: getLatestVersion(publicVersions) });
 
         const manifest = this.cfPrompter.manifest;
         if (!manifest) {
@@ -665,7 +688,7 @@ export default class extends Generator {
         this.abapProvider = await getConfiguredProvider(providerOptions, this.logger);
 
         const applications = await loadApps(this.abapProvider, this.isCustomerBase);
-        this.telemetryCollector.setData('numberOfApplications', applications.length);
+        this.telemetryCollector.setBatch({ numberOfApplications: applications.length });
         const application = applications.find((application) => application.id === baseApplicationName);
         if (!application) {
             throw new Error(t('error.applicationNotFound', { appName: baseApplicationName }));
