@@ -2,7 +2,12 @@ import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import { join, basename } from 'node:path';
-import { type AxiosError, type AbapServiceProvider, isAxiosError } from '@sap-ux/axios-extension';
+import {
+    type AxiosError,
+    type AbapServiceProvider,
+    isAxiosError,
+    AdaptationProjectType
+} from '@sap-ux/axios-extension';
 import {
     getVariant,
     getAdpConfig,
@@ -13,7 +18,8 @@ import {
     getBaseAppInbounds,
     type InternalInboundNavigation,
     type AdpPreviewConfig,
-    type DescriptorVariant
+    type DescriptorVariant,
+    getExistingProjectType
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
@@ -444,10 +450,18 @@ export default class AdpFlpConfigGenerator extends Generator {
             this._abortExecution(t('error.projectNotSupported'));
             return;
         }
-        const isCloud = await this.provider.isAbapCloud();
-        if (!isCloud) {
+        const projectType = await this._getProjectType();
+        if (projectType !== AdaptationProjectType.CLOUD_READY) {
             this._abortExecution(t('error.projectNotCloudReady'));
         }
+    }
+
+    /**
+     * @returns {Promise<AdaptationProjectType | undefined>} The project type.
+     */
+    private _getProjectType(): Promise<AdaptationProjectType | undefined> {
+        const ui5YamlPath = join(this.projectRootPath, FileName.Ui5Yaml);
+        return getExistingProjectType(this.projectRootPath, ui5YamlPath);
     }
 
     /**

@@ -18,34 +18,31 @@ import type {
     TargetFolderPromptOptions,
     EnableTypeScriptPromptOptions,
     AddDeployConfigPromptOptions,
-    AddFlpConfigPromptOptions
+    AddFlpConfigPromptOptions,
+    OptionalPromptsConfig
 } from '../types';
 import { t } from '../../utils/i18n';
-import { attributePromptNames } from '../types';
+import { attributePromptNames, SystemType } from '../types';
 import { getProjectNameTooltip } from './helper/tooltip';
 import { getVersionAdditionalMessages } from './helper/additional-messages';
 import { updateWizardSteps, getDeployPage, updateFlpWizardSteps } from '../../utils/steps';
 import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
-
-interface Config {
-    isCloudProject: boolean;
-    layer: FlexLayer;
-    ui5Versions: string[];
-    isVersionDetected: boolean;
-    prompts: YeomanUiSteps;
-    isCfEnv?: boolean;
-}
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Returns all project attribute prompts, filtering based on promptOptions.
  *
  * @param {string} path - The project base path.
- * @param {Config} config - Configuration values needed for conditional prompt logic.
+ * @param {OptionalPromptsConfig} config - Configuration values needed for conditional prompt logic.
  * @param {AttributePromptOptions} [promptOptions] - Optional settings to control visibility and defaults.
  * @returns {AttributesQuestion[]} An array of prompt objects for basic info input.
  */
-export function getPrompts(path: string, config: Config, promptOptions?: AttributePromptOptions): AttributesQuestion[] {
-    const { isVersionDetected, ui5Versions, isCloudProject, layer, prompts, isCfEnv = false } = config;
+export function getPrompts(
+    path: string,
+    config: OptionalPromptsConfig,
+    promptOptions?: AttributePromptOptions
+): AttributesQuestion[] {
+    const { isVersionDetected, ui5Versions, systemType, projectType, layer, prompts, isCfEnv = false } = config;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
     const keyedPrompts: Record<attributePromptNames, AttributesQuestion> = {
@@ -61,7 +58,7 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
             promptOptions?.[attributePromptNames.namespace]
         ),
         [attributePromptNames.targetFolder]: getTargetFolderPrompt(promptOptions?.[attributePromptNames.targetFolder]),
-        [attributePromptNames.ui5Version]: getUi5VersionPrompt(ui5Versions, isVersionDetected, isCloudProject),
+        [attributePromptNames.ui5Version]: getUi5VersionPrompt(ui5Versions, isVersionDetected, systemType),
         [attributePromptNames.ui5ValidationCli]: getUi5VersionValidationPromptForCli(),
         [attributePromptNames.enableTypeScript]: getEnableTypeScriptPrompt(
             promptOptions?.[attributePromptNames.enableTypeScript]
@@ -72,7 +69,7 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
         ),
         [attributePromptNames.addFlpConfig]: getFlpConfigPrompt(
             prompts,
-            isCloudProject,
+            projectType,
             promptOptions?.[attributePromptNames.addFlpConfig]
         )
     };
@@ -201,19 +198,19 @@ function getTargetFolderPrompt(options?: TargetFolderPromptOptions): AttributesQ
  *
  * @param {string[]} ui5Versions - Array of available UI5 versions.
  * @param {boolean} isVersionDetected - Whether a UI5 version was detected from the system.
- * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
+ * @param {boolean} systemType - The system type.
  * @returns {AttributesQuestion} The prompt configuration for UI5 version.
  */
 function getUi5VersionPrompt(
     ui5Versions: string[],
     isVersionDetected: boolean,
-    isCloudProject: boolean
+    systemType?: SystemType
 ): AttributesQuestion {
     return {
         type: 'list',
         name: attributePromptNames.ui5Version,
         message: t('prompts.ui5VersionLabel'),
-        when: !isCloudProject,
+        when: systemType !== SystemType.CLOUD_READY,
         choices: ui5Versions,
         guiOptions: {
             applyDefaultWhenDirty: true,
@@ -295,13 +292,13 @@ export function getAddDeployConfigPrompt(prompts: YeomanUiSteps, _?: AddDeployCo
  * Creates the Add FLP Config confirm prompt.
  *
  * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
- * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
+ * @param {boolean} projectType - The project type.
  * @param {AddFlpConfigPromptOptions} options - Optional prompt options to control visibility.
  * @returns {AttributesQuestion} The prompt configuration for Add FLP config confirmation.
  */
 export function getFlpConfigPrompt(
     prompts: YeomanUiSteps,
-    isCloudProject: boolean,
+    projectType?: AdaptationProjectType,
     options?: AddFlpConfigPromptOptions
 ): AttributesQuestion {
     return {
@@ -312,7 +309,7 @@ export function getFlpConfigPrompt(
         guiOptions: {
             breadcrumb: true
         },
-        when: () => isCloudProject,
+        when: () => projectType === AdaptationProjectType.CLOUD_READY,
         validate: (value: boolean, answers: AttributesAnswers) => {
             updateFlpWizardSteps(!!options?.hasBaseAppInbounds, prompts, answers.projectName, value);
             return true;

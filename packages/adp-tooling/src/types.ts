@@ -43,6 +43,10 @@ export interface AdpPreviewConfig {
      * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
      */
     cfBuildPath?: string;
+
+    builder: {
+        customTasks: { name: string }[];
+    };
 }
 
 export interface OnpremApp {
@@ -143,11 +147,12 @@ export interface SourceApplication {
     fileType: string;
     bspUrl: string;
     bspName: string;
+    cloudDevAdaptationStatus: string;
 }
 
-export interface FlexUISupportedSystem {
-    isUIFlex: boolean;
-    isOnPremise: boolean;
+export interface FlexUICapability {
+    isUIFlexSupported: boolean;
+    isDtaFolderDeploymentSupported: boolean;
 }
 
 export interface UI5Version {
