@@ -129,7 +129,7 @@ async function generateChanges(
 export async function getEditorApi(appPath: string, pageName?: string): Promise<PageEditorApi | undefined> {
     const project = await resolveApplication(appPath);
     if (project?.applicationAccess) {
-        return new PageEditorApi(project.applicationAccess, pageName);
+        return new PageEditorApi(project.applicationAccess, undefined, pageName);
     }
     return undefined;
 }

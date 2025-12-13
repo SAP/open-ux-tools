@@ -1,5 +1,19 @@
 # @sap-ux/app-config-writer
 
+## 0.6.66
+
+### Patch Changes
+
+-   Updated dependencies [7217d7d]
+    -   @sap-ux/project-access@1.32.15
+    -   @sap-ux/axios-extension@1.24.5
+
+## 0.6.65
+
+### Patch Changes
+
+-   31591a1: fix: improve logging for smartlinks config
+
 ## 0.6.64
 
 ### Patch Changes
