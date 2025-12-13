@@ -4,6 +4,7 @@ exports[`config createFlpTemplateConfig minimum settings 1`] = `
 Object {
   "apps": Object {},
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -42,6 +43,7 @@ exports[`config createFlpTemplateConfig minimum settings with one reuse lib 1`] 
 Object {
   "apps": Object {},
   "basePath": "..",
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -120,8 +122,8 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -197,8 +199,8 @@ Object {
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
@@ -277,8 +279,8 @@ Object {
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
