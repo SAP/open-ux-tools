@@ -51,6 +51,10 @@ export interface AdpPreviewConfigWithBuildPath {
      * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
      */
     cfBuildPath: string;
+
+    builder: {
+        customTasks: { name: string }[];
+    };
     /**
      * If set to true then certification validation errors are ignored.
      */
@@ -163,11 +167,12 @@ export interface SourceApplication {
     fileType: string;
     bspUrl: string;
     bspName: string;
+    cloudDevAdaptationStatus: string;
 }
 
-export interface FlexUISupportedSystem {
-    isUIFlex: boolean;
-    isOnPremise: boolean;
+export interface FlexUICapability {
+    isUIFlexSupported: boolean;
+    isDtaFolderDeploymentSupported: boolean;
 }
 
 export interface UI5Version {

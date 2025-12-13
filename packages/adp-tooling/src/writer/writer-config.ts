@@ -56,6 +56,7 @@ export interface ConfigOptions {
      * System UI5 Version.
      */
     systemVersion: string | undefined;
+
     /**
      * The application manifest.
      */
@@ -107,10 +108,10 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
 
     const target = await getProviderConfig(configAnswers.system, logger);
 
-    const isCloudProject = await provider.isAbapCloud();
+    const isCloudSystem = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
-    const ui5Version = isCloudProject
+    const ui5Version = isCloudSystem
         ? getLatestVersion(publicVersions)
         : getVersionToBeUsed(attributeAnswers.ui5Version, isCustomerBase, publicVersions);
 
@@ -131,7 +132,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         fioriId
     };
 
-    if (isCloudProject) {
+    if (isCloudSystem) {
         const lrep = provider.getLayeredRepository();
         const { activeLanguages: languages } = await lrep.getSystemInfo();
 

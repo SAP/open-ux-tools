@@ -4,7 +4,9 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
-import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
+import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
+import type { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { type Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
     /**
@@ -38,6 +40,7 @@ export enum configPromptNames {
     username = 'username',
     password = 'password',
     storeCredentials = 'storeCredentials',
+    projectType = 'projectType',
     application = 'application',
     appValidationCli = 'appValidationCli',
     fioriId = 'fioriId',
@@ -74,6 +77,11 @@ export interface StoreCredentialsPromptOptions {
     hide?: boolean;
 }
 
+export interface ProjectTypePromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
 export interface ApplicationPromptOptions {
     default?: string;
     hide?: boolean;
@@ -101,6 +109,7 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.username]: UsernamePromptOptions;
     [configPromptNames.password]: PasswordPromptOptions;
     [configPromptNames.storeCredentials]: StoreCredentialsPromptOptions;
+    [configPromptNames.projectType]: ProjectTypePromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
     [configPromptNames.appValidationCli]: CliValidationPromptOptions;
     [configPromptNames.fioriId]: FioriIdPromptOptions;
@@ -287,4 +296,19 @@ export interface JsonInput {
     targetFolder?: string;
     projectName?: string;
     namespace?: string;
+    projectType?: AdaptationProjectType;
+}
+
+export enum SystemType {
+    CLOUD_READY = 'cloudReady',
+    ON_PREM = 'onPremise'
+}
+export interface OptionalPromptsConfig {
+    projectType?: AdaptationProjectType;
+    systemType?: SystemType;
+    layer: FlexLayer;
+    ui5Versions: string[];
+    isVersionDetected: boolean;
+    prompts: YeomanUiSteps;
+    isCfEnv?: boolean;
 }
