@@ -22,9 +22,6 @@ interface BaseLoggerOptions {
     metadataOverride?: Metadata;
 }
 
-/**
- *
- */
 class BaseWinstonLogger implements Logger {
     protected _logger: winston.Logger;
     protected logPrefix: string;
