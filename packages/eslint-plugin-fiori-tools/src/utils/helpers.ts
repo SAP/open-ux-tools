@@ -532,10 +532,8 @@ export function resolveIdentifierPath(path: string, variables: Record<string, st
  * @param variables The variables lookup object
  */
 export function rememberInterestingVariable(node: unknown, name: string, variables: Record<string, string[]>): void {
-    const declaratorNode = node as unknown as { id: { name: string } };
-    if (variables[declaratorNode.id.name] === undefined) {
-        variables[declaratorNode.id.name] = [];
-    }
+    const declaratorNode = node as { id: { name: string } };
+    variables[declaratorNode.id.name] ??= [];
     variables[declaratorNode.id.name].push(name);
 }
 
@@ -562,7 +560,7 @@ export function createVariableDeclaratorProcessor(
     interestingPathChecker: (path: string) => boolean
 ): (node: unknown) => void {
     return function processVariableDeclarator(node: unknown): void {
-        const declaratorNode = node as unknown as { init?: unknown };
+        const declaratorNode = node as { init?: unknown };
         let path = getIdentifierPath(declaratorNode.init);
         path = resolveIdentifierPath(path, variables);
 
