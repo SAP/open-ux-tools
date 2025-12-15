@@ -258,7 +258,7 @@ function mergeDeletionRanges(tokens: CompilerToken[], deletionRanges: DeletionRa
         do {
             doMerge = false;
             const next = rangeIndex + 1 < deletionRanges.length ? deletionRanges[rangeIndex + 1] : null;
-            if (current.termRange.end + 1 === next?.termRange.start) {
+            if (current.termRange.end + 1 === next?.termRange?.start) {
                 // merge possible if at most a single separator token is between deletion ranges
                 const nonCommentTokenIndexes: number[] = [];
                 let nextIndex = current.tokenRange.end;

@@ -1,5 +1,22 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.5.0
+
+### Minor Changes
+
+-   7217d7d: Update to the latest `@sap/ux-specification` version and remove unused code related to the application model and schema parsing.
+
+### Patch Changes
+
+-   @sap-ux/fiori-docs-embeddings@0.4.5
+
+## 0.4.11
+
+### Patch Changes
+
+-   63eec1e: fix(fiori-mcp): fix cap service schema and logger errors in stdio
+    -   @sap-ux/fiori-docs-embeddings@0.4.5
+
 ## 0.4.10
 
 ### Patch Changes
