@@ -1,5 +1,5 @@
 /** sap.ui.core */
-import UI5Element from 'sap/ui/core/Element';
+import type UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -25,7 +25,6 @@ import { getSyncViewIds } from './sync-views-utils';
  * @param control UI5 control.
  * @param isReuseComponent Function to check if the control is a reuse component.
  * @param isCloud Whether the application is running in the cloud
- *
  * @returns boolean whether menu item is enabled or not
  */
 export function isControllerExtensionEnabledForControl(
@@ -50,7 +49,6 @@ export function isControllerExtensionEnabledForControl(
  * @param overlays Control overlays
  * @param isReuseComponent Function to check if the control is a reuse component.
  * @param isCloud Whether the application is running in the cloud
- *
  * @returns boolean whether menu item is enabled or not
  */
 export const isControllerExtensionEnabled = (

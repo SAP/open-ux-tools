@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "1.26.16",
+    "version": "1.26.17",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -23,8 +23,8 @@
         "build": "npm-run-all -l -p build:extension build:copyfiles build:storybook",
         "build:extension": "tsc --build --pretty",
         "build:copyfiles": "copyfiles --up 1 \"./src/**/*.scss\" ./dist/",
-        "lint": "eslint . --ext .ts,.tsx",
-        "lint:fix": "eslint . --ext .ts,.tsx --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "format:fix": "prettier --write --ignore-path ../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "storybook dev",
@@ -67,7 +67,8 @@
         "css-loader": "6.8.1",
         "enzyme": "3.11.0",
         "enzyme-adapter-react-16": "1.15.7",
-        "eslint-plugin-react": "7.33.2",
+        "eslint": "9.39.1",
+        "eslint-plugin-react": "7.37.5",
         "eslint-plugin-storybook": "0.6.15",
         "jest-environment-jsdom": "29.7.0",
         "jest-scss-transform": "1.0.4",

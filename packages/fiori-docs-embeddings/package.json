@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-docs-embeddings",
-    "version": "0.4.5",
+    "version": "0.4.6",
     "description": "SAP Fiori documentation indexing",
     "private": false,
     "scripts": {
@@ -19,8 +19,8 @@
         "clean-data": "rm -rf dist data/docs data/search",
         "clean": "npm-run-all -l -s clean-data clean-embeddings",
         "test": "jest --passWithNoTests --silent",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix"
+        "lint": "eslint",
+        "lint:fix": "eslint --fix"
     },
     "dependencies": {},
     "devDependencies": {

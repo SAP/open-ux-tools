@@ -2,7 +2,8 @@ import LrepConnector from 'sap/ui/fl/LrepConnector';
 import FakeLrepConnector from 'sap/ui/fl/FakeLrepConnector';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
-import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
+import type { FlexChange } from './common';
+import { CHANGES_API_PATH, getFlexSettings } from './common';
 
 interface FetchedChanges {
     [key: string]: FlexChange;

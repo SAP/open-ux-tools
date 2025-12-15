@@ -36,7 +36,7 @@ jest.mock('../../src/utils/validators', () => ({
     validateAppSelection: jest.fn()
 }));
 describe('getPrompts', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mockGetSystemSelectionQuestions = require('@sap-ux/odata-service-inquirer').getSystemSelectionQuestions;
     const mockFetchAppList = helpers.fetchAppListForSelectedSystem as jest.Mock;
     const mockDownloadApp = downloadUtils.downloadApp as jest.Mock;
