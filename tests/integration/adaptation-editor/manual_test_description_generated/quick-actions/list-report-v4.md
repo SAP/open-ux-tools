@@ -7,7 +7,7 @@
 - [3. Add New Annotation File](#3-add-new-annotation-file)
 - [4. Enable Variant Management in Tables and Charts](#4-enable-variant-management-in-tables-and-charts)
 - [5. Change table actions](#5-change-table-actions)
-- [6: Add Custom Page Action to LR page](#6-add-custom-page-action-to-lr-page)
+- [6: Add Custom Page Action to LR page(manifest change)](#6-add-custom-page-action-to-lr-pagemanifest-change)
 - [7: Add Custom Table Action to LR page](#7-add-custom-table-action-to-lr-page)
 - [8. Enable/Disable Semantic Date Range in Filter Bar](#8-enabledisable-semantic-date-range-in-filter-bar)
 - [9. Enable Table Filtering for Page Variants](#9-enable-table-filtering-for-page-variants)
@@ -191,8 +191,8 @@
 
 ---
 
-<a id="6-add-custom-page-action-to-lr-page"></a>
-## 6: Add Custom Page Action to LR page
+<a id="6-add-custom-page-action-to-lr-pagemanifest-change"></a>
+## 6: Add Custom Page Action to LR page(manifest change)
 
 ### Steps
 
@@ -228,6 +228,7 @@
 
 7. Check control with label `Test Page Action` is visible in the `Running Application Preview`
 
+---
 
 <a id="7-add-custom-table-action-to-lr-page"></a>
 ## 7: Add Custom Table Action to LR page

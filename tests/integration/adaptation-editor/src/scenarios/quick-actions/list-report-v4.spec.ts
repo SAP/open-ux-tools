@@ -238,11 +238,11 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
     );
 
     test(
-        '6: Add Custom Page Action to LR page',
+        '6: Add Custom Page Action to LR page(manifest change)',
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.96.0'
+                description: '<1.120.0'
             }
         },
         async ({ page, previewFrame, ui5Version, projectCopy }) => {
