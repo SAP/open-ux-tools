@@ -159,7 +159,7 @@ export function isString(value: unknown): value is string {
  * @returns True if the base string starts with the substring
  */
 export function startsWith(base: string, sub: string): boolean {
-    return base.indexOf(sub) === 0;
+    return base.startsWith(sub);
 }
 
 /**
@@ -170,7 +170,7 @@ export function startsWith(base: string, sub: string): boolean {
  * @returns True if the string contains the substring
  */
 export function containsString(str: string, substring: string): boolean {
-    return str.indexOf(substring) >= 0;
+    return str.includes(substring);
 }
 
 // ------------------------------------------------------------------------------
@@ -483,9 +483,10 @@ export function getIdentifierPath(node: unknown): string {
     switch (astNode.type) {
         case 'Identifier':
             return (node as IdentifierNode).name;
-        case 'MemberExpression':
+        case 'MemberExpression': {
             const memberNode = node as MemberExpressionNode;
             return `${getIdentifierPath(memberNode.object)}.${getLiteralOrIdentifierName(memberNode.property)}`;
+        }
         case 'NewExpression':
             return getIdentifierPath((node as any).callee);
         case 'CallExpression':
@@ -532,7 +533,7 @@ export function resolveIdentifierPath(path: string, variables: Record<string, st
  */
 export function rememberInterestingVariable(node: unknown, name: string, variables: Record<string, string[]>): void {
     const declaratorNode = node as unknown as { id: { name: string } };
-    if (typeof variables[declaratorNode.id.name] === 'undefined') {
+    if (variables[declaratorNode.id.name] === undefined) {
         variables[declaratorNode.id.name] = [];
     }
     variables[declaratorNode.id.name].push(name);
@@ -579,7 +580,7 @@ export function createVariableDeclaratorProcessor(
  * @returns True if the identifier has an underscore prefix
  */
 export function hasUnderscore(identifier: string): boolean {
-    return identifier !== '_' && identifier[0] === '_';
+    return identifier !== '_' && identifier.startsWith('_');
 }
 
 /**

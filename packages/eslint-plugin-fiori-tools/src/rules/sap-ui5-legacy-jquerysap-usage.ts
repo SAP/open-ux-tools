@@ -7,6 +7,29 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: any, type: any): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a, obj): boolean {
+    return a.includes(obj);
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -26,16 +49,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Basic Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: any, type: any): boolean {
-            return node?.type === type;
-        }
 
         /**
          * Check if a node is an Identifier.
@@ -55,17 +68,6 @@ const rule: Rule.RuleModule = {
          */
         function isMember(node: any): boolean {
             return isType(node, 'MemberExpression');
-        }
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a, obj): boolean {
-            return a.includes(obj);
         }
 
         /**

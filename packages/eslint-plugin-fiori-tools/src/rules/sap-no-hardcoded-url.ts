@@ -4,6 +4,26 @@
 
 import type { Rule } from 'eslint';
 import { type ASTNode } from '../utils/helpers';
+
+// ------------------------------------------------------------------------------
+// Helper Functions
+// ------------------------------------------------------------------------------
+
+/**
+ * RegExp pattern for hardcoded URL detection.
+ */
+const HARDCODED_URL_PATTERN = /(http|https):\/\/.*/;
+
+/**
+ * Check if a string contains prohibited hardcoded URLs.
+ *
+ * @param name The string to check for URLs
+ * @returns RegExp exec result if URLs found, null otherwise
+ */
+function matchProhibited(name: string): RegExpExecArray | null {
+    return HARDCODED_URL_PATTERN.exec(name);
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -35,16 +55,6 @@ const rule: Rule.RuleModule = {
             'https://localhost/offline/'
         ];
 
-        /**
-         * Check if a string contains prohibited hardcoded URLs.
-         *
-         * @param name The string to check for URLs
-         * @returns RegExp match array if URLs found, null otherwise
-         */
-        function matchProhibited(name: string): RegExpMatchArray | null {
-            return name.match('(http|https)://.*');
-        }
-
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
@@ -58,7 +68,7 @@ const rule: Rule.RuleModule = {
                 if (typeof val === 'string') {
                     result = matchProhibited(val);
 
-                    if (result && !ALLOWED_DOMAINS.some((domain) => val.indexOf(domain) >= 0)) {
+                    if (result && !ALLOWED_DOMAINS.some((domain) => val.includes(domain))) {
                         context.report({ node: node, messageId: 'hardcodedUrl' });
                     }
                 }

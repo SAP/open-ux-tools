@@ -15,6 +15,48 @@ import {
 } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
+// Helper Functions
+// ------------------------------------------------------------------------------
+
+/**
+ * Check if a node represents the window object.
+ *
+ * @param node The node to check
+ * @returns True if the node represents the window object
+ */
+function isWindow(node: ASTNode | undefined): boolean {
+    return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
+}
+
+/**
+ * Get the rightmost method name from a call expression.
+ *
+ * @param node The call expression node
+ * @returns The rightmost method name
+ */
+function getRightestMethodName(node: ASTNode): string {
+    if (isMember((node as any).callee)) {
+        return (node as any).callee.property.name;
+    } else {
+        return (node as any).callee.name;
+    }
+}
+
+/**
+ * Check if a path represents direct body access.
+ *
+ * @param calleePathNonCmpt The callee path
+ * @param speciousObjectNonCmpt The specious object
+ * @returns True if this is direct body access
+ */
+function isDirectBodyAccess(calleePathNonCmpt: string, speciousObjectNonCmpt: string): boolean {
+    return (
+        (calleePathNonCmpt === 'document.body' || calleePathNonCmpt === 'window.document.body') &&
+        speciousObjectNonCmpt === 'body'
+    );
+}
+
+// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -42,7 +84,7 @@ const rule: Rule.RuleModule = {
                 'getElementsByTagName'
             ],
             FORBIDDEN_WINDOW_USAGES = ['innerWidth', 'innerHeight', 'getSelection'];
-        const FORBIDDEN_METHODS = FORBIDDEN_DOM_ACCESS.concat(FORBIDDEN_WINDOW_USAGES);
+        const FORBIDDEN_METHODS = new Set(FORBIDDEN_DOM_ACCESS.concat(FORBIDDEN_WINDOW_USAGES));
 
         const FORBIDDEN_DOCUMENT_OBJECT: string[] = [],
             FORBIDDEN_SCREEN_OBJECT: string[] = [],
@@ -96,16 +138,6 @@ const rule: Rule.RuleModule = {
         }
 
         /**
-         * Check if a node represents the window object.
-         *
-         * @param node The node to check
-         * @returns True if the node represents the window object
-         */
-        function isWindow(node: ASTNode | undefined): boolean {
-            return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
-        }
-
-        /**
          * Check if a node represents history object access.
          *
          * @param node The node to check
@@ -123,20 +155,6 @@ const rule: Rule.RuleModule = {
                 );
             }
             return false;
-        }
-
-        /**
-         * Get the rightmost method name from a call expression.
-         *
-         * @param node The call expression node
-         * @returns The rightmost method name
-         */
-        function getRightestMethodName(node: ASTNode): string {
-            if (isMember((node as any).callee)) {
-                return (node as any).callee.property.name;
-            } else {
-                return (node as any).callee.name;
-            }
         }
 
         /**
@@ -340,9 +358,10 @@ const rule: Rule.RuleModule = {
          * @param speciousObject The object being accessed
          */
         function handleDomAccessChecks(node: ASTNode, methodName: string, speciousObject: string): void {
-            if (speciousObject === 'document' && isDomAccess(methodName)) {
-                context.report({ node: node, messageId: 'domAccess' });
-            } else if (speciousObject !== 'document' && FORBIDDEN_DOCUMENT_OBJECT.includes(speciousObject)) {
+            if (
+                (speciousObject === 'document' && isDomAccess(methodName)) ||
+                (speciousObject !== 'document' && FORBIDDEN_DOCUMENT_OBJECT.includes(speciousObject))
+            ) {
                 context.report({ node: node, messageId: 'domAccess' });
             }
         }
@@ -369,7 +388,7 @@ const rule: Rule.RuleModule = {
          */
         function isBodyElementAccess(speciousObject: string, calleePath: string): boolean {
             return (
-                (speciousObject === 'body' && calleePath.indexOf('document.') !== -1) ||
+                (speciousObject === 'body' && calleePath.includes('document.')) ||
                 (speciousObject === 'body' &&
                     FORBIDDEN_DOCUMENT_OBJECT.includes(calleePath.slice(0, calleePath.lastIndexOf('.body')))) ||
                 FORBIDDEN_BODY_OBJECT.includes(speciousObject)
@@ -429,7 +448,7 @@ const rule: Rule.RuleModule = {
                 return;
             }
 
-            if (FORBIDDEN_METHODS.includes(methodName)) {
+            if (FORBIDDEN_METHODS.has(methodName)) {
                 handleForbiddenMethodCall(node, methodName);
             } else {
                 handleOtherMethodCall(node);
@@ -447,20 +466,6 @@ const rule: Rule.RuleModule = {
                 calleePathNonCmpt === 'window.screen' ||
                 calleePathNonCmpt === 'screen' ||
                 FORBIDDEN_SCREEN_OBJECT.includes(calleePathNonCmpt)
-            );
-        }
-
-        /**
-         * Check if a path represents direct body access.
-         *
-         * @param calleePathNonCmpt The callee path
-         * @param speciousObjectNonCmpt The specious object
-         * @returns True if this is direct body access
-         */
-        function isDirectBodyAccess(calleePathNonCmpt: string, speciousObjectNonCmpt: string): boolean {
-            return (
-                (calleePathNonCmpt === 'document.body' || calleePathNonCmpt === 'window.document.body') &&
-                speciousObjectNonCmpt === 'body'
             );
         }
 
@@ -492,20 +497,20 @@ const rule: Rule.RuleModule = {
 
             // Handle window property access
             if (
-                calleePathNonCmpt === 'window' &&
-                (node as any).property &&
-                'name' in (node as any).property &&
-                isWindowUsage((node as any).property.name)
+                (calleePathNonCmpt === 'window' &&
+                    (node as any).property &&
+                    'name' in (node as any).property &&
+                    isWindowUsage((node as any).property.name)) ||
+                isScreenAccess(calleePathNonCmpt)
             ) {
-                context.report({ node: node, messageId: 'windowUsages' });
-            } else if (isScreenAccess(calleePathNonCmpt)) {
                 context.report({ node: node, messageId: 'windowUsages' });
             }
 
             // Handle body access
-            if (isDirectBodyAccess(calleePathNonCmpt, speciousObjectNonCmpt)) {
-                context.report({ node: node, messageId: 'windowUsages' });
-            } else if (isIndirectBodyAccess(calleePathNonCmpt, speciousObjectNonCmpt)) {
+            if (
+                isDirectBodyAccess(calleePathNonCmpt, speciousObjectNonCmpt) ||
+                isIndirectBodyAccess(calleePathNonCmpt, speciousObjectNonCmpt)
+            ) {
                 context.report({ node: node, messageId: 'windowUsages' });
             }
         }
@@ -522,7 +527,7 @@ const rule: Rule.RuleModule = {
                 processHistory(node);
             },
             'MemberExpression': function (node): void {
-                if (isCall(node.parent) && !(node as any).computed) {
+                if (isCall(node.parent) && !node.computed) {
                     handleCallExpressionMember(node);
                 } else {
                     handleNonCallExpressionMember(node);

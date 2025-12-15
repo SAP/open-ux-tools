@@ -6,6 +6,21 @@ import type { Rule, Scope } from 'eslint';
 import { type ASTNode } from '../utils/helpers';
 
 //------------------------------------------------------------------------------
+// Helper Functions
+//------------------------------------------------------------------------------
+
+/**
+ * Check if an array contains a specific item.
+ *
+ * @param array The array to search in
+ * @param item The item to search for
+ * @returns True if the array contains the item, false otherwise
+ */
+function contains(array: string[], item: string): boolean {
+    return array.includes(item);
+}
+
+//------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
 
@@ -26,21 +41,6 @@ const rule: Rule.RuleModule = {
 
     create(context: Rule.RuleContext) {
         const ALLOWED_VARIABLES = ['undefined', 'NaN', 'arguments', 'PDFJS', 'console', 'Infinity'];
-
-        //--------------------------------------------------------------------------
-        // Helpers
-        //--------------------------------------------------------------------------
-
-        /**
-         * Check if an array contains a specific item.
-         *
-         * @param array The array to search in
-         * @param item The item to search for
-         * @returns True if the array contains the item, false otherwise
-         */
-        function contains(array: string[], item: string): boolean {
-            return array.includes(item);
-        }
 
         //--------------------------------------------------------------------------
         // Public

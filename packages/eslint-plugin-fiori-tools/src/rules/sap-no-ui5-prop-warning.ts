@@ -9,6 +9,17 @@ import type { Rule } from 'eslint';
 
 // ------------------------------------------------------------------------------
 
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a, obj): boolean {
+    return a.includes(obj);
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -25,20 +36,6 @@ const rule: Rule.RuleModule = {
     create(context: Rule.RuleContext) {
         // variables should be defined here
         const ODATA_MODEL_V2_MEMBERS = ['oData'];
-
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a, obj): boolean {
-            return a.includes(obj);
-        }
 
         // --------------------------------------------------------------------------
         // Public

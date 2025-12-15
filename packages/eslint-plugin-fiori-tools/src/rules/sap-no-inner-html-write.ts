@@ -22,6 +22,33 @@ import {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a left-hand side expression is interesting for analysis.
+ *
+ * @param left The left-hand side expression to check
+ * @returns True if the expression is interesting for analysis
+ */
+function isInteresting(left: ASTNode): boolean {
+    return isMember(left);
+}
+
+/**
+ * Check if a property access is valid (not innerHTML).
+ *
+ * @param property The property node to validate
+ * @returns True if the property access is valid
+ */
+function isValid(property: ASTNode): boolean {
+    // anything is valid, except 'innerHTML'
+    if (isIdentifier(property)) {
+        return (property as IdentifierNode).name !== 'innerHTML';
+    } else if (isLiteral(property)) {
+        return (property as LiteralNode).value !== 'innerHTML';
+    }
+    return true;
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -36,36 +63,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-
-        /**
-         * Check if a left-hand side expression is interesting for analysis.
-         *
-         * @param left The left-hand side expression to check
-         * @returns True if the expression is interesting for analysis
-         */
-        function isInteresting(left: ASTNode): boolean {
-            return isMember(left);
-        }
-
-        /**
-         * Check if a property access is valid (not innerHTML).
-         *
-         * @param property The property node to validate
-         * @returns True if the property access is valid
-         */
-        function isValid(property: ASTNode): boolean {
-            // anything is valid, except 'innerHTML'
-            if (isIdentifier(property)) {
-                return (property as IdentifierNode).name !== 'innerHTML';
-            } else if (isLiteral(property)) {
-                return (property as LiteralNode).value !== 'innerHTML';
-            }
-            return true;
-        }
-
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------

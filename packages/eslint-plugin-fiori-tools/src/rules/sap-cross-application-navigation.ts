@@ -4,6 +4,38 @@
 
 import type { Rule } from 'eslint';
 import { type ASTNode } from '../utils/helpers';
+
+// ------------------------------------------------------------------------------
+// Helper Functions
+// ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: ASTNode | undefined, type: string): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if a string ends with a specific suffix.
+ *
+ * @param string The string to check
+ * @param suffix The suffix to look for
+ * @returns True if the string ends with the suffix
+ */
+function endsWith(string: string, suffix: string): boolean {
+    return (
+        typeof string === 'string' &&
+        typeof suffix === 'string' &&
+        string.includes(suffix) &&
+        string.indexOf(suffix) === string.length - suffix.length
+    );
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -23,16 +55,6 @@ const rule: Rule.RuleModule = {
     create(context: Rule.RuleContext) {
         const VARIABLES: Record<string, boolean> = {};
 
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: ASTNode | undefined, type: string): boolean {
-            return node?.type === type;
-        }
         /**
          * Check if a node is an ObjectExpression.
          *
@@ -98,21 +120,6 @@ const rule: Rule.RuleModule = {
         }
 
         /**
-         * Check if a string ends with a specific suffix.
-         *
-         * @param string The string to check
-         * @param suffix The suffix to look for
-         * @returns True if the string ends with the suffix
-         */
-        function endsWith(string: string, suffix: string): boolean {
-            return (
-                typeof string === 'string' &&
-                typeof suffix === 'string' &&
-                string.indexOf(suffix, string.length - suffix.length) !== -1
-            );
-        }
-
-        /**
          * Get the identifier path from a node.
          *
          * @param node The AST node to extract path from
@@ -158,8 +165,8 @@ const rule: Rule.RuleModule = {
                 // iterate properties
                 for (const property of (node as any).properties) {
                     // return property value if property key matches given key
-                    if (isProperty(property) && getName((property as any).key) === key) {
-                        return (property as any).value;
+                    if (isProperty(property) && getName(property.key) === key) {
+                        return property.value;
                     }
                 }
             }
@@ -251,17 +258,17 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'VariableDeclarator': function (node): void {
-                if (isInterestingAssignment((node as any).init) && (node as any).id.type === 'Identifier') {
-                    VARIABLES[(node as any).id.name] = true;
+            'VariableDeclarator': function (node: any): void {
+                if (isInterestingAssignment(node.init) && node.id.type === 'Identifier') {
+                    VARIABLES[node.id.name] = true;
                 }
             },
-            'AssignmentExpression': function (node): void {
-                if (isInterestingAssignment((node as any).right) && (node as any).left.type === 'Identifier') {
-                    VARIABLES[(node as any).left.name] = true;
+            'AssignmentExpression': function (node: any): void {
+                if (isInterestingAssignment(node.right) && node.left.type === 'Identifier') {
+                    VARIABLES[node.left.name] = true;
                 }
             },
-            'CallExpression': function (node): void {
+            'CallExpression': function (node: any): void {
                 if (isInterestingCall(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'staticNavigationTargets' });
                 }

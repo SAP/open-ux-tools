@@ -8,6 +8,18 @@ import { type ASTNode } from '../utils/helpers';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: ASTNode | undefined, type: string): boolean {
+    return node?.type === type;
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -56,17 +68,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: ASTNode | undefined, type: string): boolean {
-            return node?.type === type;
-        }
         /**
          * Check if a node is an Identifier.
          *
@@ -194,20 +195,14 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'VariableDeclarator': function (node): boolean {
-                return (
-                    rememberWindow((node as any).id, (node as any).init) ||
-                    rememberNavigator((node as any).id, (node as any).init)
-                );
+            'VariableDeclarator': function (node: any): boolean {
+                return rememberWindow(node.id, node.init) || rememberNavigator(node.id, node.init);
             },
-            'AssignmentExpression': function (node): boolean {
-                return (
-                    rememberWindow((node as any).left, (node as any).right) ||
-                    rememberNavigator((node as any).left, (node as any).right)
-                );
+            'AssignmentExpression': function (node: any): boolean {
+                return rememberWindow(node.left, node.right) || rememberNavigator(node.left, node.right);
             },
-            'MemberExpression': function (node): void {
-                if (isNavigatorObject((node as any).object)) {
+            'MemberExpression': function (node: any): void {
+                if (isNavigatorObject(node.object)) {
                     if (isCall(node.parent)) {
                         const methodName = getRightestMethodName(node.parent);
                         if (typeof methodName === 'string' && FORBIDDEN_METHODS.includes(methodName)) {

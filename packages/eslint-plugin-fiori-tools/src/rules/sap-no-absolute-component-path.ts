@@ -6,6 +6,21 @@ import type { Rule } from 'eslint';
 import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
+// Helper Functions
+// ------------------------------------------------------------------------------
+
+/**
+ * Check if a string ends with a specific suffix.
+ *
+ * @param string The string to check
+ * @param suffix The suffix to look for
+ * @returns True if the string ends with the suffix
+ */
+function endsWith(string: string, suffix: string): boolean {
+    return string.endsWith(suffix);
+}
+
+// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -87,9 +102,9 @@ const rule: Rule.RuleModule = {
                         propertyList.hasOwnProperty(key) &&
                         (property = propertyList[key]) &&
                         property.type === T_PROPERTY &&
-                        getLiteralOrIdentifiertName((property as any).key) === propertyName
+                        getLiteralOrIdentifiertName(property.key) === propertyName
                     ) {
-                        return (property as any).value;
+                        return property.value;
                     }
                 }
             }
@@ -119,24 +134,13 @@ const rule: Rule.RuleModule = {
                         if (
                             includesElements.hasOwnProperty(key) &&
                             (element = includesElements[key]) &&
-                            getLiteralOrIdentifiertName(element).indexOf('/') === 0
+                            getLiteralOrIdentifiertName(element).startsWith('/')
                         ) {
                             context.report({ node: node, messageId: 'absolutePath' });
                         }
                     }
                 }
             }
-        }
-
-        /**
-         * Check if a string ends with a specific suffix.
-         *
-         * @param string The string to check
-         * @param suffix The suffix to look for
-         * @returns True if the string ends with the suffix
-         */
-        function endsWith(string: string, suffix: string): boolean {
-            return string.indexOf(suffix, string.length - suffix.length) !== -1;
         }
 
         /**

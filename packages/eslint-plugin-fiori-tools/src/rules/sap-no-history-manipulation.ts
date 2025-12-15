@@ -16,11 +16,28 @@ import {
 } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
+// Helper Functions
 // ------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
+
+/**
+ * Check if a node represents a condition statement.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents a condition statement
+ */
+function isCondition(node: any): boolean {
+    return isType(node, 'IfStatement') || isType(node, 'ConditionalExpression');
+}
+
+/**
+ * Check if a node represents a unary expression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents a unary expression
+ */
+function isUnary(node: any): boolean {
+    return isType(node, 'UnaryExpression');
+}
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -42,9 +59,6 @@ const rule: Rule.RuleModule = {
     create(context: Rule.RuleContext) {
         const WINDOW_OBJECTS: string[] = [];
         const HISTORY_OBJECTS: string[] = [];
-        //    const INTERESTING_HISTORY_METHODS = [
-        //            "forward", "back", "go"
-        //    ];
 
         // Initialize factory functions
         const isWindowObject = createIsWindowObject(WINDOW_OBJECTS);
@@ -56,25 +70,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helper Functions
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node represents a condition statement.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents a condition statement
-         */
-        function isCondition(node: any): boolean {
-            return isType(node, 'IfStatement') || isType(node, 'ConditionalExpression');
-        }
-        /**
-         * Check if a node represents a unary expression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents a unary expression
-         */
-        function isUnary(node: any): boolean {
-            return isType(node, 'UnaryExpression');
-        }
-
         /**
          * Check if a node is within a conditional statement up to a maximum depth.
          *
@@ -133,9 +128,10 @@ const rule: Rule.RuleModule = {
                     return false;
                 case 'back':
                     return isInCondition(node, 3);
-                case 'go':
+                case 'go': {
                     const args = node.arguments;
                     return args.length === 1 && isMinusOne(args[0]) && isInCondition(node, 3);
+                }
                 default:
             }
             return true;

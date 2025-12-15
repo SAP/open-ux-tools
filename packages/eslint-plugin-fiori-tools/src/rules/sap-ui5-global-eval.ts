@@ -8,6 +8,29 @@ import { type ASTNode } from '../utils/helpers';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: ASTNode | undefined, type: string): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a: string[], obj: string): boolean {
+    return a.includes(obj);
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -27,16 +50,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Basic Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: ASTNode | undefined, type: string): boolean {
-            return node?.type === type;
-        }
 
         /**
          * Check if a node is an Identifier.
@@ -56,17 +69,6 @@ const rule: Rule.RuleModule = {
          */
         function isMember(node: ASTNode | undefined): boolean {
             return isType(node, 'MemberExpression');
-        }
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a: string[], obj: string): boolean {
-            return a.includes(obj);
         }
 
         /**

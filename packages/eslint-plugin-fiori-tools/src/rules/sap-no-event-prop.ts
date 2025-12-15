@@ -5,13 +5,21 @@
 import type { Rule } from 'eslint';
 
 // THIS RULE IS DEPRECATED --> sap-no-ui5base-prop
-// ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
+// Helper Functions
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a: string[], obj: string): boolean {
+    return a.includes(obj);
+}
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -32,20 +40,6 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         const PRIVATE_MEMBERS = ['oSource', 'mParameters', 'sId'];
-
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a, obj): boolean {
-            return a.includes(obj);
-        }
 
         // --------------------------------------------------------------------------
         // Public

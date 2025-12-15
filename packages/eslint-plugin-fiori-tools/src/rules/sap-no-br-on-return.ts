@@ -16,11 +16,20 @@ import {
 } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
+// Helper Functions
 // ------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
+
+/**
+ * Check if a queryCommandSupported call is valid (not checking for insertBrOnReturn).
+ *
+ * @param node The AST node to validate
+ * @returns True if the queryCommandSupported call is valid
+ */
+function isValid(node: ASTNode): boolean {
+    return (
+        (node as any).parent.arguments.length === 0 || (node as any).parent.arguments[0].value !== 'insertBrOnReturn'
+    );
+}
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -66,19 +75,6 @@ const rule: Rule.RuleModule = {
                 isDocumentObject((node as any).object) &&
                 ((isIdentifier((node as any).property) && (node as any).property.name === 'queryCommandSupported') ||
                     (isLiteral((node as any).property) && (node as any).property.value === 'queryCommandSupported'))
-            );
-        }
-
-        /**
-         * Check if a queryCommandSupported call is valid (not checking for insertBrOnReturn).
-         *
-         * @param node The AST node to validate
-         * @returns True if the queryCommandSupported call is valid
-         */
-        function isValid(node: ASTNode): boolean {
-            return (
-                (node as any).parent.arguments.length === 0 ||
-                (node as any).parent.arguments[0].value !== 'insertBrOnReturn'
             );
         }
 

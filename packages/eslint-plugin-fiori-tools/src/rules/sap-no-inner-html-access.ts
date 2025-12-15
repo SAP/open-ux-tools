@@ -15,6 +15,23 @@ import { type ASTNode, type IdentifierNode, type LiteralNode, isIdentifier, isLi
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a property access is valid (not innerHTML).
+ *
+ * @param property The property node to validate
+ * @returns True if the property access is valid
+ */
+function isValid(property: ASTNode): boolean {
+    // anything is valid, except 'innerHTML'
+    if (isIdentifier(property)) {
+        return (property as IdentifierNode).name !== 'innerHTML';
+    } else if (isLiteral(property)) {
+        return (property as LiteralNode).value !== 'innerHTML';
+    }
+    return true;
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -29,26 +46,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-
-        /**
-         * Check if a property access is valid (not innerHTML).
-         *
-         * @param property The property node to validate
-         * @returns True if the property access is valid
-         */
-        function isValid(property: ASTNode): boolean {
-            // anything is valid, except 'innerHTML'
-            if (isIdentifier(property)) {
-                return (property as IdentifierNode).name !== 'innerHTML';
-            } else if (isLiteral(property)) {
-                return (property as LiteralNode).value !== 'innerHTML';
-            }
-            return true;
-        }
-
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------

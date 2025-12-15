@@ -76,11 +76,10 @@ const rule: Rule.RuleModule = {
                 const speciousObject = isForbiddenObviousApi(calleePath);
 
                 if (
-                    (calleePath === 'sessionStorage' || calleePath === 'window.sessionStorage') &&
-                    speciousObject === 'sessionStorage'
+                    ((calleePath === 'sessionStorage' || calleePath === 'window.sessionStorage') &&
+                        speciousObject === 'sessionStorage') ||
+                    contains(FORBIDDEN_STORAGE_OBJECT, speciousObject)
                 ) {
-                    context.report({ node: node, messageId: 'sessionStorageUsage' });
-                } else if (contains(FORBIDDEN_STORAGE_OBJECT, speciousObject)) {
                     context.report({ node: node, messageId: 'sessionStorageUsage' });
                 }
             }

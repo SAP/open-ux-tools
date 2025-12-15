@@ -5,11 +5,40 @@
 import type { Rule } from 'eslint';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
+// Helper Functions
 // ------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: any, type: any): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a: any[], obj: any): boolean {
+    return a.includes(obj);
+}
+
+/**
+ * Check if a node is the target of an assignment expression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is the target of an assignment expression
+ */
+function isAssignTarget(node: any): boolean {
+    return node?.parent.type === 'AssignmentExpression' && node.parent.left === node;
+}
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -58,17 +87,6 @@ const rule: Rule.RuleModule = {
         // Basic Helpers
         // --------------------------------------------------------------------------
         /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: any, type: any): boolean {
-            return node?.type === type;
-        }
-
-        /**
          * Check if a node is an Identifier.
          *
          * @param node The AST node to check
@@ -86,17 +104,6 @@ const rule: Rule.RuleModule = {
          */
         function isMember(node: any): boolean {
             return isType(node, 'MemberExpression');
-        }
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a: any[], obj: any): boolean {
-            return a.includes(obj);
         }
 
         /**
@@ -152,27 +159,16 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
-         * Check if a node is the target of an assignment expression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is the target of an assignment expression
-         */
-        function isAssignTarget(node: any): boolean {
-            return node?.parent.type === 'AssignmentExpression' && node.parent.left === node;
-        }
-
-        /**
          * Check if a node represents a prohibited event usage.
          *
          * @param node The AST node to check
          */
         function processMemberExpression(node: any): void {
             if (isAssignTarget(node) && isIdentifier(node.property)) {
-                if (isWindowObject(node.object) && contains(FORBIDDEN_GLOBAL_EVENT, node.property.name)) {
-                    context.report({ node: node, messageId: 'globalEvent' });
-                } else if (
-                    isEventObject(node.object) &&
-                    (node.property.name === 'returnValue' || node.property.name === 'cancelBubble')
+                if (
+                    (isWindowObject(node.object) && contains(FORBIDDEN_GLOBAL_EVENT, node.property.name)) ||
+                    (isEventObject(node.object) &&
+                        (node.property.name === 'returnValue' || node.property.name === 'cancelBubble'))
                 ) {
                     context.report({ node: node, messageId: 'globalEvent' });
                 }

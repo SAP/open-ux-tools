@@ -7,6 +7,20 @@ import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isLiteral, isProperty, isMember, isObject, contains } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
+// Helpers
+// ------------------------------------------------------------------------------
+
+/**
+ * Check if a value is a number.
+ *
+ * @param i The value to check
+ * @returns True if the value is a number
+ */
+function isNumber(i: unknown): i is number {
+    return Number(i) === i && i % 1 === 0;
+}
+
+// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -34,16 +48,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         /**
-         * Check if a value is a number.
-         *
-         * @param i The value to check
-         * @returns True if the value is a number
-         */
-        function isNumber(i: unknown): i is number {
-            return Number(i) === i && i % 1 === 0;
-        }
-
-        /**
          * Check if a node value is in the performance range.
          *
          * @param node The node to check
@@ -62,7 +66,7 @@ const rule: Rule.RuleModule = {
         function isInteresting(node: ASTNode): boolean {
             const callee = (node as any).callee;
             if (isMember(callee)) {
-                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, (callee.property as any).name)) {
+                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, callee.property.name)) {
                     return true;
                 }
             }

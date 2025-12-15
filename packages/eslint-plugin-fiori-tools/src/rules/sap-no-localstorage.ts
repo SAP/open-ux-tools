@@ -78,11 +78,10 @@ const rule: Rule.RuleModule = {
                 const speciousObject = isForbiddenObviousApi(calleePath);
 
                 if (
-                    (calleePath === 'localStorage' || calleePath === 'window.localStorage') &&
-                    speciousObject === 'localStorage'
+                    ((calleePath === 'localStorage' || calleePath === 'window.localStorage') &&
+                        speciousObject === 'localStorage') ||
+                    contains(FORBIDDEN_STORAGE_OBJECT, speciousObject)
                 ) {
-                    context.report({ node: node, messageId: 'localStorageUsage' });
-                } else if (contains(FORBIDDEN_STORAGE_OBJECT, speciousObject)) {
                     context.report({ node: node, messageId: 'localStorageUsage' });
                 }
             }

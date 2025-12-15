@@ -14,6 +14,59 @@ import { contains } from '../utils/helpers';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Remove duplicate elements from an array.
+ *
+ * @param array The array to remove duplicates from
+ * @returns Array with duplicates removed
+ */
+function uniquifyArray<T>(array: T[]): T[] {
+    const a = array.concat();
+    for (let i = 0; i < a.length; ++i) {
+        for (let j = i + 1; j < a.length; ) {
+            if (a[i] === a[j]) {
+                a.splice(j, 1);
+            } else {
+                ++j;
+            }
+        }
+    }
+    return a;
+}
+
+/**
+ * Calculate the object name from a member expression object.
+ *
+ * @param memberExpressionObject The member expression object to analyze
+ * @returns The calculated object name
+ */
+function calculateObjectName(memberExpressionObject: any): string {
+    let objectName = '';
+    if (memberExpressionObject.type === 'MemberExpression') {
+        objectName = memberExpressionObject.property.name;
+    } else if (memberExpressionObject.type === 'Identifier') {
+        objectName = memberExpressionObject.name;
+    }
+    return objectName;
+}
+
+/**
+ * Check if ancestors array contains a NewExpression and return its position.
+ *
+ * @param ancestors The array of ancestor nodes to check
+ * @returns The position of the NewExpression or -1 if not found
+ */
+function checkIfAncestorsContainsNewExpression(ancestors): number {
+    const ancestorsLength = ancestors.length;
+    for (let i = 0; i < ancestorsLength; i++) {
+        if (ancestors[i].type === 'NewExpression') {
+            return i;
+        }
+    }
+    return -1;
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -44,24 +97,6 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         const sourceCode = context.sourceCode ?? context.getSourceCode();
-
-        /**
-         * Remove duplicate elements from an array.
-         *
-         * @param array The array to remove duplicates from
-         * @returns Array with duplicates removed
-         */
-        function uniquifyArray<T>(array: T[]): T[] {
-            const a = array.concat();
-            for (let i = 0; i < a.length; ++i) {
-                for (let j = i + 1; j < a.length; ++j) {
-                    if (a[i] === a[j]) {
-                        a.splice(j--, 1);
-                    }
-                }
-            }
-            return a;
-        }
         const customNS = context.options[0]?.ns ? context.options[0].ns : [];
         const configuration = {
             'ns': uniquifyArray(
@@ -123,44 +158,12 @@ const rule: Rule.RuleModule = {
          */
         function checkIfNotAllowedMethod(property: string): boolean {
             if (
-                typeof property !== 'undefined' &&
-                (contains(CHECKED_METHODS, property) || property.indexOf('get') === 0 || property.indexOf('set') === 0)
+                property !== undefined &&
+                (contains(CHECKED_METHODS, property) || property.startsWith('get') || property.startsWith('set'))
             ) {
                 return true;
             }
             return false;
-        }
-
-        /**
-         * Calculate the object name from a member expression object.
-         *
-         * @param memberExpressionObject The member expression object to analyze
-         * @returns The calculated object name
-         */
-        function calculateObjectName(memberExpressionObject: any): string {
-            let objectName = '';
-            if (memberExpressionObject.type === 'MemberExpression') {
-                objectName = memberExpressionObject.property.name;
-            } else if (memberExpressionObject.type === 'Identifier') {
-                objectName = memberExpressionObject.name;
-            }
-            return objectName;
-        }
-
-        /**
-         * Check if ancestors array contains a NewExpression and return its position.
-         *
-         * @param ancestors The array of ancestor nodes to check
-         * @returns The position of the NewExpression or -1 if not found
-         */
-        function checkIfAncestorsContainsNewExpression(ancestors): number {
-            const ancestorsLength = ancestors.length;
-            for (let i = 0; i < ancestorsLength; i++) {
-                if (ancestors[i].type === 'NewExpression') {
-                    return i;
-                }
-            }
-            return -1;
         }
 
         /**
@@ -170,8 +173,8 @@ const rule: Rule.RuleModule = {
          * @returns True if the namespace should be reported for violations
          */
         function checkIfReportedNamespace(namespace): boolean {
-            for (let i = 0; i < configuration.ns.length; i++) {
-                if (namespace.indexOf(configuration.ns[i] + '.') === 0) {
+            for (const ns of configuration.ns) {
+                if (namespace.startsWith(ns + '.')) {
                     return true;
                 }
             }

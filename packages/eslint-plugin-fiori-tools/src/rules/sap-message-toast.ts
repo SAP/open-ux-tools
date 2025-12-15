@@ -24,6 +24,23 @@ const INTERESTING_PATH = {
 };
 
 // ------------------------------------------------------------------------------
+// Helper Functions
+// ------------------------------------------------------------------------------
+
+/**
+ * Extract numeric value from EM unit string.
+ *
+ * @param value The string value to parse (e.g., "2em")
+ * @returns The numeric value extracted from the EM unit string
+ */
+function getEMValue(value: string): number {
+    if (endsWith(value, 'em')) {
+        return Number(value.replace('em', ''));
+    }
+    return 0;
+}
+
+// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -50,19 +67,6 @@ const rule: Rule.RuleModule = {
         const DURATION_MIN = 3000;
         const WIDTH_MAX = 35;
         const POSITION_DEFAULT = 'center bottom';
-
-        /**
-         * Extract numeric value from EM unit string.
-         *
-         * @param value The string value to parse (e.g., "2em")
-         * @returns The numeric value extracted from the EM unit string
-         */
-        function getEMValue(value: string): number {
-            if (endsWith(value, 'em')) {
-                return Number(value.replace('em', ''));
-            }
-            return 0;
-        }
 
         /**
          * Check if a path matches interesting MessageToast API calls.

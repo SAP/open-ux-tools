@@ -22,6 +22,37 @@ import {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Remove duplicate elements from an array.
+ *
+ * @param array The array to remove duplicates from
+ * @returns Array with duplicates removed
+ */
+function uniquifyArray<T>(array: T[]): T[] {
+    const a = array.concat();
+    for (let i = 0; i < a.length; ++i) {
+        for (let j = i + 1; j < a.length; ) {
+            if (a[i] === a[j]) {
+                a.splice(j, 1);
+            } else {
+                ++j;
+            }
+        }
+    }
+    return a;
+}
+
+/**
+ * Check if an identifier is a special case for member expressions.
+ *
+ * @param identifier The identifier string to check
+ * @returns True if the identifier is a special case for member expressions
+ */
+function isSpecialCaseIdentifierForMemberExpression(identifier: string): boolean {
+    return identifier === '__proto__';
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -53,23 +84,6 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         const sourceCode = context.sourceCode ?? context.getSourceCode();
-        /**
-         * Remove duplicate elements from an array.
-         *
-         * @param array The array to remove duplicates from
-         * @returns Array with duplicates removed
-         */
-        function uniquifyArray<T>(array: T[]): T[] {
-            const a = array.concat();
-            for (let i = 0; i < a.length; ++i) {
-                for (let j = i + 1; j < a.length; ++j) {
-                    if (a[i] === a[j]) {
-                        a.splice(j--, 1);
-                    }
-                }
-            }
-            return a;
-        }
         const customNS = (context.options[0]?.ns as string[] | undefined) ?? [];
         const configuration = {
             'ns': uniquifyArray(
@@ -151,16 +165,6 @@ const rule: Rule.RuleModule = {
         // Create the variable declarator processor using the shared utility
         const processVariableDeclarator = createVariableDeclaratorProcessor(VARIABLES, isinterestingPath);
 
-        /**
-         * Check if an identifier is a special case for member expressions.
-         *
-         * @param identifier The identifier string to check
-         * @returns True if the identifier is a special case for member expressions
-         */
-        function isSpecialCaseIdentifierForMemberExpression(identifier: string): boolean {
-            return identifier === '__proto__';
-        }
-
         return {
             'VariableDeclarator': processVariableDeclarator,
             'MemberExpression'(node: ASTNode): void {
@@ -170,7 +174,7 @@ const rule: Rule.RuleModule = {
                 const identifier = (node as any).property.name;
 
                 if (
-                    typeof identifier !== 'undefined' &&
+                    identifier !== undefined &&
                     // && hasUnderscore(identifier)
                     !isSpecialCaseIdentifierForMemberExpression(identifier)
                 ) {
@@ -181,7 +185,7 @@ const rule: Rule.RuleModule = {
                     switch (parent.type) {
                         case 'ExpressionStatement':
                         case 'AssignmentExpression':
-                        case 'CallExpression':
+                        case 'CallExpression': {
                             let path = getIdentifierPath(node);
                             path = resolveIdentifierPath(path, VARIABLES);
                             if (
@@ -193,6 +197,7 @@ const rule: Rule.RuleModule = {
                                 context.report({ node: node, messageId: 'privateProperty' });
                             }
                             break;
+                        }
                         default:
                     }
                 }

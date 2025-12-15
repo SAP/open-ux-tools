@@ -5,12 +5,24 @@
 import type { Rule } from 'eslint';
 
 // ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
+// Helper Functions
 // ------------------------------------------------------------------------------
 
-// ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
+/**
+ * RegExp pattern for hardcoded color detection.
+ * Matches #RRGGBB or #RGB color patterns.
+ */
+const HARDCODED_COLOR_PATTERN = /#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})[^\w]/;
+
+/**
+ * Check if a name matches prohibited hardcoded color patterns.
+ *
+ * @param name The name string to check for color patterns
+ * @returns RegExp exec result if color patterns found, null otherwise
+ */
+function matchProhibited(name: string): RegExpExecArray | null {
+    return HARDCODED_COLOR_PATTERN.exec(name);
+}
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -29,27 +41,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        // variables should be defined here
-
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-
-        /*
-         * What we will be looking for:
-         *      color: #FFF,
-         *      color: #ABABAB
-         */
-        /**
-         * Check if a name matches prohibited hardcoded color patterns.
-         *
-         * @param name The name string to check for color patterns
-         * @returns RegExp match array if color patterns found, null otherwise
-         */
-        function matchProhibited(name: string): RegExpMatchArray | null {
-            return name.match('#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})[^\\w]');
-        }
-
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------

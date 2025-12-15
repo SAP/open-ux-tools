@@ -3,14 +3,32 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
+// Helper Functions
 // ------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: any, type: string): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a: string[], obj: string): boolean {
+    return a.includes(obj);
+}
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -35,17 +53,6 @@ const rule: Rule.RuleModule = {
         // Basic Helpers
         // --------------------------------------------------------------------------
         /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: any, type: string): boolean {
-            return node?.type === type;
-        }
-
-        /**
          * Check if a node is an Identifier.
          *
          * @param node The AST node to check
@@ -63,17 +70,6 @@ const rule: Rule.RuleModule = {
          */
         function isMember(node: any): boolean {
             return isType(node, 'MemberExpression');
-        }
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a: string[], obj: string): boolean {
-            return a.includes(obj);
         }
 
         /**
@@ -120,19 +116,15 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator'(node: ASTNode): boolean {
-                return rememberWindow((node as any).id, (node as any).init);
+            'VariableDeclarator'(node: any): boolean {
+                return rememberWindow(node.id, node.init);
             },
-            'AssignmentExpression'(node: ASTNode): boolean {
+            'AssignmentExpression'(node: any): boolean {
                 // check if anything is assigned to a window property
-                if (
-                    isMember((node as any).left) &&
-                    'object' in (node as any).left &&
-                    isWindowObject((node as any).left.object)
-                ) {
+                if (isMember(node.left) && 'object' in node.left && isWindowObject(node.left.object)) {
                     context.report({ node: node, messageId: 'globalDefine' });
                 }
-                return rememberWindow((node as any).left, (node as any).right);
+                return rememberWindow(node.left, node.right);
             }
         };
     }
