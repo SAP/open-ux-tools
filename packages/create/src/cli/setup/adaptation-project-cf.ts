@@ -50,9 +50,14 @@ async function setupAdaptationProjectCF(basePath: string): Promise<void> {
     const logger = getLogger();
     await validateBasePath(basePath);
 
-    logger.info(`Setting up CF adaptation project at: ${basePath}`);
-
     try {
+        // Step 0: Verify user is logged in to Cloud Foundry
+        try {
+            execSync('cf target', { stdio: 'pipe' });
+        } catch (error) {
+            throw new Error('You are not logged in to Cloud Foundry. Please run "cf login" first.');
+        }
+
         // Step 1: Verify this is an adaptation project
         const manifestVariantPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
         if (!existsSync(manifestVariantPath)) {
@@ -160,7 +165,9 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
             return;
         }
 
-        const ui5AppInfo = JSON.parse(readFileSync(ui5AppInfoPath, 'utf-8')) as CfUi5AppInfo;
+        const ui5AppInfoData = JSON.parse(readFileSync(ui5AppInfoPath, 'utf-8'));
+        const ui5AppInfo = ui5AppInfoData[Object.keys(ui5AppInfoData)[0]] as CfUi5AppInfo;
+
         const reusableLibs =
             ui5AppInfo.asyncHints?.libs?.filter(
                 (lib) => lib.html5AppName && lib.url && typeof lib.url === 'object' && lib.url.url !== undefined
@@ -173,16 +180,26 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
             return;
         }
 
-        const paths = reusableLibs.map((lib) => {
+        const paths = reusableLibs.flatMap((lib) => {
             const libName = String(lib.name);
             const html5AppName = String(lib.html5AppName);
             const resourcePath = '/resources/' + libName.replace(/\./g, '/');
 
-            return {
-                path: resourcePath,
-                src: `./.reuse/${html5AppName}`,
-                fallthrough: false
-            };
+            const urlPath =
+                lib.url && typeof lib.url === 'object' && lib.url.url ? lib.url.url.split('/~')[0] : '/' + html5AppName;
+
+            return [
+                {
+                    path: resourcePath,
+                    src: `./.reuse/${html5AppName}`,
+                    fallthrough: false
+                },
+                {
+                    path: urlPath,
+                    src: `./.reuse/${html5AppName}`,
+                    fallthrough: false
+                }
+            ];
         });
 
         // Add the serve-static-middleware configuration
