@@ -3,11 +3,10 @@ import type { QfaJsonConfig, QuickDeployedAppConfig, AppInfo } from '../../src/a
 import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
 import { downloadApp, hasQfaJson } from '../../src/utils/download-utils';
-import type { AppIndex } from '@sap-ux/axios-extension';
+import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
 import { ErrorHandler, ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { HELP_NODES } from '@sap-ux/guided-answers-helper';
 import { PromptState } from '../../src/prompts/prompt-state';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { qfaJsonFileName } from '../../src/utils/constants';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';

@@ -1,3 +1,4 @@
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -9,6 +10,7 @@ import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
 import path, { dirname, join, posix } from 'node:path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import {
     getWebappPath,
@@ -506,7 +508,7 @@ export class FlpSandbox {
                 //use protocol from request header referer as fallback for connect API (karma test runner)
                 'protocol' in req
                     ? req.protocol
-                    : req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http',
+                    : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http'),
                 req.headers.host,
                 'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
             );

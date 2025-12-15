@@ -1,10 +1,10 @@
-import UI5Element from 'sap/ui/core/Element';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type UI5Element from 'sap/ui/core/Element';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
-import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getUi5Version, isLowerThanMinimalUi5Version, isVersionEqualOrHasNewerPatch } from '../../../utils/version';
-import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import Component from 'sap/ui/core/Component';
 import type AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
 import type ManagedObject from 'sap/ui/base/ManagedObject';

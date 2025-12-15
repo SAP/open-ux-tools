@@ -44,6 +44,7 @@ export const minVersionInfo = {
 
 /**
  * Check if the given version info is valid.
+ *
  * @param versionInfo to check
  * @throws Error if the version info is invalid
  */
@@ -100,7 +101,6 @@ export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui
  * @param ui5VersionInfo to check
  * @param minUi5VersionInfo to check against (default is 1.71)
  * @throws Error if the version info is invalid
- *
  * @returns boolean
  */
 export function isLowerThanMinimalUi5Version(
@@ -126,7 +126,6 @@ export function isLowerThanMinimalUi5Version(
  * @param ui5VersionInfo to check
  * @param targetUi5VersionInfo to check against (default is 1.71)
  * @throws Error if the version info is invalid
- *
  * @returns boolean
  */
 export function isVersionEqualOrHasNewerPatch(

@@ -4,7 +4,8 @@ import * as cpeCpmmon from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
 import * as coreUtils from '../../../src/utils/core';
-import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import * as cpeUtils from '../../../src/cpe/utils';
 import * as versionUtils from '../../../src/utils/version';
 import * as applicationUtils from '../../../src/utils/application';
@@ -84,7 +85,7 @@ describe('context-menu-service', () => {
                 contextMenuItems: [
                     {
                         enabled: true,
-                        id : 'DEFAULTACTION01',
+                        id: 'DEFAULTACTION01',
                         title: 'default action 01',
                         tooltip: undefined
                     },
