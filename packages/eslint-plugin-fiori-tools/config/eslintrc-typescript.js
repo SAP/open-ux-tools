@@ -38,11 +38,12 @@ module.exports = defineConfig([
         rules: {
             ...typescriptEslint.configs.recommended.rules,
             ...typescriptEslint.configs['recommended-type-checked'].rules,
+            // Warning rules (alphabetical)
+            "@typescript-eslint/no-unsafe-argument": "warn",
+            "@typescript-eslint/no-unsafe-assignment": "warn",
             "@typescript-eslint/no-unsafe-call": "warn",
             "@typescript-eslint/no-unsafe-member-access": "warn",
             "@typescript-eslint/no-unsafe-return": "warn",
-            "@typescript-eslint/no-unsafe-argument": "warn",
-            "@typescript-eslint/no-unsafe-assignment": "warn",
         },
     }
 ]);
