@@ -66,6 +66,17 @@ function isValid(): boolean {
     return false;
 }
 
+/**
+ * Check if a node represents the global window object.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents the global window object
+ */
+function isWindow(node: any): boolean {
+    // true if node is the global variable 'window'
+    return node && isIdentifier(node) && node.name === 'window';
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -85,17 +96,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Check if a node represents the global window object.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents the global window object
-         */
-        function isWindow(node: any): boolean {
-            // true if node is the global variable 'window'
-            return node && isIdentifier(node) && node.name === 'window';
-        }
 
         /**
          * Check if a node represents the window object or a reference to it.

@@ -89,8 +89,7 @@ const rule: Rule.RuleModule = {
         const FORBIDDEN_DOCUMENT_OBJECT: string[] = [],
             FORBIDDEN_SCREEN_OBJECT: string[] = [],
             FORBIDDEN_BODY_OBJECT: string[] = [],
-            FORBIDDEN_HISTORY_OBJECT: string[] = [],
-            FORBIDDEN_LOCATION_OBJECT: string[] = [];
+            FORBIDDEN_HISTORY_OBJECT: string[] = [];
 
         const IF_CONDITION = 'IfStatement',
             CONDITION_EXP = 'ConditionalExpression',
@@ -176,9 +175,6 @@ const rule: Rule.RuleModule = {
                 case 'window.history':
                     FORBIDDEN_HISTORY_OBJECT.push(varName);
                     break;
-                case 'window.location':
-                    FORBIDDEN_LOCATION_OBJECT.push(varName);
-                    break;
                 case 'window.screen':
                     FORBIDDEN_SCREEN_OBJECT.push(varName);
                     break;
@@ -209,9 +205,6 @@ const rule: Rule.RuleModule = {
                     break;
                 case 'screen':
                     FORBIDDEN_SCREEN_OBJECT.push(varName);
-                    break;
-                case 'location':
-                    FORBIDDEN_LOCATION_OBJECT.push(varName);
                     break;
                 case 'history':
                     FORBIDDEN_HISTORY_OBJECT.push(varName);

@@ -20,6 +20,26 @@ function isType(node: ASTNode | undefined, type: string): boolean {
     return node?.type === type;
 }
 
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: ASTNode | undefined): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: ASTNode | undefined): boolean {
+    return isType(node, 'MemberExpression');
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -53,24 +73,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: ASTNode | undefined): boolean {
-            return isType(node, 'Identifier');
-        }
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: ASTNode | undefined): boolean {
-            return isType(node, 'MemberExpression');
-        }
 
         /**
          * Process DOM insertion calls and report violations.

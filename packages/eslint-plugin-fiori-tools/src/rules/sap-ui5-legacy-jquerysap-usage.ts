@@ -30,6 +30,26 @@ function contains(a, obj): boolean {
     return a.includes(obj);
 }
 
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: any): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: any): boolean {
+    return isType(node, 'MemberExpression');
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -49,26 +69,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Basic Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: any): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: any): boolean {
-            return isType(node, 'MemberExpression');
-        }
 
         /**
          * Check if a call expression represents an interesting jQuery.sap usage.

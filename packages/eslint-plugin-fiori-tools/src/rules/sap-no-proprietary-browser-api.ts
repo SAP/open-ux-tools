@@ -37,6 +37,26 @@ function contains(a: any[], obj: any): boolean {
     return a.includes(obj);
 }
 
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: any): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: any): boolean {
+    return isType(node, 'MemberExpression');
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -58,28 +78,8 @@ const rule: Rule.RuleModule = {
         const FORBIDDEN_WINDOW_PROPERTIES = ['innerWidth', 'innerHeight'];
 
         // --------------------------------------------------------------------------
-        // Basic Helpers
+        // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: any): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: any): boolean {
-            return isType(node, 'MemberExpression');
-        }
 
         /**
          * Check if a node represents the global window object.

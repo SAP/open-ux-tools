@@ -34,7 +34,7 @@ function isInteresting(node: ASTNode): boolean {
 function isValid(node: ASTNode): boolean {
     const nodeWithArgs = node as any;
     if (nodeWithArgs.arguments && isArray(nodeWithArgs.arguments[0])) {
-        const importList = (nodeWithArgs.arguments[0] as any).elements;
+        const importList = nodeWithArgs.arguments[0].elements;
         for (const key in importList) {
             if (importList.hasOwnProperty(key)) {
                 const lib = importList[key];

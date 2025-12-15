@@ -39,6 +39,33 @@ function isUnary(node: any): boolean {
     return isType(node, 'UnaryExpression');
 }
 
+/**
+ * Check if a node is within a conditional statement up to a maximum depth.
+ *
+ * @param node The AST node to check
+ * @param maxDepth Maximum depth to search for conditions
+ * @returns True if the node is within a conditional statement
+ */
+function isInCondition(node: any, maxDepth: number): boolean {
+    // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
+    // (true?history.back():''); || if(true) history.back(); || if(true){history.back();} || if(true){}else{history.back();}
+    if (maxDepth > 0) {
+        const parent = node.parent;
+        return isCondition(parent) || isInCondition(parent, maxDepth - 1);
+    }
+    return false;
+}
+
+/**
+ * Check if a node represents the value -1.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents the value -1
+ */
+function isMinusOne(node: any): boolean {
+    return isUnary(node) && node.operator === '-' && isLiteral(node.argument) && node.argument.value === 1;
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -70,32 +97,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helper Functions
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is within a conditional statement up to a maximum depth.
-         *
-         * @param node The AST node to check
-         * @param maxDepth Maximum depth to search for conditions
-         * @returns True if the node is within a conditional statement
-         */
-        function isInCondition(node: any, maxDepth: number): boolean {
-            // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
-            // (true?history.back():''); || if(true) history.back(); || if(true){history.back();} || if(true){}else{history.back();}
-            if (maxDepth > 0) {
-                const parent = node.parent;
-                return isCondition(parent) || isInCondition(parent, maxDepth - 1);
-            }
-            return false;
-        }
-
-        /**
-         * Check if a node represents the value -1.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents the value -1
-         */
-        function isMinusOne(node: any): boolean {
-            return isUnary(node) && node.operator === '-' && isLiteral(node.argument) && node.argument.value === 1;
-        }
 
         /**
          * Check if a call expression is interesting for history manipulation detection.

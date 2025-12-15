@@ -31,6 +31,56 @@ function contains(a: string[], obj: string): boolean {
     return a.includes(obj);
 }
 
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: ASTNode | undefined): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: ASTNode | undefined): boolean {
+    return isType(node, 'MemberExpression');
+}
+
+/**
+ * Check if a node is a NewExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a NewExpression
+ */
+function isNewExpression(node: ASTNode | undefined): boolean {
+    return isType(node, 'NewExpression');
+}
+
+/**
+ * Check if a node is an ArrayExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an ArrayExpression
+ */
+function isArrayExpression(node: ASTNode | undefined): boolean {
+    return isType(node, 'ArrayExpression');
+}
+
+/**
+ * Check if a node is an ObjectExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an ObjectExpression
+ */
+function isObjectExpression(node: ASTNode | undefined): boolean {
+    return isType(node, 'ObjectExpression');
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -62,51 +112,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Basic Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: ASTNode | undefined): boolean {
-            return isType(node, 'Identifier');
-        }
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: ASTNode | undefined): boolean {
-            return isType(node, 'MemberExpression');
-        }
-        /**
-         * Check if a node is a NewExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a NewExpression
-         */
-        function isNewExpression(node: ASTNode | undefined): boolean {
-            return isType(node, 'NewExpression');
-        }
-        /**
-         * Check if a node is an ArrayExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an ArrayExpression
-         */
-        function isArrayExpression(node: ASTNode | undefined): boolean {
-            return isType(node, 'ArrayExpression');
-        }
-        /**
-         * Check if a node is an ObjectExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an ObjectExpression
-         */
-        function isObjectExpression(node: ASTNode | undefined): boolean {
-            return isType(node, 'ObjectExpression');
-        }
         /**
          * Check if array element contains interesting content methods
          *

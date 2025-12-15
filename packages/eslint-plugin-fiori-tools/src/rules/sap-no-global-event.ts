@@ -40,6 +40,26 @@ function isAssignTarget(node: any): boolean {
     return node?.parent.type === 'AssignmentExpression' && node.parent.left === node;
 }
 
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: any): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: any): boolean {
+    return isType(node, 'MemberExpression');
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -84,27 +104,8 @@ const rule: Rule.RuleModule = {
         ];
 
         // --------------------------------------------------------------------------
-        // Basic Helpers
+        // Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: any): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: any): boolean {
-            return isType(node, 'MemberExpression');
-        }
 
         /**
          * Check if a node represents the global window object.

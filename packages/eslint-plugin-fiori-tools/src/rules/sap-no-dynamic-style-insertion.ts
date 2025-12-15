@@ -61,10 +61,10 @@ const rule: Rule.RuleModule = {
         function isInteresting(node: any): boolean {
             if (isMember(node) && isMember(node.object) && isDocumentObject(node.object.object)) {
                 const prop = node.object.property;
-                if (isIdentifier(prop) && (prop as any).name === 'styleSheets') {
+                if (isIdentifier(prop) && prop.name === 'styleSheets') {
                     return true;
                 }
-                if (isLiteral(prop) && (prop as any).value === 'styleSheets') {
+                if (isLiteral(prop) && prop.value === 'styleSheets') {
                     return true;
                 }
             }

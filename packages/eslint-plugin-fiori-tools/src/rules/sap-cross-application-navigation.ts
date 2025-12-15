@@ -31,6 +31,76 @@ function endsWith(string: string, suffix: string): boolean {
     return typeof string === 'string' && typeof suffix === 'string' && string.endsWith(suffix);
 }
 
+/**
+ * Check if a node is an ObjectExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an ObjectExpression
+ */
+function isObject(node: ASTNode | undefined): boolean {
+    return isType(node, 'ObjectExpression');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: ASTNode | undefined): boolean {
+    return isType(node, 'MemberExpression');
+}
+
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: ASTNode | undefined): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a CallExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a CallExpression
+ */
+function isCall(node: ASTNode | undefined): boolean {
+    return isType(node, 'CallExpression');
+}
+
+/**
+ * Check if a node is a LogicalExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a LogicalExpression
+ */
+function isLogical(node: ASTNode | undefined): boolean {
+    return isType(node, 'LogicalExpression');
+}
+
+/**
+ * Check if a node is a Literal.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a Literal
+ */
+function isLiteral(node: ASTNode | undefined): boolean {
+    return isType(node, 'Literal');
+}
+
+/**
+ * Check if a node is a Property.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a Property
+ */
+function isProperty(node: ASTNode | undefined): boolean {
+    return isType(node, 'Property');
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -49,70 +119,6 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         const VARIABLES: Record<string, boolean> = {};
-
-        /**
-         * Check if a node is an ObjectExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an ObjectExpression
-         */
-        function isObject(node: ASTNode | undefined): boolean {
-            return isType(node, 'ObjectExpression');
-        }
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: ASTNode | undefined): boolean {
-            return isType(node, 'MemberExpression');
-        }
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: ASTNode | undefined): boolean {
-            return isType(node, 'Identifier');
-        }
-        /**
-         * Check if a node is a CallExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a CallExpression
-         */
-        function isCall(node: ASTNode | undefined): boolean {
-            return isType(node, 'CallExpression');
-        }
-        /**
-         * Check if a node is a LogicalExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a LogicalExpression
-         */
-        function isLogical(node: ASTNode | undefined): boolean {
-            return isType(node, 'LogicalExpression');
-        }
-        /**
-         * Check if a node is a Literal.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a Literal
-         */
-        function isLiteral(node: ASTNode | undefined): boolean {
-            return isType(node, 'Literal');
-        }
-        /**
-         * Check if a node is a Property.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a Property
-         */
-        function isProperty(node: ASTNode | undefined): boolean {
-            return isType(node, 'Property');
-        }
 
         /**
          * Get the identifier path from a node.

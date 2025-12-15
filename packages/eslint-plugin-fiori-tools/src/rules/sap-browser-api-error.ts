@@ -333,7 +333,7 @@ const rule: Rule.RuleModule = {
             } else if (
                 contains(FORBIDDEN_GLOB_EVENT, propertyName) &&
                 node.parent.type === 'AssignmentExpression' &&
-                (node.parent as any).left === node
+                node.parent.left === node
             ) {
                 context.report({ node: node, messageId: 'forbiddenGlobEvent' });
             }
@@ -352,8 +352,7 @@ const rule: Rule.RuleModule = {
 
             const propertyName = node.property.name;
             const isEventProperty = propertyName === 'returnValue' || propertyName === 'cancelBubble';
-            const isAssignmentTarget =
-                node.parent.type === 'AssignmentExpression' && (node.parent as any).left === node;
+            const isAssignmentTarget = node.parent.type === 'AssignmentExpression' && node.parent.left === node;
 
             if (!isEventProperty || !isAssignmentTarget) {
                 return;
@@ -412,7 +411,7 @@ const rule: Rule.RuleModule = {
 
                 if (isCall(parent)) {
                     handleCallExpression(node, parent);
-                } else if ((node as any).computed) {
+                } else if (node.computed) {
                     handleComputedProperty(node);
                 } else {
                     handleNonComputedProperty(node);

@@ -20,6 +20,36 @@ function isType(node: ASTNode | undefined, type: string): boolean {
     return node?.type === type;
 }
 
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: ASTNode | undefined): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: ASTNode | undefined): boolean {
+    return isType(node, 'MemberExpression');
+}
+
+/**
+ * Check if a node is a CallExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a CallExpression
+ */
+function isCall(node: ASTNode | undefined): boolean {
+    return isType(node, 'CallExpression');
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -68,33 +98,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: ASTNode | undefined): boolean {
-            return isType(node, 'Identifier');
-        }
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: ASTNode | undefined): boolean {
-            return isType(node, 'MemberExpression');
-        }
-        /**
-         * Check if a node is a CallExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a CallExpression
-         */
-        function isCall(node: ASTNode | undefined): boolean {
-            return isType(node, 'CallExpression');
-        }
 
         /**
          * Get the rightmost method name from a call expression node.
