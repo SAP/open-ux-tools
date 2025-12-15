@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/sap-systems-ext-webapp",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "private": true,
     "main": "dist/store.js",
     "description": "Web view for sap-systems-ext",
@@ -16,7 +16,8 @@
         "build:webapp": "node esbuild.js",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config=jest.config.js --silent",
         "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand  --config=jest.config.js --colors",
-        "lint": "eslint . --ext .ts,.tsx",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "format:fix": "prettier --write --ignore-path ../../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
         "madge": "madge --warning --circular --extensions ts ./"

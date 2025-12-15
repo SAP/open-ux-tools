@@ -281,7 +281,7 @@ export const Tree = (): ReactElement => {
                 disabled: isNavigationMode ? true : !child.enabled,
                 title: isNavigationMode
                     ? t('CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE')
-                    : child?.tooltip ?? child?.title,
+                    : (child?.tooltip ?? child?.title),
                 onClick(): void {
                     if (isExtensionPoint) {
                         dispatch(addExtensionPoint(showActionContextualMenu));

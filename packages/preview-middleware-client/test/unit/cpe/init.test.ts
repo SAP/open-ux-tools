@@ -1,4 +1,5 @@
-import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import * as common from '@sap-ux-private/control-property-editor-common';
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';

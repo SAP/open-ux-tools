@@ -56,15 +56,13 @@ export async function checkStoredSystem(storedSystem: Endpoint): Promise<{
     logger.push(...atoMsgs);
 
     // sap ui5 repo request
-    const { messages: sapUI5RepoMsgs, isSapUi5Repo: isSapUi5RepoResult } = await checkUi5AbapRepository(
-        abapServiceProvider
-    );
+    const { messages: sapUI5RepoMsgs, isSapUi5Repo: isSapUi5RepoResult } =
+        await checkUi5AbapRepository(abapServiceProvider);
     logger.push(...sapUI5RepoMsgs);
 
     // check for transport requests
-    const { messages: transportReqMsgs, isTransportRequests: isTransportRequestsResult } = await checkTransportRequests(
-        abapServiceProvider
-    );
+    const { messages: transportReqMsgs, isTransportRequests: isTransportRequestsResult } =
+        await checkTransportRequests(abapServiceProvider);
     logger.push(...transportReqMsgs);
 
     const storedSystemResults: EndpointResults = {

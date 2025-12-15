@@ -64,7 +64,7 @@ describe('Test ABAP headless generator', () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
+        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 }) as any);
     });
     afterEach(() => {
         process.chdir(ORIGINAL_CWD);

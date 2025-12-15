@@ -14,16 +14,15 @@ import yeomanTest from 'yeoman-test';
 import { FioriAppGenerator, type FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { promptOdataServiceAnswers, promptUI5ApplicationAnswers } from '../../../src/fiori-app-generator/prompting';
 import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers';
-import type { Project } from '../../../src/types';
 import {
     FIORI_STEPS,
     FloorplanFE,
     FloorplanFF,
-    type Service,
     STEP_DATASOURCE_AND_SERVICE,
     STEP_FLP_CONFIG,
     STEP_PROJECT_ATTRIBUTES
 } from '../../../src/types';
+import type { Project, Service } from '../../../src/types';
 import * as commonUtils from '../../../src/utils';
 import {
     type AppWizardCache,
