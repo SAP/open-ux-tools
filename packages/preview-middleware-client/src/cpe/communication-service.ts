@@ -1,10 +1,11 @@
 import Log from 'sap/base/Log';
 
-import { ExternalAction, startPostMessageCommunication } from '@sap-ux-private/control-property-editor-common';
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import { startPostMessageCommunication } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../utils/error';
 
-import { ActionHandler } from './types';
+import type { ActionHandler } from './types';
 
 export class CommunicationService {
     /**

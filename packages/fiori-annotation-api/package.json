@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-annotation-api",
-    "version": "0.7.21",
+    "version": "0.7.23",
     "description": "Library that provides API for reading and writing annotations in SAP Fiori elements projects.",
     "publisher": "SAPSE",
     "author": "SAP SE",
@@ -16,8 +16,8 @@
         "build": "npm-run-all clean compile",
         "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo  ./reports",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "pre-commit": "lint-staged --quiet",
         "test": "jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=3",
         "watch": "tsc  --build ./ -watch"

@@ -77,7 +77,7 @@ async function getBackendTargetChoices(
             return {
                 name: isDefault
                     ? `${getBackendSystemDisplayName(system)} (Source system)`
-                    : getBackendSystemDisplayName(system) ?? '',
+                    : (getBackendSystemDisplayName(system) ?? ''),
                 value: system.url,
                 isDefault,
                 scp: !!system.serviceKeys, // legacy service key store entries
@@ -250,7 +250,7 @@ export async function getPackageChoices(
         packages = await queryPackages(input, systemConfig, backendTarget);
 
         morePackageResultsMsg =
-            packages && packages.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
+            packages?.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
                 ? t('prompts.config.package.packageAutocomplete.sourceMessage', { numResults: packages.length })
                 : morePackageResultsMsg;
 

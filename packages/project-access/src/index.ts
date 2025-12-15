@@ -27,6 +27,7 @@ export {
     getCdsServices,
     getCapI18nFolderNames,
     getSpecification,
+    getSpecificationModuleFromCache,
     getSpecificationPath,
     getI18nPropertiesPaths,
     getI18nBundles,

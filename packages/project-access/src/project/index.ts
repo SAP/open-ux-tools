@@ -51,6 +51,11 @@ export {
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
 export { updatePackageScript, hasUI5CliV3 } from './script';
-export { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from './specification';
+export {
+    getSpecification,
+    getSpecificationModuleFromCache,
+    getSpecificationPath,
+    refreshSpecificationDistTags
+} from './specification';
 export { readFlexChanges } from './flex-changes';
 export { getListReportPage, getObjectPages, getFilterFields, getTableColumns } from './model';

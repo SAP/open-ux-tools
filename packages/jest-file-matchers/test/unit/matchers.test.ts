@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import fs from 'node:fs';
-import { MatcherIgnore, README_GENERATION_PLATFORM_REGEX, README_GENERATOR_REGEX } from '../../src/matchers/types';
+import type { MatcherIgnore } from '../../src/matchers/types';
+import { README_GENERATION_PLATFORM_REGEX, README_GENERATOR_REGEX } from '../../src/matchers/types';
 import { toMatchFolder, toContainAllFilesIn } from '../../src/index';
 import { toMatchFile } from '../../src/matchers/toMatchFileSnapshot';
 
@@ -17,6 +18,7 @@ export const ignoreMatcherOpts: MatcherIgnore = {
 
 describe('Test matchers', () => {
     beforeAll(() => {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         require('../../src/setup');
     });
 

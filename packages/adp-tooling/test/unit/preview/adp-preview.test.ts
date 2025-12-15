@@ -5,6 +5,7 @@ import express from 'express';
 import { renderFile } from 'ejs';
 import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { SuperTest, Test } from 'supertest';
 
@@ -952,7 +953,6 @@ describe('AdaptationProject', () => {
 
         test('GET /adp/api/annotation => Metadata fetch error', async () => {
             jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 getDataSourceMetadata: jest.fn().mockRejectedValue(new Error('Metadata fetch error')),
                 getManifestDataSources: jest.fn().mockReturnValue({
                     mainService: {

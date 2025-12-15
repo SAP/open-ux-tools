@@ -1,11 +1,12 @@
-import Dialog from 'sap/m/Dialog';
-import UI5Element from 'sap/ui/core/Element';
+import type Dialog from 'sap/m/Dialog';
+import type UI5Element from 'sap/ui/core/Element';
 import Fragment from 'sap/ui/core/Fragment';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getTextBundle } from '../i18n';
 
-import AddFragment, { AddFragmentOptions } from './controllers/AddFragment.controller';
+import type { AddFragmentOptions } from './controllers/AddFragment.controller';
+import AddFragment from './controllers/AddFragment.controller';
 import AddTableColumnFragments from './controllers/AddTableColumnFragments.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';

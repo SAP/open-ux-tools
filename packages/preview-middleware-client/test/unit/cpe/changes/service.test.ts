@@ -1,6 +1,6 @@
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
-import { ActionHandler } from '../../../../src/cpe/types';
+import type { ActionHandler } from '../../../../src/cpe/types';
 import {
     changeProperty,
     deletePropertyChanges,
@@ -11,10 +11,10 @@ import {
     showInfoCenterMessage
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
 import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsControlTreeModifier';
-import Control from 'sap/ui/core/Control';
+import type Control from 'sap/ui/core/Control';
 import * as Utils from '../../../../src/utils/version';
 import ChangesWriteAPIMock from 'mock/sap/ui/fl/write/api/ChangesWriteAPI';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';

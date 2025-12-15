@@ -143,7 +143,6 @@ export function findBy(options: {
             if (fatalErrors.length === 0) {
                 resolve(searchResult);
             } else {
-                // eslint-disable-next-line prefer-promise-reject-errors
                 reject(fatalErrors);
             }
         });
