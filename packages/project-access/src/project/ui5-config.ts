@@ -8,6 +8,7 @@ import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file'
 type PathMappings = { [key: string]: string | undefined };
 
 const PATH_MAPPING_DEFAULTS: Record<Ui5Document['type'], Record<string, string>> = {
+    component: { src: 'src', test: 'test' },
     application: { webapp: DirName.Webapp },
     library: { src: 'src', test: 'test' },
     'theme-library': { src: 'src', test: 'test' },
