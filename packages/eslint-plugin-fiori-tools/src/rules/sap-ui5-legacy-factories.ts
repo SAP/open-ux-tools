@@ -85,6 +85,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check if callee matches sap.ui.* pattern
+         *
+         * @param callee
          */
         function isSapUiPattern(callee: any): boolean {
             return (
@@ -100,6 +102,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check if callee matches jQuery.sap.* or $.sap.* pattern
+         *
+         * @param callee
          */
         function isJQuerySapPattern(callee: any): boolean {
             return (
@@ -115,6 +119,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check if callee matches sap.ui.component.* pattern
+         *
+         * @param callee
          */
         function isSapUiComponentPattern(callee: any): boolean {
             return (

@@ -109,6 +109,8 @@ const rule: Rule.RuleModule = {
         }
         /**
          * Check if array element contains interesting content methods
+         *
+         * @param elements
          */
         function hasInterestingContentMethods(elements: any[]): boolean {
             for (const element of elements) {
@@ -127,6 +129,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check object properties for content arrays with interesting methods
+         *
+         * @param properties
          */
         function hasContentWithInterestingMethods(properties: any[]): boolean {
             for (const prop of properties) {
@@ -141,6 +145,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check arguments for object expressions with interesting content
+         *
+         * @param args
          */
         function hasArgumentsWithInterestingContent(args: any[]): boolean {
             for (const arg of args) {
@@ -155,6 +161,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check if node has interesting methods pattern
+         *
+         * @param node
          */
         function hasInterestingMethodsPattern(node: any): boolean {
             const callee = node.callee;
@@ -166,6 +174,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check property elements for interesting content methods
+         *
+         * @param elements
          */
         function hasPropertyElementsWithInterestingMethods(elements: any[]): boolean {
             for (const element of elements) {
@@ -181,6 +191,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check properties for interesting property names and array values
+         *
+         * @param properties
          */
         function hasPropertiesWithInterestingNames(properties: any[]): boolean {
             for (const prop of properties) {
@@ -195,6 +207,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check arguments for object expressions with interesting property names
+         *
+         * @param args
          */
         function hasArgumentsWithInterestingPropertyNames(args: any[]): boolean {
             for (const arg of args) {
@@ -209,6 +223,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Check if node has interesting property names pattern
+         *
+         * @param node
          */
         function hasInterestingPropertyNamesPattern(node: any): boolean {
             const callee = node.callee;

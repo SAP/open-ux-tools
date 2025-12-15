@@ -10,6 +10,8 @@ import type { Rule } from 'eslint';
 
 /**
  * Check if node is Opa5.extendConfig call expression
+ *
+ * @param node
  */
 function isOpa5ExtendConfigCall(node: any): boolean {
     return (
@@ -25,6 +27,8 @@ function isOpa5ExtendConfigCall(node: any): boolean {
 
 /**
  * Find autoWait property in object expression properties
+ *
+ * @param propsList
  */
 function findAutoWaitProperty(propsList: any[]): { exists: boolean; value?: boolean } {
     for (const property in propsList) {
@@ -58,6 +62,8 @@ const rule: Rule.RuleModule = {
 
         /**
          * Handle Opa5.extendConfig call expression validation
+         *
+         * @param node
          */
         function handleOpa5ExtendConfig(node: any): void {
             if (node.arguments[0]?.type !== 'ObjectExpression') {
