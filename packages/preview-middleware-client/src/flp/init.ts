@@ -5,7 +5,7 @@ import { MessageBarType, SCENARIO, type Scenario } from '@sap-ux-private/control
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import AppState from 'sap/ushell/services/AppState';
+import type AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
 import initCdm from './initCdm';
@@ -324,7 +324,7 @@ export async function init({
                 const view = event.getParameter('componentInstance');
                 const pluginScript = flexSettings.pluginScript ?? '';
 
-                let libs: string[] = [];
+                const libs: string[] = [];
 
                 if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
@@ -345,7 +345,7 @@ export async function init({
 
                 sap.ui.require(
                     libs,
-                    // eslint-disable-next-line no-shadow
+
                     async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
                         try {
                             await startAdaptation(options, pluginScript);

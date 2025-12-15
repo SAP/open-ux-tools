@@ -925,7 +925,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
         // inputs visible only in "edit mode" (after cell click)
         const editedCell = this.state.editedCell;
-        const itsThisRow = editedCell && editedCell.rowIndex === rowIndex;
+        const itsThisRow = editedCell?.rowIndex === rowIndex;
         const itsThisCol = editedCell && editedCell.column?.key === column?.key;
         const isCellInEditMode = itsThisRow && itsThisCol;
 

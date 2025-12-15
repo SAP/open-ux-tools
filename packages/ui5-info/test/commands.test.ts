@@ -214,7 +214,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
     });
 });
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockSpawn = require('mock-spawn');
 import childProcess from 'child_process';
 

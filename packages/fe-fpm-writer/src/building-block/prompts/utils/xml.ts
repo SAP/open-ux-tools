@@ -117,7 +117,9 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
     const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
     for (const element of elements) {
         const id = element.getAttributeNode('id')?.value;
-        id && ids.push(id);
+        if (id) {
+            ids.push(id);
+        }
     }
     return ids;
 }

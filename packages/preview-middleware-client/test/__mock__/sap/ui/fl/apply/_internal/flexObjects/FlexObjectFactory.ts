@@ -1,4 +1,4 @@
-import FlexChange from 'sap/ui/fl/Change';
+import type FlexChange from 'sap/ui/fl/Change';
 interface ChangeContent {
     property: string;
     newValue: string;

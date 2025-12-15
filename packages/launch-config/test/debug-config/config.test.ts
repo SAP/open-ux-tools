@@ -1,8 +1,7 @@
 import { configureLaunchJsonFile } from '../../src/debug-config/config';
 import type { DebugOptions, LaunchConfig, LaunchJSON, FioriOptions } from '../../src/types';
-import path from 'node:path';
+import path, { join } from 'node:path';
 import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../../src/types';
-import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { FileName } from '@sap-ux/project-access';

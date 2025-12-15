@@ -3,8 +3,8 @@ import { TextEmbeddingService } from '../../../../src/tools/services/text-embedd
 // Mock the transformers module
 jest.mock('@xenova/transformers');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const mockTransformers = require('@xenova/transformers');
+import * as transformersModule from '@xenova/transformers';
+const mockTransformers = transformersModule as jest.Mocked<typeof transformersModule>;
 
 describe('TextEmbeddingService', () => {
     let service: TextEmbeddingService;
@@ -17,8 +17,8 @@ describe('TextEmbeddingService', () => {
         const createMockPipelineInstance = () =>
             jest.fn().mockResolvedValue({
                 data: new Float32Array(384).fill(0).map(() => Math.random() - 0.5)
-            });
-        mockTransformers.pipeline.mockImplementation(() => Promise.resolve(createMockPipelineInstance()));
+            }) as unknown as ReturnType<typeof transformersModule.pipeline>;
+        mockTransformers.pipeline.mockImplementation(createMockPipelineInstance);
     });
 
     describe('initialize', () => {
