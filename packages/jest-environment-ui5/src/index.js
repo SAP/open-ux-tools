@@ -166,7 +166,7 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
                 };
                 resolve();
             },
-            function() {
+            function () {
                 resolve();
             }
         );
