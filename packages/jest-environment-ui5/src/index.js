@@ -2,7 +2,7 @@ const JSDOMEnvironment = require('jest-environment-jsdom').default;
 const { initTsConfigMappingStrategy } = require('./utils/tsMappingStrategy');
 const { initUi5MappingStrategy } = require('./utils/ui5MappingStrategy');
 const { initUI5Environment } = require('./env/ui5Environment');
-const path = require('path');
+const path = require('node:path');
 
 /**
  * Define the custom environment for the jest tests that runs in a UI5 environment
@@ -33,7 +33,7 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
 
     /**
      * Prepare the environment for the test.
-     * This is called before each test and will setup the UI5 environment.
+     * This is called before each test and will set up the UI5 environment.
      * @returns {Promise<void>} A promise that resolves when the environment is ready
      */
     async setup() {
@@ -143,23 +143,22 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
      * @param {boolean} allowCSS Whether to allow the UI5 CSS to be loaded
      */
     overwriteUi5Lib(resolve, allowCSS) {
-        const that = this;
         sap.ui.require(
             ['sap/ui/core/Lib'],
-            function (Lib) {
+            (Lib) => {
                 const fnInit = Lib.init;
                 const fnLoad = Lib._load;
-                Lib._load = function (mSettings) {
-                    if (that.testEnvironmentOptions.shimManifests) {
+                Lib._load = (mSettings) => {
+                    if (this.testEnvironmentOptions.shimManifests) {
                         const name = typeof mSettings === 'string' ? mSettings : mSettings.name;
-                        that.shimManifestFile(name);
+                        this.shimManifestFile(name);
                     }
 
                     return fnLoad.call(this, mSettings);
                 };
-                Lib.init = function (mSettings) {
-                    if (that.testEnvironmentOptions.shimManifests) {
-                        that.shimManifestFile(mSettings.name);
+                Lib.init = (mSettings) => {
+                    if (this.testEnvironmentOptions.shimManifests) {
+                        this.shimManifestFile(mSettings.name);
                     }
 
                     mSettings.noLibraryCSS = !allowCSS;
@@ -167,7 +166,7 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
                 };
                 resolve();
             },
-            function (e) {
+            function() {
                 resolve();
             }
         );
