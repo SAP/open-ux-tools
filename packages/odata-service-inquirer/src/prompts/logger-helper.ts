@@ -38,7 +38,7 @@ export default class LoggerHelper {
         response: AxiosInterceptorManager<AxiosResponse>;
     }): void {
         // Dont log response data, which can be huge (edmx) unless log level is explictly set to `trace` (@vscode-logging/logger)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const logResponseData =
             typeof (LoggerHelper.logger as any).getLogLevel === 'function' &&
             (LoggerHelper.logger as any).getLogLevel() === 'trace';

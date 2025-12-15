@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import type { MiddlewareParameters } from '@ui5/server';
+import type { MiddlewareParameters } from '@ui5/server'; // eslint-disable-line sonarjs/no-implicit-dependencies
 
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 

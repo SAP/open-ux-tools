@@ -24,7 +24,7 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
                 let answersPreview: string;
                 try {
                     answersPreview = JSON.stringify(responseAction.answers, undefined, 4);
-                } catch (e) {
+                } catch {
                     answersPreview = '{}';
                 }
                 setPreview({

@@ -18,7 +18,7 @@ const ENTITY_SET = 'C_CustomerOP';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+
     ...(jest.requireActual('@sap-ux/project-access') as object),
     getCapModelAndServices: jest.fn().mockResolvedValue({
         model: {},

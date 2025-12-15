@@ -1370,7 +1370,7 @@ describe('FpmDocumentationBuilder', () => {
             process.env.GITHUB_TOKEN = 'test-token';
 
             // Setup XMLParser mock to return valid parsed data
-            const { XMLParser } = require('fast-xml-parser'); // eslint-disable-line @typescript-eslint/no-var-requires
+            const { XMLParser } = jest.requireMock('fast-xml-parser') as { XMLParser: jest.Mock };
             const mockParse = jest.fn().mockReturnValue({
                 'mvc:View': {
                     'fpmExplorer:Page': {
@@ -1497,7 +1497,7 @@ describe('FpmDocumentationBuilder', () => {
             process.env.GITHUB_TOKEN = 'test-token';
 
             // Setup XMLParser mock to return empty structure (no implementation steps)
-            const { XMLParser } = require('fast-xml-parser'); // eslint-disable-line @typescript-eslint/no-var-requires
+            const { XMLParser } = jest.requireMock('fast-xml-parser') as { XMLParser: jest.Mock };
             const mockParse = jest.fn().mockReturnValue({
                 'mvc:View': {
                     'fpmExplorer:Page': {
