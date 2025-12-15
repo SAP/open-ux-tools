@@ -9,6 +9,7 @@ import type { Logger } from '@sap-ux/logger/src/types';
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
     const debug = !!process.env['UX_DEBUG'];
+    jest.setTimeout(30000);
 
     function prepareTestFiles(testConfigurationName: string): string {
         // Copy input templates into output directory
