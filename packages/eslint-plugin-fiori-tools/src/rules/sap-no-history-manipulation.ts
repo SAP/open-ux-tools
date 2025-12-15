@@ -66,6 +66,27 @@ function isMinusOne(node: any): boolean {
     return isUnary(node) && node.operator === '-' && isLiteral(node.argument) && node.argument.value === 1;
 }
 
+/**
+ * Check if a history manipulation call is valid.
+ *
+ * @param node The call expression node to validate
+ * @returns True if the history manipulation call is valid
+ */
+function isValid(node: any): boolean {
+    switch (node.callee.property.name) {
+        case 'forward':
+            return false;
+        case 'back':
+            return isInCondition(node, 3);
+        case 'go': {
+            const args = node.arguments;
+            return args.length === 1 && isMinusOne(args[0]) && isInCondition(node, 3);
+        }
+        default:
+    }
+    return true;
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -115,27 +136,6 @@ const rule: Rule.RuleModule = {
                 return true;
             }
             return false;
-        }
-
-        /**
-         * Check if a history manipulation call is valid.
-         *
-         * @param node The call expression node to validate
-         * @returns True if the history manipulation call is valid
-         */
-        function isValid(node: any): boolean {
-            switch (node.callee.property.name) {
-                case 'forward':
-                    return false;
-                case 'back':
-                    return isInCondition(node, 3);
-                case 'go': {
-                    const args = node.arguments;
-                    return args.length === 1 && isMinusOne(args[0]) && isInCondition(node, 3);
-                }
-                default:
-            }
-            return true;
         }
 
         // --------------------------------------------------------------------------

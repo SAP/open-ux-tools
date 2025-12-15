@@ -101,6 +101,58 @@ function isProperty(node: ASTNode | undefined): boolean {
     return isType(node, 'Property');
 }
 
+/**
+ * Get the identifier path from a node.
+ *
+ * @param node The AST node to extract path from
+ * @returns The identifier path extracted from the node
+ */
+function getIdentifierPath(node: ASTNode): string {
+    if (isIdentifier(node)) {
+        return (node as any).name;
+    } else if (isLiteral(node)) {
+        return (node as any).value;
+    } else if (isMember(node)) {
+        return `${getIdentifierPath((node as any).object)}.${getIdentifierPath((node as any).property)}`;
+    } else {
+        return '';
+    }
+}
+
+/**
+ * Get the name from an identifier or literal node.
+ *
+ * @param node The AST node to extract name from
+ * @returns The name extracted from the node, or null if not found
+ */
+function getName(node: ASTNode): string | null {
+    if (isIdentifier(node)) {
+        return (node as any).name;
+    } else if (isLiteral(node)) {
+        return (node as any).value;
+    }
+    return null;
+}
+
+/**
+ * Method checks the given node, if it's a method call with 'CrossApplicationNavigation' as the only argument.
+ *
+ * @param node - a CallExpression node
+ * @returns True if the node is a getService call with CrossApplicationNavigation
+ */
+function isGetServiceCall(node: ASTNode | undefined): boolean {
+    if (isCall(node)) {
+        if (
+            (node as any).arguments?.length === 1 &&
+            isLiteral((node as any).arguments[0]) &&
+            (node as any).arguments[0].value === 'CrossApplicationNavigation'
+        ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -121,39 +173,6 @@ const rule: Rule.RuleModule = {
         const VARIABLES: Record<string, boolean> = {};
 
         /**
-         * Get the identifier path from a node.
-         *
-         * @param node The AST node to extract path from
-         * @returns The identifier path extracted from the node
-         */
-        function getIdentifierPath(node: ASTNode): string {
-            if (isIdentifier(node)) {
-                return (node as any).name;
-            } else if (isLiteral(node)) {
-                return (node as any).value;
-            } else if (isMember(node)) {
-                return `${getIdentifierPath((node as any).object)}.${getIdentifierPath((node as any).property)}`;
-            } else {
-                return '';
-            }
-        }
-
-        /**
-         * Get the name from an identifier or literal node.
-         *
-         * @param node The AST node to extract name from
-         * @returns The name extracted from the node, or null if not found
-         */
-        function getName(node: ASTNode): string | null {
-            if (isIdentifier(node)) {
-                return (node as any).name;
-            } else if (isLiteral(node)) {
-                return (node as any).value;
-            }
-            return null;
-        }
-
-        /**
          * Get a property from an object node by key.
          *
          * @param node The object node to search in
@@ -172,25 +191,6 @@ const rule: Rule.RuleModule = {
                 }
             }
             return null;
-        }
-
-        /**
-         * Method checks the given node, if it's a method call with 'CrossApplicationNavigation' as the only argument.
-         *
-         * @param node - a CallExpression node
-         * @returns True if the node is a getService call with CrossApplicationNavigation
-         */
-        function isGetServiceCall(node: ASTNode | undefined): boolean {
-            if (isCall(node)) {
-                if (
-                    (node as any).arguments?.length === 1 &&
-                    isLiteral((node as any).arguments[0]) &&
-                    (node as any).arguments[0].value === 'CrossApplicationNavigation'
-                ) {
-                    return true;
-                }
-            }
-            return false;
         }
 
         /**

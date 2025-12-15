@@ -50,6 +50,28 @@ function isCall(node: ASTNode | undefined): boolean {
     return isType(node, 'CallExpression');
 }
 
+/**
+ * Get the rightmost method name from a call expression node.
+ *
+ * @param node The call expression node to analyze
+ * @returns The rightmost method name
+ */
+function getRightestMethodName(node: ASTNode): string {
+    const callee = (node as any).callee;
+    return isMember(callee) ? callee.property.name : callee.name;
+}
+
+/**
+ * Check if a node represents the global window object.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents the global window object
+ */
+function isWindow(node: ASTNode | undefined): boolean {
+    // true if node is the global variable 'window'
+    return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -98,28 +120,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Get the rightmost method name from a call expression node.
-         *
-         * @param node The call expression node to analyze
-         * @returns The rightmost method name
-         */
-        function getRightestMethodName(node: ASTNode): string {
-            const callee = (node as any).callee;
-            return isMember(callee) ? callee.property.name : callee.name;
-        }
-
-        /**
-         * Check if a node represents the global window object.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents the global window object
-         */
-        function isWindow(node: ASTNode | undefined): boolean {
-            // true if node is the global variable 'window'
-            return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
-        }
 
         /**
          * Check if a node represents the window object or a reference to it.
