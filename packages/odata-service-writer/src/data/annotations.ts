@@ -288,7 +288,7 @@ function getAnnotationNamespacesForSingleAnnotation(
 ): NamespaceAlias[] {
     if (edmxAnnotation?.xml) {
         // Parse once
-        const annotationsJson: Object = xmlToJson(edmxAnnotation.xml);
+        const annotationsJson: object = xmlToJson(edmxAnnotation.xml);
         return schemaNamespaces.map((schema: NamespaceAlias) => {
             // Check if alias exists in backend annotation file, if so use it
             const annotationAlias =
@@ -354,7 +354,7 @@ function xmlToJson(xml: string): any | void {
  * @returns Array of namespaces and their aliases
  */
 function getNamespaces(metadata: string): NamespaceAlias[] {
-    const jsonMetadata: Object = xmlToJson(metadata);
+    const jsonMetadata: object = xmlToJson(metadata);
     let schema = jsonMetadata['edmx:Edmx']?.['edmx:DataServices']?.['Schema'];
 
     if (!schema) {
@@ -381,7 +381,7 @@ function getNamespaces(metadata: string): NamespaceAlias[] {
  * @param namespace - the namespace to search
  * @returns An alias for the specified namespace or empty string
  */
-function getAliasFromAnnotation(annotations: Object, namespace: string): string {
+function getAliasFromAnnotation(annotations: object, namespace: string): string {
     let references = annotations['edmx:Edmx']?.['edmx:Reference'];
 
     // Can be array or single item

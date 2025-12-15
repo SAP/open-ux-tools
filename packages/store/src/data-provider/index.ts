@@ -30,6 +30,11 @@ export interface DataProvider<E, K extends EntityKey> {
     read(key: K): Promise<E | undefined>;
     write(entity: E): Promise<E | undefined>;
     delete(entity: E): Promise<boolean>;
+    /**
+     * Returns the data as an array related to the entity.
+     *
+     * @param options - Options for retrieving data.
+     */
     getAll(options?: ProviderGetAllOptions<E>): Promise<E[] | []>;
 }
 

@@ -1,7 +1,13 @@
-import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import {
+    ODataService,
+    ODataVersion,
+    ServiceProvider,
+    type AbapServiceProvider,
+    type ODataServiceInfo,
+    type AxiosRequestConfig
+} from '@sap-ux/axios-extension';
 import { createForAbap } from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
-import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
     GUIDED_ANSWERS_ICON,

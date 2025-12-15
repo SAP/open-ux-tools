@@ -32,7 +32,8 @@
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
         "check-types": "tsc --noEmit",
-        "lint": "eslint . --ext .ts",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "cross-env SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true jest --ci --forceExit --detectOpenHandles --colors --silent",
         "ide-ext:package": "vsce package"
     },

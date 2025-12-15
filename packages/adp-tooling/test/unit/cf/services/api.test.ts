@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { readFileSync } from 'node:fs';
-import { cfGetAvailableOrgs } from '@sap/cf-tools';
-import { Cli } from '@sap/cf-tools';
+import { cfGetAvailableOrgs, Cli } from '@sap/cf-tools';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';

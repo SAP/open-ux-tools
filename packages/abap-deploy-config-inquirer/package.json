@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-inquirer"
     },
-    "version": "1.6.57",
+    "version": "1.6.59",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -14,8 +14,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",

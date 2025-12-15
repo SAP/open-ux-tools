@@ -177,7 +177,7 @@ class CstToAstVisitor extends Visitor {
         const line = hasNaNOrUndefined(token.endLine) ? (token.startLine ?? 0) - 1 : (token.endLine ?? 0) - 1;
         const char = hasNaNOrUndefined(token.endColumn)
             ? (token.startColumn ?? 0) - 1 + token.image.length
-            : token.endColumn ?? 0;
+            : (token.endColumn ?? 0);
         const end = Position.create(line, char);
         if (this.startPosition) {
             return Range.create(adjustPosition(start, this.startPosition), adjustPosition(end, this.startPosition));

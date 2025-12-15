@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-library-reference-inquirer",
     "description": "Prompts module that can provide prompts for UI5 library writer",
-    "version": "0.4.77",
+    "version": "0.4.79",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -16,8 +16,8 @@
         "build": "tsc --build",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "watch": "tsc --watch",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",

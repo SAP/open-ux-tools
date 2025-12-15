@@ -161,7 +161,7 @@ async function saveSystem(
         force: systemExistsInStore
     });
     const i18nKey = systemPanelViewType === SystemPanelViewType.Create ? 'info.systemSaved' : 'info.systemUpdated';
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
     window.showInformationMessage(t(i18nKey, geti18nOpts(backendSystem.name)));
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

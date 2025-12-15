@@ -47,11 +47,8 @@ describe('Generate v2 apps', () => {
             }
             console.log(`Restoring cwd: ${originalCwd}`);
             process.chdir(originalCwd);
-        } catch {
-            () => {
-                // Needed for lint
-            };
-        }
+            // eslint-disable-next-line no-empty
+        } catch {}
     });
 
     it('LROP v2 - URL', async () => {

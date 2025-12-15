@@ -1,8 +1,7 @@
-import type { Control, ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import type { Control, ExternalAction, Properties } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
     controlSelected,
-    Properties,
     propertyChanged,
     PropertyType,
     reportTelemetry,
@@ -99,8 +98,12 @@ export class SelectionService implements Service {
      *
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
+     * @param changeService - change service instance.
      */
-    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {}
+    constructor(
+        private readonly rta: RuntimeAuthoring,
+        private readonly changeService: ChangeService
+    ) {}
 
     /**
      * Initialize selection service.

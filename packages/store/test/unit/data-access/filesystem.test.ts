@@ -8,6 +8,7 @@ import type { Entity } from '../../../src';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 
 jest.mock('fs', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     return require('memfs');
 });
 
