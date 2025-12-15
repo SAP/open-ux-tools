@@ -28,12 +28,7 @@ function isType(node: ASTNode | undefined, type: string): boolean {
  * @returns True if the string ends with the suffix
  */
 function endsWith(string: string, suffix: string): boolean {
-    return (
-        typeof string === 'string' &&
-        typeof suffix === 'string' &&
-        string.includes(suffix) &&
-        string.indexOf(suffix) === string.length - suffix.length
-    );
+    return typeof string === 'string' && typeof suffix === 'string' && string.endsWith(suffix);
 }
 
 // ------------------------------------------------------------------------------
