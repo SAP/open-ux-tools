@@ -197,7 +197,6 @@ describe('getValueHelpDownloadPrompt', () => {
                 }
             };
             if (typeof prompt.when === 'function') {
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 prompt.when(answers);
             }
         });
@@ -247,7 +246,6 @@ describe('getValueHelpDownloadPrompt', () => {
         it('should log info when no external services are fetched', async () => {
             mockAbapServiceProvider.fetchExternalServices.mockResolvedValue([]);
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const result = typeof prompt.validate === 'function' ? await prompt.validate(true) : true;
 
             expect(result).toBe(true);
@@ -259,7 +257,6 @@ describe('getValueHelpDownloadPrompt', () => {
             const error = new Error('Network error');
             mockAbapServiceProvider.fetchExternalServices.mockRejectedValue(error);
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const result = typeof prompt.validate === 'function' ? await prompt.validate(true) : true;
 
             expect(result).toBe(true);
@@ -353,7 +350,6 @@ describe('getValueHelpDownloadPrompt', () => {
                 }
             };
             if (typeof prompt.when === 'function') {
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 prompt.when(answers);
             }
 
@@ -369,11 +365,10 @@ describe('getValueHelpDownloadPrompt', () => {
             // Check that downloadTimeMs is >= 100ms
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const successCall = mockReportEvent.mock.calls.find(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
                 (call: any[]) => call[0]?.eventName === 'VALUE_HELP_DOWNLOAD_SUCCESS'
             );
             expect(successCall).toBeDefined();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
             expect(successCall?.[0]?.measurements?.downloadTimeMs).toBeGreaterThanOrEqual(100);
         });
     });
