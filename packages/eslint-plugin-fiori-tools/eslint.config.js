@@ -1,5 +1,4 @@
 const base = require('../../eslint.config.js');
-const { default:  eslintPlugin } = require('eslint-plugin-eslint-plugin');
 
 const tsParser = require('@typescript-eslint/parser');
 
@@ -16,6 +15,5 @@ module.exports = [
                 project: './tsconfig.eslint.json'
             }
         }
-    },
-    eslintPlugin.configs.recommended
+    }
 ];

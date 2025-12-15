@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-docs-embeddings",
-    "version": "0.4.5",
+    "version": "0.4.6",
     "description": "SAP Fiori documentation indexing",
     "private": false,
     "scripts": {

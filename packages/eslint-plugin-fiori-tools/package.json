@@ -18,8 +18,7 @@
     },
     "devDependencies": {
         "eslint": "^9",
-        "@typescript-eslint/rule-tester": "8.46.2",
-        "eslint-plugin-eslint-plugin": "7.2.0"
+        "@typescript-eslint/rule-tester": "8.46.2"
     },
     "dependencies": {
         "@babel/core": "^7.28.5",
