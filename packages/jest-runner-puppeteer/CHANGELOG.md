@@ -1,43 +1,49 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.3
+
+### Patch Changes
+
+- 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
+
 ## 0.2.2
 
 ### Patch Changes
 
--   605fdca: Remove replace mkdirp with node native functionality
+- 605fdca: Remove replace mkdirp with node native functionality
 
 ## 0.2.1
 
 ### Patch Changes
 
--   cfe9c13: Add deep link to package and changelog to README.md
+- cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.2.0
 
 ### Minor Changes
 
--   f4cd036: Move rimraf to dependencies.
+- f4cd036: Move rimraf to dependencies.
 
 ## 0.1.2
 
 ### Patch Changes
 
--   43a2446: chore: fix Sonar issues
+- 43a2446: chore: fix Sonar issues
 
 ## 0.1.1
 
 ### Patch Changes
 
--   93f8a83: chore - upgrade typescript 5.6.2
+- 93f8a83: chore - upgrade typescript 5.6.2
 
 ## 0.1.0
 
 ### Minor Changes
 
--   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+- c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
 
 ## 0.0.2
 
 ### Patch Changes
 
--   9b6f4c87: adds new jest runner puppeteer module
+- 9b6f4c87: adds new jest runner puppeteer module
