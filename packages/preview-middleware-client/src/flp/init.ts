@@ -414,7 +414,7 @@ if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.dataset.openUxPreviewLibsManifests,
         flex: bootstrapConfig.dataset.openUxPreviewFlexSettings,
-        customInit: bootstrapConfig.dataset.openUxPreviewCustominit,
+        customInit: bootstrapConfig.dataset.openUxPreviewCustomInit,
         enhancedHomePage: !!bootstrapConfig.dataset.openUxPreviewEnhancedHomepage,
         enableCardGenerator: !!bootstrapConfig.dataset.openUxPreviewEnableCardGenerator
     }).catch((e) => {
