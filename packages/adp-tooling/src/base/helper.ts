@@ -4,7 +4,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
 import type { UI5Config } from '@sap-ux/ui5-config';
-import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
+import { type InboundContent, type Inbound, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace, type Manifest } from '@sap-ux/project-access';
 
 import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
@@ -157,6 +157,27 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
     } catch (error) {
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         throw new Error(`No system configuration found in ${basename(ui5ConfigPath)}`);
+    }
+}
+
+/**
+ * Returns the project type for an existing Adaptation project based on the information
+ * inside the ui5.yaml. If the builder key is presented inside the yaml then we are
+ * in a cloudReady project otherwise - onPremise.
+ *
+ * @param {string} basePath - The path to the adaptation project root folder.
+ * @param {string} yamlPath - The path to the ui5.yaml file.
+ * @returns {Promise<AdaptationProjectType | undefined>} The project type or undefined.
+ */
+export async function getExistingProjectType(
+    basePath: string,
+    yamlPath: string
+): Promise<AdaptationProjectType | undefined> {
+    try {
+        const ui5Yaml = await getAdpConfig(basePath, yamlPath);
+        return ui5Yaml.builder ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
+    } catch (error) {
+        return undefined;
     }
 }
 

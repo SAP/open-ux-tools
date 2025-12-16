@@ -104,7 +104,8 @@
         "failedToCreateServiceInstance": "Failed to create the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
         "failedToGetFDCApps": "Retrieving FDC apps failed: {{error}}",
         "failedToConnectToFDCService": "Failed to connect to the FDC service: '{{status}}'",
-        "baseAppRequired": "A base app is required for CF project generation. Please select a base app and try again."
+        "baseAppRequired": "A base app is required for CF project generation. Please select a base app and try again.",
+        "projectTypeNotProvided": "The project type is missing." 
     },
     "choices": {
         "true": "true",

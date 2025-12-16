@@ -1,5 +1,7 @@
 import { AppRouterType } from '@sap-ux/adp-tooling';
 import type { CFApp, SourceApplication } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { t } from '../../../utils/i18n';
 
 interface Choice {
     name: string;
@@ -61,3 +63,12 @@ export const getAppRouterChoices = (isInternalUsage: boolean): { name: AppRouter
     }
     return options;
 };
+
+/**
+ *
+ * @returns {{ name: string; value: AdaptationProjectType }[]} The localized project type choices.
+ */
+export const getProjectTypeChoices = (): { name: string; value: AdaptationProjectType }[] => [
+    { name: t('prompts.projectTypeCloudReadyName'), value: AdaptationProjectType.CLOUD_READY },
+    { name: t('prompts.projectTypeOnPremName'), value: AdaptationProjectType.ON_PREMISE }
+];
