@@ -1,5 +1,16 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.11.22
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/telemetry@0.6.48
+    - @sap-ux/inquirer-common@0.9.17
+
 ## 2.11.21
 
 ### Patch Changes
