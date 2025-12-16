@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.21
+
+### Patch Changes
+
+- 7db4f79: Append the enableLazyLoading attribute for all newly generated FE V4 apps
+
 ## 2.8.20
 
 ### Patch Changes
