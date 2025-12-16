@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.21
+
+### Patch Changes
+
+- 089110c: always register (lookup) sub gens
+
 ## 0.5.20
 
 ### Patch Changes
