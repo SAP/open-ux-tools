@@ -201,6 +201,9 @@ importers:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../../packages/odata-service-writer
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../../packages/store
       '@sap-ux/ui5-application-writer':
         specifier: workspace:*
         version: link:../../packages/ui5-application-writer
