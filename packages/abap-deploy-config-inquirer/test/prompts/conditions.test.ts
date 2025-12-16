@@ -56,8 +56,11 @@ describe('Test abap deploy config inquirer conditions', () => {
         jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
             name: 'Target system 1',
             url: 'http://saved.target.url',
-            client: '100'
+            client: '100',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         });
+        expect(showScpQuestion({ targetSystem: 'Url', url: 'http://saved.target.url', package: '' })).toBe(false);
         expect(showScpQuestion({ url: 'http://saved.target.url', package: '' })).toBe(false);
     });
 

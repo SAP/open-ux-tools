@@ -311,7 +311,9 @@ describe('test helper functions', () => {
                 backendSystem: {
                     name: 'testSystem',
                     url: 'http://testsystem:44300',
-                    client: '001'
+                    client: '001',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
                 },
                 serviceProvider: providerMock
             }
@@ -363,7 +365,9 @@ describe('test helper functions', () => {
                 backendSystem: {
                     name: 'testSystem',
                     url: 'http://testsystem:44300',
-                    client: '001'
+                    client: '001',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
                 },
                 serviceProvider: providerMock
             }
@@ -421,7 +425,9 @@ describe('test helper functions', () => {
                 backendSystem: {
                     name: 'testSystem',
                     url: 'http://testsystem:44300',
-                    client: '001'
+                    client: '001',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
                 },
                 serviceProvider: providerMock
             }

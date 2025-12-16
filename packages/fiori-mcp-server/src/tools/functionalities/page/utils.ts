@@ -1,6 +1,6 @@
-import type { AppData } from '../../../page-editor-api';
 import type { PageDef } from './types';
 import { FioriElementsVersion, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import type { Application } from '@sap/ux-specification/dist/types/src';
 
 const newPagePrefixForType = new Map<PageTypeV4, string>([
     [PageTypeV4.ListReport, 'List'],
@@ -97,9 +97,9 @@ export function generatePageId(
 /**
  * Retrieves the Fiori Elements version for the given application.
  *
- * @param appData - The application data object containing configuration details.
+ * @param appData - The application configuration.
  * @returns The resolved Fiori Elements version.
  */
-export function getFioriElementsVersion(appData: AppData) {
-    return appData.config.target?.fioriElements ?? FioriElementsVersion.v4;
+export function getFioriElementsVersion(appData: Application) {
+    return appData.target?.fioriElements ?? FioriElementsVersion.v4;
 }

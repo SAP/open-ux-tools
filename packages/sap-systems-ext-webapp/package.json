@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/sap-systems-ext-webapp",
-    "version": "0.0.4",
+    "version": "0.0.6",
     "private": true,
     "main": "dist/store.js",
     "description": "Web view for sap-systems-ext",

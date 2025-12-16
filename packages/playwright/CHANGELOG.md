@@ -1,52 +1,60 @@
 # @sap-ux-private/playwright
 
+## 0.2.3
+
+### Patch Changes
+
+- 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
+- Updated dependencies [4ecfbe2]
+    - @sap-ux/logger@0.7.2
+
 ## 0.2.2
 
 ### Patch Changes
 
--   cfe9c13: Add deep link to package and changelog to README.md
--   Updated dependencies [cfe9c13]
-    -   @sap-ux/logger@0.7.1
+- cfe9c13: Add deep link to package and changelog to README.md
+- Updated dependencies [cfe9c13]
+    - @sap-ux/logger@0.7.1
 
 ## 0.2.1
 
 ### Patch Changes
 
--   43a2446: chore: fix Sonar issues
+- 43a2446: chore: fix Sonar issues
 
 ## 0.2.0
 
 ### Minor Changes
 
--   a28357d: chore - drop node18 support as it is out of maintenance
+- a28357d: chore - drop node18 support as it is out of maintenance
 
 ### Patch Changes
 
--   Updated dependencies [a28357d]
-    -   @sap-ux/logger@0.7.0
+- Updated dependencies [a28357d]
+    - @sap-ux/logger@0.7.0
 
 ## 0.1.0
 
 ### Minor Changes
 
--   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+- c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
 
 ### Patch Changes
 
--   Updated dependencies [c2359077]
-    -   @sap-ux/logger@0.6.0
+- Updated dependencies [c2359077]
+    - @sap-ux/logger@0.6.0
 
 ## 0.0.3
 
 ### Patch Changes
 
--   c15435b6: fix: remove engines pnpm from package.json
--   Updated dependencies [c15435b6]
-    -   @sap-ux/logger@0.5.1
+- c15435b6: fix: remove engines pnpm from package.json
+- Updated dependencies [c15435b6]
+    - @sap-ux/logger@0.5.1
 
 ## 0.0.2
 
 ### Patch Changes
 
--   Updated dependencies [2e0b1a6d]
-    -   @sap-ux/logger@0.5.0
+- Updated dependencies [2e0b1a6d]
+    - @sap-ux/logger@0.5.0

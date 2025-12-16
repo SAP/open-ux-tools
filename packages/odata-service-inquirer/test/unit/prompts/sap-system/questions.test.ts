@@ -215,7 +215,9 @@ describe('questions', () => {
         const backendSystemReentrance: BackendSystem = {
             name: 'http://s4hc:1234',
             url: 'http:/s4hc:1234',
-            authenticationType: 'reentranceTicket'
+            authenticationType: 'reentranceTicket',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
         };
         const cachedConnectedSystem: ConnectedSystem = {
             serviceProvider: {
