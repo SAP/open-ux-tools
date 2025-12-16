@@ -1,5 +1,13 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.81
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.22
+- @sap-ux/fiori-generator-shared@0.13.44
+- @sap-ux/inquirer-common@0.9.17
+
 ## 0.4.80
 
 ### Patch Changes
