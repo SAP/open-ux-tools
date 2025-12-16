@@ -19,85 +19,36 @@ const telemEventValueHelpDownloadSuccess = 'VALUE_HELP_DOWNLOAD_SUCCESS';
 const telemEventValueHelpDownloadFailed = 'VALUE_HELP_DOWNLOAD_FAILED';
 
 /**
- * Create telemetry data for value help download events.
- * Separates measurements (numeric values) from properties (dimensions).
- *
- * @param params - telemetry parameters
- * @param params.userChoseToDownload - whether user chose to download
- * @param params.valueHelpCount - count of value help items
- * @param params.downloadTimeMs - download time in milliseconds
- * @param params.error - error message if download failed
- * @returns telemetry data object with properties and measurements
- */
-function createValueHelpTelemetryData(params: {
-    userChoseToDownload?: boolean;
-    valueHelpCount?: number;
-    downloadTimeMs?: number;
-    error?: string;
-}): { properties: Record<string, any>; measurements: Record<string, number> } {
-    // Build property object for TelemetryHelper
-    const propertyData: Record<string, any> = {};
-    if (params.userChoseToDownload !== undefined) {
-        propertyData.userChoseToDownload = params.userChoseToDownload;
-    }
-    if (params.valueHelpCount !== undefined) {
-        propertyData.valueHelpCount = params.valueHelpCount;
-    }
-    if (params.error !== undefined) {
-        propertyData.error = params.error;
-    }
-
-    // Use TelemetryHelper to add standard properties (Platform, OperatingSystem, etc.)
-    const properties = TelemetryHelper.createTelemetryData(propertyData) ?? {};
-
-    // Build measurements object for numeric metrics
-    const measurements: Record<string, number> = {};
-    if (params.downloadTimeMs !== undefined) {
-        measurements.downloadTimeMs = params.downloadTimeMs;
-    }
-
-    return { properties, measurements };
-}
-
-/**
- * Send telemetry event with measurements support.
+ * Send telemetry event with optional measurements support.
  *
  * @param eventName - telemetry event name
- * @param params - telemetry parameters
- * @param params.userChoseToDownload - whether user chose to download
- * @param params.valueHelpCount - count of value help items
- * @param params.downloadTimeMs - download time in milliseconds
- * @param params.error - error message if download failed
- * @param useMeasurements - whether to use measurements (defaults to true for reportEvent)
+ * @param properties - telemetry properties (dimensions)
+ * @param measurements - optional telemetry measurements (numeric metrics)
  */
 async function sendValueHelpTelemetry(
     eventName: string,
-    params: {
-        userChoseToDownload?: boolean;
-        valueHelpCount?: number;
-        downloadTimeMs?: number;
-        error?: string;
-    },
-    useMeasurements = true
+    properties: Record<string, any>,
+    measurements?: Record<string, number>
 ): Promise<void> {
-    const telemetryData = createValueHelpTelemetryData(params);
+    // Use TelemetryHelper to add standard properties (Platform, OperatingSystem, etc.)
+    const enrichedProperties = TelemetryHelper.createTelemetryData(properties) ?? {};
 
-    if (useMeasurements && Object.keys(telemetryData.measurements).length > 0) {
+    if (measurements && Object.keys(measurements).length > 0) {
         // Use reportEvent for events with measurements
         const telemetryClient = getTelemetryClient();
         if (telemetryClient) {
             await telemetryClient.reportEvent(
                 {
                     eventName,
-                    properties: telemetryData.properties,
-                    measurements: telemetryData.measurements
+                    properties: enrichedProperties,
+                    measurements
                 },
                 SampleRate.NoSampling
             );
         }
     } else {
         // Use sendTelemetryEvent for simple events without measurements
-        sendTelemetryEvent(eventName, telemetryData.properties);
+        sendTelemetryEvent(eventName, enrichedProperties);
     }
 }
 
@@ -144,11 +95,9 @@ export function getValueHelpDownloadPrompt(
             delete PromptState.odataService.valueListMetadata;
 
             // Send telemetry when prompt is answered
-            await sendValueHelpTelemetry(
-                telemEventValueHelpDownloadPrompted,
-                { userChoseToDownload: downloadMetadata },
-                false // no measurements for this event
-            );
+            await sendValueHelpTelemetry(telemEventValueHelpDownloadPrompted, {
+                userChoseToDownload: downloadMetadata
+            });
 
             if (downloadMetadata && connectionValidator.serviceProvider instanceof AbapServiceProvider) {
                 const startTime = Date.now();
@@ -165,21 +114,27 @@ export function getValueHelpDownloadPrompt(
                     }
 
                     // Send success telemetry with measurements
-                    await sendValueHelpTelemetry(telemEventValueHelpDownloadSuccess, {
-                        userChoseToDownload: true,
-                        valueHelpCount: externalServiceMetadata.length,
-                        downloadTimeMs
-                    });
+                    await sendValueHelpTelemetry(
+                        telemEventValueHelpDownloadSuccess,
+                        {
+                            userChoseToDownload: true,
+                            valueHelpCount: externalServiceMetadata.length
+                        },
+                        { downloadTimeMs }
+                    );
                 } catch (error) {
                     const downloadTimeMs = Date.now() - startTime;
                     LoggerHelper.logger.error(`Failed to fetch external service metadata: ${error}`);
 
                     // Send failure telemetry with measurements
-                    await sendValueHelpTelemetry(telemEventValueHelpDownloadFailed, {
-                        userChoseToDownload: true,
-                        downloadTimeMs,
-                        error: error instanceof Error ? error.message : 'Unknown error'
-                    });
+                    await sendValueHelpTelemetry(
+                        telemEventValueHelpDownloadFailed,
+                        {
+                            userChoseToDownload: true,
+                            error: error instanceof Error ? error.message : 'Unknown error'
+                        },
+                        { downloadTimeMs }
+                    );
                 }
             }
 
