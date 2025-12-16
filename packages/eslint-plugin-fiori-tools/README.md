@@ -19,9 +19,9 @@ Pnpm
 
 To consume this module, add @sap-ux/eslint-plugin-fiori-tools in your project eslint config file (e.g. `eslint.config.js`). You must specify one of the following configurations:
 
-- recommended: contains rules for JavaScript & TypeScript on both prod and test code. 
+- recommended: contains rules for JavaScript & TypeScript on both prod and test code.
 
-- erp: contains rules for JavaScript & TypeScript on both prod and test code. recommended for SAP internal use.
+- recommended-for-s4hana: contains rules for JavaScript & TypeScript on both prod and test code. recommended for SAP internal use.
 
 `eslint.config.js`
 ```javascript

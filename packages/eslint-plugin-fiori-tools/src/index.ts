@@ -142,8 +142,8 @@ export const configs = {
         const typescriptConfig = require('../config/eslintrc-typescript.js') as Linter.Config[];
         return [...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig];
     },
-    // ERP config for JavaScript & TypeScript projects
-    get erp(): Linter.Config[] {
+    // Recommended for S/4HANA config for JavaScript & TypeScript projects
+    get 'recommended-for-s4hana'(): Linter.Config[] {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const commonConfig = require('../config/eslintrc-common.js') as Linter.Config[];
         // eslint-disable-next-line @typescript-eslint/no-require-imports
