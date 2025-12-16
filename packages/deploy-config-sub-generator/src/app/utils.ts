@@ -37,21 +37,3 @@ export function getYUIDetails(appRootPath: string): { name: string; description:
     ];
 }
 
-/**
- * Registers all the root generator's namespaces i.e the subgenerators.
- *
- * @param rootGenerator - the root generator name
- * @param generatorNamespace - the namespace of the generator
- * @param isPackageRegistered - function to check if a package is registered
- * @param lookup - function to lookup and register the package's namespaces
- */
-export function registerNamespaces(
-    rootGenerator: string,
-    generatorNamespace: string,
-    isPackageRegistered: GeneratorOptions['env.isPackageRegistered'],
-    lookup: GeneratorOptions['env.lookup']
-): void {
-    if (rootGenerator && !isPackageRegistered(generatorNamespace)) {
-        lookup({ packagePatterns: [rootGenerator] });
-    }
-}
