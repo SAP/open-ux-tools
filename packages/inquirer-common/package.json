@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/inquirer-common",
     "description": "Commonly used shared functionality and types to support inquirer modules.",
-    "version": "0.9.15",
+    "version": "0.9.17",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -16,8 +16,8 @@
         "build": "tsc --build",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "watch": "tsc --watch",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",

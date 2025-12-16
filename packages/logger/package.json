@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/logger",
-    "version": "0.7.1",
+    "version": "0.7.2",
     "description": "A simple logging module",
     "repository": {
         "type": "git",
@@ -18,8 +18,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --maxWorkers=1 --colors --silent",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"

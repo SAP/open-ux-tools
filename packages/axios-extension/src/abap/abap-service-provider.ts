@@ -18,7 +18,7 @@ import type {
 import { TenantType } from './types';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+
 import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator';
 import type { GeneratorEntry } from './adt-catalog/generators/types';
 import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';

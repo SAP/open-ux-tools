@@ -1,11 +1,14 @@
-import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
 
-export const mockTargetSystems = [
+export const mockTargetSystems: BackendSystem[] = [
     {
         name: 'target1',
         url: 'https://mock.url.target1.com',
         client: '100',
-        userDisplayName: 'mockUser'
+        userDisplayName: 'mockUser',
+        authenticationType: AuthenticationType.Basic,
+        systemType: 'OnPrem',
+        connectionType: 'abap_catalog'
     },
     {
         name: 'target2',
@@ -13,18 +16,25 @@ export const mockTargetSystems = [
         client: '102',
         userDisplayName: 'mockUser2',
         authenticationType: AuthenticationType.ReentranceTicket,
-        systemType: 'AbapCloud'
+        systemType: 'AbapCloud',
+        connectionType: 'abap_catalog'
     },
     {
         name: 'target3',
         url: 'https://mock.url.target3.com',
         client: '103',
-        userDisplayName: 'mockUser3'
+        userDisplayName: 'mockUser3',
+        authenticationType: AuthenticationType.Basic,
+        systemType: 'OnPrem',
+        connectionType: 'abap_catalog'
     },
     {
         name: 'target4',
         url: 'https://mock.url.target4.com',
         client: '104',
-        userDisplayName: 'mockUser4'
+        userDisplayName: 'mockUser4',
+        authenticationType: AuthenticationType.Basic,
+        systemType: 'OnPrem',
+        connectionType: 'abap_catalog'
     }
 ];

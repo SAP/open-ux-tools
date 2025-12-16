@@ -1,5 +1,5 @@
 /** sap.m */
-import Button from 'sap/m/Button';
+import type Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
 

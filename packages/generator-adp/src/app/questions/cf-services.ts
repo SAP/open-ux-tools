@@ -305,7 +305,7 @@ export class CFServicesPrompter {
             message: t('prompts.businessServiceLabel'),
             choices: this.businessServices,
             default: (_: CfServicesAnswers) =>
-                this.businessServices.length === 1 ? this.businessServices[0] ?? '' : '',
+                this.businessServices.length === 1 ? (this.businessServices[0] ?? '') : '',
             when: (answers: CfServicesAnswers) => this.isCfLoggedIn && (this.approuter || answers.approuter),
             validate: async (value: string) => {
                 const validationResult = validateEmptyString(value);

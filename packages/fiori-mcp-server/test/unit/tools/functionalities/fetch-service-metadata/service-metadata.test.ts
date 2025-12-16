@@ -1,47 +1,55 @@
-import type { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem, ConnectionType, SystemType } from '@sap-ux/store';
 import type { ODataService } from '@sap-ux/axios-extension';
 import {
     findSapSystem,
     getServiceMetadata
 } from '../../../../../src/tools/functionalities/fetch-service-metadata/service-metadata';
-import { SystemService } from '@sap-ux/store/dist/services/backend-system';
+import { getService } from '@sap-ux/store';
 import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 
 // Mock dependencies
-jest.mock('@sap-ux/store/dist/services/backend-system');
+jest.mock('@sap-ux/store');
 jest.mock('@sap-ux/axios-extension');
 jest.mock('@sap-ux/logger');
 jest.mock('@sap-ux/edmx-parser');
 
 describe('service-metadata', () => {
     let mockGetAll: jest.Mock;
+    const commonSystemProps: { connectionType: ConnectionType; systemType: SystemType } = {
+        connectionType: 'abap_catalog',
+        systemType: 'OnPrem'
+    };
     const mockSystems: BackendSystem[] = [
         {
             name: 'TestSystem1',
             url: 'https://test1.example.com',
             client: '100',
             username: 'user1',
-            password: 'pass1'
+            password: 'pass1',
+            ...commonSystemProps
         },
         {
             name: 'TestSystem2',
             url: 'https://test2.example.com',
             client: '200',
             username: 'user2',
-            password: 'pass2'
+            password: 'pass2',
+            ...commonSystemProps
         },
         {
             name: 'ProductionSystem',
             url: 'https://prod.example.com',
             client: '300',
             username: 'produser',
-            password: 'prodpass'
+            password: 'prodpass',
+            ...commonSystemProps
         },
         {
             name: 'DevSystem',
             url: 'https://dev.example.com',
-            client: '400'
+            client: '400',
+            ...commonSystemProps
         }
     ];
 
@@ -50,7 +58,7 @@ describe('service-metadata', () => {
 
         // Mock SystemService
         mockGetAll = jest.fn().mockResolvedValue(mockSystems);
-        (SystemService as jest.Mock).mockImplementation(() => ({
+        (getService as jest.Mock).mockImplementation(() => ({
             getAll: mockGetAll
         }));
 
@@ -138,7 +146,8 @@ describe('service-metadata', () => {
                 url: 'https://test.example.com',
                 client: '100',
                 username: 'user',
-                password: 'pass'
+                password: 'pass',
+                ...commonSystemProps
             };
 
             const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
@@ -163,7 +172,8 @@ describe('service-metadata', () => {
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
-                client: '100'
+                client: '100',
+                ...commonSystemProps
             };
 
             const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
@@ -181,7 +191,8 @@ describe('service-metadata', () => {
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
-                client: '100'
+                client: '100',
+                ...commonSystemProps
             };
 
             await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
@@ -193,7 +204,8 @@ describe('service-metadata', () => {
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
-                client: '100'
+                client: '100',
+                ...commonSystemProps
             };
 
             await getServiceMetadata(sapSystem, '/sap/opu/odata4/service3');
@@ -209,7 +221,8 @@ describe('service-metadata', () => {
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
-                client: '100'
+                client: '100',
+                ...commonSystemProps
             };
 
             const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
@@ -226,7 +239,8 @@ describe('service-metadata', () => {
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
-                client: '100'
+                client: '100',
+                ...commonSystemProps
             };
 
             const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
@@ -245,7 +259,8 @@ describe('service-metadata', () => {
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
-                client: '100'
+                client: '100',
+                ...commonSystemProps
             };
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
@@ -264,7 +279,8 @@ describe('service-metadata', () => {
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
-                client: '500'
+                client: '500',
+                ...commonSystemProps
             };
 
             await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
@@ -288,7 +304,8 @@ describe('service-metadata', () => {
             const sapSystem: BackendSystem = {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
-                client: '100'
+                client: '100',
+                ...commonSystemProps
             };
 
             await getServiceMetadata(sapSystem, 'https://test.example.com/sap/opu/odata4/service3');
@@ -313,7 +330,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
                 'Failed to parse service metadata. The service may not be a valid OData V4 service.'
@@ -337,7 +354,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
                 'Failed to parse service metadata. The service may not be a valid OData V4 service.'
@@ -361,7 +378,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow(
                 'Failed to parse service metadata. The service may not be a valid OData V4 service.'
@@ -382,7 +399,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
 
@@ -401,7 +418,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await getServiceMetadata(sapSystem, 'https://test.example.com/sap/opu/odata4/service1?param=value');
 
@@ -426,7 +443,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: '100'
-            };
+            } as BackendSystem;
 
             await expect(getServiceMetadata(sapSystem, '/sap/opu/odata4/service1')).rejects.toThrow('Network error');
         });
@@ -443,7 +460,7 @@ describe('service-metadata', () => {
                 name: 'TestSystem',
                 url: 'https://test.example.com',
                 client: undefined as any
-            };
+            } as BackendSystem;
 
             await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
 

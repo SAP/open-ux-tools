@@ -953,7 +953,7 @@ function getAliasInfo(
 }
 
 function elementHasFlags(element: AnyNode | undefined): boolean {
-    if (!element || element.type !== 'element') {
+    if (element?.type !== 'element') {
         return false;
     }
     const content = element.content[0];

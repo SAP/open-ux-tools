@@ -1,9 +1,10 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
+import type { SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 import {
-    SimpleQuickAction,
     quickActionListChanged,
     executeQuickAction,
     externalFileChange
@@ -12,7 +13,7 @@ import {
 import type { ChangeService } from '../../../../src/cpe/changes/service';
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
-import {
+import type {
     QuickActionActivationContext,
     QuickActionContext,
     QuickActionDefinitionGroup,
