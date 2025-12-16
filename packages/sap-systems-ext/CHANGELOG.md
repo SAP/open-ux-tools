@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.1.2
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+
 ## 0.1.1
 
 ### Patch Changes
