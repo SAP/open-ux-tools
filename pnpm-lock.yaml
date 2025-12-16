@@ -2055,6 +2055,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap/ux-specification':
+        specifier: 1.139.2
+        version: 1.139.2(typescript@5.9.3)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -2188,6 +2191,9 @@ importers:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
+      '@sap/ux-specification':
+        specifier: 1.139.2
+        version: 1.139.2(typescript@5.9.3)
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -3578,6 +3584,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@sap/ux-specification':
+        specifier: 1.139.2
+        version: 1.139.2(typescript@5.9.3)
       '@types/adm-zip':
         specifier: 0.5.5
         version: 0.5.5
