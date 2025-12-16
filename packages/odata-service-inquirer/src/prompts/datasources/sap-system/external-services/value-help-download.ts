@@ -60,6 +60,48 @@ function createValueHelpTelemetryData(params: {
 }
 
 /**
+ * Send telemetry event with measurements support.
+ *
+ * @param eventName - telemetry event name
+ * @param params - telemetry parameters
+ * @param params.userChoseToDownload - whether user chose to download
+ * @param params.valueHelpCount - count of value help items
+ * @param params.downloadTimeMs - download time in milliseconds
+ * @param params.error - error message if download failed
+ * @param useMeasurements - whether to use measurements (defaults to true for reportEvent)
+ */
+async function sendValueHelpTelemetry(
+    eventName: string,
+    params: {
+        userChoseToDownload?: boolean;
+        valueHelpCount?: number;
+        downloadTimeMs?: number;
+        error?: string;
+    },
+    useMeasurements = true
+): Promise<void> {
+    const telemetryData = createValueHelpTelemetryData(params);
+
+    if (useMeasurements && Object.keys(telemetryData.measurements).length > 0) {
+        // Use reportEvent for events with measurements
+        const telemetryClient = getTelemetryClient();
+        if (telemetryClient) {
+            await telemetryClient.reportEvent(
+                {
+                    eventName,
+                    properties: telemetryData.properties,
+                    measurements: telemetryData.measurements
+                },
+                SampleRate.NoSampling
+            );
+        }
+    } else {
+        // Use sendTelemetryEvent for simple events without measurements
+        sendTelemetryEvent(eventName, telemetryData.properties);
+    }
+}
+
+/**
  * Get the value help download confirmation prompt.
  *
  * @param connectionValidator - connection validator instance
@@ -102,10 +144,11 @@ export function getValueHelpDownloadPrompt(
             delete PromptState.odataService.valueListMetadata;
 
             // Send telemetry when prompt is answered
-            const telemetryData = createValueHelpTelemetryData({
-                userChoseToDownload: downloadMetadata
-            });
-            sendTelemetryEvent(telemEventValueHelpDownloadPrompted, telemetryData.properties);
+            await sendValueHelpTelemetry(
+                telemEventValueHelpDownloadPrompted,
+                { userChoseToDownload: downloadMetadata },
+                false // no measurements for this event
+            );
 
             if (downloadMetadata && connectionValidator.serviceProvider instanceof AbapServiceProvider) {
                 const startTime = Date.now();
@@ -121,43 +164,22 @@ export function getValueHelpDownloadPrompt(
                         LoggerHelper.logger.info(t('warnings.noExternalServiceMetdataFetched'));
                     }
 
-                    // Send telemetry with measurements for numeric metrics
-                    const telemetryData = createValueHelpTelemetryData({
+                    // Send success telemetry with measurements
+                    await sendValueHelpTelemetry(telemEventValueHelpDownloadSuccess, {
                         userChoseToDownload: true,
                         valueHelpCount: externalServiceMetadata.length,
                         downloadTimeMs
                     });
-                    const telemetryClient = getTelemetryClient();
-                    if (telemetryClient) {
-                        await telemetryClient.reportEvent(
-                            {
-                                eventName: telemEventValueHelpDownloadSuccess,
-                                properties: telemetryData.properties,
-                                measurements: telemetryData.measurements
-                            },
-                            SampleRate.NoSampling
-                        );
-                    }
                 } catch (error) {
                     const downloadTimeMs = Date.now() - startTime;
                     LoggerHelper.logger.error(`Failed to fetch external service metadata: ${error}`);
-                    // Send telemetry with measurements for numeric metrics
-                    const telemetryData = createValueHelpTelemetryData({
+
+                    // Send failure telemetry with measurements
+                    await sendValueHelpTelemetry(telemEventValueHelpDownloadFailed, {
                         userChoseToDownload: true,
                         downloadTimeMs,
                         error: error instanceof Error ? error.message : 'Unknown error'
                     });
-                    const telemetryClient = getTelemetryClient();
-                    if (telemetryClient) {
-                        await telemetryClient.reportEvent(
-                            {
-                                eventName: telemEventValueHelpDownloadFailed,
-                                properties: telemetryData.properties,
-                                measurements: telemetryData.measurements
-                            },
-                            SampleRate.NoSampling
-                        );
-                    }
                 }
             }
 
