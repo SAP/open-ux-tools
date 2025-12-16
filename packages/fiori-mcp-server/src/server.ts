@@ -142,7 +142,7 @@ export class FioriFunctionalityServer {
      * @param result - The result to be converted.
      * @returns The converted result in CallToolResult format.
      */
-    private convertResultToCallToolResult<T extends object | String>(result: T | string): CallToolResult {
+    private convertResultToCallToolResult<T extends object | string>(result: T | string): CallToolResult {
         // Handle string results - return them as plain text content
         if (typeof result === 'string' || result instanceof String) {
             return {

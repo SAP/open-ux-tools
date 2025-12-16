@@ -230,10 +230,8 @@ server:
 
     function getFsWithUi5Yaml(manifestContent: string): Editor {
         return getFs({
-            [join(
-                basePath,
-                'ui5.yaml'
-            )]: `# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+            [join(basePath, 'ui5.yaml')]:
+                `# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: "2.5"
 metadata:

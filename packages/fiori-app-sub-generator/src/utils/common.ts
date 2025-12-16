@@ -258,7 +258,7 @@ export async function generateLaunchConfig(
                 vscode: vscode,
                 addStartCmd,
                 sapClientParam: options.sapClientParam,
-                flpAppId: options?.enableVirtualEndpoints ? 'app-preview' : options.flpAppId ?? '',
+                flpAppId: options?.enableVirtualEndpoints ? 'app-preview' : (options.flpAppId ?? ''),
                 flpSandboxAvailable: !options?.enableVirtualEndpoints,
                 isAppStudio: isAppStudio(),
                 writeToAppOnly

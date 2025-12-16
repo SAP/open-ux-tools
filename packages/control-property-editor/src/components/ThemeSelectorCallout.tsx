@@ -128,5 +128,5 @@ export function ThemeSelectorCallout(): ReactElement {
  * @param themeName - ThemeName
  */
 export function setThemeOnDocument(themeName: ThemeName): void {
-    document.getElementsByTagName('HTML')[0].setAttribute('data-theme', themeName);
+    document.documentElement.dataset.theme = themeName;
 }

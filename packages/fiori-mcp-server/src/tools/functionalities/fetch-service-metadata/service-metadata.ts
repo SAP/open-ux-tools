@@ -1,9 +1,10 @@
-import type { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux/axios-extension';
 
 import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
-import { SystemService } from '@sap-ux/store/dist/services/backend-system';
+import { getService } from '@sap-ux/store';
 import { ToolsLogger } from '@sap-ux/logger';
+import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 
 /**
  * Fetches SAP backend systems.
@@ -12,7 +13,11 @@ import { ToolsLogger } from '@sap-ux/logger';
  */
 async function getSapSystems(): Promise<BackendSystem[]> {
     const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
-    return new SystemService(logger).getAll({ includeSensitiveData: true });
+    const systemStore = await getService<BackendSystem, BackendSystemKey>({
+        logger: logger,
+        entityName: 'system'
+    });
+    return systemStore.getAll({ includeSensitiveData: true });
 }
 
 /**
@@ -59,7 +64,7 @@ function matchSystemByUrl(systems: BackendSystem[], url: string): BackendSystem[
     }
     if (!matchingSystems.length) {
         // system not stored. Return raw props for further processing
-        matchingSystems = [{ name: origin, url: origin, client }];
+        matchingSystems = [{ name: origin, url: origin, client } as BackendSystem];
     }
     return matchingSystems;
 }
@@ -157,6 +162,24 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
 }
 
 /**
+ * Checks if the provided metadata is a valid (parseable, and not error).
+ *
+ * @param metadata - The EDMX metadata XML as string.
+ * @throws An error if the metadata is not valid.
+ */
+function checkMetadata(metadata: string): void {
+    let parsedMetadata: unknown;
+    try {
+        parsedMetadata = parseEdmx(metadata);
+    } catch {
+        /* error handled below */
+    }
+    if (!parsedMetadata) {
+        throw new Error('Failed to parse service metadata. The service may not be a valid OData V4 service.');
+    }
+}
+
+/**
  * Fetches the service metadata for a given SAP system and service path.
  *
  * @param sapSystem - The SAP system object.
@@ -165,5 +188,7 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
  */
 export async function getServiceMetadata(sapSystem: BackendSystem, servicePath: string): Promise<string> {
     const service = await getServiceFromSystem(sapSystem, servicePath);
-    return service.metadata();
+    const metadata = await service.metadata();
+    checkMetadata(metadata);
+    return metadata;
 }
