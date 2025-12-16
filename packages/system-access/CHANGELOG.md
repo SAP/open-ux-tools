@@ -1,5 +1,13 @@
 # @sap-ux/system-access
 
+## 0.6.33
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+
 ## 0.6.32
 
 ### Patch Changes

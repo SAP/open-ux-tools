@@ -1,5 +1,14 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.5.2
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+    - @sap-ux/fiori-docs-embeddings@0.4.6
+
 ## 0.5.1
 
 ### Patch Changes

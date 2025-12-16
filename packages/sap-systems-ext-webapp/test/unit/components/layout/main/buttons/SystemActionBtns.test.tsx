@@ -12,14 +12,17 @@ describe('<Buttons />', () => {
         url: 'https://url.com',
         client: '000',
         username: 'user',
-        password: 'pass'
+        password: 'pass',
+        connectionType: 'abap_catalog'
     };
 
     const systemInfoBTP: BackendSystem = {
         name: 'sysName',
-        systemType: 'AbabCloud',
+        systemType: 'AbapCloud',
         url: 'https://url.com',
-        serviceKeys: 'test-service-key'
+        serviceKeys: 'test-service-key',
+        authenticationType: 'reentranceTicket',
+        connectionType: 'abap_catalog'
     };
 
     afterEach(() => {

@@ -908,7 +908,9 @@ describe('ConnectionValidator', () => {
                 url: 'https://system1:12345/',
                 authenticationType: 'reentranceTicket',
                 userDisplayName: 'user1',
-                client: '001'
+                client: '001',
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             }
         };
         connectValidator.setConnectedSystem(cachedConnectedSystem);
@@ -944,10 +946,12 @@ describe('ConnectionValidator', () => {
             backendSystem: {
                 name: 'system2',
                 url: 'https://system2:1234554321/',
-                authenticationType: '',
+                authenticationType: 'oauth2',
                 serviceKeys: {
                     url: 'https://system2:54321/'
-                }
+                },
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             }
         };
 

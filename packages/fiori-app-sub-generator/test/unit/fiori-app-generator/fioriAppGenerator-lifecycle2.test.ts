@@ -409,7 +409,9 @@ describe('Test FioriAppGenerator', () => {
                         url: 'http://mockhost:1234',
                         client: '010',
                         username: 'mockUser',
-                        password: 'mockPassword'
+                        password: 'mockPassword',
+                        systemType: 'OnPrem',
+                        connectionType: 'abap_catalog'
                     },
                     serviceProvider: {} as ServiceProvider
                 },

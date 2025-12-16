@@ -314,7 +314,9 @@ describe('proxy', () => {
     describe('enhanceConfigForSystem', () => {
         const system: BackendSystem = {
             name: 'example',
-            url: 'http://backend.example'
+            url: 'http://backend.example',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         };
 
         test('simple system', async () => {

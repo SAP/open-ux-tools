@@ -1,4 +1,5 @@
 import type { SystemState } from '../../../src/types';
+import type { BackendSystem } from '@sap-ux/store';
 import { LoadingState } from '../../../src/types';
 import { getInitialState, reducer } from '../../../src/state/reducers';
 import * as types from '@sap-ux/sap-systems-ext-types';
@@ -54,7 +55,7 @@ describe('Test the reducer', () => {
                 client: '',
                 username: '',
                 password: ''
-            }
+            } as BackendSystem
         };
     });
 

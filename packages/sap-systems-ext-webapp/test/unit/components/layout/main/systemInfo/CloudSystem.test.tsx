@@ -13,7 +13,9 @@ describe('<CloudSystem />', () => {
                 systemInfo={{
                     name: 'btp system',
                     url: 'https://mock.btp.system',
-                    authenticationType: 'reentranceTicket'
+                    authenticationType: 'reentranceTicket',
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
                 }}
                 setUrl={setUrl}
                 setIsDetailsUpdated={setIsDetailsUpdated}
@@ -40,7 +42,9 @@ describe('<CloudSystem />', () => {
                     url: 'https://mock.service.key.url',
                     serviceKeys: {
                         mockKey: 'mockValue'
-                    }
+                    },
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
                 }}
                 setUrl={setUrl}
                 setIsDetailsUpdated={setIsDetailsUpdated}
@@ -66,7 +70,9 @@ describe('<CloudSystem />', () => {
                     authenticationType: 'reentranceTicket',
                     serviceKeys: {
                         mockKey: 'mockValue'
-                    }
+                    },
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
                 }}
                 setUrl={setUrl}
                 setIsDetailsUpdated={setIsDetailsUpdated}
@@ -84,7 +90,9 @@ describe('<CloudSystem />', () => {
                 systemInfo={{
                     name: 'btp system',
                     url: 'https://mock.btp.system',
-                    authenticationType: 'basic'
+                    authenticationType: 'basic',
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
                 }}
                 setUrl={setUrl}
                 setIsDetailsUpdated={setIsDetailsUpdated}

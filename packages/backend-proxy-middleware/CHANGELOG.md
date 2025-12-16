@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.20
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+
 ## 0.10.19
 
 ### Patch Changes
