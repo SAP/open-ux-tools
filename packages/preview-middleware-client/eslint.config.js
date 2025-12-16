@@ -16,7 +16,7 @@ module.exports = defineConfig([
             'coverage/**'
         ]
     },
-    ...fioriTools.configs.erp,
+    ...fioriTools.configs['recommended-for-s4hana'],
     {
         languageOptions: {
             parser: tsParser,
