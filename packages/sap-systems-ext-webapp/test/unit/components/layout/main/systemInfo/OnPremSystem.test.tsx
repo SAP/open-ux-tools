@@ -25,7 +25,8 @@ describe('<OnPremSystem />', () => {
             name: 'systemName',
             url: 'https://dummy.com',
             client: '000',
-
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog',
             username: 'user',
             password: 'password'
         };

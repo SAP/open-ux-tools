@@ -15,6 +15,24 @@ export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undef
     );
 };
 
+/**
+ * Checks if any of the values in the object are not `undefined` or `null`
+ *
+ * @param obj - the object to check
+ * @param props - the properties to check on the object
+ * @returns - `true` if any value is not `undefined` or `null`, `false` otherwise
+ */
+export function hasAnyValue<E extends object, K extends keyof E>(obj: E, props: K[]): boolean {
+    if (obj == null || typeof obj !== 'object') {
+        return false;
+    }
+
+    return props.some((prop) => {
+        const value = obj[prop];
+        return value !== undefined && value !== null;
+    });
+}
+
 /** Given an `Error` or any other object thrown, returns an `Error` instance */
 export function errorInstance(e: Error | unknown): NodeJS.ErrnoException {
     if (e instanceof Error) {
