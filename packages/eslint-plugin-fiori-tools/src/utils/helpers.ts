@@ -613,3 +613,181 @@ export function isForbiddenObviousApi(calleePath: string): string {
     const elementArray = calleePath.split('.');
     return elementArray.at(-1) ?? '';
 }
+
+// ------------------------------------------------------------------------------
+// Object Path Finding Utilities
+// ------------------------------------------------------------------------------
+
+/**
+ * Filter predicate for path segments.
+ * @param value The value at the current path segment
+ * @param key The key/property name of the current segment
+ * @param path The current path array leading to this segment
+ * @param context Optional external context object passed from the caller
+ * @returns True if this segment matches the filter criteria, or an object with pass: boolean and optional metadata
+ */
+export type PathSegmentFilter<TContext = any> = (
+    value: unknown,
+    key: string,
+    path: string[],
+    context?: TContext
+) => boolean | { pass: boolean; metadata?: Record<string, any> };
+
+/**
+ * Result of a path search operation.
+ */
+export interface PathMatch {
+    /** The complete path array to the matched location */
+    path: string[];
+    /** The value at the matched path */
+    value: unknown;
+    /** Map of wildcard names to their matched keys (e.g., {'targetName': 'BookingList'}) */
+    wildcardValues: Record<string, string>;
+    /** Optional metadata attached by filter predicates (e.g., computed values) */
+    metadata?: Record<string, any>;
+}
+
+/**
+ * Find all paths in a nested object matching a path template with wildcards and filters.
+ * 
+ * This function traverses a nested object structure and finds all paths that match
+ * a given template. The template can include:
+ * - Static segments: exact property names that must match
+ * - Wildcard segments: '*' or named wildcards like '{targetName}' that match any key
+ * 
+ * Filters can be applied to wildcard segments to constrain which keys are matched.
+ * 
+ * @example
+ * ```typescript
+ * const manifest = {
+ *   'sap.ui5': {
+ *     routing: {
+ *       targets: {
+ *         'BookingList': { type: 'Component', name: 'sap.fe.templates.ListReport' },
+ *         'DetailPage': { type: 'Component', name: 'sap.fe.templates.ObjectPage' }
+ *       }
+ *     }
+ *   }
+ * };
+ * 
+ * const matches = findPathsInObject(
+ *   manifest,
+ *   ['sap.ui5', 'routing', 'targets', '{targetName}'],
+ *   {
+ *     targetName: (value, key, path, ctx) => {
+ *       if (value?.type !== 'Component') return false;
+ *       if (value?.name !== 'sap.fe.templates.ListReport') return false;
+ *       // Can access external context and return metadata
+ *       const entitySet = value.options?.settings?.entitySet;
+ *       const fqn = ctx?.indexedService?.entitySets[entitySet]?.structuredType;
+ *       return { pass: !!fqn, metadata: { fullyQualifiedName: fqn } };
+ *     }
+ *   },
+ *   { indexedService: myService }
+ * );
+ * // Returns: [{ path: [...], value: {...}, wildcardValues: {...}, metadata: { fullyQualifiedName: '...' } }]
+ * ```
+ * 
+ * @param obj The object to traverse
+ * @param pathTemplate Array representing the path template (e.g., ['sap.ui5', 'routing', 'targets', '*'])
+ * @param filters Optional map of wildcard names/indices to filter predicates
+ * @param context Optional external context object passed to filter predicates
+ * @param basePath Starting path (used internally for recursion)
+ * @returns Array of matching path results
+ */
+export function findPathsInObject<TContext = any>(
+    obj: unknown,
+    pathTemplate: string[],
+    filters: Record<string, PathSegmentFilter<TContext>> = {},
+    context?: TContext,
+    basePath: string[] = []
+): PathMatch[] {
+    const results: PathMatch[] = [];
+    
+    // Base case: if template is empty, we've matched the complete path
+    if (pathTemplate.length === 0) {
+        return [{
+            path: basePath,
+            value: obj,
+            wildcardValues: {},
+            metadata: {}
+        }];
+    }
+    
+    // Handle null/undefined
+    if (obj === null || obj === undefined) {
+        return results;
+    }
+    
+    // Only process objects (not arrays, primitives, etc.)
+    if (typeof obj !== 'object' || Array.isArray(obj)) {
+        return results;
+    }
+    
+    const [currentSegment, ...remainingTemplate] = pathTemplate;
+    
+    // Check if this segment is a wildcard
+    const isWildcard = currentSegment === '*' || (currentSegment.startsWith('{') && currentSegment.endsWith('}'));
+    const wildcardName = isWildcard && currentSegment !== '*' 
+        ? currentSegment.slice(1, -1) // Extract name from {wildcardName}
+        : currentSegment; // Use the segment itself as fallback
+    
+    if (isWildcard) {
+        // Wildcard: try all properties of the current object
+        const filter = filters[wildcardName];
+        
+        for (const [key, value] of Object.entries(obj)) {
+            let filterMetadata: Record<string, any> | undefined;
+            
+            // Apply filter if provided
+            if (filter) {
+                const filterResult = filter(value, key, [...basePath, key], context);
+                if (typeof filterResult === 'boolean') {
+                    if (!filterResult) continue;
+                } else {
+                    if (!filterResult.pass) continue;
+                    filterMetadata = filterResult.metadata;
+                }
+            }
+            
+            // Recursively search remaining template
+            const subResults = findPathsInObject(
+                value,
+                remainingTemplate,
+                filters,
+                context,
+                [...basePath, key]
+            );
+            
+            // Merge wildcard values and metadata
+            for (const result of subResults) {
+                results.push({
+                    ...result,
+                    wildcardValues: {
+                        [wildcardName]: key,
+                        ...result.wildcardValues
+                    },
+                    metadata: {
+                        ...filterMetadata,
+                        ...result.metadata
+                    }
+                });
+            }
+        }
+    } else {
+        // Static segment: must match exactly
+        const typedObj = obj as Record<string, unknown>;
+        if (currentSegment in typedObj) {
+            const subResults = findPathsInObject(
+                typedObj[currentSegment],
+                remainingTemplate,
+                filters,
+                context,
+                [...basePath, currentSegment]
+            );
+            results.push(...subResults);
+        }
+    }
+    
+    return results;
+}

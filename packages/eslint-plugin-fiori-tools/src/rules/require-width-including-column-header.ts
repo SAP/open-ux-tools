@@ -8,12 +8,33 @@ import {
     REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     RequireWidthIncludingColumnHeaderDiagnostic
 } from '../language/diagnostics';
-import { AnyNode } from '@humanwhocodes/momoa';
+import { AnyNode, ObjectNode } from '@humanwhocodes/momoa';
 import { RuleVisitor } from '@eslint/core';
+import { findPathsInObject } from '../utils/helpers';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
 };
+
+/**
+ * Gets the path to the last property in an object.
+ * Useful for reporting errors at the location of the last existing property.
+ *
+ * @param basePath - The base path array to the object.
+ * @param obj - The plain JavaScript object to find the last property in.
+ * @returns The path array pointing to the last property, or the base path if no properties exist.
+ */
+function getLastMemberPath(basePath: string[], obj: any): string[] {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
+        return basePath;
+    }
+    const keys = Object.keys(obj);
+    if (keys.length === 0) {
+        return basePath;
+    }
+    const lastKey = keys[keys.length - 1];
+    return [...basePath, lastKey];
+}
 
 const rule: FioriMixedRuleDefinition = createMixedRule({
     ruleId: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
@@ -28,8 +49,7 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
         messages: {
             ['require-width-including-column-header']:
                 'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for better column width calculation.'
-        },
-        fixable: 'code'
+        }
     },
     check(context) {
         const problems: RequireWidthIncludingColumnHeaderDiagnostic[] = [];
@@ -40,50 +60,62 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
             if (!indexedService) {
                 continue;
             }
-            const targets = manifest['sap.ui5']?.routing?.targets ?? {};
-            const lineItemReferences = [];
-            for (const [targetName, target] of Object.entries(targets)) {
-                if (target.type === 'Component' && target.name === 'sap.fe.templates.ListReport') {
-                    const settings = target.options?.settings;
-                    if (!settings) {
-                        continue;
-                    }
-                    if (!settings.controlConfiguration) {
-                        continue;
-                    }
-                    for (const [key, value] of Object.entries(settings.controlConfiguration)) {
-                        if (key !== '@' + UI_LINE_ITEM) {
-                            continue;
+            
+            // Find all ListReport targets with LineItem control configurations
+            // All validation logic is now in the filter predicates
+            const pathMatches = findPathsInObject(
+                manifest,
+                ['sap.ui5', 'routing', 'targets', '{targetName}', 'options', 'settings', 'controlConfiguration', '{annotationPath}'],
+                {
+                    targetName: (value, key, path, ctx) => {
+                        const target = value as any;
+                        
+                        // Check target type
+                        if (target?.type !== 'Component' || target?.name !== 'sap.fe.templates.ListReport') {
+                            return false;
                         }
-
-                        const contextPath =
+                        
+                        // Extract and validate contextPath
+                        const contextPath = 
                             target.options?.settings?.contextPath ??
                             (target.options?.settings?.entitySet ? `/${target.options.settings.entitySet}` : undefined);
+                        
                         if (!contextPath) {
-                            continue;
+                            return false;
                         }
+                        
                         const targetSegments = contextPath.split('/');
                         if (targetSegments.length !== 2) {
                             // TODO: support different target paths
-                            continue;
+                            return false;
                         }
+                        
                         const entitySetName = targetSegments[1];
-
-                        const { metadataService } = indexedService;
-                        const fullyQualifiedName = indexedService.entitySets[entitySetName]?.structuredType;
+                        const fullyQualifiedName = ctx?.indexedService?.entitySets[entitySetName]?.structuredType;
+                        
                         if (!fullyQualifiedName) {
-                            continue;
+                            return false;
                         }
-                        // const metadataElement = metadataService.getMetadataElement(fullyQualifiedName);
-                        lineItemReferences.push({
-                            entityTypeName: fullyQualifiedName,
-                            value,
-                            annotationPath: key,
-                            targetName
-                        });
-                    }
-                }
-            }
+                        
+                        // Return pass with metadata containing the computed fullyQualifiedName
+                        return {
+                            pass: true,
+                            metadata: { fullyQualifiedName }
+                        };
+                    },
+                    annotationPath: (value, key) => key === '@' + UI_LINE_ITEM
+                },
+                { indexedService }
+            );
+
+            // Build lineItemReferences directly from matches
+            const lineItemReferences = pathMatches.map(match => ({
+                entityTypeName: match.metadata?.fullyQualifiedName,
+                value: match.value,
+                annotationPath: match.wildcardValues.annotationPath,
+                targetName: match.wildcardValues.targetName,
+                basePath: match.path
+            }));
 
             // TODO: it is better to loop through pages as they are usually less than annotations
             // TODO: check presentation variants
@@ -100,19 +132,18 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                     if (records.length < 6 && records.length > 0) {
                         for (const ref of lineItemReferences) {
                             if (annotation.target === ref.entityTypeName && annotation.qualifier === undefined) {
-                                if ((ref.value as any)?.tableSettings?.widthIncludingColumnHeader !== true) {
-                                    const path = [
-                                        'sap.ui5',
-                                        'routing',
-                                        'targets',
-                                        ref.targetName,
-                                        'options',
-                                        'settings',
-                                        'controlConfiguration',
-                                        ref.annotationPath,
-                                        'tableSettings',
-                                        'widthIncludingColumnHeader'
-                                    ];
+                                const tableSettings = (ref.value as any)?.tableSettings;
+                                const widthIncludingColumnHeader = tableSettings?.widthIncludingColumnHeader;
+                                if (widthIncludingColumnHeader !== true) {
+                                    let path: string[];
+                                    if (widthIncludingColumnHeader !== undefined) {
+                                        path = [...ref.basePath, 'tableSettings', 'widthIncludingColumnHeader'];
+                                    } else if (tableSettings) {
+                                        path = getLastMemberPath([...ref.basePath, 'tableSettings'], tableSettings);
+                                    } else {
+                                        path = getLastMemberPath(ref.basePath, ref.value);
+                                    }
+                                    
                                     problems.push({
                                         type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
                                         manifestPropertyPath: path,
