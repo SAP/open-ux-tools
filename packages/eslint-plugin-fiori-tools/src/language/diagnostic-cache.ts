@@ -17,7 +17,7 @@ export class DiagnosticCache {
      * @param key - The key to retrieve diagnostics for.
      * @returns An array of diagnostics or undefined.
      */
-    public static getMessages(key: Diagnostic['type']): Diagnostic[] | undefined {
+    public static getMessages<T extends Diagnostic['type']>(key: T): Extract<Diagnostic, { type: T }>[] | undefined {
         return this.cache[key];
     }
 
@@ -27,7 +27,7 @@ export class DiagnosticCache {
      * @param key - The key to add diagnostics for.
      * @param diagnostic - Diagnostic to store.
      */
-    public static addMessage(key: Diagnostic['type'], diagnostic: Diagnostic): void {
+    public static addMessage<T extends Diagnostic['type']>(key: T, diagnostic: Extract<Diagnostic, { type: T }>): void {
         this.cache[key] ??= [];
         this.cache[key].push(diagnostic as any);
     }
@@ -38,7 +38,7 @@ export class DiagnosticCache {
      * @param key - The key to add diagnostics for.
      * @param diagnostics - Diagnostics to store.
      */
-    public static addMessages(key: Diagnostic['type'], diagnostics: Diagnostic[]): void {
+    public static addMessages<T extends Diagnostic['type']>(key: T, diagnostics: Extract<Diagnostic, { type: T }>[]): void {
         this.cache[key] ??= [];
         for (const diagnostic of diagnostics) {
             this.cache[key].push(diagnostic as any);

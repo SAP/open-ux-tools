@@ -1,10 +1,10 @@
 import { RuleTester } from 'eslint';
-import flexEnabledRule from '../../src/rules/flex-enabled';
+import flexEnabledRule from '../../src/rules/sap-require-flex-enabled';
 import { meta, languages } from '../../src/index';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
-    language: '@sap-ux/eslint-plugin-fiori-tools/fioriElements'
+    language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
 });
 
 ruleTester.run('flex-enabled', flexEnabledRule, {

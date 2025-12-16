@@ -1,21 +1,21 @@
 import { pathToFileURL } from 'node:url';
 
-import { processServices, ServiceInfo } from '@sap-ux/project-access';
-import { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
+import { ServiceInfo } from '@sap-ux/project-access';
+import { AliasInformation, AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import {
     CdsCompilerFacade,
     createMetadataCollector,
-    getMetadataElementsFromMap,
-    createCdsCompilerFacadeForRootSync
+    getMetadataElementsFromMap
+    // createCdsCompilerFacadeForRootSync
 } from '@sap/ux-cds-compiler-facade';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 import { MetadataService } from '@sap-ux/odata-entity-model';
 
-import { XMLAnnotationServiceAdapter } from './xml';
+import { XML_VOCABULARY_SERVICE, XMLAnnotationServiceAdapter } from './xml';
 import { ServiceArtifacts, TextFile } from './types';
-
-const vocabularyService = new VocabularyService();
+import { getAliasInformation, getAllNamespacesAndReferences } from '@sap-ux/odata-annotation-core';
+import { addAllVocabulariesToAliasInformation } from './vocabularies';
 
 export function getXmlServiceArtifacts(
     odataVersion: '2.0' | '4.0',
@@ -31,111 +31,160 @@ export function getXmlServiceArtifacts(
             metadataFile,
             annotationFiles
         },
-        vocabularyService,
+        XML_VOCABULARY_SERVICE,
         { apps: {}, projectType: 'EDMXBackend', root: '' },
         ''
     );
     adapter.sync(fileCache);
 
+    const documents = adapter.getDocuments();
+    const aliasInformation = getAliasInfo(adapter.metadataService, XML_VOCABULARY_SERVICE, documents);
+
     return {
         path,
         metadataService: adapter.metadataService,
-        annotationFiles: adapter.getDocuments(),
+        annotationFiles: documents,
+        aliasInfo: aliasInformation,
         fileSequence: adapter.getAllFiles().map((file) => file.uri)
     };
 }
 
-export class CdsProvider {
+export class CdsAnnotationProvider {
     private static serviceInfoCache = new Map<string, ServiceInfo[]>();
+    private static serviceArtifactCache = new Map<string, Record<string, ServiceArtifacts>>();
     private static cdsCache = new Map<string, CdsCompilerFacade>();
     private static vocabularyService = new VocabularyService(true);
 
     public static getCdsServiceArtifacts(
         rootPath: string,
-        fileCache: Map<string, string>,
-        ignoreCache = false
-    ): ServiceArtifacts[] {
-        const facade = this.getFacade(rootPath, fileCache, ignoreCache);
-
-        const services = this.serviceInfoCache.get(rootPath) || [];
-
-        const result = services.map((serviceInfo) => {
-            const serviceName = serviceInfo.name;
-
-            const annotationFiles: Record<string, AnnotationFile> = {};
-            const metadataElementMap = facade.getMetadata(serviceName);
-            // We collect already full metadata from compile model, we don't need to build it based on paths.
-            const metadataCollector = createMetadataCollector(new Map(), facade);
-            const { propagationMap } = facade.getPropagatedTargetMap(serviceName);
-            for (const path of facade.getAllSourceUris()) {
-                const uri = pathToFileURL(path).toString();
-                const cdsAnnotationFile = toTargetMap(
-                    facade.blitzIndex.forUri(uri),
-                    uri,
-                    this.vocabularyService,
-                    facade
-                );
-
-                const annotationFile = toAnnotationFile(
-                    uri,
-                    this.vocabularyService,
-                    cdsAnnotationFile,
-                    metadataCollector,
-                    undefined,
-                    propagationMap,
-                    true
-                ).file;
-
-                annotationFiles[uri] = annotationFile;
+        servicePath: string,
+        fileCache: Map<string, string>
+    ): ServiceArtifacts | undefined {
+        let cachedArtifactsByRoot = this.serviceArtifactCache.get(rootPath);
+        if (cachedArtifactsByRoot) {
+            const cachedService = cachedArtifactsByRoot[servicePath];
+            if (cachedService) {
+                return cachedService;
             }
-            const metadataElements = getMetadataElementsFromMap(metadataElementMap);
-            const metadataService = new MetadataService({ uriMap: facade?.getUriMap() || new Map() });
-            metadataService.import(metadataElements, 'DummyMetadataFileUri');
+        }
 
-            return {
-                path: uniformUrl(serviceInfo.urlPath),
-                metadataService,
-                annotationFiles,
-                fileSequence: facade.getFileSequence().map((path) => pathToFileURL(path).toString())
-            };
-        });
-        return result;
+        const facade = this.getFacade(rootPath, fileCache, false);
+
+        const services = this.serviceInfoCache.get(rootPath) ?? [];
+        const serviceInfo = services.find((s) => uniformUrl(s.urlPath) === uniformUrl(servicePath));
+        if (!serviceInfo) {
+            return;
+        }
+
+        const serviceName = serviceInfo.name;
+
+        const annotationFiles: Record<string, AnnotationFile> = {};
+        const metadataElementMap = facade.getMetadata(serviceName);
+        // We collect already full metadata from compile model, we don't need to build it based on paths.
+        const metadataCollector = createMetadataCollector(new Map(), facade);
+        const { propagationMap } = facade.getPropagatedTargetMap(serviceName);
+        for (const path of facade.getAllSourceUris()) {
+            const uri = pathToFileURL(path).toString();
+            const cdsAnnotationFile = toTargetMap(facade.blitzIndex.forUri(uri), uri, this.vocabularyService, facade);
+
+            const annotationFile = toAnnotationFile(
+                uri,
+                this.vocabularyService,
+                cdsAnnotationFile,
+                metadataCollector,
+                undefined,
+                propagationMap,
+                true
+            ).file;
+
+            annotationFiles[uri] = annotationFile;
+        }
+        const metadataElements = getMetadataElementsFromMap(metadataElementMap);
+        const metadataService = new MetadataService({ uriMap: facade?.getUriMap() || new Map() });
+        metadataService.import(metadataElements, 'DummyMetadataFileUri');
+
+        const aliasInformation = getAliasInfo(metadataService, XML_VOCABULARY_SERVICE, annotationFiles);
+        const url = uniformUrl(serviceInfo.urlPath);
+        const artifacts = {
+            path: url,
+            metadataService,
+            annotationFiles,
+            aliasInfo: aliasInformation,
+            fileSequence: facade.getFileSequence().map((path) => pathToFileURL(path).toString())
+        };
+
+        cachedArtifactsByRoot = {};
+        cachedArtifactsByRoot[url] = artifacts;
+        this.serviceArtifactCache.set(rootPath, cachedArtifactsByRoot);
+        return artifacts;
+    }
+
+    public static getServices(rootPath: string, fileCache: Map<string, string>): ServiceInfo[] {
+        this.getFacade(rootPath, fileCache, false);
+        return this.serviceInfoCache.get(rootPath) ?? [];
+    }
+    public static resetCache(rootPath: string, fileCache: Map<string, string>): void {
+        this.serviceArtifactCache.delete(rootPath);
+        this.getFacade(rootPath, fileCache, true);
     }
 
     private static getFacade(rootPath: string, fileCache: Map<string, string>, ignoreCache = false): CdsCompilerFacade {
-        const cachedValue = this.cdsCache.get(rootPath);
-        if (cachedValue && ignoreCache === false) {
-            return cachedValue;
-        }
+        throw new Error('Not implemented yet.');
+        // const cachedValue = this.cdsCache.get(rootPath);
+        // if (cachedValue && ignoreCache === false) {
+        //     return cachedValue;
+        // }
 
-        console.log('compiling cds model for path:', rootPath);
-        performance.mark('cds-compile-start');
-        const cache = new Proxy(
-            {},
-            {
-                get(compilerCache: Record<string, string | undefined>, path: string) {
-                    const cachedValue = compilerCache[path];
-                    if (cachedValue !== undefined) {
-                        return cachedValue;
-                    }
-                    const uri = pathToFileURL(path).toString();
-                    const value = fileCache.get(uri);
-                    compilerCache[path] = value;
-                    return value;
-                }
-            }
-        );
-        const facade = createCdsCompilerFacadeForRootSync(rootPath, [], cache);
-        const services = processServices(facade.getServiceInfo());
+        // console.log('compiling cds model for path:', rootPath);
+        // performance.mark('cds-compile-start');
+        // const cache = new Proxy(
+        //     {},
+        //     {
+        //         get(compilerCache: Record<string, string | undefined>, path: string) {
+        //             const cachedValue = compilerCache[path];
+        //             if (cachedValue !== undefined) {
+        //                 return cachedValue;
+        //             }
+        //             const uri = pathToFileURL(path).toString();
+        //             const value = fileCache.get(uri);
+        //             compilerCache[path] = value;
+        //             return value;
+        //         }
+        //     }
+        // );
+        // const facade = createCdsCompilerFacadeForRootSync(rootPath, [], cache);
+        // const services = processServices(facade.getServiceInfo());
 
-        this.serviceInfoCache.set(rootPath, services);
-        this.cdsCache.set(rootPath, facade);
-        performance.mark('cds-compile-end');
+        // this.serviceInfoCache.set(rootPath, services);
+        // this.cdsCache.set(rootPath, facade);
+        // performance.mark('cds-compile-end');
 
-        performance.measure('cds-compile', 'cds-compile-start', 'cds-compile-end');
-        console.log('CDS compilation performance:', performance.getEntriesByName('cds-compile'));
-        return facade;
+        // performance.measure('cds-compile', 'cds-compile-start', 'cds-compile-end');
+        // console.log('CDS compilation performance:', performance.getEntriesByName('cds-compile'));
+        // return facade;
     }
+}
+
+function getAliasInfo(
+    metadataService: MetadataService,
+    vocabularyService: VocabularyService,
+    files: Record<string, AnnotationFile>
+): Record<string, AliasInformation> {
+    const aliasInformation: Record<string, AliasInformation> = {};
+    for (const [uri, document] of Object.entries(files)) {
+        const namespaces = getAllNamespacesAndReferences(
+            document.namespace ?? { name: '', type: 'namespace' },
+            document.references
+        );
+
+        const aliasInfo = getAliasInformation(namespaces, metadataService.getNamespaces());
+        const aliasInfoWithAllVocabularies = addAllVocabulariesToAliasInformation(
+            aliasInfo,
+            vocabularyService.getVocabularies()
+        );
+        aliasInformation[uri] = aliasInfoWithAllVocabularies;
+    }
+    return aliasInformation;
 }
 
 /**

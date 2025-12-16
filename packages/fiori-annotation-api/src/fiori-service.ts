@@ -22,8 +22,8 @@ import type { MetadataService } from '@sap-ux/odata-entity-model';
 import type { AnnotationListWithOrigins } from './avt';
 import { convertMetadataToAvtSchema, convertAnnotationFile, convertTargetAnnotationsToInternal } from './avt';
 
-import { XMLAnnotationServiceAdapter, getLocalEDMXService } from './xml';
-import { getCDSService, CDSAnnotationServiceAdapter } from './cds';
+import { XMLAnnotationServiceAdapter, getLocalEDMXService, XML_VOCABULARY_SERVICE } from './xml';
+import { getCDSService, CDSAnnotationServiceAdapter, CDS_VOCABULARY_SERVICE } from './cds';
 import { addAllVocabulariesToAliasInformation } from './vocabularies';
 
 import type {
@@ -154,9 +154,10 @@ export class FioriAnnotationService {
         fs?: Editor,
         options: Partial<FioriAnnotationServiceOptions> = {}
     ): Promise<T> {
-        const vocabularyAPI = new VocabularyService(
+        const vocabularyAPI =
             project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs'
-        );
+                ? CDS_VOCABULARY_SERVICE
+                : XML_VOCABULARY_SERVICE;
         const finalOptions = getOptionsWithDefaults(options);
         const service = await getService(project, serviceName, appName, fs, finalOptions.clearFileResolutionCache);
         const adapter = createAdapter(
@@ -436,7 +437,7 @@ function applyWorkspaceEdits(
     content: string
 ): string {
     const document = TextDocument.create(fileUri, languageId, 0, content);
-    const fileChanges = workspaceEdits.changes ? workspaceEdits.changes[fileUri] ?? [] : [];
+    const fileChanges = workspaceEdits.changes ? (workspaceEdits.changes[fileUri] ?? []) : [];
     return TextDocument.applyEdits(document, fileChanges);
 }
 

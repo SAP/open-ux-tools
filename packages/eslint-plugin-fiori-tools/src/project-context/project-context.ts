@@ -9,11 +9,14 @@ import { normalizePath, type FoundFioriArtifacts, type Manifest } from '@sap-ux/
 import { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import { XMLDocument } from '@xml-tools/ast';
 
-import { AppIndex, buildIndex, ProjectIndex, reindex } from './facets';
-import type { ServiceIndex } from './facets/services';
+import type { WorkerResult } from './types';
+import type { ParsedApp, ParsedProject, ParsedService } from './parser';
+import { ApplicationParser } from './parser';
+import { DiagnosticCache } from '../language/diagnostic-cache';
+import { LinkedModel, linkProject } from './linker';
 
 // Sync function for worker calls
-let artifactWorker: (file: string) => FoundFioriArtifacts;
+let artifactWorker: (file: string) => WorkerResult;
 
 /**
  *
@@ -21,7 +24,7 @@ let artifactWorker: (file: string) => FoundFioriArtifacts;
  */
 function getWorkerPath(name: string): string {
     // Create sync function to call the working draft-toggle-worker
-    const currentDir = __dirname; //path.dirname(fileURLToPath(import.meta.url));
+    const currentDir = __dirname;
 
     // Try multiple possible worker locations
     const workerPaths = [
@@ -47,7 +50,7 @@ function getWorkerPath(name: string): string {
  *
  * @returns
  */
-function getArtifactWorker(): (file: string) => FoundFioriArtifacts {
+function getArtifactWorker(): (file: string) => WorkerResult {
     if (artifactWorker) {
         return artifactWorker;
     }
@@ -65,10 +68,14 @@ export type DocumentType = AnnotationFile | XMLDocument | DocumentNode;
  */
 export class ProjectContext {
     private artifacts: FoundFioriArtifacts;
-    private _index: ProjectIndex;
+    private _index: ParsedProject;
 
-    public get index(): ProjectIndex {
+    public get index(): ParsedProject {
         return this._index;
+    }
+    private _linkedModel: LinkedModel;
+    public get linkedModel(): LinkedModel {
+        return this._linkedModel;
     }
 
     public readonly documents: Record<string, DocumentType> = {};
@@ -77,15 +84,15 @@ export class ProjectContext {
      *
      * @param index
      */
-    private constructor(artifacts: FoundFioriArtifacts, index: ProjectIndex) {
+    private constructor(artifacts: FoundFioriArtifacts, index: ParsedProject, linkedModel: LinkedModel) {
         this._index = index;
+        this._linkedModel = linkedModel;
         this.artifacts = artifacts;
     }
 
-    public getIndexedServiceForMainService(appIndex: AppIndex, serviceName?: string): ServiceIndex | undefined {
+    public getIndexedServiceForMainService(appIndex: ParsedApp, serviceName?: string): ParsedService | undefined {
         const name = serviceName ?? appIndex.manifest.mainServiceName;
-        const servicePath = appIndex.manifest.services[name]?.path;
-        return this.index.services[servicePath];
+        return appIndex.services[name];
     }
 
     public getManifest(app?: string): Manifest | undefined {
@@ -99,18 +106,31 @@ export class ProjectContext {
 
     public reindex(uri: string, content: string): void {
         ProjectContext.fileCache.set(uri, content);
-        reindex(uri, this._index, this.artifacts, ProjectContext.fileCacheProxy);
+        const { diagnostics, index } = ProjectContext.parser.reparse(uri, this.index, ProjectContext.fileCacheProxy);
+
+        for (const diagnostic of diagnostics) {
+            DiagnosticCache.addMessage(diagnostic.type, diagnostic);
+        }
+
+        const [linkedModel, linkerDiagnostics] = linkProject(index);
+
+        for (const diagnostic of linkerDiagnostics) {
+            DiagnosticCache.addMessage(diagnostic.type, diagnostic);
+        }
+
+        this._linkedModel = linkedModel;
     }
 
+    private static parser = new ApplicationParser();
     /**
      * Project file mapping to artifacts. Used to find out to which project the file belongs.
      * It should only be used by `findProjectRoot` method.
      */
-    private static projectArtifactCache = new Map<string, FoundFioriArtifacts>();
+    private static projectArtifactCache = new Map<string, WorkerResult>();
 
-    private static findFioriArtifacts(uri: string): FoundFioriArtifacts {
+    private static findFioriArtifacts(uri: string): WorkerResult {
         // potential issue when called from application modeler or via ESLint API
-        const root = normalizePath(process.cwd()); // TODO: check if root detection is needed? seems to work also with workspaces 
+        const root = normalizePath(process.cwd()); // TODO: check if root detection is needed? seems to work also with workspaces
         console.log('ProjectContext.findFioriArtifacts - searching for artifacts for', uri, 'with root', root);
         try {
             const cachedValue = this.projectArtifactCache.get(root);
@@ -128,7 +148,7 @@ export class ProjectContext {
             performance.clearMeasures();
             return artifacts;
         } catch {
-            return {};
+            return { artifacts: {}, projectType: 'EDMXBackend' };
         }
     }
 
@@ -208,13 +228,24 @@ export class ProjectContext {
         if (this.appRoots.size > 0) {
             // uri not is part of the known apps
             // no point trying to reindex
-            return new ProjectContext({}, { apps: {}, documents: {}, services: {} });
+            return new ProjectContext({}, { projectType: 'EDMXBackend', apps: {}, documents: {} }, { apps: {} });
         }
 
-        const artifacts = this.findFioriArtifacts(uri);
+        const { artifacts, projectType } = this.findFioriArtifacts(uri);
 
-        const index = buildIndex(artifacts, this.fileCacheProxy);
-        const context = new ProjectContext(artifacts, index);
+        const { diagnostics, index } = this.parser.parse(projectType, artifacts, this.fileCacheProxy);
+
+        for (const diagnostic of diagnostics) {
+            DiagnosticCache.addMessage(diagnostic.type, diagnostic);
+        }
+
+        const [linkedModel, linkerDiagnostics] = linkProject(index);
+
+        for (const diagnostic of linkerDiagnostics) {
+            DiagnosticCache.addMessage(diagnostic.type, diagnostic);
+        }
+
+        const context = new ProjectContext(artifacts, index, linkedModel);
         for (const uri of Object.keys(index.documents)) {
             this.instanceCache.set(uri, context);
         }

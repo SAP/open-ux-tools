@@ -17,13 +17,12 @@ export type ManifestRuleDefinition<Options extends Partial<CustomRuleTypeDefinit
         Options
     >;
 
-export type FioriMixedRuleDefinition<Options extends Partial<CustomRuleTypeDefinitions> = object> =
-    CustomRuleDefinitionType<
-        {
-            LangOptions: JSONLanguageOptions;
-            Code: FioriJSONSourceCode | FioriXMLSourceCode;
-            Visitor: RuleVisitor;
-            Node: AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
-        },
-        Options
-    >;
+export type FioriRuleDefinition<Options extends Partial<CustomRuleTypeDefinitions> = object> = CustomRuleDefinitionType<
+    {
+        LangOptions: JSONLanguageOptions;
+        Code: FioriJSONSourceCode | FioriXMLSourceCode;
+        Visitor: RuleVisitor;
+        Node: AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
+    },
+    Options
+>;

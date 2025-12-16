@@ -1,6 +1,7 @@
 import type { XMLDocument } from '@xml-tools/ast';
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import type { DocumentNode } from '@humanwhocodes/momoa';
+import type { FoundFioriArtifacts, ProjectType } from '@sap-ux/project-access';
 
 export interface RemoteSourceFileWithToolsCache {
     type: 'remote';
@@ -40,3 +41,8 @@ export type RemoteFile = RemoteFileWithToolsCache | RemoteFileWithLocalServiceCa
 export type File = RemoteFile | LocalFile;
 
 export type DocumentType = AnnotationFile | XMLDocument | DocumentNode;
+
+export interface WorkerResult {
+    artifacts: FoundFioriArtifacts;
+    projectType: ProjectType;
+}

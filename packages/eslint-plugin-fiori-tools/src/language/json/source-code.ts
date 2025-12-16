@@ -22,4 +22,14 @@ export class FioriJSONSourceCode extends JSONSourceCode {
         super({ text, ast });
         this.projectContext = projectContext;
     }
+
+    /**
+     * Create member string matcher from object path.
+     *
+     * @param path Path to the node.
+     * @returns Matcher string.
+     */
+    createMatcherString(path: string[]): string {
+        return path.map((segment) => `Member[name.value="${segment}"]`).join(' ');
+    }
 }

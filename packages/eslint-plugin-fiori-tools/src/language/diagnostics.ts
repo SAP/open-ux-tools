@@ -1,6 +1,6 @@
 import type { Element } from '@sap-ux/odata-annotation-core';
-export const REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'require-width-including-column-header';
-export const REQUIRE_FLEX_ENABLED = 'flex-enabled';
+export const REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-require-width-including-column-header';
+export const REQUIRE_FLEX_ENABLED = 'sap-require-flex-enabled';
 
 export interface RequireWidthIncludingColumnHeaderDiagnostic {
     type: typeof REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -11,6 +11,10 @@ export interface RequireWidthIncludingColumnHeaderDiagnostic {
         annotationPath: string;
         annotation: Element;
     };
+}
+
+export interface ManifestPropertyDiagnostic {
+    propertyPath: string[];
 }
 
 export interface RequireFlexEnabled {

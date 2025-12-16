@@ -5,7 +5,7 @@ import type { FioriJSONSourceCode } from './json/source-code';
 import type { AnyNode } from '@humanwhocodes/momoa';
 import { FioriXMLSourceCode } from './xml/source-code';
 import type { XMLAstNode, XMLToken } from '@xml-tools/ast';
-import { FioriMixedRuleDefinition } from '../types';
+import { FioriRuleDefinition } from '../types';
 import { FioriAnnotationSourceCode } from './annotations/source-code';
 import { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
 import { DiagnosticCache } from './diagnostic-cache';
@@ -44,7 +44,8 @@ type AnnotationRuleContext<MessageIds extends string, RuleOptions extends unknow
 export function createMixedRule<
     MessageIds extends string,
     RuleOptions extends unknown[],
-    ExtRuleDocs extends Record<string, unknown> = {}
+    ExtRuleDocs extends Record<string, unknown> = {},
+    T extends Diagnostic['type'] = Diagnostic['type']
 >({
     ruleId,
     meta,
@@ -53,19 +54,19 @@ export function createMixedRule<
     createXml,
     createAnnotations
 }: {
-    ruleId: Diagnostic['type'];
+    ruleId: T;
     meta?: RulesMeta<MessageIds, RuleOptions, ExtRuleDocs>;
     createJson?: (
         context: JSONRuleContext<MessageIds, RuleOptions>,
-        validationResult: Extract<Diagnostic, { type: typeof ruleId }>[]
+        validationResult: Extract<Diagnostic, { type: T }>[]
     ) => RuleVisitor;
     createXml?: (
         context: XMLRuleContext<MessageIds, RuleOptions>,
-        validationResult: Extract<Diagnostic, { type: typeof ruleId }>[]
+        validationResult: Extract<Diagnostic, { type: T }>[]
     ) => RuleVisitor;
     createAnnotations?: (
         context: AnnotationRuleContext<MessageIds, RuleOptions>,
-        validationResult: Extract<Diagnostic, { type: typeof ruleId }>[]
+        validationResult: Extract<Diagnostic, { type: T }>[]
     ) => RuleVisitor;
     check: (
         context: RuleContext<{
@@ -75,8 +76,8 @@ export function createMixedRule<
             Node: Node;
             MessageIds: MessageIds;
         }>
-    ) => Extract<Diagnostic, { type: typeof ruleId }>[];
-}): FioriMixedRuleDefinition<{ MessageIds: MessageIds; RuleOptions: RuleOptions }> {
+    ) => Extract<Diagnostic, { type: T }>[];
+}): FioriRuleDefinition<{ MessageIds: MessageIds; RuleOptions: RuleOptions }> {
     return {
         meta,
         create(

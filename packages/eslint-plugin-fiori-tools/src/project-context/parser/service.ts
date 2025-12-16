@@ -11,25 +11,19 @@ import {
     MetadataElement
 } from '@sap-ux/odata-annotation-core';
 import { MetadataService } from '@sap-ux/odata-entity-model';
-import { CdsProvider, getXmlServiceArtifacts } from '@sap-ux/fiori-annotation-api';
+import { CdsAnnotationProvider, getXmlServiceArtifacts } from '@sap-ux/fiori-annotation-api';
 import { ServiceArtifacts } from '@sap-ux/fiori-annotation-api/src/types';
 
-import { ODataService } from './manifest';
 import { DocumentType } from '../types';
 import { uniformUrl } from '../utils';
 
 export interface ServiceIndex {
-    path: string;
-    projectRoot: string;
-    sourceKind: 'local-xml' | 'local-cap';
-    metadataService: MetadataService;
     entityContainer?: MetadataElement;
     /**
      * Key is simple identifier as it would be used in context path by SAP Fiori elements.
      */
     entitySets: Record<string, MetadataElement>;
-    annotationFiles: Record<string, AnnotationFile>;
-    fileSequence: string[];
+
     annotations: AnnotationIndex;
 }
 
@@ -55,7 +49,7 @@ export interface IndexedAnnotation {
  * @returns
  */
 export function buildAnnotationIndexKey(target: string, term: string): string {
-    return `${target}@${term}`;
+    return `${target}/@${term}`;
 }
 
 /**
@@ -114,77 +108,7 @@ function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): Annotation
     return index;
 }
 
-const serviceCache: Record<string, Record<string, ServiceIndex>> = {};
-
-export function reIndexCdsService(
-    uri: string,
-    index: ServiceIndex,
-    documents: { [key: string]: DocumentType },
-    fileCache: Map<string, string>,
-    invalidateCdsCache: boolean
-): ServiceIndex[] {
-    let uriBelongsToService = false;
-    for (const file of index.fileSequence) {
-        if (file === uri) {
-            uriBelongsToService = true;
-            break;
-        }
-    }
-    if (!uriBelongsToService) {
-        return [index];
-    }
-    return indexCdsService(index.projectRoot, documents, fileCache, invalidateCdsCache);
-}
-
-export function indexCdsService(
-    projectRootPath: string,
-    documents: { [key: string]: DocumentType },
-    fileCache: Map<string, string>,
-    invalidateCdsCache: boolean
-): ServiceIndex[] {
-    console.log('Indexing CDS service for project root:', projectRootPath);
-    const artifacts = CdsProvider.getCdsServiceArtifacts(projectRootPath, fileCache, invalidateCdsCache);
-    console.log(
-        'Found CDS services:',
-        artifacts.map((a) => a.path)
-    );
-    const cachedValue = serviceCache[projectRootPath];
-    if (cachedValue && !invalidateCdsCache) {
-        console.log('Using cached CDS service indices for project root:', projectRootPath);
-        return [...Object.values(cachedValue)];
-    }
-    serviceCache[projectRootPath] ??= {};
-    const indices = [];
-    for (const artifact of artifacts) {
-        const cdsServiceIndex = buildServiceIndex('local-cap', projectRootPath, artifact, documents);
-        serviceCache[projectRootPath][artifact.path] = cdsServiceIndex;
-        indices.push(cdsServiceIndex);
-    }
-    return indices;
-}
-
-export function indexCachedServiceWithLocalData(
-    projectRoot: string,
-    service: ODataService,
-    documents: { [key: string]: DocumentType },
-    fileCache: Map<string, string>
-): ServiceIndex | undefined {
-    if (!service.metadata) {
-        return;
-    }
-    const artifacts = getXmlServiceArtifacts(
-        service.version,
-        uniformUrl(service.path),
-        { uri: service.metadata.uri, isReadOnly: true },
-        service.annotationFiles.map((file) => ({ uri: file.uri, isReadOnly: file.type === 'remote' })),
-        fileCache
-    );
-    return buildServiceIndex('local-cap', projectRoot, artifacts, documents);
-}
-
-function buildServiceIndex(
-    sourceKind: 'local-xml' | 'local-cap',
-    projectRoot: string,
+export function buildServiceIndex(
     artifacts: ServiceArtifacts,
     documents: { [key: string]: DocumentType }
 ): ServiceIndex {
@@ -204,9 +128,6 @@ function buildServiceIndex(
         }
     });
     return {
-        sourceKind,
-        projectRoot,
-        ...artifacts,
         entitySets: entitySets,
         entityContainer,
         annotations: annotationIndex

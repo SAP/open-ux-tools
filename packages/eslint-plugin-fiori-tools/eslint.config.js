@@ -13,9 +13,6 @@ module.exports = [
                 tsconfigRootDir: __dirname,
                 project: './tsconfig.eslint.json'
             }
-        },
-        rules: {
-            '@typescript-eslint/no-require-imports': 'warn'
         }
     },
     eslintPlugin.configs.recommended

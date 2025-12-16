@@ -1,5 +1,5 @@
 import { type FioriPropertyDefinition, PROPERTY_DEFINITIONS } from '../property-definitions';
-import type { FioriMixedRuleDefinition } from '../types';
+import type { FioriRuleDefinition } from '../types';
 import { createMixedRule } from '../language/rule-factory';
 import { REQUIRE_FLEX_ENABLED, type RequireFlexEnabled } from '../language/diagnostics';
 import { RuleVisitor } from '@eslint/core';
@@ -7,7 +7,7 @@ import { MemberNode } from '@humanwhocodes/momoa';
 
 const flexEnabledDefinition: FioriPropertyDefinition = PROPERTY_DEFINITIONS.flexEnabled;
 
-const rule: FioriMixedRuleDefinition = createMixedRule({
+const rule: FioriRuleDefinition = createMixedRule({
     ruleId: REQUIRE_FLEX_ENABLED,
     meta: {
         type: flexEnabledDefinition.type,
@@ -26,22 +26,21 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
 
         for (const [, app] of Object.entries(context.sourceCode.projectContext.index.apps)) {
             const manifest = app.manifestObject;
-            const flexEnabled = manifest?.['sap.ui5']?.flexEnabled;
-            if (flexEnabled === flexEnabledDefinition.defaultValue) {
-                continue;
-            } else if (flexEnabled === false) {
+            if (!app.manifest.flexEnabled) {
                 problems.push({
                     type: REQUIRE_FLEX_ENABLED,
                     manifestPropertyPath: ['sap.ui5', 'flexEnabled'],
                     propertyName: 'flexEnabled'
                 });
-            } else {
-                problems.push({
-                    type: REQUIRE_FLEX_ENABLED,
-                    manifestPropertyPath: ['sap.ui5'],
-                    propertyName: 'flexEnabled'
-                });
             }
+            //  else if (flexEnabled === false) {
+            // } else {
+            //     problems.push({
+            //         type: REQUIRE_FLEX_ENABLED,
+            //         manifestPropertyPath: ['sap.ui5'],
+            //         propertyName: 'flexEnabled'
+            //     });
+            // }
         }
 
         return problems;
@@ -72,17 +71,9 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
             });
         }
         for (const diagnostic of diagnostics) {
-            matchers[createMatcherString(diagnostic.manifestPropertyPath)] = report;
+            matchers[context.sourceCode.createMatcherString(diagnostic.manifestPropertyPath)] = report;
         }
         return matchers;
-
-        /**
-         *
-         * @param path
-         */
-        function createMatcherString(path: string[]) {
-            return path.map((segment) => `Member[name.value="${segment}"]`).join(' ');
-        }
     }
 });
 

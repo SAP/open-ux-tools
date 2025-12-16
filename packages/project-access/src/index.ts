@@ -55,7 +55,8 @@ export {
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled,
     readFlexChanges,
-    processServices
+    processServices,
+    getMainService
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';

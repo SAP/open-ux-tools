@@ -1,6 +1,6 @@
 import { runAsWorker } from 'synckit';
-import type { FoundFioriArtifacts } from '@sap-ux/project-access';
-import { findFioriArtifacts, findProjectRoot } from '@sap-ux/project-access';
+import { findFioriArtifacts, findProjectRoot, getProjectType } from '@sap-ux/project-access';
+import type { WorkerResult } from './types';
 
 /**
  * Get Fiori project artifacts for the given file path.
@@ -8,18 +8,18 @@ import { findFioriArtifacts, findProjectRoot } from '@sap-ux/project-access';
  * @param filePath - file path to find the project artifacts for
  * @returns Found Fiori artifacts
  */
-async function getProjectArtifacts(filePath: string): Promise<FoundFioriArtifacts> {
+async function getProjectArtifacts(filePath: string): Promise<WorkerResult> {
     try {
         const projectRoot = await findProjectRoot(filePath, false);
-
+        const projectType = await getProjectType(projectRoot);
         const artifacts = await findFioriArtifacts({
             wsFolders: [projectRoot],
             artifacts: ['applications', 'adaptations']
         });
-        return artifacts;
+        return { artifacts, projectType };
     } catch (error) {
         // debugLog('Worker failed with error:', error.message);
-        return {};
+        return { artifacts: {}, projectType: 'EDMXBackend' };
     }
 }
 
