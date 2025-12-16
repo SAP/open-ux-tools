@@ -10,14 +10,11 @@ sap.ui.define([
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();
 <% startPages.forEach(function(pageName) { %>
-            Then.onThe<%- pageName%>.iSeeThisPage();
-            <% if (filterBarItems && filterBarItems.length > 0) { %>
+            Then.onThe<%- pageName%>.iSeeThisPage();<% if (filterBarItems && filterBarItems.length > 0) { %>
                 <% filterBarItems.forEach(function(item) { %>
             Then.onThe<%- pageName%>.onFilterBar().iCheckFilterField("<%- item %>");
                 <% }); %>
-            <% } %>
-
-            <% if (tableColumns && Object.keys(tableColumns).length > 0) { %>
+            <% } %><% if (tableColumns && Object.keys(tableColumns).length > 0) { %>
             Then.onThe<%- pageName %>.onTable().iCheckColumns(<%- Object.keys(tableColumns).length %>, <%- JSON.stringify(tableColumns) %>);
             <% } %>
 <% });%>

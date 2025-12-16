@@ -25,6 +25,9 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
     };
 });
 
+jest.mock('@sap/ux-specification', () => ({
+}));
+
 describe('Generate v4 apps', () => {
     let testProjectName: string;
     let expectedOutputPath: string;
