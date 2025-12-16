@@ -1,6 +1,5 @@
 import { basename } from 'node:path';
 import type { DeployConfigOptions } from '../types';
-import type { GeneratorOptions } from 'yeoman-generator';
 
 /**
  * Parses the target from the CLI args or the options.
@@ -36,4 +35,3 @@ export function getYUIDetails(appRootPath: string): { name: string; description:
         }
     ];
 }
-
