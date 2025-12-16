@@ -188,6 +188,37 @@ function isInterestingAssignment(node: ASTNode | undefined): boolean {
     );
 }
 
+/**
+ * Check if a navigation call has valid target configuration.
+ *
+ * @param node The call expression node to validate
+ * @returns True if the navigation has valid target configuration
+ */
+function isValid(node: ASTNode): boolean {
+    if ((node as any).arguments?.length > 0) {
+        const target = getProperty((node as any).arguments[0], 'target');
+        if (target) {
+            // get property target from first argument, get property shellHash from property target
+            const shellHash = getProperty(target, 'shellHash');
+            // check if property shellHash has value '#' or '#Shell-home' or ""
+            if (
+                (shellHash && getName(shellHash) === '#Shell-home') ||
+                (shellHash && getName(shellHash) === '#') ||
+                (shellHash && getName(shellHash) === '')
+            ) {
+                return true;
+            }
+            const semanticObject = getProperty(target, 'semanticObject');
+            const action = getProperty(target, 'action');
+            // check if property semanticObject has value '#Shell' and action has the value '#home'
+            if (semanticObject && getName(semanticObject) === 'Shell' && action && getName(action) === 'home') {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -220,37 +251,6 @@ const rule: Rule.RuleModule = {
                 if (isMember(callee)) {
                     const object = callee.object;
                     if (isGetServiceCall(object) || (isIdentifier(object) && VARIABLES[object.name])) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /**
-         * Check if a navigation call has valid target configuration.
-         *
-         * @param node The call expression node to validate
-         * @returns True if the navigation has valid target configuration
-         */
-        function isValid(node: ASTNode): boolean {
-            if ((node as any).arguments?.length > 0) {
-                const target = getProperty((node as any).arguments[0], 'target');
-                if (target) {
-                    // get property target from first argument, get property shellHash from property target
-                    const shellHash = getProperty(target, 'shellHash');
-                    // check if property shellHash has value '#' or '#Shell-home' or ""
-                    if (
-                        (shellHash && getName(shellHash) === '#Shell-home') ||
-                        (shellHash && getName(shellHash) === '#') ||
-                        (shellHash && getName(shellHash) === '')
-                    ) {
-                        return true;
-                    }
-                    const semanticObject = getProperty(target, 'semanticObject');
-                    const action = getProperty(target, 'action');
-                    // check if property semanticObject has value '#Shell' and action has the value '#home'
-                    if (semanticObject && getName(semanticObject) === 'Shell' && action && getName(action) === 'home') {
                         return true;
                     }
                 }
