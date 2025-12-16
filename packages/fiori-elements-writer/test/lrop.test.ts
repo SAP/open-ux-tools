@@ -30,8 +30,7 @@ if (debug?.enabled) {
     jest.setTimeout(360000);
 }
 
-jest.mock('@sap/ux-specification', () => ({
-}));
+jest.mock('@sap/ux-specification', () => ({}));
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
