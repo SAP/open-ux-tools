@@ -153,6 +153,41 @@ function isGetServiceCall(node: ASTNode | undefined): boolean {
     return false;
 }
 
+/**
+ * Get a property from an object node by key.
+ *
+ * @param node The object node to search in
+ * @param key The property key to search for
+ * @returns The property node if found, null otherwise
+ */
+function getProperty(node: ASTNode, key: string): ASTNode | null {
+    // check if node is an object, only objects have properties
+    if (isObject(node)) {
+        // iterate properties
+        for (const property of (node as any).properties) {
+            // return property value if property key matches given key
+            if (isProperty(property) && getName(property.key) === key) {
+                return property.value;
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * Method checks if the assignment node contains any interesting nodes. Can handle nested conditions.
+ *
+ * @param node The assignment node to check
+ * @returns True if the assignment contains interesting nodes
+ */
+function isInterestingAssignment(node: ASTNode | undefined): boolean {
+    return (
+        isGetServiceCall(node) ||
+        (isLogical(node) &&
+            (isInterestingAssignment((node as any).left) || isInterestingAssignment((node as any).right)))
+    );
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -171,41 +206,6 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         const VARIABLES: Record<string, boolean> = {};
-
-        /**
-         * Get a property from an object node by key.
-         *
-         * @param node The object node to search in
-         * @param key The property key to search for
-         * @returns The property node if found, null otherwise
-         */
-        function getProperty(node: ASTNode, key: string): ASTNode | null {
-            // check if node is an object, only objects have properties
-            if (isObject(node)) {
-                // iterate properties
-                for (const property of (node as any).properties) {
-                    // return property value if property key matches given key
-                    if (isProperty(property) && getName(property.key) === key) {
-                        return property.value;
-                    }
-                }
-            }
-            return null;
-        }
-
-        /**
-         * Method checks if the assignment node contains any interesting nodes. Can handle nested conditions.
-         *
-         * @param node The assignment node to check
-         * @returns True if the assignment contains interesting nodes
-         */
-        function isInterestingAssignment(node: ASTNode | undefined): boolean {
-            return (
-                isGetServiceCall(node) ||
-                (isLogical(node) &&
-                    (isInterestingAssignment((node as any).left) || isInterestingAssignment((node as any).right)))
-            );
-        }
 
         /**
          * Check if a call expression is interesting for cross-application navigation.
