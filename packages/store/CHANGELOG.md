@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.4.0
+
+### Minor Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+
 ## 1.3.5
 
 ### Patch Changes
