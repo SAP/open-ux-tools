@@ -1,4 +1,5 @@
 import type { PanelContext } from '../../../../../src/types';
+import type { BackendSystem } from '@sap-ux/store';
 import { testSystemConnection } from '../../../../../src/panel/system/actions/testConnection';
 import * as utils from '../../../../../src/panel/system/utils';
 import { initI18n } from '../../../../../src/utils';
@@ -16,13 +17,14 @@ describe('Test Connection Action', () => {
         await initI18n();
     });
 
-    const backendSystem = {
+    const backendSystem: BackendSystem = {
         name: 'Test System',
         systemType: 'OnPrem',
         url: 'https://test-system.example.com',
         client: '100',
         username: 'testuser',
-        password: 'password'
+        password: 'password',
+        connectionType: 'abap_catalog'
     };
 
     it('should post message to webview with service summary', async () => {
