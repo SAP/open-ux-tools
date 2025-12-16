@@ -62,10 +62,10 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
             }
             
             // Find all ListReport targets with LineItem control configurations
-            // All validation logic is now in the filter predicates
+            // Using optional segments to match paths at any depth
             const pathMatches = findPathsInObject(
                 manifest,
-                ['sap.ui5', 'routing', 'targets', '{targetName}', 'options', 'settings', 'controlConfiguration', '{annotationPath}'],
+                ['sap.ui5', 'routing', 'targets', '{targetName}', 'options', 'settings', 'controlConfiguration?', `@${UI_LINE_ITEM}?`, 'tableSettings?', 'widthIncludingColumnHeader?'],
                 {
                     targetName: (value, key, path, ctx) => {
                         const target = value as any;
@@ -102,20 +102,38 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                             pass: true,
                             metadata: { fullyQualifiedName }
                         };
-                    },
-                    annotationPath: (value, key) => key === '@' + UI_LINE_ITEM
+                    }
                 },
                 { indexedService }
             );
 
-            // Build lineItemReferences directly from matches
-            const lineItemReferences = pathMatches.map(match => ({
-                entityTypeName: match.metadata?.fullyQualifiedName,
-                value: match.value,
-                annotationPath: match.wildcardValues.annotationPath,
-                targetName: match.wildcardValues.targetName,
-                basePath: match.path
-            }));
+            // Build lineItemReferences with computed report paths
+            const lineItemReferences = pathMatches.map(match => {
+                const pathDepth = match.path.length;
+                // Path depths:
+                // 6 = settings (controlConfiguration missing)
+                // 7 = controlConfiguration (LineItem missing)
+                // 8 = LineItem (tableSettings missing)
+                // 9 = tableSettings (widthIncludingColumnHeader missing)
+                // 10 = widthIncludingColumnHeader (exists)
+                
+                //const hasControlConfiguration = pathDepth >= 7;
+                //const hasLineItem = pathDepth >= 8;
+                //const hasTableSettings = pathDepth >= 9;
+                const hasWidthProp = pathDepth >= 10;
+                
+                // Determine the report path based on what exists
+                const reportPath = hasWidthProp ? match.path : getLastMemberPath(match.path, match.value);
+                
+                return {
+                    entityTypeName: match.metadata?.fullyQualifiedName,
+                    value: match.value,
+                    annotationPath: '@' + UI_LINE_ITEM,
+                    targetName: match.wildcardValues.targetName,
+                    reportPath,
+                    widthIncludingColumnHeader: hasWidthProp ? match.value : undefined
+                };
+            });
 
             // TODO: it is better to loop through pages as they are usually less than annotations
             // TODO: check presentation variants
@@ -132,21 +150,11 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                     if (records.length < 6 && records.length > 0) {
                         for (const ref of lineItemReferences) {
                             if (annotation.target === ref.entityTypeName && annotation.qualifier === undefined) {
-                                const tableSettings = (ref.value as any)?.tableSettings;
-                                const widthIncludingColumnHeader = tableSettings?.widthIncludingColumnHeader;
-                                if (widthIncludingColumnHeader !== true) {
-                                    let path: string[];
-                                    if (widthIncludingColumnHeader !== undefined) {
-                                        path = [...ref.basePath, 'tableSettings', 'widthIncludingColumnHeader'];
-                                    } else if (tableSettings) {
-                                        path = getLastMemberPath([...ref.basePath, 'tableSettings'], tableSettings);
-                                    } else {
-                                        path = getLastMemberPath(ref.basePath, ref.value);
-                                    }
-                                    
+                                // Check if widthIncludingColumnHeader is not true
+                                if (ref.widthIncludingColumnHeader !== true) {
                                     problems.push({
                                         type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-                                        manifestPropertyPath: path,
+                                        manifestPropertyPath: ref.reportPath,
                                         propertyName: 'widthIncludingColumnHeader',
                                         annotation: {
                                             file: annotation.source,

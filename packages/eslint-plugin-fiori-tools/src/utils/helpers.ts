@@ -645,6 +645,8 @@ export interface PathMatch {
     wildcardValues: Record<string, string>;
     /** Optional metadata attached by filter predicates (e.g., computed values) */
     metadata?: Record<string, any>;
+    /** Number of segments matched from the template (useful for optional segments) */
+    matchedDepth: number;
 }
 
 /**
@@ -672,7 +674,7 @@ export interface PathMatch {
  * 
  * const matches = findPathsInObject(
  *   manifest,
- *   ['sap.ui5', 'routing', 'targets', '{targetName}'],
+ *   ['sap.ui5', 'routing', 'targets', '{targetName}', 'tableSettings?', 'widthIncludingColumnHeader?'],
  *   {
  *     targetName: (value, key, path, ctx) => {
  *       if (value?.type !== 'Component') return false;
@@ -685,7 +687,8 @@ export interface PathMatch {
  *   },
  *   { indexedService: myService }
  * );
- * // Returns: [{ path: [...], value: {...}, wildcardValues: {...}, metadata: { fullyQualifiedName: '...' } }]
+ * // Returns matches at any depth: full path if widthIncludingColumnHeader exists,
+ * // up to tableSettings if it exists, or just up to targetName
  * ```
  * 
  * @param obj The object to traverse
@@ -710,7 +713,8 @@ export function findPathsInObject<TContext = any>(
             path: basePath,
             value: obj,
             wildcardValues: {},
-            metadata: {}
+            metadata: {},
+            matchedDepth: basePath.length
         }];
     }
     
@@ -726,11 +730,32 @@ export function findPathsInObject<TContext = any>(
     
     const [currentSegment, ...remainingTemplate] = pathTemplate;
     
+    // Check if this segment is optional (ends with '?')
+    const isOptional = currentSegment.endsWith('?');
+    const segmentWithoutOptional = isOptional ? currentSegment.slice(0, -1) : currentSegment;
+    
     // Check if this segment is a wildcard
-    const isWildcard = currentSegment === '*' || (currentSegment.startsWith('{') && currentSegment.endsWith('}'));
-    const wildcardName = isWildcard && currentSegment !== '*' 
-        ? currentSegment.slice(1, -1) // Extract name from {wildcardName}
-        : currentSegment; // Use the segment itself as fallback
+    const isWildcard = segmentWithoutOptional === '*' || (segmentWithoutOptional.startsWith('{') && segmentWithoutOptional.endsWith('}'));
+    const wildcardName = isWildcard && segmentWithoutOptional !== '*' 
+        ? segmentWithoutOptional.slice(1, -1) // Extract name from {wildcardName}
+        : segmentWithoutOptional; // Use the segment itself as fallback
+    
+    // If optional and remaining path doesn't exist, return current position as a match
+    if (isOptional) {
+        const typedObj = obj as Record<string, unknown>;
+        const hasProperty = isWildcard ? Object.keys(typedObj).length > 0 : (segmentWithoutOptional in typedObj);
+        
+        if (!hasProperty) {
+            // Path ends here - return this as a valid match
+            return [{
+                path: basePath,
+                value: obj,
+                wildcardValues: {},
+                metadata: {},
+                matchedDepth: basePath.length
+            }];
+        }
+    }
     
     if (isWildcard) {
         // Wildcard: try all properties of the current object
@@ -777,15 +802,18 @@ export function findPathsInObject<TContext = any>(
     } else {
         // Static segment: must match exactly
         const typedObj = obj as Record<string, unknown>;
-        if (currentSegment in typedObj) {
+        if (segmentWithoutOptional in typedObj) {
             const subResults = findPathsInObject(
-                typedObj[currentSegment],
+                typedObj[segmentWithoutOptional],
                 remainingTemplate,
                 filters,
                 context,
-                [...basePath, currentSegment]
+                [...basePath, segmentWithoutOptional]
             );
             results.push(...subResults);
+        } else if (!isOptional) {
+            // Required segment not found - no match
+            return results;
         }
     }
     
