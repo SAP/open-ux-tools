@@ -40,7 +40,8 @@
         "typescript": "5.9.3",
         "typescript-eslint": "8.49.0",
         "update-ts-references": "3.6.2",
-        "yargs-parser": "21.1.1"
+        "yargs-parser": "21.1.1",
+        "yaml":  "2.8.2"
     },
     "scripts": {
         "update-ts-references": "update-ts-references",
