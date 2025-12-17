@@ -9,7 +9,7 @@
         "<%- ui5.typesPackage %>": "<%- ui5.typesVersion %>",
         "ui5-tooling-transpile": "^3.10.0",
         "typescript": "^5.9.3",
-        "@eslint": "^9",
+        "eslint": "^9",
         "@sap-ux/eslint-plugin-fiori-tools": "^9.0.0"
     }
 }
