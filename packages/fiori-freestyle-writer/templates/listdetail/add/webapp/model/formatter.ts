@@ -9,5 +9,5 @@ export function currencyValue(value: string): string {
         return "";
     }
 
-    return parseFloat(value).toFixed(2);
+    return Number.parseFloat(value).toFixed(2);
 }

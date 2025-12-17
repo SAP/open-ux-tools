@@ -50,7 +50,7 @@ export abstract class AppIndexService extends Axios implements Service {
      * @returns list of applications
      */
     public async search(searchParams: { [property: string]: string } = {}, resultFields?: string[]): Promise<AppIndex> {
-        const params = Object.assign({}, searchParams);
+        const params = {...searchParams};
         if (resultFields) {
             params['fields'] = resultFields.join(',');
         }

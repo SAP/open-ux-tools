@@ -88,7 +88,7 @@ export const paramsProcessing = (params: any, instructions: ParamRecordConfig): 
         val = param;
     }
 
-    if (!isNaN(val as number)) {
+    if (!Number.isNaN(val as number)) {
         processedMeasurements[key] = val as number;
     } else {
         processedDimensions[key] = val as string;

@@ -45,9 +45,8 @@ export function ChangeStack(changeStackProps: ChangeStackProps): ReactElement {
     const { changes } = changeStackProps;
     let groups = convertChanges(changes);
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery)
-        .filter((item) => item.name === FilterName.changeSummaryFilterQuery)[0]
-        .value.toString()
-        .toLowerCase();
+        .find((item) => item.name === FilterName.changeSummaryFilterQuery)?.value.toString()
+        .toLowerCase() ?? '';
     groups = filterGroup(groups, filterQuery);
     const stackName = changes[0].type === PENDING_CHANGE_TYPE ? 'unsaved-changes-stack' : 'saved-changes-stack';
     return (

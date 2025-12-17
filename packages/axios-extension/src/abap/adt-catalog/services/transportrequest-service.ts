@@ -28,7 +28,7 @@ export class TransportRequestService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
      */
-    private static adtCategory = {
+    private static readonly adtCategory = {
         scheme: 'http://www.sap.com/adt/categories/cts',
         term: 'transports'
     };

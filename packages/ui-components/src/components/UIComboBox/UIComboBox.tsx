@@ -152,14 +152,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     // Default values for public component properties
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
-    private comboBox = React.createRef<ComboBoxRef>();
-    private comboboxDomRef = React.createRef<HTMLDivElement>();
-    private menuDomRef = React.createRef<HTMLDivElement>();
-    private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
+    private readonly comboBox = React.createRef<ComboBoxRef>();
+    private readonly comboboxDomRef = React.createRef<HTMLDivElement>();
+    private readonly menuDomRef = React.createRef<HTMLDivElement>();
+    private readonly selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
-    private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
+    private readonly ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
-    private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
+    private readonly calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
     private readonly onExternalSearchDebounce: (query: string) => void;
 
     /**
@@ -387,7 +387,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      *
      * @returns {IComboBoxOption[]} Array of combobox items.
      */
-    private onResolveOptions = (): IComboBoxOption[] => {
+    private readonly onResolveOptions = (): IComboBoxOption[] => {
         return this.props.options;
     };
 
@@ -432,7 +432,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
      */
-    private onRenderItem = (
+    private readonly onRenderItem = (
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
@@ -447,7 +447,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      *
      * @returns {number | undefined} Selected item index.
      */
-    private getCurrentSelectedIndex = (): number | undefined => {
+    private readonly getCurrentSelectedIndex = (): number | undefined => {
         const baseCombobox = this.comboBox.current;
         if (!baseCombobox) {
             return undefined;
@@ -463,7 +463,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      *
      * @returns {string}
      */
-    private getPlaceholder = (): string => {
+    private readonly getPlaceholder = (): string => {
         if (this.props.placeholder) {
             return this.props.placeholder;
         } else {

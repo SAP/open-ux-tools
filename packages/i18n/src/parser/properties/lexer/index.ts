@@ -103,8 +103,8 @@ function isValue(tokens: Token[]): boolean {
  */
 class PropertiesTokenizer {
     private offset: number;
-    private text: string;
-    private tokens: Token[];
+    private readonly text: string;
+    private readonly tokens: Token[];
     /**
      * Class constructor.
      *

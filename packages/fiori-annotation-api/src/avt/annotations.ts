@@ -480,7 +480,7 @@ function createExpression(
         case 'Decimal':
             return {
                 type: 'Decimal',
-                Decimal: parseFloat(value)
+                Decimal: Number.parseFloat(value)
             };
         case 'Date':
             return {

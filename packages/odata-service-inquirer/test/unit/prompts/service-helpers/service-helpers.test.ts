@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import { showCollabDraftWarning } from '../../../../src/prompts/datasources/service-helpers/service-helpers';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { join } from 'node:path';

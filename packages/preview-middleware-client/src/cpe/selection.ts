@@ -91,8 +91,8 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
  *
  */
 export class SelectionService implements Service {
-    private appliedChangeCache = new Map<string, number>();
-    private activeChangeHandlers = new Set<() => void>();
+    private readonly appliedChangeCache = new Map<string, number>();
+    private readonly activeChangeHandlers = new Set<() => void>();
     private currentSelection: ManagedObject;
     /**
      *

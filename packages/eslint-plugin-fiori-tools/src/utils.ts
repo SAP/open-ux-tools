@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseDocument } from 'yaml';
-import * as process from 'process';
+import * as process from 'node:process';
 
 export const getResourcePaths = (): { sourceCodePath: string; testCodePath?: string } => {
     let sourceCodePath: string = 'webapp';

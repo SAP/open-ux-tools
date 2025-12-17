@@ -154,7 +154,7 @@ export const Tree = (): ReactElement => {
      */
     function setCurrentItem(current: CurrentType, segment: string): CurrentType {
         if (Array.isArray(current)) {
-            current = current[parseInt(segment, 10)];
+            current = current[Number.parseInt(segment, 10)];
         } else if (current && segment === 'children') {
             current = current.children;
         } else {
@@ -392,7 +392,7 @@ export const Tree = (): ReactElement => {
         const data = groupHeaderProps?.group?.data as OutlineNodeItem;
         const isExtensionPoint = data?.controlType === 'sap.ui.extensionpoint';
         const hasDefaultContent = data?.hasDefaultContent || false;
-        const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
+        const focus = filterQuery.find((item) => item.name === FilterName.focusEditable)?.value as boolean | undefined;
         const focusEditable = !data?.editable && focus ? 'focusEditable' : '';
         const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
         const indicator = controlChange ? (

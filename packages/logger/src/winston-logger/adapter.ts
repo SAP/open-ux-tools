@@ -13,7 +13,7 @@ import {
 import { NullTransport as WinstonNullTransport } from './null-transport';
 import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-channel-transport';
 import type { Format } from 'logform';
-import { inspect } from 'util';
+import { inspect } from 'node:util';
 import chalk from 'chalk';
 
 /**
@@ -28,7 +28,7 @@ export function toWinstonLogLevel(logLevel?: LogLevel): string | undefined {
 
 const toWinstonTransportOptions = <OPT>(transportOptions: TransportOptions): OPT & { level?: string } => {
     const { logLevel, ...opts } = transportOptions;
-    return Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) }) as OPT & { level?: string };
+    return { ...opts, level: toWinstonLogLevel(logLevel) } as OPT & { level?: string };
 };
 
 const levelColor: { [level: string]: string } = {
