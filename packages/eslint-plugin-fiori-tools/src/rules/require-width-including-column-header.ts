@@ -1,14 +1,13 @@
 import { UI_LINE_ITEM } from '../constants';
-import type { XMLElement } from '@xml-tools/ast';
 import { createMixedRule } from '../language/rule-factory';
 import type { FioriMixedRuleDefinition } from '../types';
-import { IndexedAnnotation } from '../project-context/facets/services';
+import { ServiceIndex } from '../project-context/facets/services';
 import { Edm, elementsWithName, Element } from '@sap-ux/odata-annotation-core';
 import {
     REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     RequireWidthIncludingColumnHeaderDiagnostic
 } from '../language/diagnostics';
-import { AnyNode, ObjectNode } from '@humanwhocodes/momoa';
+import { AnyNode } from '@humanwhocodes/momoa';
 import { RuleVisitor } from '@eslint/core';
 import { findPathsInObject } from '../utils/helpers';
 
@@ -16,25 +15,69 @@ export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
 };
 
-/**
- * Gets the path to the last property in an object.
- * Useful for reporting errors at the location of the last existing property.
- *
- * @param basePath - The base path array to the object.
- * @param obj - The plain JavaScript object to find the last property in.
- * @returns The path array pointing to the last property, or the base path if no properties exist.
- */
-function getLastMemberPath(basePath: string[], obj: any): string[] {
-    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
-        return basePath;
-    }
-    const keys = Object.keys(obj);
-    if (keys.length === 0) {
-        return basePath;
-    }
-    const lastKey = keys[keys.length - 1];
-    return [...basePath, lastKey];
+interface PathFilterContext {
+    indexedService?: ServiceIndex;
 }
+
+interface PathFilterMetadata {
+    fullyQualifiedName: string;
+}
+
+type PathFilter = (
+    value: any,
+    key: string,
+    path: string[],
+    ctx?: PathFilterContext
+) => PathFilterMetadata | undefined;
+
+const pathTemplate = [
+    'sap.ui5',
+    'routing',
+    'targets',
+    '{targetName}',
+    'options',
+    'settings',
+    'controlConfiguration?',
+    `@${UI_LINE_ITEM}?`,
+    'tableSettings?',
+    'widthIncludingColumnHeader?'
+];
+
+const pathFilters: Record<string, PathFilter> = {
+    targetName: (value, key, path, ctx) => {
+        const target = value as any;
+
+        // Check target type
+        if (target?.type !== 'Component' || target?.name !== 'sap.fe.templates.ListReport') {
+            return;
+        }
+
+        // Extract and validate contextPath
+        const contextPath =
+            target.options?.settings?.contextPath ??
+            (target.options?.settings?.entitySet ? `/${target.options.settings.entitySet}` : undefined);
+
+        if (!contextPath) {
+            return;
+        }
+
+        const targetSegments = contextPath.split('/');
+        if (targetSegments.length !== 2) {
+            // TODO: support different target paths
+            return;
+        }
+
+        const entitySetName = targetSegments[1];
+        const fullyQualifiedName = ctx?.indexedService?.entitySets[entitySetName]?.structuredType;
+
+        if (!fullyQualifiedName) {
+            return;
+        }
+
+        // Return metadata containing the computed fullyQualifiedName
+        return { fullyQualifiedName };
+    }
+};
 
 const rule: FioriMixedRuleDefinition = createMixedRule({
     ruleId: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
@@ -54,80 +97,27 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
     check(context) {
         const problems: RequireWidthIncludingColumnHeaderDiagnostic[] = [];
 
-        for (const [, app] of Object.entries(context.sourceCode.projectContext.index.apps)) {
+        for (const app of Object.values(context.sourceCode.projectContext.index.apps)) {
             const manifest = app.manifestObject;
             const indexedService = context.sourceCode.projectContext.getIndexedServiceForMainService(app);
             if (!indexedService) {
                 continue;
             }
-            
+
             // Find all ListReport targets with LineItem control configurations
             // Using optional segments to match paths at any depth
-            const pathMatches = findPathsInObject(
-                manifest,
-                ['sap.ui5', 'routing', 'targets', '{targetName}', 'options', 'settings', 'controlConfiguration?', `@${UI_LINE_ITEM}?`, 'tableSettings?', 'widthIncludingColumnHeader?'],
-                {
-                    targetName: (value, key, path, ctx) => {
-                        const target = value as any;
-                        
-                        // Check target type
-                        if (target?.type !== 'Component' || target?.name !== 'sap.fe.templates.ListReport') {
-                            return undefined;
-                        }
-                        
-                        // Extract and validate contextPath
-                        const contextPath = 
-                            target.options?.settings?.contextPath ??
-                            (target.options?.settings?.entitySet ? `/${target.options.settings.entitySet}` : undefined);
-                        
-                        if (!contextPath) {
-                            return undefined;
-                        }
-                        
-                        const targetSegments = contextPath.split('/');
-                        if (targetSegments.length !== 2) {
-                            // TODO: support different target paths
-                            return undefined;
-                        }
-                        
-                        const entitySetName = targetSegments[1];
-                        const fullyQualifiedName = ctx?.indexedService?.entitySets[entitySetName]?.structuredType;
-                        
-                        if (!fullyQualifiedName) {
-                            return undefined;
-                        }
-                        
-                        // Return metadata containing the computed fullyQualifiedName
-                        return { fullyQualifiedName };
-                    }
-                },
-                { indexedService }
-            );
+            const pathMatches = findPathsInObject(manifest, pathTemplate, pathFilters, { indexedService });
 
             // Build lineItemReferences with computed report paths
-            const lineItemReferences = pathMatches.map(match => {
-                const pathDepth = match.path.length;
-                // Path depths:
-                // 6 = settings (controlConfiguration missing)
-                // 7 = controlConfiguration (LineItem missing)
-                // 8 = LineItem (tableSettings missing)
-                // 9 = tableSettings (widthIncludingColumnHeader missing)
-                // 10 = widthIncludingColumnHeader (exists)
-                
-                //const hasControlConfiguration = pathDepth >= 7;
-                //const hasLineItem = pathDepth >= 8;
-                //const hasTableSettings = pathDepth >= 9;
-                const hasWidthProp = pathDepth >= 10;
-                
-                // Determine the report path based on what exists
-                const reportPath = hasWidthProp ? match.path : getLastMemberPath(match.path, match.value);
-                
+            const lineItemReferences = pathMatches.map((match) => {
+                const hasWidthProp = match.path.length >= pathTemplate.length;
+
                 return {
                     entityTypeName: match.metadata?.fullyQualifiedName,
                     value: match.value,
                     annotationPath: '@' + UI_LINE_ITEM,
                     targetName: match.wildcardValues.targetName,
-                    reportPath,
+                    reportPath: match.path,
                     widthIncludingColumnHeader: hasWidthProp ? match.value : undefined
                 };
             });
@@ -144,24 +134,32 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                         continue;
                     }
                     const records = elementsWithName(Edm.Record, collection);
-                    if (records.length < 6 && records.length > 0) {
-                        for (const ref of lineItemReferences) {
-                            if (annotation.target === ref.entityTypeName && annotation.qualifier === undefined) {
-                                // Check if widthIncludingColumnHeader is not true
-                                if (ref.widthIncludingColumnHeader !== true) {
-                                    problems.push({
-                                        type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-                                        manifestPropertyPath: ref.reportPath,
-                                        propertyName: 'widthIncludingColumnHeader',
-                                        annotation: {
-                                            file: annotation.source,
-                                            annotationPath: ref.annotationPath,
-                                            annotation: annotation.top
-                                        }
-                                    });
-                                }
-                            }
+                    // Skip if wrong number of records (only check tables with 1-5 columns)
+                    if (records.length === 0 || records.length >= 6) {
+                        continue;
+                    }
+
+                    for (const ref of lineItemReferences) {
+                        // Skip if target doesn't match or has qualifier
+                        if (annotation.target !== ref.entityTypeName || annotation.qualifier !== undefined) {
+                            continue;
                         }
+
+                        // Skip if widthIncludingColumnHeader is already set to true
+                        if (ref.widthIncludingColumnHeader === true) {
+                            continue;
+                        }
+
+                        problems.push({
+                            type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+                            manifestPropertyPath: ref.reportPath,
+                            propertyName: 'widthIncludingColumnHeader',
+                            annotation: {
+                                file: annotation.source,
+                                annotationPath: ref.annotationPath,
+                                annotation: annotation.top
+                            }
+                        });
                     }
                 }
             }
@@ -189,89 +187,31 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
         if (validationResult.length === 0) {
             return {};
         }
-        const aliasMap = context.sourceCode.getAliasMap();
         const lookup = new Set<Element>();
         for (const diagnostic of validationResult) {
             lookup.add((diagnostic as RequireWidthIncludingColumnHeaderDiagnostic).annotation?.annotation);
         }
         return {
             ['target>element[name="Annotation"]'](node: Element) {
-                if (!lookup.has(node)) {
-                    return;
+                if (lookup.has(node)) {
+                    context.report({
+                        node,
+                        messageId: 'require-width-including-column-header'
+                    });
                 }
-
-                // if (node.attributes.length === 0) {
-                //     return;
-                // }
-
-                // const termAttribute = node.attributes.find((attr) => attr.key === 'Term');
-                // if (!termAttribute) {
-                //     return;
-                // }
-                // const qualifier = node.attributes.find((attr) => attr.key === 'Qualifier');
-                // if (qualifier) {
-                //     // TODO: check if empty qualifier is ok
-                //     return; // skip qualified annotations
-                // }
-                // const fullyQualifiedTermName = getFullyQualifiedName(aliasMap, termAttribute.value ?? '');
-                // if (fullyQualifiedTermName !== result.annotation.term) {
-                //     return;
-                // }
-
-                // if (node.parent?.type !== 'XMLElement') {
-                //     return;
-                // }
-                // const targetPath = node.parent.attributes.find((attribute) => attribute.key === 'Target')?.value ?? '';
-                // if (!targetPath) {
-                //     return;
-                // }
-
-                // const [targetName, ...rest] = targetPath.split('/');
-                // if (rest.length > 0) {
-                //     return; // line item can only be on entity
-                // }
-                // const fullyQualifiedTargetName = getFullyQualifiedName(aliasMap, targetName);
-
-                // if (fullyQualifiedTargetName !== result.annotation.target) {
-                //     return;
-                // }
-
-                // if (node.syntax?.openBody !== undefined) {
-                context.report({
-                    node: node,
-                    messageId: 'require-width-including-column-header'
-                });
-                // }
             }
         };
     }
 });
 
 /**
+ * Creates a CSS selector string for matching a path in the manifest JSON.
  *
- * @param path
+ * @param path - Array of path segments
+ * @returns CSS selector string for ESLint JSON matching
  */
 function createMatcherString(path: string[]) {
     return path.map((segment) => `Member[name.value="${segment}"]`).join(' ');
 }
 
 export default rule;
-
-/**
- *
- * @param aliasMap
- * @param name
- */
-function getFullyQualifiedName(aliasMap: Record<string, string>, name: string): string | undefined {
-    const nameSegments = name.split('.');
-    const simpleIdentifier = nameSegments.pop();
-    if (!simpleIdentifier) {
-        return;
-    }
-    const targetNamespaceOrAlias = nameSegments.join('.');
-    const resolvedNamespace = aliasMap[targetNamespaceOrAlias] ?? targetNamespaceOrAlias;
-    if (!resolvedNamespace) {
-        return;
-    }
-    return `${resolvedNamespace}.${simpleIdentifier}`;
-}
