@@ -12,7 +12,7 @@
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
 |**Namespace**<br>testnamepsace|
 |**UI5 Theme**<br>sap_horizon|
-|**UI5 Version**<br>1.142.0|
+|**UI5 Version**<br>1.143.0|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
 |**Main Entity**<br>Travel|
