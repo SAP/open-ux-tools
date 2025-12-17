@@ -134,6 +134,15 @@ Object.keys(rulesMap).forEach((ruleName: string) => {
     rules[`fiori-custom/${ruleName}`] = rulesMap[ruleName];
 });
 
+const createPluginConfig = (): Linter.Config => ({
+    plugins: {
+        '@sap-ux/fiori-tools': {
+            meta,
+            rules
+        }
+    }
+});
+
 // Config definitions as constants
 const commonConfig: Linter.Config[] = [
     {
@@ -287,9 +296,9 @@ const typescriptConfig: Linter.Config[] = [
 // Named configs for easy consumption
 export const configs: Record<string, Linter.Config[]> = {
     // Recommended config for JavaScript & TypeScript projects (prod + test)
-    recommended: [...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig],
+    recommended: [createPluginConfig(), ...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig],
     // Recommended for S/4HANA config for JavaScript & TypeScript projects
-    'recommended-for-s4hana': [...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig]
+    'recommended-for-s4hana': [createPluginConfig(), ...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig]
 };
 
 // Default export following ESLint 9 plugin structure
