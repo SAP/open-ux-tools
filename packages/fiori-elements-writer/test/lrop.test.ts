@@ -1,4 +1,3 @@
-// Mock @sap-ux/project-access to prevent specification analysis
 jest.mock('@sap-ux/project-access');
 
 import type { FioriElementsApp, LROPSettings } from '../src';

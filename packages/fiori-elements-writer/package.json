@@ -49,6 +49,7 @@
         "semver": "7.5.4"
     },
     "devDependencies": {
+        "@sap-ux/project-access": "workspace:*",
         "@sap/ux-specification": "1.139.2",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@types/ejs": "3.1.2",
