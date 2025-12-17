@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.6
+
+### Patch Changes
+
+- ffcf1b2: fix sonar issues: replace getAttribute() with .dataset
+
 ## 0.18.5
 
 ### Patch Changes
