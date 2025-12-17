@@ -72,7 +72,7 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                         
                         // Check target type
                         if (target?.type !== 'Component' || target?.name !== 'sap.fe.templates.ListReport') {
-                            return false;
+                            return undefined;
                         }
                         
                         // Extract and validate contextPath
@@ -81,27 +81,24 @@ const rule: FioriMixedRuleDefinition = createMixedRule({
                             (target.options?.settings?.entitySet ? `/${target.options.settings.entitySet}` : undefined);
                         
                         if (!contextPath) {
-                            return false;
+                            return undefined;
                         }
                         
                         const targetSegments = contextPath.split('/');
                         if (targetSegments.length !== 2) {
                             // TODO: support different target paths
-                            return false;
+                            return undefined;
                         }
                         
                         const entitySetName = targetSegments[1];
                         const fullyQualifiedName = ctx?.indexedService?.entitySets[entitySetName]?.structuredType;
                         
                         if (!fullyQualifiedName) {
-                            return false;
+                            return undefined;
                         }
                         
-                        // Return pass with metadata containing the computed fullyQualifiedName
-                        return {
-                            pass: true,
-                            metadata: { fullyQualifiedName }
-                        };
+                        // Return metadata containing the computed fullyQualifiedName
+                        return { fullyQualifiedName };
                     }
                 },
                 { indexedService }

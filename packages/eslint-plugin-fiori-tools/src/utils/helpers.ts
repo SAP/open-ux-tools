@@ -624,14 +624,14 @@ export function isForbiddenObviousApi(calleePath: string): string {
  * @param key The key/property name of the current segment
  * @param path The current path array leading to this segment
  * @param context Optional external context object passed from the caller
- * @returns True if this segment matches the filter criteria, or an object with pass: boolean and optional metadata
+ * @returns Metadata object if this segment matches, undefined otherwise
  */
 export type PathSegmentFilter<TContext = any> = (
     value: unknown,
     key: string,
     path: string[],
     context?: TContext
-) => boolean | { pass: boolean; metadata?: Record<string, any> };
+) => Record<string, any> | undefined;
 
 /**
  * Result of a path search operation.
@@ -645,8 +645,6 @@ export interface PathMatch {
     wildcardValues: Record<string, string>;
     /** Optional metadata attached by filter predicates (e.g., computed values) */
     metadata?: Record<string, any>;
-    /** Number of segments matched from the template (useful for optional segments) */
-    matchedDepth: number;
 }
 
 /**
@@ -655,7 +653,8 @@ export interface PathMatch {
  * This function traverses a nested object structure and finds all paths that match
  * a given template. The template can include:
  * - Static segments: exact property names that must match
- * - Wildcard segments: '*' or named wildcards like '{targetName}' that match any key
+ * - Wildcard segments: named wildcards like '{targetName}' that match any key
+ * - Optional segments: segments ending with '?' that may be missing
  * 
  * Filters can be applied to wildcard segments to constrain which keys are matched.
  * 
@@ -677,12 +676,12 @@ export interface PathMatch {
  *   ['sap.ui5', 'routing', 'targets', '{targetName}', 'tableSettings?', 'widthIncludingColumnHeader?'],
  *   {
  *     targetName: (value, key, path, ctx) => {
- *       if (value?.type !== 'Component') return false;
- *       if (value?.name !== 'sap.fe.templates.ListReport') return false;
- *       // Can access external context and return metadata
+ *       if (value?.type !== 'Component') return undefined;
+ *       if (value?.name !== 'sap.fe.templates.ListReport') return undefined;
+ *       // Access external context and return metadata
  *       const entitySet = value.options?.settings?.entitySet;
  *       const fqn = ctx?.indexedService?.entitySets[entitySet]?.structuredType;
- *       return { pass: !!fqn, metadata: { fullyQualifiedName: fqn } };
+ *       return fqn ? { fullyQualifiedName: fqn } : undefined;
  *     }
  *   },
  *   { indexedService: myService }
@@ -705,73 +704,64 @@ export function findPathsInObject<TContext = any>(
     context?: TContext,
     basePath: string[] = []
 ): PathMatch[] {
-    const results: PathMatch[] = [];
-    
     // Base case: if template is empty, we've matched the complete path
     if (pathTemplate.length === 0) {
         return [{
             path: basePath,
             value: obj,
             wildcardValues: {},
-            metadata: {},
-            matchedDepth: basePath.length
+            metadata: {}
         }];
     }
     
-    // Handle null/undefined
-    if (obj === null || obj === undefined) {
-        return results;
+    // Handle null/undefined/non-objects
+    if (obj == null || typeof obj !== 'object' || Array.isArray(obj)) {
+        return [];
     }
     
-    // Only process objects (not arrays, primitives, etc.)
-    if (typeof obj !== 'object' || Array.isArray(obj)) {
-        return results;
-    }
-    
+    const typedObj = obj as Record<string, unknown>;
     const [currentSegment, ...remainingTemplate] = pathTemplate;
     
-    // Check if this segment is optional (ends with '?')
+    // Parse segment modifiers
     const isOptional = currentSegment.endsWith('?');
     const segmentWithoutOptional = isOptional ? currentSegment.slice(0, -1) : currentSegment;
+    const isWildcard = segmentWithoutOptional.startsWith('{') && segmentWithoutOptional.endsWith('}');
+    const wildcardName = isWildcard ? segmentWithoutOptional.slice(1, -1) : segmentWithoutOptional;
     
-    // Check if this segment is a wildcard
-    const isWildcard = segmentWithoutOptional === '*' || (segmentWithoutOptional.startsWith('{') && segmentWithoutOptional.endsWith('}'));
-    const wildcardName = isWildcard && segmentWithoutOptional !== '*' 
-        ? segmentWithoutOptional.slice(1, -1) // Extract name from {wildcardName}
-        : segmentWithoutOptional; // Use the segment itself as fallback
+    // Check if property exists
+    const hasProperty = isWildcard ? Object.keys(typedObj).length > 0 : (segmentWithoutOptional in typedObj);
     
-    // If optional and remaining path doesn't exist, return current position as a match
-    if (isOptional) {
-        const typedObj = obj as Record<string, unknown>;
-        const hasProperty = isWildcard ? Object.keys(typedObj).length > 0 : (segmentWithoutOptional in typedObj);
-        
-        if (!hasProperty) {
-            // Path ends here - return this as a valid match
-            return [{
-                path: basePath,
-                value: obj,
-                wildcardValues: {},
-                metadata: {},
-                matchedDepth: basePath.length
-            }];
-        }
+    // If optional and property doesn't exist, return current position as match
+    if (isOptional && !hasProperty) {
+        return [{
+            path: basePath,
+            value: obj,
+            wildcardValues: {},
+            metadata: {}
+        }];
     }
+    
+    // If required and property doesn't exist, no match
+    if (!isOptional && !hasProperty && !isWildcard) {
+        return [];
+    }
+    
+    const results: PathMatch[] = [];
     
     if (isWildcard) {
         // Wildcard: try all properties of the current object
         const filter = filters[wildcardName];
         
-        for (const [key, value] of Object.entries(obj)) {
+        for (const [key, value] of Object.entries(typedObj)) {
             let filterMetadata: Record<string, any> | undefined;
             
-            // Apply filter if provided
+            // Apply filter if provided - returns metadata or undefined
             if (filter) {
-                const filterResult = filter(value, key, [...basePath, key], context);
-                if (typeof filterResult === 'boolean') {
-                    if (!filterResult) continue;
-                } else {
-                    if (!filterResult.pass) continue;
-                    filterMetadata = filterResult.metadata;
+                filterMetadata = filter(value, key, [...basePath, key], context);
+                
+                // Skip if filter returned undefined (no match)
+                if (filterMetadata === undefined) {
+                    continue;
                 }
             }
             
@@ -800,21 +790,15 @@ export function findPathsInObject<TContext = any>(
             }
         }
     } else {
-        // Static segment: must match exactly
-        const typedObj = obj as Record<string, unknown>;
-        if (segmentWithoutOptional in typedObj) {
-            const subResults = findPathsInObject(
-                typedObj[segmentWithoutOptional],
-                remainingTemplate,
-                filters,
-                context,
-                [...basePath, segmentWithoutOptional]
-            );
-            results.push(...subResults);
-        } else if (!isOptional) {
-            // Required segment not found - no match
-            return results;
-        }
+        // Static segment: recurse into the property
+        const subResults = findPathsInObject(
+            typedObj[segmentWithoutOptional],
+            remainingTemplate,
+            filters,
+            context,
+            [...basePath, segmentWithoutOptional]
+        );
+        results.push(...subResults);
     }
     
     return results;
