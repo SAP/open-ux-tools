@@ -207,6 +207,12 @@ metadata:
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@sap-ux/generator-adp'
+      version: mocked-version
+      toolsId: mocked-uuid
 builder:
   customTasks:
     - name: app-variant-bundler-build
