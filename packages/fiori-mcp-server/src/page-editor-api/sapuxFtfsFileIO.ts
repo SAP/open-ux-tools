@@ -18,7 +18,7 @@ import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import { getSpecificationModuleFromCache, readFlexChanges } from '@sap-ux/project-access';
 import { getFlexChangeLayer, getManifest, getUI5Version } from './project';
-import { logger } from '../utils/logger';
+import { logger, specificationLogger } from '../utils/logger';
 import { mergeChanges, writeFlexChanges } from './flex';
 
 export interface PageData {
@@ -89,7 +89,8 @@ export class SapuxFtfsFileIO {
         const specification = await this.getSpecification();
         return specification.readApp({
             app: this.appAccess,
-            skipParsing
+            skipParsing,
+            logger: specificationLogger
         });
     }
 
