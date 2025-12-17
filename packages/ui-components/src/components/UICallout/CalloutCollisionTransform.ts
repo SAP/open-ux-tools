@@ -162,7 +162,7 @@ export class CalloutCollisionTransform {
         if (!elements) {
             return;
         }
-        const { container, target } = elements;
+        const { container } = elements;
         for (const styleName in this.originalStyle) {
             const styleValue = this.originalStyle[styleName];
             if (typeof styleValue === 'string') {
