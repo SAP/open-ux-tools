@@ -1,3 +1,6 @@
+// Mock @sap-ux/project-access to prevent specification analysis
+jest.mock('@sap-ux/project-access');
+
 import type { FioriElementsApp, LROPSettings } from '../src';
 import { generate, TableType, TemplateType } from '../src';
 import { join } from 'node:path';
@@ -29,8 +32,6 @@ const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
     jest.setTimeout(360000);
 }
-
-jest.mock('@sap/ux-specification', () => ({}));
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
