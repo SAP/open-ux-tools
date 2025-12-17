@@ -2191,6 +2191,9 @@ importers:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sap/ux-specification':
         specifier: 1.139.2
         version: 1.139.2(typescript@5.9.3)
