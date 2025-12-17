@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.6.5
+
+### Patch Changes
+
+- 63c0f52: Revert typescript template changes for eslint
+
 ## 1.6.4
 
 ### Patch Changes
