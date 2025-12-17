@@ -2644,6 +2644,9 @@ importers:
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
       i18next:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.3)

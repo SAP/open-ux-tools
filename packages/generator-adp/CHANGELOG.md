@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.7.23
+
+### Patch Changes
+
+- a79eb1b: feat: Adding points of telemetry data for ADP generator
+- Updated dependencies [a79eb1b]
+    - @sap-ux/adp-tooling@0.18.23
+
 ## 0.7.22
 
 ### Patch Changes
