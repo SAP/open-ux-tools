@@ -7319,7 +7319,7 @@ module.exports = defineConfig([
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@eslint\\": \\"^9\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -24226,7 +24226,7 @@ module.exports = defineConfig([
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@eslint\\": \\"^9\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
   },
   \\"scripts\\": {
@@ -47906,7 +47906,7 @@ module.exports = defineConfig([
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@eslint\\": \\"^9\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -51413,7 +51413,7 @@ module.exports = defineConfig([
     \\"@sapui5/ts-types-esm\\": \\"~1.111.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@eslint\\": \\"^9\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -54920,7 +54920,7 @@ module.exports = defineConfig([
     \\"@sapui5/types\\": \\"~1.113.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"@eslint\\": \\"^9\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
