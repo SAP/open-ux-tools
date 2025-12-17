@@ -14,9 +14,10 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
+        "cross-env": "7.0.3",
         "eslint": "^9",
         "@typescript-eslint/rule-tester": "8.46.2",
         "eslint-plugin-eslint-plugin": "7.2.0"
