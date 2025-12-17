@@ -3,8 +3,18 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import fileSystem from 'node:fs';
+import fileSystem, { read } from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
+import * as appModels from '../test-input/constants';
+
+const readAppMock = jest.fn();
+jest.mock('@sap-ux/project-access', () => ({
+    ...(jest.requireActual('@sap-ux/project-access') as any),
+    getSpecification: jest.fn().mockResolvedValue({
+        ...(jest.requireActual('@sap-ux/project-access') as any).getSpecification,
+        readApp: () => readAppMock()
+    })
+}));
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
@@ -259,6 +269,7 @@ describe('ui5-test-writer', () => {
         });
 
         it('generates filter tests for LROPv4 app', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
             fs = await generateOPAFiles(projectDir, {}, fs);
 
@@ -268,6 +279,7 @@ describe('ui5-test-writer', () => {
         });
 
         it('generates column tests for LROPv4 app', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
             fs = await generateOPAFiles(projectDir, {}, fs);
 
@@ -277,6 +289,7 @@ describe('ui5-test-writer', () => {
         });
 
         it('generates tests for LROPv4 app that has no filters in filter bar', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4NoFilters');
             const mockLogger = {
                 warn: jest.fn()
@@ -296,6 +309,7 @@ describe('ui5-test-writer', () => {
         });
 
         it('generates tests for LROPv4 app that has no columns in the table', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4NoColumns');
             const mockLogger = {
                 warn: jest.fn()
@@ -315,6 +329,7 @@ describe('ui5-test-writer', () => {
         });
 
         it('fails gracefully for app that has no package.json', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4IncorrectPackageJson');
             const mockLogger = {
                 warn: jest.fn()
