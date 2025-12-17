@@ -59,8 +59,8 @@ export const configs = {
                     '@sap-ux/eslint-plugin-fiori-tools': plugin
                 },
                 rules: {
-                    '@sap-ux/eslint-plugin-fiori-tools/flex-enabled': 'warn',
-                    '@sap-ux/eslint-plugin-fiori-tools/require-width-including-column-header': 'warn'
+                    '@sap-ux/eslint-plugin-fiori-tools/sap-require-flex-enabled': 'warn',
+                    '@sap-ux/eslint-plugin-fiori-tools/sap-require-width-including-column-header': 'warn'
                 }
             }
         ];

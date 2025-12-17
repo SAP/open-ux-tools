@@ -1,5 +1,13 @@
 import { RuleVisitor } from '@eslint/core';
-import { Edm, elementsWithName, Element } from '@sap-ux/odata-annotation-core';
+import {
+    Edm,
+    elementsWithName,
+    Element,
+    getElementAttributeValue,
+    elements,
+    toFullyQualifiedName,
+    parseIdentifier
+} from '@sap-ux/odata-annotation-core';
 import { MemberNode } from '@humanwhocodes/momoa';
 
 import { createMixedRule } from '../language/rule-factory';
@@ -32,17 +40,47 @@ const rule: FioriRuleDefinition = createMixedRule({
     check(context) {
         const problems: RequireWidthIncludingColumnHeaderDiagnostic[] = [];
 
-        for (const [, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             if (app.type !== 'fe-v4') {
                 continue;
             }
             for (const page of app.pages) {
+                const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+                const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
+                if (!parsedService) {
+                    continue;
+                }
+
                 for (const table of page.tables) {
-                    const [collection] = elementsWithName(Edm.Collection, table.annotation.top);
+                    const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.top.uri];
+
+                    const [collection] = elementsWithName(Edm.Collection, table.annotation.top.value);
                     if (!collection) {
                         continue;
                     }
-                    const records = elementsWithName(Edm.Record, collection);
+
+                    const records = elements((element) => {
+                        if (element.name !== Edm.Record) {
+                            return false;
+                        }
+                        const recordType = getElementAttributeValue(element, Edm.Type);
+
+                        if (recordType.includes('/')) {
+                            // do not support paths as types
+                            return false;
+                        }
+
+                        if (recordType) {
+                            const fullyQualifiedName = toFullyQualifiedName(
+                                aliasInfo.aliasMap,
+                                '', // it should be qualified identifier
+                                parseIdentifier(recordType)
+                            );
+                            return fullyQualifiedName === 'com.sap.vocabularies.UI.v1.DataField';
+                        }
+                        return false;
+                    }, collection);
+
                     if (records.length < 6 && records.length > 0 && table.widthIncludingColumnHeader !== true) {
                         const path = [
                             'sap.ui5',
@@ -62,7 +100,7 @@ const rule: FioriRuleDefinition = createMixedRule({
                             annotation: {
                                 file: table.annotation.source,
                                 annotationPath: table.annotationPath,
-                                annotation: table.annotation.top
+                                reference: table.annotation.top
                             }
                         });
                     }
@@ -157,7 +195,7 @@ const rule: FioriRuleDefinition = createMixedRule({
         const lookup = new Set<Element>();
         console.log(validationResult);
         for (const diagnostic of validationResult) {
-            lookup.add(diagnostic.annotation?.annotation);
+            lookup.add(diagnostic.annotation?.reference?.value);
         }
         return {
             ['target>element[name="Annotation"]'](node: Element) {

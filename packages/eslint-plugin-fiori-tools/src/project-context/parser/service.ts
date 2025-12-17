@@ -38,8 +38,13 @@ export interface IndexedAnnotation {
     term: string;
     qualifier?: string;
     source: string;
-    top: Element;
-    layers: Element[];
+    top: AnnotationReference;
+    layers: AnnotationReference[];
+}
+
+export interface AnnotationReference {
+    uri: string;
+    value: Element;
 }
 
 /**
@@ -89,17 +94,25 @@ function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): Annotation
                 index[termKey] ??= {};
                 const qualifierKey = qualifier?.value ?? 'undefined';
                 const indexedValue = index[termKey][qualifierKey];
+                const reference: AnnotationReference = {
+                    uri: annotationFile.uri,
+                    value: annotation
+                };
                 if (indexedValue) {
-                    indexedValue.top = annotation;
-                    indexedValue.layers.unshift(annotation);
+                    indexedValue.top = reference;
+                    indexedValue.layers.unshift(reference);
                 } else {
+                    const reference: AnnotationReference = {
+                        uri: annotationFile.uri,
+                        value: annotation
+                    };
                     index[termKey][qualifierKey] = {
                         source: annotationFile.uri,
                         target: targetName,
                         term: termName,
                         qualifier: qualifier?.value,
-                        top: annotation,
-                        layers: [annotation]
+                        top: reference,
+                        layers: [reference]
                     };
                 }
             }
