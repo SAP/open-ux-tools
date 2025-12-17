@@ -9,5 +9,5 @@ export function numberUnit(value: string): string {
         return "";
     }
 
-    return Number.parseFloat(value).toFixed(2);
+    return parseFloat(value).toFixed(2);
 }
