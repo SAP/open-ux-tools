@@ -29,7 +29,7 @@ export const visitorKeys: {
 };
 
 /**
- *
+ * Annotation Source Code representation.
  */
 export class FioriAnnotationSourceCode extends TextSourceCodeBase {
     public readonly projectContext: ProjectContext;
@@ -37,7 +37,6 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
      * The AST of the source code.
      */
     ast: AnnotationFile;
-    private aliasMap: Record<string, string> | undefined;
 
     constructor({ text, ast, projectContext }: { text: string; ast: AnnotationFile; projectContext: ProjectContext }) {
         super({ text, ast });
@@ -46,58 +45,8 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
     }
 
     /**
-     * Get alias to namespace map.
-     *
-     * @returns Alias map.
-     */
-    getAliasMap(): Record<string, string> {
-        if (this.aliasMap) {
-            return this.aliasMap;
-        }
-        this.aliasMap = {};
-        // const root = this.ast.rootElement;
-        // if (!root) {
-        //     return this.aliasMap;
-        // }
-        // for (const child of root.subElements) {
-        //     if (child.type === 'XMLElement' && child.name === 'Reference') {
-        //         for (const subElement of child.subElements) {
-        //             if (subElement.type === 'XMLElement' && subElement.name === 'Include') {
-        //                 let namespace: string | undefined;
-        //                 let alias: string | undefined;
-        //                 for (const attribute of subElement.attributes) {
-        //                     if (attribute.key === 'Namespace') {
-        //                         namespace = attribute.value ?? undefined;
-        //                     } else if (attribute.key === 'Alias') {
-        //                         alias = attribute.value ?? undefined;
-        //                     }
-        //                 }
-        //                 if (namespace) {
-        //                     this.aliasMap[namespace] = namespace;
-        //                     if (alias) {
-        //                         this.aliasMap[alias] = namespace;
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        return this.aliasMap;
-    }
-
-    // getParent(node: XMLAstNode | XMLToken): object | undefined {
-    //     if (isNode(node)) {
-    //         if (node.type === 'XMLDocument') {
-    //             return undefined;
-    //         }
-    //         return node.parent;
-    //     } else {
-    //         return undefined;
-    //     }
-    // }
-
-    /**
-     *
+     * Traversal of AST.
+     * 
      * @returns
      */
     traverse(): Iterable<TraversalStep> {

@@ -1,13 +1,13 @@
 import { type FioriPropertyDefinition, PROPERTY_DEFINITIONS } from '../property-definitions';
 import type { FioriRuleDefinition } from '../types';
-import { createMixedRule } from '../language/rule-factory';
+import { createFioriRule } from '../language/rule-factory';
 import { REQUIRE_FLEX_ENABLED, type RequireFlexEnabled } from '../language/diagnostics';
 import { RuleVisitor } from '@eslint/core';
 import { MemberNode } from '@humanwhocodes/momoa';
 
 const flexEnabledDefinition: FioriPropertyDefinition = PROPERTY_DEFINITIONS.flexEnabled;
 
-const rule: FioriRuleDefinition = createMixedRule({
+const rule: FioriRuleDefinition = createFioriRule({
     ruleId: REQUIRE_FLEX_ENABLED,
     meta: {
         type: flexEnabledDefinition.type,

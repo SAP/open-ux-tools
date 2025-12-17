@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import { MemberNode } from '@humanwhocodes/momoa';
 
-import { createMixedRule } from '../language/rule-factory';
+import { createFioriRule } from '../language/rule-factory';
 import type { FioriRuleDefinition } from '../types';
 import {
     REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
@@ -21,8 +21,8 @@ export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
 };
 
-const rule: FioriRuleDefinition = createMixedRule({
-    ruleId: 'sap-require-width-including-column-header',
+const rule: FioriRuleDefinition = createFioriRule({
+    ruleId: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     meta: {
         type: 'suggestion',
         docs: {

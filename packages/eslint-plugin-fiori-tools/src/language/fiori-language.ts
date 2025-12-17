@@ -80,7 +80,10 @@ export class FioriLanguage
         const text = typeof file.body === 'string' ? file.body : new TextDecoder().decode(file.body);
         const path = normalizePath(file.path);
         const uri = pathToFileURL(path).toString();
-        DiagnosticCache.clear(uri); // currently this does not work well in ESLint extension, because it triggers this on window focus change
+        // currently this does not work well in ESLint extension,
+        // because it triggers this on window focus change and cache is cleared even though file hasn't change
+        // similar problem is also with project context update in general
+        DiagnosticCache.clear(uri);
         const projectContext = ProjectContext.updateFile(uri, text);
         const document = projectContext.index.documents[uri];
         if (!document) {
@@ -197,10 +200,11 @@ export class FioriLanguage
     }
 
     /**
+     * Creates SourceCode object that ESLint uses to work with a file.
      *
-     * @param file
-     * @param parseResult
-     * @returns
+     * @param file - The file to create SourceCode for.
+     * @param parseResult - The result of parsing the file.
+     * @returns A SourceCode instance.
      */
     createSourceCode(file: File, parseResult: OkParseResult<FioriParseResultAst>): FioriSourceCode {
         const text = typeof file.body === 'string' ? file.body : new TextDecoder().decode(file.body);

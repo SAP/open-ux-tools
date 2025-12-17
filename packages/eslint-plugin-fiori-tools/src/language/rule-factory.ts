@@ -11,13 +11,6 @@ import { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
 import { DiagnosticCache } from './diagnostic-cache';
 import { Diagnostic } from './diagnostics';
 
-type FioriRuleLanguageSpecificOptions = {
-    LangOptions: FioriLanguageOptions;
-    Code: FioriSourceCode;
-    Visitor: RuleVisitor;
-    Node: Node;
-};
-
 type JSONRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
     LangOptions: FioriLanguageOptions;
     Code: FioriJSONSourceCode;
@@ -41,7 +34,13 @@ type AnnotationRuleContext<MessageIds extends string, RuleOptions extends unknow
     MessageIds: MessageIds;
 }>;
 
-export function createMixedRule<
+/**
+ * Creates a Fiori rule that can operate on multiple files in a Fiori application.
+ * 
+ * @param param0 - Rule definition.
+ * @returns A Fiori rule definition.
+ */
+export function createFioriRule<
     MessageIds extends string,
     RuleOptions extends unknown[],
     ExtRuleDocs extends Record<string, unknown> = {},

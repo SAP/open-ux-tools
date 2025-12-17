@@ -1,5 +1,4 @@
 import {
-    AnnotationFile,
     Edm,
     getAliasInformation,
     getAllNamespacesAndReferences,
@@ -10,12 +9,9 @@ import {
     Element,
     MetadataElement
 } from '@sap-ux/odata-annotation-core';
-import { MetadataService } from '@sap-ux/odata-entity-model';
-import { CdsAnnotationProvider, getXmlServiceArtifacts } from '@sap-ux/fiori-annotation-api';
 import { ServiceArtifacts } from '@sap-ux/fiori-annotation-api/src/types';
 
 import { DocumentType } from '../types';
-import { uniformUrl } from '../utils';
 
 export interface ServiceIndex {
     entityContainer?: MetadataElement;
