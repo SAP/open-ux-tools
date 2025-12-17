@@ -15,6 +15,18 @@ import { isString, containsString } from '../utils/helpers';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a string does not contain a substring.
+ *
+ * @param string The string to search in
+ * @param substring The substring to check for absence
+ * @returns True if the string does not contain the substring
+ */
+function containsNot(string: string, substring: string): boolean {
+    return !containsString(string, substring);
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -30,24 +42,10 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-        /**
-         * Check if a string does not contain a substring.
-         *
-         * @param string The string to search in
-         * @param substring The substring to check for absence
-         * @returns True if the string does not contain the substring
-         */
-        function containsNot(string: string, substring: string): boolean {
-            return !containsString(string, substring);
-        }
-        // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
         return {
             'Literal': function (node): void {
-                // const val = node.value, result;
                 if (
                     isString(node.value) &&
                     containsString(node.value, 'localhost') &&

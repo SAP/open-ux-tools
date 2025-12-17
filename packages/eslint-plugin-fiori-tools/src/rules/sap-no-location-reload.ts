@@ -14,6 +14,69 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: any, type: any): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: any): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: any): boolean {
+    return isType(node, 'MemberExpression');
+}
+
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a, obj): boolean {
+    return a.includes(obj);
+}
+
+/**
+ * Check if a location reload call is valid.
+ *
+ * @returns Always returns false as location.reload() is not permitted
+ */
+function isValid(): boolean {
+    return false;
+}
+
+/**
+ * Check if a node represents the global window object.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents the global window object
+ */
+function isWindow(node: any): boolean {
+    // true if node is the global variable 'window'
+    return node && isIdentifier(node) && node.name === 'window';
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -33,56 +96,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: any, type: any): boolean {
-            return node?.type === type;
-        }
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: any): boolean {
-            return isType(node, 'Identifier');
-        }
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: any): boolean {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a, obj): boolean {
-            return a.includes(obj);
-        }
-
-        /**
-         * Check if a node represents the global window object.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents the global window object
-         */
-        function isWindow(node: any): boolean {
-            // true if node is the global variable 'window'
-            return node && isIdentifier(node) && node.name === 'window';
-        }
 
         /**
          * Check if a node represents the window object or a reference to it.
@@ -142,19 +155,6 @@ const rule: Rule.RuleModule = {
                     return false;
                 }
             }
-            return false;
-        }
-
-        /**
-         * Check if a location reload call is valid.
-         *
-         * @returns Always returns false as location.reload() is not permitted
-         */
-        function isValid(): boolean {
-            //        const args = node.arguments;
-            //        return args
-            //                && (args.length === 1 || args.length > 1
-            //                        && (args[1].value === 0 || args[1].value === "0"));
             return false;
         }
 

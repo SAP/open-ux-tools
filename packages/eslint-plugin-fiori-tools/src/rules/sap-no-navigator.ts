@@ -8,6 +8,70 @@ import { type ASTNode } from '../utils/helpers';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: ASTNode | undefined, type: string): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: ASTNode | undefined): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: ASTNode | undefined): boolean {
+    return isType(node, 'MemberExpression');
+}
+
+/**
+ * Check if a node is a CallExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a CallExpression
+ */
+function isCall(node: ASTNode | undefined): boolean {
+    return isType(node, 'CallExpression');
+}
+
+/**
+ * Get the rightmost method name from a call expression node.
+ *
+ * @param node The call expression node to analyze
+ * @returns The rightmost method name
+ */
+function getRightestMethodName(node: ASTNode): string {
+    const callee = (node as any).callee;
+    return isMember(callee) ? callee.property.name : callee.name;
+}
+
+/**
+ * Check if a node represents the global window object.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents the global window object
+ */
+function isWindow(node: ASTNode | undefined): boolean {
+    // true if node is the global variable 'window'
+    return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -56,66 +120,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: ASTNode | undefined, type: string): boolean {
-            return node?.type === type;
-        }
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: ASTNode | undefined): boolean {
-            return isType(node, 'Identifier');
-        }
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: ASTNode | undefined): boolean {
-            return isType(node, 'MemberExpression');
-        }
-        /**
-         * Check if a node is a CallExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a CallExpression
-         */
-        function isCall(node: ASTNode | undefined): boolean {
-            return isType(node, 'CallExpression');
-        }
-
-        /**
-         * Get the rightmost method name from a call expression node.
-         *
-         * @param node The call expression node to analyze
-         * @returns The rightmost method name
-         */
-        function getRightestMethodName(node: ASTNode): string {
-            const callee = (node as any).callee;
-            return isMember(callee) ? callee.property.name : callee.name;
-        }
-
-        /**
-         * Check if a node represents the global window object.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents the global window object
-         */
-        function isWindow(node: ASTNode | undefined): boolean {
-            // true if node is the global variable 'window'
-            return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
-        }
 
         /**
          * Check if a node represents the window object or a reference to it.
@@ -194,20 +198,14 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
 
         return {
-            'VariableDeclarator': function (node): boolean {
-                return (
-                    rememberWindow((node as any).id, (node as any).init) ||
-                    rememberNavigator((node as any).id, (node as any).init)
-                );
+            'VariableDeclarator': function (node: any): boolean {
+                return rememberWindow(node.id, node.init) || rememberNavigator(node.id, node.init);
             },
-            'AssignmentExpression': function (node): boolean {
-                return (
-                    rememberWindow((node as any).left, (node as any).right) ||
-                    rememberNavigator((node as any).left, (node as any).right)
-                );
+            'AssignmentExpression': function (node: any): boolean {
+                return rememberWindow(node.left, node.right) || rememberNavigator(node.left, node.right);
             },
-            'MemberExpression': function (node): void {
-                if (isNavigatorObject((node as any).object)) {
+            'MemberExpression': function (node: any): void {
+                if (isNavigatorObject(node.object)) {
                     if (isCall(node.parent)) {
                         const methodName = getRightestMethodName(node.parent);
                         if (typeof methodName === 'string' && FORBIDDEN_METHODS.includes(methodName)) {

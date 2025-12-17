@@ -85,7 +85,7 @@ const rule: Rule.RuleModule = {
          */
         function rememberWindow(left: any, right: any): boolean {
             if (isWindowObject(right) && isIdentifier(left)) {
-                WINDOW_OBJECTS.push((left as any).name);
+                WINDOW_OBJECTS.push(left.name);
                 return true;
             }
             return false;

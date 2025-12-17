@@ -7,6 +7,49 @@ import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isMember, isCall, isLiteral, contains, isForbiddenObviousApi } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
+// Helpers
+// ------------------------------------------------------------------------------
+
+/**
+ * Get the rightmost method name from a node.
+ *
+ * @param node The node to extract method name from
+ * @returns The rightmost method name
+ */
+function getRightestMethodName(node: ASTNode): string {
+    const callee = (node as any).callee;
+    return isMember(callee) ? callee.property.name : callee.name;
+}
+
+/**
+ * Build a path string from a callee node.
+ *
+ * @param node The callee node to build path from
+ * @returns The path string representation
+ */
+function buildCalleePath(node: ASTNode): string {
+    if (isMember((node as any).object)) {
+        const propertyName = (node as any).object.property?.name ?? '';
+        return `${buildCalleePath((node as any).object)}.${propertyName}`;
+    } else if (isIdentifier((node as any).object)) {
+        return (node as any).object.name;
+    }
+    return '';
+}
+
+/**
+ * Extract property name from node object.
+ *
+ * @param nodeObject The object node
+ * @returns The property name or empty string
+ */
+function getPropertyName(nodeObject: any): string {
+    return nodeObject && 'property' in nodeObject && nodeObject.property && 'name' in nodeObject.property
+        ? nodeObject.property.name
+        : '';
+}
+
+// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -88,33 +131,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Get the rightmost method name from a node.
-         *
-         * @param node The node to extract method name from
-         * @returns The rightmost method name
-         */
-        function getRightestMethodName(node: ASTNode): string {
-            const callee = (node as any).callee;
-            return isMember(callee) ? callee.property.name : callee.name;
-        }
-
-        /**
-         * Build a path string from a callee node.
-         *
-         * @param node The callee node to build path from
-         * @returns The path string representation
-         */
-        function buildCalleePath(node: ASTNode): string {
-            if (isMember((node as any).object)) {
-                const propertyName = (node as any).object.property?.name ?? '';
-                return `${buildCalleePath((node as any).object)}.${propertyName}`;
-            } else if (isIdentifier((node as any).object)) {
-                return (node as any).object.name;
-            }
-            return '';
-        }
 
         /**
          * Process document-related API usage and report violations.
@@ -246,36 +262,21 @@ const rule: Rule.RuleModule = {
         }
 
         /**
-         * Extract property name from node object.
-         *
-         * @param nodeObject The object node
-         * @returns The property name or empty string
-         */
-        function getPropertyName(nodeObject: any): string {
-            return nodeObject && 'property' in nodeObject && nodeObject.property && 'name' in nodeObject.property
-                ? nodeObject.property.name
-                : '';
-        }
-
-        /**
          * Handle computed property access cases for MemberExpression.
          *
          * @param node The MemberExpression node
          */
         function handleComputedProperty(node: any): void {
-            const calleePathCmpt = buildCalleePath((node as any).object);
+            const calleePathCmpt = buildCalleePath(node.object);
             const speciousObjectCmpt = isForbiddenObviousApi(calleePathCmpt);
-            const methodNameCmpt = getPropertyName((node as any).object);
+            const methodNameCmpt = getPropertyName(node.object);
 
             if (typeof methodNameCmpt !== 'string' || !contains(FORBIDDEN_DYNAMIC_STYLE_INSERTION, methodNameCmpt)) {
                 return;
             }
 
-            if (speciousObjectCmpt === 'document') {
-                // document.styleSheets[i]; for exp
-                context.report({ node: node, messageId: 'dynamicStyleInsertion' });
-            } else if (speciousObjectCmpt !== 'document' && contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObjectCmpt)) {
-                // myDocument.styleSheets[i]; for exp
+            if (speciousObjectCmpt === 'document' || contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObjectCmpt)) {
+                // document.styleSheets[i] or myDocument.styleSheets[i]; for exp
                 context.report({ node: node, messageId: 'dynamicStyleInsertion' });
             }
         }
@@ -291,9 +292,9 @@ const rule: Rule.RuleModule = {
                 calleePathNonCmpt === 'navigator' ||
                 calleePathNonCmpt === 'window.navigator' ||
                 (calleePathNonCmpt === 'window' &&
-                    (node as any).property &&
-                    'name' in (node as any).property &&
-                    (node as any).property.name === 'navigator');
+                    node.property &&
+                    'name' in node.property &&
+                    node.property.name === 'navigator');
 
             if (!isNavigatorAccess) {
                 return;
@@ -302,9 +303,9 @@ const rule: Rule.RuleModule = {
             const isWindowNavigatorAssignment =
                 (calleePathNonCmpt === 'window.navigator' ||
                     (calleePathNonCmpt === 'window' &&
-                        (node as any).property &&
-                        'name' in (node as any).property &&
-                        (node as any).property.name === 'navigator')) &&
+                        node.property &&
+                        'name' in node.property &&
+                        node.property.name === 'navigator')) &&
                 node.parent.type === 'VariableDeclarator';
 
             if (node.parent.parent.type !== 'CallExpression' && !isWindowNavigatorAssignment) {
@@ -320,11 +321,11 @@ const rule: Rule.RuleModule = {
          * @param calleePathNonCmpt The callee path
          */
         function handleWindowPropertyChecks(node: any, calleePathNonCmpt: string): void {
-            if (calleePathNonCmpt !== 'window' || !(node as any).property || !('name' in (node as any).property)) {
+            if (calleePathNonCmpt !== 'window' || !node.property || !('name' in node.property)) {
                 return;
             }
 
-            const propertyName = (node as any).property.name;
+            const propertyName = node.property.name;
 
             if (!contains(FORBIDDEN_GLOB_EVENT, propertyName)) {
                 // window.onresize = 16; for exp
@@ -332,7 +333,7 @@ const rule: Rule.RuleModule = {
             } else if (
                 contains(FORBIDDEN_GLOB_EVENT, propertyName) &&
                 node.parent.type === 'AssignmentExpression' &&
-                (node.parent as any).left === node
+                node.parent.left === node
             ) {
                 context.report({ node: node, messageId: 'forbiddenGlobEvent' });
             }
@@ -345,22 +346,19 @@ const rule: Rule.RuleModule = {
          * @param calleePathNonCmpt The callee path
          */
         function handleEventPropertyChecks(node: any, calleePathNonCmpt: string): void {
-            if (!(node as any).property || !('name' in (node as any).property)) {
+            if (!node.property || !('name' in node.property)) {
                 return;
             }
 
-            const propertyName = (node as any).property.name;
+            const propertyName = node.property.name;
             const isEventProperty = propertyName === 'returnValue' || propertyName === 'cancelBubble';
-            const isAssignmentTarget =
-                node.parent.type === 'AssignmentExpression' && (node.parent as any).left === node;
+            const isAssignmentTarget = node.parent.type === 'AssignmentExpression' && node.parent.left === node;
 
             if (!isEventProperty || !isAssignmentTarget) {
                 return;
             }
 
-            if (calleePathNonCmpt === 'window.event') {
-                context.report({ node: node, messageId: 'forbiddenGlobEvent' });
-            } else if (contains(FORBIDDEN_WINDOW_EVENT_OBJECT, calleePathNonCmpt)) {
+            if (calleePathNonCmpt === 'window.event' || contains(FORBIDDEN_WINDOW_EVENT_OBJECT, calleePathNonCmpt)) {
                 context.report({ node: node, messageId: 'forbiddenGlobEvent' });
             }
         }
@@ -377,14 +375,8 @@ const rule: Rule.RuleModule = {
                 return;
             }
 
-            if (speciousObjectNonCmpt === 'document') {
-                // const abc = document.styleSheets.length; for exp
-                context.report({ node: node, messageId: 'dynamicStyleInsertion' });
-            } else if (
-                speciousObjectNonCmpt !== 'document' &&
-                contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObjectNonCmpt)
-            ) {
-                // const abc = myDocument.styleSheets.length; for exp
+            if (speciousObjectNonCmpt === 'document' || contains(FORBIDDEN_DOCUMENT_OBJECT, speciousObjectNonCmpt)) {
+                // const abc = document.styleSheets.length or myDocument.styleSheets.length; for exp
                 context.report({ node: node, messageId: 'dynamicStyleInsertion' });
             }
         }
@@ -397,7 +389,7 @@ const rule: Rule.RuleModule = {
         function handleNonComputedProperty(node: any): void {
             const calleePathNonCmpt = buildCalleePath(node);
             const speciousObjectNonCmpt = isForbiddenObviousApi(
-                calleePathNonCmpt.substr(0, calleePathNonCmpt.lastIndexOf('styleSheets') - 1)
+                calleePathNonCmpt.substring(0, calleePathNonCmpt.lastIndexOf('styleSheets') - 1)
             );
 
             handleNavigatorChecks(node, calleePathNonCmpt);
@@ -419,7 +411,7 @@ const rule: Rule.RuleModule = {
 
                 if (isCall(parent)) {
                     handleCallExpression(node, parent);
-                } else if ((node as any).computed) {
+                } else if (node.computed) {
                     handleComputedProperty(node);
                 } else {
                     handleNonComputedProperty(node);

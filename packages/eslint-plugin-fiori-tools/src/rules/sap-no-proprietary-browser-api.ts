@@ -14,6 +14,60 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: any, type: any): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a: any[], obj: any): boolean {
+    return a.includes(obj);
+}
+
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: any): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: any): boolean {
+    return isType(node, 'MemberExpression');
+}
+
+/**
+ * Check if a node represents the global window object.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents the global window object
+ */
+function isWindow(node: any): boolean {
+    // true if node is the global variable 'window'
+    return node && isIdentifier(node) && node.name === 'window';
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -35,60 +89,8 @@ const rule: Rule.RuleModule = {
         const FORBIDDEN_WINDOW_PROPERTIES = ['innerWidth', 'innerHeight'];
 
         // --------------------------------------------------------------------------
-        // Basic Helpers
+        // Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: any, type: any): boolean {
-            return node?.type === type;
-        }
-
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: any): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: any): boolean {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a: any[], obj: any): boolean {
-            return a.includes(obj);
-        }
-
-        /**
-         * Check if a node represents the global window object.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents the global window object
-         */
-        function isWindow(node: any): boolean {
-            // true if node is the global variable 'window'
-            return node && isIdentifier(node) && node.name === 'window';
-        }
 
         /**
          * Check if a node represents the window object or a reference to it.
@@ -108,13 +110,12 @@ const rule: Rule.RuleModule = {
          * @returns True if the node represents the screen object
          */
         function isScreen(node: any): boolean {
-            //        console.log("isScreen");
             if (node) {
                 if (isIdentifier(node)) {
-                    // true if node id the global variable 'screen' console.log("identifier");
+                    // true if node id the global variable 'screen'
                     return node.name === 'screen';
                 } else if (isMember(node)) {
-                    // true if node id the global variable 'window.document' or '<windowReference>.document' console.log("member");
+                    // true if node id the global variable 'window.document' or '<windowReference>.document'
                     return isWindowObject(node.object) && isScreen(node.property);
                 }
             }

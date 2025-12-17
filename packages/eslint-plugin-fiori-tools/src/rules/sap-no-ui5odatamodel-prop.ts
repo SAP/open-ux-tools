@@ -4,15 +4,13 @@
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode, createPropertyChecker } from '../utils/helpers';
 
 // THIS RULE IS DEPRECATED --> sap-no-ui5base-prop
 // ------------------------------------------------------------------------------
-// Rule Disablement
-// ------------------------------------------------------------------------------
-
-// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -68,40 +66,13 @@ const rule: Rule.RuleModule = {
             'sRefreshBatchGroupId'
         ];
 
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a, obj): boolean {
-            return a.includes(obj);
-        }
-
-        // --------------------------------------------------------------------------
-        // Public
-        // --------------------------------------------------------------------------
+        const checkMemberExpression = createPropertyChecker({
+            ui5odatamodelProp: PRIVATE_MEMBERS
+        });
 
         return {
-            'MemberExpression': function (node): void {
-                if (!node.property || !('name' in node.property)) {
-                    return;
-                }
-                const val = node.property.name;
-
-                if (typeof val === 'string' && contains(PRIVATE_MEMBERS, val)) {
-                    context.report({
-                        node: node,
-                        messageId: 'ui5odatamodelProp'
-                        // data: {
-                        //     property: val
-                        // }
-                    });
-                }
+            'MemberExpression'(node: ASTNode): void {
+                checkMemberExpression(node, context);
             }
         };
     }

@@ -7,6 +7,21 @@ import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isMember, isLiteral } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
+// Helper Functions
+// ------------------------------------------------------------------------------
+
+/**
+ * Check if a node represents the global window variable.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents the global window variable
+ */
+function isWindow(node: ASTNode | undefined): boolean {
+    // true if node is the global variable 'window'
+    return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
+}
+
+// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -24,22 +39,11 @@ const rule: Rule.RuleModule = {
     },
     create(context: Rule.RuleContext) {
         const WINDOW_OBJECTS: string[] = [];
-        const FORBIDDEN_PROPERTIES = ['top', 'addEventListener'];
+        const FORBIDDEN_PROPERTIES = new Set(['top', 'addEventListener']);
 
         // --------------------------------------------------------------------------
         // Basic Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Check if a node represents the global window variable.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents the global window variable
-         */
-        function isWindow(node: ASTNode | undefined): boolean {
-            // true if node is the global variable 'window'
-            return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
-        }
 
         /**
          * Check if a node represents a window object or reference to it.
@@ -99,20 +103,20 @@ const rule: Rule.RuleModule = {
             if (isLiteral((node as any).property) && 'value' in (node as any).property) {
                 method = (node as any).property.value;
             }
-            return !FORBIDDEN_PROPERTIES.includes(method);
+            return !FORBIDDEN_PROPERTIES.has(method);
         }
 
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node): boolean {
-                return rememberWindow((node as any).id, (node as any).init);
+            'VariableDeclarator': function (node: any): boolean {
+                return rememberWindow(node.id, node.init);
             },
-            'AssignmentExpression': function (node): boolean {
-                return rememberWindow((node as any).left, (node as any).right);
+            'AssignmentExpression': function (node: any): boolean {
+                return rememberWindow(node.left, node.right);
             },
-            'MemberExpression': function (node): void {
+            'MemberExpression': function (node: any): void {
                 if (isInteresting(node) && !isValid(node)) {
                     context.report({ node: node, messageId: 'forbiddenWindowProperty' });
                 }

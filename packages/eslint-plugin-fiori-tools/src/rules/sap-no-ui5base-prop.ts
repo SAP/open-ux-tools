@@ -3,10 +3,12 @@
  */
 
 import type { Rule } from 'eslint';
+import { type ASTNode, createPropertyChecker } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -25,7 +27,6 @@ const rule: Rule.RuleModule = {
         schema: []
     },
     create(context: Rule.RuleContext) {
-        // variables should be defined here
         const MANAGED_OBJECT_MEMBERS = [
             'mProperties',
             'mAggregations',
@@ -84,47 +85,16 @@ const rule: Rule.RuleModule = {
             'aUrlParams'
         ];
 
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a, obj) {
-            return a.includes(obj);
-        }
-
-        // --------------------------------------------------------------------------
-        // Public
-        // --------------------------------------------------------------------------
+        const checkMemberExpression = createPropertyChecker({
+            managedObjectProp: MANAGED_OBJECT_MEMBERS,
+            eventProviderProp: EVENT_PROVIDER_MEMBERS,
+            eventProp: EVENT_MEMBERS,
+            odataModelProp: ODATA_MODEL_MEMBERS
+        });
 
         return {
-            'MemberExpression': function (node): void {
-                if (!node.property || !('name' in node.property)) {
-                    return;
-                }
-                const val = node.property.name;
-
-                if (typeof val === 'string' && contains(MANAGED_OBJECT_MEMBERS, val)) {
-                    context.report({ node, messageId: 'managedObjectProp', data: { property: val } });
-                }
-                if (typeof val === 'string' && contains(EVENT_PROVIDER_MEMBERS, val)) {
-                    context.report({ node, messageId: 'eventProviderProp', data: { property: val } });
-                }
-                if (typeof val === 'string' && contains(EVENT_MEMBERS, val)) {
-                    context.report({ node, messageId: 'eventProp', data: { property: val } });
-                }
-                if (typeof val === 'string' && contains(ODATA_MODEL_MEMBERS, val)) {
-                    context.report({
-                        node,
-                        messageId: 'odataModelProp',
-                        data: { property: val }
-                    });
-                }
+            'MemberExpression'(node: ASTNode): void {
+                checkMemberExpression(node, context);
             }
         };
     }

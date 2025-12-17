@@ -14,6 +14,28 @@ import type { Rule } from 'eslint';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a value is a string.
+ *
+ * @param string The value to check
+ * @returns True if the value is a string
+ */
+function isString(string): boolean {
+    return typeof string === 'string';
+}
+
+/**
+ * Check if a string contains a substring.
+ *
+ * @param string The string to search in
+ * @param substring The substring to search for
+ * @returns True if the string contains the substring
+ */
+function contains(string, substring): boolean {
+    return string.includes(substring);
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -32,30 +54,6 @@ const rule: Rule.RuleModule = {
         const sourceCode = context.sourceCode ?? context.getSourceCode();
 
         // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-        /**
-         * Check if a value is a string.
-         *
-         * @param string The value to check
-         * @returns True if the value is a string
-         */
-        function isString(string): boolean {
-            return typeof string === 'string';
-        }
-
-        /**
-         * Check if a string contains a substring.
-         *
-         * @param string The string to search in
-         * @param substring The substring to search for
-         * @returns True if the string contains the substring
-         */
-        function contains(string, substring): boolean {
-            return string.indexOf(substring) !== -1;
-        }
-
-        // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------
         return {
@@ -70,7 +68,6 @@ const rule: Rule.RuleModule = {
                 }
             },
             'Literal': function (node): void {
-                // const val = node.value, result;
                 if (isString(node.value) && contains(node.value, 'sap/ca/scfld/md/controller/BaseMasterController')) {
                     context.report({ node: node, messageId: 'basemastercontroller' });
                 }

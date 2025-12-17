@@ -8,6 +8,39 @@ import type { Rule } from 'eslint';
 // Rule Definition
 //------------------------------------------------------------------------------
 
+/**
+ * Check if node is Opa5.extendConfig call expression
+ *
+ * @param node
+ */
+function isOpa5ExtendConfigCall(node: any): boolean {
+    return (
+        node.callee.type === 'MemberExpression' &&
+        node.callee.object &&
+        'name' in node.callee.object &&
+        node.callee.object.name === 'Opa5' &&
+        node.callee.property &&
+        'name' in node.callee.property &&
+        node.callee.property.name === 'extendConfig'
+    );
+}
+
+/**
+ * Find autoWait property in object expression properties
+ *
+ * @param propsList
+ */
+function findAutoWaitProperty(propsList: any[]): { exists: boolean; value?: boolean } {
+    for (const property in propsList) {
+        const prop = propsList[property];
+        if (prop.type === 'Property' && 'key' in prop && 'name' in prop.key && prop.key.name === 'autoWait') {
+            const value = 'value' in prop && 'value' in prop.value ? prop.value.value : undefined;
+            return { exists: true, value };
+        }
+    }
+    return { exists: false };
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -27,43 +60,10 @@ const rule: Rule.RuleModule = {
         // Helpers
         //----------------------------------------------------------------------
 
-        // any helper functions should go here or else delete this section
-
-        //----------------------------------------------------------------------
-        // Public
-        //----------------------------------------------------------------------
-
-        /**
-         * Check if node is Opa5.extendConfig call expression
-         */
-        function isOpa5ExtendConfigCall(node: any): boolean {
-            return (
-                node.callee.type === 'MemberExpression' &&
-                node.callee.object &&
-                'name' in node.callee.object &&
-                node.callee.object.name === 'Opa5' &&
-                node.callee.property &&
-                'name' in node.callee.property &&
-                node.callee.property.name === 'extendConfig'
-            );
-        }
-
-        /**
-         * Find autoWait property in object expression properties
-         */
-        function findAutoWaitProperty(propsList: any[]): { exists: boolean; value?: boolean } {
-            for (const property in propsList) {
-                const prop = propsList[property];
-                if (prop.type === 'Property' && 'key' in prop && 'name' in prop.key && prop.key.name === 'autoWait') {
-                    const value = 'value' in prop && 'value' in prop.value ? prop.value.value : undefined;
-                    return { exists: true, value };
-                }
-            }
-            return { exists: false };
-        }
-
         /**
          * Handle Opa5.extendConfig call expression validation
+         *
+         * @param node
          */
         function handleOpa5ExtendConfig(node: any): void {
             if (node.arguments[0]?.type !== 'ObjectExpression') {

@@ -61,10 +61,10 @@ const rule: Rule.RuleModule = {
         function isInteresting(node: any): boolean {
             if (isMember(node) && isMember(node.object) && isDocumentObject(node.object.object)) {
                 const prop = node.object.property;
-                if (isIdentifier(prop) && (prop as any).name === 'styleSheets') {
+                if (isIdentifier(prop) && prop.name === 'styleSheets') {
                     return true;
                 }
-                if (isLiteral(prop) && (prop as any).value === 'styleSheets') {
+                if (isLiteral(prop) && prop.value === 'styleSheets') {
                     return true;
                 }
             }
@@ -75,13 +75,13 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node): boolean {
+            'VariableDeclarator': function (node: any): boolean {
                 return rememberWindow(node.id, node.init) || rememberDocument(node.id, node.init);
             },
-            'AssignmentExpression': function (node): boolean {
+            'AssignmentExpression': function (node: any): boolean {
                 return rememberWindow(node.left, node.right) || rememberDocument(node.left, node.right);
             },
-            'MemberExpression': function (node): void {
+            'MemberExpression': function (node: any): void {
                 if (isInteresting(node)) {
                     context.report({ node: node, messageId: 'dynamicStyleInsertion' });
                 }

@@ -6,6 +6,41 @@ import type { Rule } from 'eslint';
 import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
+// Helper Functions
+// ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: ASTNode | undefined, type: string): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: ASTNode | undefined): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: ASTNode | undefined): boolean {
+    return isType(node, 'MemberExpression');
+}
+
+// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -33,42 +68,11 @@ const rule: Rule.RuleModule = {
                 'appendTo',
                 'prependTo'
             ];
-        const FORBIDDEN_METHODS: string[] = ([] as string[]).concat(
-            FORBIDDEN_DOM_INSERTION,
-            FORBIDDEN_DOM_JQUERY_INSERTION
-        );
+        const FORBIDDEN_METHODS = new Set([...FORBIDDEN_DOM_INSERTION, ...FORBIDDEN_DOM_JQUERY_INSERTION]);
 
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: ASTNode | undefined, type: string): boolean {
-            return node?.type === type;
-        }
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: ASTNode | undefined): boolean {
-            return isType(node, 'Identifier');
-        }
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: ASTNode | undefined): boolean {
-            return isType(node, 'MemberExpression');
-        }
 
         /**
          * Process DOM insertion calls and report violations.
@@ -79,7 +83,7 @@ const rule: Rule.RuleModule = {
             const callee = (node as any).callee;
             if (isMember(callee)) {
                 if (isIdentifier(callee.property) && 'name' in callee.property) {
-                    if (FORBIDDEN_METHODS.includes(callee.property.name)) {
+                    if (FORBIDDEN_METHODS.has(callee.property.name)) {
                         context.report({ node: node, messageId: 'domInsertion' });
                     }
                 }

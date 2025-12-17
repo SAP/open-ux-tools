@@ -3,14 +3,63 @@
  */
 
 import type { Rule } from 'eslint';
-import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
-// Rule Disablement
+// Helper Functions
 // ------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------
-// Invoking global form of strict mode syntax for whole script
-// ------------------------------------------------------------------------------
+
+/**
+ * Check if a node is of a specific type.
+ *
+ * @param node The AST node to check
+ * @param type The type to check for
+ * @returns True if the node is of the specified type
+ */
+function isType(node: any, type: string): boolean {
+    return node?.type === type;
+}
+
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a: string[], obj: string): boolean {
+    return a.includes(obj);
+}
+
+/**
+ * Check if a node is an Identifier.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is an Identifier
+ */
+function isIdentifier(node: any): boolean {
+    return isType(node, 'Identifier');
+}
+
+/**
+ * Check if a node is a MemberExpression.
+ *
+ * @param node The AST node to check
+ * @returns True if the node is a MemberExpression
+ */
+function isMember(node: any): boolean {
+    return isType(node, 'MemberExpression');
+}
+
+/**
+ * Check if a node represents the global window variable.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents the global window variable
+ */
+function isWindow(node: any): boolean {
+    // true if node is the global variable 'window'
+    return isIdentifier(node) && node.name === 'window';
+}
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -32,60 +81,8 @@ const rule: Rule.RuleModule = {
         const WINDOW_OBJECTS: string[] = [];
 
         // --------------------------------------------------------------------------
-        // Basic Helpers
+        // Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: any, type: string): boolean {
-            return node?.type === type;
-        }
-
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: any): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: any): boolean {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a: string[], obj: string): boolean {
-            return a.includes(obj);
-        }
-
-        /**
-         * Check if a node represents the global window variable.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents the global window variable
-         */
-        function isWindow(node: any): boolean {
-            // true if node is the global variable 'window'
-            return isIdentifier(node) && (node as any).name === 'window';
-        }
 
         /**
          * Check if a node represents a window object or reference to it.
@@ -95,12 +92,9 @@ const rule: Rule.RuleModule = {
          */
         function isWindowObject(node: any): boolean {
             // true if node is the global variable 'window' or a reference to it
-            return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, (node as any).name));
+            return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
         }
 
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
         /**
          * Remember window object references for later analysis.
          *
@@ -110,7 +104,7 @@ const rule: Rule.RuleModule = {
          */
         function rememberWindow(left: any, right: any): boolean {
             if (isWindowObject(right) && isIdentifier(left)) {
-                WINDOW_OBJECTS.push((left as any).name);
+                WINDOW_OBJECTS.push(left.name);
                 return true;
             }
             return false;
@@ -120,19 +114,15 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator'(node: ASTNode): boolean {
-                return rememberWindow((node as any).id, (node as any).init);
+            'VariableDeclarator'(node: any): boolean {
+                return rememberWindow(node.id, node.init);
             },
-            'AssignmentExpression'(node: ASTNode): boolean {
+            'AssignmentExpression'(node: any): boolean {
                 // check if anything is assigned to a window property
-                if (
-                    isMember((node as any).left) &&
-                    'object' in (node as any).left &&
-                    isWindowObject((node as any).left.object)
-                ) {
+                if (isMember(node.left) && 'object' in node.left && isWindowObject(node.left.object)) {
                     context.report({ node: node, messageId: 'globalDefine' });
                 }
-                return rememberWindow((node as any).left, (node as any).right);
+                return rememberWindow(node.left, node.right);
             }
         };
     }

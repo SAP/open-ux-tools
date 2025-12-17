@@ -13,6 +13,17 @@ import type { Rule } from 'eslint';
 // Rule Definition
 // ------------------------------------------------------------------------------
 
+/**
+ * Check if an array contains a specific object.
+ *
+ * @param a The array to search in
+ * @param obj The object to search for
+ * @returns True if the array contains the object
+ */
+function contains(a, obj) {
+    return a.includes(obj);
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -29,20 +40,6 @@ const rule: Rule.RuleModule = {
     create(context: Rule.RuleContext) {
         // Alphabetical list of the "private property names" from UI5 event provider which this check shall detect
         const PRIVATE_MEMBERS = ['mEventRegistry', 'oEventPool'];
-
-        // --------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a, obj) {
-            return a.includes(obj);
-        }
 
         // --------------------------------------------------------------------------
         // Public

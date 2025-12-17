@@ -16,6 +16,34 @@ import { isIdentifier, isMember, isWindow, contains } from '../utils/helpers';
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
+/**
+ * Check if a node represents setTimeout.
+ *
+ * @param node The AST node to check
+ * @returns True if the node represents setTimeout
+ */
+function isTimeout(node: ASTNode): boolean {
+    return isIdentifier(node) && (node as { name: string }).name === 'setTimeout';
+}
+
+/**
+ * Check if a setTimeout call has valid timeout arguments.
+ *
+ * @param node The AST node to check
+ * @returns True if the setTimeout call has valid timeout arguments
+ */
+function isValid(node: ASTNode): boolean {
+    const args = (node as unknown as { arguments: ASTNode[] }).arguments;
+    return (
+        args &&
+        (args.length === 1 ||
+            (args.length > 1 &&
+                ((args[1] as unknown as { value: string | number }).value === 0 ||
+                    (args[1] as unknown as { value: string | number }).value === '0')))
+    );
+}
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -34,16 +62,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
-
-        /**
-         * Check if a node represents setTimeout.
-         *
-         * @param node The AST node to check
-         * @returns True if the node represents setTimeout
-         */
-        function isTimeout(node: ASTNode): boolean {
-            return isIdentifier(node) && (node as { name: string }).name === 'setTimeout';
-        }
 
         /**
          * Check if a node represents an interesting setTimeout call to analyze.
@@ -69,23 +87,6 @@ const rule: Rule.RuleModule = {
             }
             // here obj may not be node.callee any more but node.callee.property
             return isTimeout(obj);
-        }
-
-        /**
-         * Check if a setTimeout call has valid timeout arguments.
-         *
-         * @param node The AST node to check
-         * @returns True if the setTimeout call has valid timeout arguments
-         */
-        function isValid(node: ASTNode): boolean {
-            const args = (node as unknown as { arguments: ASTNode[] }).arguments;
-            return (
-                args &&
-                (args.length === 1 ||
-                    (args.length > 1 &&
-                        ((args[1] as unknown as { value: string | number }).value === 0 ||
-                            (args[1] as unknown as { value: string | number }).value === '0')))
-            );
         }
 
         /**

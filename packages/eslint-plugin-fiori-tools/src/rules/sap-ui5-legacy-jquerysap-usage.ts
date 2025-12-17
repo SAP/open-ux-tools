@@ -3,10 +3,12 @@
 // ------------------------------------------------------------------------------
 
 import type { Rule } from 'eslint';
+import { contains, isIdentifier, isMember } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'problem',
@@ -26,47 +28,6 @@ const rule: Rule.RuleModule = {
         // --------------------------------------------------------------------------
         // Basic Helpers
         // --------------------------------------------------------------------------
-        /**
-         * Check if a node is of a specific type.
-         *
-         * @param node The AST node to check
-         * @param type The type to check for
-         * @returns True if the node is of the specified type
-         */
-        function isType(node: any, type: any): boolean {
-            return node?.type === type;
-        }
-
-        /**
-         * Check if a node is an Identifier.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is an Identifier
-         */
-        function isIdentifier(node: any): boolean {
-            return isType(node, 'Identifier');
-        }
-
-        /**
-         * Check if a node is a MemberExpression.
-         *
-         * @param node The AST node to check
-         * @returns True if the node is a MemberExpression
-         */
-        function isMember(node: any): boolean {
-            return isType(node, 'MemberExpression');
-        }
-
-        /**
-         * Check if an array contains a specific object.
-         *
-         * @param a The array to search in
-         * @param obj The object to search for
-         * @returns True if the array contains the object
-         */
-        function contains(a, obj): boolean {
-            return a.includes(obj);
-        }
 
         /**
          * Check if a call expression represents an interesting jQuery.sap usage.
