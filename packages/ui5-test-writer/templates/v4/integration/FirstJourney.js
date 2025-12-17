@@ -9,15 +9,17 @@ sap.ui.define([
 
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();
-<% startPages.forEach(function(pageName) { %>
-            Then.onThe<%- pageName%>.iSeeThisPage();<% if (filterBarItems && filterBarItems.length > 0) { %>
-                <% filterBarItems.forEach(function(item) { %>
+            <%_ startPages.forEach(function(pageName) { %>
+            Then.onThe<%- pageName %>.iSeeThisPage();
+            <%_ if (filterBarItems && filterBarItems.length > 0) { -%>
+                <%_ filterBarItems.forEach(function(item) { _%>
             Then.onThe<%- pageName%>.onFilterBar().iCheckFilterField("<%- item %>");
-                <% }); %>
-            <% } %><% if (tableColumns && Object.keys(tableColumns).length > 0) { %>
+                <%_ }); -%>
+            <%_ } -%>
+            <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { _%>
             Then.onThe<%- pageName %>.onTable().iCheckColumns(<%- Object.keys(tableColumns).length %>, <%- JSON.stringify(tableColumns) %>);
-            <% } %>
-<% });%>
+            <%_ } -%>
+            <%_ }); -%>
         });
 
 <% if (startLR) { %>

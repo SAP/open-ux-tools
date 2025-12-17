@@ -211,10 +211,6 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -608,15 +604,8 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
-            
-
-            
 
             Then.onTheEmployeesObjectPage.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -987,10 +976,6 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -1361,10 +1346,6 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -1712,10 +1693,6 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -2036,7 +2013,6 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
         });
 
 
@@ -2355,10 +2331,6 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesObjectPage.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -2738,10 +2710,6 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -3199,10 +3167,6 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -3639,10 +3603,6 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesListTarget.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -5456,20 +5416,10 @@ server:
             Given.iStartMyApp();
 
             Then.onTheTravelList.iSeeThisPage();
-            
-                
             Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"TravelID\\");
-                
             Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"AgencyID\\");
-                
             Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"Kunden ID\\");
-                
-            
-
-            
             Then.onTheTravelList.onTable().iCheckColumns(8, {\\"TravelID\\":{\\"header\\":\\"TravelID\\"},\\"AgencyID\\":{\\"header\\":\\"AgencyID\\"},\\"CustomerID\\":{\\"header\\":\\"Kunden ID\\"},\\"BeginDate\\":{\\"header\\":\\"BeginDate\\"},\\"EndDate\\":{\\"header\\":\\"EndDate\\"},\\"TotalPrice\\":{\\"header\\":\\"TotalPrice\\"},\\"Memo\\":{\\"header\\":\\"Memo\\"},\\"Status\\":{\\"header\\":\\"Status\\"}});
-            
-
         });
 
 
@@ -7131,18 +7081,9 @@ server:
             Given.iStartMyApp();
 
             Then.onTheTravelList.iSeeThisPage();
-            
-                
             Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"TravelID\\");
-                
             Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"AgencyID\\");
-                
             Then.onTheTravelList.onFilterBar().iCheckFilterField(\\"Kunden ID\\");
-                
-            
-
-            
-
         });
 
 
@@ -8931,12 +8872,7 @@ server:
             Given.iStartMyApp();
 
             Then.onTheTravelList.iSeeThisPage();
-            
-
-            
             Then.onTheTravelList.onTable().iCheckColumns(8, {\\"TravelID\\":{\\"header\\":\\"TravelID\\"},\\"AgencyID\\":{\\"header\\":\\"AgencyID\\"},\\"CustomerID\\":{\\"header\\":\\"Kunden ID\\"},\\"BeginDate\\":{\\"header\\":\\"BeginDate\\"},\\"EndDate\\":{\\"header\\":\\"EndDate\\"},\\"TotalPrice\\":{\\"header\\":\\"TotalPrice\\"},\\"Memo\\":{\\"header\\":\\"Memo\\"},\\"Status\\":{\\"header\\":\\"Status\\"}});
-            
-
         });
 
 
@@ -10731,10 +10667,6 @@ server:
             Given.iStartMyApp();
 
             Then.onTheTravelList.iSeeThisPage();
-            
-
-            
-
         });
 
 
@@ -11086,10 +11018,6 @@ Object {
             Given.iStartMyApp();
 
             Then.onTheEmployeesObjectPage.iSeeThisPage();
-            
-
-            
-
         });
 
 
