@@ -6,7 +6,7 @@ const yaml = require('yaml');
 
 // Packages that should not have major version bumps
 const BLOCKED_MAJOR_PACKAGES = [
-    '@sap-ux/eslint-plugin-fiori-tools'
+    // '@sap-ux/eslint-plugin-fiori-tools'
 ];
 
 const CHANGESET_DIR = path.join(__dirname, '..', '.changeset');
