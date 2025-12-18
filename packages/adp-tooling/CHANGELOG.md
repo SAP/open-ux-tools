@@ -1,5 +1,21 @@
 # @sap-ux/adp-tooling
 
+## 0.18.24
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/odata-service-writer@0.28.0
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/inquirer-common@0.10.0
+    - @sap-ux/system-access@0.6.34
+
+## 0.18.23
+
+### Patch Changes
+
+- a79eb1b: feat: Adding points of telemetry data for ADP generator
+
 ## 0.18.22
 
 ### Patch Changes
