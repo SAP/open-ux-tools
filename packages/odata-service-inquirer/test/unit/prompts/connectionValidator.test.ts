@@ -1,7 +1,13 @@
-import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import {
+    ODataService,
+    ODataVersion,
+    ServiceProvider,
+    type AbapServiceProvider,
+    type ODataServiceInfo,
+    type AxiosRequestConfig
+} from '@sap-ux/axios-extension';
 import { createForAbap } from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
-import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
     GUIDED_ANSWERS_ICON,
@@ -902,7 +908,9 @@ describe('ConnectionValidator', () => {
                 url: 'https://system1:12345/',
                 authenticationType: 'reentranceTicket',
                 userDisplayName: 'user1',
-                client: '001'
+                client: '001',
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             }
         };
         connectValidator.setConnectedSystem(cachedConnectedSystem);
@@ -938,10 +946,12 @@ describe('ConnectionValidator', () => {
             backendSystem: {
                 name: 'system2',
                 url: 'https://system2:1234554321/',
-                authenticationType: '',
+                authenticationType: 'oauth2',
                 serviceKeys: {
                     url: 'https://system2:54321/'
-                }
+                },
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             }
         };
 

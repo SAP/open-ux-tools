@@ -35,7 +35,6 @@ import type { Logger } from '@sap-ux/logger';
 
 const getProjectTypeMock = jest.fn();
 jest.mock('@sap-ux/project-access', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/project-access') as object),
     getProjectType: () => getProjectTypeMock()
 }));

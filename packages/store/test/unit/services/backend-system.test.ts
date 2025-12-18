@@ -52,13 +52,13 @@ describe('BackendSystem service', () => {
             );
             expect(writeFileSyncSpy).toHaveBeenNthCalledWith(
                 2,
-                expect.stringContaining('systems.json'),
-                expect.any(String)
+                expect.stringContaining('.systemsMigrated'),
+                expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
             );
             expect(writeFileSyncSpy).toHaveBeenNthCalledWith(
                 3,
-                expect.stringContaining('.systemsMigrated'),
-                expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+                expect.stringContaining('systems.json'),
+                expect.any(String)
             );
         });
 
@@ -136,17 +136,16 @@ describe('BackendSystem service', () => {
         it('delegates to data provider', async () => {
             const mockSystemDataProvider = jest.spyOn(SystemDataProvider.prototype, 'delete');
             const systemService = new SystemService(logger);
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
+            await systemService.delete(
+                new BackendSystem({
+                    name: 'system',
+                    url: 'some_url',
+                    client: 'some_client',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                })
+            );
             expect(mockSystemDataProvider).toHaveBeenCalledTimes(1);
-        });
-
-        it('calls migration only once', async () => {
-            jest.spyOn(SystemDataProvider.prototype, 'delete');
-            const systemService = new SystemService(logger);
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
         });
     });
 
@@ -205,7 +204,7 @@ describe('BackendSystem service', () => {
                 new BackendSystemKey({ url: 'url_existing' }),
                 update
             );
-            expect(updatedEntity).toEqual({ ...existingSystem, ...update });
+            expect(updatedEntity).toEqual({ ...existingSystem, ...update, hasSensitiveData: true });
             expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
 
@@ -225,7 +224,7 @@ describe('BackendSystem service', () => {
                 new BackendSystemKey({ url: 'url_existing' }),
                 update
             );
-            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name });
+            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name, hasSensitiveData: true });
             expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
 
@@ -245,7 +244,7 @@ describe('BackendSystem service', () => {
                 new BackendSystemKey({ url: 'url_existing' }),
                 update
             );
-            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name });
+            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name, hasSensitiveData: true });
             expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
     });

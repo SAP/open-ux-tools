@@ -136,6 +136,7 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
     export interface ContextMenuItem {
         id: string;
         text: string | ((overlay: ElementOverlay) => string);
+         
         handler: Function;
         icon?: string;
         enabled: ((overlay: ElementOverlay[]) => boolean);

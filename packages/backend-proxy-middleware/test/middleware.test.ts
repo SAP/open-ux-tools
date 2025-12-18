@@ -2,9 +2,9 @@ import express from 'express';
 import supertest from 'supertest';
 import * as proxy from '../src/base/proxy';
 import * as proxyMiddleware from '../src/middleware';
-import { BackendMiddlewareConfig } from '../src/base/types';
+import type { BackendMiddlewareConfig } from '../src/base/types';
 import nock from 'nock';
-import { Options } from 'http-proxy-middleware';
+import type { Options } from 'http-proxy-middleware';
 import connect = require('connect');
 import { ToolsLogger } from '@sap-ux/logger';
 

@@ -105,7 +105,7 @@ async function retrieveControllerExtensionPageType(
 ): Promise<ControllerExtensionPageType | undefined> {
     if (pageId && typeof pageId === 'string') {
         // Find pageType for passed page id
-        const appData = await appReader.readApp();
+        const appData = await appReader.readAppData();
         pageType = appData.config.pages?.[pageId]?.pageType as string;
     }
     if (pageType && typeof pageType === 'string') {

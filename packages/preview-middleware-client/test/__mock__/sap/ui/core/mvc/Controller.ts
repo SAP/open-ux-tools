@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 // add required functionality for testing here
 export default class Controller {
-    public static create = jest.fn()
+    public static create = jest.fn();
     public loadFragment() {
         return {
             open: jest.fn()
