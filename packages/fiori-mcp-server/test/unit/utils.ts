@@ -115,7 +115,7 @@ async function getLocalSpecification(): Promise<Specification> {
 export async function readAppWithModel(
     path: string,
     applications: { [key: string]: ApplicationAccess } = {},
-    options?: ReadAppParams
+    options?: Partial<ReadAppParams>
 ): Promise<ReadAppResult> {
     const specification = await getLocalSpecification();
     const result = await specification.readApp({
