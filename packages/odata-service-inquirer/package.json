@@ -59,7 +59,7 @@
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/cap-config-writer": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.13.2",
+        "@sap-ux/vocabularies-types": "0.14.3",
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6",

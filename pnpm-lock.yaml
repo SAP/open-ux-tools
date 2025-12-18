@@ -742,8 +742,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.3
+        version: 0.14.3
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -877,8 +877,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.3
+        version: 0.14.3
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -1822,8 +1822,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.3
+        version: 0.14.3
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
@@ -1919,8 +1919,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.3
+        version: 0.14.3
       '@sap-ux/xml-odata-annotation-converter':
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
@@ -2794,8 +2794,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.3
+        version: 0.14.3
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -3115,8 +3115,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.3
+        version: 0.14.3
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -3173,8 +3173,8 @@ importers:
         specifier: workspace:*
         version: link:../axios-extension
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.3
+        version: 0.14.3
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -13562,6 +13562,10 @@ packages:
     resolution: {integrity: sha512-lPFiWVXyA4yUBeQBJePxnqXZ/bMKk6vR3GoLtW/5ayBcQAJxWTpeyK8QX91sR+AajDmzkCF/8ND2ewi8SewySg==}
     engines: {node: '>=18.x'}
 
+  /@sap-ux/vocabularies-types@0.14.3:
+    resolution: {integrity: sha512-Tdaff1M7Npy60FiZVykztiBQrebdIsu/1b+teod6+urpJoIbD0IHgJcI52j6kX/A8pRVB544ygxz+qnrSFwNqw==}
+    engines: {node: '>=18.x'}
+
   /@sap-ux/xml-odata-annotation-converter@0.4.2:
     resolution: {integrity: sha512-eSjWFBWzLfxpNetfabC0wOARdSkn26687K/0JjcIUfSzF0F0sP671O05MXaH+7XTcIC5bs76JTql6P1patImJQ==}
     dependencies:
@@ -15622,14 +15626,14 @@ packages:
       '@types/glob': 8.1.0
       '@types/json-schema': 7.0.15
       '@types/mem-fs': 1.1.2
-      '@types/node': 18.11.9
+      '@types/node': 20.0.0
       '@types/vinyl': 2.0.7
     dev: true
 
   /@types/mem-fs@1.1.2:
     resolution: {integrity: sha512-tt+4IoDO8/wmtaP2bHnB91c8AnzYtR9MK6NxfcZY9E3XgtmzOiFMeSXu3EZrBeevd0nJ87iGoUiFDGsb9QUvew==}
     dependencies:
-      '@types/node': 18.11.9
+      '@types/node': 20.0.0
       '@types/vinyl': 2.0.7
     dev: true
 
@@ -28086,7 +28090,7 @@ packages:
     dev: true
 
   /prettify-xml@1.2.0:
-    resolution: {integrity: sha1-Rtzx7oqNi3PbMLfgbvJtyc8/bxg=}
+    resolution: {integrity: sha512-kuoTbmC+QQUfx45PrdkVzJqrNEp2lhK++WGyiqBx6JrCvZUQDgeYjdV3h53n7p+37s1Iwx6GjAQ7fcIgD8kkLQ==}
     dev: false
 
   /pretty-bytes@5.6.0:

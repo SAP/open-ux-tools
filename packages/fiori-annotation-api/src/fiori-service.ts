@@ -41,6 +41,7 @@ import { ChangeConverter } from './change-converter';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { logger } from './logger';
+import { ValueListReference } from './types/adapter';
 
 export interface FioriAnnotationServiceConstructor<T> {
     new (
@@ -247,6 +248,32 @@ export class FioriAnnotationService {
     }
 
     /**
+     *
+     * @returns
+     */
+    public getExternalServices(): Map<string, ValueListReference[]> {
+        return this.adapter.getValueListReferences();
+    }
+
+    /**
+     * Refreshes file content from the file system.
+     */
+    public syncExternalServices(files: Map<string, string>): void {
+        for (const [, value] of this.adapter.getValueListReferences().entries()) {
+            for (const entry of value) {
+                for (const uri of entry.uris) {
+                    // TODO: make this parallel
+                    const resource = files.get(uri);
+                    if (resource) {
+                        // TODO: check uri
+                        this.adapter.syncExternalService(uri, resource);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Provides initial annotation file content.
      *
      * @param filePath - Path to the newly created file.
@@ -279,6 +306,33 @@ export class FioriAnnotationService {
             this.adapter.splitAnnotationSupport
         );
         return rawMetadata;
+    }
+
+    /**
+     * Reads annotations for a specific external service in an application.
+     *
+     * @returns Service metadata in AVT format.
+     */
+    public getExternalServiceSchema(): RawMetadata[] {
+        return this.adapter.getExternalServices().map(({ compiledService, metadata }) => {
+            const rawMetadata: RawMetadata = {
+                version: metadata.ODataVersion,
+                identification: 'metadataFile',
+                schema: convertMetadataToAvtSchema(metadata),
+                references: []
+            };
+
+            this.fileMergeMaps = mergeAnnotations(
+                compiledService,
+                rawMetadata,
+                '',
+                {
+                    vocabulary: this.vocabularyAPI
+                },
+                this.adapter.splitAnnotationSupport
+            );
+            return rawMetadata;
+        });
     }
 
     /**

@@ -69,6 +69,7 @@ class MetadataConverter {
             entityContainer: this.entityContainer,
             actions: this.actions,
             entityTypes: this.entityTypes,
+            enumTypes: [],
             actionImports: this.actionImports,
             associations: [],
             singletons: this.singletons,

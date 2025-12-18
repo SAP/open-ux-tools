@@ -23,7 +23,16 @@ import type {
     PathExpression,
     PropertyPathExpression,
     StringExpression,
-    DoubleExpression
+    DoubleExpression,
+    HasExpression,
+    InExpression,
+    AddExpression,
+    SubExpression,
+    DivByExpression,
+    DivExpression,
+    ModExpression,
+    MulExpression,
+    NegExpression
 } from '@sap-ux/vocabularies-types';
 
 /**
@@ -89,6 +98,15 @@ export function isExpression(
     | GtExpression
     | GeExpression
     | LtExpression
-    | LeExpression {
+    | LeExpression
+    | HasExpression
+    | InExpression
+    | AddExpression
+    | SubExpression
+    | MulExpression
+    | DivExpression
+    | DivByExpression
+    | ModExpression
+    | NegExpression {
     return typeof value === 'object' && value.type !== undefined && expressionNames[value.type] !== undefined;
 }
