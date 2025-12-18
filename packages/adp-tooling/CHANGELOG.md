@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 0.18.25
+
+### Patch Changes
+
+- Updated dependencies [691ab27]
+    - @sap-ux/odata-service-writer@0.29.0
+    - @sap-ux/inquirer-common@0.10.1
+
 ## 0.18.24
 
 ### Patch Changes
