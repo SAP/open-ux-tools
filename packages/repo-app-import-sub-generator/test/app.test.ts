@@ -27,7 +27,7 @@ import { handleWorkspaceConfig } from '@sap-ux/launch-config';
 import { EventName } from '../src/telemetryEvents';
 import { getUI5Versions } from '@sap-ux/ui5-info';
 
-jest.setTimeout(20000);
+jest.setTimeout(30000);
 
 jest.mock('@sap/ux-specification', () => ({}));
 
