@@ -80,7 +80,6 @@ sap.ui.define([
          * @public
          */
         onNavBack : function() {
-            // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-history-manipulation, @sap-ux/fiori-tools/sap-browser-api-warning
             history.go(-1);
         },
 

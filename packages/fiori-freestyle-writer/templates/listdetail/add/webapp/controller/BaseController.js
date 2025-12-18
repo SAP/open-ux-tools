@@ -54,7 +54,6 @@ sap.ui.define([
             var sPreviousHash = History.getInstance().getPreviousHash();
 
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo("list", {}, true);

@@ -167,7 +167,7 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
+/*eslint-disable @sap-ux/fiori-tools/sap-browser-api-warning, @sap-ux/fiori-tools/sap-no-dom-access*/
 var currentScript = document.getElementById("locate-reuse-libs");
 if (!currentScript) {
     currentScript = document.currentScript;

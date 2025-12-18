@@ -1490,7 +1490,6 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
             var sPreviousHash = History.getInstance().getPreviousHash();
 
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"list\\", {}, true);
@@ -3435,7 +3434,7 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
+/*eslint-disable @sap-ux/fiori-tools/sap-browser-api-warning, @sap-ux/fiori-tools/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -4305,7 +4304,6 @@ server:
         onNavBack : function() {
             var sPreviousHash = History.getInstance().getPreviousHash();
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"worklist\\", {}, true);
@@ -4461,7 +4459,6 @@ server:
          * @public
          */
         onNavBack : function() {
-            // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-history-manipulation, @sap-ux/fiori-tools/sap-browser-api-warning
             history.go(-1);
         },
 
@@ -5662,7 +5659,7 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
+/*eslint-disable @sap-ux/fiori-tools/sap-browser-api-warning, @sap-ux/fiori-tools/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
