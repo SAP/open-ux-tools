@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.0
+
+### Minor Changes
+
+- 691ab27: Prompt user to download value helps for V4 services with associated value helps. Add downloaded value helps as multiple metadata files alongside the service in the generated project.
+
 ## 0.28.0
 
 ### Minor Changes
