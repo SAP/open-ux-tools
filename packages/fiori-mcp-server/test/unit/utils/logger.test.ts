@@ -217,6 +217,8 @@ describe('logger module', () => {
         });
 
         it('should have logging methods that accept string messages', () => {
+            (logger as any)._logger.silent = true; // Mute logger for test
+
             expect(() => logger.info('test info')).not.toThrow();
             expect(() => logger.warn('test warn')).not.toThrow();
             expect(() => logger.error('test error')).not.toThrow();
@@ -224,6 +226,7 @@ describe('logger module', () => {
         });
 
         it('should handle complex message formatting', () => {
+            (logger as any)._logger.silent = true; // Mute logger for test
             const testObj = { key: 'value', nested: { prop: 123 } };
             const testError = new Error('Test error message');
 
@@ -237,6 +240,8 @@ describe('logger module', () => {
         });
 
         it('should handle edge case values', () => {
+            (logger as any)._logger.silent = true; // Mute logger for test
+
             expect(() => logger.info('Undefined value: undefined')).not.toThrow();
             expect(() => logger.warn('Null value: null')).not.toThrow();
             expect(() => logger.error('')).not.toThrow();
@@ -268,9 +273,9 @@ describe('specificationLogger adapter', () => {
         const specificationLogger = loggerModule.specificationLogger;
         const logger = loggerModule.logger;
 
-        const errorSpy = jest.spyOn(logger, 'error');
-        const warnSpy = jest.spyOn(logger, 'warn');
-        const infoSpy = jest.spyOn(logger, 'info');
+        const errorSpy = jest.spyOn(logger, 'error').mockImplementation(() => {});
+        const warnSpy = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+        const infoSpy = jest.spyOn(logger, 'info').mockImplementation(() => {});
 
         specificationLogger.info('This is an info message', { key: 'value' }, 42);
         expect(infoSpy).toHaveBeenNthCalledWith(1, '@sap/ux-specification: This is an info message');
