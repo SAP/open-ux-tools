@@ -2197,9 +2197,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap/ux-specification':
-        specifier: 1.139.2
-        version: 1.139.2(typescript@5.9.3)
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
