@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.13.1
+
+### Patch Changes
+
+- cda79d4: Update telemetry timing test.
+
 ## 2.13.0
 
 ### Minor Changes
