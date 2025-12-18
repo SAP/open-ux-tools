@@ -1,7 +1,7 @@
 import type { FullyQualifiedName, Location, TargetKind } from '..';
 import type { Facets } from './common';
 
-export type ODataVersionType = '2.0' | '4.0' | '4.01';
+export type ODataVersionType = '2.0' | '4.0';
 
 /**
  * Identification of a file containing metadata.

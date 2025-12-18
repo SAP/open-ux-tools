@@ -11,7 +11,7 @@ type DataSource = ManifestNamespace.DataSource;
 /**
  * The OData version type.
  */
-type ODataVersion = 'v2' | 'v4' | '2.0' | '4.0' | '4.01';
+type ODataVersion = 'v2' | 'v4' | '2.0' | '4.0';
 
 /**
  * Describes an OData service instance.
