@@ -22,24 +22,24 @@ export type RequireWidthIncludingColumnHeaderOptions = {
 };
 
 /**
- * Validates that a manifest path exists down to the specified minimum depth.
+ * Validates that a path exists down to the specified minimum depth.
  * Returns the deepest existing path and the missing segments.
- * @param manifest - The manifest object to validate against
- * @param fullPath - The complete path to validate
- * @param minRequiredDepth - Minimum number of segments that must exist (e.g., 6 for path ending at 'settings')
+ * @param startObject - The object to start validation from (e.g., manifest root or settings object)
+ * @param pathSegments - The path segments to validate
+ * @param minRequiredDepth - Minimum number of segments that must exist (0 = all optional)
  * @returns Object with validatedPath (deepest existing) and missingSegments, or null if minimum depth not met
  */
 function findDeepestExistingPath(
-    manifest: any,
-    fullPath: string[],
+    startObject: any,
+    pathSegments: string[],
     minRequiredDepth: number
 ): { validatedPath: string[]; missingSegments: string[] } | null {
-    let current: any = manifest;
+    let current: any = startObject;
     let depth = 0;
 
     // Walk the path to find the deepest existing level
-    for (let i = 0; i < fullPath.length; i++) {
-        const segment = fullPath[i];
+    for (let i = 0; i < pathSegments.length; i++) {
+        const segment = pathSegments[i];
         if (!current || typeof current !== 'object' || !(segment in current)) {
             // Path doesn't exist at this level
             if (i < minRequiredDepth) {
@@ -48,8 +48,8 @@ function findDeepestExistingPath(
             }
             // Return the deepest existing path and the missing segments
             return {
-                validatedPath: fullPath.slice(0, i),
-                missingSegments: fullPath.slice(i)
+                validatedPath: pathSegments.slice(0, i),
+                missingSegments: pathSegments.slice(i)
             };
         }
         current = current[segment];
@@ -58,7 +58,7 @@ function findDeepestExistingPath(
 
     // Full path exists
     return {
-        validatedPath: fullPath,
+        validatedPath: pathSegments,
         missingSegments: []
     };
 }
@@ -130,32 +130,47 @@ console.log("DEBUG; Checking apps", context.sourceCode.projectContext.linkedMode
                     }, collection);
 
                     if (records.length < 6 && records.length > 0 && table.widthIncludingColumnHeader !== true) {
-                        const fullPath = [
+                        // The linker already validated that settings exists, so we start validation from there
+                        const settingsPath = (manifest?.['sap.ui5'] as any)?.routing?.targets?.[page.targetName]?.options?.settings;
+                        
+                        if (!settingsPath) {
+                            // Settings doesn't exist in manifest (shouldn't happen if linker created the page)
+                            console.log('DEBUG; Skipping table - settings does not exist for target:', page.targetName);
+                            continue;
+                        }
+                        
+                        // Only validate the optional parts: controlConfiguration -> [key] -> tableSettings
+                        const optionalPath = [
+                            'controlConfiguration',
+                            table.controlConfigurationKey,
+                            'tableSettings'
+                        ];
+                        
+                        // minRequiredDepth = 0 since all segments are optional
+                        const pathInfo = findDeepestExistingPath(settingsPath, optionalPath, 0);
+                        
+                        if (!pathInfo) {
+                            // This shouldn't happen since minRequiredDepth is 0
+                            console.log('DEBUG; Unexpected: pathInfo is null for:', optionalPath.join('/'));
+                            continue;
+                        }
+                        
+                        // Build the full manifest path for the matcher (needed for ESLint selector)
+                        const fullManifestPath = [
                             'sap.ui5',
                             'routing',
                             'targets',
                             page.targetName,
                             'options',
                             'settings',
-                            'controlConfiguration',
-                            table.controlConfigurationKey,
-                            'tableSettings'
+                            ...pathInfo.validatedPath
                         ];
                         
-                        // Validate path exists down to 'settings' (index 5, so depth 6)
-                        const pathInfo = findDeepestExistingPath(manifest, fullPath, 6);
-                        
-                        if (!pathInfo) {
-                            // Required path down to 'settings' doesn't exist, skip this table
-                            console.log('DEBUG; Skipping table - path does not exist down to settings:', fullPath.join('/'));
-                            continue;
-                        }
-                        
-                        console.log('DEBUG; Reporting problem for table at path', pathInfo.validatedPath.join('/'), 
+                        console.log('DEBUG; Reporting problem for table at path', fullManifestPath.join('/'), 
                                     'missing segments:', pathInfo.missingSegments.join('/'));
                         problems.push({
                             type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-                            manifestPropertyPath: pathInfo.validatedPath,
+                            manifestPropertyPath: fullManifestPath,
                             missingPathSegments: pathInfo.missingSegments,
                             propertyName: 'widthIncludingColumnHeader',
                             annotation: {
