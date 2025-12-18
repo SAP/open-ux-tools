@@ -4,7 +4,7 @@ export class FeatureService {
     static {
         // eslint-disable-next-line fiori-custom/sap-no-dom-access, fiori-custom/sap-browser-api-warning
         const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
-        const features = bootstrapConfig?.getAttribute('data-open-ux-preview-features');
+        const features = bootstrapConfig?.dataset.openUxPreviewFeatures;
         if (features) {
             const featureToggles = JSON.parse(features) as { feature: string; isEnabled: boolean }[];
             for (const { feature, isEnabled } of featureToggles) {
