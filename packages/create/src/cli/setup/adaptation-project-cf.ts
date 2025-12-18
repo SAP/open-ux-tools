@@ -102,14 +102,9 @@ async function fetchUi5AppInfo(basePath: string, logger: ToolsLogger, serviceKey
 
         const ui5AppInfo: CfUi5AppInfo = await getCfUi5AppInfo(appId, appHostIds, cfConfig, logger);
 
-        const webappPath = join(basePath, 'webapp');
-        if (!existsSync(webappPath)) {
-            throw new Error('webapp folder not found in project');
-        }
-
-        const ui5AppInfoTargetPath = join(webappPath, 'ui5AppInfo.json');
+        const ui5AppInfoTargetPath = join(basePath, 'ui5AppInfo.json');
         writeFileSync(ui5AppInfoTargetPath, JSON.stringify(ui5AppInfo, null, 2), 'utf-8');
-        logger.info(`Written ui5AppInfo.json to ${webappPath}`);
+        logger.info(`Written ui5AppInfo.json to ${basePath}`);
     } catch (error) {
         logger.error(`Failed to process ui5AppInfo.json: ${(error as Error).message}`);
         throw error;
@@ -159,9 +154,9 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
             ui5Config.removeCustomMiddleware('serve-static-middleware');
         }
 
-        const ui5AppInfoPath = join(basePath, 'webapp', 'ui5AppInfo.json');
+        const ui5AppInfoPath = join(basePath, 'ui5AppInfo.json');
         if (!existsSync(ui5AppInfoPath)) {
-            logger.warn('ui5AppInfo.json not found in webapp folder, skipping serve-static-middleware configuration');
+            logger.warn('ui5AppInfo.json not found in project root, skipping serve-static-middleware configuration');
             return;
         }
 

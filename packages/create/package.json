@@ -18,7 +18,7 @@
         "node": ">=20.x"
     },
     "scripts": {
-        "build": "tsc --build && node ./scripts/generate-readme.js && node -e \"require('fs').cpSync('src/cli/setup/ui5AppInfo.json', 'dist/cli/setup/ui5AppInfo.json')\"",
+        "build": "tsc --build",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
