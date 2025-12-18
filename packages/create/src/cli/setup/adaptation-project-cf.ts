@@ -19,6 +19,7 @@ import {
     type CfUi5AppInfo
 } from '@sap-ux/adp-tooling';
 import type { CfConfig } from '@sap-ux/adp-tooling';
+import { log } from 'console';
 
 /**
  * Add the "setup adaptation-project-cf" command to a passed command.
@@ -50,14 +51,17 @@ async function setupAdaptationProjectCF(basePath: string): Promise<void> {
     const logger = getLogger();
     await validateBasePath(basePath);
 
+    // Step 0: Verify user is logged in to Cloud Foundry
     try {
-        // Step 0: Verify user is logged in to Cloud Foundry
-        try {
-            execSync('cf target', { stdio: 'pipe' });
-        } catch (error) {
-            throw new Error('You are not logged in to Cloud Foundry. Please run "cf login" first.');
-        }
+        execSync('cf oauth-token', { stdio: 'pipe' });
+    } catch (error) {
+        logger.error(
+            'You are not logged in to Cloud Foundry or your session has expired. Please run "cf login" first.'
+        );
+        throw new Error();
+    }
 
+    try {
         // Step 1: Verify this is an adaptation project
         const manifestVariantPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
         if (!existsSync(manifestVariantPath)) {
