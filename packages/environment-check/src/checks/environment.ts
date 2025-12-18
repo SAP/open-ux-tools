@@ -152,7 +152,7 @@ async function getEndpointResults(
     if (needsUsernamePassword(endpoint)) {
         if (typeof credentialCallback === 'function') {
             const credentials = await credentialCallback(endpoint);
-            if (credentials && credentials.username && credentials.password) {
+            if (credentials?.username && credentials?.password) {
                 username = credentials.username;
                 password = credentials.password;
             }

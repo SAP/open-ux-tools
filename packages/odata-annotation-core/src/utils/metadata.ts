@@ -72,8 +72,8 @@ function isEntityOrComplexOrStructuredType(currentMetadataElement: MetadataEleme
  */
 function isPathPointingToActionKindElement(metadata: IMetadataService, path: string): boolean {
     const edmxTypes = metadata.getEdmTargetKinds(path);
-    const actionKinds = [ACTION_KIND, FUNCTION_KIND, ACTION_IMPORT_KIND, FUNCTION_IMPORT_KIND];
-    return edmxTypes.findIndex((edmxType: string) => actionKinds.includes(edmxType)) >= 0;
+    const actionKinds = new Set([ACTION_KIND, FUNCTION_KIND, ACTION_IMPORT_KIND, FUNCTION_IMPORT_KIND]);
+    return edmxTypes.findIndex((edmxType: string) => actionKinds.has(edmxType)) >= 0;
 }
 
 /**

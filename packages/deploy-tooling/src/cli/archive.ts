@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { readFile } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import ZipFile from 'adm-zip';
 import type { CliOptions } from '../types';
 import type { Logger } from '@sap-ux/logger';
@@ -12,18 +12,15 @@ import { Agent } from 'node:https';
  * @param path - path to the zip file
  * @returns Buffer containing the zip file
  */
-function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer> {
+async function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer> {
     logger.info(`Loading archive from ${path}`);
-    return new Promise((resolve, reject) => {
-        readFile(path, (err, data) => {
-            if (err) {
-                reject(`Loading archive has failed. Please ensure ${path} is valid and accessible.`);
-            } else {
-                logger.info(`Archive loaded from ${path}`);
-                resolve(data);
-            }
-        });
-    });
+    try {
+        const data = await readFile(path);
+        logger.info(`Archive loaded from ${path}`);
+        return data;
+    } catch (err) {
+        throw new Error(`Loading archive has failed. Please ensure ${path} is valid and accessible.`);
+    }
 }
 
 /**

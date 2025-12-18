@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('node:fs');
 const mockXHR = require('./mockXHR');
 /**
  * Initializes the UI5 environment for the Jest tests.
