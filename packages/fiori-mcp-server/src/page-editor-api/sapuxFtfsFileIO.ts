@@ -181,12 +181,13 @@ export class SapuxFtfsFileIO {
         const exportParams = {
             [schemaType]: {
                 appId: this.getAppId(manifest),
-                jsonSchema: JSON.parse(pageData.schema),
+                jsonSchema: JSON.parse(pageData.schema) as object,
                 manifest,
                 page: {
                     ...pageData.page,
                     name: pageData.pageId,
-                    config: pageData.config
+                    config: pageData.config,
+                    logger: specificationLogger
                 } as v4.PageV4,
                 logger: specificationLogger
             }
