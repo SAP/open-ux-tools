@@ -187,7 +187,8 @@ export class SapuxFtfsFileIO {
                     ...pageData.page,
                     name: pageData.pageId,
                     config: pageData.config
-                } as v4.PageV4
+                } as v4.PageV4,
+                logger: specificationLogger
             }
         };
         const exportConfig = await this.getExportConfigParameters(manifest, exportParams);
@@ -224,7 +225,8 @@ export class SapuxFtfsFileIO {
             [SchemaType.Application]: {
                 application: config as v4.ApplicationV4,
                 manifest,
-                jsonSchema: JSON.parse(schema)
+                jsonSchema: JSON.parse(schema),
+                logger: specificationLogger
             }
         };
         const exportConfig = await this.getExportConfigParameters(manifest, exportParams);
