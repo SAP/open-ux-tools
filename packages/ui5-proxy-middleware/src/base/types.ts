@@ -1,5 +1,5 @@
 import type { NextFunction } from 'express';
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage } from 'node:http';
 
 export interface ProxyConfig {
     /**

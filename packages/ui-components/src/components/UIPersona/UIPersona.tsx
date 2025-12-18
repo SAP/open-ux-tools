@@ -24,7 +24,7 @@ export class UIPersona extends React.Component<IPersonaProps, {}> {
         super(props);
     }
 
-    private personaStyles = (_props: IPersonaStyleProps): Partial<IPersonaStyles> => {
+    private readonly personaStyles = (_props: IPersonaStyleProps): Partial<IPersonaStyles> => {
         return {
             ...{
                 root: {},

@@ -17,7 +17,7 @@ import {
     type CapServiceAnswers
 } from './types';
 import { validateCapPath } from './validators';
-import { realpath } from 'fs/promises';
+import { realpath } from 'node:fs/promises';
 
 /**
  * Find the specified choice in the list of CAP project choices and return its index.

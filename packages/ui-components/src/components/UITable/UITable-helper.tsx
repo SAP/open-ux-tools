@@ -112,7 +112,7 @@ export function scrollToColumn(
     const sidebarWidth = (sidebar?.getBoundingClientRect().width ?? 0) + (addOneToColIndex ? 20 : 0);
     const scrollContainer = document.querySelector('.ms-ScrollablePane--contentContainer');
     const cell = getCellFromCoords(selectedRow, columnKey, columns, addOneToColIndex);
-    const box = cell && cell.getBoundingClientRect();
+    const box = cell?.getBoundingClientRect();
 
     if (scrollContainer && box) {
         const left = scrollContainer.scrollLeft + Math.ceil(box.x) - sidebarWidth;

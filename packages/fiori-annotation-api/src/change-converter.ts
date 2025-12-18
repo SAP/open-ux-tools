@@ -98,11 +98,11 @@ export class ChangeConverter {
      * @param ignoreChangedFileInitialContent Flag indicating if to be changed files can be treated as empty.
      */
     constructor(
-        private serviceName: string,
-        private vocabularyAPI: VocabularyService,
-        private metadataService: MetadataService,
-        private splitAnnotationSupport: boolean,
-        private ignoreChangedFileInitialContent: boolean
+        private readonly serviceName: string,
+        private readonly vocabularyAPI: VocabularyService,
+        private readonly metadataService: MetadataService,
+        private readonly splitAnnotationSupport: boolean,
+        private readonly ignoreChangedFileInitialContent: boolean
     ) {}
     /**
      * Converts changes to the internal change format.

@@ -2,8 +2,8 @@
  * Hierarchical event name for a telemetry event submitted to Auzre Application Insights.
  */
 class EventHeader {
-    private extensionName: string;
-    private eventName: string;
+    private readonly extensionName: string;
+    private readonly eventName: string;
 
     /**
      * Event header that is composed of two parts.

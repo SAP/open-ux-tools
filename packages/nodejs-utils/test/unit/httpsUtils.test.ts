@@ -1,5 +1,5 @@
 import { setGlobalRejectUnauthorized } from '../../src/httpsUtils';
-import https from 'https';
+import https from 'node:https';
 
 describe('httpsUtils tests', () => {
     it('should set global https reject unauthorized', () => {

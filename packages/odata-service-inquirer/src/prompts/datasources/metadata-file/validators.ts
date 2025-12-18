@@ -7,7 +7,7 @@
  */
 
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import { validateODataVersion } from '../../validators';
 import { t } from '../../../i18n';
 

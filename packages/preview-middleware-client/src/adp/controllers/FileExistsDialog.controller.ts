@@ -24,7 +24,7 @@ type FileExistModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class FileExistsDialog extends BaseDialog<FileExistModel> {
-    private options: FileExistsDialogOptions;
+    private readonly options: FileExistsDialogOptions;
     public model: JSONModel;
     constructor(name: string, options: FileExistsDialogOptions) {
         super(name);

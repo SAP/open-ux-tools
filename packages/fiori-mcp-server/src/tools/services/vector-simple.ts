@@ -3,7 +3,7 @@ import { connect } from '@lancedb/lancedb';
 import type { VectorSearchResult } from './types/vector';
 import { logger } from '../../utils/logger';
 import { resolveEmbeddingsPath } from '../../utils/embeddings-path';
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 
 export interface EmbeddingMetadata {

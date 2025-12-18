@@ -59,7 +59,7 @@ import { getElementAttribute } from '@sap-ux/odata-annotation-core';
  *
  */
 class ChangePreprocessor {
-    private commands: Map<number, ChangeCommand> = new Map();
+    private readonly commands: Map<number, ChangeCommand> = new Map();
 
     /**
      *
