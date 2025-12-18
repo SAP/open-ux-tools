@@ -52,7 +52,7 @@ const currentLogLevel = getLogLevel();
 export const logger = new ToolsLogger({
     logLevel: currentLogLevel ?? LogLevel.Error,
     transports:
-        currentLogLevel !== undefined ? [new FileTransport({ filename, maxsize, maxFiles })] : [new NullTransport()],
+        currentLogLevel === undefined ? [new NullTransport()] : [new FileTransport({ filename, maxsize, maxFiles })],
     logPrefix: 'fiori-mcp'
 });
 

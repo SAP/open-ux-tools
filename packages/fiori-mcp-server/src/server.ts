@@ -122,7 +122,10 @@ export class FioriFunctionalityServer {
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
-                return this.convertResultToCallToolResult(result);
+                const convertedResult = this.convertResultToCallToolResult(result);
+                logger.debug(`Tool ${name} executed successfully with result:`);
+                logger.debug(convertedResult);
+                return convertedResult;
             } catch (error) {
                 logger.error(`Error executing tool ${name}: ${error}`);
                 logger.debug(error);
