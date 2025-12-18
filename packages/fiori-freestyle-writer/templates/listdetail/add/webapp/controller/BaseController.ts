@@ -73,7 +73,7 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
+            // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-history-manipulation, @sap-ux/fiori-tools/sap-browser-api-warning
             history.go(-1);
         } else {
             this.getRouter().navTo("list", {});
