@@ -4,7 +4,7 @@ import childProcess from 'child_process';
 import os from 'node:os';
 import { installDependencies } from '../../../src/fiori-app-generator/install';
 import { CommandRunner, initI18nFioriAppSubGenerator, t } from '../../../src/utils';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockSpawn = require('mock-spawn');
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
@@ -45,7 +45,6 @@ describe('Test install queue functions', () => {
         await installDependencies(
             {
                 appPackagePath: '/package/path',
-                enableCodeAssist: false,
                 useNpmWorkspaces: false,
                 ui5Version: '1.2.3'
             },
@@ -77,7 +76,7 @@ describe('Test install queue functions', () => {
         mockedSpawn.setDefault(mockedSpawn.simple(0 /* exit code */, 'Another process log' /* stdout */));
 
         await installDependencies(
-            { appPackagePath: '/package/path', enableCodeAssist: false, ui5Version: '1.2.3', useNpmWorkspaces: false },
+            { appPackagePath: '/package/path', ui5Version: '1.2.3', useNpmWorkspaces: false },
             DefaultLogger
         );
 
@@ -99,7 +98,7 @@ describe('Test install queue functions', () => {
         mockedSpawn.setDefault(mockedSpawn.simple(0 /* exit code */, '', 'Some error log' /* stderr */));
 
         await installDependencies(
-            { appPackagePath: '/package/path', enableCodeAssist: false, ui5Version: '1.2.3', useNpmWorkspaces: false },
+            { appPackagePath: '/package/path', ui5Version: '1.2.3', useNpmWorkspaces: false },
             DefaultLogger
         );
         expect(infoLog).toHaveBeenCalledWith(t('logMessages.installingDependencies', { path: '/package/path' }));
@@ -127,7 +126,6 @@ describe('Test install queue functions', () => {
         await installDependencies(
             {
                 appPackagePath: '/app/package/path',
-                enableCodeAssist: true,
                 ui5Version: '1.2.3',
                 useNpmWorkspaces: false,
                 capService: {
@@ -139,12 +137,7 @@ describe('Test install queue functions', () => {
 
         expect(commandRunSpy).toHaveBeenCalledWith(
             os.platform() === 'win32' ? 'npm.cmd' : 'npm',
-            expect.arrayContaining([
-                'install',
-                expect.stringMatching(new RegExp(/^eslint/)),
-                expect.stringMatching(new RegExp(/^@sap\/eslint-plugin-ui5-jsdocs/)),
-                expect.stringMatching(new RegExp(/^@sapui5\/ts-types/))
-            ]),
+            ['install'],
             { cwd: '/app/package/path' },
             true
         );
@@ -157,7 +150,6 @@ describe('Test install queue functions', () => {
         await installDependencies(
             {
                 appPackagePath: '/app/package/path',
-                enableCodeAssist: true,
                 ui5Version: '1.2.3',
                 useNpmWorkspaces: true,
                 capService: {

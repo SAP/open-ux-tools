@@ -1,67 +1,79 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.6
+
+### Patch Changes
+
+- 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
+
+## 0.4.5
+
+### Patch Changes
+
+- 7cb3db2: feat: enhance downloaded readme content for better chunking
+
 ## 0.4.4
 
 ### Patch Changes
 
--   10eb73e: fix: use existing version of ux-ui5-tooling-README.md in case of download errors
+- 10eb73e: fix: use existing version of ux-ui5-tooling-README.md in case of download errors
 
 ## 0.4.3
 
 ### Patch Changes
 
--   a990ed6: feat: add @sap-ux/create/README.md as resource
+- a990ed6: feat: add @sap-ux/create/README.md as resource
 
 ## 0.4.2
 
 ### Patch Changes
 
--   cfe9c13: Add deep link to package and changelog to README.md
+- cfe9c13: Add deep link to package and changelog to README.md
 
 ## 0.4.1
 
 ### Patch Changes
 
--   fa9580c: chore - Rimraf upgrade
+- fa9580c: chore - Rimraf upgrade
 
 ## 0.4.0
 
 ### Minor Changes
 
--   27585ad: Pre-process document sources with LLM and to clean-up an optimize for RAG code generation.
+- 27585ad: Pre-process document sources with LLM and to clean-up an optimize for RAG code generation.
 
 ## 0.3.0
 
 ### Minor Changes
 
--   e75b594: Add Fiori Development portal documentation to embeddings
+- e75b594: Add Fiori Development portal documentation to embeddings
 
 ## 0.2.0
 
 ### Minor Changes
 
--   b5b6c9c: Add FPM Development portal documentation to embeddings
+- b5b6c9c: Add FPM Development portal documentation to embeddings
 
 ## 0.1.1
 
 ### Patch Changes
 
--   43a2446: chore: fix Sonar issues
+- 43a2446: chore: fix Sonar issues
 
 ## 0.1.0
 
 ### Minor Changes
 
--   b179405: Refactor doc search to return human readable results. Simplify search and doc indexing
+- b179405: Refactor doc search to return human readable results. Simplify search and doc indexing
 
 ## 0.0.2
 
 ### Patch Changes
 
--   306561e: Fix publishing of embeddings package
+- 306561e: Fix publishing of embeddings package
 
 ## 0.0.1
 
 ### Patch Changes
 
--   a7b6272: Add doc_search tool to Fiori MCP server using data from embeddings module.
+- a7b6272: Add doc_search tool to Fiori MCP server using data from embeddings module.

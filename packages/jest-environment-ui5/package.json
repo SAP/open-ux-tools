@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-environment-ui5",
-    "version": "5.3.12",
+    "version": "5.3.13",
     "description": "Jest matchers for files and folders",
     "repository": {
         "type": "git",
@@ -14,8 +14,8 @@
     "scripts": {
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .js",
-        "lint:fix": "eslint . --ext .js --fix",
+        "lint": "eslint --ext .js",
+        "lint:fix": "eslint --ext .js --fix",
         "test": "pnpm run test-ut && pnpm run testlatest",
         "test-ut": "cross-env NODE_OPTIONS='--experimental-vm-modules' npx jest --ci --forceExit --detectOpenHandles --colors  --runInBand ",
         "test-e2e": "pnpm run testlatest && pnpm run test71 && pnpm run test84 && pnpm run test96 && pnpm run test108 && pnpm run test120 && pnpm run test124 && pnpm run test127",

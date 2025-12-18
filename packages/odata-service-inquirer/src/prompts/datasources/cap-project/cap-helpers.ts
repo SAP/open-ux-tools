@@ -58,7 +58,7 @@ export async function getCapProjectChoices(paths: string[]): Promise<CapProjectC
 
     const capChoices: CapProjectChoice[] = [];
 
-    for await (const capProjectPath of capProjectPaths) {
+    for (const capProjectPath of capProjectPaths) {
         const customCapPaths = await getCapCustomPaths(capProjectPath.path);
         const folderCount = folderCounts.get(capProjectPath.folderName) ?? 1;
 
@@ -95,7 +95,7 @@ function createCapServiceChoice(
     cdsVersionInfo: CdsVersionInfo
 ): CapServiceChoice | undefined {
     const srvDef = capModel.definitions?.[serviceInfo.name];
-    /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+
     const serviceFilePath = (srvDef as any)?.$location?.file;
     LoggerHelper.logger.debug(`Cap service def: ${JSON.stringify(srvDef)}`);
     LoggerHelper.logger.debug(`Cap service def $location.file: ${JSON.stringify(serviceFilePath)}`);

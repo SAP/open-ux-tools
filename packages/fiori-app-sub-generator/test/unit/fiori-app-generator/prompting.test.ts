@@ -93,8 +93,7 @@ describe('prompting.ts', () => {
                     "validatorCallback": [Function],
                   },
                   "enableCodeAssist": {
-                    "advancedOption": true,
-                    "default": false,
+                    "hide": true,
                   },
                   "enableEslint": {
                     "advancedOption": true,
@@ -451,7 +450,7 @@ describe('prompting.ts', () => {
             const getUI5VersionSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([{ version: '1.1.1' }]);
             const ui5ApplicationInquirerSpy = jest
                 .spyOn(ui5ApplicationInquirer, 'prompt')
-                .mockImplementation(async () => ({ ui5Version: '9.9.9' } as UI5ApplicationAnswers));
+                .mockImplementation(async () => ({ ui5Version: '9.9.9' }) as UI5ApplicationAnswers);
             expect(
                 await promptUI5ApplicationAnswers(
                     {
@@ -472,7 +471,7 @@ describe('prompting.ts', () => {
                 {
                     addDeployConfig: { validatorCallback: expect.toBeFunction() },
                     addFlpConfig: { validatorCallback: expect.toBeFunction() },
-                    enableCodeAssist: { advancedOption: true, default: false },
+                    enableCodeAssist: { hide: true },
                     enableEslint: { advancedOption: true, default: false },
                     enableTypeScript: { default: false },
                     enableVirtualEndpoints: { hide: false },
@@ -521,7 +520,12 @@ describe('prompting.ts', () => {
                         },
                         log: {}
                     } as unknown as ServiceProvider,
-                    backendSystem: { url: 'http://some/sap/system/url', name: 'on-prem-system' }
+                    backendSystem: {
+                        url: 'http://some/sap/system/url',
+                        name: 'on-prem-system',
+                        systemType: 'OnPrem',
+                        connectionType: 'abap_catalog'
+                    }
                 }
             });
 
@@ -624,7 +628,12 @@ describe('prompting.ts', () => {
                 datasourceType: DatasourceType.capProject,
                 connectedSystem: {
                     serviceProvider: {} as ServiceProvider,
-                    backendSystem: { url: 'http://some/sap/system/url', name: 'on-prem-system' }
+                    backendSystem: {
+                        url: 'http://some/sap/system/url',
+                        name: 'on-prem-system',
+                        systemType: 'OnPrem',
+                        connectionType: 'abap_catalog'
+                    }
                 },
                 capService: {
                     serviceName: 'cap_service_name',

@@ -5,7 +5,7 @@ import {
     resolveApplication,
     resolveRefs,
     validateWithSchema
-} from '../../../src/tools/utils';
+} from '../../../src/utils';
 import { join } from 'node:path';
 import listReportSchema from '../page-editor-api/test-data/schema/ListReport.json';
 import * as zod from 'zod';
@@ -13,7 +13,7 @@ import type { JSONSchema4 } from 'json-schema';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+
     ...(jest.requireActual('@sap-ux/project-access') as object)
 }));
 

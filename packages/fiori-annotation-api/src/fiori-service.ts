@@ -436,7 +436,7 @@ function applyWorkspaceEdits(
     content: string
 ): string {
     const document = TextDocument.create(fileUri, languageId, 0, content);
-    const fileChanges = workspaceEdits.changes ? workspaceEdits.changes[fileUri] ?? [] : [];
+    const fileChanges = workspaceEdits.changes ? (workspaceEdits.changes[fileUri] ?? []) : [];
     return TextDocument.applyEdits(document, fileChanges);
 }
 

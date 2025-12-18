@@ -1,5 +1,5 @@
 import type { AuthenticationType } from '@sap-ux/store';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ExternalService } from '@sap-ux/axios-extension';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
 import type { TableSelectionMode } from '@sap-ux/fiori-elements-writer';
@@ -29,6 +29,7 @@ export interface Project {
     localUI5Version: string;
     sapux?: boolean;
     skipAnnotations?: boolean;
+    /** @deprecated Code assist prompt is hidden and this property is no longer used */
     enableCodeAssist?: boolean;
     enableEslint?: boolean;
     enableTypeScript?: boolean;
@@ -76,6 +77,14 @@ export interface Service {
     destinationAuthType?: string;
     apiHubConfig?: ApiHubConfig;
     ignoreCertError?: boolean;
+    /**
+     * Value list references for the service when the user opts to download value helps.
+     */
+    /**
+     * Downloaded external service metadata including value helps with their metadata content.
+     * Populated when user opts to download value help metadata during generation.
+     */
+    valueListMetadata?: ExternalService[];
     /**
      * Can be set by adaptors if preview settings have been determined
      */

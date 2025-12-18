@@ -60,8 +60,9 @@ describe('add/cards-generator', () => {
         addCardsEditorConfigCommand(command);
         await command.parseAsync(testArgv([]));
 
-        // Flow check
-        expect(enableCardGeneratorConfigMock).not.toHaveBeenCalled();
+        // Flow check - CAP projects are now supported
+
+        expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
         expect(traceSpy).not.toHaveBeenCalled();
     });
 

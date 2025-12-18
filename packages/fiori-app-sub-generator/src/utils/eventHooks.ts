@@ -30,7 +30,7 @@ export async function runHooks(event: Event, context: GeneratorContext, logger?:
     if (event === 'app-generated') {
         return postGenerationHook(context, logger);
     } else {
-        return Promise.reject(new Error(t('error.unsupportedPostGenerationEvent', { event })));
+        throw new Error(t('error.unsupportedPostGenerationEvent', { event }));
     }
 }
 

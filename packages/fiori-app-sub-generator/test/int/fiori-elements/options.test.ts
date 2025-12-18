@@ -40,11 +40,8 @@ describe('Optional settings', () => {
                 cleanTestDir(testDir);
             }
             process.chdir(originalCwd);
-        } catch {
-            () => {
-                // Needed for lint
-            };
-        }
+            // eslint-disable-next-line no-empty
+        } catch {}
     });
 
     beforeEach(() => {
@@ -58,24 +55,9 @@ describe('Optional settings', () => {
         });
     });
 
-    it('Code Assist', async () => {
-        testProjectName = 'lrop_v2_code_assist';
-        const expectedOutputPath = getExpectedOutputPath(testProjectName);
+    // Code Assist test removed - functionality deprecated and hidden
 
-        const testFEState: Partial<State> = cloneDeep({
-            ...defaultFEState,
-            project: Object.assign({}, project, {
-                name: testProjectName,
-                enableCodeAssist: true
-            }) as Project
-        });
-
-        await runWritingPhaseGen(testFEState);
-        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
-        cleanTestDir(join(testDir, testProjectName));
-    });
-
-    it('Eslint', async () => {
+    it('Add FLP Config to OData proxy project, without OData service (LCAP)', async () => {
         testProjectName = 'lrop_v2_eslint';
         const expectedOutputPath = getExpectedOutputPath(testProjectName);
 

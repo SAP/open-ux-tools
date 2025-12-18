@@ -147,7 +147,7 @@ export async function runPostGenerationTasks(
             entityName: 'system'
         });
         // No need to await, we cannot recover anyway
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
         storeService.write(service.backendSystem, { force: true }).catch((error) => {
             logger.error(
                 t('logMessages.backendSystemSaveError', {

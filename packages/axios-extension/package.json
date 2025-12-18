@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/axios-extension",
-    "version": "1.24.2",
+    "version": "1.25.0",
     "description": "Extension of the Axios module adding convenience methods to interact with SAP systems especially with OData services.",
     "repository": {
         "type": "git",
@@ -18,8 +18,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
@@ -42,6 +42,7 @@
         "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
+        "@sap-ux/vocabularies-types": "0.13.2",
         "@sap-ux/project-access": "workspace:*",
         "@types/lodash": "4.14.202",
         "nock": "13.4.0",

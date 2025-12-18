@@ -138,6 +138,32 @@ describe('Test enhanceYaml()', () => {
         ]);
     });
 
+    test('Create new ui5-mock.yaml based on ui5.yaml, updated with services and annotations with value list references', async () => {
+        const fs = getFsWithUi5Yaml(mockManifestJson);
+        await enhanceYaml(fs, basePath, webappPath, { resolveExternalServiceReferences: { mainService: true } });
+        expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
+        // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        expect(
+            ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services?.[0]
+        ).toStrictEqual({
+            generateMockData: true,
+            metadataPath: './webapp/localService/mainService/metadata.xml',
+            mockdataPath: './webapp/localService/mainService/data',
+            urlPath: '/sap/opu/odata/sap/SEPMRA_PROD_MAN',
+            resolveExternalServiceReferences: true
+        });
+        expect(
+            ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.annotations
+        ).toEqual([
+            {
+                localPath: './webapp/localService/SEPMRA_PROD_MAN.xml',
+                urlPath:
+                    "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/"
+            }
+        ]);
+    });
+
     test('Create new ui5-mock.yaml based on ui5.yaml and manifest without dataSources', async () => {
         const fs = getFsWithUi5Yaml('{}');
         await enhanceYaml(fs, basePath, webappPath);
@@ -204,10 +230,8 @@ server:
 
     function getFsWithUi5Yaml(manifestContent: string): Editor {
         return getFs({
-            [join(
-                basePath,
-                'ui5.yaml'
-            )]: `# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+            [join(basePath, 'ui5.yaml')]:
+                `# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: "2.5"
 metadata:
