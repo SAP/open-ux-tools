@@ -6,6 +6,7 @@ export interface RequireWidthIncludingColumnHeaderDiagnostic {
     type: typeof REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
     manifestPropertyPath: string[];
     propertyName: string;
+    missingPathSegments?: string[]; // Path segments that need to be created by the fixer
     annotation: {
         file: string;
         annotationPath: string;
