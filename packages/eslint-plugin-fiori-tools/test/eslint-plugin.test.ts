@@ -73,29 +73,6 @@ export default class Component extends UIComponent {
 }
 `;
         writeFileSync(join(webappPath, 'Component.ts'), sampleTsCode);
-
-        // Create a JS file with legacy fiori-custom eslint-disable comment
-        const legacyDisableCode = `
-/*eslint-disable fiori-custom/sap-browser-api-warning*/
-sap.ui.define([
-    "sap/ui/core/UIComponent"
-], function(UIComponent) {
-    "use strict";
-
-    return UIComponent.extend("test.LegacyComponent", {
-        init: function() {
-            // This would normally trigger sap-browser-api-warning but is disabled with legacy prefix
-            var userAgent = navigator.userAgent;
-            
-            // This should still trigger sap-no-localstorage
-            localStorage.setItem("key", "value");
-
-            UIComponent.prototype.init.apply(this, arguments);
-        }
-    });
-});
-`;
-        writeFileSync(join(webappPath, 'LegacyComponent.js'), legacyDisableCode);
     });
 
     afterAll(() => {
@@ -176,39 +153,5 @@ sap.ui.define([
         const pluginDef = firstConfig.plugins?.['@sap-ux/fiori-tools'];
         expect(pluginDef?.meta).toBeDefined();
         expect(pluginDef?.rules).toBeDefined();
-    });
-
-    test('plugin handles legacy fiori-custom prefix in eslint-disable comments', async () => {
-        const eslint = new ESLint({
-            cwd: testProjectPath,
-            overrideConfigFile: true,
-            overrideConfig: [
-                ...plugin.configs.recommended,
-                {
-                    plugins: {
-                        'fiori-tools': plugin,
-                        'fiori-custom': plugin // backward compatibility
-                    }
-                }
-            ]
-        });
-
-        const results = await eslint.lintFiles([join(webappPath, 'LegacyComponent.js')]);
-
-        expect(results).toBeDefined();
-        expect(results.length).toBeGreaterThan(0);
-
-        const result = results[0];
-        expect(result.filePath).toContain('LegacyComponent.js');
-
-        // Get all rule IDs from messages
-        const ruleIds = result.messages.map((msg) => msg.ruleId);
-
-        // Should NOT contain sap-browser-api-warning (disabled with legacy prefix)
-        expect(ruleIds).not.toContain('@sap-ux/fiori-tools/sap-browser-api-warning');
-        expect(ruleIds).not.toContain('fiori-custom/sap-browser-api-warning');
-
-        // Should still contain sap-no-localstorage (not disabled)
-        expect(ruleIds).toContain('@sap-ux/fiori-tools/sap-no-localstorage');
     });
 });

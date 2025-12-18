@@ -124,24 +124,7 @@ const rulesMap: Record<string, Rule.RuleModule> = {
     'sap-usage-basemastercontroller': sapUsageBasemastercontroller
 };
 
-// Build rules object with both standard and legacy (fiori-custom/) prefixes
-// The fiori-custom/ prefix is maintained for backward compatibility with
-// the original eslint-plugin-fiori-custom package that this replaced
-export const rules: Record<string, Rule.RuleModule> = {};
-Object.keys(rulesMap).forEach((ruleName: string) => {
-    rules[ruleName] = rulesMap[ruleName];
-    // Legacy compatibility: also register with fiori-custom/ prefix
-    rules[`fiori-custom/${ruleName}`] = rulesMap[ruleName];
-});
-
-const createPluginConfig = (): Linter.Config => ({
-    plugins: {
-        '@sap-ux/fiori-tools': {
-            meta,
-            rules
-        }
-    }
-});
+export const rules = rulesMap;
 
 // Config definitions as constants
 const commonConfig: Linter.Config[] = [
@@ -296,9 +279,35 @@ const typescriptConfig: Linter.Config[] = [
 // Named configs for easy consumption
 export const configs: Record<string, Linter.Config[]> = {
     // Recommended config for JavaScript & TypeScript projects (prod + test)
-    recommended: [createPluginConfig(), ...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig],
+    recommended: [
+        {
+            plugins: {
+                '@sap-ux/fiori-tools': {
+                    meta,
+                    rules
+                }
+            }
+        },
+        ...commonConfig,
+        ...typescriptConfig,
+        ...prodConfig,
+        ...testConfig
+    ],
     // Recommended for S/4HANA config for JavaScript & TypeScript projects
-    'recommended-for-s4hana': [createPluginConfig(), ...commonConfig, ...typescriptConfig, ...prodConfig, ...testConfig]
+    'recommended-for-s4hana': [
+        {
+            plugins: {
+                '@sap-ux/fiori-tools': {
+                    meta,
+                    rules
+                }
+            }
+        },
+        ...commonConfig,
+        ...typescriptConfig,
+        ...prodConfig,
+        ...testConfig
+    ]
 };
 
 // Default export following ESLint 9 plugin structure
