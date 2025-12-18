@@ -17,5 +17,4 @@ export * from './writer/manifest';
 export * from './writer/writer-config';
 export { generate, migrate } from './writer';
 export { generateChange } from './writer/editors';
-export { getCustomConfig } from './writer/project-utils';
 export { generateInboundConfig } from './writer/inbound-navigation';

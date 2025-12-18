@@ -1,5 +1,39 @@
 # @sap-ux/generator-simple-fe
 
+## 1.1.133
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/fiori-elements-writer@2.8.23
+    - @sap-ux/fiori-freestyle-writer@2.5.15
+    - @sap-ux/system-access@0.6.34
+
+## 1.1.132
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.22
+- @sap-ux/fiori-freestyle-writer@2.5.14
+
+## 1.1.131
+
+### Patch Changes
+
+- Updated dependencies [7db4f79]
+    - @sap-ux/fiori-elements-writer@2.8.21
+
+## 1.1.130
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+- Updated dependencies [ba58398]
+    - @sap-ux/system-access@0.6.33
+    - @sap-ux/fiori-elements-writer@2.8.20
+    - @sap-ux/fiori-freestyle-writer@2.5.13
+
 ## 1.1.129
 
 ### Patch Changes

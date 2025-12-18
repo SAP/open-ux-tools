@@ -1,5 +1,53 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.10.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/odata-service-inquirer@2.12.0
+    - @sap-ux/annotation-generator@0.4.0
+    - @sap-ux/odata-service-writer@0.28.0
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/fiori-elements-writer@2.8.23
+    - @sap-ux/fiori-freestyle-writer@2.5.15
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/ui5-application-inquirer@0.15.49
+
+## 0.9.19
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.22
+- @sap-ux/fiori-freestyle-writer@2.5.14
+- @sap-ux/odata-service-inquirer@2.11.22
+
+## 0.9.18
+
+### Patch Changes
+
+- Updated dependencies [7db4f79]
+    - @sap-ux/fiori-elements-writer@2.8.21
+    - @sap-ux/odata-service-inquirer@2.11.22
+
+## 0.9.17
+
+### Patch Changes
+
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+    - @sap-ux/odata-service-inquirer@2.11.22
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/telemetry@0.6.48
+    - @sap-ux/cap-config-writer@0.12.35
+    - @sap-ux/fiori-elements-writer@2.8.20
+    - @sap-ux/fiori-freestyle-writer@2.5.13
+    - @sap-ux/ui5-application-inquirer@0.15.48
+
 ## 0.9.16
 
 ### Patch Changes

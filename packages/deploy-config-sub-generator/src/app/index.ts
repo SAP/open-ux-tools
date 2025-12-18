@@ -8,7 +8,7 @@ import {
     TargetName,
     getExtensionGenPromptOpts
 } from '@sap-ux/deploy-config-generator-shared';
-import { parseTarget, getYUIDetails, registerNamespaces } from './utils';
+import { parseTarget, getYUIDetails } from './utils';
 import {
     getApiHubOptions,
     getEnvApiHubConfig,
@@ -71,12 +71,9 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         this.target = parseTarget(args, opts);
         this.vscode = opts.vscode;
 
-        registerNamespaces(
-            this.rootGeneratorName(),
-            this.genNamespace,
-            this.env.isPackageRegistered.bind(this.env),
-            this.env.lookup.bind(this.env)
-        );
+        if (this.rootGeneratorName()) {
+            this.env.lookup({ packagePatterns: [this.rootGeneratorName()] });
+        }
 
         // Extensions use options.data to pass in the options
         if (this.options.data?.destinationRoot) {

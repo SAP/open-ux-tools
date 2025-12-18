@@ -1,5 +1,24 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
+### Patch Changes
+
+- @sap-ux/fiori-docs-embeddings@0.4.6
+
+## 0.5.2
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+    - @sap-ux/fiori-docs-embeddings@0.4.6
+
 ## 0.5.1
 
 ### Patch Changes
