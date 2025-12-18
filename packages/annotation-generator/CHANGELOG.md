@@ -1,5 +1,16 @@
 # @sap-ux/annotation-generator
 
+## 0.4.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/fiori-annotation-api@0.8.0
+
 ## 0.3.85
 
 ### Patch Changes
