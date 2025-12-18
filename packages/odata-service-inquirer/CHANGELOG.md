@@ -1,5 +1,21 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.13.1
+
+### Patch Changes
+
+- cda79d4: Update telemetry timing test.
+
+## 2.13.0
+
+### Minor Changes
+
+- 691ab27: Prompt user to download value helps for V4 services with associated value helps. Add downloaded value helps as multiple metadata files alongside the service in the generated project.
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.1
+
 ## 2.12.0
 
 ### Minor Changes

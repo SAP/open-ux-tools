@@ -13,7 +13,9 @@ describe('Test registration of the views', () => {
             extensionPath: '/mock/extension/path'
         } as unknown as ExtensionContext;
 
-        registerViews(mockContext);
-        expect(initSapSystemsViewSpy).toHaveBeenCalledWith(mockContext);
+        registerViews({ vscodeExtContext: mockContext });
+        expect(initSapSystemsViewSpy).toHaveBeenCalledWith({
+            vscodeExtContext: mockContext
+        });
     });
 });

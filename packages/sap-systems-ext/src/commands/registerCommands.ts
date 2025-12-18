@@ -1,4 +1,4 @@
-import type { ExtensionContext } from 'vscode';
+import type { SapSystemsExtContext } from '../types';
 import { registerSystemViewCommands } from './system';
 import { registerExtensionCommands } from './extension';
 
@@ -7,7 +7,7 @@ import { registerExtensionCommands } from './extension';
  *
  * @param context - the extension context
  */
-export function registerCommands(context: ExtensionContext): void {
-    registerExtensionCommands(context);
+export function registerCommands(context: SapSystemsExtContext): void {
+    registerExtensionCommands(context.vscodeExtContext);
     registerSystemViewCommands(context);
 }

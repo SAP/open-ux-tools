@@ -1,4 +1,3 @@
-const { rules } = require('eslint-plugin-fiori-custom');
 const base = require('../../eslint.config.js');
 
 const tsParser = require('@typescript-eslint/parser');
