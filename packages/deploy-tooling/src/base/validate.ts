@@ -303,7 +303,7 @@ async function validatePackageWithAdt(
             return;
         }
         const packages = await adtService.listPackages({ phrase: inputPackage });
-        const isValidPackage = packages.indexOf(inputPackage) >= 0;
+        const isValidPackage = packages.includes(inputPackage);
 
         if (isValidPackage) {
             output.summary.push({

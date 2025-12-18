@@ -18,7 +18,7 @@ async function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer>
         const data = await readFile(path);
         logger.info(`Archive loaded from ${path}`);
         return data;
-    } catch (err) {
+    } catch {
         throw new Error(`Loading archive has failed. Please ensure ${path} is valid and accessible.`);
     }
 }
