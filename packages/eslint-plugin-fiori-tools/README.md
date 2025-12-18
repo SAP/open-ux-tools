@@ -17,9 +17,19 @@ Pnpm
 
 ## Usage
 
-To consume this module, add @sap-ux/eslint-plugin-fiori-tools to `extend` in your existing eslintrc configuration. You must specify one of the following configurations:
+To consume this module, add @sap-ux/eslint-plugin-fiori-tools in your project eslint config file (e.g. `eslint.config.js`). You must specify one of the following configurations:
 
-- defaultJS: contains rules for JavaScript for both prod and test code from plugin eslint-plugin-fiori-custom 
-- defaultTS: contains rules for typescript and rules for both prod and test code from plugin eslint-plugin-fiori-custom 
-- testcode: contains rules for typescript and rules for test code from plugin eslint-plugin-fiori-custom
-- prodCode: contains rules for typescript and rules for production code from plugin eslint-plugin-fiori-custom
+- recommended: contains rules for JavaScript & TypeScript on both prod and test code.
+
+- recommended-for-s4hana: contains rules for JavaScript & TypeScript on both prod and test code. recommended for SAP internal use.
+
+`eslint.config.js`
+```javascript
+const { defineConfig } = require('eslint/config');
+
+const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = defineConfig([
+    ...fioriTools.configs.recommended,
+]);
+```

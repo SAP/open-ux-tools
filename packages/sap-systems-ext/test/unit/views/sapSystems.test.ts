@@ -17,9 +17,9 @@ describe('Test the SAP Systems view', () => {
             extensionPath: '/mock/extension/path'
         } as unknown as ExtensionContext;
 
-        initSapSystemsView(mockContext);
+        initSapSystemsView({ vscodeExtContext: mockContext });
 
         expect(registerTreeDataProviderSpy).toHaveBeenCalledWith('sap.ux.tools.sapSystems', expect.any(Object));
-        expect(mockContext.subscriptions.length).toBe(1);
+        expect(mockContext.subscriptions.length).toBe(2);
     });
 });
