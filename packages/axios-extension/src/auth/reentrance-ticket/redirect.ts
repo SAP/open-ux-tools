@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import http from 'http';
+import http from 'node:http';
 import { ConnectionError, TimeoutError } from '../error';
 import { prettyPrintTimeInMs } from '../../abap/message';
 import { redirectErrorHtml, redirectSuccessHtml } from '../static';

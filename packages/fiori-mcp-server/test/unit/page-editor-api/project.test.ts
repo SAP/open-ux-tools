@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { getFlexChangeLayer } from '../../../src/page-editor-api/project';
 import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 
 jest.mock('fs/promises');
 

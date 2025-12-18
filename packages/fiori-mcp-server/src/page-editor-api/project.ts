@@ -72,7 +72,7 @@ export async function getUI5Version(appAccess: ApplicationAccess): Promise<strin
     const manifest = await getManifest(appAccess);
     let ui5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
 
-    if (ui5Version !== undefined && Number.isNaN(parseFloat(ui5Version))) {
+    if (ui5Version !== undefined && Number.isNaN(Number.parseFloat(ui5Version))) {
         ui5Version = 'latest';
     }
 

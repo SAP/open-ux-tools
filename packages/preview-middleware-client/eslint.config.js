@@ -2,36 +2,39 @@ const { defineConfig } = require('eslint/config');
 const js = require('@eslint/js');
 
 const jsdoc = require('eslint-plugin-jsdoc');
-// const config = require('@sap-ux/eslint-plugin-fiori-tools');
+const typescriptEslint = require('@typescript-eslint/eslint-plugin');
+const tsParser = require('@typescript-eslint/parser');
+const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
 module.exports = defineConfig([
     {
-        ignores: ['dist', 'test/fixtures/**', 'coverage', 'node_modules/**', 'eslint.config.js']
+        ignores: [
+            'test/fixtures/**',
+            'dist/**',
+            'node_modules/**',
+            'eslint.config.js',
+            'coverage/**'
+        ]
     },
-    // ...config.defaultTS,
+    ...fioriTools.configs['recommended-for-s4hana'],
     {
         languageOptions: {
+            parser: tsParser,
             ecmaVersion: 5,
             sourceType: 'script',
 
             parserOptions: {
                 project: './tsconfig.eslint.json',
-                tsconfigRootDir: './'
+                tsconfigRootDir: __dirname
             }
         },
         plugins: {
-            jsdoc
+            '@typescript-eslint': typescriptEslint,
+            jsdoc,
+            'fiori-custom': fioriTools // backward compatibility
         },
         rules: {
             'quotes': ['error', 'single', { 'allowTemplateLiterals': true }],
-            'valid-jsdoc': [
-                'error',
-                {
-                    requireParamType: false,
-                    requireReturn: false,
-                    requireReturnType: false
-                }
-            ],
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 {

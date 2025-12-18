@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.7.3
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 0.7.2
 
 ### Patch Changes

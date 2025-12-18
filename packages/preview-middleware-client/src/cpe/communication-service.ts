@@ -12,7 +12,7 @@ export class CommunicationService {
      * Sends an action to the CPE.
      */
     static sendAction: (action: ExternalAction) => void;
-    private static actionHandlers: ActionHandler[] = [];
+    private static readonly actionHandlers: ActionHandler[] = [];
 
     static {
         const { sendAction } = startPostMessageCommunication<ExternalAction>(

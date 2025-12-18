@@ -280,7 +280,7 @@ async function retrieveNpmUI5Versions(
         : [defaultMinVersion];
 
     if (ui5SelectedVersion?.length) {
-        const latestMinIdx = latestVersions.findIndex((v: string) => v === ui5SelectedVersion);
+        const latestMinIdx = latestVersions.indexOf(ui5SelectedVersion);
 
         if (latestMinIdx === -1) {
             if (

@@ -3,7 +3,7 @@ import { TableType } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';

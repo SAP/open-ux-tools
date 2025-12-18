@@ -20,7 +20,7 @@ export {
  * @extends {React.Component<ListProps, {}>}
  */
 export class UIVirtualList extends React.Component<ListProps, {}> {
-    private listRef = React.createRef<List>();
+    private readonly listRef = React.createRef<List>();
     /**
      * Initializes component properties.
      *

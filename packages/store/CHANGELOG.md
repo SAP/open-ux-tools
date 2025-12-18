@@ -1,5 +1,13 @@
 # @sap-ux/store
 
+## 1.4.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+
 ## 1.4.0
 
 ### Minor Changes

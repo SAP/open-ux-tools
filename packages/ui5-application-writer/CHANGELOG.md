@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 1.6.6
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-config@0.29.12
+
 ## 1.6.5
 
 ### Patch Changes

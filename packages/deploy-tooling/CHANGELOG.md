@@ -1,5 +1,25 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.18
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-input-validator@0.6.39
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.17.17
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.1
+
 ## 0.17.16
 
 ### Patch Changes

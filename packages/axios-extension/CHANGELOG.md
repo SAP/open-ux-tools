@@ -1,5 +1,14 @@
 # @sap-ux/axios-extension
 
+## 1.25.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/btp-utils@1.1.6
+
 ## 1.25.0
 
 ### Minor Changes

@@ -1,5 +1,30 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.137
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/flp-config-inquirer@0.4.85
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/adp-tooling@0.18.26
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/store@1.4.1
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.1.136
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.25
+- @sap-ux/inquirer-common@0.10.1
+- @sap-ux/flp-config-inquirer@0.4.84
+
 ## 0.1.135
 
 ### Patch Changes

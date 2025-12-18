@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import { join, normalize } from 'node:path';
 import { pathToFileURL } from 'node:url';
 

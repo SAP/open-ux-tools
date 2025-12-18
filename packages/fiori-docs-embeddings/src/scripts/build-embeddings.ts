@@ -2,7 +2,7 @@
 
 import { pipeline, type FeatureExtractionPipeline } from '@xenova/transformers';
 import { connect } from '@lancedb/lancedb';
-import * as fs from 'fs/promises';
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 

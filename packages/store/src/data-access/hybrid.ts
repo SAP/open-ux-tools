@@ -6,7 +6,7 @@ import { getSecureStore } from '../secure-store';
 import { getSensitiveDataProperties, getSerializableProperties } from '../decorators';
 import type { DataAccess } from '.';
 import type { ServiceOptions } from '../types';
-import { inspect } from 'util';
+import { inspect } from 'node:util';
 
 function getFullyQualifiedServiceName(name: string): string {
     return 'fiori/v2/' + name;

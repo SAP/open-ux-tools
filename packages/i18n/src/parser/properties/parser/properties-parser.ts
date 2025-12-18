@@ -5,12 +5,12 @@ import type { CommentLine, KeyElementLine, PropertyList, TextNode, Token } from 
  * Properties list class.
  */
 class PropertiesList {
-    private tokens: Token[];
-    private text: string;
+    private readonly tokens: Token[];
+    private readonly text: string;
     private index: number;
-    private list: PropertyList;
-    private lineOffsets: number[];
-    private contentLength: number;
+    private readonly list: PropertyList;
+    private readonly lineOffsets: number[];
+    private readonly contentLength: number;
     /**
      * Class constructor.
      *

@@ -1,5 +1,13 @@
 # @sap-ux/ui5-info
 
+## 0.13.5
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+
 ## 0.13.4
 
 ### Patch Changes
