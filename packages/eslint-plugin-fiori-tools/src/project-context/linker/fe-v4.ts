@@ -19,12 +19,21 @@ export interface FeV4ListReport {
     contextPath: string;
     entity: MetadataElement;
     settings: {};
-    tables: ListReportControlConfiguration[];
+    tables: PageControlConfiguration[];
 }
 
-export type FeV4PageType = FeV4ListReport;
+export interface FeV4ObjectPage {
+    targetName: string;
+    componentName: 'sap.fe.templates.ObjectPage';
+    contextPath: string;
+    entity: MetadataElement;
+    settings: {};
+    tables: PageControlConfiguration[];
+}
 
-export type ListReportControlConfiguration = TableConfiguration;
+export type FeV4PageType = FeV4ListReport | FeV4ObjectPage;
+
+export type PageControlConfiguration = TableConfiguration;
 
 export interface TableConfiguration {
     type: 'table';
@@ -33,6 +42,7 @@ export interface TableConfiguration {
     annotationPath: string;
     controlConfigurationKey: string;
     widthIncludingColumnHeader: boolean;
+    disableCopyToClipboard: boolean;
 }
 
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
@@ -44,7 +54,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     const routingTargets = manifest['sap.ui5']?.routing?.targets;
     if (routingTargets) {
         for (const [name, target] of Object.entries(routingTargets)) {
-            if (target.name === 'sap.fe.templates.ListReport') {
+            if (target.name === 'sap.fe.templates.ListReport' || target.name === 'sap.fe.templates.ObjectPage') {
                 const settings = target.options?.settings;
                 const contextPath =
                     target.options?.settings?.contextPath ??
@@ -86,6 +96,7 @@ interface TableControlConfiguration {
     tableSettings?: {
         type?: string;
         widthIncludingColumnHeader?: boolean;
+        disableCopyToClipboard?: boolean;
     };
 }
 
@@ -95,25 +106,10 @@ function linkControls(
     entity: MetadataElement,
     service: ParsedService,
     controlConfigurations: { [path: string]: ControlConfiguration }
-): { tables: ListReportControlConfiguration[] } {
-    const tables: { [path: string]: ListReportControlConfiguration } = {};
+): { tables: PageControlConfiguration[] } {
+    const tables: { [path: string]: PageControlConfiguration } = {};
     if (!entity.structuredType) {
         return { tables: [] };
-    }
-    const lineItemKey = buildAnnotationIndexKey(entity.structuredType, UI_LINE_ITEM);
-    const lineItems = service.index.annotations[lineItemKey];
-    if (lineItems) {
-        const defaultLineItems = lineItems['undefined'];
-        if (defaultLineItems) {
-            tables[lineItemKey] = {
-                type: 'table',
-                tableType: 'ResponsiveTable',
-                annotationPath: lineItemKey,
-                controlConfigurationKey: '@' + UI_LINE_ITEM,
-                annotation: defaultLineItems,
-                widthIncludingColumnHeader: false
-            };
-        }
     }
 
     for (const [path, settings] of Object.entries(controlConfigurations)) {
@@ -121,7 +117,7 @@ function linkControls(
             // do not support expressions
             continue;
         }
-        const [contextPath, annotationPath] = path.split('@');
+        let [contextPath, annotationPath] = path.split('@');
 
         const annotationSegments = annotationPath.split('/');
         if (annotationSegments.length > 1) {
@@ -129,10 +125,21 @@ function linkControls(
             continue;
         }
         let controlEntity: MetadataElement | undefined = entity;
+        const entityStructureType = entity?.structuredType;
+        if (!entityStructureType) {
+            continue;
+        }
+        const pageEntityType = service.artifacts.metadataService.getMetadataElement(entityStructureType);
+        if (!pageEntityType) {
+            continue;
+        }
         if (contextPath !== '') {
+            if (contextPath.endsWith('/')) {
+                contextPath = contextPath.slice(0, -1);
+            }
             controlEntity = contextPath.startsWith('/')
                 ? getEntityForContextPath(contextPath, service)
-                : resolveNavigationProperties(entity, contextPath.split('/'));
+                : resolveNavigationProperties(pageEntityType, contextPath.split('/'));
         }
 
         const entityType = controlEntity?.structuredType;
@@ -141,25 +148,41 @@ function linkControls(
         }
         const [term, qualifier] = annotationPath.split('#');
 
-        if (term === UI_LINE_ITEM && qualifier === undefined) {
-            const table = tables[lineItemKey];
-            if (table) {
-                // update existing table
-                if (settings?.tableSettings?.widthIncludingColumnHeader !== undefined) {
-                    table.widthIncludingColumnHeader = settings.tableSettings.widthIncludingColumnHeader;
-                }
-                if (settings?.tableSettings?.type !== undefined) {
-                    const tableType = getTableType(settings.tableSettings.type);
-                    if (tableType) {
-                        table.tableType = tableType;
-                    } else {
-                        // TODO: create diagnostic message
-                    }
+        if (term === UI_LINE_ITEM) {
+            const lineItemKey = qualifier
+                ? `${buildAnnotationIndexKey(entityType, UI_LINE_ITEM)}#${qualifier}`
+                : buildAnnotationIndexKey(entityType, UI_LINE_ITEM);
+
+            const lineItems = service.index.annotations[lineItemKey];
+            const defaultLineItems = lineItems['undefined'];
+
+            const table = tables[lineItemKey] ?? {
+                type: 'table',
+                tableType: 'ResponsiveTable',
+                annotationPath: lineItemKey,
+                controlConfigurationKey: path,
+                annotation: lineItems[lineItemKey] ?? defaultLineItems ?? undefined,
+                widthIncludingColumnHeader: false,
+                disableCopyToClipboard: undefined
+            };
+            // update existing table
+            if (settings?.tableSettings?.widthIncludingColumnHeader !== undefined) {
+                table.widthIncludingColumnHeader = settings.tableSettings.widthIncludingColumnHeader;
+            }
+            if (settings?.tableSettings?.disableCopyToClipboard !== undefined) {
+                table.disableCopyToClipboard = settings.tableSettings.disableCopyToClipboard;
+            }
+            if (settings?.tableSettings?.type !== undefined) {
+                const tableType = getTableType(settings.tableSettings.type);
+                if (tableType) {
+                    table.tableType = tableType;
+                } else {
+                    // TODO: create diagnostic message
                 }
             }
+            tables[lineItemKey] = table;
         }
     }
-
     return { tables: Object.values(tables) };
 }
 
