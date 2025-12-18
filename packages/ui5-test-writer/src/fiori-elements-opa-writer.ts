@@ -297,7 +297,7 @@ function getColumnIdentifier(column: {
  */
 function transformTableColumns(columnAggregations: Record<string, any>): Record<string, any> {
     const columns: Record<string, any> = {};
-    Object.values(columnAggregations).map((columnAggregation, index) => {
+    Object.values(columnAggregations).forEach((columnAggregation, index) => {
         columns[getColumnIdentifier(columnAggregation) ?? index] = {
             header: columnAggregation.description
             // TODO possibly more reliable properties could be used?
@@ -380,7 +380,10 @@ async function getFeatureData(basePath: string, fs?: Editor, log?: Logger): Prom
         const appResult: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
         listReportPage = appResult.applicationModel ? getListReportPage(appResult.applicationModel) : listReportPage;
     } catch (error) {
-        log?.warn('Error analyzing project model using specification. No dynamic tests will be generated.');
+        log?.warn(
+            'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
+                (error as Error).message
+        );
         return featureData;
     }
 
