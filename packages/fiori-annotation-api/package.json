@@ -32,7 +32,7 @@
         "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.13.2",
+        "@sap-ux/vocabularies-types": "0.14.3",
         "@sap-ux/xml-odata-annotation-converter": "workspace:*",
         "@sap/ux-cds-compiler-facade": "1.19.0",
         "@xml-tools/ast": "5.0.5",

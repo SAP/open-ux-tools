@@ -118,6 +118,7 @@ import {
     REPLACE_TEXT,
     UPDATE_ELEMENT_NAME
 } from '../types/internal-change';
+import type { ValueListReference } from '../types/adapter';
 
 type ChangeHandlerFunction<T extends AnnotationFileChange> = (writer: CDSWriter, document: Document, change: T) => void;
 type ChangeHandler = {
@@ -323,6 +324,34 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         return {
             changes: workspaceChanges
         };
+    }
+
+    /**
+     * Returns a map of value list references.
+     *
+     * @returns Map of value list references.
+     */
+    public getValueListReferences(): Map<string, ValueListReference[]> {
+        return new Map();
+    }
+
+    /**
+     *
+     * @param _uri
+     * @param _data
+     */
+    public syncExternalService(_uri: string, _data: string): void {}
+
+    /**
+     *
+     * @returns
+     */
+    getExternalServices(): {
+        uri: string;
+        metadata: MetadataService;
+        compiledService: CompiledService;
+    }[] {
+        return [];
     }
 
     private handleSapAnnotations(writers: Map<string, CDSWriter>, changes: AnnotationFileChange[]): void {
