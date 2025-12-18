@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.12
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 0.29.11
 
 ### Patch Changes

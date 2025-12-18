@@ -1,5 +1,13 @@
 # @sap-ux/reload-middleware
 
+## 0.3.8
+
+### Patch Changes
+
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/btp-utils@1.1.6
+
 ## 0.3.7
 
 ### Patch Changes

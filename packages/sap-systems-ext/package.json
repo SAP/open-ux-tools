@@ -1,6 +1,6 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "displayName": "Connection Manager for SAP Systems",
     "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
