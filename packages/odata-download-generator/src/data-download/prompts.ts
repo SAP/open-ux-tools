@@ -1,23 +1,20 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
-import { Logger } from '@sap-ux/logger';
-import {
-    getSystemSelectionQuestions,
-    OdataServiceAnswers,
-    OdataVersion,
-    promptNames as servicePromptNames
-} from '@sap-ux/odata-service-inquirer';
+import type { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
+import type { Logger } from '@sap-ux/logger';
+import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
+import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { createApplicationAccess } from '@sap-ux/project-access';
-import { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
+import type { EntityType } from '@sap-ux/vocabularies-types';
+import type { CollectionFacet } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import { UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
+import type { EntitySetsFlat } from './odata-query';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
+import { getData } from './prompt-helpers';
 import type { AppConfig, Entity } from './types';
 import { getAppConfig, getSystemNameFromStore } from './utils';
-import { getData } from './prompt-helpers';
-import { EntityType } from '@sap-ux/vocabularies-types';
-import { UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { lastIndexOf } from 'lodash';
 
 export const promptNames = {
     relatedEntitySelection: 'relatedEntitySelection',
@@ -39,15 +36,17 @@ export type SelectedEntityAnswer = {
     };
 };
 
-function createRelatedEntityChoices(
-    relatedEntities: Map<Entity, Entity[]>
-): CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] {
+/**
+ *
+ * @param relatedEntities
+ */
+function createRelatedEntityChoices(relatedEntities: Map<Entity, Entity[]>): CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] {
     const choices: CheckboxChoiceOptions[] = [];
 
     relatedEntities.forEach((entities, parentEntity) => {
         // Check the entity types assigned annotations for cross refs to other entities that should be selected by default
         // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-select
-        const defaultSelectionPaths = getDefaultSelectionPaths(parentEntity.entitySet.entityType);
+        const defaultSelectionPaths = getDefaultSelectionPaths(parentEntity.entityType);
 
         entities.forEach((entity) => {
             // fix issue with prompt values containing `name
@@ -72,15 +71,72 @@ function createRelatedEntityChoices(
     return choices;
 }
 
+/**
+ *
+ * @param entityType
+ */
 function getDefaultSelectionPaths(entityType: EntityType): string[] {
-    const refTargetPaths = entityType.annotations.UI?.Facets?.map((facet) => {
+    const refTargetPaths: string[] = [];
+    entityType.annotations.UI?.Facets?.forEach((facet) => {
         if (facet.$Type === UIAnnotationTypes.ReferenceFacet && facet.Target.type === 'AnnotationPath') {
             const value = facet.Target.value;
-            return value.substring(0, value.lastIndexOf('/'));
+            const pathSepIndex = value.lastIndexOf('/');
+            if (pathSepIndex > -1) {
+                refTargetPaths.push(value.substring(0, value.lastIndexOf('/')));
+            }
         }
-    }).filter((val) => !!val) as string[];
+        if (facet.$Type === UIAnnotationTypes.CollectionFacet) {
+            refTargetPaths.push(...getAllReferenceFacets(facet));
+        }
+    });
 
     return refTargetPaths ?? [];
+}
+
+/**
+ *
+ * @param collectionFacet
+ */
+function getAllReferenceFacets(collectionFacet: CollectionFacet): string[] {
+    const refTargetPaths: string[] = [];
+    collectionFacet.Facets.forEach((facet) => {
+        if (facet.$Type === UIAnnotationTypes.ReferenceFacet && facet.Target.type === 'AnnotationPath') {
+            const value = facet.Target.value;
+            const pathSepIndex = value.lastIndexOf('/');
+            if (pathSepIndex > -1) {
+                refTargetPaths.push(value.substring(0, value.lastIndexOf('/')));
+            }
+        } else if (facet.$Type === UIAnnotationTypes.CollectionFacet) {
+            refTargetPaths.push(...getAllReferenceFacets(facet));
+        }
+    });
+    return refTargetPaths;
+}
+
+/**
+ * Reset the values of the passed app config reference otherwise create a new object reference
+ *
+ * @param appConfig
+ * @returns
+ */
+function resetAppConfig(appConfig?: AppConfig): AppConfig {
+    if (appConfig) {
+        appConfig.appAccess = undefined;
+        appConfig.referencedEntities = undefined;
+        appConfig.servicePath = undefined;
+        appConfig.backendConfig = undefined;
+        if (appConfig.systemName) {
+            appConfig.systemName.value = undefined;
+        }
+        return appConfig;
+    }
+    return {
+        appAccess: undefined,
+        referencedEntities: undefined,
+        servicePath: undefined,
+        backendConfig: undefined,
+        systemName: { value: undefined }
+    };
 }
 
 /**
@@ -92,20 +148,14 @@ export async function getODataDownloaderPrompts(): Promise<{
     questions: Question[];
     answers: {
         application: AppConfig;
-        odataQueryResult: { odata: object | undefined };
+        odataQueryResult: { odata: []; entitySetsQueried: EntitySetsFlat };
         odataServiceAnswers: Partial<OdataServiceAnswers>;
     };
 }> {
     const selectSourceQuestions: Question[] = [];
-    let appConfig: AppConfig = {
-        appAccess: undefined,
-        referencedEntities: undefined,
-        servicePath: undefined,
-        backendConfig: undefined,
-        systemName: { value: undefined }
-    };
-    let servicePaths: string[] = [];
-
+    // Local state
+    const appConfig: AppConfig = resetAppConfig();
+    const servicePaths: string[] = [];
     let keyPrompts: InputQuestion[] = [];
 
     const appSelectionQuestion = {
@@ -124,6 +174,10 @@ export async function getODataDownloaderPrompts(): Promise<{
             if (appPath === appConfig.appAccess?.app.appRoot) {
                 return true;
             }
+            // Selected app has changed reset local state
+            servicePaths.length = 0;
+            keyPrompts.length = 0;
+            resetAppConfig(appConfig);
             // validate application exists at path
             appConfig.appAccess = await createApplicationAccess(appPath);
             // Update the app config with entity data from the manifest and main service metadata
@@ -172,11 +226,7 @@ export async function getODataDownloaderPrompts(): Promise<{
                 previousServicePath = systemSelectionQuestions.answers.servicePath;
                 if (relatedEntityChoices.length === 0) {
                     relatedEntityChoices = [];
-                    relatedEntityChoices.push(
-                        ...(appConfig.referencedEntities?.navPropEntities
-                            ? createRelatedEntityChoices(appConfig.referencedEntities?.navPropEntities)
-                            : [])
-                    );
+                    relatedEntityChoices.push(...(appConfig.referencedEntities?.navPropEntities ? createRelatedEntityChoices(appConfig.referencedEntities?.navPropEntities) : []));
                 }
             }
             return relatedEntityChoices.length > 0;
@@ -191,10 +241,7 @@ export async function getODataDownloaderPrompts(): Promise<{
         default: (previousAnswers: Answers) => {
             let defaults: SelectedEntityAnswer[] = [];
             const previousEntitySelections = previousAnswers?.[promptNames.relatedEntitySelection];
-            if (
-                !previousEntitySelections ||
-                (Array.isArray(previousEntitySelections) && previousEntitySelections.length === 0)
-            ) {
+            if (!previousEntitySelections || (Array.isArray(previousEntitySelections) && previousEntitySelections.length === 0)) {
                 // Pre-select entities with default selection property
                 relatedEntityChoices.forEach((entityChoice) => {
                     // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
@@ -203,9 +250,7 @@ export async function getODataDownloaderPrompts(): Promise<{
                     }
                 });
             } else {
-                defaults = (previousAnswers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswer[])?.map(
-                    (entityAnswer) => entityAnswer
-                );
+                defaults = (previousAnswers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswer[])?.map((entityAnswer) => entityAnswer);
             }
             return defaults;
         }
@@ -213,8 +258,9 @@ export async function getODataDownloaderPrompts(): Promise<{
 
     // Generate the max size of key parts allowed
     keyPrompts = getKeyPrompts(3, appConfig, systemSelectionQuestions.answers);
-    let odataQueryResult = {
-        odata: undefined
+    const odataQueryResult: { odata: []; entitySetsQueried: EntitySetsFlat } = {
+        odata: [],
+        entitySetsQueried: {}
     };
 
     selectSourceQuestions.push(
@@ -231,32 +277,27 @@ export async function getODataDownloaderPrompts(): Promise<{
     };
 }
 
-function getKeyPrompts(
-    size: number,
-    appInfo: AppConfig,
-    odataServiceAnswers: Partial<OdataServiceAnswers>
-): InputQuestion[] {
+/**
+ *
+ * @param size
+ * @param appInfo
+ * @param odataServiceAnswers
+ */
+function getKeyPrompts(size: number, appInfo: AppConfig, odataServiceAnswers: Partial<OdataServiceAnswers>): InputQuestion[] {
     const questions: InputQuestion[] = [];
 
     const getEntityKeyInputPrompt = (keypart: number) =>
         ({
             when: () => {
-                return (
-                    !!odataServiceAnswers.connectedSystem?.serviceProvider &&
-                    !!appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name
-                );
+                return !!odataServiceAnswers.connectedSystem?.serviceProvider && !!appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name;
             },
             name: `entityKeyIdx:${keypart}`,
             message: () => `Enter values for: ${appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name}`,
-            type:
-                appInfo.referencedEntities?.listEntity.semanticKeys?.[keypart]?.type === 'Edm.Boolean'
-                    ? 'confirm'
-                    : 'input',
+            type: appInfo.referencedEntities?.listEntity.semanticKeys?.[keypart]?.type === 'Edm.Boolean' ? 'confirm' : 'input',
             guiOptions: {
                 hint: "For range selection use '-' between values. Use commas to select non-contigous values."
             },
             validate: (keyValue: string) => {
-                let validationMsg;
                 // todo : move to a validator
                 if (invalidEntityKeyFilterChars.includes(keyValue)) {
                     return `Invalid key value contain not allowed characters: ${invalidEntityKeyFilterChars.join()}`;
@@ -264,7 +305,7 @@ function getKeyPrompts(
                 const filterAndParts = keyValue.split(',');
                 filterAndParts.forEach((filterPart) => {
                     const filterRangeParts = filterPart.split('-');
-                    if (filterAndParts.length > 2) {
+                    if (filterRangeParts.length > 2) {
                         return "Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'";
                     }
                 });
@@ -288,10 +329,18 @@ function getKeyPrompts(
     return questions;
 }
 
+/**
+ *
+ * @param odataServiceAnswers
+ * @param appConfig
+ * @param odataQueryResult
+ * @param odataQueryResult.odata
+ * @param odataQueryResult.entitySetsQueried
+ */
 function getConfirmDownloadPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig,
-    odataQueryResult: { odata: undefined | object }
+    odataQueryResult: { odata: undefined | []; entitySetsQueried: EntitySetsFlat }
 ): Question {
     return {
         when: () => {
@@ -312,7 +361,8 @@ function getConfirmDownloadPrompt(
                 if (typeof result === 'string') {
                     return result;
                 }
-                odataQueryResult.odata = result;
+                odataQueryResult.odata = result.odataQueryResult;
+                odataQueryResult.entitySetsQueried = result.entitySetsQueried;
             }
             return true;
         },
@@ -334,6 +384,11 @@ function getConfirmDownloadPrompt(
     } as ConfirmQuestion;
 }
 
+/**
+ *
+ * @param odataServiceAnswers
+ * @returns
+ */
 function getUpdateMainServiceMetadataPrompt(odataServiceAnswers: Partial<OdataServiceAnswers>): ConfirmQuestion {
     const question: ConfirmQuestion = {
         when: () => {

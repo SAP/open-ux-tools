@@ -1,18 +1,24 @@
-import { ApplicationAccess } from '@sap-ux/project-access';
-import { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import { EntitySet, Singleton } from '@sap-ux/vocabularies-types';
+import type { ApplicationAccess } from '@sap-ux/project-access';
+import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
+import type { EntityType } from '@sap-ux/vocabularies-types';
+import type { PageV4 } from '@sap/ux-specification/dist/types/src/v4';
 
 export type SemanticKeyFilter = { name: string; type: string; value: string | undefined };
 
 export type ReferencedEntities = {
-    listEntity: {
-        entitySetName: string;
+    listEntity: Entity & {
         semanticKeys: SemanticKeyFilter[];
     };
     pageObjectEntities?: Entity[];
     navPropEntities?: Map<Entity, Entity[]>;
 };
-export type Entity = { entitySetName: string; entityPath: string; entitySet: EntitySet | Singleton };
+export type Entity = {
+    entitySetName: string;
+    entityPath: string; // The nav property name (this entity path part)
+    entityType: EntityType | undefined;
+    page?: PageV4; // The page specification
+    navPropEntities?: Entity[];
+};
 
 // todo: consolidate this and AppConfig
 export type AppConfig = {
@@ -29,7 +35,6 @@ export type AppConfig = {
      */
     systemName?: { value?: string };
 };
-
 
 export const navPropNameExclusions = ['DraftAdministrativeData', 'SiblingEntity'];
 export const entityTypeExclusions = ['I_DraftAdministrativeData'];

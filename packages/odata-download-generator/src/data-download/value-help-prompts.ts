@@ -1,21 +1,22 @@
-import { CheckBoxQuestion } from '@sap-ux/inquirer-common';
-import { SelectedEntityAnswer } from './prompts';
-import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
-import { CheckboxChoiceOptions } from 'inquirer';
-import merge from 'lodash/merge';
 import { convert } from '@sap-ux/annotation-converter';
+import type { AbapServiceProvider, AxiosRequestConfig, ExternalService, ValueListReference } from '@sap-ux/axios-extension';
+import { type ExternalServiceReference } from '@sap-ux/axios-extension';
 import { parse } from '@sap-ux/edmx-parser';
-import {
-    ValueListReference,
-    type ExternalServiceReference,
-    AbapServiceProvider,
-    ExternalService,
-    AxiosRequestConfig
-} from '@sap-ux/axios-extension';
-import { entityTypeExclusions } from './types';
+import type { CheckBoxQuestion } from '@sap-ux/inquirer-common';
+import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
+import type { CheckboxChoiceOptions } from 'inquirer';
+import merge from 'lodash/merge';
 import { join } from 'path';
 import { PromptState } from './prompt-state';
+import { entityTypeExclusions } from './types';
 
+/**
+ *
+ * @param servicePath
+ * @param metadata
+ * @param abapServiceProvider
+ * @returns
+ */
 export function getValueHelpSelectionPrompt(
     servicePath: string,
     metadata: string,
@@ -46,10 +47,13 @@ export function getValueHelpSelectionPrompt(
     return { questions: [vhSelectionQuestion], valueHelpData };
 }
 
-async function getExternalServiceEntityData(
-    selectedValueHelpRefs: ExternalService[],
-    abapServiceProvider: AbapServiceProvider
-): Promise<ExternalService[]> {
+/**
+ *
+ * @param selectedValueHelpRefs
+ * @param abapServiceProvider
+ * @returns
+ */
+async function getExternalServiceEntityData(selectedValueHelpRefs: ExternalService[], abapServiceProvider: AbapServiceProvider): Promise<ExternalService[]> {
     const externalServiceEntityData: ExternalService[] = [];
 
     const reqConfig: AxiosRequestConfig = {
@@ -72,9 +76,7 @@ async function getExternalServiceEntityData(
         const valueHelpEntityData: ExternalService = externalServiceRef;
         const [servicePath] = valueHelpEntityData.path.split(';');
         // Create a request cache entry
-        PromptState.externalServiceRequestCache[servicePath] = PromptState.externalServiceRequestCache[servicePath]
-            ? PromptState.externalServiceRequestCache[servicePath]
-            : [];
+        PromptState.externalServiceRequestCache[servicePath] = PromptState.externalServiceRequestCache[servicePath] ? PromptState.externalServiceRequestCache[servicePath] : [];
 
         const serviceMetadata = convert(parse(externalServiceRef.metadata));
         const entitySets = serviceMetadata.entitySets;
@@ -103,19 +105,25 @@ async function getExternalServiceEntityData(
     return externalServiceEntityData;
 }
 
-async function getExternalServiceMetadata(
-    selectedValueHelps: ExternalServiceReference[][],
-    abapServiceProvider: AbapServiceProvider
-): Promise<ExternalService[]> {
-    let flatExtSerRefs = selectedValueHelps.flat();
+/**
+ *
+ * @param selectedValueHelps
+ * @param abapServiceProvider
+ * @returns
+ */
+async function getExternalServiceMetadata(selectedValueHelps: ExternalServiceReference[][], abapServiceProvider: AbapServiceProvider): Promise<ExternalService[]> {
+    const flatExtSerRefs = selectedValueHelps.flat();
     const extServiceData = await abapServiceProvider.fetchExternalServices(flatExtSerRefs);
     return extServiceData;
 }
 
-function getValueHelpChoices(
-    servicePath: string,
-    metadata: string
-): CheckboxChoiceOptions<{ name: string; value: ExternalServiceReference }>[] {
+/**
+ *
+ * @param servicePath
+ * @param metadata
+ * @returns
+ */
+function getValueHelpChoices(servicePath: string, metadata: string): CheckboxChoiceOptions<{ name: string; value: ExternalServiceReference }>[] {
     const choices: { name: string; value: ExternalServiceReference[] }[] = [];
     const externalServiceRefs = getExternalServiceReferences(servicePath, metadata, []) as ValueListReference[];
     const uniqueByServicePaths: {
@@ -137,7 +145,7 @@ function getValueHelpChoices(
     });
 
     // 2 levels path -> vh entity -> externalRefs[]
-    let choiceNameByPathAndEntity: {
+    const choiceNameByPathAndEntity: {
         [path: string]: {
             [targetEntity: string]: ExternalServiceReference[];
         };
@@ -156,7 +164,8 @@ function getValueHelpChoices(
                         };
                     }
                 }
-            } else if (ref.type === 'code-list') { //Put all code list entities for the same service on the same choice as its a single request
+            } else if (ref.type === 'code-list') {
+                //Put all code list entities for the same service on the same choice as its a single request
                 if (choiceNameByPathAndEntity?.[ref.value]) {
                     choiceNameByPathAndEntity[ref.value]['Code list'].push(ref);
                 } else if (!choiceNameByPathAndEntity?.[ref.value]) {
@@ -167,7 +176,7 @@ function getValueHelpChoices(
     });
 
     // create choices
-    Object.entries(choiceNameByPathAndEntity).forEach(([path, targetEntities]) => {
+    Object.values(choiceNameByPathAndEntity).forEach((targetEntities) => {
         Object.entries(targetEntities).forEach(([targetEntity, entityRefs]) => {
             const choiceNameTargets: string[] = [];
             entityRefs.forEach((entityRef) => {
@@ -179,7 +188,6 @@ function getValueHelpChoices(
             });
             const choiceName = `${targetEntity} (${choiceNameTargets.join()})`;
             choices.push({ name: choiceName, value: entityRefs });
-
         });
     });
 

@@ -1,29 +1,22 @@
 import { MessageType, Prompts, type AppWizard } from '@sap-devx/yeoman-ui-types';
-import { AbapServiceProvider, ExternalService } from '@sap-ux/axios-extension';
-import {
-    DefaultLogger,
-    getHostEnvironment,
-    hostEnvironment,
-    ILogWrapper,
-    LogWrapper
-} from '@sap-ux/fiori-generator-shared';
+import type { AbapServiceProvider, ExternalService } from '@sap-ux/axios-extension';
+import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import { DefaultLogger, getHostEnvironment, hostEnvironment, LogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
-import { writeExternalServiceMetadata, OdataVersion } from '@sap-ux/odata-service-writer';
-import { DirName, FileName, getMockServerConfig } from '@sap-ux/project-access';
+import { writeExternalServiceMetadata } from '@sap-ux/odata-service-writer';
+import { DirName, getMockServerConfig } from '@sap-ux/project-access';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 import { join } from 'path';
-import Generator, { GeneratorOptions } from 'yeoman-generator';
+import prettifyXml from 'prettify-xml';
+import type { GeneratorOptions } from 'yeoman-generator';
+import Generator from 'yeoman-generator';
 import { t } from '../utils/i18n';
-import {
-    getODataDownloaderPrompts,
-    promptNames,
-    SelectedEntityAnswerAsJSONString,
-    type SelectedEntityAnswer
-} from './prompts';
+import type { EntitySetsFlat } from './odata-query';
+import type { SelectedEntityAnswerAsJSONString } from './prompts';
+import { getODataDownloaderPrompts, promptNames, type SelectedEntityAnswer } from './prompts';
 import { type ReferencedEntities } from './types';
 import { convertODataResultToEntityFileData } from './utils';
 import { getValueHelpSelectionPrompt } from './value-help-prompts';
-import prettifyXml from 'prettify-xml';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -68,7 +61,7 @@ export class ODataDownloadGenerator extends Generator {
         /**
          * The downloaded entity odata as JSON
          */
-        entityData?: object;
+        entityOData?: { odata: []; entitySetsQueried: EntitySetsFlat };
         /**
          * The downloaded value help odata as JSON
          */
@@ -150,11 +143,7 @@ export class ODataDownloadGenerator extends Generator {
         TelemetryHelper.createTelemetryData({
             ...this.options.telemetryData
         }); */
-        ODataDownloadGenerator._logger = this._configureLogging(
-            this.options.logLevel,
-            this.options.logger,
-            this.options.vscode
-        ) as ILogWrapper & Logger;
+        ODataDownloadGenerator._logger = this._configureLogging(this.options.logLevel, this.options.logger, this.options.vscode) as ILogWrapper & Logger;
     }
 
     async prompting(): Promise<void> {
@@ -164,7 +153,7 @@ export class ODataDownloadGenerator extends Generator {
                 questions
             } = await getODataDownloaderPrompts();
             const promptAnswers = await this.prompt(questions);
-            this.state.entityData = odataQueryResult.odata;
+            this.state.entityOData = odataQueryResult;
             this.state.appRootPath = application.appAccess?.getAppRoot();
             this.state.mainServicePath = odataServiceAnswers.servicePath;
             this.state.mainServiceName = application.appAccess?.app.mainService;
@@ -178,9 +167,7 @@ export class ODataDownloadGenerator extends Generator {
                 const mockConfig = await getMockServerConfig(this.state.appRootPath);
                 ODataDownloadGenerator.logger.info(`Mock config: ${JSON.stringify(mockConfig)}`);
                 // todo: Find the matching service, for now use the first one
-                this.state.mockDataRootPath =
-                    mockConfig.services?.[0]?.mockdataPath ??
-                    join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
+                this.state.mockDataRootPath = mockConfig.services?.[0]?.mockdataPath ?? join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
                 // metadata path
                 const metadataPath = mockConfig.services?.[0]?.metadataPath?.match(/^(.*\/)([^\/]*)$/)?.[0];
                 this.state.mockMetaDataPath = metadataPath ?? join(DirName.Webapp, DirName.LocalService);
@@ -204,17 +191,13 @@ export class ODataDownloadGenerator extends Generator {
     }
 
     async writing(): Promise<void> {
-        if (this.state.entityData) {
+        if (this.state.entityOData?.odata) {
             try {
                 this.generationTime0 = performance.now();
                 // Set target dir to mock data path
                 this.destinationRoot(join(this.state.appRootPath!));
 
-                const entityFileData = convertODataResultToEntityFileData(
-                    this.state.appEntities!,
-                    this.state.entityData!,
-                    this.state.selectedEntities
-                );
+                const entityFileData = convertODataResultToEntityFileData(this.state.appEntities!, this.state.entityOData, this.state.selectedEntities);
 
                 // const mainEntityPath = join(`${this.state.appEntities.listEntity}.json`);
                 // Write main entity data file (todo: do we need to treat this differently? )
@@ -248,13 +231,7 @@ export class ODataDownloadGenerator extends Generator {
         }
 
         if (this.state.updateMainServiceMetadata && this.state.mainServiceMetadata && this.state.mainServiceName) {
-            const mainServiceMetadataPath = join(
-                this.state.appRootPath!,
-                DirName.Webapp,
-                DirName.LocalService,
-                this.state.mainServiceName,
-                'metadata.xml'
-            );
+            const mainServiceMetadataPath = join(this.state.appRootPath!, DirName.Webapp, DirName.LocalService, this.state.mainServiceName, 'metadata.xml');
             this.writeDestination(mainServiceMetadataPath, prettifyXml(this.state.mainServiceMetadata, { indent: 4 }));
         }
     }
@@ -278,6 +255,10 @@ export class ODataDownloadGenerator extends Generator {
     /**
      * Configures the vscode logger and yeoman logger to share single wrapper.
      * Set as an option to be passed to sub-gens.
+     *
+     * @param logLevel
+     * @param vscLogger
+     * @param vscode
      */
     _configureLogging(logLevel: LogLevel, vscLogger: IVSCodeExtLogger, vscode?: object): ILogWrapper {
         const logWrapper = new LogWrapper(

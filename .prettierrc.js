@@ -14,7 +14,7 @@ module.exports = {
     htmlWhitespaceSensitivity: 'css',
     bracketSameLine: true,
     jsxSingleQuote: false,
-    printWidth: 120,
+    printWidth: 180,
     proseWrap: 'preserve',
     quoteProps: 'preserve',
     semi: true,
