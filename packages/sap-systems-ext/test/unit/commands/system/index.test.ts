@@ -15,7 +15,7 @@ describe('Test registering the systems commands', () => {
             return { dispose: () => {} };
         });
 
-        registerSystemViewCommands(mockContext);
+        registerSystemViewCommands({ vscodeExtContext: mockContext });
 
         const subs = mockContext.subscriptions;
 

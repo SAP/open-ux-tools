@@ -1,5 +1,6 @@
 import type { FSWatcher } from 'node:fs';
-import { window, type ExtensionContext } from 'vscode';
+import type { SapSystemsExtContext } from '../types';
+import { window } from 'vscode';
 import { SapSystemsProvider } from '../providers';
 import { Entity, getFilesystemWatcherFor, getSapToolsDirectory } from '@sap-ux/store';
 
@@ -8,9 +9,12 @@ import { Entity, getFilesystemWatcherFor, getSapToolsDirectory } from '@sap-ux/s
  *
  * @param context - the extension context
  */
-export function initSapSystemsView(context: ExtensionContext): void {
-    const systemsTreeDataProvider = new SapSystemsProvider(context);
-    window.registerTreeDataProvider('sap.ux.tools.sapSystems', systemsTreeDataProvider);
+export function initSapSystemsView(context: SapSystemsExtContext): void {
+    const systemsTreeDataProvider = new SapSystemsProvider(context.vscodeExtContext);
+    context.vscodeExtContext.subscriptions.push(
+        window.registerTreeDataProvider('sap.ux.tools.sapSystems', systemsTreeDataProvider)
+    );
+    context.systemsTreeDataProvider = systemsTreeDataProvider;
 
     const storeWatcher: FSWatcher | undefined = getFilesystemWatcherFor(
         Entity.BackendSystem,
@@ -18,6 +22,6 @@ export function initSapSystemsView(context: ExtensionContext): void {
         { baseDirectory: getSapToolsDirectory() }
     );
     if (storeWatcher) {
-        context.subscriptions.push({ dispose: () => storeWatcher.close() });
+        context.vscodeExtContext.subscriptions.push({ dispose: () => storeWatcher.close() });
     }
 }
