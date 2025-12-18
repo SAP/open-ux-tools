@@ -1,5 +1,36 @@
 # @sap-ux/generator-adp
 
+## 0.7.24
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/odata-service-writer@0.28.0
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/inquirer-common@0.10.0
+    - @sap-ux/adp-tooling@0.18.24
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/system-access@0.6.34
+
+## 0.7.23
+
+### Patch Changes
+
+- a79eb1b: feat: Adding points of telemetry data for ADP generator
+- Updated dependencies [a79eb1b]
+    - @sap-ux/adp-tooling@0.18.23
+
+## 0.7.22
+
+### Patch Changes
+
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+    - @sap-ux/system-access@0.6.33
+    - @sap-ux/adp-tooling@0.18.22
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/inquirer-common@0.9.17
+
 ## 0.7.21
 
 ### Patch Changes

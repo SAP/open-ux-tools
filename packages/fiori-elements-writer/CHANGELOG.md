@@ -1,5 +1,37 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.23
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/annotation-generator@0.4.0
+    - @sap-ux/odata-service-writer@0.28.0
+    - @sap-ux/fe-fpm-writer@0.40.0
+    - @sap-ux/fiori-generator-shared@0.13.44
+
+## 2.8.22
+
+### Patch Changes
+
+- Updated dependencies [63c0f52]
+    - @sap-ux/ui5-application-writer@1.6.5
+    - @sap-ux/ui5-test-writer@0.7.44
+
+## 2.8.21
+
+### Patch Changes
+
+- 7db4f79: Append the enableLazyLoading attribute for all newly generated FE V4 apps
+
+## 2.8.20
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.44
+- @sap-ux/ui5-config@0.29.11
+- @sap-ux/cap-config-writer@0.12.35
+
 ## 2.8.19
 
 ### Patch Changes

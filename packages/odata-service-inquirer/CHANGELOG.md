@@ -1,5 +1,29 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.12.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/inquirer-common@0.10.0
+    - @sap-ux/fiori-generator-shared@0.13.44
+
+## 2.11.22
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/telemetry@0.6.48
+    - @sap-ux/inquirer-common@0.9.17
+
 ## 2.11.21
 
 ### Patch Changes

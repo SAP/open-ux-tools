@@ -2,7 +2,7 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import { AxiosError } from 'axios';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { AuthenticationType } from '../../../store/src';
+import { AuthenticationType } from '@sap-ux/store';
 import { initI18n, t } from '../../src/i18n';
 import { PromptState } from '../../src/prompts/prompt-state';
 import {
@@ -162,7 +162,9 @@ describe('Test validators', () => {
                 url: 'https://mock.url.target1.com',
                 client: '001',
                 serviceKeys: {},
-                authenticationType: AuthenticationType.ReentranceTicket
+                authenticationType: AuthenticationType.ReentranceTicket,
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             });
             const result = validateUrl('https://mock.url.target1.com');
             expect(result).toBe(true);

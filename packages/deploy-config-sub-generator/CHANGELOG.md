@@ -1,5 +1,37 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.22
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/odata-service-inquirer@2.12.0
+    - @sap-ux/inquirer-common@0.10.0
+    - @sap-ux/deploy-config-generator-shared@0.1.63
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.97
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.111
+
+## 0.5.21
+
+### Patch Changes
+
+- 089110c: always register (lookup) sub gens
+
+## 0.5.20
+
+### Patch Changes
+
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+    - @sap-ux/odata-service-inquirer@2.11.22
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.110
+    - @sap-ux/deploy-config-generator-shared@0.1.63
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/ui5-config@0.29.11
+    - @sap-ux/inquirer-common@0.9.17
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.96
+
 ## 0.5.19
 
 ### Patch Changes

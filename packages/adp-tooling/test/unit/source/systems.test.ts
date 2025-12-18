@@ -41,7 +41,9 @@ const backendSystems: BackendSystem[] = [
         password: 'some-pw',
         url: 'some-url',
         userDisplayName: 'some-name',
-        username: 'some-user'
+        username: 'some-user',
+        connectionType: 'abap_catalog',
+        systemType: 'OnPrem'
     }
 ];
 
