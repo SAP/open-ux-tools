@@ -3593,9 +3593,6 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
-      '@sap/ux-specification':
-        specifier: 1.139.2
-        version: 1.139.2(typescript@5.9.3)
       '@types/adm-zip':
         specifier: 0.5.5
         version: 0.5.5
