@@ -1,4 +1,4 @@
-import type { Annotations, ServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider, ODataServiceInfo, ExternalService } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -102,6 +102,11 @@ export interface OdataServiceAnswers {
      * If the user chose to ignore the certificate error when connecting to the service the value will be true.
      */
     [serviceUrlInternalPromptNames.ignoreCertError]?: boolean;
+
+    /**
+     * Value list metdata related to the main odata service
+     */
+    valueListMetadata?: ExternalService[];
 }
 
 export interface ConnectedSystem {
@@ -161,7 +166,11 @@ export enum promptNames {
     /**
      * System selection
      */
-    systemSelection = 'systemSelection'
+    systemSelection = 'systemSelection',
+    /**
+     * Value Help download confirm prompt
+     */
+    valueHelpDownload = 'valueHelpDownload'
 }
 
 /**
@@ -384,7 +393,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
     Record<promptNames.userSystemName, SystemNamePromptOptions> &
-    Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
+    Record<promptNames.systemSelection, SystemSelectionPromptOptions> &
+    Record<promptNames.valueHelpDownload, ValueHelpDownloadPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 
@@ -412,3 +422,9 @@ export type EntityPromptOptions = {
      */
     displayPageBuildingBlockPrompt?: boolean;
 };
+
+/**
+ * Support hiding of the value help download prompt, default is true - hidden.
+ * Note that this prompt is dependant on service metdata being provided, usually by the service selection prompt.
+ */
+export type ValueHelpDownloadPromptOptions = Pick<CommonPromptOptions, 'hide'>;
