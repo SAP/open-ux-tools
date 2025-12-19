@@ -1,7 +1,0 @@
-{
-    "devDependencies": {
-        "eslint": "8.57.0",
-        "@sap/eslint-plugin-ui5-jsdocs": "2.0.5",
-        "@sapui5/ts-types": "<%- ui5.typesVersion %>"
-    }
-}
