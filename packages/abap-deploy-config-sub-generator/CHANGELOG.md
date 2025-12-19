@@ -1,5 +1,36 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.113
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/abap-deploy-config-inquirer@1.6.64
+    - @sap-ux/abap-deploy-config-writer@0.2.46
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/deploy-config-generator-shared@0.1.64
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.1.112
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.63
+- @sap-ux/deploy-config-generator-shared@0.1.63
+
+## 0.1.111
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.62
+- @sap-ux/deploy-config-generator-shared@0.1.63
+- @sap-ux/fiori-generator-shared@0.13.44
+- @sap-ux/abap-deploy-config-writer@0.2.45
+
 ## 0.1.110
 
 ### Patch Changes

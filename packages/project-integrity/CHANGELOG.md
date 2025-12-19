@@ -1,5 +1,13 @@
 # @sap-ux/project-integrity
 
+## 0.2.35
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+
 ## 0.2.34
 
 ### Patch Changes

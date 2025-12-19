@@ -1,5 +1,20 @@
 # @sap-ux/axios-extension
 
+## 1.25.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/btp-utils@1.1.6
+
+## 1.25.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
 ## 1.24.6
 
 ### Patch Changes

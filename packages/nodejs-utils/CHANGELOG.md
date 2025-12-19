@@ -1,5 +1,12 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.11
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+    - @sap-ux/btp-utils@1.1.6
+
 ## 0.2.10
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/eslint-plugin-fiori-tools",
-    "version": "0.6.2",
+    "version": "9.0.1",
     "description": "Custom linting plugin for Fiori tools apps",
     "keywords": [
         "eslint",
@@ -14,19 +14,21 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors"
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
-        "eslint": "^9"
+        "cross-env": "7.0.3",
+        "eslint": "^9",
+        "@typescript-eslint/rule-tester": "8.46.2"
     },
     "dependencies": {
-        "eslint-plugin-fiori-custom": "^2.6.7",
+        "@babel/core": "^7.28.5",
+        "@babel/eslint-parser": "^7.28.5",
+        "@eslint/js": "^9",
+        "@typescript-eslint/eslint-plugin": ">=8.49.0",
+        "@typescript-eslint/parser": ">=8.49.0",
+        "globals": "16.5.0",
         "yaml": "2.2.2"
-    },
-    "peerDependencies": {
-        "eslint": ">=8",
-        "@typescript-eslint/eslint-plugin": ">=7.1.1",
-        "@typescript-eslint/parser": ">=5.62.0"
     },
     "engines": {
         "node": ">=20.x"
@@ -35,9 +37,6 @@
     "files": [
         "LICENSE",
         "lib",
-        "eslintrc-common.js",
-        "eslintrc-prod.js",
-        "eslintrc-test.js",
-        "eslintrc-typescript.js"
+        "docs"
     ]
 }

@@ -1,5 +1,29 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.6.34
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-input-validator@0.6.39
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/ui5-info@0.13.5
+    - @sap-ux/logger@0.7.3
+
+## 0.6.33
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.1
+
+## 0.6.32
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/inquirer-common@0.10.0
+
 ## 0.6.31
 
 ### Patch Changes

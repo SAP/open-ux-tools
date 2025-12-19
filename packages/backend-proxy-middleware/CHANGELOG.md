@@ -1,5 +1,23 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.22
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/store@1.4.1
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.10.21
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/axios-extension@1.25.0
+
 ## 0.10.20
 
 ### Patch Changes

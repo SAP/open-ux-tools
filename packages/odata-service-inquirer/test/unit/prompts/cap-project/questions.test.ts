@@ -3,7 +3,7 @@ import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
 import type { PathLike } from 'node:fs';
-import * as fsPromises from 'fs/promises';
+import * as fsPromises from 'node:fs/promises';
 import type { ListQuestion } from 'inquirer';
 import os from 'node:os';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';

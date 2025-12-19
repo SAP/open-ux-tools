@@ -1,5 +1,36 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.85
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-input-validator@0.6.39
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/adp-tooling@0.18.26
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.4.84
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.25
+- @sap-ux/inquirer-common@0.10.1
+
+## 0.4.83
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/inquirer-common@0.10.0
+    - @sap-ux/adp-tooling@0.18.24
+    - @sap-ux/fiori-generator-shared@0.13.44
+
 ## 0.4.82
 
 ### Patch Changes

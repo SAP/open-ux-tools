@@ -1,5 +1,67 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.2
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-application-inquirer@0.15.51
+    - @sap-ux/fiori-freestyle-writer@2.5.17
+    - @sap-ux/odata-service-inquirer@2.13.2
+    - @sap-ux/fiori-elements-writer@2.8.25
+    - @sap-ux/annotation-generator@0.4.1
+    - @sap-ux/odata-service-writer@0.29.1
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/telemetry@0.6.49
+    - @sap-ux/ui5-info@0.13.5
+    - @sap-ux/store@1.4.1
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/cap-config-writer@0.12.36
+    - @sap-ux/launch-config@0.10.44
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.11.1
+
+### Patch Changes
+
+- Updated dependencies [cda79d4]
+    - @sap-ux/odata-service-inquirer@2.13.1
+
+## 0.11.0
+
+### Minor Changes
+
+- 691ab27: Prompt user to download value helps for V4 services with associated value helps. Add downloaded value helps as multiple metadata files alongside the service in the generated project.
+
+### Patch Changes
+
+- Updated dependencies [691ab27]
+    - @sap-ux/odata-service-inquirer@2.13.0
+    - @sap-ux/odata-service-writer@0.29.0
+    - @sap-ux/fiori-elements-writer@2.8.24
+    - @sap-ux/fiori-freestyle-writer@2.5.16
+    - @sap-ux/ui5-application-inquirer@0.15.50
+
+## 0.10.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/odata-service-inquirer@2.12.0
+    - @sap-ux/annotation-generator@0.4.0
+    - @sap-ux/odata-service-writer@0.28.0
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/fiori-elements-writer@2.8.23
+    - @sap-ux/fiori-freestyle-writer@2.5.15
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/ui5-application-inquirer@0.15.49
+
 ## 0.9.19
 
 ### Patch Changes
