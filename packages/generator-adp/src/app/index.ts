@@ -311,7 +311,7 @@ export default class extends Generator {
             this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
             if (this.attributeAnswers.addDeployConfig) {
                 const system = await this.systemLookup.getSystemByName(this.configAnswers.system);
-                addDeployGen(
+                await addDeployGen(
                     {
                         projectName: this.attributeAnswers.projectName,
                         projectPath: this.attributeAnswers.targetFolder,
@@ -325,7 +325,7 @@ export default class extends Generator {
             }
 
             if (this.attributeAnswers?.addFlpConfig) {
-                addFlpGen(
+                await addFlpGen(
                     {
                         vscode: this.vscode,
                         projectRootPath: this._getProjectPath(),
