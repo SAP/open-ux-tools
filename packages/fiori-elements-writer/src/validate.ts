@@ -1,5 +1,5 @@
 import type { SemVer } from 'semver';
-import * as semVer from 'semver';
+import semVer from 'semver';
 import { TemplateTypeAttributes } from './data/templateAttributes';
 import { t } from './i18n';
 import { ValidationError } from './types';
