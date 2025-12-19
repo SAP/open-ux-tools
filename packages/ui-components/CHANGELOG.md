@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.19
+
+### Patch Changes
+
+- 87a6696: UIIconButton. Issue on MacOS(in VSCode) - tooltips does not appear on icon buttons
+
 ## 1.26.18
 
 ### Patch Changes
