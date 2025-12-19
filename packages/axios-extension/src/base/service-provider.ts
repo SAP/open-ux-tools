@@ -89,6 +89,11 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
 
     /**
      * Create an axios configuration for a new service instance.
+     * 
+     * **IMPORTANT:**
+     * This method intentionally mutates Axios instance defaults.
+     * Changing this behaviour (e.g. making defaults immutable) will break
+     * Axios header merging and interceptor resolution.
      *
      * @param path path of the service relative to the service provider
      * @returns axios config
