@@ -37,7 +37,6 @@ export class ApplicationParser {
         artifacts: FoundFioriArtifacts,
         fileCache: Map<string, string>
     ): ParseResult {
-        performance.mark('project-index-build-start');
         this.reset(projectType, fileCache);
 
         for (const app of artifacts.applications ?? []) {
@@ -72,12 +71,6 @@ export class ApplicationParser {
                 }
             } catch {}
         }
-
-        performance.mark('project-index-build-end');
-        performance.measure('project-index-build', 'project-index-build-start', 'project-index-build-end');
-        console.log('ProjectContext.buildIndex - index built', performance.getEntriesByName('project-index-build'));
-        performance.clearMarks();
-        performance.clearMeasures();
         return {
             index: this.index,
             diagnostics: this.diagnostics

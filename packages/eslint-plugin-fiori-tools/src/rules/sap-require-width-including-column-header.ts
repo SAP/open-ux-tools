@@ -16,6 +16,7 @@ import {
     REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     RequireWidthIncludingColumnHeaderDiagnostic
 } from '../language/diagnostics';
+import { getRecordType } from '../project-context/linker/annotations';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -63,25 +64,15 @@ const rule: FioriRuleDefinition = createFioriRule({
                         if (element.name !== Edm.Record) {
                             return false;
                         }
-                        const recordType = getElementAttributeValue(element, Edm.Type);
 
-                        if (recordType.includes('/')) {
-                            // do not support paths as types
-                            return false;
-                        }
-
-                        if (recordType) {
-                            const fullyQualifiedName = toFullyQualifiedName(
-                                aliasInfo.aliasMap,
-                                '', // it should be qualified identifier
-                                parseIdentifier(recordType)
-                            );
-                            return fullyQualifiedName === 'com.sap.vocabularies.UI.v1.DataField';
-                        }
-                        return false;
+                        return getRecordType(aliasInfo, element) === 'com.sap.vocabularies.UI.v1.DataField';
                     }, collection);
 
-                    if (records.length < 6 && records.length > 0 && table.widthIncludingColumnHeader !== true) {
+                    if (
+                        records.length < 6 &&
+                        records.length > 0 &&
+                        table.settings.widthIncludingColumnHeader !== true
+                    ) {
                         const path = [
                             'sap.ui5',
                             'routing',
@@ -90,7 +81,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                             'options',
                             'settings',
                             'controlConfiguration',
-                            table.controlConfigurationKey,
+                            ...table.configurationPath,
                             'tableSettings'
                         ];
                         problems.push({

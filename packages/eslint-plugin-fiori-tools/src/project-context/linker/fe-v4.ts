@@ -37,12 +37,14 @@ export type PageControlConfiguration = TableConfiguration;
 
 export interface TableConfiguration {
     type: 'table';
-    tableType: 'ResponsiveTable' | 'GridTable' | 'AnalyticalTable' | 'TreeTable';
     annotation: IndexedAnnotation;
     annotationPath: string;
-    controlConfigurationKey: string;
-    widthIncludingColumnHeader: boolean;
-    disableCopyToClipboard: boolean;
+    configurationPath: string[];
+    settings: {
+        tableType: 'ResponsiveTable' | 'GridTable' | 'AnalyticalTable' | 'TreeTable';
+        widthIncludingColumnHeader: boolean;
+        disableCopyToClipboard: boolean;
+    };
 }
 
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
@@ -160,22 +162,25 @@ function linkControls(
                 type: 'table',
                 tableType: 'ResponsiveTable',
                 annotationPath: lineItemKey,
-                controlConfigurationKey: path,
+                configurationPath: [path],
                 annotation: defaultLineItems,
-                widthIncludingColumnHeader: false,
-                disableCopyToClipboard: undefined
+                settings: {
+                    tableType: 'ResponsiveTable',
+                    widthIncludingColumnHeader: false,
+                    disableCopyToClipboard: undefined
+                }
             };
             // update existing table
             if (settings?.tableSettings?.widthIncludingColumnHeader !== undefined) {
-                table.widthIncludingColumnHeader = settings.tableSettings.widthIncludingColumnHeader;
+                table.settings.widthIncludingColumnHeader = settings.tableSettings.widthIncludingColumnHeader;
             }
             if (settings?.tableSettings?.disableCopyToClipboard !== undefined) {
-                table.disableCopyToClipboard = settings.tableSettings.disableCopyToClipboard;
+                table.settings.disableCopyToClipboard = settings.tableSettings.disableCopyToClipboard;
             }
             if (settings?.tableSettings?.type !== undefined) {
                 const tableType = getTableType(settings.tableSettings.type);
                 if (tableType) {
-                    table.tableType = tableType;
+                    table.settings.tableType = tableType;
                 } else {
                     // TODO: create diagnostic message
                 }
@@ -186,7 +191,7 @@ function linkControls(
     return { tables: Object.values(tables) };
 }
 
-function getTableType(value: string): TableConfiguration['tableType'] | undefined {
+function getTableType(value: string): TableConfiguration['settings']['tableType'] | undefined {
     switch (value) {
         case 'ResponsiveTable':
         case 'GridTable':
