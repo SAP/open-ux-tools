@@ -3,13 +3,6 @@ import { fioriToolsDirectory } from '@sap-ux/project-access';
 import { join } from 'node:path';
 
 /**
- * General logger settings
- */
-const filename = join(fioriToolsDirectory, 'fiori-mcp-server.log');
-const maxsize = 10 * 1024 * 1024; // 10 MB max per file
-const maxFiles = 5; // Keep up to 5 log files
-
-/**
  * @returns The current log level based on configuration sources
  */
 function getLogLevel(): LogLevel | undefined {
@@ -52,7 +45,15 @@ const currentLogLevel = getLogLevel();
 export const logger = new ToolsLogger({
     logLevel: currentLogLevel ?? LogLevel.Error,
     transports:
-        currentLogLevel === undefined ? [new NullTransport()] : [new FileTransport({ filename, maxsize, maxFiles })],
+        currentLogLevel === undefined
+            ? [new NullTransport()]
+            : [
+                  new FileTransport({
+                      filename: join(fioriToolsDirectory, 'fiori-mcp-server.log'),
+                      maxsize: 10 * 1024 * 1024, // 10 MB max per file
+                      maxFiles: 5 // Keep up to 5 log files
+                  })
+              ],
     logPrefix: 'fiori-mcp'
 });
 
