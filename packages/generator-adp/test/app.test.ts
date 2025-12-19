@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec } from 'node:child_process';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import { rimraf } from 'rimraf';

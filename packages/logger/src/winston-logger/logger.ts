@@ -5,7 +5,7 @@ import winston, { format } from 'winston';
 import { toWinstonLogLevel, toWinstonTransport } from './adapter';
 import type WinstonTransport from 'winston-transport';
 import { nextColor } from './utils';
-import { inspect } from 'util';
+import { inspect } from 'node:util';
 
 const defaultLoggerOptions: LoggerOptions = {
     transports: [new ConsoleTransport()]

@@ -7,7 +7,7 @@ import { t } from '../../src/i18n';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import * as fileSystem from 'node:fs';
 import { rimraf } from 'rimraf';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 
 expect.extend({ toMatchFolder });
 

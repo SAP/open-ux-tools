@@ -11,7 +11,7 @@ export class FileStoreService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
      */
-    private static adtCategory = {
+    private static readonly adtCategory = {
         scheme: 'http://www.sap.com/adt/categories/filestore',
         term: 'filestore-ui5-bsp'
     };

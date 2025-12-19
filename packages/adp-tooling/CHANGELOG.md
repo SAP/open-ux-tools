@@ -1,5 +1,25 @@
 # @sap-ux/adp-tooling
 
+## 0.18.26
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-input-validator@0.6.39
+    - @sap-ux/odata-service-writer@0.29.1
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/nodejs-utils@0.2.11
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/ui5-info@0.13.5
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/store@1.4.1
+    - @sap-ux/i18n@0.3.7
+    - @sap-ux/btp-utils@1.1.6
+
 ## 0.18.25
 
 ### Patch Changes

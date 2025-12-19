@@ -1,6 +1,6 @@
 /* eslint-disable no-console */ // Only intend to run in CLI environment where we don't need more advanced logging
 import path from 'node:path';
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 import axios from 'axios';
 import prettier from 'prettier';
 import type { CSDL, CSDLAnnotations, SchemaElement } from '@sap-ux/vocabularies/CSDL';

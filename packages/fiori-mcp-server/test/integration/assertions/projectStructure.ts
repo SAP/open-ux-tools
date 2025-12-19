@@ -1,5 +1,5 @@
 import type { AssertionValueFunctionContext, AssertionValueFunctionResult } from 'promptfoo';
-import { statSync, readdirSync, existsSync } from 'fs';
+import { statSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'path';
 
 /**

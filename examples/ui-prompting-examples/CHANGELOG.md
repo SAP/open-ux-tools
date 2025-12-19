@@ -1,5 +1,14 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.4.10
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui-components@1.26.18
+    - @sap-ux/ui-prompting@0.5.9
+
 ## 0.4.9
 
 ### Patch Changes

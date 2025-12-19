@@ -62,9 +62,9 @@ const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
  * @extends {React.Component<UIDropdownProps, UIDropdownState>}
  */
 export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState> {
-    private dropdownDomRef = React.createRef<HTMLDivElement>();
-    private menuDomRef = React.createRef<HTMLDivElement>();
-    private calloutCollisionTransform = new CalloutCollisionTransform(this.dropdownDomRef, this.menuDomRef);
+    private readonly dropdownDomRef = React.createRef<HTMLDivElement>();
+    private readonly menuDomRef = React.createRef<HTMLDivElement>();
+    private readonly calloutCollisionTransform = new CalloutCollisionTransform(this.dropdownDomRef, this.menuDomRef);
 
     /**
      * Initializes component properties.
@@ -202,7 +202,7 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
      */
-    private onRenderItem = (
+    private readonly onRenderItem = (
         props?: IDropdownOption,
         defaultRender?: (props?: IDropdownOption) => JSX.Element | null
     ): JSX.Element | null => {

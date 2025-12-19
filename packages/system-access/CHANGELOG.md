@@ -1,5 +1,16 @@
 # @sap-ux/system-access
 
+## 0.6.35
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/store@1.4.1
+    - @sap-ux/btp-utils@1.1.6
+
 ## 0.6.34
 
 ### Patch Changes

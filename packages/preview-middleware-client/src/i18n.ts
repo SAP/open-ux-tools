@@ -36,7 +36,7 @@ export async function getResourceModel(key = 'open.ux.preview.client'): Promise<
 }
 
 export class TextBundle {
-    constructor(private bundle: ResourceBundle) {}
+    constructor(private readonly bundle: ResourceBundle) {}
 
     getText(key: string, args?: string[]): string {
         return this.bundle.getText(key, args) ?? key;

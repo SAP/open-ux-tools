@@ -1,4 +1,4 @@
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 import { connect } from '@lancedb/lancedb';
 import type { EmbeddingMetadata } from '../../../../src/tools/services/vector-simple';

@@ -1,5 +1,15 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.46
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/ui5-config@0.29.12
+
 ## 0.2.45
 
 ### Patch Changes

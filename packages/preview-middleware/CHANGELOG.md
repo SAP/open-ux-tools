@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.23.78
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/adp-tooling@0.18.26
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/i18n@0.3.7
+    - @sap-ux/btp-utils@1.1.6
+
 ## 0.23.77
 
 ### Patch Changes
