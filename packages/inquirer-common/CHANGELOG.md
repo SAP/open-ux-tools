@@ -1,5 +1,17 @@
 # @sap-ux/inquirer-common
 
+## 0.10.3
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/telemetry@0.6.50
+    - @sap-ux/ui5-info@0.13.6
+    - @sap-ux/odata-service-writer@0.29.2
+
 ## 0.10.2
 
 ### Patch Changes
