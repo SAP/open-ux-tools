@@ -156,9 +156,7 @@ export class VocabularyService {
                 }
             });
 
-            for (const [key, value] of this.cdsVocabulary.nameMap.entries()) {
-                this.cdsVocabulary.reverseNameMap.set(value, key);
-            }
+            this.cdsVocabulary.nameMap.forEach((value, key) => this.cdsVocabulary.reverseNameMap.set(value, key));
         }
     }
 
