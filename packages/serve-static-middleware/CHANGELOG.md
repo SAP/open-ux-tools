@@ -1,5 +1,12 @@
 # @sap-ux/serve-static-middleware
 
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+
 ## 0.4.4
 
 ### Patch Changes
