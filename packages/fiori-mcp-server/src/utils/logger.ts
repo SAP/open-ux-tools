@@ -2,6 +2,8 @@ import { ToolsLogger, LogLevel, NullTransport, FileTransport } from '@sap-ux/log
 import { fioriToolsDirectory } from '@sap-ux/project-access';
 import { join } from 'node:path';
 
+type MessageMetadataType = (object | string | number)[];
+
 /**
  * @returns The current log level based on configuration sources
  */
@@ -60,7 +62,6 @@ export const logger = new ToolsLogger({
 /**
  * Specification module ("@sap/ux-specification") expects different logger interface, so we create a simple adapter here
  */
-type MessageMetadataType = (object | string | number)[];
 export const specificationLogger = {
     info: (message: string, ...meta: MessageMetadataType): void => {
         logger.info(`@sap/ux-specification: ${message}`);
