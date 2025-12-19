@@ -172,14 +172,14 @@ describe('UI5 templates', () => {
         });
     });
 
-    it('option: `typescript and code assist` to check for conflicts', async () => {
-        const projectDir = join(outputDir, 'testapp_tsandcodeassist');
+    it('option: `typescript and eslint` to check for conflicts', async () => {
+        const projectDir = join(outputDir, 'testapp_ts_and_eslint');
         const fs = await generate(
             projectDir,
             Object.assign(baseAppConfig, {
                 appOptions: {
                     typescript: true,
-                    codeAssist: true
+                    eslint: true
                 }
             })
         );

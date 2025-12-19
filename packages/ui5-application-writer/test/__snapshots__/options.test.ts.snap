@@ -40,10 +40,8 @@ module.exports = defineConfig([
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"eslint\\": \\"^9\\",
-    \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"~1.76.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
@@ -52,21 +50,6 @@ module.exports = defineConfig([
     \\"lint\\": \\"eslint ./\\"
   },
   \\"sapux\\": true
-}
-",
-    "state": "modified",
-  },
-  "tsconfig.json": Object {
-    "contents": "{
-    \\"compilerOptions\\": {
-        \\"module\\": \\"none\\",
-        \\"noEmit\\": true,
-        \\"checkJs\\": true,
-        \\"allowJs\\": true,
-        \\"types\\": [
-            \\"@sapui5/ts-types\\"
-        ]
-    }
 }
 ",
     "state": "modified",
@@ -1813,7 +1796,7 @@ appDescription=Test App Description",
 }
 `;
 
-exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 1`] = `
+exports[`UI5 templates option: \`typescript and eslint\` to check for conflicts 1`] = `
 "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
@@ -1847,7 +1830,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
 "
 `;
 
-exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 2`] = `
+exports[`UI5 templates option: \`typescript and eslint\` to check for conflicts 2`] = `
 "{
     \\"compilerOptions\\": {
         \\"target\\": \\"es2022\\",
@@ -1876,7 +1859,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
 }"
 `;
 
-exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 3`] = `
+exports[`UI5 templates option: \`typescript and eslint\` to check for conflicts 3`] = `
 "const { defineConfig } = require('eslint/config');
 const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
