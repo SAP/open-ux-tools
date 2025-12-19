@@ -23,27 +23,6 @@ describe('UI5 templates', () => {
         removeSync(outputDir); // even for in memory
     });
 
-    it('generates options: `codeAssist, eslint, sapux`', async () => {
-        const projectDir = join(outputDir, 'testapp_options');
-        const fs = await generate(projectDir, {
-            ...baseAppConfig,
-            appOptions: {
-                codeAssist: true,
-                eslint: true,
-                sapux: true
-            }
-        });
-        expect(fs.dump(projectDir)).toMatchSnapshot();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
-    });
-
     it('generates options: `sapux` shouldnt be included for CAP project', async () => {
         const projectDir = join(outputDir, 'testapp_options');
         const fs = await generate(projectDir, {

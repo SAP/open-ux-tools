@@ -11,7 +11,6 @@
     "appNamespace": "",
     "ui5Theme": "sap_horizon",
     "ui5Version": "1.136.0",
-    "enableCodeAssist": false,
     "enableEslint": false,
     "enableTypeScript": false,
     "showMockDataInfo": false,

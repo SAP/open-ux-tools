@@ -1,8 +1,7 @@
 import { getUI5ThemesChoices } from '@sap-ux/inquirer-common';
-import { defaultVersion, getDefaultUI5Theme, minUi5VersionSupportingCodeAssist } from '@sap-ux/ui5-info';
+import { defaultVersion, getDefaultUI5Theme } from '@sap-ux/ui5-info';
 import { t } from '../i18n';
 import { promptNames } from '../types';
-import { isVersionIncluded } from './prompt-helpers';
 import type { ListChoiceOptions } from 'inquirer';
 import type { UI5ApplicationAnswers, UI5ApplicationQuestion } from '../types';
 import type { ConfirmQuestion, ListQuestion } from '@sap-ux/inquirer-common';
@@ -60,25 +59,6 @@ export function getEnableEsLintPrompt(): UI5ApplicationQuestion {
         default: false,
         guiOptions: {
             breadcrumb: t('prompts.enableEslint.breadcrumb')
-        }
-    } as ConfirmQuestion<UI5ApplicationAnswers>;
-}
-
-/**
- * Get the `enableCodeAssist` prompt.
- *
- * @returns The `enableCodeAssist` prompt
- */
-export function getEnableCodeAssistPrompt(): UI5ApplicationQuestion {
-    return {
-        when: (answers): boolean =>
-            isVersionIncluded(answers?.ui5Version || defaultVersion, minUi5VersionSupportingCodeAssist),
-        type: 'confirm',
-        name: promptNames.enableCodeAssist,
-        message: t('prompts.enableCodeAssist.message'),
-        default: false,
-        guiOptions: {
-            breadcrumb: t('prompts.enableCodeAssist.breadcrumb')
         }
     } as ConfirmQuestion<UI5ApplicationAnswers>;
 }

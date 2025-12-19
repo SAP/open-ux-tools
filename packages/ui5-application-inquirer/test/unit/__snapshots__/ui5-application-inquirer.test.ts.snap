@@ -144,16 +144,6 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
   {
     "default": false,
     "guiOptions": {
-      "breadcrumb": "Code Assist",
-    },
-    "message": "Add Code Assist Libraries to your Project",
-    "name": "enableCodeAssist",
-    "type": "confirm",
-    "when": [Function],
-  },
-  {
-    "default": false,
-    "guiOptions": {
       "breadcrumb": "Skip Annotations",
     },
     "message": "Skip Generation of Associated \`annotations.cds\` File",
