@@ -37,10 +37,9 @@ module.exports = defineConfig([
 
 ## Manually Migrating from Eslint@8, @sap-ux/eslint-plugin-fiori-tools@0.6.x and/or eslint-plugin-fiori-custom
 
-All rules from eslint-plugin-fiori-custom have been migrated to @sap-ux/eslint-plugin-fiori-tools@9.x.x
-Eslint 9 required changing to use the new flat config.
+All rules from `eslint-plugin-fiori-custom` have been migrated to `@sap-ux/eslint-plugin-fiori-tools` version `9`.
 
-
+Eslint 9 requires changing to use the new flat config.
  
 1. Create `eslint.config.js`
 ```javascript
@@ -54,22 +53,24 @@ module.exports = defineConfig([
 ```
 
 2. Copy any values from `.eslintignore` (if it exists) into `eslint.config.js` by adding the `ignores` array.
+
    More info at https://eslint.org/docs/latest/use/configure/configuration-files#excluding-files-with-ignores
 
-```javascript
-const { defineConfig } = require('eslint/config');
+   ```javascript
+   const { defineConfig } = require('eslint/config');
+   
+   const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
-const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+   module.exports = defineConfig([
+        {
+        ignores: ['dist']
+        },
+       ...fioriTools.configs.recommended,
+   ]);
+   ```
 
-module.exports = defineConfig([
-     {
-     ignores: ['dist']
-     },
-    ...fioriTools.configs.recommended,
-]);
-```
-3. Delete the `.eslintignore` file
-4. If the `.eslintrc` file contains only either of these content it can be deleted. `eslint.config.js` from step 1 is the equivalent.
+3. Delete the `.eslintignore` file   
+5. If the `.eslintrc` file contains only either of these content it can be deleted. `eslint.config.js` from step 1 is the equivalent.
    ```
    {
     "extends": "plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS",
@@ -85,14 +86,30 @@ module.exports = defineConfig([
    ```
    **Note**: If you have custom rules or configuration in .eslintrc file please check https://eslint.org/docs/latest/use/migrate-to-9.0.0 for details on how it migrate the content.
 
-5. In the package.json
-Remove `eslint-plugin-fiori-custom` it exists in the package.json
-Update `eslint` to version `^9`
-Update `@sap-ux/eslint-plugin-fiori-tools` to version `^9`
-6. npm install
-7. Find and replace in source code an references to `fiori-custom/` rules and replace the `fiori-custom/` with `@sap-ux/fiori-tools/` 
-e.g. `//eslint-disable fiori-custom/sap-browser-api-warning`
-becomes `//eslint-disable @sap-ux/fiori-tools/sap-browser-api-warning`
+6. In the package.json
 
-8. npm run lint
-   check outout for errors and warning. Fix as normal.
+   Remove `eslint-plugin-fiori-custom` if it exists in the package.json
+
+   Update `eslint` to version `^9`
+
+   Update `@sap-ux/eslint-plugin-fiori-tools` to version `^9`
+
+6. Execute in the project root directory
+   `npm install`
+
+8. Find in source code an references to `fiori-custom/`  and replace with `@sap-ux/fiori-tools/`
+   
+   e.g.
+
+   `//eslint-disable fiori-custom/sap-browser-api-warning`
+   
+    becomes
+   
+   `//eslint-disable @sap-ux/fiori-tools/sap-browser-api-warning`
+   
+
+10. Execute in the project root directory
+
+   `npm run lint`
+
+   Check output for errors and warning. Fix as normal.
