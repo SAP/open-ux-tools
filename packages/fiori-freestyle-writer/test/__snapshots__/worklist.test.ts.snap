@@ -247,7 +247,7 @@ server:
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api, fiori-custom/sap-browser-api-warning
+                // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-proprietary-browser-api, @sap-ux/fiori-tools/sap-browser-api-warning
                 if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                     this._sContentDensityClass = \\"\\";
                 } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -497,7 +497,6 @@ server:
         onNavBack : function() {
             var sPreviousHash = History.getInstance().getPreviousHash();
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"worklist\\", {}, true);
@@ -653,7 +652,6 @@ server:
          * @public
          */
         onNavBack : function() {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         },
 
@@ -6518,7 +6516,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -7028,7 +7025,7 @@ server:
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api, fiori-custom/sap-browser-api-warning
+                // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-proprietary-browser-api, @sap-ux/fiori-tools/sap-browser-api-warning
                 if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                     this._sContentDensityClass = \\"\\";
                 } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -7278,7 +7275,6 @@ server:
         onNavBack : function() {
             var sPreviousHash = History.getInstance().getPreviousHash();
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"worklist\\", {}, true);
@@ -7434,7 +7430,6 @@ server:
          * @public
          */
         onNavBack : function() {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         },
 
@@ -9890,7 +9885,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -10401,7 +10395,7 @@ server:
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api, fiori-custom/sap-browser-api-warning
+                // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-proprietary-browser-api, @sap-ux/fiori-tools/sap-browser-api-warning
                 if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                     this._sContentDensityClass = \\"\\";
                 } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -10651,7 +10645,6 @@ server:
         onNavBack : function() {
             var sPreviousHash = History.getInstance().getPreviousHash();
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"worklist\\", {}, true);
@@ -10807,7 +10800,6 @@ server:
          * @public
          */
         onNavBack : function() {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         },
 
@@ -12853,7 +12845,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -13109,14 +13100,6 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori freestyle template: worklistTemplate Generate files for template: worklist_ts 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
-",
-    "state": "modified",
-  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -13128,6 +13111,16 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslint.config.js": Object {
+    "contents": "const { defineConfig } = require('eslint/config');
+const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = defineConfig([
+    ...fioriTools.configs.recommended
+]);
+",
     "state": "modified",
   },
   "package.json": Object {
@@ -13146,11 +13139,10 @@ archive.zip
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -13455,7 +13447,7 @@ export default class Component extends UIComponent {
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
+            // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -13563,7 +13555,6 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         } else {
             this.getRouter().navTo(\\"worklist\\", {});
@@ -16250,7 +16241,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -16516,14 +16506,6 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori freestyle template: worklistTemplate Generate files for template: worklist_ts_ui5_1_108 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
-",
-    "state": "modified",
-  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -16535,6 +16517,16 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslint.config.js": Object {
+    "contents": "const { defineConfig } = require('eslint/config');
+const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = defineConfig([
+    ...fioriTools.configs.recommended
+]);
+",
     "state": "modified",
   },
   "package.json": Object {
@@ -16553,11 +16545,10 @@ archive.zip
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -16858,7 +16849,7 @@ export default class Component extends UIComponent {
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
+            // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -16966,7 +16957,6 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         } else {
             this.getRouter().navTo(\\"worklist\\", {});
@@ -19648,7 +19638,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
