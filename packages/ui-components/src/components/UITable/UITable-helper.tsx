@@ -14,7 +14,11 @@ import type { UIColumn, EditedCell, UITableProps, UITableState } from '.';
  */
 export function _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
     const key = columnKey as keyof T;
-    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1));
+    return items.slice(0).sort((a: T, b: T) => {
+        const comparison = a[key] < b[key];
+        const shouldSwap = isSortedDescending ? !comparison : comparison;
+        return shouldSwap ? 1 : -1;
+    });
 }
 
 /**

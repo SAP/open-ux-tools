@@ -406,7 +406,7 @@ export class ErrorHandler {
         }
         return Object.keys(ERROR_TYPE).find((errorCodeType) => {
             return ERROR_MAP[errorCodeType as ERROR_TYPE].find((exp: RegExp) => exp.test(errorValueToFind.toString()));
-        }, {}) as ERROR_TYPE;
+        }) as ERROR_TYPE;
     }
 
     /**

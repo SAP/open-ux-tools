@@ -13,7 +13,7 @@ export function validateAppId(appId: string): boolean {
     if (!appId) {
         throw new Error(t('error.missingRequiredProperty', { propertyName: 'app.id' }));
     }
-    const match = appId.match(/["]/);
+    const match = appId.match(/"/);
     if (match) {
         throw new Error(
             t('error.disallowedCharacters', { propertyName: 'app.id', disallowedChars: `${match?.join()}` })

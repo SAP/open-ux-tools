@@ -31,7 +31,7 @@ export const enum DeletionRangeKind {
     TARGET_FROM_WITH = 'TargetFromWith' // deletion starts from 'with' keyword, i.e. "with @Core.Description: 'description'"
 }
 
-const cdsKeywords = [
+const cdsKeywords = new Set([
     'ABSTRACT',
     'ACTION',
     'ANNOTATE',
@@ -47,7 +47,7 @@ const cdsKeywords = [
     'TYPE',
     'USING',
     'VIEW'
-];
+]);
 
 const separatorForKind: {
     [kind: string]: string;
@@ -819,7 +819,7 @@ function getClosingTokenIndex(tokens: CompilerToken[], startIndex: number): numb
             //    (this is not possible: element/parameter list could be followed by annotations of entity/action)
             // only include trailing comments if they are followed by a semicolon
             closingTokenIndex = token.text !== ';' && commentStartIndex > 0 ? commentStartIndex : index;
-        } else if (cdsKeywords.includes((token.text || '').toUpperCase())) {
+        } else if (cdsKeywords.has((token.text || '').toUpperCase())) {
             // start of next CDS statement
             closingTokenIndex = commentStartIndex > 0 ? commentStartIndex : index;
         } else if (['(', '{'].includes(token.text)) {

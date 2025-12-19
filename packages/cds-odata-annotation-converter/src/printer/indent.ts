@@ -14,12 +14,11 @@ const CLOSING_CHARACTERS = new Set([']', '}', ')']);
  */
 export function indent(
     string: string,
-    indentInfo = {
-        level: 0,
-        skipFirstLine: false
-    }
+    {
+        level = 0,
+        skipFirstLine = false
+    } = {}
 ): string {
-    let level = indentInfo.level;
     const parts = string.split('\n');
     for (let i = 0; i < parts.length; i++) {
         const line = parts[i];
@@ -27,7 +26,7 @@ export function indent(
         if (change < 0) {
             level += change;
         }
-        if (indentInfo.skipFirstLine && i === 0) {
+        if (skipFirstLine && i === 0) {
             level += change;
             continue;
         }

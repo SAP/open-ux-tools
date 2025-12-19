@@ -686,6 +686,17 @@ class CstToAstVisitor extends Visitor {
     }
 
     /**
+     * Builds operator.
+     *
+     * @param operatorToken Operator CST token
+     * @param range Token range
+     * @returns Operator node
+     */
+    private buildOperator(operatorToken: IToken, range: Range): Operator {
+        return { type: OPERATOR_TYPE, value: operatorToken.image, range };
+    }
+
+    /**
      * Converts expression children to expression ast node.
      *
      * @param context CST expression children
@@ -693,17 +704,6 @@ class CstToAstVisitor extends Visitor {
      * @returns Expression value ast node
      */
     expression(context: ExpressionChildren, location: CstNodeLocation): Expression | Path {
-        /**
-         * Builds operator.
-         *
-         * @param operatorToken Operator CST token
-         * @param range Token range
-         * @returns Operator node
-         */
-        function buildOperator(operatorToken: IToken, range: Range): Operator {
-            const operator: Operator = { type: OPERATOR_TYPE, value: operatorToken.image, range };
-            return operator;
-        }
         const openToken = existsAndNotRecovered(context.LParen) ? this.createToken(context.LParen[0]) : undefined;
         const closeToken = existsAndNotRecovered(context.RParen) ? this.createToken(context.RParen[0]) : undefined;
         const range = this.locationToRange(location);
@@ -713,7 +713,7 @@ class CstToAstVisitor extends Visitor {
                 return node;
             }
         }
-        const operators = (context.Operator ?? []).map((token) => buildOperator(token, this.tokenToRange(token)));
+        const operators = (context.Operator ?? []).map((token) => this.buildOperator(token, this.tokenToRange(token)));
         const operands = (context.value ?? []).map((token) => this.visit(token) as AnnotationValue);
         const expression = { operators, operands, openToken, closeToken, range };
         const unsupportedOperator = operators.find((operator) => {
@@ -1255,8 +1255,7 @@ class CstToAstVisitor extends Visitor {
                     ) {
                         this.recoverFromMissingValue(assignment.children.Colon[0], property);
                     } else if (
-                        assignment.children?.value &&
-                        assignment.children?.value.length &&
+                        assignment.children?.value?.length &&
                         assignment.children.value[0]?.children?.path &&
                         assignments[assignmentIndex + 1] &&
                         !assignments[assignmentIndex + 1].children?.path
