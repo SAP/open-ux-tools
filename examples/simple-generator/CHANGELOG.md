@@ -1,5 +1,17 @@
 # @sap-ux/generator-simple-fe
 
+## 1.1.136
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/axios-extension@1.25.2
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/fiori-elements-writer@2.8.26
+    - @sap-ux/fiori-freestyle-writer@2.5.18
+    - @sap-ux/system-access@0.6.36
+
 ## 1.1.135
 
 ### Patch Changes
