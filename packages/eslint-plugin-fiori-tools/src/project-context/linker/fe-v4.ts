@@ -153,7 +153,7 @@ function linkControls(
                 ? `${buildAnnotationIndexKey(entityType, UI_LINE_ITEM)}#${qualifier}`
                 : buildAnnotationIndexKey(entityType, UI_LINE_ITEM);
 
-            const lineItems = service.index.annotations[lineItemKey];
+            const lineItems = service.index.annotations[lineItemKey] ?? [];
             const defaultLineItems = lineItems['undefined'];
 
             const table = tables[lineItemKey] ?? {
@@ -161,7 +161,7 @@ function linkControls(
                 tableType: 'ResponsiveTable',
                 annotationPath: lineItemKey,
                 controlConfigurationKey: path,
-                annotation: lineItems[lineItemKey] ?? defaultLineItems ?? undefined,
+                annotation: defaultLineItems,
                 widthIncludingColumnHeader: false,
                 disableCopyToClipboard: undefined
             };
@@ -225,8 +225,21 @@ function getEntityForContextPath(contextPath: string, service: ParsedService): M
     if (!entity) {
         return undefined;
     }
+    const entityType = resolveNavigationProperties(entity, segments);
 
-    return resolveNavigationProperties(entity, segments);
+    if (!entityType) {
+        const entityStructureType = service.index.entitySets[entityName]?.structuredType;
+        if (!entityStructureType) {
+            return;
+        }
+        const pageEntityType = service.artifacts.metadataService.getMetadataElement(entityStructureType);
+        if (!pageEntityType) {
+            return;
+        }
+        return resolveNavigationProperties(pageEntityType, segments);
+    }
+
+    return entityType;
 }
 
 function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
