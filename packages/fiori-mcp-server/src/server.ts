@@ -93,10 +93,10 @@ export class FioriFunctionalityServer {
             try {
                 let result;
                 TelemetryHelper.markToolStartTime();
-                const telemetryProperties: TelemetryData = {
-                    tool: name,
-                    functionalityId: (args as { functionalityId: string })?.functionalityId
-                };
+                const telemetryProperties: TelemetryData = { tool: name };
+                if ('functionalityId' in args) {
+                    telemetryProperties.functionalityId = args.functionalityId as string;
+                }
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
 
                 switch (name) {
