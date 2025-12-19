@@ -148,6 +148,7 @@ describe('executeFunctionality', () => {
         expect(modifiedConfig.settings.title).toEqual('new title');
         expect(exportParams.ui5Version).toEqual('1.141.3');
         expect(exportParams.layer).toEqual(FlexChangeLayer.Customer);
+        expect(exportParams.v4.Application.logger).toBeDefined();
         expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
         expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
     });
@@ -176,8 +177,10 @@ describe('executeFunctionality', () => {
             })
         );
         expect(exportProjectMock).toHaveBeenCalledTimes(1);
-        const modifiedConfig = exportProjectMock.mock.calls[0][0].v4.ObjectPage.page.config;
+        const exportParams = exportProjectMock.mock.calls[0][0];
+        const modifiedConfig = exportParams.v4.ObjectPage.page.config;
         expect(modifiedConfig.header.actions.RelatedApps.showRelatedApps).toEqual('dummy value');
+        expect(exportParams.v4.ObjectPage.logger).toBeDefined();
         expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
         expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
     });
