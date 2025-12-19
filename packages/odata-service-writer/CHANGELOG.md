@@ -1,5 +1,15 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/mockserver-config-writer@0.9.34
+
 ## 0.29.0
 
 ### Minor Changes

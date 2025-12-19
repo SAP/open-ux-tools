@@ -1,5 +1,17 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.92
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-library-inquirer@0.6.34
+    - @sap-ux/ui5-library-writer@0.6.36
+    - @sap-ux/nodejs-utils@0.2.11
+    - @sap-ux/ui5-info@0.13.5
+    - @sap-ux/fiori-generator-shared@0.13.45
+
 ## 0.1.91
 
 ### Patch Changes

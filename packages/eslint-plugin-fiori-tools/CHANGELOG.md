@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.0.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 9.0.0
 
 ### Major Changes

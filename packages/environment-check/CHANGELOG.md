@@ -1,5 +1,18 @@
 # @sap-ux/environment-check
 
+## 0.18.61
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/store@1.4.1
+    - @sap-ux/btp-utils@1.1.6
+
 ## 0.18.60
 
 ### Patch Changes

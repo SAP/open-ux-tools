@@ -8,7 +8,7 @@ import { AnnotationsWriter, ComponentUsagesWriter, NewModelWriter, DataSourceWri
  * Handles the creation of a writer instance based on the generator type.
  */
 export class WriterFactory {
-    private static writers = new Map<ChangeType, Writer>([
+    private static readonly writers = new Map<ChangeType, Writer>([
         [ChangeType.ADD_ANNOTATIONS_TO_ODATA, AnnotationsWriter],
         [ChangeType.ADD_COMPONENT_USAGES, ComponentUsagesWriter],
         [ChangeType.ADD_LIBRARY_REFERENCE, ComponentUsagesWriter],

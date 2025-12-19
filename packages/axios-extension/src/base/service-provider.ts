@@ -94,10 +94,9 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
      * @returns axios config
      */
     protected generateServiceConfig(path: string): AxiosRequestConfig {
-        const config = Object.assign({}, this.defaults);
-        const headers = Object.assign(this.defaults.headers?.common ?? {}, { Cookie: this.cookies.toString() });
+        const headers = { ...this.defaults.headers?.common, Cookie: this.cookies.toString() };
         return {
-            ...config,
+            ...this.defaults,
             baseURL: this.defaults.baseURL + path,
             headers
         };

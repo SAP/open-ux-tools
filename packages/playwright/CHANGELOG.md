@@ -1,5 +1,13 @@
 # @sap-ux-private/playwright
 
+## 0.2.4
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+
 ## 0.2.3
 
 ### Patch Changes

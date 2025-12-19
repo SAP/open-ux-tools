@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.1.4
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 0.1.3
 
 ### Patch Changes

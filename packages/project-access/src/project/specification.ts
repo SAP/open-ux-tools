@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { readdir } from 'fs/promises';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';

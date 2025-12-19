@@ -1,6 +1,6 @@
 jest.disableAutomock();
 
-import * as cp from 'child_process';
+import * as cp from 'node:child_process';
 import { executeNpmUI5VersionsCmd } from '../src/commands';
 import { getUI5Versions } from '../src/ui5-version-info';
 import os from 'node:os';
@@ -219,7 +219,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockSpawn = require('mock-spawn');
-import childProcess from 'child_process';
+import childProcess from 'node:child_process';
 
 describe('Test commands internals', () => {
     jest.setTimeout(10000);

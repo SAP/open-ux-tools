@@ -34,7 +34,7 @@ export interface UI5ToolingTransportOptions extends TransportOptions {
  * on the console in different formats
  */
 export class UI5ToolingTransport extends Transport {
-    private static instances: Map<string, UI5ToolingTransport> = new Map();
+    private static readonly instances: Map<string, UI5ToolingTransport> = new Map();
     public readonly options: UI5ToolingTransportOptions;
 
     /**
@@ -113,7 +113,7 @@ export interface VSCodeTransportOptions extends TransportOptions {
  *  https://code.visualstudio.com/api/extension-capabilities/common-capabilities#output-channel
  */
 export class VSCodeTransport extends Transport {
-    private static instances: Map<string, VSCodeTransport> = new Map();
+    private static readonly instances: Map<string, VSCodeTransport> = new Map();
     public readonly options: VSCodeTransportOptions;
 
     /**

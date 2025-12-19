@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
-import { exec as execCP } from 'child_process';
-import { promisify } from 'util';
+import { exec as execCP } from 'node:child_process';
+import { promisify } from 'node:util';
 import type { UI5LibConfig } from '../src/types';
 import type { Editor } from 'mem-fs-editor';
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from '../src/utils';

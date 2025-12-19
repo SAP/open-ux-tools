@@ -1,5 +1,19 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.71
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/abap-deploy-config-inquirer@1.6.64
+    - @sap-ux/odata-service-inquirer@2.13.2
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/telemetry@0.6.49
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/btp-utils@1.1.6
+
 ## 0.2.70
 
 ### Patch Changes

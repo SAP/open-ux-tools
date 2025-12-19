@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.9
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/logger@0.7.3
+
 ## 1.6.8
 
 ### Patch Changes

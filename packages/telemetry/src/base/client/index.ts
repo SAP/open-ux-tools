@@ -6,7 +6,7 @@ import { TelemetrySettings } from '../config-state';
  * Factory to get telemetry client instance.
  */
 class ClientFactory {
-    private static clientMap = new Map<string, Client>();
+    private static readonly clientMap = new Map<string, Client>();
 
     /**
      * Get singleton instance of default telemetry client for Azure app insights.
