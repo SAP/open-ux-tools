@@ -1070,7 +1070,7 @@ class CstToAstVisitor extends Visitor {
      */
     path(context: PathChildren, location: CstNodeLocation): Path {
         const segments: Identifier[] = (context.pathSegment ?? [])
-            .map((segment, i) => {
+            .flatMap((segment, i) => {
                 const quotedIdentifiers =
                     segment.children.quotedIdentifier?.reduce(
                         (acc: { token: IToken; delimiter: Delimiter }[], quotedIdentifier) => {
@@ -1126,52 +1126,38 @@ class CstToAstVisitor extends Visitor {
                 const identifiers = this.getIdentifierToken(segment);
                 return [...identifiers, ...quotedIdentifiers, ...delimitedIdentifiers, ...fromErrorRecovery];
             })
-            .reduce((acc, allSegments) => [...acc, ...allSegments], [])
             .sort((a, b) => compareTokensByPosition(a.token, b.token))
             .map(({ token, delimiter }) => this.tokenToIdentifier(token, delimiter));
         const separators: Separator[] = [
-            ...(context.pathSegment ?? []).map((segment) => {
+            ...(context.pathSegment ?? []).flatMap((segment) => {
                 const quotedIdentifiers =
-                    segment.children.quotedIdentifier?.reduce(
-                        (acc: { token: IToken; delimiter: Delimiter }[], quotedIdentifier) => {
-                            const childrenSeparators = quotedIdentifier.children.PathSegmentSeparator ?? [];
-                            return [
-                                ...acc,
-                                ...childrenSeparators.map((token) => ({
-                                    token,
-                                    delimiter: Delimiter.quoted
-                                }))
-                            ];
-                        },
-                        []
-                    ) ?? [];
+                    segment.children.quotedIdentifier?.flatMap((quotedIdentifier) => {
+                        const childrenSeparators = quotedIdentifier.children.PathSegmentSeparator ?? [];
+                        return childrenSeparators.map((token) => ({
+                            token,
+                            delimiter: Delimiter.quoted
+                        }));
+                    }) ?? [];
                 const delimitedIdentifiers =
-                    segment.children.delimitedIdentifier?.reduce(
-                        (acc: { token: IToken; delimiter: Delimiter }[], delimitedIdentifier) => {
-                            if (!delimitedIdentifier.children.DelimitedIdentifier) {
-                                return [
-                                    ...acc,
-                                    {
-                                        token: this.createEmptyIdentifier(
-                                            delimitedIdentifier.children.IdentifierStart[0],
-                                            delimitedIdentifier.children.DelimitedIdentifierExit[0]
-                                        ),
-                                        delimiter: Delimiter.exclamationSquareBrackets
-                                    }
-                                ];
-                            }
-                            const childrenSeparators = delimitedIdentifier.children.PathSegmentSeparator ?? [];
-
+                    segment.children.delimitedIdentifier?.flatMap((delimitedIdentifier) => {
+                        if (!delimitedIdentifier.children.DelimitedIdentifier) {
                             return [
-                                ...acc,
-                                ...childrenSeparators.map((token) => ({
-                                    token,
+                                {
+                                    token: this.createEmptyIdentifier(
+                                        delimitedIdentifier.children.IdentifierStart[0],
+                                        delimitedIdentifier.children.DelimitedIdentifierExit[0]
+                                    ),
                                     delimiter: Delimiter.exclamationSquareBrackets
-                                }))
+                                }
                             ];
-                        },
-                        []
-                    ) ?? [];
+                        }
+                        const childrenSeparators = delimitedIdentifier.children.PathSegmentSeparator ?? [];
+
+                        return childrenSeparators.map((token) => ({
+                            token,
+                            delimiter: Delimiter.exclamationSquareBrackets
+                        }));
+                    }) ?? [];
                 return [...quotedIdentifiers, ...delimitedIdentifiers];
             }),
             (context.PathSegmentSeparator ?? []).map((token) => ({
@@ -1179,7 +1165,7 @@ class CstToAstVisitor extends Visitor {
                 delimiter: Delimiter.none
             }))
         ]
-            .reduce((acc, allSegments) => [...acc, ...allSegments], [])
+            .flat()
             .sort((a, b) => compareTokensByPosition(a.token, b.token))
             .map(({ token, delimiter }) => this.tokenToSeparator(token, delimiter));
 
