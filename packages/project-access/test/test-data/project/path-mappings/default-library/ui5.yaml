@@ -1,0 +1,5 @@
+specVersion: "3.0"
+type: library
+metadata:
+  name: test.default.library
+

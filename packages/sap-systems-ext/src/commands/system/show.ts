@@ -19,14 +19,13 @@ export const showSystemsCommandHandler =
             const backendSystemKey = await getBackendSystemKey(systemService, system);
             const storedBackendSystem = await systemService.read(backendSystemKey);
             if (!storedBackendSystem) {
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 window.showErrorMessage(t('error.systemNotFound', { backendKey: backendSystemKey.getId() }));
                 return;
             }
             openSystemPanel(context, backendSystemKey, storedBackendSystem, statusMsg);
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : undefined;
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
             window.showErrorMessage(errorMessage ?? t('error.viewSystemDetails'));
             logTelemetryFailure();
         }
@@ -97,7 +96,7 @@ function openSystemPanel(
         panelKey,
         () =>
             new SystemPanel({
-                extensionPath: extContext.extensionPath,
+                extensionPath: extContext.vscodeExtContext.extensionPath,
                 systemPanelViewType: SystemPanelViewType.View,
                 backendSystem,
                 disposeCallback: () => panelManager.deleteAndDispose(panelKey),

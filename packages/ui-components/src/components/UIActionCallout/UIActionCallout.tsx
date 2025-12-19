@@ -33,7 +33,7 @@ export interface IActionCalloutDetail {
      */
     command?: {
         id: string;
-        params: Object | string;
+        params: object | string;
     };
     /**
      * A http url string, command takes precedence if provided
@@ -46,15 +46,15 @@ export interface IActionCalloutDetail {
  *
  */
 export class UIActionCallout extends React.Component<ActionCalloutProps> {
-    private anchor: React.RefObject<HTMLAnchorElement>;
-    private actionDetail: IActionCalloutDetail;
-    private commandAction: ActionCalloutProps['commandAction'];
-    private targetElementId: string;
-    private showInline: boolean | undefined;
-    private icon: UIIcon | undefined;
-    private onClick: ActionCalloutProps['onClick'];
+    private readonly anchor: React.RefObject<HTMLAnchorElement>;
+    private readonly actionDetail: IActionCalloutDetail;
+    private readonly commandAction: ActionCalloutProps['commandAction'];
+    private readonly targetElementId: string;
+    private readonly showInline: boolean | undefined;
+    private readonly icon: UIIcon | undefined;
+    private readonly onClick: ActionCalloutProps['onClick'];
     private anchorClicked: boolean;
-    private isError: ActionCalloutProps['isError'];
+    private readonly isError: ActionCalloutProps['isError'];
 
     /**
      * Initializes component properties.

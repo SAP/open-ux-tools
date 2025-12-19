@@ -23,9 +23,9 @@ type LabelDefinition = { source: ODataAnnotations['term']; value: ValueWithOrigi
  * Converts OData annotations to SAP annotations.
  */
 export class SAPAnnotationConverter {
-    private targets = new Map<string, Target>();
-    private labels = new Map<string, LabelDefinition[]>();
-    private targetProperties = new Map<string, Set<string>>();
+    private readonly targets = new Map<string, Target>();
+    private readonly labels = new Map<string, LabelDefinition[]>();
+    private readonly targetProperties = new Map<string, Set<string>>();
 
     /**
      * Converts OData annotations to SAP annotations.

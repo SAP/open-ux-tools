@@ -1,8 +1,8 @@
 import type { FunctionalityId, GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput } from '../types';
-import { PageEditorApi, findByPath } from '../page-editor-api';
+import { PageEditorApi, SapuxFtfsFileIO, findByPath } from '../page-editor-api';
 import type { TreeNode, PropertyPath } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
-import { prepatePropertySchema, resolveApplication, resolveRefs } from './utils';
+import { prepatePropertySchema, resolveApplication, resolveRefs } from '../utils';
 import type { JSONSchema4 } from 'json-schema';
 
 /**
@@ -91,8 +91,12 @@ function getPropertyDetails(
 async function getDetails(appPath: string, pageName?: string): Promise<TreeNode | undefined> {
     const project = await resolveApplication(appPath);
     if (project?.applicationAccess) {
-        const pageEditorApi = new PageEditorApi(project.applicationAccess, pageName);
-        return pageEditorApi.getPageTree();
+        const ftfsFileIo = new SapuxFtfsFileIO(project?.applicationAccess);
+        const application = await ftfsFileIo.getApplicationModel();
+        if (application) {
+            const pageEditorApi = new PageEditorApi(project.applicationAccess, application, pageName);
+            return pageEditorApi.getPageTree();
+        }
     }
 }
 

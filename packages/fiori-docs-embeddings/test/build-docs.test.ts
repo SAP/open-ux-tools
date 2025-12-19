@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import * as fs from 'node:fs/promises';
 import { join } from 'node:path';
 
 const mockFetch = jest.fn();

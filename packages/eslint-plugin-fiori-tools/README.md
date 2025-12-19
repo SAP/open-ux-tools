@@ -17,24 +17,19 @@ Pnpm
 
 ## Usage
 
-To consume this module, add @sap-ux/eslint-plugin-fiori-tools plugin to your `eslint.config.mjs`. You must specify one of the following configurations:
+To consume this module, add @sap-ux/eslint-plugin-fiori-tools in your project eslint config file (e.g. `eslint.config.js`). You must specify one of the following configurations:
 
-- defaultJS: contains rules for JavaScript for both prod and test code from plugin eslint-plugin-fiori-custom 
-- defaultTS: contains rules for typescript and rules for both prod and test code from plugin eslint-plugin-fiori-custom 
-- testcode: contains rules for typescript and rules for test code from plugin eslint-plugin-fiori-custom
-- prodCode: contains rules for typescript and rules for production code from plugin eslint-plugin-fiori-custom
+- recommended: contains rules for JavaScript & TypeScript on both prod and test code.
 
-To use `manifest.json` specific rules update `eslint.config.mjs` with the relevant configuration:
+- recommended-for-s4hana: contains rules for JavaScript & TypeScript on both prod and test code. recommended for SAP internal use.
 
-```
-import fioriToolsPlugin from "@sap-ux/eslint-plugin-fiori-tools";
-import { defineConfig } from "eslint/config";
+`eslint.config.js`
+```javascript
+const { defineConfig } = require('eslint/config');
 
-export default defineConfig([
-  {
-    extends: [fioriToolsPlugin.configs["SAP-consistency"]],
-  },
+const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = defineConfig([
+    ...fioriTools.configs.recommended,
 ]);
 ```
-
-Run with `npx eslint`. (eslint version 9 is required)

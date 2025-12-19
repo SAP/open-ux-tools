@@ -1,13 +1,16 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    NestedQuickActionDefinition,
+    QuickActionContext
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { createManifestPropertyChange } from '../../../utils/fe-v4';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { isA } from '../../../utils/core';
 import { getTooltipsForTableEmptyRowModeAction } from '../common/utils';
-import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
 
 export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';

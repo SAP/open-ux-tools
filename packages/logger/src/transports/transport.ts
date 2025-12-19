@@ -10,6 +10,10 @@ export class ConsoleTransport extends Transport {
     private static singletonInstance: ConsoleTransport;
     public readonly options: ConsoleTransportOptions;
 
+    /**
+     *
+     * @param opts
+     */
     constructor(opts: ConsoleTransportOptions = {}) {
         super();
         if (!ConsoleTransport.singletonInstance) {
@@ -30,9 +34,13 @@ export interface UI5ToolingTransportOptions extends TransportOptions {
  * on the console in different formats
  */
 export class UI5ToolingTransport extends Transport {
-    private static instances: Map<string, UI5ToolingTransport> = new Map();
+    private static readonly instances: Map<string, UI5ToolingTransport> = new Map();
     public readonly options: UI5ToolingTransportOptions;
 
+    /**
+     *
+     * @param opts
+     */
     constructor(opts: UI5ToolingTransportOptions) {
         super();
         const instance = UI5ToolingTransport.instances.get(opts.moduleName);
@@ -52,6 +60,9 @@ export class UI5ToolingTransport extends Transport {
 export class NullTransport extends Transport {
     private static singletonInstance: NullTransport;
 
+    /**
+     *
+     */
     constructor() {
         super();
         if (!NullTransport.singletonInstance) {
@@ -62,7 +73,9 @@ export class NullTransport extends Transport {
 }
 
 export interface FileTransportOptions extends TransportOptions {
-    filename: string;
+    filename: string; //The filename of the logfile to write output to.
+    maxsize?: number; // Max size in bytes of the logfile, if the size is exceeded then a new file is created, a counter will become a suffix of the log file.
+    maxFiles?: number; // Limit the number of files created when the size of the logfile is exceeded.
 }
 
 /**
@@ -71,6 +84,11 @@ export interface FileTransportOptions extends TransportOptions {
 export class FileTransport extends Transport {
     public readonly options: FileTransportOptions;
 
+    /**
+     * Constructor for FileTransport, expects the options for the transport, file name is mandatory.
+     *
+     * @param opts - options for the transport
+     */
     constructor(opts: FileTransportOptions) {
         super();
         this.options = this.copy<FileTransportOptions>(opts);
@@ -84,6 +102,9 @@ export interface StringArrayTransportOptions extends TransportOptions {
     logs: string[];
 }
 
+/**
+ *
+ */
 export class StringArrayTransport extends Transport {}
 
 export interface VSCodeTransportOptions extends TransportOptions {
@@ -95,9 +116,13 @@ export interface VSCodeTransportOptions extends TransportOptions {
  *  https://code.visualstudio.com/api/extension-capabilities/common-capabilities#output-channel
  */
 export class VSCodeTransport extends Transport {
-    private static instances: Map<string, VSCodeTransport> = new Map();
+    private static readonly instances: Map<string, VSCodeTransport> = new Map();
     public readonly options: VSCodeTransportOptions;
 
+    /**
+     *
+     * @param opts
+     */
     constructor(opts: VSCodeTransportOptions) {
         super();
         const instance = VSCodeTransport.instances.get(opts.channelName);
@@ -123,13 +148,25 @@ export interface ArrayTransportOptions extends TransportOptions {
     logs?: ArrayTransportLogEntry[];
 }
 
+/**
+ *
+ */
 export class ArrayTransport extends WinstonTransport {
     public readonly logs: ArrayTransportLogEntry[];
+    /**
+     *
+     * @param opts
+     */
     constructor(opts?: ArrayTransportOptions) {
         super({ level: typeof opts?.logLevel === 'number' ? LogLevel[opts.logLevel].toLowerCase() : 'debug' });
         this.logs = opts?.logs ?? [];
     }
-    log(info: ArrayTransportLogEntry, next: () => void) {
+    /**
+     *
+     * @param info
+     * @param next
+     */
+    log(info: ArrayTransportLogEntry, next: () => void): void {
         this.logs.push(info);
         next();
     }

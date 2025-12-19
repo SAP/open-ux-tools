@@ -13,11 +13,11 @@ import {
 import { NullTransport as WinstonNullTransport } from './null-transport';
 import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-channel-transport';
 import type { Format } from 'logform';
-import { inspect } from 'util';
+import { inspect } from 'node:util';
 import chalk from 'chalk';
 
 /**
- * Translate @type {LogLevel} to what Winston understands
+ * Translate type {LogLevel} to what Winston understands.
  *
  * @param {LogLevel} logLevel - optional logLevel
  * @returns log - level that Winston understands (https://github.com/winstonjs/winston#logging-levels)
@@ -28,7 +28,7 @@ export function toWinstonLogLevel(logLevel?: LogLevel): string | undefined {
 
 const toWinstonTransportOptions = <OPT>(transportOptions: TransportOptions): OPT & { level?: string } => {
     const { logLevel, ...opts } = transportOptions;
-    return Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) }) as OPT & { level?: string };
+    return { ...opts, level: toWinstonLogLevel(logLevel) } as OPT & { level?: string };
 };
 
 const levelColor: { [level: string]: string } = {
@@ -40,9 +40,9 @@ const levelColor: { [level: string]: string } = {
     debug: 'cyan'
 };
 
-const hasColorSupport = () => process.stdout.isTTY;
+const hasColorSupport = (): boolean => process.stdout.isTTY;
 
-const colorFn = (color: string) => {
+const colorFn = (color: string): chalk.Chalk | undefined => {
     try {
         return color ? chalk.keyword(color) : undefined;
     } catch {
@@ -60,7 +60,7 @@ const ui5ToolingFormat = (moduleName: string): Format =>
             return `${level} ${chalk.magenta(label)} ${msg}`;
         })
     );
-const decorateLevel = (level: string) => {
+const decorateLevel = (level: string): string => {
     const padded = level.padEnd(7);
     if (hasColorSupport()) {
         const decorator = colorFn(levelColor[level]);
@@ -74,8 +74,8 @@ const decorateLevel = (level: string) => {
  * Return a colored label if label and color are specified, _if_ we running on a TTY.
  * Else return `''`
  *
- * @param label
- * @param labelColor
+ * @param label - Label name
+ * @param labelColor - Label color
  * @returns {string} decorated label
  */
 const decorateLabel = (label?: string, labelColor?: string): string => {
@@ -100,10 +100,9 @@ const consoleFormat = format.combine(
 );
 
 /**
- * Take a @type {Transport} and return the corresponding @type {WinstonTransport}
- * Will throw an error if the transport is not recognized
+ * Take a type {Transport} and return the corresponding type {WinstonTransport} will throw an error if the transport is not recognized.
  *
- * @param transport
+ * @param transport - transport to convert
  * @returns {WinstonTransport} winston transport
  */
 export function toWinstonTransport(transport: Transport): WinstonTransport {

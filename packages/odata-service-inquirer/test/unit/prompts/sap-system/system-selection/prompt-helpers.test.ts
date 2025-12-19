@@ -15,14 +15,16 @@ const backendSystemBasic: BackendSystem = {
     url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1',
-    systemType: 'OnPrem'
+    systemType: 'OnPrem',
+    connectionType: 'abap_catalog'
 };
 
 const backendSystemReentrance: BackendSystem = {
     name: 'http://s4hc:1234',
     url: 'http:/s4hc:1234',
     authenticationType: 'reentranceTicket',
-    systemType: 'S4HC'
+    systemType: 'AbapCloud',
+    connectionType: 'abap_catalog'
 };
 
 const backendSystems: BackendSystem[] = [backendSystemBasic, backendSystemReentrance];

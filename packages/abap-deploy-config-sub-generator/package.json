@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-sub-generator"
     },
-    "version": "0.1.100",
+    "version": "0.1.114",
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
     "scripts": {
@@ -14,8 +14,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
@@ -49,6 +49,7 @@
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
         "memfs": "3.4.13",
         "mem-fs-editor": "9.4.0",
         "unionfs": "4.4.0",

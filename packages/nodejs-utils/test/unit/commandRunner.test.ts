@@ -1,8 +1,8 @@
-import childProcess, { type SpawnOptionsWithoutStdio } from 'child_process';
+import childProcess, { type SpawnOptionsWithoutStdio } from 'node:child_process';
 import { CommandRunner } from '../../src/commandRunner';
 import { type Logger } from '@sap-ux/logger';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockSpawn = require('mock-spawn');
 
 // write test cases for the CommandRunner class

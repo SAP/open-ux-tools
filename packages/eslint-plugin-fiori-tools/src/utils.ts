@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseDocument } from 'yaml';
-import * as process from 'process';
+import * as process from 'node:process';
 
 /**
  * Get resource paths for UI5 application or library based on ui5.yaml configuration.

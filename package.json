@@ -15,14 +15,14 @@
         "check-dependency-version-consistency": "5.0.1",
         "esbuild": "0.25.11",
         "esbuild-sass-plugin": "3.3.1",
-        "eslint": "9.36.0",
+        "eslint": "9.39.1",
         "eslint-config-prettier": "10.1.1",
-        "eslint-import-resolver-typescript": "4.2.2",
-        "eslint-plugin-import": "2.31.0",
-        "eslint-plugin-jsdoc": "50.6.8",
-        "eslint-plugin-prettier": "5.2.3",
+        "eslint-import-resolver-typescript": "4.4.4",
+        "eslint-plugin-import": "2.32.0",
+        "eslint-plugin-jsdoc": "61.5.0",
+        "eslint-plugin-prettier": "5.5.4",
         "eslint-plugin-promise": "7.2.1",
-        "eslint-plugin-sonarjs": "3.0.2",
+        "eslint-plugin-sonarjs": "3.0.5",
         "globals": "16.0.0",
         "husky": "8.0.3",
         "jest": "30.2.0",
@@ -38,9 +38,10 @@
         "rimraf": "6.0.1",
         "ts-jest": "29.4.5",
         "typescript": "5.9.3",
-        "typescript-eslint": "8.46.2",
+        "typescript-eslint": "8.49.0",
         "update-ts-references": "3.6.2",
-        "yargs-parser": "21.1.1"
+        "yargs-parser": "21.1.1",
+        "yaml":  "2.8.2"
     },
     "scripts": {
         "update-ts-references": "update-ts-references",
@@ -48,7 +49,8 @@
         "clean": "npm-run-all clean:nx:reset clean:nx:all",
         "clean:nx:all": "nx run-many --target=clean --all",
         "clean:nx:reset": "nx reset --only-cache",
-        "build": "nx run-many --target=build --all",
+        "validate:changesets": "node scripts/validate-changesets.js",
+        "build": "pnpm validate:changesets && nx run-many --target=build --all",
         "build:force": "nx run-many --target=build --all --skip-nx-cache",
         "format": "pnpm recursive run format",
         "lint": "nx run-many --target=lint --all",
@@ -59,7 +61,7 @@
         "link": "pnpm recursive run link",
         "unlink": "pnpm recursive run unlink",
         "prepare": "husky install",
-        "cset": "changeset",
+        "cset": "pnpm validate:changesets && changeset",
         "ci:version": "changeset version && pnpm install --lockfile-only",
         "ci:publish": " node --max_old_space_size=20336 node_modules/@changesets/cli/bin.js publish",
         "run:pretty-quick": "pretty-quick --ignore-path .prettierignore",
@@ -81,7 +83,7 @@
             "@storybook/manager-api>store2": "2.14.4",
             "mta-local": "1.0.4",
             "axios@<1.12.0": "^1.12.2",
-            "@typescript-eslint/parser": "6.2.0"
+            "eslint": "^9.39.1"
         }
     }
 }

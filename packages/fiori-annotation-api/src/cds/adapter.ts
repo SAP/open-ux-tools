@@ -132,8 +132,8 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
     public metadataService = new MetadataService();
     public splitAnnotationSupport = true;
     private fileCache: Map<string, string>;
-    private documents = new Map<string, Document>();
-    private metadata: MetadataElement[] = [];
+    private readonly documents = new Map<string, Document>();
+    private readonly metadata: MetadataElement[] = [];
     private missingReferences: { [uri: string]: Set<string> } = {};
     /**
      *
@@ -145,12 +145,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
      * @param ignoreChangedFileInitialContent Flag indicating if to be changed files can be treated as empty.
      */
     constructor(
-        private service: CDSService,
-        private project: Project,
-        private vocabularyService: VocabularyService,
-        private appName: string,
-        private writeSapAnnotations: boolean,
-        private ignoreChangedFileInitialContent: boolean
+        private readonly service: CDSService,
+        private readonly project: Project,
+        private readonly vocabularyService: VocabularyService,
+        private readonly appName: string,
+        private readonly writeSapAnnotations: boolean,
+        private readonly ignoreChangedFileInitialContent: boolean
     ) {
         this.fileCache = new Map();
         this._fileSequence = service.serviceFiles;
@@ -962,7 +962,7 @@ function getAliasInfo(
 }
 
 function elementHasFlags(element: AnyNode | undefined): boolean {
-    if (!element || element.type !== 'element') {
+    if (element?.type !== 'element') {
         return false;
     }
     const content = element.content[0];

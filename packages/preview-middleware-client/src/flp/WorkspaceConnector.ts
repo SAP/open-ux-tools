@@ -1,7 +1,8 @@
 import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
-import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
+import type { FlexChange } from './common';
+import { CHANGES_API_PATH, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
@@ -22,7 +23,7 @@ const connector = merge({}, ObjectStorageConnector, {
             if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
                     this.fileChangeRequestNotifier(change.fileName, 'create', change, additionalChangeInfo);
-                } catch (e) {
+                } catch {
                     // exceptions in the listener call are ignored
                 }
             }
@@ -44,7 +45,7 @@ const connector = merge({}, ObjectStorageConnector, {
             if (typeof this.fileChangeRequestNotifier === 'function') {
                 try {
                     this.fileChangeRequestNotifier(key, 'delete');
-                } catch (e) {
+                } catch {
                     // exceptions in the listener call are ignored
                 }
             }

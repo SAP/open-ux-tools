@@ -1,4 +1,4 @@
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import hasStableId from 'mock/sap/ui/rta/util/hasStableId';
@@ -15,7 +15,7 @@ import { getTextBundle } from '../../../src/i18n';
 import * as syncViewsUtils from '../../../src/adp/sync-views-utils';
 
 describe('Dialogs', () => {
-    let isReuseComponentMock = jest.fn().mockReturnValue(false);
+    const isReuseComponentMock = jest.fn().mockReturnValue(false);
     jest.spyOn(syncViewsUtils, 'getSyncViewIds').mockReturnValue(new Set<string>());
     describe('initDialogs', () => {
         afterEach(() => {

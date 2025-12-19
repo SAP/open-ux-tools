@@ -79,7 +79,10 @@ export class VisitorState {
      * @param vocabularyService - The vocabulary service associated with the instance.
      * @param [position] - The optional position associated with the instance.
      */
-    constructor(public vocabularyService: VocabularyService, public position?: Position) {}
+    constructor(
+        public vocabularyService: VocabularyService,
+        public position?: Position
+    ) {}
 
     // context
     /**

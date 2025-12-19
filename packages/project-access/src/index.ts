@@ -1,4 +1,11 @@
-export { FileName, DirName, FioriToolsSettings, MinCdsPluginUi5Version, MinCdsVersion } from './constants';
+export {
+    FileName,
+    DirName,
+    FioriToolsSettings,
+    MinCdsPluginUi5Version,
+    MinCdsVersion,
+    fioriToolsDirectory
+} from './constants';
 export { getFilePaths } from './file';
 export { normalizePath } from './path';
 export {
@@ -28,6 +35,7 @@ export {
     getCdsServices,
     getCapI18nFolderNames,
     getSpecification,
+    getSpecificationModuleFromCache,
     getSpecificationPath,
     getI18nPropertiesPaths,
     getI18nBundles,
@@ -38,6 +46,7 @@ export {
     getMockServerConfig,
     getMockDataPath,
     getNodeModulesPath,
+    getPathMappings,
     getProject,
     getProjectType,
     getWebappPath,

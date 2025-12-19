@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
+import { v4 as uuidv4 } from 'uuid';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
 import {
@@ -13,6 +14,8 @@ import {
     getCfConfig,
     getConfig,
     getConfiguredProvider,
+    getFormattedVersion,
+    getLatestVersion,
     getYamlContent,
     isCfInstalled,
     isLoggedInCf,
@@ -21,27 +24,27 @@ import {
     loadCfConfig
 } from '@sap-ux/adp-tooling';
 import {
-    TelemetryHelper,
     getDefaultTargetFolder,
     isCli,
     isExtensionInstalled,
-    sendTelemetry
+    sendTelemetry,
+    TelemetryHelper
 } from '@sap-ux/fiori-generator-shared';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
-import { EventName } from '../telemetryEvents';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import { getPackageInfo, installDependencies } from '../utils/deps';
 import { initI18n, t } from '../utils/i18n';
 import AdpGeneratorLogger from '../utils/logger';
 import { setHeaderTitle } from '../utils/opts';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
+import { TelemetryCollector, EventName } from '../telemetry';
 import {
     getDeployPage,
     getWizardPages,
@@ -66,6 +69,7 @@ import {
     type JsonInput
 } from './types';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
+import type { AdpTelemetryData } from '../types';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -174,6 +178,14 @@ export default class extends Generator {
      * Indicates if the CF feature is enabled.
      */
     private readonly isCfFeatureEnabled: boolean;
+    /**
+     * Tools ID.
+     */
+    private toolsId: string;
+    /**
+     * Telemetry collector instance.
+     */
+    private telemetryCollector: TelemetryCollector;
 
     /**
      * Creates an instance of the generator.
@@ -198,11 +210,6 @@ export default class extends Generator {
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
 
-        // Force the generator to overwrite existing files without additional prompting
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
-
         if (!this.jsonInput) {
             this.env.lookup({
                 packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
@@ -220,8 +227,12 @@ export default class extends Generator {
     }
 
     async initializing(): Promise<void> {
-        await initI18n();
+        // Force the generator to overwrite existing files without additional prompting
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
 
+        await initI18n();
         this.isCli = isCli();
         this.layer = getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
@@ -233,14 +244,7 @@ export default class extends Generator {
         this.logger.info(`isCfInstalled: ${this.cfInstalled}`);
 
         const isInternalUsage = isInternalFeaturesSettingEnabled();
-        if (!this.jsonInput) {
-            const shouldShowTargetEnv = isAppStudio() && this.cfInstalled && this.isCfFeatureEnabled;
-            this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
-            this.prompter = this._getOrCreatePrompter();
-            this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
-        }
-
-        await TelemetryHelper.initTelemetrySettings({
+        await initTelemetrySettings({
             consumerModule: {
                 name: '@sap/generator-fiori:generator-adp',
                 version: this.rootGeneratorVersion()
@@ -248,6 +252,13 @@ export default class extends Generator {
             internalFeature: isInternalUsage,
             watchTelemetrySettingStore: false
         });
+        this.telemetryCollector = new TelemetryCollector();
+        if (!this.jsonInput) {
+            const shouldShowTargetEnv = this.cfInstalled && this.isCfFeatureEnabled;
+            this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
+            this.prompter = this._getOrCreatePrompter();
+            this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
+        }
     }
 
     async prompting(): Promise<void> {
@@ -332,13 +343,16 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
+            this.toolsId = uuidv4();
+            if (this.jsonInput) {
+                await this._initFromJson();
+            }
+
+            this._collectTelemetryData();
+
             if (this.isCfEnv) {
                 await this._generateAdpProjectArtifactsCF();
                 return;
-            }
-
-            if (this.jsonInput) {
-                await this._initFromJson();
             }
 
             if (this.shouldCreateExtProject) {
@@ -369,7 +383,8 @@ export default class extends Generator {
                 manifest,
                 layer: this.layer,
                 packageJson,
-                logger: this.toolsLogger
+                logger: this.toolsLogger,
+                toolsId: this.toolsId
             });
 
             if (config.options) {
@@ -386,7 +401,7 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
-        if (!this.shouldInstallDeps || this.shouldCreateExtProject || this.isCfEnv) {
+        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
             return;
         }
 
@@ -398,23 +413,24 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
-        if (this.shouldCreateExtProject || this.isCfEnv) {
-            return;
-        }
-
-        const telemetryData =
-            TelemetryHelper.createTelemetryData({
-                appType: 'generator-adp',
-                ...this.options.telemetryData
-            }) ?? {};
         const projectPath = this._getProjectPath();
-        if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, projectPath).catch((error) => {
-                this.logger.error(t('error.telemetry', { error }));
-            });
+        const data = TelemetryHelper.createTelemetryData({
+            appType: 'generator-adp',
+            ...this.options.telemetryData,
+            ...this.telemetryCollector.telemetryData
+        });
+
+        if (data) {
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, data, projectPath)
+                .then(() => {
+                    this.logger.log(`Event ${EventName.ADAPTATION_PROJECT_CREATED} successfully sent`);
+                })
+                .catch((error) => {
+                    this.logger.error(`Failed to send telemetry: ${error}`);
+                });
         }
 
-        if (this.isCli) {
+        if (this.isCli || this.isCfEnv || this.shouldCreateExtProject) {
             return;
         }
 
@@ -449,13 +465,43 @@ export default class extends Generator {
     }
 
     /**
+     * Collects the telemetry data for the ADP generator.
+     */
+    private _collectTelemetryData(): void {
+        const telemetryData: AdpTelemetryData = {
+            wasFlpConfigDone: this.attributeAnswers?.addFlpConfig ?? false,
+            wasTypeScriptChosen: this.attributeAnswers?.enableTypeScript ?? false,
+            wasDeployConfigDone: this.attributeAnswers?.addDeployConfig ?? false,
+            wasExtProjectGenerated: this.shouldCreateExtProject ?? false
+        };
+        if (this.isCfEnv) {
+            telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
+            telemetryData.projectType = 'cf';
+        } else {
+            const isCloud = this.prompter?.isCloud ?? false;
+            telemetryData.projectType = isCloud ? 'cloudReady' : 'onPremise';
+            telemetryData.baseAppTechnicalName = this.configAnswers?.application?.id ?? '';
+        }
+        if (this.jsonInput) {
+            telemetryData.ui5VersionSelected = getLatestVersion(this.publicVersions);
+        } else {
+            const version =
+                this.attributeAnswers?.ui5Version ?? getLatestVersion(this.prompter?.ui5?.publicVersions) ?? '';
+            telemetryData.ui5VersionSelected = getFormattedVersion(version);
+        }
+        telemetryData.systemUI5Version = this.prompter?.ui5?.systemVersion ?? '';
+
+        this.telemetryCollector.setBatch(telemetryData);
+    }
+
+    /**
      * Determines the target environment based on the current context.
      * Sets the target environment and updates related state accordingly.
      */
     private async _determineTargetEnv(): Promise<void> {
         const hasRequiredExtensions = this.isCfFeatureEnabled && this.cfInstalled;
 
-        if (isAppStudio() && hasRequiredExtensions) {
+        if (hasRequiredExtensions) {
             await this._promptForTargetEnvironment();
         } else {
             this.targetEnv = TargetEnv.ABAP;
@@ -467,7 +513,7 @@ export default class extends Generator {
      */
     private async _promptForTargetEnvironment(): Promise<void> {
         const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
-            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfig, this.vscode)
+            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfig)
         ]);
 
         this.targetEnv = targetEnvAnswers.targetEnv;
@@ -529,7 +575,7 @@ export default class extends Generator {
             return cached;
         }
 
-        const prompter = new ConfigPrompter(this.systemLookup, this.layer, this.logger);
+        const prompter = new ConfigPrompter(this.systemLookup, this.layer, this.logger, this.telemetryCollector);
         cachePut(this.appWizard, { prompter }, this.logger);
         return prompter;
     }
@@ -538,15 +584,19 @@ export default class extends Generator {
      * Generates the ADP project artifacts for the CF environment.
      */
     private async _generateAdpProjectArtifactsCF(): Promise<void> {
-        const projectPath = this.isMtaYamlFound ? process.cwd() : this.destinationPath();
+        const projectPath = this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
+        this.telemetryCollector.setBatch({ ui5VersionSelected: getLatestVersion(publicVersions) });
 
         const manifest = this.cfPrompter.manifest;
         if (!manifest) {
             throw new Error('Manifest not found for base app.');
         }
 
-        const html5RepoRuntimeGuid = this.cfPrompter.serviceInstanceGuid;
+        const html5RepoRuntimeGuid = this.cfPrompter.html5RepoRuntimeGuid;
+        const serviceInstanceGuid = this.cfPrompter.serviceInstanceGuid;
+        const backendUrl = this.cfPrompter.backendUrl;
+        const oauthPaths = this.cfPrompter.oauthPaths;
         const config = getCfConfig({
             attributeAnswers: this.attributeAnswers,
             cfServicesAnswers: this.cfServicesAnswers,
@@ -554,8 +604,13 @@ export default class extends Generator {
             layer: this.layer,
             manifest,
             html5RepoRuntimeGuid,
+            serviceInstanceGuid,
+            backendUrl,
+            oauthPaths,
             projectPath,
-            publicVersions
+            publicVersions,
+            packageJson: getPackageInfo(),
+            toolsId: this.toolsId
         });
 
         if (config.options) {
@@ -571,6 +626,12 @@ export default class extends Generator {
      * @returns {string} The project path from the answers.
      */
     private _getProjectPath(): string {
+        if (this.isCfEnv) {
+            return join(this.destinationPath(), this.attributeAnswers.projectName);
+        }
+        if (this.shouldCreateExtProject) {
+            return join(process.cwd(), this.attributeAnswers.projectName);
+        }
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
     }
 
@@ -627,6 +688,7 @@ export default class extends Generator {
         this.abapProvider = await getConfiguredProvider(providerOptions, this.logger);
 
         const applications = await loadApps(this.abapProvider, this.isCustomerBase);
+        this.telemetryCollector.setBatch({ numberOfApplications: applications.length });
         const application = applications.find((application) => application.id === baseApplicationName);
         if (!application) {
             throw new Error(t('error.applicationNotFound', { appName: baseApplicationName }));

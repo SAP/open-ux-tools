@@ -103,8 +103,8 @@ function isValue(tokens: Token[]): boolean {
  */
 class PropertiesTokenizer {
     private offset: number;
-    private text: string;
-    private tokens: Token[];
+    private readonly text: string;
+    private readonly tokens: Token[];
     /**
      * Class constructor.
      *
@@ -192,7 +192,7 @@ class PropertiesTokenizer {
             this.next();
         }
         let type: TokenType = 'whitespace';
-        if (!isSeparator(this.peek()) && token && token.type === 'key') {
+        if (!isSeparator(this.peek()) && token?.type === 'key') {
             // whitespace can also serve as separator
             type = 'separator';
         }

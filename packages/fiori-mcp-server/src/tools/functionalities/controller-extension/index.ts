@@ -8,7 +8,7 @@ import type {
     GetFunctionalityDetailsInput,
     GetFunctionalityDetailsOutput
 } from '../../../types';
-import { convertToSchema, getDefaultExtensionFolder, resolveApplication, validateWithSchema } from '../../utils';
+import { convertToSchema, getDefaultExtensionFolder, resolveApplication, validateWithSchema } from '../../../utils';
 import { join } from 'node:path';
 import { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../constant';
 import { buildControllerExtensionSchema, ControllerExtensionCreationSchema } from './schema';
@@ -105,7 +105,7 @@ async function retrieveControllerExtensionPageType(
 ): Promise<ControllerExtensionPageType | undefined> {
     if (pageId && typeof pageId === 'string') {
         // Find pageType for passed page id
-        const appData = await appReader.readApp();
+        const appData = await appReader.readAppData();
         pageType = appData.config.pages?.[pageId]?.pageType as string;
     }
     if (pageType && typeof pageType === 'string') {

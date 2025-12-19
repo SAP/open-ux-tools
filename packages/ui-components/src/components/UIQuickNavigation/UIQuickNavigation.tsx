@@ -92,9 +92,9 @@ function getOffsetFromElement(target: Element): UIQuickNavigationOffset | undefi
     if (!yAttr || !xAttr) {
         return undefined;
     }
-    const y = parseFloat(yAttr);
-    const x = parseFloat(xAttr);
-    return !isNaN(y) && !isNaN(x) ? { y, x } : undefined;
+    const y = Number.parseFloat(yAttr);
+    const x = Number.parseFloat(xAttr);
+    return !Number.isNaN(y) && !Number.isNaN(x) ? { y, x } : undefined;
 }
 
 /**
@@ -104,11 +104,10 @@ function getOffsetFromElement(target: Element): UIQuickNavigationOffset | undefi
  * @param offset Offset values for helper position.
  */
 function toggleExternalVisibility(enabled: boolean, offset = EXTERNAL_HELPER_OFFSET): void {
-    const holder = document.body;
     // Cleanup container
     const existingContainer = document.querySelector(`.${QUICK_NAVIGATION_CLASSES.external}`);
     if (existingContainer) {
-        holder.removeChild(existingContainer);
+        existingContainer.remove();
     }
     // Show helpers if quick navigation is active
     if (enabled) {
@@ -133,7 +132,7 @@ function toggleExternalVisibility(enabled: boolean, offset = EXTERNAL_HELPER_OFF
             helper.style.left = `${position.left}px`;
             externalContainer.appendChild(helper);
         });
-        holder.appendChild(externalContainer);
+        document.body.appendChild(externalContainer);
     }
 }
 
@@ -169,7 +168,6 @@ function stopEventBubling(event: KeyboardEvent | FocusEvent): void {
     event.preventDefault();
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const UIQuickNavigation: React.FC<UIQuickNavigationProps> = (props: UIQuickNavigationProps) => {
     const { className, children, inline, offset } = props;
     const [enabled, setEnabled] = useState(false);

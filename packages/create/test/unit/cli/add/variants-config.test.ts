@@ -4,7 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { addAddVariantsConfigCommand } from '../../../../src/cli/add/variants-config';
 import * as appConfigWriter from '@sap-ux/app-config-writer';
 import * as logger from '../../../../src/tracing/logger';
-import * as childProcess from 'child_process';
+import * as childProcess from 'node:child_process';
 import { join } from 'node:path';
 
 jest.mock('child_process');

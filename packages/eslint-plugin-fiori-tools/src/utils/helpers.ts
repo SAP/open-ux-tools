@@ -159,7 +159,7 @@ export function isString(value: unknown): value is string {
  * @returns True if the base string starts with the substring
  */
 export function startsWith(base: string, sub: string): boolean {
-    return base.indexOf(sub) === 0;
+    return base.startsWith(sub);
 }
 
 /**
@@ -170,7 +170,7 @@ export function startsWith(base: string, sub: string): boolean {
  * @returns True if the string contains the substring
  */
 export function containsString(str: string, substring: string): boolean {
-    return str.indexOf(substring) >= 0;
+    return str.includes(substring);
 }
 
 // ------------------------------------------------------------------------------
@@ -483,9 +483,10 @@ export function getIdentifierPath(node: unknown): string {
     switch (astNode.type) {
         case 'Identifier':
             return (node as IdentifierNode).name;
-        case 'MemberExpression':
+        case 'MemberExpression': {
             const memberNode = node as MemberExpressionNode;
             return `${getIdentifierPath(memberNode.object)}.${getLiteralOrIdentifierName(memberNode.property)}`;
+        }
         case 'NewExpression':
             return getIdentifierPath((node as any).callee);
         case 'CallExpression':
@@ -531,10 +532,8 @@ export function resolveIdentifierPath(path: string, variables: Record<string, st
  * @param variables The variables lookup object
  */
 export function rememberInterestingVariable(node: unknown, name: string, variables: Record<string, string[]>): void {
-    const declaratorNode = node as unknown as { id: { name: string } };
-    if (typeof variables[declaratorNode.id.name] === 'undefined') {
-        variables[declaratorNode.id.name] = [];
-    }
+    const declaratorNode = node as { id: { name: string } };
+    variables[declaratorNode.id.name] ??= [];
     variables[declaratorNode.id.name].push(name);
 }
 
@@ -561,7 +560,7 @@ export function createVariableDeclaratorProcessor(
     interestingPathChecker: (path: string) => boolean
 ): (node: unknown) => void {
     return function processVariableDeclarator(node: unknown): void {
-        const declaratorNode = node as unknown as { init?: unknown };
+        const declaratorNode = node as { init?: unknown };
         let path = getIdentifierPath(declaratorNode.init);
         path = resolveIdentifierPath(path, variables);
 
@@ -579,7 +578,7 @@ export function createVariableDeclaratorProcessor(
  * @returns True if the identifier has an underscore prefix
  */
 export function hasUnderscore(identifier: string): boolean {
-    return identifier !== '_' && identifier[0] === '_';
+    return identifier !== '_' && identifier.startsWith('_');
 }
 
 /**
@@ -612,4 +611,158 @@ export function endsWith(str: string, suffix: string): boolean {
 export function isForbiddenObviousApi(calleePath: string): string {
     const elementArray = calleePath.split('.');
     return elementArray.at(-1) ?? '';
+}
+
+// ------------------------------------------------------------------------------
+// Storage Detection Functions (for localStorage/sessionStorage rules)
+// ------------------------------------------------------------------------------
+
+/**
+ * Create a storage rule factory that generates consistent rules for localStorage/sessionStorage.
+ *
+ * @param storageName The name of the storage API (e.g., 'localStorage' or 'sessionStorage')
+ * @param messageId The message ID for the rule violation
+ * @returns Object containing helper functions for storage detection
+ */
+export function createStorageRuleHelpers(
+    storageName: string,
+    messageId: string
+): {
+    processVariableDeclarator: (node: ASTNode, forbiddenStorageObjects: string[]) => void;
+    checkMemberExpression: (node: ASTNode, forbiddenStorageObjects: string[], context: any) => void;
+} {
+    return {
+        /**
+         * Process variable declarator nodes for storage references.
+         *
+         * @param node The variable declarator node to process
+         * @param forbiddenStorageObjects Array to store forbidden storage object references
+         */
+        processVariableDeclarator(node: ASTNode, forbiddenStorageObjects: string[]): void {
+            const declaratorNode = node as { init?: ASTNode; id: IdentifierNode };
+            if (declaratorNode.init) {
+                if (declaratorNode.init.type === 'MemberExpression') {
+                    const memberInit = declaratorNode.init as MemberExpressionNode;
+                    const objectNode = memberInit.object as IdentifierNode;
+                    const propertyNode = memberInit.property as IdentifierNode;
+                    const firstElement = objectNode.name;
+                    const secondElement = propertyNode.name;
+                    if (firstElement + '.' + secondElement === `window.${storageName}`) {
+                        forbiddenStorageObjects.push(declaratorNode.id.name);
+                    }
+                } else if (
+                    declaratorNode.init.type === 'Identifier' &&
+                    (declaratorNode.init as IdentifierNode).name === storageName
+                ) {
+                    forbiddenStorageObjects.push(declaratorNode.id.name);
+                }
+            }
+        },
+
+        /**
+         * Check if a member expression represents forbidden storage usage.
+         *
+         * @param node The member expression node to check
+         * @param forbiddenStorageObjects Array of forbidden storage object references
+         * @param context The ESLint rule context
+         */
+        checkMemberExpression(node: ASTNode, forbiddenStorageObjects: string[], context: any): void {
+            const memberExpressionNode = node as MemberExpressionNode;
+            const calleePath = buildCalleePath(memberExpressionNode);
+            const speciousObject = isForbiddenObviousApi(calleePath);
+
+            if (
+                ((calleePath === storageName || calleePath === `window.${storageName}`) &&
+                    speciousObject === storageName) ||
+                contains(forbiddenStorageObjects, speciousObject)
+            ) {
+                context.report({ node: node, messageId });
+            }
+        }
+    };
+}
+
+// ------------------------------------------------------------------------------
+// Property Checking Functions (for UI5 property rules)
+// ------------------------------------------------------------------------------
+
+/**
+ * Create a helper function to check member expressions against forbidden property lists.
+ *
+ * @param propertyGroups Object mapping message IDs to arrays of forbidden property names
+ * @returns Function that checks member expressions
+ */
+export function createPropertyChecker(propertyGroups: Record<string, string[]>): (node: ASTNode, context: any) => void {
+    return function checkMemberExpression(node: ASTNode, context: any): void {
+        const memberNode = node as MemberExpressionNode;
+        if (!memberNode.property) {
+            return;
+        }
+        const propertyObj = memberNode.property as Record<string, unknown>;
+        if (!('name' in propertyObj)) {
+            return;
+        }
+        const val: string = (memberNode.property as IdentifierNode).name;
+
+        if (typeof val === 'string') {
+            for (const [messageId, properties] of Object.entries(propertyGroups)) {
+                if (contains(properties, val)) {
+                    const data = messageId.includes('Prop') ? { property: val } : undefined;
+                    context.report({ node, messageId, data });
+                    break;
+                }
+            }
+        }
+    };
+}
+
+// ------------------------------------------------------------------------------
+// Document-based Rule Functions (for DOM access, element creation, etc.)
+// ------------------------------------------------------------------------------
+
+/**
+ * Create document-based rule visitors with common pattern.
+ *
+ * @param config Configuration object for the document-based rule
+ * @param config.isInteresting Function to check if a node is interesting
+ * @param config.isValid Function to validate the node
+ * @param config.messageId The message ID for violations
+ * @returns Rule visitor object
+ */
+export function createDocumentBasedRuleVisitors(config: {
+    isInteresting: (node: ASTNode, isDocumentObject: (node: unknown) => boolean) => boolean;
+    isValid: (node: ASTNode) => boolean;
+    messageId: string;
+}): (context: any) => any {
+    return function createVisitors(context: any): any {
+        const WINDOW_OBJECTS: string[] = [];
+        const DOCUMENT_OBJECTS: string[] = [];
+
+        // Initialize factory functions
+        const isWindowObject = createIsWindowObject(WINDOW_OBJECTS);
+        const rememberWindow = createRememberWindow(WINDOW_OBJECTS, isWindowObject);
+        const isDocument = createIsDocument(isWindowObject);
+        const isDocumentObject = createIsDocumentObject(DOCUMENT_OBJECTS, isDocument);
+        const rememberDocument = createRememberDocument(DOCUMENT_OBJECTS, isDocumentObject);
+
+        return {
+            'VariableDeclarator'(node: ASTNode): boolean {
+                return (
+                    rememberWindow((node as any).id, (node as any).init) ||
+                    rememberDocument((node as any).id, (node as any).init)
+                );
+            },
+            'AssignmentExpression'(node: ASTNode): boolean {
+                return (
+                    rememberWindow((node as any).left, (node as any).right) ||
+                    rememberDocument((node as any).left, (node as any).right)
+                );
+            },
+            'MemberExpression'(node: ASTNode): void {
+                if (config.isInteresting(node, isDocumentObject) && !config.isValid(node)) {
+                    context.report({ node: node, messageId: config.messageId });
+                }
+            }
+        };
+    };
 }

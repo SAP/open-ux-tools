@@ -38,6 +38,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
 import { t } from '../../utils/i18n';
+import type { TelemetryCollector } from '../../telemetry';
 import type {
     AchPromptOptions,
     ApplicationPromptOptions,
@@ -217,8 +218,14 @@ export class ConfigPrompter {
      * @param {SystemLookup} systemLookup - The source system class to retrieve system endpoints.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - Instance of the logger.
+     * @param {TelemetryCollector} telemetryCollector - Instance of the telemetry collector.
      */
-    constructor(private readonly systemLookup: SystemLookup, layer: FlexLayer, private readonly logger: ToolsLogger) {
+    constructor(
+        private readonly systemLookup: SystemLookup,
+        layer: FlexLayer,
+        private readonly logger: ToolsLogger,
+        private readonly telemetryCollector: TelemetryCollector
+    ) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 
@@ -579,7 +586,10 @@ export class ConfigPrompter {
                 return validationResult;
             }
 
+            this.telemetryCollector.startTiming('applicationListLoadingTime');
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+            this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
+            this.telemetryCollector.endTiming('applicationListLoadingTime');
             this.isLoginSuccessful = true;
             return true;
         } catch (e) {
@@ -622,7 +632,10 @@ export class ConfigPrompter {
                     return validationResult;
                 }
 
+                this.telemetryCollector.startTiming('applicationListLoadingTime');
                 this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+                this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
+                this.telemetryCollector.endTiming('applicationListLoadingTime');
             }
 
             return true;

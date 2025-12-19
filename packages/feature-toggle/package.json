@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/feature-toggle",
-    "version": "0.3.4",
+    "version": "0.3.5",
     "description": "Feature toggle manager for Fiori tools",
     "repository": {
         "type": "git",
@@ -15,8 +15,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "link": "pnpm link --global",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "unlink": "pnpm unlink --global"

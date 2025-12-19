@@ -46,7 +46,11 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param options - optional options, see below
      * @param options.fs - optional `mem-fs-editor` instance
      */
-    constructor(private _project: Project, private appId: string, private options?: ApplicationAccessOptions) {}
+    constructor(
+        private readonly _project: Project,
+        private readonly appId: string,
+        private readonly options?: ApplicationAccessOptions
+    ) {}
 
     /**
      * Returns the application structure.
@@ -310,7 +314,10 @@ class ProjectAccessImp implements ProjectAccess {
      * @param _project - Project structure
      * @param options - optional options, like logger
      */
-    constructor(private _project: Project, private options?: ProjectAccessOptions) {}
+    constructor(
+        private readonly _project: Project,
+        private readonly options?: ProjectAccessOptions
+    ) {}
 
     /**
      * Returns list of application IDs.
@@ -322,9 +329,26 @@ class ProjectAccessImp implements ProjectAccess {
     }
 
     /**
-     * Returns an instance of an application for a given application ID. The contains information about the application, like paths and services.
+     * Get application ID (the relative path from project root to app root) for a given 'sap.app.id' from the manifest.
      *
-     * @param appId - application ID
+     * @param manifestAppId - The 'sap.app.id' from the manifest
+     * @returns - application ID (the relative path from project root to app root) or undefined if not found
+     */
+    async getApplicationIdByManifestAppId(manifestAppId: string): Promise<string | undefined> {
+        for (const [appId, { manifest: manifestPath }] of Object.entries(this._project.apps)) {
+            const manifestContent = await readJSON<Manifest>(manifestPath, this.options?.memFs);
+            if (manifestContent['sap.app']?.id === manifestAppId) {
+                return appId;
+            }
+        }
+        return undefined;
+    }
+
+    /**
+     * Returns an instance of an application for a given application ID (the relative path from project root to app root, NOT the 'sap.app.id' from the manifest).
+     * It contains information about the application, like paths and services.
+     *
+     * @param appId - application ID (the relative path from project root to app root, NOT the 'sap.app.id' from the manifest)
      * @returns - Instance of ApplicationAccess that contains information about the application, like paths and services
      */
     getApplication(appId: string): ApplicationAccess {
@@ -386,14 +410,14 @@ export async function createApplicationAccess(
     fs?: Editor | ApplicationAccessOptions
 ): Promise<ApplicationAccess> {
     try {
-        const apps = await findAllApps([appRoot]);
-        const app = apps.find((app) => app.appRoot === appRoot);
-        if (!app) {
-            throw new Error(`Could not find app with root ${appRoot}`);
-        }
         let options: ApplicationAccessOptions | undefined;
         if (fs) {
             options = isEditor(fs) ? { fs } : fs;
+        }
+        const apps = await findAllApps([appRoot], options?.fs);
+        const app = apps.find((app) => app.appRoot === appRoot);
+        if (!app) {
+            throw new Error(`Could not find app with root ${appRoot}`);
         }
         const project = await getProject(app.projectRoot, options?.fs);
         const appId = relative(project.root, appRoot);
