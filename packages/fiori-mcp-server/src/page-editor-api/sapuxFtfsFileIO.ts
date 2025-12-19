@@ -1,3 +1,4 @@
+import type { JSONSchema7 } from 'json-schema';
 import type {
     v4,
     ExportParametersV4Type,
@@ -174,14 +175,14 @@ export class SapuxFtfsFileIO {
     public async writePage(pageData: PageData): Promise<ExportResults | undefined> {
         const manifest = await getManifest(this.appAccess);
         if (!manifest) {
-            return;
+            return undefined;
         }
         const specification = await this.getSpecification();
         const schemaType = pageData.pageType === PageTypeV4.ObjectPage ? SchemaType.ObjectPage : SchemaType.ListReport;
         const exportParams = {
             [schemaType]: {
                 appId: this.getAppId(manifest),
-                jsonSchema: JSON.parse(pageData.schema) as object,
+                jsonSchema: JSON.parse(pageData.schema) as JSONSchema7,
                 manifest,
                 page: {
                     ...pageData.page,
@@ -219,14 +220,14 @@ export class SapuxFtfsFileIO {
         const { config, schema } = appData;
         const manifest = await getManifest(this.appAccess);
         if (!manifest) {
-            return;
+            return undefined;
         }
         const specification = await this.getSpecification();
         const exportParams: ExportParametersV4Type = {
             [SchemaType.Application]: {
                 application: config as v4.ApplicationV4,
                 manifest,
-                jsonSchema: JSON.parse(schema),
+                jsonSchema: JSON.parse(schema) as JSONSchema7,
                 logger: specificationLogger
             }
         };
