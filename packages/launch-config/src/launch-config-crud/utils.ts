@@ -3,7 +3,7 @@ import type { ODataVersion } from '@sap-ux/project-access';
 import { FileName } from '@sap-ux/project-access';
 import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types';
 import { Arguments, FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
-import { default as yargsParser } from 'yargs-parser';
+import yargsParser from 'yargs-parser';
 
 /**
  * Returns the string array of 'args' required in the launch config.

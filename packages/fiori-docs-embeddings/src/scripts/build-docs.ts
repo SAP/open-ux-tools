@@ -5,7 +5,7 @@ import { marked } from 'marked';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { spawn, type SpawnOptionsWithoutStdio } from 'node:child_process';
-import { default as matter } from 'gray-matter';
+import matter from 'gray-matter';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { setTimeout } from 'node:timers/promises';
 
