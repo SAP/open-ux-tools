@@ -10,15 +10,11 @@ const CLOSING_CHARACTERS = new Set([']', '}', ')']);
  *
  * @param string - String representing a complete element
  * @param indentInfo - indentation level, default 0 and skipFirstLine a boolean flag, flag to skip indenting first line if insert position is known.
+ * @param indentInfo.level
+ * @param indentInfo.skipFirstLine
  * @returns Indent a string representing a complete element.
  */
-export function indent(
-    string: string,
-    {
-        level = 0,
-        skipFirstLine = false
-    } = {}
-): string {
+export function indent(string: string, { level = 0, skipFirstLine = false } = {}): string {
     const parts = string.split('\n');
     for (let i = 0; i < parts.length; i++) {
         const line = parts[i];
