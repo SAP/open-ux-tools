@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.94
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+- Updated dependencies [dad2bd7]
+    - @sap-ux/ui5-library-writer@0.6.38
+
 ## 0.1.93
 
 ### Patch Changes

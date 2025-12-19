@@ -1,5 +1,14 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.27
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+- Updated dependencies [dad2bd7]
+    - @sap-ux/ui5-application-writer@1.6.7
+    - @sap-ux/ui5-test-writer@0.7.47
+
 ## 2.8.26
 
 ### Patch Changes
