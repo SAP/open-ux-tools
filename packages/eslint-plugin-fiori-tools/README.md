@@ -89,3 +89,10 @@ module.exports = defineConfig([
 Remove `eslint-plugin-fiori-custom` it exists in the package.json
 Update `eslint` to version `^9`
 Update `@sap-ux/eslint-plugin-fiori-tools` to version `^9`
+6. npm install
+7. Find and replace in source code an references to `fiori-custom/` rules and replace the `fiori-custom/` with `@sap-ux/fiori-tools/` 
+e.g. `//eslint-disable fiori-custom/sap-browser-api-warning`
+becomes `//eslint-disable @sap-ux/fiori-tools/sap-browser-api-warning`
+
+8. npm run lint
+   check outout for errors and warning. Fix as normal.
