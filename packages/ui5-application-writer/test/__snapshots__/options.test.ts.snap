@@ -43,8 +43,7 @@ module.exports = defineConfig([
     \\"eslint\\": \\"^9\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"~1.76.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"@babel/eslint-parser\\": \\"^7.27.0\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
@@ -1832,8 +1831,8 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"eslint\\": \\"^9\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
@@ -1882,7 +1881,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
 const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
 module.exports = defineConfig([
-    ...fioriTools.configs.recommended,
+    ...fioriTools.configs.recommended
 ]);
 "
 `;
@@ -1907,7 +1906,7 @@ archive.zip
 const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
 module.exports = defineConfig([
-    ...fioriTools.configs.recommended,
+    ...fioriTools.configs.recommended
 ]);
 ",
     "state": "modified",
@@ -1930,9 +1929,9 @@ module.exports = defineConfig([
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
     \\"typescript\\": \\"^5.9.3\\",
-    \\"eslint\\": \\"^9\\",
+    \\"ui5-tooling-modules\\": \\"^0.6.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
-    \\"ui5-tooling-modules\\": \\"^0.6.0\\"
+    \\"eslint\\": \\"^9\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",

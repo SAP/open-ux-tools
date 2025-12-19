@@ -40,7 +40,7 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
     optTmplFilePaths.forEach((optTmplFilePath) => {
         const relPath = optTmplFilePath.replace(optTmplDirPath, '');
         const outPath = join(basePath, relPath);
-        // Extend or add
+        // Add new files or merge  with existing json files
         if (!fs.exists(outPath) || !outPath.endsWith('.json')) {
             fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
                 globOptions: { dot: true },

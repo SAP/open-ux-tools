@@ -13,8 +13,7 @@
     "@ui5/cli": "^4.0.33",
     "@sap/ux-ui5-tooling": "1",
     "@sap-ux/eslint-plugin-fiori-tools": "^9.0.0",
-    "eslint": "^9",
-    "@babel/eslint-parser": "^7.27.0"
+    "eslint": "^9"
   },
   "scripts": {
     "start": "fiori run --open \"test/flp.html#app-preview\"",

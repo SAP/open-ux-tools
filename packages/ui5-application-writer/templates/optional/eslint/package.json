@@ -4,7 +4,6 @@
     },
     "devDependencies": {
         "@sap-ux/eslint-plugin-fiori-tools": "^9.0.0",
-        "eslint": "^9",
-        "@babel/eslint-parser": "^7.27.0"
+        "eslint": "^9"
     }
 }
