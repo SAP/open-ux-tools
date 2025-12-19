@@ -12,7 +12,6 @@
 '@sap-ux/annotation-generator': patch
 '@sap-ux/fiori-annotation-api': patch
 '@sap-ux/jest-environment-ui5': patch
-'@sap-ux/odata-vocabularies': patch
 '@sap-ux/environment-check': patch
 '@sap-ux/axios-extension': patch
 '@sap-ux/inquirer-common': patch
