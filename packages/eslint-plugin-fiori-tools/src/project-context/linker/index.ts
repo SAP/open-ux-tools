@@ -1,8 +1,10 @@
-import { Diagnostic } from '../../language/diagnostics';
-import { ParsedProject } from '../parser';
-import { LinkedFeV2App, runFeV2Linker } from './fe-v2';
-import { LinkedFeV4App, runFeV4Linker } from './fe-v4';
-import { LinkerContext } from './types';
+import type { Diagnostic } from '../../language/diagnostics';
+import type { ParsedProject } from '../parser';
+import type { LinkedFeV2App } from './fe-v2';
+import { runFeV2Linker } from './fe-v2';
+import type { LinkedFeV4App } from './fe-v4';
+import { runFeV4Linker } from './fe-v4';
+import type { LinkerContext } from './types';
 
 export type LinkedApp = LinkedFeV4App | LinkedFeV2App;
 
@@ -10,6 +12,10 @@ export interface LinkedModel {
     apps: { [path: string]: LinkedApp };
 }
 
+/**
+ *
+ * @param parsedProject
+ */
 export function linkProject(parsedProject: ParsedProject): [LinkedModel, Diagnostic[]] {
     const model: LinkedModel = {
         apps: {}

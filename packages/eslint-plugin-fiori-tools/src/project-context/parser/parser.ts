@@ -8,7 +8,7 @@ import { CdsAnnotationProvider, getXmlServiceArtifacts, type ServiceArtifacts } 
 
 import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types';
 import { uniformUrl } from '../utils';
-import { Diagnostic } from '../../language/diagnostics';
+import type { Diagnostic } from '../../language/diagnostics';
 import { buildServiceIndex } from './service';
 import type { ParsedProject, ParsedApp, ParsedManifest, FoundODataService, CustomViews } from './types';
 
@@ -22,16 +22,30 @@ interface ParseContext {
     fileCache: Map<string, string>;
 }
 
+/**
+ *
+ */
 export class ApplicationParser {
     private context: ParseContext;
     private index: ParsedProject;
     private diagnostics: Diagnostic[];
+    /**
+     *
+     * @param projectType
+     * @param fileCache
+     */
     private reset(projectType: ProjectType, fileCache: Map<string, string>) {
         this.index = { projectType, apps: {}, documents: {} };
         this.diagnostics = [];
         this.context = { projectType, fileCache };
     }
 
+    /**
+     *
+     * @param projectType
+     * @param artifacts
+     * @param fileCache
+     */
     public parse(
         projectType: ProjectType,
         artifacts: FoundFioriArtifacts,
@@ -69,7 +83,9 @@ export class ApplicationParser {
                         parsedApp.services[service.name] = { config: service, artifacts, index };
                     }
                 }
-            } catch {}
+            } catch {
+                // skip faulty apps for now
+            }
         }
         return {
             index: this.index,
@@ -77,6 +93,12 @@ export class ApplicationParser {
         };
     }
 
+    /**
+     *
+     * @param uri
+     * @param index
+     * @param fileCache
+     */
     public reparse(uri: string, index: ParsedProject, fileCache: Map<string, string>): ParseResult {
         this.reset(index.projectType, fileCache);
         if (uri.endsWith('.cds')) {
@@ -95,11 +117,10 @@ export class ApplicationParser {
                             service.index = serviceIndex;
                         }
                     }
-                    app.services;
                 }
             }
         } else if (uri.endsWith('manifest.json')) {
-            for (const [key,previousApp] of Object.entries(index.apps)) {
+            for (const [key, previousApp] of Object.entries(index.apps)) {
                 if (previousApp.manifest.manifestUri === uri) {
                     const manifestContent = fileCache.get(uri) ?? '';
                     const manifestAst = parseJson(manifestContent, {
@@ -164,6 +185,12 @@ export class ApplicationParser {
         return { index: index, diagnostics: [] };
     }
 
+    /**
+     *
+     * @param webappPath
+     * @param manifestUri
+     * @param manifest
+     */
     private parseManifest(
         webappPath: string,
         manifestUri: string,
@@ -237,6 +264,11 @@ export class ApplicationParser {
         return [parsedManifest, services];
     }
 
+    /**
+     *
+     * @param projectRootPath
+     * @param service
+     */
     private parseService(projectRootPath: string, service: FoundODataService): ServiceArtifacts | undefined {
         if (service.type === 'cap') {
             return CdsAnnotationProvider.getCdsServiceArtifacts(projectRootPath, service.path, this.context.fileCache);
@@ -251,6 +283,9 @@ export class ApplicationParser {
         }
     }
 
+    /**
+     *
+     */
     private isCapProject(): boolean {
         return this.context.projectType === 'CAPJava' || this.context.projectType === 'CAPNodejs';
     }
@@ -259,6 +294,12 @@ export class ApplicationParser {
 type DataSources = Exclude<Manifest['sap.app']['dataSources'], undefined>;
 type DataSource = DataSources[keyof DataSources];
 
+/**
+ *
+ * @param webappPath
+ * @param dataSource
+ * @param manifestDataSources
+ */
 function getAnnotationFiles(
     webappPath: string,
     dataSource: DataSource,
@@ -293,10 +334,18 @@ function getAnnotationFiles(
     return annotationFiles;
 }
 
+/**
+ *
+ * @param manifest
+ */
 function getFlexEnabled(manifest: Manifest): boolean {
     return manifest['sap.ui5']?.flexEnabled ?? true;
 }
 
+/**
+ *
+ * @param manifest
+ */
 function getMinUI5Version(manifest: Manifest): string | undefined {
     const value = manifest['sap.ui5']?.dependencies?.minUI5Version;
     if (Array.isArray(value)) {

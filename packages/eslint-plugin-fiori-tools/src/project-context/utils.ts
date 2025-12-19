@@ -1,4 +1,4 @@
-import { ParsedApp, ParsedService } from './parser';
+import type { ParsedApp, ParsedService } from './parser';
 
 /**
  * Normalizes a URL by replacing backslashes with forward slashes and removing leading slashes.

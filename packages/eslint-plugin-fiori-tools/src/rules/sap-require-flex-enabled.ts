@@ -2,8 +2,8 @@ import { type FioriPropertyDefinition, PROPERTY_DEFINITIONS } from '../property-
 import type { FioriRuleDefinition } from '../types';
 import { createFioriRule } from '../language/rule-factory';
 import { REQUIRE_FLEX_ENABLED, type RequireFlexEnabled } from '../language/diagnostics';
-import { RuleVisitor } from '@eslint/core';
-import { MemberNode } from '@humanwhocodes/momoa';
+import type { RuleVisitor } from '@eslint/core';
+import type { MemberNode } from '@humanwhocodes/momoa';
 
 const flexEnabledDefinition: FioriPropertyDefinition = PROPERTY_DEFINITIONS.flexEnabled;
 
@@ -25,7 +25,6 @@ const rule: FioriRuleDefinition = createFioriRule({
         const problems: RequireFlexEnabled[] = [];
 
         for (const [, app] of Object.entries(context.sourceCode.projectContext.index.apps)) {
-            const manifest = app.manifestObject;
             if (!app.manifest.flexEnabled) {
                 problems.push({
                     type: REQUIRE_FLEX_ENABLED,
@@ -33,14 +32,6 @@ const rule: FioriRuleDefinition = createFioriRule({
                     propertyName: 'flexEnabled'
                 });
             }
-            //  else if (flexEnabled === false) {
-            // } else {
-            //     problems.push({
-            //         type: REQUIRE_FLEX_ENABLED,
-            //         manifestPropertyPath: ['sap.ui5'],
-            //         propertyName: 'flexEnabled'
-            //     });
-            // }
         }
 
         return problems;
@@ -50,6 +41,10 @@ const rule: FioriRuleDefinition = createFioriRule({
             return {};
         }
         const matchers: RuleVisitor = {};
+        /**
+         *
+         * @param node
+         */
         function report(node: MemberNode) {
             context.report({
                 node,

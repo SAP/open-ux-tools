@@ -1,16 +1,10 @@
-import { MetadataElement } from '@sap-ux/odata-annotation-core';
-import { LinkerContext } from './types';
+import type { MetadataElement } from '@sap-ux/odata-annotation-core';
+import type { LinkerContext } from './types';
 import { getParsedServiceByName } from '../utils';
-import { ParsedService } from '../parser';
+import type { ParsedService } from '../parser';
 
-import {
-    AnnotationNode,
-    collectSections,
-    collectTables,
-    SectionNode,
-    TableNode,
-    TableSectionNode
-} from './annotations';
+import type { AnnotationNode, SectionNode, TableNode, TableSectionNode } from './annotations';
+import { collectSections, collectTables } from './annotations';
 
 export interface LinkedFeV2App {
     type: 'fe-v2';
@@ -74,6 +68,10 @@ export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
 
+/**
+ *
+ * @param context
+ */
 export function runFeV2Linker(context: LinkerContext): LinkedFeV2App {
     const linkedApp: LinkedFeV2App = {
         type: 'fe-v2',
@@ -110,6 +108,15 @@ interface PageSettings {
     pages?: { [name: string]: PageSettings };
 }
 
+/**
+ *
+ * @param context
+ * @param service
+ * @param linkedApp
+ * @param path
+ * @param name
+ * @param target
+ */
 function linkPage(
     context: LinkerContext,
     service: ParsedService,
@@ -190,6 +197,13 @@ function linkPage(
     }
 }
 
+/**
+ *
+ * @param page
+ * @param pathToPage
+ * @param tables
+ * @param configuration
+ */
 function linkListReportTable(
     page: FeV2ListReport,
     pathToPage: string[],
@@ -235,7 +249,6 @@ function linkListReportTable(
                     }
                 }
             }
-            
         } else {
             // no annotation definition found for this table, but configuration exists
             const orphanedSection: OrphanTable = {
@@ -258,6 +271,15 @@ function linkListReportTable(
     }
 }
 
+/**
+ *
+ * @param page
+ * @param pathToPage
+ * @param entity
+ * @param service
+ * @param sections
+ * @param configuration
+ */
 function linkObjectPageSections(
     page: FeV2ObjectPage,
     pathToPage: string[],
@@ -324,9 +346,8 @@ function linkObjectPageSections(
                     }
                 }
             }
-            
         } else {
-             // no annotation definition found for this section, but configuration exists
+            // no annotation definition found for this section, but configuration exists
             const orphanedSection: OrphanSection = {
                 type: 'orphan-section',
                 configurationPath: [...pathToPage, 'component', 'settings', 'sections', sectionKey],
@@ -346,6 +367,10 @@ function linkObjectPageSections(
     }
 }
 
+/**
+ *
+ * @param value
+ */
 function getCreationRowsValue(value: string): TableSettings['createMode'] | undefined {
     switch (value) {
         case 'creationRows':

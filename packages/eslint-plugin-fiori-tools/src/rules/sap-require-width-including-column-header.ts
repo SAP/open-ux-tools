@@ -1,21 +1,12 @@
-import { RuleVisitor } from '@eslint/core';
-import {
-    Edm,
-    elementsWithName,
-    Element,
-    getElementAttributeValue,
-    elements,
-    toFullyQualifiedName,
-    parseIdentifier
-} from '@sap-ux/odata-annotation-core';
-import { MemberNode } from '@humanwhocodes/momoa';
+import type { RuleVisitor } from '@eslint/core';
+import type { Element } from '@sap-ux/odata-annotation-core';
+import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
+import type { MemberNode } from '@humanwhocodes/momoa';
 
 import { createFioriRule } from '../language/rule-factory';
 import type { FioriRuleDefinition } from '../types';
-import {
-    REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-    RequireWidthIncludingColumnHeaderDiagnostic
-} from '../language/diagnostics';
+import type { RequireWidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
+import { REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
@@ -106,6 +97,10 @@ const rule: FioriRuleDefinition = createFioriRule({
             return {};
         }
         const matchers: RuleVisitor = {};
+        /**
+         *
+         * @param node
+         */
         function report(node: MemberNode) {
             // The selector matches a Member node, we need its value (the Object)
             const tableSettingsObject = node.value;

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import type { Rule, Linter } from 'eslint';
+import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import js from '@eslint/js';
 import babelParser from '@babel/eslint-parser';
@@ -20,7 +20,6 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
     name: string;
     version: string;
 };
-
 
 // Plugin meta information (required for ESLint 9)
 export const meta = {

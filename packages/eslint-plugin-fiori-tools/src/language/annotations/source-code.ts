@@ -1,8 +1,8 @@
 import type { SourceLocation, TraversalStep } from '@eslint/plugin-kit';
 import { TextSourceCodeBase } from '@eslint/plugin-kit';
 
-import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
-import {
+import type {
+    AnnotationFile,
     ANNOTATION_FILE_TYPE,
     ATTRIBUTE_TYPE,
     ELEMENT_TYPE,
@@ -38,6 +38,13 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
      */
     ast: AnnotationFile;
 
+    /**
+     *
+     * @param root0
+     * @param root0.text
+     * @param root0.ast
+     * @param root0.projectContext
+     */
     constructor({ text, ast, projectContext }: { text: string; ast: AnnotationFile; projectContext: ProjectContext }) {
         super({ text, ast });
         this.ast = ast;
@@ -46,7 +53,7 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
 
     /**
      * Traversal of AST.
-     * 
+     *
      * @returns
      */
     traverse(): Iterable<TraversalStep> {

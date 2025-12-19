@@ -2,15 +2,12 @@ import { join } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 
-import { findFioriArtifacts, FoundFioriArtifacts, normalizePath } from '@sap-ux/project-access';
+import type { FoundFioriArtifacts } from '@sap-ux/project-access';
+import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
 
-import {
-    FeV2ListReport,
-    FeV2ObjectPage,
-    LinkedFeV2App,
-    runFeV2Linker
-} from '../../../src/project-context/linker/fe-v2';
-import { LinkerContext } from '../../../src/project-context/linker/types';
+import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App } from '../../../src/project-context/linker/fe-v2';
+import { runFeV2Linker } from '../../../src/project-context/linker/fe-v2';
+import type { LinkerContext } from '../../../src/project-context/linker/types';
 import { ApplicationParser } from '../../../src/project-context/parser';
 
 const parser = new ApplicationParser();

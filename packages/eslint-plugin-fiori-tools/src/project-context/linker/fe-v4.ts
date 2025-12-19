@@ -1,11 +1,8 @@
-import { Manifest } from '@sap-ux/project-access';
-
-import { MetadataElement, parseIdentifier, parsePath, toFullyQualifiedPath } from '@sap-ux/odata-annotation-core';
+import type { MetadataElement } from '@sap-ux/odata-annotation-core';
+import type { ParsedService, IndexedAnnotation } from '../parser';
 import { buildAnnotationIndexKey } from '../parser';
-import { LinkerContext } from './types';
-import { get } from 'http';
+import type { LinkerContext } from './types';
 import { getParsedServiceByName } from '../utils';
-import { ParsedService, IndexedAnnotation } from '../parser';
 import { UI_LINE_ITEM } from '../../constants';
 
 export interface LinkedFeV4App {
@@ -47,6 +44,10 @@ export interface TableConfiguration {
     };
 }
 
+/**
+ *
+ * @param context
+ */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
@@ -104,6 +105,11 @@ interface TableControlConfiguration {
 
 type ControlConfiguration = TableControlConfiguration;
 
+/**
+ *
+ * @param entity
+ * @param service
+ */
 function linkControls(
     entity: MetadataElement,
     service: ParsedService,
@@ -191,6 +197,10 @@ function linkControls(
     return { tables: Object.values(tables) };
 }
 
+/**
+ *
+ * @param value
+ */
 function getTableType(value: string): TableConfiguration['settings']['tableType'] | undefined {
     switch (value) {
         case 'ResponsiveTable':
@@ -208,6 +218,11 @@ interface PageSettings {
     entitySet?: string;
 }
 
+/**
+ *
+ * @param settings
+ * @param service
+ */
 function getEntity(settings: PageSettings, service: ParsedService): MetadataElement | undefined {
     if (settings.contextPath) {
         return getEntityForContextPath(settings.contextPath, service);
@@ -217,6 +232,11 @@ function getEntity(settings: PageSettings, service: ParsedService): MetadataElem
     return undefined;
 }
 
+/**
+ *
+ * @param contextPath
+ * @param service
+ */
 function getEntityForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
     if (!contextPath.startsWith('/')) {
         return;
@@ -247,6 +267,11 @@ function getEntityForContextPath(contextPath: string, service: ParsedService): M
     return entityType;
 }
 
+/**
+ *
+ * @param root
+ * @param segments
+ */
 function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
     if (segments.length === 0) {
         return root;

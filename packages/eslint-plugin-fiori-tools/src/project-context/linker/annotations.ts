@@ -1,20 +1,17 @@
+import type { AliasInformation, Element, MetadataElement } from '@sap-ux/odata-annotation-core';
 import {
-    AliasInformation,
     Edm,
     elementsWithName,
     getElementAttributeValue,
     toFullyQualifiedName,
-    Element,
     parseIdentifier,
     ELEMENT_TYPE,
     getElementAttribute,
     toFullyQualifiedPath,
-    parsePath,
-    MetadataElement
+    parsePath
 } from '@sap-ux/odata-annotation-core';
-import {} from '../../../../xml-odata-annotation-converter/src/parser/element-getters';
-import { buildAnnotationIndexKey, IndexedAnnotation, ParsedService } from '../parser';
-import { LinkerContext } from './types';
+import type { IndexedAnnotation, ParsedService } from '../parser';
+import { buildAnnotationIndexKey } from '../parser';
 import { UI_LINE_ITEM } from '../../constants';
 
 export interface AnnotationBasedNode<T extends string, Children = never> {
@@ -37,6 +34,12 @@ export type NodeLookup = {
     [K in AnnotationNode['type']]?: Extract<AnnotationNode, { type: K }>[];
 };
 
+/**
+ *
+ * @param feVersion
+ * @param entityType
+ * @param service
+ */
 export function collectTables(feVersion: 'v2' | 'v4', entityType: string, service: ParsedService): TableNode[] {
     const tables: TableNode[] = [];
     const lineItemKey = buildAnnotationIndexKey(entityType, UI_LINE_ITEM);
@@ -53,6 +56,12 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
     }
     return tables;
 }
+/**
+ *
+ * @param feVersion
+ * @param entityType
+ * @param service
+ */
 export function collectSections(feVersion: 'v2' | 'v4', entityType: string, service: ParsedService): SectionNode[] {
     const sections: SectionNode[] = [];
     const facetsKey = buildAnnotationIndexKey(entityType, 'com.sap.vocabularies.UI.v1.Facets');
@@ -130,6 +139,11 @@ export function collectSections(feVersion: 'v2' | 'v4', entityType: string, serv
     return sections;
 }
 
+/**
+ *
+ * @param aliasInfo
+ * @param element
+ */
 export function getRecordType(aliasInfo: AliasInformation, element: Element): string | undefined {
     const recordType = getElementAttributeValue(element, Edm.Type);
 
@@ -149,6 +163,10 @@ interface RecordProperty {
     kind: Edm.String | Edm.AnnotationPath;
 }
 
+/**
+ *
+ * @param record
+ */
 function getRecordPropertyValue(record: Element): Record<string, RecordProperty> {
     const properties: Record<string, RecordProperty> = {};
     for (const child of record.content) {
@@ -179,7 +197,12 @@ function getRecordPropertyValue(record: Element): Record<string, RecordProperty>
     return properties;
 }
 
-function getEntityForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
+/**
+ *
+ * @param contextPath
+ * @param service
+ */
+export function getEntityForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
     if (!contextPath.startsWith('/')) {
         return;
     }
@@ -196,6 +219,11 @@ function getEntityForContextPath(contextPath: string, service: ParsedService): M
     return resolveNavigationProperties(entity, segments);
 }
 
+/**
+ *
+ * @param root
+ * @param segments
+ */
 function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
     if (segments.length === 0) {
         return root;

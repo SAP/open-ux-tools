@@ -1,5 +1,5 @@
-import { Diagnostic } from "../../language/diagnostics";
-import { ParsedApp } from "../parser";
+import type { Diagnostic } from '../../language/diagnostics';
+import type { ParsedApp } from '../parser';
 
 export interface LinkerContext {
     app: ParsedApp;

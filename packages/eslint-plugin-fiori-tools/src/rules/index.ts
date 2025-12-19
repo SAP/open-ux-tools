@@ -54,7 +54,7 @@ import sapUsageBasemastercontroller from './sap-usage-basemastercontroller';
 
 import flexEnabledRule from './sap-require-flex-enabled';
 import requireWidthIncludingColumnHeader from './sap-require-width-including-column-header';
-import { Rule } from 'eslint';
+import type { Rule } from 'eslint';
 
 export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | FioriXMLRuleDefinition> = {
     'sap-bookmark-performance': sapBookmarkPerformance,

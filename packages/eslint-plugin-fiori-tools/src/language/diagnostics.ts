@@ -1,4 +1,4 @@
-import { AnnotationReference } from '../project-context/parser';
+import type { AnnotationReference } from '../project-context/parser';
 export const REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-require-width-including-column-header';
 export const REQUIRE_FLEX_ENABLED = 'sap-require-flex-enabled';
 

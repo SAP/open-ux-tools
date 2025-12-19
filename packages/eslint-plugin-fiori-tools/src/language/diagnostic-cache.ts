@@ -1,4 +1,4 @@
-import { Diagnostic } from './diagnostics';
+import type { Diagnostic } from './diagnostics';
 
 type InternalDiagnosticCache = {
     [K in Diagnostic['type']]?: Extract<Diagnostic, { type: K }>[];
@@ -38,7 +38,10 @@ export class DiagnosticCache {
      * @param key - The key to add diagnostics for.
      * @param diagnostics - Diagnostics to store.
      */
-    public static addMessages<T extends Diagnostic['type']>(key: T, diagnostics: Extract<Diagnostic, { type: T }>[]): void {
+    public static addMessages<T extends Diagnostic['type']>(
+        key: T,
+        diagnostics: Extract<Diagnostic, { type: T }>[]
+    ): void {
         this.cache[key] ??= [];
         for (const diagnostic of diagnostics) {
             this.cache[key].push(diagnostic as any);

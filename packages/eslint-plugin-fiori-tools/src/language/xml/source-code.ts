@@ -28,6 +28,13 @@ export class FioriXMLSourceCode extends TextSourceCodeBase {
     ast: XMLDocument;
     private aliasMap: Record<string, string> | undefined;
 
+    /**
+     *
+     * @param root0
+     * @param root0.text
+     * @param root0.ast
+     * @param root0.projectContext
+     */
     constructor({ text, ast, projectContext }: { text: string; ast: XMLDocument; projectContext: ProjectContext }) {
         super({ text, ast });
         this.ast = ast;
@@ -74,6 +81,10 @@ export class FioriXMLSourceCode extends TextSourceCodeBase {
         return this.aliasMap;
     }
 
+    /**
+     *
+     * @param node
+     */
     getParent(node: XMLAstNode | XMLToken): object | undefined {
         if (isNode(node)) {
             if (node.type === 'XMLDocument') {

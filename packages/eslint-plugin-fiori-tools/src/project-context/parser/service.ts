@@ -1,3 +1,4 @@
+import type { Element, MetadataElement } from '@sap-ux/odata-annotation-core';
 import {
     Edm,
     getAliasInformation,
@@ -5,13 +6,11 @@ import {
     getElementAttribute,
     getElementAttributeValue,
     parseIdentifier,
-    toFullyQualifiedName,
-    Element,
-    MetadataElement
+    toFullyQualifiedName
 } from '@sap-ux/odata-annotation-core';
-import { ServiceArtifacts } from '@sap-ux/fiori-annotation-api/src/types';
+import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api/src/types';
 
-import { DocumentType } from '../types';
+import type { DocumentType } from '../types';
 
 export interface ServiceIndex {
     entityContainer?: MetadataElement;
@@ -55,7 +54,7 @@ export function buildAnnotationIndexKey(target: string, term: string): string {
 
 /**
  *
- * @param files
+ * @param service
  * @returns
  */
 function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): AnnotationIndex {
@@ -117,6 +116,10 @@ function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): Annotation
     return index;
 }
 
+/**
+ *
+ * @param artifacts
+ */
 export function buildServiceIndex(
     artifacts: ServiceArtifacts,
     documents: { [key: string]: DocumentType }
