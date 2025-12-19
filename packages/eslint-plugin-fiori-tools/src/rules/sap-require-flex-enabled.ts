@@ -24,9 +24,14 @@ const rule: FioriRuleDefinition = createMixedRule({
     check(context) {
         const problems: RequireFlexEnabled[] = [];
 
-        for (const [, app] of Object.entries(context.sourceCode.projectContext.index.apps)) {
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.index.apps)) {
             const manifest = app.manifestObject;
-            if (!app.manifest.flexEnabled) {
+            
+            // Check the actual current manifest state to prevent circular fixes
+            // The app.manifest object is from the index which doesn't update between fix passes
+            const currentFlexEnabled = manifest?.['sap.ui5']?.flexEnabled;
+            
+            if (!app.manifest.flexEnabled && currentFlexEnabled !== true) {
                 problems.push({
                     type: REQUIRE_FLEX_ENABLED,
                     manifestPropertyPath: ['sap.ui5', 'flexEnabled'],
@@ -51,6 +56,21 @@ const rule: FioriRuleDefinition = createMixedRule({
         }
         const matchers: RuleVisitor = {};
         function report(node: MemberNode) {
+            // Double-check that the fix hasn't already been applied
+            // This prevents circular fixes when the index doesn't update between passes
+            if (node.value.type === 'Boolean') {
+                // If node is already a Boolean with value true, skip
+                if ((node.value as any).value === true) {
+                    return;
+                }
+            } else if (node.value.type === 'Object') {
+                const flexProp = node.value.members.find(
+                    (m: any) => m.name.type === 'String' && m.name.value === 'flexEnabled'
+                );
+                if (flexProp?.value?.type === 'Boolean' && (flexProp.value as any).value === true) {
+                    return;
+                }
+            }
             context.report({
                 node,
                 messageId: REQUIRE_FLEX_ENABLED,

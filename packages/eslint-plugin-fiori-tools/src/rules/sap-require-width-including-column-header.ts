@@ -122,7 +122,6 @@ console.log("DEBUG; Checking apps", context.sourceCode.projectContext.linkedMode
                         
                         if (!settingsPath) {
                             // Settings doesn't exist in manifest (shouldn't happen if linker created the page)
-                            console.log('DEBUG; Skipping table - settings does not exist for target:', page.targetName);
                             continue;
                         }
                         
@@ -146,8 +145,42 @@ console.log("DEBUG; Checking apps", context.sourceCode.projectContext.linkedMode
                             ...pathInfo.validatedPath
                         ];
                         
-                        console.log('DEBUG; Reporting problem for table at path', fullManifestPath.join('/'), 
-                                    'missing segments:', pathInfo.missingSegments.join('/'));
+                        // Re-check the actual current manifest to see if fix was already applied
+                        // This prevents circular fixes after autofix passes
+                        let currentObj = settingsPath;
+                        let alreadyFixed = false;
+                        
+                        // Navigate to the deepest existing level
+                        for (const segment of pathInfo.validatedPath) {
+                            if (currentObj && typeof currentObj === 'object' && segment in currentObj) {
+                                currentObj = currentObj[segment];
+                            }
+                        }
+                        
+                        // Check if widthIncludingColumnHeader already exists at the correct location
+                        if (pathInfo.missingSegments.length === 0) {
+                            // Direct check at current level
+                            alreadyFixed = currentObj?.widthIncludingColumnHeader === true;
+                        } else {
+                            // Need to check if the missing path + property exists
+                            let checkObj = currentObj;
+                            for (const segment of pathInfo.missingSegments) {
+                                if (checkObj && typeof checkObj === 'object' && segment in checkObj) {
+                                    checkObj = checkObj[segment];
+                                } else {
+                                    break;
+                                }
+                            }
+                            // If we successfully navigated all missing segments, check for the property
+                            if (checkObj && typeof checkObj === 'object') {
+                                alreadyFixed = checkObj.widthIncludingColumnHeader === true;
+                            }
+                        }
+                        
+                        if (alreadyFixed) {
+                            continue;
+                        }
+                        
                         problems.push({
                             type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
                             manifestPropertyPath: fullManifestPath,
@@ -209,13 +242,15 @@ console.log("DEBUG; Checking apps", context.sourceCode.projectContext.linkedMode
 
                             const indentation = getIndentation(parentObject);
                             const newContent = generateFixedContent(parentObject, missing, indentation, context);
+                            
                             return fixer.replaceTextRange(parentObject.range, newContent);
                         }
                     });
                 };
             }
             
-            matchers[context.sourceCode.createMatcherString(diagnostic.manifestPropertyPath)] = createReportFunction(missingSegments);
+            const matcherPath = context.sourceCode.createMatcherString(diagnostic.manifestPropertyPath);
+            matchers[matcherPath] = createReportFunction(missingSegments);
         }
         return matchers;
     },
@@ -225,7 +260,6 @@ console.log("DEBUG; Checking apps", context.sourceCode.projectContext.linkedMode
         }
 
         const lookup = new Set<Element>();
-        console.log(validationResult);
         for (const diagnostic of validationResult) {
             lookup.add(diagnostic.annotation?.reference?.value);
         }
@@ -248,12 +282,17 @@ console.log("DEBUG; Checking apps", context.sourceCode.projectContext.linkedMode
  * Check if the fix should be skipped (already has correct value)
  */
 function shouldSkipFix(parentObject: any, missingSegments: string[]): boolean {
+    //console.log('shouldSkipFix: checking with missingSegments=', missingSegments);
+    //console.log('shouldSkipFix: parentObject.members.length=', parentObject.members.length);
+    
     if (missingSegments.length === 0) {
         // At tableSettings level, check if widthIncludingColumnHeader is already true
         const property = parentObject.members.find(
             (member: any) => member.name.type === 'String' && member.name.value === 'widthIncludingColumnHeader'
         );
-        return property?.value?.type === 'Boolean' && property.value.value === true;
+        const result = property?.value?.type === 'Boolean' && property.value.value === true;
+        //console.log('shouldSkipFix: at tableSettings level, found property=', property?.name?.value, 'value=', property?.value?.value, 'returning=', result);
+        return result;
     }
     
     // Navigate through missing segments to check if fix is already applied
