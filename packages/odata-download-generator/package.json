@@ -34,7 +34,7 @@
     "dependencies": {
         "odata-query": "8.0.5",
         "@sap/ux-specification": "1.139.2",
-        "@sap-ux/annotation-converter": "0.10.8",
+        "@sap-ux/annotation-converter": "0.10.9",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/edmx-parser": "0.9.1",
@@ -46,7 +46,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.13.1",
+        "@sap-ux/vocabularies-types": "0.13.2",
         "@vscode-logging/logger": "2.0.0",
         "@sap-devx/yeoman-ui-types": "1.16.9",
         "i18next": "25.3.0",

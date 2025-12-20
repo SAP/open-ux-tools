@@ -44,28 +44,30 @@ function createRelatedEntityChoices(relatedEntities: Map<Entity, Entity[]>): Che
     const choices: CheckboxChoiceOptions[] = [];
 
     relatedEntities.forEach((entities, parentEntity) => {
-        // Check the entity types assigned annotations for cross refs to other entities that should be selected by default
-        // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-select
-        const defaultSelectionPaths = getDefaultSelectionPaths(parentEntity.entityType);
+        if (parentEntity.entityType) {
+            // Check the entity types assigned annotations for cross refs to other entities that should be selected by default
+            // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-select
+            const defaultSelectionPaths = getDefaultSelectionPaths(parentEntity.entityType);
 
-        entities.forEach((entity) => {
-            // fix issue with prompt values containing `name
-            const entityChoice: SelectedEntityAnswer = {
-                // Nasty workaround for checkbox selection issue: https://github.com/SAP/inquirer-gui/issues/787
-                fullPath: `${parentEntity.entityPath}/${entity.entityPath}`,
-                entity: {
-                    entityPath: entity.entityPath,
-                    entitySetName: entity.entitySetName,
-                    defaultSelection: defaultSelectionPaths.includes(entity.entityPath)
-                }
-            };
+            entities.forEach((entity) => {
+                // fix issue with prompt values containing `name
+                const entityChoice: SelectedEntityAnswer = {
+                    // Nasty workaround for checkbox selection issue: https://github.com/SAP/inquirer-gui/issues/787
+                    fullPath: `${parentEntity.entityPath}/${entity.entityPath}`,
+                    entity: {
+                        entityPath: entity.entityPath,
+                        entitySetName: entity.entitySetName,
+                        defaultSelection: defaultSelectionPaths.includes(entity.entityPath)
+                    }
+                };
 
-            const choiceId = `${parentEntity.entityPath} > ${entity.entityPath} :${entityChoice.entity.defaultSelection}`;
-            choices.push({
-                name: choiceId,
-                value: JSON.stringify(entityChoice)
+                const choiceId = `${parentEntity.entityPath} > ${entity.entityPath} :${entityChoice.entity.defaultSelection}`;
+                choices.push({
+                    name: choiceId,
+                    value: JSON.stringify(entityChoice)
+                });
             });
-        });
+        };
     });
 
     return choices;
