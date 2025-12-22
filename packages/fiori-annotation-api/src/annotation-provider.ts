@@ -1,10 +1,10 @@
 import { pathToFileURL } from 'node:url';
 
-import { ServiceInfo } from '@sap-ux/project-access';
-import { AliasInformation, AnnotationFile } from '@sap-ux/odata-annotation-core-types';
+import type { ServiceInfo } from '@sap-ux/project-access';
+import type { AliasInformation, AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
+import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import {
-    CdsCompilerFacade,
     createMetadataCollector,
     getMetadataElementsFromMap
     // createCdsCompilerFacadeForRootSync
@@ -13,10 +13,20 @@ import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-conv
 import { MetadataService } from '@sap-ux/odata-entity-model';
 
 import { XML_VOCABULARY_SERVICE, XMLAnnotationServiceAdapter } from './xml';
-import { ServiceArtifacts, TextFile } from './types';
+import type { ServiceArtifacts, TextFile } from './types';
 import { getAliasInformation, getAllNamespacesAndReferences } from '@sap-ux/odata-annotation-core';
 import { addAllVocabulariesToAliasInformation } from './vocabularies';
 
+/**
+ * Get XML service artifacts.
+ *
+ * @param odataVersion - Service OData version.
+ * @param path - Service path.
+ * @param metadataFile - Metadata file.
+ * @param annotationFiles - Annotation files.
+ * @param fileCache - File cache.
+ * @returns Service artifacts.
+ */
 export function getXmlServiceArtifacts(
     odataVersion: '2.0' | '4.0',
     path: string,
@@ -49,12 +59,23 @@ export function getXmlServiceArtifacts(
     };
 }
 
+/**
+ *
+ */
 export class CdsAnnotationProvider {
     private static serviceInfoCache = new Map<string, ServiceInfo[]>();
     private static serviceArtifactCache = new Map<string, Record<string, ServiceArtifacts>>();
     private static cdsCache = new Map<string, CdsCompilerFacade>();
     private static vocabularyService = new VocabularyService(true);
 
+    /**
+     * Get CDS service artifacts.
+     *
+     * @param rootPath - Project root path.
+     * @param servicePath - Service path.
+     * @param fileCache - File cache.
+     * @returns Service artifacts or undefined.
+     */
     public static getCdsServiceArtifacts(
         rootPath: string,
         servicePath: string,
@@ -73,7 +94,7 @@ export class CdsAnnotationProvider {
         const services = this.serviceInfoCache.get(rootPath) ?? [];
         const serviceInfo = services.find((s) => uniformUrl(s.urlPath) === uniformUrl(servicePath));
         if (!serviceInfo) {
-            return;
+            return undefined;
         }
 
         const serviceName = serviceInfo.name;
@@ -119,16 +140,33 @@ export class CdsAnnotationProvider {
         return artifacts;
     }
 
+    /**
+     * Get CDS services.
+     *
+     * @param rootPath - Project root path.
+     * @param fileCache - File cache.
+     * @returns Service info array.
+     */
     public static getServices(rootPath: string, fileCache: Map<string, string>): ServiceInfo[] {
         this.getFacade(rootPath, fileCache, false);
         return this.serviceInfoCache.get(rootPath) ?? [];
     }
+    /**
+     * Reset CDS cache clearing compile model and service artifacts.
+     *
+     * @param rootPath - Project root path.
+     * @param fileCache - File cache.
+     */
     public static resetCache(rootPath: string, fileCache: Map<string, string>): void {
         this.serviceArtifactCache.delete(rootPath);
         this.getFacade(rootPath, fileCache, true);
     }
 
-    private static getFacade(rootPath: string, fileCache: Map<string, string>, ignoreCache = false): CdsCompilerFacade {
+    private static getFacade(
+        rootPath: string,
+        fileCache: Map<string, string>,
+        _ignoreCache = false
+    ): CdsCompilerFacade {
         throw new Error('Not implemented yet.');
         // const cachedValue = this.cdsCache.get(rootPath);
         // if (cachedValue && ignoreCache === false) {

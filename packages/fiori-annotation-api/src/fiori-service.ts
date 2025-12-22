@@ -6,7 +6,7 @@ import { create as createEditor } from 'mem-fs-editor';
 
 import type { RawMetadata } from '@sap-ux/vocabularies-types';
 import type { Project } from '@sap-ux/project-access';
-import { VocabularyService } from '@sap-ux/odata-vocabularies';
+import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type {
     AliasInformation,
     CompilerMessage,

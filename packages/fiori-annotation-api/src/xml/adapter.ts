@@ -52,8 +52,7 @@ import {
     REPLACE_ATTRIBUTE,
     DELETE_ATTRIBUTE,
     INSERT_TARGET,
-    REPLACE_TEXT,
-    ServiceArtifacts
+    REPLACE_TEXT
 } from '../types';
 import { ApiError, ApiErrorCode } from '../error';
 
@@ -151,6 +150,11 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         this.metadataService.import(this.metadata, this.service.metadataFile.uri);
     }
 
+    /**
+     * Get annotation documents.
+     *
+     * @returns Annotation documents.
+     */
     public getDocuments(): Record<string, AnnotationFile> {
         const annotationFiles: Record<string, AnnotationFile> = {};
         for (const [uri, document] of this.documents.entries()) {

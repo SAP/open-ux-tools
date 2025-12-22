@@ -1,4 +1,4 @@
-import { Project } from '@sap-ux/project-access';
+import type { Project } from '@sap-ux/project-access';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 
 import { CDSAnnotationServiceAdapter } from '../../../src/cds';
