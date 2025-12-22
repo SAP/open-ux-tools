@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.0.3
+
+### Patch Changes
+
+- 904870c: Update README with migration guide for ESLint 9
+
 ## 9.0.2
 
 ### Patch Changes
