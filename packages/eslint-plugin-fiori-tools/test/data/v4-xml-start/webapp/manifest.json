@@ -115,12 +115,10 @@
                 }
               },
               "controlConfiguration": {
-                "tableSetting": {
-                  "@com.sap.vocabularies.UI.v1.LineItem": {
-                    "tableSettings": {
-                      "type": "ResponsiveTable",
-                      "selectionMode": "Auto"
-                    }
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable",
+                    "selectionMode": "Auto"
                   }
                 }
               }

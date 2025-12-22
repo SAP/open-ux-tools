@@ -5,8 +5,7 @@ export const REQUIRE_FLEX_ENABLED = 'sap-flex-enabled';
 
 export interface RequireWidthIncludingColumnHeaderDiagnostic {
     type: typeof REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
-    manifestPropertyPath: string[];
-    propertyName: string;
+    manifest: ManifestPropertyDiagnosticData;
     annotation: {
         file: string;
         annotationPath: string;

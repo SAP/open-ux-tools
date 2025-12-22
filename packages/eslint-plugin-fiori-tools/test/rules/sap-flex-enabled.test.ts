@@ -1,17 +1,14 @@
-import { join } from 'node:path';
-
 import { RuleTester } from 'eslint';
 import flexEnabledRule from '../../src/rules/sap-flex-enabled';
 import { meta, languages } from '../../src/index';
+import { V4_MANIFEST_PATH } from '../test-helper';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
     language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
 });
 
-const V4_MANIFEST_PATH = join('test', 'data', 'v4-xml-start', 'webapp', 'manifest.json');
-
-ruleTester.run('flex-enabled', flexEnabledRule, {
+ruleTester.run('sap-flex-enabled', flexEnabledRule, {
     valid: [
         // Non-manifest files should be ignored
         {

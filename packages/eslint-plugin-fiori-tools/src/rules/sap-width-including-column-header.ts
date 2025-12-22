@@ -8,6 +8,7 @@ import type { FioriRuleDefinition } from '../types';
 import type { RequireWidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
 import { REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
+import { findDeepestExistingPath } from '../utils/helpers';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -24,10 +25,11 @@ const rule: FioriRuleDefinition = createFioriRule({
             url: 'https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412'
         },
         messages: {
-            ['require-width-including-column-header']:
+            ['width-including-column-header-manifest']:
+                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for better column width calculation. Add it to the control configuration for "{{table}}" table.',
+            ['width-including-column-header']:
                 'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for better column width calculation.'
-        },
-        fixable: 'code'
+        }
     },
     check(context) {
         const problems: RequireWidthIncludingColumnHeaderDiagnostic[] = [];
@@ -43,10 +45,14 @@ const rule: FioriRuleDefinition = createFioriRule({
                     continue;
                 }
 
-                for (const table of page.tables) {
-                    const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.top.uri];
+                for (const table of page.lookup['table'] ?? []) {
+                    if (!table.annotation) {
+                        // annotations are required for this rule
+                        continue;
+                    }
+                    const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
 
-                    const [collection] = elementsWithName(Edm.Collection, table.annotation.top.value);
+                    const [collection] = elementsWithName(Edm.Collection, table.annotation.annotation.top.value);
                     if (!collection) {
                         continue;
                     }
@@ -62,27 +68,23 @@ const rule: FioriRuleDefinition = createFioriRule({
                     if (
                         records.length < 6 &&
                         records.length > 0 &&
-                        table.settings.widthIncludingColumnHeader !== true
+                        table.resolvedConfiguration.widthIncludingColumnHeader !== true
                     ) {
-                        const path = [
-                            'sap.ui5',
-                            'routing',
-                            'targets',
-                            page.targetName,
-                            'options',
-                            'settings',
-                            'controlConfiguration',
-                            ...table.configurationPath,
-                            'tableSettings'
-                        ];
                         problems.push({
                             type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-                            manifestPropertyPath: path,
-                            propertyName: 'widthIncludingColumnHeader',
+                            manifest: {
+                                uri: parsedApp.manifest.manifestUri,
+                                object: parsedApp.manifestObject,
+                                requiredPropertyPath: page.configurationPath,
+                                optionalPropertyPath: [
+                                    ...table.configurationPath,
+                                    ...table.configurationPaths.widthIncludingColumnHeader
+                                ]
+                            },
                             annotation: {
-                                file: table.annotation.source,
-                                annotationPath: table.annotationPath,
-                                reference: table.annotation.top
+                                file: table.annotation.annotation.source,
+                                annotationPath: table.annotation.annotationPath,
+                                reference: table.annotation.annotation.top
                             }
                         });
                     }
@@ -93,83 +95,32 @@ const rule: FioriRuleDefinition = createFioriRule({
         return problems;
     },
     createJson(context, diagnostics) {
-        if (diagnostics.length === 0) {
+        const applicableDiagnostics = diagnostics.filter(
+            (diagnostic) => diagnostic.manifest.uri === context.sourceCode.uri
+        );
+        if (applicableDiagnostics.length === 0) {
             return {};
         }
         const matchers: RuleVisitor = {};
-        /**
-         *
-         * @param node
-         */
-        function report(node: MemberNode) {
-            // The selector matches a Member node, we need its value (the Object)
-            const tableSettingsObject = node.value;
-
-            if (tableSettingsObject.type !== 'Object') {
-                return;
-            }
-
-            // Check if widthIncludingColumnHeader already exists
-            const property = tableSettingsObject.members.find(
-                (member: MemberNode) =>
-                    member.name.type === 'String' && member.name.value === 'widthIncludingColumnHeader'
+        for (const diagnostic of applicableDiagnostics) {
+            const paths = findDeepestExistingPath(
+                diagnostic.manifest.object,
+                diagnostic.manifest.requiredPropertyPath,
+                diagnostic.manifest.optionalPropertyPath
             );
-
-            if (property?.value?.type !== 'Boolean' || property.value.value !== true) {
-                context.report({
-                    node: tableSettingsObject,
-                    messageId: 'require-width-including-column-header',
-                    fix(fixer) {
-                        // Check if required properties exist
-                        if (!tableSettingsObject.loc || !tableSettingsObject.range) {
-                            return null;
+            if (paths) {
+                matchers[context.sourceCode.createMatcherString(paths.validatedPath)] = function report(
+                    node: MemberNode
+                ): void {
+                    context.report({
+                        node,
+                        messageId: 'width-including-column-header-manifest',
+                        data: {
+                            table: diagnostic.annotation.annotationPath
                         }
-
-                        // Calculate indentation from the first member or use object position + 2 spaces
-                        let propertyIndent = '';
-                        let baseIndent = '';
-
-                        if (tableSettingsObject.members.length > 0 && tableSettingsObject.members[0].loc) {
-                            // Use existing member's indentation
-                            propertyIndent = ' '.repeat(tableSettingsObject.members[0].loc.start.column);
-                            // Base indent is 2 spaces less than property indent
-                            baseIndent = ' '.repeat(Math.max(0, tableSettingsObject.members[0].loc.start.column - 2));
-                        } else {
-                            // Fallback: calculate from object position
-                            baseIndent = ' '.repeat(tableSettingsObject.loc.start.column);
-                            propertyIndent = baseIndent + '  ';
-                        }
-
-                        if (tableSettingsObject.members.length === 0) {
-                            // Empty object
-                            return fixer.replaceTextRange(
-                                tableSettingsObject.range,
-                                `{\n${propertyIndent}"widthIncludingColumnHeader": true\n${baseIndent}}`
-                            );
-                        }
-
-                        // Build new object with existing properties + widthIncludingColumnHeader
-                        const properties: string[] = [];
-                        for (const member of tableSettingsObject.members) {
-                            // Preserve all existing properties by extracting their raw text
-                            if (!member.range) {
-                                continue;
-                            }
-                            const memberStart = member.range[0];
-                            const memberEnd = member.range[1];
-                            const memberText = context.sourceCode.text.substring(memberStart, memberEnd);
-                            properties.push(`${propertyIndent}${memberText.trim()}`);
-                        }
-                        properties.push(`${propertyIndent}"widthIncludingColumnHeader": true`);
-
-                        const newContent = `{\n${properties.join(',\n')}\n${baseIndent}}`;
-                        return fixer.replaceTextRange(tableSettingsObject.range, newContent);
-                    }
-                });
+                    });
+                };
             }
-        }
-        for (const diagnostic of diagnostics) {
-            matchers[context.sourceCode.createMatcherString(diagnostic.manifestPropertyPath)] = report;
         }
         return matchers;
     },
@@ -179,7 +130,6 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
 
         const lookup = new Set<Element>();
-        console.log(validationResult);
         for (const diagnostic of validationResult) {
             lookup.add(diagnostic.annotation?.reference?.value);
         }
@@ -191,7 +141,7 @@ const rule: FioriRuleDefinition = createFioriRule({
 
                 context.report({
                     node: node,
-                    messageId: 'require-width-including-column-header'
+                    messageId: 'width-including-column-header'
                 });
             }
         };

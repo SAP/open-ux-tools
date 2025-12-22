@@ -17,7 +17,7 @@ module.exports = defineConfig([
         ]
     },
     // TODO: this is already not working, fix it separately
-    // ...fioriTools.configs['recommended'],
+    ...fioriTools.configs['recommended'],
     {
         languageOptions: {
             parser: tsParser,

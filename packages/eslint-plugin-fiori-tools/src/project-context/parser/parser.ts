@@ -351,7 +351,7 @@ function getMinUI5Version(manifest: Manifest): MinUI5Version | undefined {
         return undefined;
     }
     const rawValue = Array.isArray(value) ? value[0] : value;
-    if (rawValue.startsWith('{') && rawValue.endsWith('}')) {
+    if (rawValue.startsWith('${') && rawValue.endsWith('}')) {
         // expression, assume latest UI5 version
         return {
             raw: rawValue,

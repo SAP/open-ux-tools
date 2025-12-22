@@ -9,28 +9,13 @@ import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App } from '../../../src
 import { runFeV2Linker } from '../../../src/project-context/linker/fe-v2';
 import type { LinkerContext } from '../../../src/project-context/linker/types';
 import { ApplicationParser } from '../../../src/project-context/parser';
+import type { ManifestChange } from '../../test-helper';
+import { applyManifestChange } from '../../test-helper';
 
 const parser = new ApplicationParser();
 
 interface TestOptions {
     manifestChanges?: ManifestChange[];
-}
-
-interface ManifestChange {
-    path: string[];
-    value: unknown;
-}
-
-function applyManifestChange(manifest: any, change: ManifestChange): void {
-    let current = manifest;
-    for (let i = 0; i < change.path.length - 1; i++) {
-        const segment = change.path[i];
-        if (!(segment in current)) {
-            current[segment] = {};
-        }
-        current = current[segment];
-    }
-    current[change.path[change.path.length - 1]] = change.value;
 }
 
 describe('FE V2 Linker', () => {

@@ -377,6 +377,7 @@ function convertTargetAnnotations(
  *
  * @param returnValue - The return value containing file targets.
  * @param [propagationMap] - The map of propagated targets.
+ * @param mergePropagatedAnnotations - Flag indicating whether to merge propagated annotations in the existing file.
  */
 function checkGhostTarget(
     returnValue: ReturnValue,
