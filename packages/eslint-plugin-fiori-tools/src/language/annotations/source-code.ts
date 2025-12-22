@@ -1,16 +1,15 @@
 import type { SourceLocation, TraversalStep } from '@eslint/plugin-kit';
 import { TextSourceCodeBase } from '@eslint/plugin-kit';
 
-import type {
-    AnnotationFile,
+import type { AnnotationFile, AnyNode } from '@sap-ux/odata-annotation-core';
+import {
     ANNOTATION_FILE_TYPE,
     ATTRIBUTE_TYPE,
     ELEMENT_TYPE,
     NAMESPACE_TYPE,
     REFERENCE_TYPE,
     TARGET_TYPE,
-    TEXT_TYPE,
-    type AnyNode
+    TEXT_TYPE
 } from '@sap-ux/odata-annotation-core';
 
 import { AnnotationTraversalStep, STEP_PHASE } from './traversal-step';

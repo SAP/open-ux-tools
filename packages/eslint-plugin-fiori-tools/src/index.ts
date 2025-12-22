@@ -230,8 +230,8 @@ export const configs: Record<string, Linter.Config[]> = {
             files: ['**/manifest.json', '**/*.xml', '**/*.cds'],
             language: '@sap-ux/fiori-tools/fiori',
             rules: {
-                '@sap-ux/fiori-tools/sap-require-flex-enabled': 'warn',
-                '@sap-ux/fiori-tools/sap-require-width-including-column-header': 'warn'
+                '@sap-ux/fiori-tools/sap-flex-enabled': 'warn',
+                '@sap-ux/fiori-tools/sap-width-including-column-header': 'warn'
             }
         }
     ]

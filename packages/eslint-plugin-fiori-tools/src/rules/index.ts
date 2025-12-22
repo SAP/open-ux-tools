@@ -52,8 +52,8 @@ import sapUi5LegacyJquerysapUsage from './sap-ui5-legacy-jquerysap-usage';
 import sapUi5NoPrivateProp from './sap-ui5-no-private-prop';
 import sapUsageBasemastercontroller from './sap-usage-basemastercontroller';
 
-import flexEnabledRule from './sap-require-flex-enabled';
-import requireWidthIncludingColumnHeader from './sap-require-width-including-column-header';
+import flexEnabledRule from './sap-flex-enabled';
+import requireWidthIncludingColumnHeader from './sap-width-including-column-header';
 import type { Rule } from 'eslint';
 
 export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | FioriXMLRuleDefinition> = {
