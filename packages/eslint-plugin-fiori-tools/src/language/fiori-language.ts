@@ -28,7 +28,7 @@ export type Node = AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
 
 export type FioriParseResultAst = {
     context: ProjectContext;
-
+    uri: string;
     document:
         | {
               type: 'json';
@@ -94,6 +94,7 @@ export class FioriLanguage
                     return {
                         ok: true,
                         ast: {
+                            uri,
                             context: projectContext,
                             document: {
                                 type: 'xml',
@@ -118,6 +119,7 @@ export class FioriLanguage
                 return {
                     ok: true,
                     ast: {
+                        uri,
                         context: projectContext,
                         document: {
                             type: 'json',
@@ -138,6 +140,7 @@ export class FioriLanguage
                 return {
                     ok: true,
                     ast: {
+                        uri,
                         context: projectContext,
                         document: {
                             type: 'annotation',
@@ -166,6 +169,7 @@ export class FioriLanguage
             return {
                 ok: true,
                 ast: {
+                    uri,
                     context: projectContext,
                     document: {
                         type: 'json',
@@ -177,6 +181,7 @@ export class FioriLanguage
             return {
                 ok: true,
                 ast: {
+                    uri,
                     context: projectContext,
                     document: {
                         type: 'xml',
@@ -188,6 +193,7 @@ export class FioriLanguage
             return {
                 ok: true,
                 ast: {
+                    uri,
                     context: projectContext,
                     document: {
                         type: 'annotation',
@@ -214,7 +220,8 @@ export class FioriLanguage
             return new FioriJSONSourceCode({
                 text,
                 ast: document.root,
-                projectContext: parseResult.ast.context
+                projectContext: parseResult.ast.context,
+                uri: parseResult.ast.uri
             });
         } else if (document.type === 'xml') {
             return new FioriXMLSourceCode({

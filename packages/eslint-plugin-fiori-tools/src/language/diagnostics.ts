@@ -1,3 +1,4 @@
+import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
 export const REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const REQUIRE_FLEX_ENABLED = 'sap-flex-enabled';
@@ -13,14 +14,16 @@ export interface RequireWidthIncludingColumnHeaderDiagnostic {
     };
 }
 
-export interface ManifestPropertyDiagnostic {
-    propertyPath: string[];
+export interface ManifestPropertyDiagnosticData {
+    uri: string;
+    object: Manifest;
+    requiredPropertyPath: string[];
+    optionalPropertyPath: string[];
 }
 
 export interface RequireFlexEnabled {
     type: typeof REQUIRE_FLEX_ENABLED;
-    manifestPropertyPath: string[];
-    propertyName: string;
+    manifest: ManifestPropertyDiagnosticData;
 }
 
 export type Diagnostic = RequireWidthIncludingColumnHeaderDiagnostic | RequireFlexEnabled;

@@ -8,6 +8,10 @@ type InternalDiagnosticCache = {
  * In memory cache for diagnostics.
  */
 export class DiagnosticCache {
+    /**
+     * If set to true, forces cache clear on the first update of a file.
+     */
+    public static forceReindexOnFirstUpdate = false;
     private static cache: InternalDiagnosticCache = {};
     private static requests: Map<string, number> = new Map();
 
@@ -56,10 +60,9 @@ export class DiagnosticCache {
     public static clear(key: string): void {
         const numberOfRequests = this.requests.get(key) ?? 0;
         this.requests.set(key, numberOfRequests + 1);
-        if (numberOfRequests > 0) {
+        if (numberOfRequests > 0 || this.forceReindexOnFirstUpdate) {
             // the first time file is processed assume it is pristine
             // clear cache on subsequent calls
-            console.log('DiagnosticCache.clear - triggered by', key);
             this.cache = {};
         }
     }

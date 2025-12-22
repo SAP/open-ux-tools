@@ -30,7 +30,8 @@ function getWorkerPath(name: string): string {
 
     // Try multiple possible worker locations
     const workerPaths = [
-        join(currentDir, name) // src location
+        join(currentDir, name), // src location
+        join(currentDir, '..', '..', 'lib', 'project-context', name) // dist location
     ];
 
     let workerPath = null;
@@ -167,7 +168,8 @@ export class ProjectContext {
             const artifacts = getArtifactWorker()(root);
             this.projectArtifactCache.set(root, artifacts);
             return artifacts;
-        } catch {
+        } catch (error) {
+            console.error('Error finding Fiori artifacts:', error);
             return { artifacts: {}, projectType: 'EDMXBackend' };
         }
     }
@@ -175,6 +177,11 @@ export class ProjectContext {
     private static instanceCache = new Map<string, ProjectContext>();
     private static updateCache = new Map<string, number>();
     private static appRoots = new Set<string>();
+
+    /**
+     * If set to true, forces re-indexing on the first update of a file.
+     */
+    public static forceReindexOnFirstUpdate = false;
 
     /**
      * Creates a ProjectContext for the given file path.
@@ -200,8 +207,7 @@ export class ProjectContext {
         const numberOfUpdates = this.updateCache.get(uri) ?? 0;
         this.updateCache.set(uri, numberOfUpdates + 1);
         const context = this.getInstanceForFile(uri);
-        console.log('ProjectContext.updateFile - updates for', uri, ':', numberOfUpdates + 1);
-        if (numberOfUpdates === 0) {
+        if (numberOfUpdates === 0 && !this.forceReindexOnFirstUpdate) {
             // assume that first time check is called the file content is the same as in file system/cache
             return context;
         }

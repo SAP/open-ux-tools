@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 
-import type { FoundFioriArtifacts } from '@sap-ux/project-access';
+import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
 
 import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App } from '../../../src/project-context/linker/fe-v2';
@@ -57,7 +57,7 @@ describe('FE V2 Linker', () => {
             const absolutePath = normalizePath(join(root, 'webapp', 'manifest.json'));
             const uri = pathToFileURL(absolutePath).toString();
             const manifestText = fileCache.get(uri)!;
-            const manifestObject = JSON.parse(manifestText);
+            const manifestObject = JSON.parse(manifestText) as Manifest;
             for (const change of options?.manifestChanges) {
                 applyManifestChange(manifestObject, change);
             }

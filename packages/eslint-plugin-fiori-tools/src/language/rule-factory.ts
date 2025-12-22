@@ -95,10 +95,7 @@ export function createFioriRule<
             }>
         ): RuleVisitor {
             let cachedDiagnostics = DiagnosticCache.getMessages(ruleId);
-            if (cachedDiagnostics) {
-                console.log('Using cached diagnostics for rule', ruleId);
-            } else {
-                console.log('Computing diagnostics for rule', ruleId);
+            if (!cachedDiagnostics) {
                 cachedDiagnostics = check(context);
                 DiagnosticCache.addMessages(ruleId, cachedDiagnostics);
             }

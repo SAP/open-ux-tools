@@ -10,7 +10,7 @@ import type { LocalFile, RemoteFileWithLocalServiceCache } from '../types';
 import { uniformUrl } from '../utils';
 import type { Diagnostic } from '../../language/diagnostics';
 import { buildServiceIndex } from './service';
-import type { ParsedProject, ParsedApp, ParsedManifest, FoundODataService, CustomViews } from './types';
+import type { ParsedProject, ParsedApp, ParsedManifest, FoundODataService, CustomViews, MinUI5Version } from './types';
 
 export interface ParseResult {
     index: ParsedProject;
@@ -257,7 +257,6 @@ export class ApplicationParser {
             flexEnabled,
             minUI5Version,
             customViews,
-
             appId: manifest['sap.app']?.id ?? '',
             mainServiceName
         };
@@ -339,17 +338,33 @@ function getAnnotationFiles(
  * @param manifest
  */
 function getFlexEnabled(manifest: Manifest): boolean {
-    return manifest['sap.ui5']?.flexEnabled ?? true;
+    return manifest['sap.ui5']?.flexEnabled ?? false;
 }
 
 /**
  *
  * @param manifest
  */
-function getMinUI5Version(manifest: Manifest): string | undefined {
+function getMinUI5Version(manifest: Manifest): MinUI5Version | undefined {
     const value = manifest['sap.ui5']?.dependencies?.minUI5Version;
-    if (Array.isArray(value)) {
-        return value[0];
+    if (!value) {
+        return undefined;
     }
-    return value;
+    const rawValue = Array.isArray(value) ? value[0] : value;
+    if (rawValue.startsWith('{') && rawValue.endsWith('}')) {
+        // expression, assume latest UI5 version
+        return {
+            raw: rawValue,
+            major: 999,
+            minor: 0,
+            patch: 0
+        };
+    }
+    const [major, minor, patch] = rawValue.split('.').map((part) => parseInt(part, 10));
+    return {
+        raw: rawValue,
+        major: Number.isNaN(major) ? 0 : major,
+        minor: Number.isNaN(minor) ? 0 : minor,
+        patch: Number.isNaN(patch) ? 0 : patch
+    };
 }

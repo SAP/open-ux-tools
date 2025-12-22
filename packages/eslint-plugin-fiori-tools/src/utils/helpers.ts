@@ -766,3 +766,43 @@ export function createDocumentBasedRuleVisitors(config: {
         };
     };
 }
+
+/**
+ * Validates that a path exists and returns the deepest existing level.
+ *
+ * @param startObject - The object to start validation from (e.g., settings object)
+ * @param requiredPathSegments - Array of required path segments
+ * @param optionalPathSegments - Array of optional path segments
+ * @returns Object with validatedPath (deepest existing) and missingSegments
+ */
+export function findDeepestExistingPath(
+    startObject: any,
+    requiredPathSegments: string[],
+    optionalPathSegments: string[]
+): { validatedPath: string[]; missingSegments: string[] } | undefined {
+    let current: any = startObject;
+
+    for (let i = 0; i < requiredPathSegments.length; i++) {
+        const segment = requiredPathSegments[i];
+        if (!current || typeof current !== 'object' || !(segment in current)) {
+            return undefined;
+        }
+        current = current[segment];
+    }
+
+    for (let i = 0; i < optionalPathSegments.length; i++) {
+        const segment = optionalPathSegments[i];
+        if (!current || typeof current !== 'object' || !(segment in current)) {
+            return {
+                validatedPath: requiredPathSegments.concat(optionalPathSegments.slice(0, i)),
+                missingSegments: optionalPathSegments.slice(i)
+            };
+        }
+        current = current[segment];
+    }
+
+    return {
+        validatedPath: [...requiredPathSegments, ...optionalPathSegments],
+        missingSegments: []
+    };
+}

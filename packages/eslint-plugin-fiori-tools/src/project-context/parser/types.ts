@@ -26,8 +26,15 @@ export interface ParsedManifest {
     appId: string;
     flexEnabled: boolean;
     customViews: CustomViews;
-    minUI5Version?: string;
+    minUI5Version?: MinUI5Version;
     mainServiceName: string;
+}
+
+export interface MinUI5Version {
+    raw: string;
+    major: number;
+    minor: number;
+    patch: number;
 }
 
 export interface ParsedService {

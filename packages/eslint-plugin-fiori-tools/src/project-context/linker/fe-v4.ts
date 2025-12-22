@@ -127,7 +127,11 @@ function linkControls(
         }
         let [contextPath, annotationPath] = path.split('@');
 
-        const annotationSegments = annotationPath.split('/');
+        const annotationSegments = annotationPath?.split('/') ?? [];
+        if (annotationSegments.length === 0) {
+            // do not support non annotation configurations
+            continue;
+        }
         if (annotationSegments.length > 1) {
             // do not support nested annotations
             continue;
