@@ -7,6 +7,7 @@ import { ContextualMenu } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton';
 import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
+import { compareStylesBySelector } from '../../utils/styles';
 
 describe('<UIDialog />', () => {
     const windowHeight = 300;
@@ -340,10 +341,18 @@ describe('<UIDialog />', () => {
                     <div className="dummy"></div>
                 </UIDialog>
             );
+            
             const dialog = document.querySelector('.ms-Dialog-main');
             expect(dialog).toBeInTheDocument();
+            
+            // Validate dialog has correct inline styles applied
             if (dialog) {
-                expect((dialog as HTMLElement).style.backgroundColor).toBeDefined();
+                const styles = window.getComputedStyle(dialog);
+                // These styles are set via Fluent UI's styles prop as inline styles
+                // In test environment, CSS variables may not resolve, so check they're defined
+                expect(styles.backgroundColor).toBeDefined();
+                expect(styles.borderRadius).toBe('4px');
+                expect(styles.borderStyle).toBeDefined();
             }
         });
         it('Title - single line', () => {

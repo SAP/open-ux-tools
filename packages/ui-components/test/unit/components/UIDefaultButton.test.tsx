@@ -4,6 +4,7 @@ import { DefaultButton } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
 import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDefaultButton';
 import { UiIcons } from '../../../src/components/Icons';
+import { compareStylesByElement } from '../../utils/styles';
 
 describe('<UIDefaultButton />', () => {
     it('Should render a UIDefaultButton component', () => {
@@ -54,8 +55,12 @@ describe('<UIDefaultButton />', () => {
         const { container } = render(<UIDefaultButton alert={true}>Dummy</UIDefaultButton>);
         const button = container.querySelector('.ms-Button');
         expect(button).toBeInTheDocument();
-        // Alert styling is applied via styles prop, verify component renders
-        expect(button).toHaveTextContent('Dummy');
+        
+        // Validate alert styles are applied
+        compareStylesByElement(button, {
+            backgroundColor: 'var(--vscode-errorForeground)',
+            borderColor: 'var(--vscode-button-border, transparent)'
+        } as Partial<CSSStyleDeclaration>);
     });
 
     it('Styles - alert and checked', () => {
@@ -67,7 +72,13 @@ describe('<UIDefaultButton />', () => {
         const button = container.querySelector('.ms-Button');
         expect(button).toBeInTheDocument();
         expect(button).toHaveClass('is-checked');
-        expect(button).toHaveTextContent('Dummy');
+        
+        // Validate alert and checked styles are both applied
+        // When checked=true, checkedBorderColor is used instead of alert borderColor
+        compareStylesByElement(button, {
+            backgroundColor: 'var(--vscode-errorForeground)',
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))'
+        } as Partial<CSSStyleDeclaration>);
     });
 
     it('Styles - transparent', () => {
