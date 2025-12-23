@@ -1,3 +1,4 @@
+import * as projectAccess from '@sap-ux/project-access';
 import '@sap-ux/jest-file-matchers';
 import { copyFileSync, existsSync, promises as fs, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import 'jest-extended';
@@ -12,6 +13,9 @@ import { EXPECTED_OUTPUT_DIR_NAME } from './test-utils';
 
 const testDir: string = getTestDir('headless');
 const fixturesPath = join(__dirname, './fixtures');
+
+const specMock = jest.spyOn(projectAccess, 'getSpecification');
+specMock.mockResolvedValue({} as any);
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');

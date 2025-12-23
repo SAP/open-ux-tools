@@ -2079,6 +2079,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap/ux-specification':
+        specifier: 1.139.2
+        version: 1.139.2(typescript@5.9.3)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -2212,6 +2215,9 @@ importers:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -3440,6 +3446,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap/ux-specification':
+        specifier: 1.139.2
+        version: 1.139.2(typescript@5.9.3)
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -4856,6 +4865,9 @@ importers:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
         version: link:../jest-file-matchers
+      '@sap/ux-specification':
+        specifier: 1.139.2
+        version: 1.139.2(typescript@5.9.3)
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
