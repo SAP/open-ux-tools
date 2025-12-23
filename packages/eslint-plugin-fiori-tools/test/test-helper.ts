@@ -49,7 +49,7 @@ export function setup(name: string) {
         }
         const changes = lookup[key] ?? [];
         for (const change of changes) {
-            const path = normalizePath(join(ROOT, change.filename));
+            const path = normalizePath(change.filename);
             const uri = pathToFileURL(path).toString();
             ProjectContext.updateFile(uri, change.code);
         }
