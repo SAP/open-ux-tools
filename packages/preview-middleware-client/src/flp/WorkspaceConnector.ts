@@ -2,9 +2,13 @@ import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
 import type { FlexChange } from './common';
-import { CHANGES_API_PATH, getFlexSettings } from './common';
+import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
+import { Window } from '../../types/global';
+
+const baseUrl = (globalThis as unknown as Window)['data-open-ux-preview-base-url'] ?? '';
+const CHANGES_API_PATH = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],

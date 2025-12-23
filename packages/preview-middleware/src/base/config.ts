@@ -50,6 +50,7 @@ export type PreviewUrls = {
  */
 export interface TemplateConfig {
     basePath: string;
+    baseUrl: string;
     apps: Record<
         string,
         {
@@ -383,6 +384,7 @@ export function createFlpTemplateConfig(
     }
     return {
         basePath: basePath,
+        baseUrl: '',
         apps: {},
         init: initPath,
         ui5: {
