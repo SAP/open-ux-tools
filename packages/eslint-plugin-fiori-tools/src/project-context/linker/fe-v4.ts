@@ -53,7 +53,7 @@ export type Section = TableSection | OrphanSection;
 export interface TableSettings {
     tableType: 'ResponsiveTable' | 'GridTable' | 'AnalyticalTable' | 'TreeTable';
     widthIncludingColumnHeader: boolean;
-    disableCopyToClipboard: boolean;
+    disableCopyToClipboard?: boolean;
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
@@ -267,11 +267,9 @@ function linkListReportTable(
                     tableControl.configuration.widthIncludingColumnHeader = value;
                     tableControl.resolvedConfiguration.widthIncludingColumnHeader = value;
                 }
-                if (controlConfiguration.tableSettings?.disableCopyToClipboard !== undefined) {
-                    const value = controlConfiguration.tableSettings.disableCopyToClipboard;
-                    tableControl.configuration.disableCopyToClipboard = value;
-                    tableControl.resolvedConfiguration.disableCopyToClipboard = value;
-                }
+                const value = controlConfiguration.tableSettings?.disableCopyToClipboard;
+                tableControl.configuration.disableCopyToClipboard = value;
+                tableControl.resolvedConfiguration.disableCopyToClipboard = value;
             }
         } else {
             // no annotation definition found for this table, but configuration exists
@@ -349,11 +347,9 @@ function linkObjectPageSections(
                             tableControl.configuration.widthIncludingColumnHeader = value;
                             tableControl.resolvedConfiguration.widthIncludingColumnHeader = value;
                         }
-                        if (controlConfiguration.tableSettings?.disableCopyToClipboard !== undefined) {
-                            const value = controlConfiguration.tableSettings.disableCopyToClipboard;
-                            tableControl.configuration.disableCopyToClipboard = value;
-                            tableControl.resolvedConfiguration.disableCopyToClipboard = value;
-                        }
+                        const disableCopyValue = controlConfiguration.tableSettings.disableCopyToClipboard;
+                        tableControl.configuration.disableCopyToClipboard = disableCopyValue;
+                        tableControl.resolvedConfiguration.disableCopyToClipboard = disableCopyValue;
                     }
                 }
             }
