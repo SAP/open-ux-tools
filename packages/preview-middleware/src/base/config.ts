@@ -376,7 +376,11 @@ export function createFlpTemplateConfig(
     const id = manifest['sap.app']?.id ?? '';
     const ns = id.replace(/\./g, '/');
     const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
-    const initPath = config.init ? `${ns}${config.init.startsWith('/') ? '' : '/'}${config.init}` : undefined;
+    let initPath: string | undefined;
+    if (config.init) {
+        const separator = config.init.startsWith('/') ? '' : '/';
+        initPath = `${ns}${separator}${config.init}`;
+    }
     return {
         basePath: basePath,
         apps: {},
