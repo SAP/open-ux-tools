@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.81
+
+### Patch Changes
+
+- e81640f: fix: custom init
+
 ## 0.23.80
 
 ### Patch Changes
