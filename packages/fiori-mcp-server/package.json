@@ -81,7 +81,7 @@
         "@sap-ai-sdk/langchain": "2.3.0",
         "promptfoo": "0.119.14",
         "@langchain/mcp-adapters": "1.0.2",
-        "@langchain/core": "1.1.1"
+        "@langchain/core": "1.1.8"
     },
     "dependencies": {
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
