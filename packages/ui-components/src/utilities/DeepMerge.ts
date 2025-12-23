@@ -5,18 +5,19 @@ import React from 'react';
  * Parameters are not mutated.
  * Arrays are copied as references and are not merged.
  *
- * @param a
- * @param b
+ * @param a The base object.
+ * @param b The object to merge into the base object.
+ * @param ignore Array of property names to skip deep merge for (shallow overwrite instead).
  * @returns  Record<string, unknown>
  */
-export function deepMerge(a: any, b: any): Record<string, unknown> {
-    const result = Object.keys(a).length ? deepMerge({}, a) : {};
+export function deepMerge(a: any, b: any, ignore: string[] = []): Record<string, unknown> {
+    const result = Object.keys(a).length ? deepMerge({}, a, ignore) : {};
     const keys = Object.keys(b);
     for (const key of keys) {
         const value = b[key];
-        if (isObject(value)) {
+        if (isObject(value) && !ignore.includes(key)) {
             if (!result[key] || isObject(result[key])) {
-                result[key] = deepMerge(result[key] ?? {}, value);
+                result[key] = deepMerge(result[key] ?? {}, value, ignore);
             } else {
                 throw new Error('Object structures are not compatible!');
             }

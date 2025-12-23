@@ -1,10 +1,11 @@
 import React from 'react';
 import type { IDialogProps, IDialogFooterProps } from '@fluentui/react';
-import { Dialog as BaseDialog, DialogFooter } from '@fluentui/react';
+import { Dialog as BaseDialog, DialogFooter, keyframes } from '@fluentui/react';
 import { UIDefaultButton } from '../UIButton';
 import { deepMerge } from '../../utilities/DeepMerge';
 
 import '../../styles/_shadows.scss';
+import { addScaleToTransform } from './UIDialog-helper';
 
 export interface DialogProps extends IDialogProps {
     // Accept and cancel buttons options
@@ -30,6 +31,14 @@ export interface DialogProps extends IDialogProps {
     // Is dialog open should be animated with fade in animation
     // Default value for "isOpenAnimated" is "true"
     isOpenAnimated?: boolean;
+    /**
+     * Enables a blurry overlay behind the dialog.
+     * When `true`, a backdrop blur effect is applied (e.g., using `backdrop-filter: blur(...)`).
+     * Set to `false` to disable the blur.
+     *
+     * @default true
+     */
+    withBlurOverlay?: boolean;
 }
 
 export const DIALOG_MAX_HEIGHT_OFFSET = 32;
@@ -67,6 +76,21 @@ export enum UIDialogScrollArea {
     Dialog = 'Dialog'
 }
 
+const DIALOG_ANIMATION_SCALE = 0.9;
+const DIALOG_ANIMATION = {
+    duration: '0.4s',
+    scale: DIALOG_ANIMATION_SCALE,
+    timingMethod: 'ease-in-out',
+    keyframe: keyframes({
+        from: {
+            transform: `scale(${DIALOG_ANIMATION_SCALE})`
+        },
+        to: {
+            transform: 'scale(1)'
+        }
+    })
+};
+
 /**
  * UIDialog component.
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/dialog
@@ -78,7 +102,9 @@ export enum UIDialogScrollArea {
  */
 export class UIDialog extends React.Component<DialogProps, DialogState> {
     // Default values for public component properties
-    static readonly defaultProps = { isOpenAnimated: true };
+    static readonly defaultProps = { isOpenAnimated: true, withBlurOverlay: true };
+    private readonly popupRef: React.RefObject<HTMLDivElement>;
+
     /**
      * Initializes component properties.
      *
@@ -96,6 +122,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             resizeMaxHeight: this.getResizeMaxHeight(),
             isMounted: false
         };
+        this.popupRef = React.createRef<HTMLDivElement>();
     }
 
     /**
@@ -104,13 +131,16 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      * @param {Readonly<DialogProps>} prevProps
      */
     componentDidUpdate(prevProps: Readonly<DialogProps>): void {
-        const { scrollArea } = this.props;
+        const { scrollArea, isOpen = true, hidden } = this.props;
         if (prevProps.scrollArea !== scrollArea) {
             if (scrollArea === UIDialogScrollArea.Content) {
                 this.attachResize();
             } else {
                 this.detachResize();
             }
+        }
+        if ((isOpen !== prevProps.isOpen && isOpen === false) || (hidden !== prevProps.hidden && hidden === true)) {
+            this.applyCloseTransition();
         }
     }
 
@@ -232,6 +262,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      * @param {React.MouseEvent} event Mousedown event
      */
     onHeaderMouseDown(event: React.MouseEvent): void {
+        console.log('onHeaderMouseDown!!!');
         if (!this.props.modalProps?.dragOptions) {
             // No need to handle non draggable
             return;
@@ -240,6 +271,24 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
         if (dialogFocusZone?.firstChild) {
             const focusPlaceholder = dialogFocusZone.firstChild as HTMLElement;
             focusPlaceholder.focus();
+        }
+    }
+
+    /**
+     * Applies a closing transition animation to the dialog element.
+     */
+    private applyCloseTransition(): void {
+        const { isOpenAnimated } = this.props;
+        const popupRef = this.popupRef.current;
+        if (!isOpenAnimated || !popupRef) {
+            return;
+        }
+        const dialogDragZone = popupRef.querySelector('.ms-Dialog-main') as HTMLElement;
+        if (dialogDragZone) {
+            const transform = dialogDragZone.style.transform;
+            const newTransform = addScaleToTransform(transform, 0.9);
+            dialogDragZone.style.transform = newTransform;
+            dialogDragZone.style.transition = `transform ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`;
         }
     }
 
@@ -259,11 +308,26 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             multiLineTitle,
             scrollArea = UIDialogScrollArea.Content,
             children,
+            withBlurOverlay,
+            isOpenAnimated,
             ...rest
         } = this.props;
         const dialogProps: IDialogProps = {
             minWidth: '460px',
             modalProps: {
+                styles: {
+                    root: {
+                        transition: isOpenAnimated
+                            ? `opacity ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`
+                            : undefined,
+                        backdropFilter: withBlurOverlay ? 'blur(5px)' : undefined
+                    },
+                    main: {
+                        animation: isOpenAnimated
+                            ? `${DIALOG_ANIMATION.keyframe} ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`
+                            : undefined
+                    }
+                },
                 layerProps: {
                     onLayerDidMount: this.onModalLayerMount,
                     onLayerWillUnmount: this.onModalLayerUnmount
@@ -271,10 +335,13 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 overlay: {
                     styles: {
                         root: {
-                            background: DIALOG_STYLES.modalOverlay.background,
-                            opacity: DIALOG_STYLES.modalOverlay.opacity
+                            background: withBlurOverlay ? 'none' : DIALOG_STYLES.modalOverlay.background,
+                            opacity: withBlurOverlay ? undefined : DIALOG_STYLES.modalOverlay.opacity
                         }
                     }
+                },
+                popupProps: {
+                    ref: this.popupRef
                 }
             },
             styles: {
@@ -354,7 +421,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             }
         };
 
-        const props = deepMerge(dialogProps, rest);
+        const props = deepMerge(dialogProps, rest, ['ref']);
 
         return (
             <BaseDialog {...props}>
