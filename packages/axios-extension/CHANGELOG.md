@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.3
+
+### Patch Changes
+
+- 14a1bc2: Refactor generateServiceConfig to use Object.assign
+
 ## 1.25.2
 
 ### Patch Changes
