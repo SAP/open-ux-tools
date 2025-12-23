@@ -57,17 +57,17 @@ const PACKAGE_ADDITIONAL_VALIDATION = {
  * @param {ToolsLogger} logger - Logger instance for tracking operations and errors.
  * @param {AppWizard} appWizard - AppWizard instance for interacting with the UI (optional).
  */
-export function addFlpGen(
+export async function addFlpGen(
     { projectRootPath, vscode, inbounds, layer, prompts }: FlpGenProps,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
-): void {
+): Promise<void> {
     try {
         /**
          * We are using this namespace for now because '@sap/fiori:adp-flp-config' is not yet bundled in '@sap/generator-fiori'.
          */
-        composeWith('@sap/fiori:adp-flp-config', {
+        await composeWith('@sap/fiori:adp-flp-config', {
             launchAsSubGen: true,
             vscode,
             inbounds,
@@ -96,12 +96,12 @@ export function addFlpGen(
  * @param {ToolsLogger} logger - Logger for info and error output
  * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
  */
-export function addDeployGen(
+export async function addDeployGen(
     { projectName, projectPath, connectedSystem, system }: DeployGenOptions,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
-): void {
+): Promise<void> {
     try {
         const subGenPromptOptions = {
             ui5AbapRepo: { hideIfOnPremise: true },
@@ -131,7 +131,7 @@ export function addDeployGen(
             ...(system?.Url && { appGenServiceHost: system.Url })
         };
 
-        composeWith('@sap/fiori:deploy-config', generatorOptions);
+        await composeWith('@sap/fiori:deploy-config', generatorOptions);
         logger.info(`'@sap/fiori:deploy-config' was called.`);
     } catch (e) {
         logger.error(e);
@@ -159,7 +159,7 @@ export async function addExtProjectGen(
     try {
         const data = await getExtensionProjectData(configAnswers, attributeAnswers, systemLookup);
 
-        composeWith('@bas-dev/extensibility-sub', {
+        await composeWith('@bas-dev/extensibility-sub', {
             arguments: [JSON.stringify(data)],
             appWizard
         });
