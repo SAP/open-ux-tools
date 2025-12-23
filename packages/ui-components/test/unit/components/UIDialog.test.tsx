@@ -4,6 +4,7 @@ import type { DialogProps, DialogState } from '../../../src/components/UIDialog'
 import { UIDialog, UIDialogScrollArea, DIALOG_MAX_HEIGHT_OFFSET } from '../../../src/components/UIDialog';
 import type { IDialogStyles, IDialogContentStyles, IDialogFooterStyles } from '@fluentui/react';
 import { ContextualMenu } from '@fluentui/react';
+import { UIDefaultButton } from '../../../src/components/UIButton';
 import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
 
@@ -138,15 +139,23 @@ describe('<UIDialog />', () => {
         });
 
         it('Custom footer with multiple elements', () => {
-            wrapper.setProps({
-                footer: [
-                    <UIDefaultButton key="accept" className="dummyButton" />,
-                    <UIDefaultButton key="decline" className="dummyButton" />,
-                    <UIDefaultButton key="cancel" className="dummyButton" />
-                ]
-            });
-            expect(wrapper.find(DialogFooter).length).toEqual(1);
-            expect(wrapper.find('UIDefaultButton.dummyButton').length).toEqual(3);
+            render(
+                <UIDialog
+                    acceptButtonText="Yes"
+                    cancelButtonText="No"
+                    onAccept={onAcceptSpy}
+                    onCancel={onRejectSpy}
+                    footer={[
+                        <UIDefaultButton key="accept" className="dummyButton" />,
+                        <UIDefaultButton key="decline" className="dummyButton" />,
+                        <UIDefaultButton key="cancel" className="dummyButton" />
+                    ]}
+                    isOpen={true}>
+                    <div className="dummy"></div>
+                </UIDialog>
+            );
+            const buttons = document.querySelectorAll('.dummyButton');
+            expect(buttons.length).toEqual(3);
         });
     });
 
