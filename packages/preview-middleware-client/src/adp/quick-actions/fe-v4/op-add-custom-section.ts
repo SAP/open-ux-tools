@@ -1,5 +1,5 @@
 import { getV4AppComponent } from '../../../utils/fe-v4';
-import { PageDescriptorV4 } from '../../controllers/AddCustomFragment.controller';
+import { PageDescriptorV4 } from '../../controllers/types';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { OP_ADD_CUSTOM_SECTION } from '../common/op-add-custom-section';

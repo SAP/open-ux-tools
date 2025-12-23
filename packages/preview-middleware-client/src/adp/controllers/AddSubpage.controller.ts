@@ -15,9 +15,6 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-/** sap.fe.core */
-import type AppComponentV4 from 'sap/fe/core/AppComponent';
-
 /** sap.suite.ui.generic */
 import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
 
@@ -32,6 +29,7 @@ import { CommunicationService } from '../../cpe/communication-service';
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { generateRoutePattern } from '../quick-actions/fe-v4/utils';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { PageDescriptorV4 } from './types';
 
 type SubpageType = 'ObjectPage' | 'CustomPage';
 
@@ -40,13 +38,6 @@ export interface PageDescriptorV2 {
     appComponent: AppComponentV2;
     entitySet: string;
     pageType: string;
-}
-
-export interface PageDescriptorV4 {
-    appType: 'fe-v4';
-    appComponent: AppComponentV4;
-    pageId: string;
-    routePattern: string;
 }
 
 export interface AddSubpageOptions {
@@ -152,31 +143,33 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
                 }
             };
         } else {
-            const routePattern = generateRoutePattern(pageDescriptor.routePattern, navProperty, targetEntitySet);
-            modifiedValue = {
-                appComponent: pageDescriptor.appComponent,
-                changeType: 'appdescr_fe_addNewPage',
-                reference: this.options.appReference,
-                parameters: {
-                    sourcePage: {
-                        id: pageDescriptor.pageId,
-                        navigationSource: navProperty
-                    },
-                    targetPage: {
-                        type: 'Component',
-                        id: `${targetEntitySet}ObjectPage`,
-                        name: 'sap.fe.templates.ObjectPage',
-                        routePattern,
-                        settings: {
-                            contextPath: `/${targetEntitySet}`,
-                            editableHeaderContent: false,
-                            entitySet: targetEntitySet,
-                            pageLayout: '',
-                            controlConfiguration: {}
+            if (pageDescriptor.routePattern) {
+                const routePattern = generateRoutePattern(pageDescriptor.routePattern, navProperty, targetEntitySet);
+                modifiedValue = {
+                    appComponent: pageDescriptor.appComponent,
+                    changeType: 'appdescr_fe_addNewPage',
+                    reference: this.options.appReference,
+                    parameters: {
+                        sourcePage: {
+                            id: pageDescriptor.pageId,
+                            navigationSource: navProperty
+                        },
+                        targetPage: {
+                            type: 'Component',
+                            id: `${targetEntitySet}ObjectPage`,
+                            name: 'sap.fe.templates.ObjectPage',
+                            routePattern,
+                            settings: {
+                                contextPath: `/${targetEntitySet}`,
+                                editableHeaderContent: false,
+                                entitySet: targetEntitySet,
+                                pageLayout: '',
+                                controlConfiguration: {}
+                            }
                         }
                     }
-                }
-            };
+                };
+            }
         }
 
         const command = await CommandFactory.getCommandFor(
