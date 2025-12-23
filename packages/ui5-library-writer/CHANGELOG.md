@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.39
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+
 ## 0.6.38
 
 ### Patch Changes

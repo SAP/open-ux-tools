@@ -1,5 +1,15 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.6
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+- Updated dependencies [d24f36d]
+    - @sap-ux/fiori-elements-writer@2.8.28
+    - @sap-ux/fiori-freestyle-writer@2.5.20
+    - @sap-ux/odata-service-inquirer@2.13.4
+
 ## 0.11.5
 
 ### Patch Changes

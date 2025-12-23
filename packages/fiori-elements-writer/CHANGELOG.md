@@ -1,5 +1,14 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.28
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+- Updated dependencies [d24f36d]
+    - @sap-ux/ui5-application-writer@1.6.8
+    - @sap-ux/ui5-test-writer@0.7.48
+
 ## 2.8.27
 
 ### Patch Changes
