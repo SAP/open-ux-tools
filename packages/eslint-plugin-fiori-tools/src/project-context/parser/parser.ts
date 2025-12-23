@@ -1,5 +1,5 @@
 import { dirname, join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse as parseJson } from '@humanwhocodes/momoa';
 
 import type { FoundFioriArtifacts, Manifest, ProjectType } from '@sap-ux/project-access';
@@ -131,7 +131,7 @@ export class ApplicationParser {
                     });
                     index.documents[uri] = manifestAst;
                     const manifest = JSON.parse(manifestContent) as Manifest;
-                    const webappPath = dirname(new URL(uri).pathname);
+                    const webappPath = dirname(fileURLToPath(uri));
                     const [parsedManifest, services] = this.parseManifest(webappPath, uri, manifest);
                     index.documents[uri] = manifestAst;
 
