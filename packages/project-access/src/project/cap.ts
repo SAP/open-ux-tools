@@ -206,27 +206,8 @@ export async function getCapModelAndServices(
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'projectRoot': ${_projectRoot}`);
 
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
-    // filter services that have ( urlPath defined AND no endpoints) OR have endpoints with kind 'odata'
-    // i.e. ignore services for websockets and other unsupported protocols
-    if (services.filter) {
-        services = services.filter(
-            (service) =>
-                (service.urlPath && service.endpoints === undefined) ||
-                service.endpoints?.find(filterCapServiceEndpoints)
-        );
-    }
-    if (services.map) {
-        services = services.map((value) => {
-            const { endpoints, urlPath } = value;
-            const odataEndpoint = endpoints?.find(filterCapServiceEndpoints);
-            const endpointPath = odataEndpoint?.path ?? urlPath;
-            return {
-                name: value.name,
-                urlPath: uniformUrl(endpointPath),
-                runtime: value.runtime
-            };
-        });
-    }
+
+    services = processServices(services);
     return {
         model,
         services,
@@ -236,6 +217,36 @@ export async function getCapModelAndServices(
             root: cds.root
         }
     };
+}
+
+/**
+ * Filter and normalize service definitions from CAP project.
+ *
+ * @param services - list of services from cds.compile.to['serviceinfo'](model)
+ * @returns list of normalized service info
+ */
+export function processServices(services: ServiceInfo[] | object | undefined): ServiceInfo[] {
+    // filter services that have ( urlPath defined AND no endpoints) OR have endpoints with kind 'odata'
+    // i.e. ignore services for websockets and other unsupported protocols
+    if (services && Array.isArray(services)) {
+        return services
+            .filter(
+                (service) =>
+                    (service.urlPath && service.endpoints === undefined) ||
+                    service.endpoints?.find(filterCapServiceEndpoints)
+            )
+            .map((value) => {
+                const { endpoints, urlPath } = value;
+                const odataEndpoint = endpoints?.find(filterCapServiceEndpoints);
+                const endpointPath = odataEndpoint?.path ?? urlPath;
+                return {
+                    name: value.name,
+                    urlPath: uniformUrl(endpointPath),
+                    runtime: value.runtime
+                };
+            });
+    }
+    return [];
 }
 
 /**
