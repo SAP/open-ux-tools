@@ -102,9 +102,6 @@ describe('prompt-helpers', () => {
             [promptNames.enableEslint]: {
                 name: promptNames.enableEslint
             },
-            [promptNames.enableCodeAssist]: {
-                name: promptNames.enableCodeAssist
-            },
             [promptNames.skipAnnotations]: {
                 name: promptNames.skipAnnotations
             },
@@ -119,10 +116,10 @@ describe('prompt-helpers', () => {
             }
         };
         // All prompts returned
-        expect(hidePrompts(prompts).length).toEqual(15);
+        expect(hidePrompts(prompts).length).toEqual(14);
         // Hide prompts that are not applicable for CAP projects
         let filteredPrompts = hidePrompts(prompts, {}, mockCdsInfo);
-        expect(filteredPrompts.length).toEqual(13);
+        expect(filteredPrompts.length).toEqual(12);
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.targetFolder });
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.enableEslint });
 
@@ -139,7 +136,7 @@ describe('prompt-helpers', () => {
             }
         };
         filteredPrompts = hidePrompts(prompts, promptOpts);
-        expect(filteredPrompts.length).toEqual(12);
+        expect(filteredPrompts.length).toEqual(11);
         expect(filteredPrompts).toEqual(
             expect.not.arrayContaining([{ name: promptNames.addDeployConfig, when: expect.any(Function) }])
         );
@@ -156,21 +153,21 @@ describe('prompt-helpers', () => {
         };
         // show `addDeployConfig` prompt when isCap is true
         filteredPrompts = hidePrompts(prompts, promptOpts, mockCdsInfo);
-        expect(filteredPrompts.length).toEqual(13);
+        expect(filteredPrompts.length).toEqual(12);
         expect(filteredPrompts).toEqual(
             expect.arrayContaining([{ name: promptNames.addDeployConfig, when: expect.any(Function) }])
         );
 
         // hide `addDeployConfig` prompt when isCap is false
         filteredPrompts = hidePrompts(prompts, promptOpts, undefined);
-        expect(filteredPrompts.length).toEqual(14);
+        expect(filteredPrompts.length).toEqual(13);
         expect(filteredPrompts).toEqual(
             expect.not.arrayContaining([{ name: promptNames.addDeployConfig, when: expect.any(Function) }])
         );
 
         // hide `enableTypeScript` and `enableVirtualEndpoints` when hasMinCdsVersion is false
         filteredPrompts = hidePrompts(prompts, promptOpts, { ...mockCdsInfo, hasMinCdsVersion: false });
-        expect(filteredPrompts.length).toEqual(11);
+        expect(filteredPrompts.length).toEqual(10);
         expect(filteredPrompts).toEqual(
             expect.not.arrayContaining([
                 { name: promptNames.enableTypeScript },

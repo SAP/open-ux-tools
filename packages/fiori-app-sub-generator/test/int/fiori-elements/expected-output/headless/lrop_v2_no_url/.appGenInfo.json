@@ -11,7 +11,6 @@
     "appNamespace": "testNameSpace",
     "ui5Theme": "sap_fiori_3",
     "ui5Version": "1.71.0",
-    "enableCodeAssist": false,
     "enableEslint": false,
     "enableTypeScript": false,
     "showMockDataInfo": true,

@@ -92,9 +92,6 @@ describe('prompting.ts', () => {
                   "addFlpConfig": {
                     "validatorCallback": [Function],
                   },
-                  "enableCodeAssist": {
-                    "hide": true,
-                  },
                   "enableEslint": {
                     "advancedOption": true,
                     "default": false,
@@ -471,7 +468,6 @@ describe('prompting.ts', () => {
                 {
                     addDeployConfig: { validatorCallback: expect.toBeFunction() },
                     addFlpConfig: { validatorCallback: expect.toBeFunction() },
-                    enableCodeAssist: { hide: true },
                     enableEslint: { advancedOption: true, default: false },
                     enableTypeScript: { default: false },
                     enableVirtualEndpoints: { hide: false },

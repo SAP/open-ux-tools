@@ -57,10 +57,6 @@
             "message": "Add ESLint Configuration to the Project",
             "breadcrumb": "ESLint"
         },
-        "enableCodeAssist": {
-            "message": "Add Code Assist Libraries to your Project",
-            "breadcrumb": "Code Assist"
-        },
         "skipAnnotations": {
             "message": "Skip Generation of Associated `annotations.cds` File",
             "breadcrumb": "Skip Annotations"

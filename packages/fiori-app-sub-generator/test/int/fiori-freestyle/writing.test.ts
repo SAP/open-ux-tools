@@ -247,35 +247,6 @@ describe('Freestyle generation', () => {
         accessSpy.mockRestore();
     });
 
-    it('Test Freestyle Simple Floorplan - Code Assist', async () => {
-        testProjectName = 'simple_code_assist';
-        mockModulePath = setExpectedOutPath(testProjectName);
-        const state: State = {
-            project: {
-                name: testProjectName,
-                description: 'An SAP Fiori application.',
-                title: 'App Title',
-                enableCodeAssist: false,
-                ui5Theme: 'sap_fiori_3',
-                ui5Version: '1.82.2',
-                localUI5Version: '1.82.2',
-                skipAnnotations: false,
-                namespace: '',
-                targetFolder: testDir,
-                enableVirtualEndpoints: true
-            },
-            service: {
-                servicePath: '',
-                version: OdataVersion.v2,
-                source: DatasourceType.metadataFile
-            },
-            floorplan: FloorplanFF.FF_SIMPLE,
-            viewName: 'View1'
-        };
-        await runWritingPhaseGen(state);
-        expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
-    });
-
     it('Test Freestyle Simple Floorplan - Eslint', async () => {
         testProjectName = 'simple_eslint';
         mockModulePath = setExpectedOutPath(testProjectName);
@@ -284,7 +255,6 @@ describe('Freestyle generation', () => {
                 name: testProjectName,
                 description: 'An SAP Fiori application.',
                 title: 'App Title',
-                enableCodeAssist: false,
                 enableEslint: true,
                 ui5Theme: 'sap_fiori_3',
                 ui5Version: '1.82.2',
@@ -314,7 +284,6 @@ describe('Freestyle generation', () => {
                 name: testProjectName,
                 description: 'An SAP Fiori application.',
                 title: 'App Title',
-                enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: true,
                 ui5Theme: 'sap_fiori_3',

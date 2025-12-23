@@ -53,7 +53,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             config: {
                 ...listDetailConfig,
                 appOptions: {
-                    codeAssist: true,
                     eslint: true
                 }
             }

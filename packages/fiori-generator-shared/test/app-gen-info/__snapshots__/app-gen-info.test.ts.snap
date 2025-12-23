@@ -106,7 +106,6 @@ Object {
     "appName": "appName",
     "appNamespace": "appNamespace",
     "appTitle": "appTitle",
-    "enableCodeAssist": false,
     "enableEslint": false,
     "enableTypeScript": false,
     "generationDate": "Jan 01 1975",
