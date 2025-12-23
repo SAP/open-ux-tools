@@ -25,13 +25,11 @@ To consume this module, add @sap-ux/eslint-plugin-fiori-tools in your project es
 
 `eslint.config.js`
 ```javascript
-const { defineConfig } = require('eslint/config');
-
 const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
-module.exports = defineConfig([
-    ...fioriTools.configs.recommended,
-]);
+module.exports = [
+    ...fioriTools.configs.recommended
+];
 ```
 
 
@@ -43,13 +41,11 @@ Eslint 9 requires changing to use the new flat config.
  
 1. Create `eslint.config.js`
 ```javascript
-const { defineConfig } = require('eslint/config');
-
 const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
-module.exports = defineConfig([
-    ...fioriTools.configs.recommended,
-]);
+module.exports = [
+    ...fioriTools.configs.recommended
+];
 ```
 
 2. Copy any values from `.eslintignore` (if it exists) into `eslint.config.js` by adding the `ignores` array.
@@ -57,16 +53,14 @@ module.exports = defineConfig([
    More info at https://eslint.org/docs/latest/use/configure/configuration-files#excluding-files-with-ignores
 
    ```javascript
-   const { defineConfig } = require('eslint/config');
-   
    const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
-   module.exports = defineConfig([
+   module.exports = [
         {
         ignores: ['dist']
         },
        ...fioriTools.configs.recommended,
-   ]);
+   ];
    ```
 
 3. Delete the `.eslintignore` file   

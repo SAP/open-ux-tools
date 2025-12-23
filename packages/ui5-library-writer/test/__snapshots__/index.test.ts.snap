@@ -1608,13 +1608,11 @@ archive.zip
     "state": "modified",
   },
   "com.sap.myui5tslib113/eslint.config.js": Object {
-    "contents": "const { defineConfig } = require('eslint/config');
-const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
-module.exports = defineConfig([
+module.exports = [
     ...fioriTools.configs.recommended,
-]);
-",
+];",
     "state": "modified",
   },
   "com.sap.myui5tslib113/karma.conf.js": Object {
@@ -2231,13 +2229,11 @@ archive.zip
     "state": "modified",
   },
   "com.sap.myui5tslib/eslint.config.js": Object {
-    "contents": "const { defineConfig } = require('eslint/config');
-const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
-module.exports = defineConfig([
+module.exports = [
     ...fioriTools.configs.recommended,
-]);
-",
+];",
     "state": "modified",
   },
   "com.sap.myui5tslib/karma.conf.js": Object {
@@ -2854,13 +2850,11 @@ archive.zip
     "state": "modified",
   },
   "com.sap.myui5tslib121/eslint.config.js": Object {
-    "contents": "const { defineConfig } = require('eslint/config');
-const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
-module.exports = defineConfig([
+module.exports = [
     ...fioriTools.configs.recommended,
-]);
-",
+];",
     "state": "modified",
   },
   "com.sap.myui5tslib121/karma.conf.js": Object {

@@ -1,6 +1,5 @@
-const { defineConfig } = require('eslint/config');
 const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
 
-module.exports = defineConfig([
+module.exports = [
     ...fioriTools.configs.recommended
-]);
+];
