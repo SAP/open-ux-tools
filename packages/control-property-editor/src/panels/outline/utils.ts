@@ -3,7 +3,7 @@ import type { FilterOptions } from '../../slice';
 import { FilterName } from '../../slice';
 import type { IGroup } from '@fluentui/react';
 
-const commonVisibleControls = [
+const commonVisibleControls = new Set([
     'sap.ui.comp.smarttable.SmartTable',
     'sap.m.Column',
     'sap.ui.comp.smartfilterbar.SmartFilterBar',
@@ -26,7 +26,7 @@ const commonVisibleControls = [
     'sap.ovp.ui.Card',
     'sap.ui.extensionpoint',
     'sap.ui.extensionpoint.child'
-];
+]);
 
 /**
  * Filter model. If none of filter conditions meet, model without filter is returned.
@@ -113,7 +113,7 @@ function filterByCommonlyUsedControls(model: OutlineNode[], filterOption: Filter
     for (const item of model) {
         let parentMatch = false;
         const controlType = item.controlType;
-        if (commonVisibleControls.includes(controlType)) {
+        if (commonVisibleControls.has(controlType)) {
             parentMatch = true;
             // add node without its children
             filteredModel.push({ ...item, children: [] });
@@ -145,7 +145,7 @@ export const adaptExpandCollapsed = (groups: IGroup[], collapsed: IGroup[]) => {
         return;
     }
     for (const group of groups) {
-        const [collapsedResult] = collapsed.filter((data) => isSame(group.data.path, data.data.path));
+        const collapsedResult = collapsed.find((data) => isSame(group.data.path, data.data.path));
         if (collapsedResult) {
             group.isCollapsed = true;
         }

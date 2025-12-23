@@ -23,9 +23,8 @@ const Funnel = (): ReactElement => {
         const action = filterNodes([{ name, value: isChecked }]);
         dispatch(action);
     };
-    const showEditablePropertiesChecked = filterQuery.filter(
-        (item) => item.name === FilterName.showEditableProperties
-    )[0].value as boolean;
+    const showEditablePropertiesChecked = filterQuery.find((item) => item.name === FilterName.showEditableProperties)
+        ?.value as boolean | undefined;
     const checked = showEditablePropertiesChecked;
     return (
         <>

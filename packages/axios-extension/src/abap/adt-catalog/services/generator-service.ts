@@ -23,8 +23,6 @@ export class GeneratorService extends AdtService {
         return GeneratorService.adtCategory;
     }
 
-    private id: string;
-
     /**
      * Get the UI service generator for the given referenced object.
      *

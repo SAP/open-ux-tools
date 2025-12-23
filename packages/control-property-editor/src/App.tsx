@@ -66,7 +66,7 @@ export default function App(appProps: AppProps): ReactElement {
                 const paddingWidth = 40;
                 const width = node.clientWidth;
                 const availableWidth = width - paddingWidth;
-                const requiredWidth = parseInt(previewWidth, 10);
+                const requiredWidth = Number.parseInt(previewWidth, 10);
                 if (availableWidth < requiredWidth) {
                     const scale = availableWidth / requiredWidth;
                     dispatch(changePreviewScale(scale));

@@ -42,7 +42,7 @@ export function isElementWithName(node: AnyNode | undefined, name: string): node
  * @returns boolean check result
  */
 function isEmptyText(text: string): boolean {
-    return (text || '').replace(/[\s]/g, '').length === 0;
+    return (text || '').replace(/\s/g, '').length === 0;
 }
 
 /**

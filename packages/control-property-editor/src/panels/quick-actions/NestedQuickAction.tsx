@@ -211,7 +211,7 @@ function mergeNodes(
             continue;
         }
         endNode.label = `${startNode.label}-${endNode.label}`;
-        const index = parentNode.children.findIndex((parentChild) => parentChild === startNode);
+        const index = parentNode.children.indexOf(startNode);
         if (index !== -1) {
             parentNode.children[index] = endNode;
         }
