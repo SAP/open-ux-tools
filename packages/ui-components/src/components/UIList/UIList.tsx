@@ -48,7 +48,7 @@ export class UIList extends React.Component<ListProps, {}> {
         super(props);
     }
 
-    private onGroupHeaderClick = (group: IGroup): void => {
+    private readonly onGroupHeaderClick = (group: IGroup): void => {
         this.props.onSelect(group);
     };
 

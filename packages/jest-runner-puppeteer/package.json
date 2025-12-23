@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-runner-puppeteer",
-    "version": "0.2.1",
+    "version": "0.2.3",
     "description": "Jest runner for puppeteer",
     "repository": {
         "type": "git",
@@ -15,8 +15,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -31,7 +31,6 @@
     "devDependencies": {
         "chalk": "4.1.2",
         "jest-environment-node": "30.2.0",
-        "mkdirp": "1.0.4",
         "puppeteer-core": "22.15.0",
         "which": "2.0.2"
     },

@@ -1,7 +1,7 @@
 {
   "name": "@sap-ux/cf-deploy-config-writer",
   "description": "Add or amend Cloud Foundry and ABAP deployment configuration for SAP projects",
-  "version": "0.3.36",
+  "version": "0.3.48",
   "repository": {
     "type": "git",
     "url": "https://github.com/SAP/open-ux-tools.git",
@@ -17,8 +17,8 @@
     "build": "tsc --build",
     "clean": "rimraf --glob dist coverage *.tsbuildinfo",
     "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "jest --runInBand --ci --forceExit --detectOpenHandles --colors",
     "watch": "tsc --watch"
   },
@@ -54,7 +54,7 @@
     "@types/js-yaml": "4.0.9",
     "@types/semver": "7.5.2",
     "memfs": "3.4.13",
-    "js-yaml": "3.14.0",
+    "js-yaml": "3.14.2",
     "fs-extra": "10.0.0",
     "unionfs": "4.4.0"
   },

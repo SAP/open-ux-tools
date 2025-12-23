@@ -9,7 +9,7 @@ import { getFunctionalityDetails, resolveFunctionality } from './get-functionali
 import type { PropertyPath } from '../page-editor-api';
 import { PageEditorApi } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
-import { resolveApplication } from './utils';
+import { resolveApplication } from '../utils';
 
 /**
  * Executes a functionality based on the provided parameters.
@@ -129,7 +129,7 @@ async function generateChanges(
 export async function getEditorApi(appPath: string, pageName?: string): Promise<PageEditorApi | undefined> {
     const project = await resolveApplication(appPath);
     if (project?.applicationAccess) {
-        return new PageEditorApi(project.applicationAccess, pageName);
+        return new PageEditorApi(project.applicationAccess, undefined, pageName);
     }
     return undefined;
 }

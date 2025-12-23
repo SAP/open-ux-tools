@@ -1,4 +1,4 @@
-import { spawn, type SpawnOptionsWithoutStdio } from 'child_process';
+import { spawn, type SpawnOptionsWithoutStdio } from 'node:child_process';
 import type { Logger } from '@sap-ux/logger';
 
 /**

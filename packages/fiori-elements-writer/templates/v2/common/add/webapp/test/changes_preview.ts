@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(".");

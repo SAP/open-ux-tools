@@ -4997,10 +4997,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
   },
   {
     "maintained": true,
-    "version": "1.141.0",
-  },
-  {
-    "maintained": true,
     "version": "1.139.0",
   },
   {
@@ -5036,9 +5032,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
     "version": "1.142.0",
   },
   {
-    "version": "1.141.0",
-  },
-  {
     "version": "1.139.0",
   },
   {
@@ -5066,9 +5059,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 [
   {
     "version": "1.142.0",
-  },
-  {
-    "version": "1.141.0",
   },
   {
     "version": "1.139.0",
@@ -5100,9 +5090,6 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
     "version": "1.142.0",
   },
   {
-    "version": "1.141.0",
-  },
-  {
     "version": "1.139.0",
   },
   {
@@ -5132,9 +5119,6 @@ exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 ver
     "version": "1.142.0",
   },
   {
-    "version": "1.141.0",
-  },
-  {
     "version": "1.139.0",
   },
   {
@@ -5162,9 +5146,6 @@ exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 ver
 [
   {
     "version": "1.142.0",
-  },
-  {
-    "version": "1.141.0",
   },
   {
     "version": "1.139.0",

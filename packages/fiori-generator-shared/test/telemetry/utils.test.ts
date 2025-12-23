@@ -15,7 +15,7 @@ describe('Telemetry utils', () => {
             () =>
                 ({
                     reportEvent: reportEventSpy
-                } as any)
+                }) as any
         );
         TelemetryHelper.createTelemetryData();
         await sendTelemetry('TEST_EVENT', TelemetryHelper.telemetryData, 'mock/path');
@@ -30,7 +30,7 @@ describe('Telemetry utils', () => {
             () =>
                 ({
                     reportEventBlocking: reportEventBlockingSpy
-                } as any)
+                }) as any
         );
         TelemetryHelper.createTelemetryData();
         await sendTelemetryBlocking('TEST_EVENT', TelemetryHelper.telemetryData, 'mock/path');

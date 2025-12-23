@@ -1,5 +1,5 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { getUi5Version } from '../../../utils/version';
 import { getControllerInfoForControl, getReuseComponentChecker, checkForExistingChange } from '../../utils';

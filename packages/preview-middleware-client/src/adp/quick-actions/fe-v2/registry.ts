@@ -1,5 +1,5 @@
 import XMLView from 'sap/ui/core/mvc/XMLView';
-import Control from 'sap/ui/core/Control';
+import type Control from 'sap/ui/core/Control';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 
 import type {

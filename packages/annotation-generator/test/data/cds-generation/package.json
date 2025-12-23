@@ -24,7 +24,5 @@
   "sapux": [
     "app/project1"
   ],
-  "devDependencies": {
-    "@sap/ux-specification": "^1.84.6"
-  }
+  "devDependencies": {}
 }

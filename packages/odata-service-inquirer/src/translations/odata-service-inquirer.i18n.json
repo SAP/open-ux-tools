@@ -111,7 +111,7 @@
             "newSystemChoiceLabel": "New System",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
+            "authenticationFailedUpdateCredentials": "$t(texts.authenticationFailed). Please try updating the credentials."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
@@ -206,6 +206,10 @@
         "smartVariantManagement": {
             "message": "Enable Smart Variant Management",
             "hint": "Enables page level variant."
+        },
+        "valueHelpDownload": {
+            "message": "The service contains references to value help services. Do you want to download the associated metadata during generation? This may increase generation time.",
+            "hint": "Download metadata for value help to improve the user experience with dropdowns and search."
         }
     },
     "errors": {
@@ -217,7 +221,9 @@
         "capModelAndServicesLoadError": "An error occurred loading the CAP model and services: {{- error, addMsgWithColonFormatter}}.",
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. The CAP service property: `urlPath` is not defined but it is required.",
         "unknownError": "An error occurred: {{- error, addMsgWithColonFormatter}}.",
-        "authenticationFailed": "Authentication incorrect: {{error}}.",
+        "authenticationFailed": "$t(texts.authenticationFailed): {{error}}.",
+        "authenticationFailedSpecificCatalog": "{{authFailType}}: Unable to access the OData V{{odataVersion}} service catalog",
+        "authenticationFailedAllCatalogs": "{{authFailType}}: Unable to access any service catalogs",
         "invalidUrl": "Invalid URL: {{-input, addMsgWithColonFormatter}}.",
         "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",
         "urlNotFound": "URL not found.",
@@ -241,7 +247,8 @@
         "unparseableXML": "Unparseable XML was specified: {{-error}}.",
         "noRelevantEntities": "The template and service selected have no relevant entities that you can use.",
         "cfInstanceCredentialsNotReturned": "Cannot not retrieve credentials to access: {{serviceInstanceName}}.",
-        "v2CatalogServiceNoAnnotations": "An error occurred when creating an OData V2 catalog service object. Annotations will not be available: {{-error}}"
+        "v2CatalogServiceNoAnnotations": "An error occurred when creating an OData V2 catalog service object. Annotations will not be available: {{-error}}",
+        "backendSystemRetrieval": "An error occurred when retrieving the backend systems from the store: {{-error}}"
     },
     "warnings": {
         "largeMetadataDocument": "The metadata for this OData service is very large. It may take some time before this operation completes.",
@@ -253,7 +260,8 @@
         "collaborativeDraftMessage": "The selected service is draft enabled but does not support collaborative draft.",
         "certificateErrors": "A certificate error occurred when connecting to the host: {{-url}}. Certificate error: {{error}}.",
         "allowingUnauthorizedCertsNode": "Setting the `NODE_TLS_REJECT_UNAUTHORIZED` environment variable to `0` makes TLS connections and HTTPS requests insecure by disabling certificate verification. It is important to understand the security risks when using this setting.",
-        "certErrorIgnoredByNodeSetting": "An SSL certificate error is being ignored by the 'NODE_TLS_REJECT_UNAUTHORIZED=0' Node.js setting. This makes TLS connections and HTTPS requests insecure by disabling certificate verification. For details of the certification error, see the logs."
+        "certErrorIgnoredByNodeSetting": "An SSL certificate error is being ignored by the 'NODE_TLS_REJECT_UNAUTHORIZED=0' Node.js setting. This makes TLS connections and HTTPS requests insecure by disabling certificate verification. For details of the certification error, see the logs.",
+        "noExternalServiceMetdataFetched": "No external service metadata were fetched. $t(texts.seeLogForDetails)."
     },
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",
@@ -262,6 +270,8 @@
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
         "choiceNameNone": "None",
-        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies.",
+        "authorizationFailed": "Authorization failed",
+        "authenticationFailed": "Authentication failed"
     }
 }

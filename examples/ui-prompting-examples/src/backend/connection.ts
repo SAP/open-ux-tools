@@ -6,7 +6,7 @@ import type {
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer
 } from '@sap-ux/fe-fpm-writer';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -41,8 +41,7 @@ import type {
     ResponseI18n
 } from '../utils/types';
 import type { AddonActions } from '../addons/types';
-import { handleAction as handleAddonAction } from '../addons/project';
-import { testAppPath, getApplication } from '../addons/project';
+import { handleAction as handleAddonAction, testAppPath, getApplication } from '../addons/project';
 import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/project/types';
 import type { ApplicationInformation, SetProjectPath } from '../addons/project/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';

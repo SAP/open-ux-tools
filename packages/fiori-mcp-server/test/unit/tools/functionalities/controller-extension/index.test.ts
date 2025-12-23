@@ -3,32 +3,43 @@ import {
     CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY,
     createControllerExtensionHandlers
 } from '../../../../../src/tools/functionalities/controller-extension';
-import { mockSpecificationImport } from '../../../utils';
-import * as toolUtils from '../../../../../src/tools/utils';
+import { mockSpecificationReadApp } from '../../../utils';
 import * as projectUtils from '../../../../../src/page-editor-api/project';
 import { join } from 'node:path';
+import { getDefaultExtensionFolder } from '../../../../../src/utils';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+
     ...(jest.requireActual('@sap-ux/project-access') as object)
+}));
+
+// Mock the utils module to avoid property redefinition errors
+jest.mock('../../../../../src/utils', () => ({
+    ...jest.requireActual('../../../../../src/utils'),
+    getDefaultExtensionFolder: jest.fn()
 }));
 
 describe('create-controller-extension', () => {
     const appPath = join('root', 'app1');
-    let importProjectMock = jest.fn();
-    let generateCustomExtensionMock = jest.fn();
-    const findProjectRootSpy: jest.SpyInstance = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
-    const getDefaultExtensionFolderSpy: jest.SpyInstance = jest.spyOn(toolUtils, 'getDefaultExtensionFolder');
-    const getUI5VersionSpy: jest.SpyInstance = jest.spyOn(projectUtils, 'getUI5Version');
-    const getManifestSpy: jest.SpyInstance = jest.spyOn(projectUtils, 'getManifest');
-    const createApplicationAccessSpy: jest.SpyInstance = jest.spyOn(
-        openUxProjectAccessDependency,
-        'createApplicationAccess'
-    );
+    let readAppMock: jest.Mock;
+    let generateCustomExtensionMock: jest.Mock;
+    let findProjectRootSpy: jest.SpyInstance;
+    let getUI5VersionSpy: jest.SpyInstance;
+    let getManifestSpy: jest.SpyInstance;
+    let createApplicationAccessSpy: jest.SpyInstance;
     const memFsdumpMock = jest.fn();
+
     beforeEach(async () => {
-        importProjectMock = jest.fn().mockResolvedValue([]);
+        // Create spies in beforeEach to avoid redefinition errors
+        findProjectRootSpy = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
+        getUI5VersionSpy = jest.spyOn(projectUtils, 'getUI5Version');
+        getManifestSpy = jest.spyOn(projectUtils, 'getManifest');
+        createApplicationAccessSpy = jest.spyOn(openUxProjectAccessDependency, 'createApplicationAccess');
+
+        readAppMock = jest.fn().mockResolvedValue({
+            files: []
+        });
         memFsdumpMock.mockReturnValue({
             'manifest.json': {}
         });
@@ -36,7 +47,7 @@ describe('create-controller-extension', () => {
             commit: jest.fn(),
             dump: memFsdumpMock
         });
-        getDefaultExtensionFolderSpy.mockReturnValue('controllerFolder');
+        (getDefaultExtensionFolder as jest.Mock).mockReturnValue('controllerFolder');
         findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
         getUI5VersionSpy.mockResolvedValue('1.108.1');
         getManifestSpy.mockResolvedValue({});
@@ -53,16 +64,21 @@ describe('create-controller-extension', () => {
                     root: 'root'
                 },
                 getSpecification: () => ({
-                    importProject: importProjectMock,
-                    generateCustomExtension: generateCustomExtensionMock
+                    readApp: readAppMock,
+                    generateCustomExtension: generateCustomExtensionMock,
+                    getApiVersion: () => ({ version: '99' })
                 })
             };
         });
     });
 
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     describe('getFunctionalityDetails', () => {
         test('getFunctionalityDetails', async () => {
-            mockSpecificationImport(importProjectMock);
+            mockSpecificationReadApp(readAppMock);
             const details = await createControllerExtensionHandlers.getFunctionalityDetails({
                 appPath: appPath,
                 functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId
@@ -74,7 +90,7 @@ describe('create-controller-extension', () => {
             createApplicationAccessSpy.mockImplementation(() => {
                 throw new Error('Test error');
             });
-            mockSpecificationImport(importProjectMock);
+            mockSpecificationReadApp(readAppMock);
             await expect(
                 createControllerExtensionHandlers.getFunctionalityDetails({
                     appPath: appPath,
@@ -86,7 +102,7 @@ describe('create-controller-extension', () => {
 
     describe('executeFunctionality', () => {
         test('create controller extension with pageType', async () => {
-            mockSpecificationImport(importProjectMock);
+            mockSpecificationReadApp(readAppMock);
             const details = await createControllerExtensionHandlers.executeFunctionality({
                 appPath: appPath,
                 functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
@@ -125,7 +141,7 @@ describe('create-controller-extension', () => {
         });
 
         test('create controller extension with pageId', async () => {
-            mockSpecificationImport(importProjectMock);
+            mockSpecificationReadApp(readAppMock);
             const details = await createControllerExtensionHandlers.executeFunctionality({
                 appPath: appPath,
                 functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
@@ -165,7 +181,7 @@ describe('create-controller-extension', () => {
 
         test('create controller extension - validate "pageType", invalid floorplan', async () => {
             memFsdumpMock.mockReturnValue({});
-            mockSpecificationImport(importProjectMock);
+            mockSpecificationReadApp(readAppMock);
             await expect(
                 createControllerExtensionHandlers.executeFunctionality({
                     appPath: appPath,
@@ -194,7 +210,7 @@ describe('create-controller-extension', () => {
 
         test('create controller extension - validate "controllerName", missing value', async () => {
             memFsdumpMock.mockReturnValue({});
-            mockSpecificationImport(importProjectMock);
+            mockSpecificationReadApp(readAppMock);
             await expect(
                 createControllerExtensionHandlers.executeFunctionality({
                     appPath: appPath,
@@ -219,7 +235,7 @@ describe('create-controller-extension', () => {
 
         test('create controller extension - validate "controllerName", invalid extension name', async () => {
             memFsdumpMock.mockReturnValue({});
-            mockSpecificationImport(importProjectMock);
+            mockSpecificationReadApp(readAppMock);
             await expect(
                 createControllerExtensionHandlers.executeFunctionality({
                     appPath: appPath,
@@ -247,7 +263,7 @@ describe('create-controller-extension', () => {
 
         test('create controller extension - no changes', async () => {
             memFsdumpMock.mockReturnValue({});
-            mockSpecificationImport(importProjectMock);
+            mockSpecificationReadApp(readAppMock);
             const details = await createControllerExtensionHandlers.executeFunctionality({
                 appPath: appPath,
                 functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
@@ -276,7 +292,7 @@ describe('create-controller-extension', () => {
             createApplicationAccessSpy.mockImplementation(() => {
                 throw new Error('Test error');
             });
-            mockSpecificationImport(importProjectMock);
+            mockSpecificationReadApp(readAppMock);
             const details = await createControllerExtensionHandlers.executeFunctionality({
                 appPath: appPath,
                 functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,

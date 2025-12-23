@@ -1,8 +1,7 @@
-import type { Control, ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import type { Control, ExternalAction, Properties } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
     controlSelected,
-    Properties,
     propertyChanged,
     PropertyType,
     reportTelemetry,
@@ -92,15 +91,19 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
  *
  */
 export class SelectionService implements Service {
-    private appliedChangeCache = new Map<string, number>();
-    private activeChangeHandlers = new Set<() => void>();
+    private readonly appliedChangeCache = new Map<string, number>();
+    private readonly activeChangeHandlers = new Set<() => void>();
     private currentSelection: ManagedObject;
     /**
      *
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
+     * @param changeService - change service instance.
      */
-    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {}
+    constructor(
+        private readonly rta: RuntimeAuthoring,
+        private readonly changeService: ChangeService
+    ) {}
 
     /**
      * Initialize selection service.

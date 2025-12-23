@@ -1,5 +1,8 @@
 <!-- Use stable and unique id's!-->
-<core:FragmentDefinition xmlns="sap.m" xmlns:table="sap.ui.table" xmlns:smartfield="sap.ui.comp.smartfield"	xmlns:core="sap.ui.core">
+<core:FragmentDefinition xmlns="sap.m" xmlns:table="sap.ui.table" xmlns:smartfield="sap.ui.comp.smartfield"	xmlns:core="sap.ui.core"><% if (targetAggregation && controlType && viewName) { %>
+    <!-- viewName: <%= viewName %> -->
+    <!-- controlType: <%= controlType %> -->
+    <!-- targetAggregation: <%= targetAggregation %> --> <% } %>
 	<table:Column
 		autoResizable="true"
 		width="150px" 

@@ -241,7 +241,8 @@ describe('Test FioriAppGenerator', () => {
                 EnableEslint: undefined,
                 EnableTypeScript: undefined,
                 EnableCodeAssist: undefined,
-                ToolsId: 'abcd1234'
+                ToolsId: 'abcd1234',
+                ValueHelpCount: 0
             });
             expect(writeAppGenInfoFiles).toHaveBeenCalledWith(
                 {
@@ -320,7 +321,7 @@ describe('Test FioriAppGenerator', () => {
             project: {
                 name: 'testApp',
                 targetFolder,
-                enableCodeAssist: true
+                enableCodeAssist: false
             } as Project,
             service: {
                 capService: {
@@ -348,7 +349,6 @@ describe('Test FioriAppGenerator', () => {
             {
                 appPackagePath: appPath,
                 capService: mockState.service!.capService,
-                enableCodeAssist: true,
                 useNpmWorkspaces: true
             },
             expect.objectContaining({ debug: expect.any(Function) }) // Logger
@@ -409,7 +409,9 @@ describe('Test FioriAppGenerator', () => {
                         url: 'http://mockhost:1234',
                         client: '010',
                         username: 'mockUser',
-                        password: 'mockPassword'
+                        password: 'mockPassword',
+                        systemType: 'OnPrem',
+                        connectionType: 'abap_catalog'
                     },
                     serviceProvider: {} as ServiceProvider
                 },

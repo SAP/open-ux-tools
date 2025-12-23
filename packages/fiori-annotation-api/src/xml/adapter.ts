@@ -72,7 +72,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     public splitAnnotationSupport = false;
     public fileCache: Map<string, string>;
 
-    private documents = new Map<string, Document>();
+    private readonly documents = new Map<string, Document>();
     private metadata: MetadataElement[] = [];
 
     private setFileCache(fileCache: Map<string, string>) {
@@ -102,10 +102,10 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
      * @param appName - Name of the application.
      */
     constructor(
-        private service: LocalEDMXService,
-        private vocabularyService: VocabularyService,
-        private project: Project,
-        private appName: string
+        private readonly service: LocalEDMXService,
+        private readonly vocabularyService: VocabularyService,
+        private readonly project: Project,
+        private readonly appName: string
     ) {
         this.fileCache = new Map();
     }
@@ -235,7 +235,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             }
             workspaceChanges[uri] = edits;
         }
-        return Promise.resolve({ changes: workspaceChanges });
+        return { changes: workspaceChanges };
     }
 
     /**
@@ -757,7 +757,7 @@ function convertPointerSegment(
         // convert attribute segment to index based one
         // we assume that keys in the object are added in the order they are in file,
         // which in general should be true
-        elementIndex = Object.keys(currentNode).findIndex((key) => key === segment);
+        elementIndex = Object.keys(currentNode).indexOf(segment);
     }
     const mappedSegment = elementIndex !== -1 ? elementIndex.toString() : segment;
     return { mappedSegment, nextNode };

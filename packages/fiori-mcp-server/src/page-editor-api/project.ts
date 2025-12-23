@@ -1,13 +1,6 @@
-import {
-    FileName,
-    getCapServiceName,
-    getMinimumUI5Version,
-    getWebappPath,
-    readCapServiceMetadataEdmx
-} from '@sap-ux/project-access';
+import { FileName, getCapServiceName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
 import type { ApplicationAccess, Manifest, Package } from '@sap-ux/project-access';
 import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
-import type { FileData } from '@sap/ux-specification/dist/types/src';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -52,50 +45,6 @@ export async function getServiceName(appAccess: ApplicationAccess): Promise<stri
 }
 
 /**
- * Reads annotation files for the application.
- *
- * @param appAccess - The application access object
- * @returns A promise that resolves to an array of FileData objects
- */
-export async function readAnnotationFiles(appAccess: ApplicationAccess): Promise<FileData[]> {
-    const annotationData: FileData[] = [];
-    const mainServiceName = getMainService(appAccess);
-    const mainService = appAccess.app?.services?.[mainServiceName];
-    if (!mainService) {
-        return [];
-    }
-    if (mainService.uri && (appAccess.projectType === 'CAPJava' || appAccess.projectType === 'CAPNodejs')) {
-        const serviceUri = mainService?.uri ?? '';
-        if (serviceUri) {
-            const edmx = await readCapServiceMetadataEdmx(appAccess.root, serviceUri);
-            annotationData.push({
-                fileContent: edmx,
-                dataSourceUri: serviceUri
-            });
-        }
-    } else {
-        if (mainService.local) {
-            const serviceFile = await readFile(mainService.local);
-            annotationData.push({
-                dataSourceUri: mainService.local,
-                fileContent: serviceFile.toString()
-            });
-        }
-        const { annotations = [] } = mainService;
-        for (const annotation of annotations) {
-            if (annotation.local) {
-                const annotationFile = await readFile(annotation.local);
-                annotationData.push({
-                    dataSourceUri: annotation.local,
-                    fileContent: annotationFile.toString()
-                });
-            }
-        }
-    }
-    return annotationData;
-}
-
-/**
  * Retrieves the manifest file for the application.
  *
  * @param appAccess - The application access object
@@ -123,7 +72,7 @@ export async function getUI5Version(appAccess: ApplicationAccess): Promise<strin
     const manifest = await getManifest(appAccess);
     let ui5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
 
-    if (ui5Version !== undefined && Number.isNaN(parseFloat(ui5Version))) {
+    if (ui5Version !== undefined && Number.isNaN(Number.parseFloat(ui5Version))) {
         ui5Version = 'latest';
     }
 
@@ -140,11 +89,11 @@ export async function getFlexChangeLayer(root: string): Promise<FlexChangeLayer>
     let packageJson: Package | undefined;
     const packageJsonPath = join(root, FileName.Package);
     if (existsSync(packageJsonPath)) {
-        const file = await readFile(packageJsonPath);
+        const file = await readFile(packageJsonPath, { encoding: 'utf-8' });
         try {
-            packageJson = JSON.parse(file.toString());
+            packageJson = JSON.parse(file) as Package;
         } catch (error) {
-            logger.error(String(error));
+            logger.error(`Error parsing package.json file ${packageJsonPath} ${error}`);
         }
     }
 

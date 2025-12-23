@@ -21,7 +21,7 @@ class CsvTokenizer {
     private mode: 'default' | 'quoted';
     private start: number;
     private lastTextTokenType: TokenType;
-    private tokens: Token[];
+    private readonly tokens: Token[];
     constructor() {
         this.i = 0;
         this.value = '';

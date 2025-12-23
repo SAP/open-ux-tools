@@ -131,6 +131,7 @@ exports[`Test system selection prompts should return system selection prompts an
         "name": "http://abap.on.prem:1234",
         "value": {
           "system": {
+            "connectionType": "abap_catalog",
             "name": "http://abap.on.prem:1234",
             "password": "password1",
             "systemType": "OnPrem",

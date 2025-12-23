@@ -1,4 +1,4 @@
-import type { PropertyPath } from './parser';
+import type { PropertyPath } from './tree';
 
 /**
  * Static method updates object for passed path.

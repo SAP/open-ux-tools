@@ -1,9 +1,9 @@
-import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
 import type { Options } from 'http-proxy-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
-import type http from 'http';
+import type http from 'node:http';
 import type { ProxyConfig } from './types';
 import {
     BOOTSTRAP_LINK,
@@ -15,6 +15,7 @@ import {
 } from './constants';
 import type { Url } from 'node:url';
 import { t } from '../i18n';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { Socket } from 'node:net';
 

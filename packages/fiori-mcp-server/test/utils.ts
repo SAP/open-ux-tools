@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 import { existsSync, lstatSync, readdirSync, rmSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 

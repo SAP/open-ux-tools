@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-file-matchers",
-    "version": "0.2.6",
+    "version": "0.2.8",
     "description": "Jest matchers for files and folders",
     "repository": {
         "type": "git",
@@ -15,8 +15,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
@@ -32,8 +32,7 @@
         "dir-compare": "5.0.0",
         "filenamify": "4.2.0",
         "jest-diff": "30.2.0",
-        "minimatch": "3.0.5",
-        "mkdirp": "1.0.4"
+        "minimatch": "3.0.5"
     },
     "eslint-formatter-multiple": {
         "formatters": [

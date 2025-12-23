@@ -409,9 +409,9 @@ export class FioriAppGenerator extends Generator {
                 AppGenBusinessHubType: getTelemetryBusinessHubType(service.apiHubConfig?.apiHubType),
                 EnableEslint: project.enableEslint,
                 EnableTypeScript: project.enableTypeScript,
-                EnableCodeAssist: project.enableCodeAssist,
                 EnableVirtualEndpoints: project.enableVirtualEndpoints,
-                ToolsId: appConfig.app.sourceTemplate?.toolsId
+                ToolsId: appConfig.app.sourceTemplate?.toolsId,
+                ValueHelpCount: service.valueListMetadata?.length ?? 0
             });
 
             if (service.apiHubConfig && isAppStudio()) {
@@ -440,7 +440,6 @@ export class FioriAppGenerator extends Generator {
                 {
                     appPackagePath: this.destinationPath(),
                     capService: this.state.service.capService,
-                    enableCodeAssist: this.state.project?.enableCodeAssist ?? false,
                     // Assumption that npm workspaces will be enabled if cds ui5 plugin is a depenedency
                     useNpmWorkspaces: !!(
                         this.state.project.enableTypeScript || // If typescript is enabled, it is required that the CAP project will be updated to use NPM workspaces

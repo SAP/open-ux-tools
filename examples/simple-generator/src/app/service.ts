@@ -1,6 +1,7 @@
 import type Generator from 'yeoman-generator';
 import type { AxiosBasicCredentials } from 'axios';
 import type { ODataService, AbapServiceProvider, Annotations } from '@sap-ux/axios-extension';
+import type { BackendSystem } from '@sap-ux/store';
 import { createForDestination, ODataVersion } from '@sap-ux/axios-extension';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { inquirer, storeCredentials, createAbapServiceProvider } from '@sap-ux/system-access';
@@ -71,7 +72,7 @@ async function askToStoreCredentials(generator: Generator, provider: AbapService
     if (store) {
         await storeCredentials(
             name,
-            { url: provider.defaults.baseURL!, client: provider.defaults.params?.['sap-client'] },
+            { url: provider.defaults.baseURL!, client: provider.defaults.params?.['sap-client'] } as BackendSystem,
             provider.defaults.auth!,
             getLogger(generator)
         );

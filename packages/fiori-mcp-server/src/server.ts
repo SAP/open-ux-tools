@@ -62,7 +62,7 @@ export class FioriFunctionalityServer {
      * Logs MCP errors and handles the SIGINT signal for graceful shutdown.
      */
     private setupErrorHandling(): void {
-        this.server.onerror = (error) => logger.error(`[MCP Error] ${error}`);
+        this.server.onerror = (error): void => logger.error(`[MCP Error] ${error}`);
         process.on('SIGINT', async () => {
             await this.server.close();
             process.exit(0);
@@ -93,10 +93,11 @@ export class FioriFunctionalityServer {
             try {
                 let result;
                 TelemetryHelper.markToolStartTime();
-                const telemetryProperties: TelemetryData = {
-                    tool: name,
-                    functionalityId: (args as any)?.functionalityId
-                };
+                const telemetryProperties: TelemetryData = { tool: name };
+                if ('functionalityId' in args) {
+                    telemetryProperties.functionalityId = args.functionalityId as string;
+                }
+                logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
 
                 switch (name) {
                     case 'search_docs':
@@ -121,8 +122,13 @@ export class FioriFunctionalityServer {
                         );
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
-                return this.convertResultToCallToolResult(result);
+                const convertedResult = this.convertResultToCallToolResult(result);
+                logger.debug(`Tool ${name} executed successfully with result:`);
+                logger.debug(convertedResult);
+                return convertedResult;
             } catch (error) {
+                logger.error(`Error executing tool ${name}: ${error}`);
+                logger.debug(error);
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
                 return {
                     content: [
@@ -142,7 +148,7 @@ export class FioriFunctionalityServer {
      * @param result - The result to be converted.
      * @returns The converted result in CallToolResult format.
      */
-    private convertResultToCallToolResult<T extends object | String>(result: T | string): CallToolResult {
+    private convertResultToCallToolResult<T extends object | string>(result: T | string): CallToolResult {
         // Handle string results - return them as plain text content
         if (typeof result === 'string' || result instanceof String) {
             return {
@@ -173,13 +179,15 @@ export class FioriFunctionalityServer {
     }
 
     /**
-     * Starts the FioriFunctionalityServer.
+     * Starts the Fiori MCP server.
      * Connects the server to a StdioServerTransport and begins listening for requests.
      */
     async run(): Promise<void> {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         await this.setupTelemetry();
-        logger.info('Fiori Functionality MCP Server running on stdio');
+        logger.info(
+            `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${packageJson.version}) running on stdio`
+        );
     }
 }

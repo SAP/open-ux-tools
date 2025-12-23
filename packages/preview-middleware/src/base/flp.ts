@@ -1,14 +1,16 @@
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type http from 'http';
+import type http from 'node:http';
 import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
 import path, { dirname, join, posix } from 'node:path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import {
     getWebappPath,
@@ -18,15 +20,17 @@ import {
     type Manifest,
     FileName,
     type ManifestNamespace,
-    createApplicationAccess
+    createApplicationAccess,
+    type UI5FlexLayer
 } from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
     type CommonChangeProperties,
-    type DescriptorVariant,
     type OperationType,
-    type CommonAdditionalChangeInfoProperties
+    type CommonAdditionalChangeInfoProperties,
+    loadAppVariant,
+    readManifestFromBuildPath
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
@@ -155,7 +159,8 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
-        this.projectType = await getProjectType(await findProjectRoot(process.cwd(), true, true));
+        const projectRoot = await findProjectRoot(process.cwd(), false, true);
+        this.projectType = await getProjectType(projectRoot);
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
@@ -221,21 +226,21 @@ export class FlpSandbox {
             return new Map([
                 // Run application in design time mode
                 // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-                ['xx-designMode', 'true'],
+                ['data-sap-ui-xx-designMode', 'true'],
                 // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-                ['xx-suppressDeactivationOfControllerCode', 'true'],
+                ['data-sap-ui-xx-suppressDeactivationOfControllerCode', 'true'],
                 // Make sure that XML preprocessing results are correctly invalidated
-                ['xx-viewCache', 'false']
+                ['data-sap-ui-xx-viewCache', 'false']
             ]);
         } else {
             return new Map([
                 // Run application in design time mode
                 // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
-                ['xx-design-mode', 'true'],
+                ['data-sap-ui-xx-design-mode', 'true'],
                 // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
-                ['xx-suppress-deactivation-of-controller-code', 'true'],
+                ['data-sap-ui-xx-suppress-deactivation-of-controller-code', 'true'],
                 // Make sure that XML preprocessing results are correctly invalidated
-                ['xx-view-cache', 'false']
+                ['data-sap-ui-xx-view-cache', 'false']
             ]);
         }
     }
@@ -473,7 +478,7 @@ export class FlpSandbox {
                 //use protocol from request header referer as fallback for connect API (karma test runner)
                 'protocol' in req
                     ? req.protocol
-                    : req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http',
+                    : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http'),
                 req.headers.host,
                 'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
             );
@@ -555,12 +560,12 @@ export class FlpSandbox {
                 version = responseJson?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
                 isCdn = responseJson?.name === 'SAPUI5 Distribution';
             } catch (error) {
-                this.logger.error(error);
+                this.logger.debug(error);
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
-            version = '1.130.0';
+            this.logger.error('Could not get UI5 version of application. Using version: 1.130.9 as fallback.');
+            version = '1.130.9';
             isCdn = false;
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => Number.parseInt(versionPart, 10));
@@ -1124,77 +1129,92 @@ export class FlpSandbox {
             await this.storeI18nKeysHandler(req, res);
         });
     }
+
+    /**
+     * Initialize the preview for an adaptation project.
+     *
+     * @param config configuration from the ui5.yaml
+     * @throws Error in case no manifest.appdescr_variant found
+     */
+    async initAdp(config: AdpPreviewConfig): Promise<void> {
+        const variant = await loadAppVariant(this.project);
+        const adp = new AdpPreview(config, this.project, this.utils, this.logger as ToolsLogger);
+        const layer = await adp.init(variant);
+
+        // CF ADP build path mode: serve built resources directly from build output
+        if (config.cfBuildPath) {
+            const manifest = this.setupCfBuildMode(config.cfBuildPath);
+            configureRta(this.rta, layer, variant.id, false);
+            await this.init(manifest, variant.reference);
+            this.setupAdpCommonHandlers(adp);
+            return;
+        }
+
+        configureRta(this.rta, layer, variant.id, adp.isCloudProject);
+        const descriptor = adp.descriptor;
+        const { name, manifest } = descriptor;
+        await this.init(manifest, name, adp.resources, adp);
+        this.router.use(adp.descriptor.url, adp.proxy.bind(adp));
+        this.setupAdpCommonHandlers(adp);
+    }
+
+    /**
+     * Setup common ADP middleware and handlers.
+     *
+     * @param adp AdpPreview instance
+     */
+    private setupAdpCommonHandlers(adp: AdpPreview): void {
+        this.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
+        this.router.use(json());
+        adp.addApis(this.router);
+    }
+
+    /**
+     * Setup the CF build path mode for the ADP project.
+     *
+     * @param cfBuildPath path to the build output folder
+     * @returns the manifest
+     */
+    private setupCfBuildMode(cfBuildPath: string): Manifest {
+        const manifest = readManifestFromBuildPath(cfBuildPath);
+        this.router.use('/', serveStatic(cfBuildPath));
+        this.logger.info(`Initialized CF ADP with cfBuildPath, serving from ${cfBuildPath}`);
+        return manifest;
+    }
 }
 
 /**
- * Creates an attribute string that can be added to an HTML element.
- *
- * @param attributes map with attributes and their values
- * @param indent indentation that's inserted before each attribute
- * @param prefix value that should be added at the start of to all attribute names
- * @returns attribute string
- */
-function serializeDataAttributes(attributes: Map<string, string>, indent = '', prefix = 'data'): string {
-    return [...attributes.entries()]
-        .map(([name, value]) => {
-            return `${indent}${prefix}-${name}="${value}"`;
-        })
-        .join('\n');
-}
-
-/**
- * Creates an attribute string that can be added to bootstrap script in a HTML file.
+ * Creates an attribute string that can be added to the UI5 bootstrap script of an HTML file.
  *
  * @param config ui5 configuration options
  * @returns attribute string
  */
 function serializeUi5Configuration(config: Map<string, string>): string {
-    return '\n' + serializeDataAttributes(config, '        ', 'data-sap-ui');
+    return '\n' + [...config.entries()].map(([name, value]) => `        ${name}="${value}"`).join('\n');
 }
 
 /**
- * Initialize the preview for an adaptation project.
+ * Configure RTA (Runtime Adaptation) for the FLP sandbox.
  *
- * @param rootProject reference to the project
- * @param config configuration from the ui5.yaml
- * @param flp FlpSandbox instance
- * @param util middleware utilities provided by the UI5 CLI
- * @param logger logger instance
- * @throws Error in case no manifest.appdescr_variant found
+ * @param rta RtaConfig instance
+ * @param layer UI5 flex layer
+ * @param variantId variant identifier
+ * @param isCloud whether this is a cloud project
  */
-export async function initAdp(
-    rootProject: ReaderCollection,
-    config: AdpPreviewConfig,
-    flp: FlpSandbox,
-    util: MiddlewareUtils,
-    logger: ToolsLogger
-): Promise<void> {
-    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
-    if (appVariant) {
-        const adp = new AdpPreview(config, rootProject, util, logger);
-        const variant = JSON.parse(await appVariant.getString()) as DescriptorVariant;
-        const layer = await adp.init(variant);
-        if (flp.rta) {
-            flp.rta.layer = layer;
-            flp.rta.options = {
-                ...flp.rta.options,
-                projectId: variant.id,
-                scenario: 'ADAPTATION_PROJECT',
-                isCloud: adp.isCloudProject
-            };
-            for (const editor of flp.rta.endpoints) {
-                editor.pluginScript ??= 'open/ux/preview/client/adp/init';
-            }
-        }
+function configureRta(rta: RtaConfig | undefined, layer: UI5FlexLayer, variantId: string, isCloud: boolean): void {
+    if (!rta) {
+        return;
+    }
 
-        const descriptor = adp.descriptor;
-        const { name, manifest } = descriptor;
-        await flp.init(manifest, name, adp.resources, adp);
-        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));
-        flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
-        flp.router.use(json());
-        adp.addApis(flp.router);
-    } else {
-        throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    rta.layer = layer;
+    rta.options = {
+        ...rta.options,
+        projectId: variantId,
+        scenario: 'ADAPTATION_PROJECT',
+        isCloud
+    };
+
+    for (const editor of rta.endpoints) {
+        editor.pluginScript ??= 'open/ux/preview/client/adp/init';
     }
 }

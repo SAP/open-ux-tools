@@ -112,7 +112,7 @@ export function scrollToColumn(
     const sidebarWidth = (sidebar?.getBoundingClientRect().width ?? 0) + (addOneToColIndex ? 20 : 0);
     const scrollContainer = document.querySelector('.ms-ScrollablePane--contentContainer');
     const cell = getCellFromCoords(selectedRow, columnKey, columns, addOneToColIndex);
-    const box = cell && cell.getBoundingClientRect();
+    const box = cell?.getBoundingClientRect();
 
     if (scrollContainer && box) {
         const left = scrollContainer.scrollLeft + Math.ceil(box.x) - sidebarWidth;
@@ -154,7 +154,7 @@ export function scrollToRow(idx = 0, table: IDetailsList | null = null) {
  */
 export async function waitFor(selector: string, count = 10): Promise<Element | void> {
     if (count === 0) {
-        return Promise.reject(new Error('Element for selector not found: ' + selector));
+        throw new Error('Element for selector not found: ' + selector);
     }
     await sleep();
     const el = document.querySelector(selector);

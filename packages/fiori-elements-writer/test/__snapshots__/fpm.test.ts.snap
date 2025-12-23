@@ -28,7 +28,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -3360,6 +3360,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         }
       }
     }
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -3620,7 +3625,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -3699,14 +3703,6 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Flexible Programming Model template: fpmTemplates Generate files for template: with-ts 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
-",
-    "state": "modified",
-  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -3718,6 +3714,15 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslint.config.js": Object {
+    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = [
+    ...fioriTools.configs.recommended
+];
+",
     "state": "modified",
   },
   "package.json": Object {
@@ -3733,14 +3738,13 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.96.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -7202,6 +7206,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           }
         }
       }
+    }
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
     }
   }
 }

@@ -1,8 +1,8 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.0.10",
-    "displayName": "SAP Systems Extension",
-    "description": "SAP Systems Visual Studio Code Extension",
+    "version": "0.1.4",
+    "displayName": "Connection Manager for SAP Systems",
+    "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
     "publisher": "SAPOSS",
     "icon": "resources/icon-extension-plug-systems.png",
@@ -32,7 +32,8 @@
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
         "check-types": "tsc --noEmit",
-        "lint": "eslint . --ext .ts",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "cross-env SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true jest --ci --forceExit --detectOpenHandles --colors --silent",
         "ide-ext:package": "vsce package"
     },
@@ -74,7 +75,7 @@
             "activitybar": [
                 {
                     "id": "open-ux-tools-sap-systems",
-                    "title": "SAP Systems",
+                    "title": "Connection Manager for SAP Systems",
                     "icon": "resources/icon-sidebar-plug-systems.svg"
                 }
             ]
@@ -83,7 +84,7 @@
             "open-ux-tools-sap-systems": [
                 {
                     "id": "sap.ux.tools.sapSystems",
-                    "name": "SAP Systems"
+                    "name": "Connection Manager for SAP Systems"
                 }
             ]
         },
@@ -143,7 +144,7 @@
             },
             {
                 "command": "sap.ux.tools.sapSystems.launchAppGen",
-                "title": "Launch Application Generator",
+                "title": "Create SAP Fiori Application",
                 "category": "SAP"
             }
         ],
@@ -182,6 +183,7 @@
             "view/item/context": [
                 {
                     "command": "sap.ux.tools.sapSystems.delete",
+                    "when": "view == sap.ux.tools.sapSystems",
                     "group": "inline"
                 },
                 {

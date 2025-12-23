@@ -4,16 +4,16 @@ import { validateBindingModel } from '../../../../src/cpe/changes/validator';
 describe('vaildateBindingModel', () => {
     const mockModifiedcontrol = {
         getModel: jest.fn().mockReturnValue({
-            getResourceBundle: jest.fn().mockReturnValue(
-                {
-                    getText: jest.fn().mockImplementation(() => false)
-                }
-            )
+            getResourceBundle: jest.fn().mockReturnValue({
+                getText: jest.fn().mockImplementation(() => false)
+            })
         })
     };
 
     test('should throw when invalid binding model string is provided', async () => {
-        await expect(() => validateBindingModel(mockModifiedcontrol as unknown as UI5Element, '{}')).rejects.toThrow('Invalid binding string.');
+        await expect(() => validateBindingModel(mockModifiedcontrol as unknown as UI5Element, '{}')).rejects.toThrow(
+            'Invalid binding string.'
+        );
     });
 
     test('should throw when invalid binding string for i18n model is provided', async () => {
@@ -28,6 +28,8 @@ describe('vaildateBindingModel', () => {
         const control = {
             getModel: jest.fn().mockReturnValue(undefined)
         };
-        await expect(() => validateBindingModel(control as unknown as UI5Element, '{ i18n>test }')).rejects.toThrow('Invalid binding model.');
+        await expect(() => validateBindingModel(control as unknown as UI5Element, '{ i18n>test }')).rejects.toThrow(
+            'Invalid binding model.'
+        );
     });
 });

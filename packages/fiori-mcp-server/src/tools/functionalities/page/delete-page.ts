@@ -7,7 +7,7 @@ import type {
 } from '../../../types';
 import { Application } from './application';
 import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
-import { convertToSchema, resolveApplication, validateWithSchema } from '../../utils';
+import { convertToSchema, resolveApplication, validateWithSchema } from '../../../utils';
 import { DELETE_PAGE } from '../../../constant';
 import { buildPageDeletionSchema } from './schema';
 
@@ -37,7 +37,7 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     }
     const { appId, applicationAccess } = appDetails;
     const ftfsFileIo = new SapuxFtfsFileIO(applicationAccess);
-    const appData = await ftfsFileIo.readApp();
+    const appData = await ftfsFileIo.readAppData();
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
     return {
@@ -68,7 +68,7 @@ async function executeFunctionality(params: ExecuteFunctionalityInput): Promise<
     }
     const { appId, applicationAccess } = appDetails;
     const ftfsFileIo = new SapuxFtfsFileIO(applicationAccess);
-    const appData = await ftfsFileIo.readApp();
+    const appData = await ftfsFileIo.readAppData();
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
     const deleteSchema = buildPageDeletionSchema(application.getPages());
