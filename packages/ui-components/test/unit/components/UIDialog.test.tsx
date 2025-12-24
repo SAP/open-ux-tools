@@ -335,7 +335,25 @@ describe('<UIDialog />', () => {
     });
 
     describe('Styles', () => {
-        it('Basic style', () => {
+        it('Basic style - overlay', () => {
+            render(
+                <UIDialog isOpen={true}>
+                    <div className="dummy"></div>
+                </UIDialog>
+            );
+            
+            const overlay = document.querySelector('.ms-Overlay');
+            expect(overlay).toBeInTheDocument();
+            
+            // Validate overlay styles
+            if (overlay) {
+                const styles = window.getComputedStyle(overlay);
+                // Check that opacity is set (may be '0.8' or a computed value)
+                expect(parseFloat(styles.opacity)).toBeGreaterThan(0);
+            }
+        });
+        
+        it('Basic style - dialog main', () => {
             render(
                 <UIDialog isOpen={true}>
                     <div className="dummy"></div>
@@ -349,12 +367,31 @@ describe('<UIDialog />', () => {
             if (dialog) {
                 const styles = window.getComputedStyle(dialog);
                 // These styles are set via Fluent UI's styles prop as inline styles
-                // In test environment, CSS variables may not resolve, so check they're defined
                 expect(styles.backgroundColor).toBeDefined();
                 expect(styles.borderRadius).toBe('4px');
                 expect(styles.borderStyle).toBeDefined();
+                expect(styles.borderWidth).toBeDefined();
             }
         });
+        
+        it('Basic style - dialog inner', () => {
+            render(
+                <UIDialog isOpen={true}>
+                    <div className="dummy"></div>
+                </UIDialog>
+            );
+            
+            const inner = document.querySelector('.ms-Dialog-inner');
+            expect(inner).toBeInTheDocument();
+            
+            if (inner) {
+                const computedStyles = window.getComputedStyle(inner as HTMLElement);
+                expect(computedStyles.padding).toMatch(/^0px/);
+                expect(computedStyles.display).toBe('flex');
+                expect(computedStyles.flexDirection).toBe('column');
+            }
+        });
+        
         it('Title - single line', () => {
             render(
                 <UIDialog isOpen={true}>
@@ -364,9 +401,15 @@ describe('<UIDialog />', () => {
             const title = document.querySelector('.ms-Dialog-title');
             expect(title).toBeInTheDocument();
             if (title) {
-                expect((title as HTMLElement).style.textAlign).toBe('center');
+                const inlineStyles = (title as HTMLElement).style;
+                expect(inlineStyles.textAlign).toBe('center');
+                expect(inlineStyles.overflow).toBe('hidden');
+                expect(inlineStyles.textOverflow).toBe('ellipsis');
+                expect(inlineStyles.whiteSpace).toBe('nowrap');
+                expect(inlineStyles.padding).toContain('20px');
             }
         });
+        
         it('Title - multi line', () => {
             render(
                 <UIDialog isOpen={true} multiLineTitle={true}>
@@ -376,10 +419,42 @@ describe('<UIDialog />', () => {
             const title = document.querySelector('.ms-Dialog-title');
             expect(title).toBeInTheDocument();
             if (title) {
-                expect((title as HTMLElement).style.textAlign).toBe('center');
+                const inlineStyles = (title as HTMLElement).style;
+                expect(inlineStyles.textAlign).toBe('center');
+                expect(inlineStyles.padding).toContain('20px');
+                // Multi-line should not have overflow hidden
+                expect(inlineStyles.overflow).not.toBe('hidden');
             }
         });
-        it('Footer', () => {
+        
+        it('Footer - with buttons', () => {
+            render(
+                <UIDialog
+                    acceptButtonText="Yes"
+                    cancelButtonText="No"
+                    onAccept={onAcceptSpy}
+                    onCancel={onRejectSpy}
+                    isOpen={true}>
+                    <div className="dummy"></div>
+                </UIDialog>
+            );
+            
+            // Verify footer elements exist
+            const actionsRight = document.querySelector('.ms-Dialog-actionsRight');
+            expect(actionsRight).toBeInTheDocument();
+            const actions = document.querySelector('.ms-Dialog-actions');
+            expect(actions).toBeInTheDocument();
+            
+            // Check styles using compareStylesBySelector for Fluent UI styles
+            compareStylesBySelector('.ms-Dialog-actionsRight', {
+                textAlign: 'center'
+            });
+            compareStylesBySelector('.ms-Dialog-actions', {
+                lineHeight: 'auto'
+            });
+        });
+        
+        it('Footer - empty', () => {
             render(
                 <UIDialog isOpen={true}>
                     <div className="dummy"></div>
@@ -389,6 +464,7 @@ describe('<UIDialog />', () => {
                 document.querySelector('.ms-Dialog-actions') || document.querySelector('[data-testid="dialog-footer"]');
             expect(footer).toBeNull();
         });
+        
         it('ScrollArea - content', () => {
             render(
                 <UIDialog isOpen={true}>
@@ -397,7 +473,11 @@ describe('<UIDialog />', () => {
             );
             const dialog = document.querySelector('.ms-Dialog-main');
             expect(dialog).toBeInTheDocument();
+            
+            const content = document.querySelector('.ms-Dialog-content');
+            expect(content).toBeInTheDocument();
         });
+        
         it('Whole dialog scrollable', () => {
             render(
                 <UIDialog isOpen={true} scrollArea={UIDialogScrollArea.Dialog}>
@@ -406,6 +486,9 @@ describe('<UIDialog />', () => {
             );
             const dialog = document.querySelector('.ms-Dialog-main');
             expect(dialog).toBeInTheDocument();
+            
+            const content = document.querySelector('.ms-Dialog-content');
+            expect(content).toBeInTheDocument();
         });
     });
 

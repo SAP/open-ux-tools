@@ -113,19 +113,58 @@ describe('<UIToggle />', () => {
             });
         }
 
-        it('Default', () => {
+        it('Default - pill styles', () => {
             const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
-            const toggleElement = container.querySelector('.ms-Toggle');
-            expect(toggleElement).toBeInTheDocument();
+            const pillElement = container.querySelector('.ms-Toggle-background');
+            expect(pillElement).toBeInTheDocument();
+            
+            const styles = window.getComputedStyle(pillElement!);
+            // Verify key pill styles
+            expect(styles.height).toBe('18px');
+            expect(styles.width).toBe('30px');
+            // Padding can be returned as full form (4 values) or short form
+            expect(styles.padding).toMatch(/^0px 1px/);
         });
 
-        it('Checked', () => {
+        it('Default - thumb styles', () => {
+            const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
+            const thumbElement = container.querySelector('.ms-Toggle-thumb');
+            expect(thumbElement).toBeInTheDocument();
+            
+            const styles = window.getComputedStyle(thumbElement!);
+            // Verify key thumb styles
+            expect(styles.height).toBe('14px');
+            expect(styles.width).toBe('14px');
+            expect(styles.borderWidth).toBe('1px');
+        });
+
+        it('Checked - pill styles', () => {
+            const { container } = render(<UIToggle onChange={handleChangeMock} checked={true} />);
+            const pillElement = container.querySelector('.ms-Toggle-background');
+            expect(pillElement).toBeInTheDocument();
+
+            const styles = window.getComputedStyle(pillElement!);
+            // Verify key pill styles remain consistent
+            expect(styles.height).toBe('18px');
+            expect(styles.width).toBe('30px');
+            // Padding can be returned as full form (4 values) or short form
+            expect(styles.padding).toMatch(/^0px 1px/);
+        });
+
+        it('Checked - thumb styles', () => {
             const { container } = render(<UIToggle onChange={handleChangeMock} checked={true} />);
             const toggleElement = container.querySelector('.ms-Toggle');
             expect(toggleElement).toBeInTheDocument();
-
+            
             // Test that the toggle renders with checked state
             expect(toggleElement).toHaveClass('is-checked');
+            
+            const thumbElement = container.querySelector('.ms-Toggle-thumb');
+            const styles = window.getComputedStyle(thumbElement!);
+            // Verify key thumb styles
+            expect(styles.height).toBe('14px');
+            expect(styles.width).toBe('14px');
+            expect(styles.borderWidth).toBe('1px');
         });
     });
 
