@@ -18,11 +18,9 @@ const CalloutWithText = (props: { id: string }): JSX.Element => {
                 id={id}
                 iconProps={{ iconName: UiIcons.Bulb }}
                 checked={isCalloutVisible}
-                onClick={toggleCallout}></UIIconButton>
+                onClick={toggleCallout}>
+            </UIIconButton>
             {isCalloutVisible && (
-                <UICallout isBeakVisible={true} beakWidth={5} directionalHint={4} target={`#${id}`}>
-                    <div className="dummy">aaaaaa</div>
-                </UICallout>
                 <UICallout
                     target={`#${id}`}
                     isBeakVisible={true}
