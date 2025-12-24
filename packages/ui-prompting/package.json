@@ -52,7 +52,7 @@
         "@storybook/components": "8.4.2",
         "@storybook/react": "8.4.2",
         "@storybook/react-webpack5": "8.4.2",
-        "@testing-library/jest-dom": "5.17.0",
+        "@testing-library/jest-dom": "6.4.8",
         "@testing-library/react": "12.1.5",
         "@types/inquirer": "8.2.6",
         "@types/react": "16.14.55",
