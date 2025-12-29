@@ -1,12 +1,14 @@
 import type { CSN, ServiceInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import {
     findCapProjects,
+    findCapProjectRoot,
     getCapCustomPaths,
     getCapModelAndServices,
     getCdsRoots,
+    isCapProject,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import { basename, isAbsolute, relative } from 'node:path';
+import { basename, isAbsolute, relative, resolve, dirname, parse } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice } from '../../../types';
 import type { CapService } from '@sap-ux/cap-config-writer';
@@ -17,6 +19,51 @@ import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { realpath } from 'node:fs/promises';
 
 export const enterCapPathChoiceValue = 'enterCapPath';
+
+/**
+ * Auto-detects CAP projects by traversing up the directory tree from given starting paths
+ *
+ * @param startPaths - Array of paths to start the search from
+ * @returns Array of discovered CAP project root paths
+ */
+export async function autoDetectCapProjects(startPaths: string[]): Promise<CapProjectRootPath[]> {
+    const detectedProjects: CapProjectRootPath[] = [];
+    const processedPaths = new Set<string>();
+
+    for (const startPath of startPaths) {
+        let currentPath = resolve(startPath);
+        const { root: rootPath } = parse(currentPath);
+
+        while (currentPath !== rootPath && !processedPaths.has(currentPath)) {
+            processedPaths.add(currentPath);
+            // Check if current path or any parent contains a CAP project
+            const capRoot = await findCapProjectRoot(currentPath, false);
+
+            if (capRoot && !detectedProjects.some((p) => p.path === capRoot)) {
+                if (await isCapProject(capRoot)) {
+                    const folderName = basename(capRoot);
+                    const realPath = process.platform === 'win32' ? await realpath(capRoot) : capRoot;
+
+                    detectedProjects.push({
+                        folderName,
+                        path: realPath
+                    });
+
+                    // We found a CAP project, stop traversing up for this path
+                    break;
+                }
+            }
+            // Move to parent directory
+            const parentPath = dirname(currentPath);
+            if (parentPath === currentPath) {
+                break;
+            }
+            currentPath = parentPath;
+        }
+    }
+
+    return detectedProjects;
+}
 
 /**
  * Search for CAP projects in the specified paths.
@@ -49,21 +96,49 @@ async function getCapProjectPaths(
 /**
  * Search for CAP projects in the specified paths and create prompt choices from the results.
  * The resulting choices will include an additional entry to enter a custom path.
+ * If no CAP projects are found in the specified paths, auto-detection will be attempted.
  *
  * @param paths - The paths used to search for CAP projects
  * @returns The CAP project prompt choices
  */
 export async function getCapProjectChoices(paths: string[]): Promise<CapProjectChoice[]> {
     const { capProjectPaths, folderCounts } = await getCapProjectPaths(paths);
+    let allCapPaths = [...capProjectPaths];
+    const allFolderCounts = new Map(folderCounts);
+
+    // If no CAP projects found in the specified paths, try auto-detection
+    if (capProjectPaths.length === 0) {
+        // Start auto-detection from current working directory and provided paths
+        const autoDetectionPaths = [process.cwd(), ...paths.filter((path) => path && path.trim() !== '')];
+
+        try {
+            const autoDetectedProjects = await autoDetectCapProjects(autoDetectionPaths);
+
+            if (autoDetectedProjects.length > 0) {
+                for (const project of autoDetectedProjects) {
+                    allFolderCounts.set(project.folderName, (allFolderCounts.get(project.folderName) ?? 0) + 1);
+                }
+                allCapPaths = [...allCapPaths, ...autoDetectedProjects];
+            }
+        } catch (error) {
+            LoggerHelper.logger.debug(`Auto-detection of CAP projects failed, proceeding without auto-detected projects: ${error}`);
+        }
+    }
 
     const capChoices: CapProjectChoice[] = [];
 
-    for (const capProjectPath of capProjectPaths) {
+    for (const capProjectPath of allCapPaths) {
         const customCapPaths = await getCapCustomPaths(capProjectPath.path);
-        const folderCount = folderCounts.get(capProjectPath.folderName) ?? 1;
+        const folderCount = allFolderCounts.get(capProjectPath.folderName) ?? 1;
+
+        // Determine if this project was auto-detected
+        const isAutoDetected = !capProjectPaths.includes(capProjectPath);
+        const displayName = isAutoDetected
+            ? `${capProjectPath.folderName} (auto-detected)${folderCount > 1 ? ' (' + capProjectPath.path + ')' : ''}`
+            : `${capProjectPath.folderName}${folderCount > 1 ? ' (' + capProjectPath.path + ')' : ''}`;
 
         capChoices.push({
-            name: `${capProjectPath.folderName}${folderCount > 1 ? ' (' + capProjectPath.path + ')' : ''}`,
+            name: displayName,
             value: Object.assign(capProjectPath, customCapPaths)
         });
     }

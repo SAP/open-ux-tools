@@ -57,6 +57,7 @@
             "metadataInvalid": "The service metadata is invalid.",
             "metadataFilePathNotValid": "The metadata file does not exist or is not accessible. Please specify a valid file path.",
             "capProjectNotFound": "The folder you have selected does not contain a valid CAP project. Please check and try again.",
+            "permissionDenied": "Permission denied accessing the specified path. Please check file permissions.",
             "warningCertificateValidationDisabled": "Certificate validation has been disabled by the user.",
             "annotationsNotFound": "Annotations not found for the specified service.",
             "backendSystemExistsWarning": "A saved system connection entry: \"{{- backendName}}\" already exists with the same URL and client. Please reuse the existing entry or remove it, using the systems panel, before adding a new connection.",

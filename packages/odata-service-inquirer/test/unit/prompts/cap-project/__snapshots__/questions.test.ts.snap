@@ -17,6 +17,7 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
   },
   {
     "default": [Function],
+    "filter": [Function],
     "guiOptions": {
       "breadcrumb": "CAP Project",
       "mandatory": true,

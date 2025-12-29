@@ -1,14 +1,21 @@
 import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Question } from 'inquirer';
+import { resolve, isAbsolute } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types';
 import { promptNames } from '../../../types';
 import { PromptState, getPromptHostEnvironment } from '../../../utils';
 import { errorHandler } from '../../prompt-helpers';
-import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
+import {
+    autoDetectCapProjects,
+    enterCapPathChoiceValue,
+    getCapEdmx,
+    getCapProjectChoices,
+    getCapServiceChoices
+} from './cap-helpers';
 import {
     capInternalPromptNames,
     type CapProjectChoice,
@@ -94,6 +101,28 @@ export function getLocalCapProjectPrompts(
                 }
             },
             guiOptions: { mandatory: true, breadcrumb: t('prompts.capProject.breadcrumb') },
+            filter: async (projectPath: string): Promise<string> => {
+                // Handle empty input with auto-detection for CLI
+                if (!projectPath || projectPath.trim() === '') {
+                    const isCli = getHostEnvironment() === hostEnvironment.cli;
+                    if (isCli) {
+                        const autoDetectedProjects = await autoDetectCapProjects([process.cwd()]);
+                        if (autoDetectedProjects.length > 0) {
+                            // Return the first auto-detected project path
+                            return autoDetectedProjects[0].path;
+                        }
+                    }
+                    // Return empty string to let validation handle the error
+                    return '';
+                }
+
+                // Resolve relative paths to absolute paths for consistent handling
+                if (!isAbsolute(projectPath)) {
+                    return resolve(process.cwd(), projectPath.trim());
+                }
+
+                return projectPath;
+            },
             validate: async (projectPath: string): Promise<string | boolean> => {
                 validCapPath = await validateCapPath(projectPath);
                 // Load the cap paths if the path is valid

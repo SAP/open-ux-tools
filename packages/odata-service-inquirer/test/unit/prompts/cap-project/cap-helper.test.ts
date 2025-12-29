@@ -300,6 +300,160 @@ describe('cap-helper', () => {
         );
     });
 
+    test('getCapProjectChoices: auto-detection when no projects found in search paths', async () => {
+        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects').mockResolvedValue([]);
+        const findCapProjectRootSpy = jest
+            .spyOn(sapuxProjectAccess, 'findCapProjectRoot')
+            .mockResolvedValue('/auto/detected/project');
+        const isCapProjectSpy = jest.spyOn(sapuxProjectAccess, 'isCapProject').mockResolvedValue(true);
+
+        if (os.platform() === 'win32') {
+            jest.spyOn(fsPromises, 'realpath').mockImplementation(async (path: PathLike) => path as string);
+        }
+
+        const choices = await getCapProjectChoices(['/empty/search/path']);
+
+        expect(choices).toEqual([
+            {
+                name: 'project (auto-detected)',
+                value: {
+                    app: 'app/',
+                    db: 'db/',
+                    folderName: 'project',
+                    path: '/auto/detected/project',
+                    srv: 'srv/'
+                }
+            },
+            {
+                name: 'Manually select CAP project folder path',
+                value: 'enterCapPath'
+            }
+        ]);
+
+        expect(findCapProjectRootSpy).toHaveBeenCalled();
+        expect(isCapProjectSpy).toHaveBeenCalledWith('/auto/detected/project');
+    });
+
+    test('getCapProjectChoices: auto-detection finds multiple projects with duplicate names', async () => {
+        let callCount = 0;
+        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects').mockResolvedValue([]);
+        const findCapProjectRootSpy = jest
+            .spyOn(sapuxProjectAccess, 'findCapProjectRoot')
+            .mockImplementation(async () => {
+                callCount++;
+                if (callCount === 1) {
+                    return '/project1/bookshop';
+                }
+                if (callCount === 2) {
+                    return '/project2/bookshop';
+                }
+                return null;
+            });
+        const isCapProjectSpy = jest.spyOn(sapuxProjectAccess, 'isCapProject').mockResolvedValue(true);
+
+        if (os.platform() === 'win32') {
+            jest.spyOn(fsPromises, 'realpath').mockImplementation(async (path: PathLike) => path as string);
+        }
+
+        const choices = await getCapProjectChoices(['/path1', '/path2']);
+
+        expect(choices).toEqual([
+            {
+                name: 'bookshop (auto-detected) (/project1/bookshop)',
+                value: {
+                    app: 'app/',
+                    db: 'db/',
+                    folderName: 'bookshop',
+                    path: '/project1/bookshop',
+                    srv: 'srv/'
+                }
+            },
+            {
+                name: 'bookshop (auto-detected) (/project2/bookshop)',
+                value: {
+                    app: 'app/',
+                    db: 'db/',
+                    folderName: 'bookshop',
+                    path: '/project2/bookshop',
+                    srv: 'srv/'
+                }
+            },
+            {
+                name: 'Manually select CAP project folder path',
+                value: 'enterCapPath'
+            }
+        ]);
+    });
+
+    test('getCapProjectChoices: no auto-detection when projects are found in search paths', async () => {
+        // Clear all previous spy calls before this test
+        jest.clearAllMocks();
+
+        const findCapProjectsSpy = jest
+            .spyOn(sapuxProjectAccess, 'findCapProjects')
+            .mockResolvedValue(['/found/project']);
+        const findCapProjectRootSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjectRoot');
+
+        if (os.platform() === 'win32') {
+            jest.spyOn(fsPromises, 'realpath').mockImplementation(async (path: PathLike) => path as string);
+        }
+
+        await getCapProjectChoices(['/search/path']);
+
+        // Auto-detection should not be triggered when projects are found
+        expect(findCapProjectRootSpy).not.toHaveBeenCalled();
+    });
+
+    test('getCapServiceChoices: enhanced path resolution with relative service paths', async () => {
+        // Test the enhanced path resolution in createCapServiceChoice
+        currentMockCapModelAndServices = {
+            model: {
+                definitions: {
+                    TestService: {
+                        $location: {
+                            file: '../srv/test-service.cds'
+                        },
+                        kind: 'service',
+                        name: 'TestService'
+                    }
+                },
+                $sources: ['/project/root/srv/test-service.cds']
+            },
+            services: [
+                {
+                    name: 'TestService',
+                    urlPath: '/test/',
+                    runtime: 'Node.js'
+                }
+            ]
+        };
+
+        const capProjectPaths: CapProjectPaths = {
+            app: 'app/',
+            db: 'db/',
+            folderName: 'testproject',
+            path: '/project/root',
+            srv: 'srv/'
+        };
+
+        const choices = await getCapServiceChoices(capProjectPaths);
+
+        expect(choices).toEqual([
+            {
+                name: 'TestService (Node.js)',
+                value: {
+                    appPath: 'app/',
+                    capType: 'Node.js',
+                    cdsVersionInfo: undefined,
+                    projectPath: '/project/root',
+                    serviceCdsPath: 'srv/test-service',
+                    serviceName: 'TestService',
+                    urlPath: '/test/'
+                }
+            }
+        ]);
+    });
+
     /**
      * Tests the service path resolution using both Windows and Unix implementations, so this critical functionality can be easily tested on non-Windows platforms by developers.
      */
