@@ -1,8 +1,8 @@
 import type { FioriRuleDefinition } from '../types';
 import type { FioriXMLRuleDefinition } from '../language/xml/types';
 import {
-    REQUIRE_FLEX_ENABLED,
-    REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+    FLEX_ENABLED,
+    WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     DISABLE_COPY_TO_CLIPBOARD
 } from '../language/diagnostics';
 
@@ -111,7 +111,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-ui5-legacy-jquerysap-usage': sapUi5LegacyJquerysapUsage,
     'sap-ui5-no-private-prop': sapUi5NoPrivateProp,
     'sap-usage-basemastercontroller': sapUsageBasemastercontroller,
-    [REQUIRE_FLEX_ENABLED]: flexEnabledRule,
-    [REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
+    [FLEX_ENABLED]: flexEnabledRule,
+    [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
     [DISABLE_COPY_TO_CLIPBOARD]: disableCopyToClipboard
 };

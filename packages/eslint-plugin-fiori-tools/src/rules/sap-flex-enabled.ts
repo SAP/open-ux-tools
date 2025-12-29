@@ -1,30 +1,28 @@
-import { type FioriPropertyDefinition, PROPERTY_DEFINITIONS } from '../property-definitions';
 import type { FioriRuleDefinition } from '../types';
 import { createFioriRule } from '../language/rule-factory';
-import { REQUIRE_FLEX_ENABLED, type RequireFlexEnabled } from '../language/diagnostics';
+import { FLEX_ENABLED, type FlexEnabled } from '../language/diagnostics';
 import type { RuleVisitor } from '@eslint/core';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { isLowerThanMinimalUi5Version } from '../utils/version';
 import { findDeepestExistingPath } from '../utils/helpers';
 
-const flexEnabledDefinition: FioriPropertyDefinition = PROPERTY_DEFINITIONS.flexEnabled;
-
 const rule: FioriRuleDefinition = createFioriRule({
-    ruleId: REQUIRE_FLEX_ENABLED,
+    ruleId: FLEX_ENABLED,
     meta: {
-        type: flexEnabledDefinition.type,
+        type: 'suggestion',
         docs: {
             recommended: true,
-            description: flexEnabledDefinition.description,
-            url: flexEnabledDefinition.documentationUrl
+            description:
+                '"flexEnabled" flag in the manifest.json indicates that your application is enabled for UI adaptation.',
+            url: 'https://ui5.sap.com/sdk/#/topic/f1430c0337534d469da3a56307ff76af'
         },
         messages: {
-            [REQUIRE_FLEX_ENABLED]: flexEnabledDefinition.message
+            [FLEX_ENABLED]: '"flexEnabled" should be set to true to enable UI adaptation features'
         },
-        fixable: flexEnabledDefinition.fixable
+        fixable: 'code'
     },
     check(context) {
-        const problems: RequireFlexEnabled[] = [];
+        const problems: FlexEnabled[] = [];
 
         for (const [, app] of Object.entries(context.sourceCode.projectContext.index.apps)) {
             if (
@@ -35,7 +33,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             }
             if (!app.manifest.flexEnabled) {
                 problems.push({
-                    type: REQUIRE_FLEX_ENABLED,
+                    type: FLEX_ENABLED,
                     manifest: {
                         uri: app.manifest.manifestUri,
                         object: app.manifestObject,
@@ -69,10 +67,10 @@ const rule: FioriRuleDefinition = createFioriRule({
                 ): void {
                     context.report({
                         node,
-                        messageId: REQUIRE_FLEX_ENABLED,
+                        messageId: FLEX_ENABLED,
                         fix(fixer) {
                             if (paths.missingSegments.length === 0) {
-                                const expectedValue = flexEnabledDefinition.expectedValue ?? true;
+                                const expectedValue = true;
                                 if (node.value.type === 'Boolean') {
                                     return fixer.replaceTextRange(
                                         node.value.range ?? [node.value.loc.start.offset, node.value.loc.end.offset],

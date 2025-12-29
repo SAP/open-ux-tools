@@ -131,6 +131,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
             {
                 name: 'table with 6 columns',
                 filename: V4_MANIFEST_PATH,
+                only: true,
                 code: JSON.stringify(V4_MANIFEST)
             },
             [_6_COLUMNS_ANNOTATIONS]
