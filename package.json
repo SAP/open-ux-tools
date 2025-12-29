@@ -76,6 +76,7 @@
     "packageManager": "pnpm@8.14.0",
     "pnpm": {
         "overrides": {
+            "@sap-ux/vocabularies-types": "0.14.3",
             "router>path-to-regexp": "0.1.12",
             "router@^2.0.0>path-to-regexp": "8.2.0",
             "@storybook/manager-api>store2": "2.14.4",
