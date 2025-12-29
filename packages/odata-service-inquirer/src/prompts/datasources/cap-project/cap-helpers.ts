@@ -121,7 +121,9 @@ export async function getCapProjectChoices(paths: string[]): Promise<CapProjectC
                 allCapPaths = [...allCapPaths, ...autoDetectedProjects];
             }
         } catch (error) {
-            LoggerHelper.logger.debug(`Auto-detection of CAP projects failed, proceeding without auto-detected projects: ${error}`);
+            LoggerHelper.logger.debug(
+                `Auto-detection of CAP projects failed, proceeding without auto-detected projects: ${error}`
+            );
         }
     }
 
