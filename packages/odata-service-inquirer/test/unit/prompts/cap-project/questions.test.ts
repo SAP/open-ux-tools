@@ -1,5 +1,5 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
 import type { PathLike } from 'node:fs';
@@ -8,6 +8,7 @@ import type { ListQuestion } from 'inquirer';
 import os from 'node:os';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import {
+    autoDetectCapProjects,
     enterCapPathChoiceValue,
     getCapServiceChoices as getCapServiceChoicesMock
 } from '../../../../src/prompts/datasources/cap-project/cap-helpers';
@@ -80,7 +81,13 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
     getCapServiceChoices: jest.fn().mockImplementation(async () => mockCapServiceChoices),
     getCapEdmx: jest.fn().mockImplementation(async () => mockEdmx),
     getCapProjectPaths: jest.fn().mockImplementation(() => mockCapWorkspaceFolders),
-    getCapProjectChoices: jest.fn().mockImplementation(async () => mockCapProjectChoices)
+    getCapProjectChoices: jest.fn().mockImplementation(async () => mockCapProjectChoices),
+    autoDetectCapProjects: jest.fn()
+}));
+
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
 }));
 
 describe('getLocalCapProjectPrompts', () => {
@@ -200,6 +207,53 @@ describe('getLocalCapProjectPrompts', () => {
         });
         capProjectPathPrompt = capPrompts.find((prompt) => prompt.name === capInternalPromptNames.capProjectPath);
         expect(await (capProjectPathPrompt!.default as Function)()).toEqual('/abs/path/to/cap/project1');
+
+        // Filter tests
+        const mockAutoDetectedProjects = [{ path: '/auto/detected/cap/project', folderName: 'project' }];
+
+        // Empty input in CLI with successful auto-detection
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        (autoDetectCapProjects as jest.Mock).mockResolvedValue(mockAutoDetectedProjects);
+        expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual('/auto/detected/cap/project');
+        expect(autoDetectCapProjects).toHaveBeenCalledWith([process.cwd()]);
+
+        // Whitespace-only input in CLI with successful auto-detection
+        (autoDetectCapProjects as jest.Mock).mockClear();
+        (autoDetectCapProjects as jest.Mock).mockResolvedValue(mockAutoDetectedProjects);
+        expect(await (capProjectPathPrompt!.filter as Function)('   ')).toEqual('/auto/detected/cap/project');
+        expect(autoDetectCapProjects).toHaveBeenCalledWith([process.cwd()]);
+
+        // Empty input in CLI without auto-detection
+        (autoDetectCapProjects as jest.Mock).mockClear();
+        (autoDetectCapProjects as jest.Mock).mockResolvedValue([]);
+        expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual('');
+
+        // Empty input in non-CLI environment (should return empty string)
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        (autoDetectCapProjects as jest.Mock).mockClear();
+        expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual('');
+        expect(autoDetectCapProjects).not.toHaveBeenCalled();
+
+        // Relative path resolution
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const relativePath = './my-cap-project';
+        const expectedAbsolutePath = await (capProjectPathPrompt!.filter as Function)(relativePath);
+        expect(expectedAbsolutePath).toContain('my-cap-project');
+        expect(expectedAbsolutePath).not.toContain('./');
+
+        // Relative path with ../ resolution
+        const relativePathUp = '../sibling-cap-project';
+        const expectedAbsolutePathUp = await (capProjectPathPrompt!.filter as Function)(relativePathUp);
+        expect(expectedAbsolutePathUp).toContain('sibling-cap-project');
+        expect(expectedAbsolutePathUp).not.toContain('../');
+
+        // Absolute path input
+        const absolutePath = '/absolute/path/to/cap/project';
+        expect(await (capProjectPathPrompt!.filter as Function)(absolutePath)).toEqual(absolutePath);
+
+        // Path with trailing/leading whitespace should be trimmed
+        const pathWithWhitespace = '  /path/with/whitespace  ';
+        expect(await (capProjectPathPrompt!.filter as Function)(pathWithWhitespace)).toEqual('/path/with/whitespace');
 
         // Validate
         expect(await (capProjectPathPrompt!.validate as Function)()).toEqual(false);
