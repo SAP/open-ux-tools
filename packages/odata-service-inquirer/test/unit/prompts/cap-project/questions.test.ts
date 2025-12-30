@@ -6,6 +6,7 @@ import type { PathLike } from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import type { ListQuestion } from 'inquirer';
 import os from 'node:os';
+import path from 'node:path';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import {
     autoDetectCapProjects,
@@ -254,7 +255,9 @@ describe('getLocalCapProjectPrompts', () => {
         // Path with trailing/leading whitespace should be trimmed and resolved
         const pathWithWhitespace = '  ./relative/path/with/whitespace  ';
         const trimmedPath = await (capProjectPathPrompt!.filter as Function)(pathWithWhitespace);
-        expect(trimmedPath).toContain('relative/path/with/whitespace');
+        // Check path contains expected parts (platform-agnostic)
+        const expectedPath = path.join('relative', 'path', 'with', 'whitespace');
+        expect(trimmedPath).toContain(expectedPath);
         expect(trimmedPath).not.toContain('  ');
 
         // Validate
