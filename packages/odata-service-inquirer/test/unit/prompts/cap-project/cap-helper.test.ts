@@ -446,7 +446,7 @@ describe('cap-helper', () => {
                     capType: 'Node.js',
                     cdsVersionInfo: undefined,
                     projectPath: '/project/root',
-                    serviceCdsPath: 'srv/test-service',
+                    serviceCdsPath: `srv${sep}test-service`,
                     serviceName: 'TestService',
                     urlPath: '/test/'
                 }
