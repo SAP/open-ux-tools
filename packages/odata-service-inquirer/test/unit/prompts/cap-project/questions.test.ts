@@ -251,9 +251,11 @@ describe('getLocalCapProjectPrompts', () => {
         const absolutePath = '/absolute/path/to/cap/project';
         expect(await (capProjectPathPrompt!.filter as Function)(absolutePath)).toEqual(absolutePath);
 
-        // Path with trailing/leading whitespace should be trimmed
-        const pathWithWhitespace = '  /path/with/whitespace  ';
-        expect(await (capProjectPathPrompt!.filter as Function)(pathWithWhitespace)).toEqual('/path/with/whitespace');
+        // Path with trailing/leading whitespace should be trimmed and resolved
+        const pathWithWhitespace = '  ./relative/path/with/whitespace  ';
+        const trimmedPath = await (capProjectPathPrompt!.filter as Function)(pathWithWhitespace);
+        expect(trimmedPath).toContain('relative/path/with/whitespace');
+        expect(trimmedPath).not.toContain('  ');
 
         // Validate
         expect(await (capProjectPathPrompt!.validate as Function)()).toEqual(false);
