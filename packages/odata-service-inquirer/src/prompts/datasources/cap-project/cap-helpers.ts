@@ -8,7 +8,7 @@ import {
     isCapProject,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import { basename, isAbsolute, relative, resolve, dirname, parse } from 'node:path';
+import { basename, isAbsolute, relative } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice } from '../../../types';
 import type { CapService } from '@sap-ux/cap-config-writer';
@@ -34,62 +34,6 @@ async function createCapProjectRootPath(capRoot: string): Promise<CapProjectRoot
         folderName,
         path: realPath
     };
-}
-
-/**
- * Traverses up the directory tree from a starting path to find CAP projects
- *
- * @param startPath - The path to start searching from
- * @param processedPaths - Set of already processed paths to avoid duplicates
- * @param detectedProjects - Array of already detected projects
- * @returns The detected CAP project or undefined if none found
- */
-async function detectCapProjectInPath(
-    startPath: string,
-    processedPaths: Set<string>,
-    detectedProjects: CapProjectRootPath[]
-): Promise<CapProjectRootPath | undefined> {
-    let currentPath = resolve(startPath);
-    const { root: rootPath } = parse(currentPath);
-
-    while (currentPath !== rootPath && !processedPaths.has(currentPath)) {
-        processedPaths.add(currentPath);
-
-        const capRoot = await findCapProjectRoot(currentPath, false);
-
-        if (capRoot && !detectedProjects.some((p) => p.path === capRoot) && (await isCapProject(capRoot))) {
-            return await createCapProjectRootPath(capRoot);
-        }
-
-        const parentPath = dirname(currentPath);
-        if (parentPath === currentPath) {
-            break;
-        }
-        currentPath = parentPath;
-    }
-
-    return undefined;
-}
-
-/**
- * Auto-detects CAP projects by traversing up the directory tree from given starting paths
- *
- * @param startPaths - Array of paths to start the search from
- * @returns Array of discovered CAP project root paths
- */
-export async function autoDetectCapProjects(startPaths: string[]): Promise<CapProjectRootPath[]> {
-    const detectedProjects: CapProjectRootPath[] = [];
-    const processedPaths = new Set<string>();
-
-    for (const startPath of startPaths) {
-        const project = await detectCapProjectInPath(startPath, processedPaths, detectedProjects);
-
-        if (project) {
-            detectedProjects.push(project);
-        }
-    }
-
-    return detectedProjects;
 }
 
 /**
@@ -159,14 +103,23 @@ export async function getCapProjectChoices(paths: string[]): Promise<CapProjectC
     const allFolderCounts = new Map(folderCounts);
 
     // Auto-detect if no projects found in specified paths
-    let autoDetectedProjects: CapProjectRootPath[] = [];
+    const autoDetectedProjects: CapProjectRootPath[] = [];
     if (capProjectPaths.length === 0) {
         const autoDetectionPaths = [process.cwd(), ...paths.filter((path) => path && path.trim() !== '')];
+
         try {
-            autoDetectedProjects = await autoDetectCapProjects(autoDetectionPaths);
-            // Update folder counts for auto-detected projects
-            for (const project of autoDetectedProjects) {
-                allFolderCounts.set(project.folderName, (allFolderCounts.get(project.folderName) ?? 0) + 1);
+            const detectedRoots = new Set<string>();
+
+            // Use findCapProjectRoot to traverse up from each path
+            for (const searchPath of autoDetectionPaths) {
+                const capRoot = await findCapProjectRoot(searchPath, false);
+
+                if (capRoot && !detectedRoots.has(capRoot) && (await isCapProject(capRoot))) {
+                    detectedRoots.add(capRoot);
+                    const project = await createCapProjectRootPath(capRoot);
+                    autoDetectedProjects.push(project);
+                    allFolderCounts.set(project.folderName, (allFolderCounts.get(project.folderName) ?? 0) + 1);
+                }
             }
         } catch (error) {
             LoggerHelper.logger.debug(

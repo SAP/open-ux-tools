@@ -1,6 +1,6 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { getCapCustomPaths } from '@sap-ux/project-access';
+import { findCapProjectRoot, getCapCustomPaths, isCapProject } from '@sap-ux/project-access';
 import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
 import type { PathLike } from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
@@ -9,7 +9,6 @@ import os from 'node:os';
 import path from 'node:path';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import {
-    autoDetectCapProjects,
     enterCapPathChoiceValue,
     getCapServiceChoices as getCapServiceChoicesMock
 } from '../../../../src/prompts/datasources/cap-project/cap-helpers';
@@ -38,7 +37,9 @@ const mockCapCustomPaths: CapCustomPaths = {
 
 jest.mock('@sap-ux/project-access', () => ({
     ...jest.requireActual('@sap-ux/project-access'),
-    getCapCustomPaths: jest.fn().mockImplementation(async () => mockCapCustomPaths)
+    getCapCustomPaths: jest.fn().mockImplementation(async () => mockCapCustomPaths),
+    findCapProjectRoot: jest.fn(),
+    isCapProject: jest.fn()
 }));
 
 const mockCdsVersionInfo: CdsVersionInfo = {
@@ -82,8 +83,7 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
     getCapServiceChoices: jest.fn().mockImplementation(async () => mockCapServiceChoices),
     getCapEdmx: jest.fn().mockImplementation(async () => mockEdmx),
     getCapProjectPaths: jest.fn().mockImplementation(() => mockCapWorkspaceFolders),
-    getCapProjectChoices: jest.fn().mockImplementation(async () => mockCapProjectChoices),
-    autoDetectCapProjects: jest.fn()
+    getCapProjectChoices: jest.fn().mockImplementation(async () => mockCapProjectChoices)
 }));
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
@@ -210,30 +210,33 @@ describe('getLocalCapProjectPrompts', () => {
         expect(await (capProjectPathPrompt!.default as Function)()).toEqual('/abs/path/to/cap/project1');
 
         // Filter tests
-        const mockAutoDetectedProjects = [{ path: '/auto/detected/cap/project', folderName: 'project' }];
+        const mockCapProjectPath = '/auto/detected/cap/project';
 
         // Empty input in CLI with successful auto-detection
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        (autoDetectCapProjects as jest.Mock).mockResolvedValue(mockAutoDetectedProjects);
-        expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual('/auto/detected/cap/project');
-        expect(autoDetectCapProjects).toHaveBeenCalledWith([process.cwd()]);
+        (findCapProjectRoot as jest.Mock).mockResolvedValue(mockCapProjectPath);
+        (isCapProject as jest.Mock).mockResolvedValue(true);
+        expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual(mockCapProjectPath);
+        expect(findCapProjectRoot).toHaveBeenCalledWith(process.cwd(), false);
 
         // Whitespace-only input in CLI with successful auto-detection
-        (autoDetectCapProjects as jest.Mock).mockClear();
-        (autoDetectCapProjects as jest.Mock).mockResolvedValue(mockAutoDetectedProjects);
-        expect(await (capProjectPathPrompt!.filter as Function)('   ')).toEqual('/auto/detected/cap/project');
-        expect(autoDetectCapProjects).toHaveBeenCalledWith([process.cwd()]);
+        (findCapProjectRoot as jest.Mock).mockClear();
+        (isCapProject as jest.Mock).mockClear();
+        (findCapProjectRoot as jest.Mock).mockResolvedValue(mockCapProjectPath);
+        (isCapProject as jest.Mock).mockResolvedValue(true);
+        expect(await (capProjectPathPrompt!.filter as Function)('   ')).toEqual(mockCapProjectPath);
+        expect(findCapProjectRoot).toHaveBeenCalledWith(process.cwd(), false);
 
-        // Empty input in CLI without auto-detection
-        (autoDetectCapProjects as jest.Mock).mockClear();
-        (autoDetectCapProjects as jest.Mock).mockResolvedValue([]);
+        // Empty input in CLI without auto-detection (no CAP project found)
+        (findCapProjectRoot as jest.Mock).mockClear();
+        (findCapProjectRoot as jest.Mock).mockResolvedValue(null);
         expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual('');
 
         // Empty input in non-CLI environment (should return empty string)
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-        (autoDetectCapProjects as jest.Mock).mockClear();
+        (findCapProjectRoot as jest.Mock).mockClear();
         expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual('');
-        expect(autoDetectCapProjects).not.toHaveBeenCalled();
+        expect(findCapProjectRoot).not.toHaveBeenCalled();
 
         // Relative path resolution
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
