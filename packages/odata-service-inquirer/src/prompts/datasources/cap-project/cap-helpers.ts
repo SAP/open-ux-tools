@@ -62,7 +62,9 @@ async function detectCapProjectInPath(
         }
 
         const parentPath = dirname(currentPath);
-        if (parentPath === currentPath) break;
+        if (parentPath === currentPath) {
+            break;
+        }
         currentPath = parentPath;
     }
 
