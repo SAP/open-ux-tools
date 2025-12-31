@@ -2,17 +2,6 @@
 
 exports[`UI5 templates generates options: \`codeAssist, eslint, sapux\` 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-  \\"root\\": true,
-  \\"plugins\\": [
-    \\"@sap/ui5-jsdocs\\"
-  ],
-  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS\\"
-}
-",
-    "state": "modified",
-  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -24,6 +13,15 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslint.config.js": Object {
+    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = [
+    ...fioriTools.configs.recommended
+];
+",
     "state": "modified",
   },
   "package.json": Object {
@@ -41,12 +39,8 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"eslint\\": \\"8.57.0\\",
-    \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"~1.76.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
-    \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
-    \\"@babel/eslint-parser\\": \\"7.14.7\\"
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
@@ -55,21 +49,6 @@ archive.zip
     \\"lint\\": \\"eslint ./\\"
   },
   \\"sapux\\": true
-}
-",
-    "state": "modified",
-  },
-  "tsconfig.json": Object {
-    "contents": "{
-    \\"compilerOptions\\": {
-        \\"module\\": \\"none\\",
-        \\"noEmit\\": true,
-        \\"checkJs\\": true,
-        \\"allowJs\\": true,
-        \\"types\\": [
-            \\"@sapui5/ts-types\\"
-        ]
-    }
 }
 ",
     "state": "modified",
@@ -966,7 +945,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -1465,7 +1443,6 @@ appDescription=Test App Description",
         });
     };
     
-    /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
     var currentScript = document.getElementById(\\"locate-reuse-libs\\");
     if (!currentScript) {
         currentScript = document.currentScript;
@@ -1818,7 +1795,7 @@ appDescription=Test App Description",
 }
 `;
 
-exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 1`] = `
+exports[`UI5 templates option: \`typescript and eslint\` to check for conflicts 1`] = `
 "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
@@ -1834,11 +1811,10 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
@@ -1853,7 +1829,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
 "
 `;
 
-exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 2`] = `
+exports[`UI5 templates option: \`typescript and eslint\` to check for conflicts 2`] = `
 "{
     \\"compilerOptions\\": {
         \\"target\\": \\"es2022\\",
@@ -1882,24 +1858,17 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
 }"
 `;
 
-exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 3`] = `
-"{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
+exports[`UI5 templates option: \`typescript and eslint\` to check for conflicts 3`] = `
+"const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = [
+    ...fioriTools.configs.recommended
+];
 "
 `;
 
 exports[`UI5 templates option: \`typescript, npm modules and Fiori tools\` 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
-",
-    "state": "modified",
-  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -1911,6 +1880,15 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslint.config.js": Object {
+    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = [
+    ...fioriTools.configs.recommended
+];
+",
     "state": "modified",
   },
   "package.json": Object {
@@ -1929,12 +1907,11 @@ archive.zip
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
-    \\"ui5-tooling-modules\\": \\"^0.6.0\\"
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"ui5-tooling-modules\\": \\"^0.6.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",

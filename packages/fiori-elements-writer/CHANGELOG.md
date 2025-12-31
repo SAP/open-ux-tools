@@ -1,5 +1,38 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.28
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+- Updated dependencies [d24f36d]
+    - @sap-ux/ui5-application-writer@1.6.8
+    - @sap-ux/ui5-test-writer@0.7.48
+
+## 2.8.27
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+- Updated dependencies [dad2bd7]
+    - @sap-ux/ui5-application-writer@1.6.7
+    - @sap-ux/ui5-test-writer@0.7.47
+
+## 2.8.26
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/cap-config-writer@0.12.37
+    - @sap-ux/fe-fpm-writer@0.40.2
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/ui5-test-writer@0.7.46
+    - @sap-ux/annotation-generator@0.4.2
+    - @sap-ux/odata-service-writer@0.29.2
+    - @sap-ux/ui5-application-writer@1.6.6
+    - @sap-ux/ui5-config@0.29.12
+
 ## 2.8.25
 
 ### Patch Changes

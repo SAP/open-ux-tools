@@ -59,7 +59,6 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
  * Factory functions for applying optional features.
  */
 const factories: { [key: string]: (input: FeatureInput) => Promise<void> } = {
-    codeAssist: async (input: FeatureInput) => await copyTemplates('codeAssist', input),
     eslint: async (input: FeatureInput) => await copyTemplates('eslint', input),
     loadReuseLibs: async (input: FeatureInput) => await copyTemplates('loadReuseLibs', input),
     sapux: async (input: FeatureInput) => {

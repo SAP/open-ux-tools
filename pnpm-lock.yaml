@@ -1824,6 +1824,9 @@ importers:
       eslint:
         specifier: ^9.39.1
         version: 9.39.1
+      eslint-plugin-eslint-plugin:
+        specifier: 7.2.0
+        version: 7.2.0(eslint@9.39.1)
 
   packages/fe-fpm-writer:
     dependencies:
@@ -3243,7 +3246,7 @@ importers:
         specifier: 1.56.1
         version: 1.56.1
       '@sap-ux/logger':
-        specifier: 0.7.3
+        specifier: 0.8.0
         version: link:../logger
       '@types/folder-hash':
         specifier: 4.0.4
@@ -3313,7 +3316,7 @@ importers:
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
       '@sap-ux-private/playwright':
-        specifier: 0.2.4
+        specifier: 0.2.5
         version: link:../playwright
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -21166,6 +21169,17 @@ packages:
       eslint-import-resolver-typescript: 4.4.4(eslint-plugin-import@2.32.0)(eslint@9.39.1)
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /eslint-plugin-eslint-plugin@7.2.0(eslint@9.39.1):
+    resolution: {integrity: sha512-3WOuoauBlxCItqpIdyajCOVQbCmAlqHNQq82QunpzuGkBNr6OqHRjdPZKpy2Z0rGb005mIO0HEP9aaDCzkApxQ==}
+    engines: {node: ^20.19.0 || ^22.13.1 || >=24.0.0}
+    peerDependencies:
+      eslint: ^9.39.1
+    dependencies:
+      '@eslint-community/eslint-utils': 4.9.0(eslint@9.39.1)
+      eslint: 9.39.1
+      estraverse: 5.3.0
     dev: true
 
   /eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.49.0)(eslint-import-resolver-typescript@4.4.4)(eslint@9.39.1):

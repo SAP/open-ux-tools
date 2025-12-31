@@ -1595,13 +1595,6 @@ server:
 
 exports[`Reuse lib templates Generate files for config: lib-t-1.113.0 1`] = `
 Object {
-  "com.sap.myui5tslib113/.eslintrc": Object {
-    "contents": "{
-  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-  \\"root\\": true
-}",
-    "state": "modified",
-  },
   "com.sap.myui5tslib113/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -1612,6 +1605,14 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "com.sap.myui5tslib113/eslint.config.js": Object {
+    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = [
+    ...fioriTools.configs.recommended,
+];",
     "state": "modified",
   },
   "com.sap.myui5tslib113/karma.conf.js": Object {
@@ -1636,14 +1637,12 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"1.113.0\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"eslint\\": \\"^9\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
-    \\"eslint\\": \\"^8.57.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
@@ -2017,8 +2016,7 @@ new Example({
     "state": "modified",
   },
   "com.sap.myui5tslib113/test/com/sap/myui5tslib113/qunit/Example.qunit.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 
 /*global QUnit */
 // eslint-disable-next-line no-undef
@@ -2218,13 +2216,6 @@ builder:
 
 exports[`Reuse lib templates Generate files for config: lib-ts 1`] = `
 Object {
-  "com.sap.myui5tslib/.eslintrc": Object {
-    "contents": "{
-  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-  \\"root\\": true
-}",
-    "state": "modified",
-  },
   "com.sap.myui5tslib/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -2235,6 +2226,14 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "com.sap.myui5tslib/eslint.config.js": Object {
+    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = [
+    ...fioriTools.configs.recommended,
+];",
     "state": "modified",
   },
   "com.sap.myui5tslib/karma.conf.js": Object {
@@ -2259,14 +2258,12 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"1.102.19\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"eslint\\": \\"^9\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
-    \\"eslint\\": \\"^8.57.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
@@ -2640,8 +2637,7 @@ new Example({
     "state": "modified",
   },
   "com.sap.myui5tslib/test/com/sap/myui5tslib/qunit/Example.qunit.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 
 /*global QUnit */
 // eslint-disable-next-line no-undef
@@ -2841,13 +2837,6 @@ builder:
 
 exports[`Reuse lib templates Generate files for config: lib-ts-1.121.0 1`] = `
 Object {
-  "com.sap.myui5tslib121/.eslintrc": Object {
-    "contents": "{
-  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-  \\"root\\": true
-}",
-    "state": "modified",
-  },
   "com.sap.myui5tslib121/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -2858,6 +2847,14 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "com.sap.myui5tslib121/eslint.config.js": Object {
+    "contents": "const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = [
+    ...fioriTools.configs.recommended,
+];",
     "state": "modified",
   },
   "com.sap.myui5tslib121/karma.conf.js": Object {
@@ -2882,14 +2879,12 @@ module.exports = function (config) {
     \\"karma-ui5\\": \\"^3.0.3\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"1.121.0\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"eslint\\": \\"^9\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
-    \\"eslint\\": \\"^8.57.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\"
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
@@ -3238,8 +3233,7 @@ new Example({
     "state": "modified",
   },
   "com.sap.myui5tslib121/test/com/sap/myui5tslib121/qunit/Example.qunit.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 
 /*global QUnit */
 // eslint-disable-next-line no-undef
