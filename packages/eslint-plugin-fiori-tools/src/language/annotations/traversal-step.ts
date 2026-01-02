@@ -1,3 +1,4 @@
+import type { VisitTraversalStep } from '@eslint/plugin-kit';
 import { VisitNodeStep } from '@eslint/plugin-kit';
 import type { AnyNode } from '@sap-ux/odata-annotation-core';
 
@@ -15,10 +16,15 @@ interface VisitNodeStepConstructorParams {
     args: any[];
 }
 
+export interface AnnotationTraversalStep extends VisitTraversalStep {
+    target: AnyNode;
+}
+
 /**
  * XML Traversal Step Class
  */
-export class AnnotationTraversalStep extends VisitNodeStep {
+export class AnnotationVisitNodeStep extends VisitNodeStep implements AnnotationTraversalStep {
+    declare target: AnyNode;
     /**
      * Constructor.
      *
@@ -26,6 +32,5 @@ export class AnnotationTraversalStep extends VisitNodeStep {
      */
     constructor(params: VisitNodeStepConstructorParams) {
         super(params);
-        // this.target = target;
     }
 }

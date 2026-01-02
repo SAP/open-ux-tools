@@ -33,6 +33,5 @@ export class XMLVisitNodeStep extends VisitNodeStep implements XMLVisitTraversal
      */
     constructor(params: VisitNodeStepConstructorParams) {
         super(params);
-        // this.target = target;
     }
 }

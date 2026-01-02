@@ -27,7 +27,9 @@ export const V4_ANNOTATIONS_PATH = join(
     'annotations',
     'annotation.xml'
 );
+export const V4_METADATA_PATH = join(ROOT, 'test', 'data', 'v4-xml-start', 'webapp', 'localService', 'metadata.xml');
 export const V4_ANNOTATIONS = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
+export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
 export const V2_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
 export const V2_MANIFEST = Object.freeze(JSON.parse(readFileSync(V2_MANIFEST_PATH, 'utf-8'))) as Manifest;
