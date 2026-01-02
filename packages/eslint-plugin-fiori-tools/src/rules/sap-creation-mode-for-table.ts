@@ -1,13 +1,14 @@
-import { RuleVisitor } from '@eslint/core';
-import { MemberNode } from '@humanwhocodes/momoa';
+import type { RuleVisitor } from '@eslint/core';
+import type { MemberNode } from '@humanwhocodes/momoa';
 
 import { createFioriRule } from '../language/rule-factory';
 import type { FioriRuleDefinition } from '../types';
-import { CreateModeMessageId, CREATION_MODE_FOR_TABLE, CreationModeForTable } from '../language/diagnostics';
-import { ParsedApp } from '../project-context/parser';
+import type { CreateModeMessageId, CreationModeForTable } from '../language/diagnostics';
+import { CREATION_MODE_FOR_TABLE } from '../language/diagnostics';
+import type { ParsedApp } from '../project-context/parser';
 
 const RECOMMENDED_MODE_V2 = 'creationRows';
-const RECOMMENDED_MODE_V4 = 'InlineCreationRows';
+// const RECOMMENDED_MODE_V4 = 'InlineCreationRows';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: CREATION_MODE_FOR_TABLE,
@@ -41,7 +42,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                         type: 'string',
                         description: 'The recommended createMode value for V2 applications',
                         enum: ['creationRows', 'creationRowsHiddenInEditMode', 'newPage']
-                    },
+                    }
                     // allowInline: {
                     //     type: 'boolean',
                     //     description: 'Whether to allow the deprecated "inline" createMode'

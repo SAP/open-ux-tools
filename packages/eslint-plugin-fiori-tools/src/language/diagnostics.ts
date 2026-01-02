@@ -26,7 +26,11 @@ export interface FlexEnabled {
     type: typeof FLEX_ENABLED;
     manifest: ManifestPropertyDiagnosticData;
 }
-export type CreateModeMessageId = 'invalidCreateMode' | 'recommendCreationRows' | 'suggestAppLevel' | 'analyticalTableNotSupported';
+export type CreateModeMessageId =
+    | 'invalidCreateMode'
+    | 'recommendCreationRows'
+    | 'suggestAppLevel'
+    | 'analyticalTableNotSupported';
 export interface CreationModeForTable {
     type: typeof CREATION_MODE_FOR_TABLE;
     manifest: ManifestPropertyDiagnosticData;
@@ -38,4 +42,8 @@ export interface DisableCopyToClipboard {
     manifest: ManifestPropertyDiagnosticData;
 }
 
-export type Diagnostic = WidthIncludingColumnHeaderDiagnostic | FlexEnabled | DisableCopyToClipboard | CreationModeForTable;
+export type Diagnostic =
+    | WidthIncludingColumnHeaderDiagnostic
+    | FlexEnabled
+    | DisableCopyToClipboard
+    | CreationModeForTable;

@@ -92,21 +92,23 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
             {
                 name: 'disableCopyToClipboard set to true',
                 filename: V4_MANIFEST_PATH,
-                code: getManifestAsCode(V4_MANIFEST, {
-                    path: [
-                        'sap.ui5',
-                        'routing',
-                        'targets',
-                        'IncidentsList',
-                        'options',
-                        'settings',
-                        'controlConfiguration',
-                        '@com.sap.vocabularies.UI.v1.LineItem',
-                        'tableSettings',
-                        'disableCopyToClipboard'
-                    ],
-                    value: true
-                })
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'disableCopyToClipboard'
+                        ],
+                        value: true
+                    }
+                ])
             },
             [_6_COLUMNS_ANNOTATIONS]
         ),
@@ -122,21 +124,23 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
             {
                 name: 'disableCopyToClipboard is true',
                 filename: V4_MANIFEST_PATH,
-                code: getManifestAsCode(V4_MANIFEST, {
-                    path: [
-                        'sap.ui5',
-                        'routing',
-                        'targets',
-                        'IncidentsList',
-                        'options',
-                        'settings',
-                        'controlConfiguration',
-                        '@com.sap.vocabularies.UI.v1.LineItem',
-                        'tableSettings',
-                        'disableCopyToClipboard'
-                    ],
-                    value: true
-                })
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'disableCopyToClipboard'
+                        ],
+                        value: true
+                    }
+                ])
             },
             [_6_COLUMNS_ANNOTATIONS]
         )
@@ -147,21 +151,23 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
             {
                 name: 'object page table - redundant false value',
                 filename: V4_MANIFEST_PATH,
-                code: getManifestAsCode(V4_MANIFEST, {
-                    path: [
-                        'sap.ui5',
-                        'routing',
-                        'targets',
-                        'IncidentsList',
-                        'options',
-                        'settings',
-                        'controlConfiguration',
-                        '@com.sap.vocabularies.UI.v1.LineItem',
-                        'tableSettings',
-                        'disableCopyToClipboard'
-                    ],
-                    value: false
-                }),
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'disableCopyToClipboard'
+                        ],
+                        value: false
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'sap-disable-copy-to-clipboard',

@@ -430,13 +430,13 @@ function linkObjectPageSections(
 
             let createMode: string | undefined;
             let tableType: string | undefined;
-            let sectionEntityKey = '';
+            // let sectionEntityKey = '';
             if (sectionConfig.createMode !== undefined) {
-                sectionEntityKey = sectionKey;
+                // sectionEntityKey = sectionKey;
                 createMode = sectionConfig.createMode;
             }
             if (sectionConfig.tableSettings?.type !== undefined) {
-                sectionEntityKey = sectionKey;
+                // sectionEntityKey = sectionKey;
                 tableType = sectionConfig.tableSettings.type;
             }
 
