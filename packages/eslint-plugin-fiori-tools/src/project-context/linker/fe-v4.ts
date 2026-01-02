@@ -10,7 +10,7 @@ export interface LinkedFeV4App {
     pages: FeV4PageType[];
 }
 
-export interface FeV4ListReport extends ConfigurationBase<'list-report-page', TableSettings> {
+export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
     targetName: string;
     componentName: 'sap.fe.templates.ListReport';
     contextPath: string;
@@ -19,7 +19,7 @@ export interface FeV4ListReport extends ConfigurationBase<'list-report-page', Ta
     lookup: NodeLookup<Table | OrphanTable>;
 }
 
-export interface FeV4ObjectPage extends ConfigurationBase<'object-page', TableSettings> {
+export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     targetName: string;
     componentName: 'sap.fe.templates.ObjectPage';
     contextPath: string;
@@ -179,20 +179,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                     componentName: target.name,
                     contextPath,
                     entity: entity,
-                    configuration: {
-                        disableCopyToClipboard: {
-                            configurationPath: [...path, name, 'options', 'settings', 'disableCopyToClipboard'],
-                            values: [true, false]
-                        },
-                        tableType: {
-                            configurationPath: [...path, name, 'options', 'settings', 'tableType'],
-                            values: tableTypeValues
-                        },
-                        widthIncludingColumnHeader: {
-                            configurationPath: [...path, name, 'options', 'settings', 'widthIncludingColumnHeader'],
-                            values: [true, false]
-                        }
-                    },
+                    configuration: {},
                     sections: [],
                     lookup: {}
                 };
@@ -262,20 +249,7 @@ function linkListReport(
         componentName: 'sap.fe.templates.ListReport',
         contextPath,
         entity: entity,
-        configuration: {
-            disableCopyToClipboard: {
-                configurationPath: [...path, name, 'options', 'settings', 'disableCopyToClipboard'],
-                values: [true, false]
-            },
-            tableType: {
-                configurationPath: [...path, name, 'options', 'settings', 'tableType'],
-                values: tableTypeValues
-            },
-            widthIncludingColumnHeader: {
-                configurationPath: [...path, name, 'options', 'settings', 'widthIncludingColumnHeader'],
-                values: [true, false]
-            }
-        },
+        configuration: {},
         tables: [],
         lookup: {}
     };

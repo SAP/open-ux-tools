@@ -74,7 +74,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,
-                                requiredPropertyPath: page.configuration.widthIncludingColumnHeader.configurationPath,
+                                requiredPropertyPath: table.configuration.widthIncludingColumnHeader.configurationPath,
                                 optionalPropertyPath: []
                             },
                             annotation: {
