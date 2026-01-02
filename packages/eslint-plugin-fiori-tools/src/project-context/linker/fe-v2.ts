@@ -480,6 +480,10 @@ function linkObjectPageSections(
     }
 }
 
+/**
+ *
+ * @param config
+ */
 function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV2App {
     const createMode = config.settings?.tableSettings?.createMode;
     const linkedApp: LinkedFeV2App = {
