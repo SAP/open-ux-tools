@@ -1,7 +1,7 @@
-import type { SourceLocation, TraversalStep } from '@eslint/plugin-kit';
+import type { SourceLocation } from '@eslint/plugin-kit';
 import { TextSourceCodeBase } from '@eslint/plugin-kit';
 
-import type { AnnotationFile, AnyNode } from '@sap-ux/odata-annotation-core';
+import type { AnnotationFile, AnyNode, Attribute } from '@sap-ux/odata-annotation-core';
 import {
     ANNOTATION_FILE_TYPE,
     ATTRIBUTE_TYPE,
@@ -12,7 +12,7 @@ import {
     TEXT_TYPE
 } from '@sap-ux/odata-annotation-core';
 
-import { AnnotationTraversalStep, STEP_PHASE } from './traversal-step';
+import { AnnotationVisitNodeStep, STEP_PHASE } from './traversal-step';
 import type { ProjectContext } from '../../project-context/project-context';
 
 export const visitorKeys: {
@@ -38,11 +38,12 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
     ast: AnnotationFile;
 
     /**
+     * Creates an instance of FioriAnnotationSourceCode.
      *
-     * @param root0
-     * @param root0.text
-     * @param root0.ast
-     * @param root0.projectContext
+     * @param root0 - Object containing text, ast, and projectContext.
+     * @param root0.text - The text content of the file.
+     * @param root0.ast - The Annotation AST.
+     * @param root0.projectContext - The project context associated with the given file.
      */
     constructor({ text, ast, projectContext }: { text: string; ast: AnnotationFile; projectContext: ProjectContext }) {
         super({ text, ast });
@@ -51,15 +52,15 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
     }
 
     /**
-     * Traversal of AST.
+     * Traverse the source code and return the steps that were taken.
      *
-     * @returns
+     * @returns The steps that were taken while traversing the source code.
      */
-    traverse(): Iterable<TraversalStep> {
-        const steps: TraversalStep[] = [];
-        const visit = (node: AnyNode, parent?: AnyNode) => {
+    traverse(): Iterable<AnnotationVisitNodeStep> {
+        const steps: AnnotationVisitNodeStep[] = [];
+        const visit = (node: AnyNode, parent?: AnyNode): void => {
             steps.push(
-                new AnnotationTraversalStep({
+                new AnnotationVisitNodeStep({
                     target: node,
                     phase: STEP_PHASE.ENTER,
                     args: [node, parent]
@@ -73,16 +74,20 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
 
                 if (child) {
                     if (Array.isArray(child)) {
-                        child.forEach((grandchild) => {
+                        for (const grandchild of child) {
                             visit(grandchild, node);
-                        });
+                        }
+                    } else if (node.type === 'element' && key === 'attributes') {
+                        for (const grandchild of Object.values(child as Record<string, Attribute>)) {
+                            visit(grandchild, node);
+                        }
                     } else {
                         visit(child, node);
                     }
                 }
             }
             steps.push(
-                new AnnotationTraversalStep({
+                new AnnotationVisitNodeStep({
                     target: node,
                     phase: STEP_PHASE.EXIT,
                     args: [node, parent]

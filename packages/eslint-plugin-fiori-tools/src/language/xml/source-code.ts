@@ -1,9 +1,9 @@
-import type { SourceLocation, TraversalStep } from '@eslint/plugin-kit';
+import type { SourceLocation } from '@eslint/plugin-kit';
 import { TextSourceCodeBase } from '@eslint/plugin-kit';
 
 import type { XMLAstNode, XMLDocument, XMLToken } from '@xml-tools/ast';
 
-import { XMLTraversalStep, STEP_PHASE } from './traversal-step';
+import { XMLVisitNodeStep, STEP_PHASE } from './traversal-step';
 import type { ProjectContext } from '../../project-context/project-context';
 
 export const visitorKeys: {
@@ -11,7 +11,7 @@ export const visitorKeys: {
 } = {
     XMLDocument: ['prolog', 'rootElement'],
     XMLProlog: ['attributes'],
-    XMLElement: ['namespaces', 'attributes', 'subElements', 'textContents'],
+    XMLElement: ['attributes', 'subElements', 'textContents'],
     XMLPrologAttribute: [],
     XMLAttribute: [],
     XMLTextContent: []
@@ -25,15 +25,15 @@ export class FioriXMLSourceCode extends TextSourceCodeBase {
     /**
      * The AST of the source code.
      */
-    ast: XMLDocument;
-    private aliasMap: Record<string, string> | undefined;
+    readonly ast: XMLDocument;
 
     /**
+     * Creates an instance of FioriXMLSourceCode.
      *
-     * @param root0
-     * @param root0.text
-     * @param root0.ast
-     * @param root0.projectContext
+     * @param root0 - Object containing text, ast, and projectContext.
+     * @param root0.text - The text content of the file.
+     * @param root0.ast - The XML AST.
+     * @param root0.projectContext - The project context associated with the given file.
      */
     constructor({ text, ast, projectContext }: { text: string; ast: XMLDocument; projectContext: ProjectContext }) {
         super({ text, ast });
@@ -42,48 +42,11 @@ export class FioriXMLSourceCode extends TextSourceCodeBase {
     }
 
     /**
-     * Get alias to namespace map.
+     * Returns the parent of the given node.
      *
-     * @returns Alias map.
-     */
-    getAliasMap(): Record<string, string> {
-        if (this.aliasMap) {
-            return this.aliasMap;
-        }
-        const root = this.ast.rootElement;
-        this.aliasMap = {};
-        if (!root) {
-            return this.aliasMap;
-        }
-        for (const child of root.subElements) {
-            if (child.type === 'XMLElement' && child.name === 'Reference') {
-                for (const subElement of child.subElements) {
-                    if (subElement.type === 'XMLElement' && subElement.name === 'Include') {
-                        let namespace: string | undefined;
-                        let alias: string | undefined;
-                        for (const attribute of subElement.attributes) {
-                            if (attribute.key === 'Namespace') {
-                                namespace = attribute.value ?? undefined;
-                            } else if (attribute.key === 'Alias') {
-                                alias = attribute.value ?? undefined;
-                            }
-                        }
-                        if (namespace) {
-                            this.aliasMap[namespace] = namespace;
-                            if (alias) {
-                                this.aliasMap[alias] = namespace;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return this.aliasMap;
-    }
-
-    /**
-     *
-     * @param node
+     * @param node - The node to get the parent of.
+     * @returns The parent of the node.
+     * @throws {Error} If the method is not implemented in the subclass.
      */
     getParent(node: XMLAstNode | XMLToken): object | undefined {
         if (isNode(node)) {
@@ -97,14 +60,15 @@ export class FioriXMLSourceCode extends TextSourceCodeBase {
     }
 
     /**
+     * Traverse the source code and return the steps that were taken.
      *
-     * @returns
+     * @returns The steps that were taken while traversing the source code.
      */
-    traverse(): Iterable<TraversalStep> {
-        const steps: TraversalStep[] = [];
-        const visit = (node: XMLAstNode, parent?: XMLAstNode) => {
+    traverse(): Iterable<XMLVisitNodeStep> {
+        const steps: XMLVisitNodeStep[] = [];
+        const visit = (node: XMLAstNode, parent?: XMLAstNode): void => {
             steps.push(
-                new XMLTraversalStep({
+                new XMLVisitNodeStep({
                     target: node,
                     phase: STEP_PHASE.ENTER,
                     args: [node, parent]
@@ -127,7 +91,7 @@ export class FioriXMLSourceCode extends TextSourceCodeBase {
                 }
             }
             steps.push(
-                new XMLTraversalStep({
+                new XMLVisitNodeStep({
                     target: node,
                     phase: STEP_PHASE.EXIT,
                     args: [node, parent]

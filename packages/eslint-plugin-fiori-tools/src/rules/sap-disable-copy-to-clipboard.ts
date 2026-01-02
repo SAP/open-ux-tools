@@ -1,8 +1,8 @@
-import type { RuleVisitor } from '@eslint/core';
 import type { FioriRuleDefinition } from '../types';
 import { DISABLE_COPY_TO_CLIPBOARD, type DisableCopyToClipboard } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
+import { createJsonHandler } from '../utils/manifest';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: DISABLE_COPY_TO_CLIPBOARD,
@@ -51,26 +51,16 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJson(context, diagnostics) {
-        const applicableDiagnostics = diagnostics.filter(
-            (diagnostic) => diagnostic.manifest.uri === context.sourceCode.uri
-        );
-        if (applicableDiagnostics.length === 0) {
-            return {};
-        }
-        const matchers: RuleVisitor = {};
-        for (const diagnostic of applicableDiagnostics) {
-            matchers[context.sourceCode.createMatcherString(diagnostic.manifest.requiredPropertyPath)] =
-                function report(node: MemberNode): void {
-                    context.report({
-                        node,
-                        messageId: DISABLE_COPY_TO_CLIPBOARD
-                        // fix
-                    });
-                };
-        }
-        return matchers;
-    }
+    createJson: createJsonHandler(
+        (context) =>
+            function report(node: MemberNode): void {
+                context.report({
+                    node,
+                    messageId: DISABLE_COPY_TO_CLIPBOARD
+                    // fix
+                });
+            }
+    )
 });
 
 export default rule;
