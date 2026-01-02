@@ -98,7 +98,10 @@ export function collectSections(feVersion: 'v2' | 'v4', entityType: string, serv
                         contextPath = contextPath.slice(0, -1);
                     }
                     const referencedEntity = service.artifacts.metadataService.getMetadataElement(contextPath.slice(1));
-                    const referencedEntityType = referencedEntity?.structuredType;
+                    const referencedEntityType =
+                        referencedEntity?.kind === 'EntityType'
+                            ? referencedEntity.name
+                            : referencedEntity?.structuredType;
                     if (!referencedEntityType) {
                         continue;
                     }

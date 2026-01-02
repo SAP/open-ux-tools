@@ -1,11 +1,12 @@
 import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
-export const REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
-export const REQUIRE_FLEX_ENABLED = 'sap-flex-enabled';
+export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
+export const FLEX_ENABLED = 'sap-flex-enabled';
+export const DISABLE_COPY_TO_CLIPBOARD = 'sap-disable-copy-to-clipboard';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 
-export interface RequireWidthIncludingColumnHeaderDiagnostic {
-    type: typeof REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
+export interface WidthIncludingColumnHeaderDiagnostic {
+    type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
     manifest: ManifestPropertyDiagnosticData;
     annotation: {
         file: string;
@@ -21,8 +22,8 @@ export interface ManifestPropertyDiagnosticData {
     optionalPropertyPath: string[];
 }
 
-export interface RequireFlexEnabled {
-    type: typeof REQUIRE_FLEX_ENABLED;
+export interface FlexEnabled {
+    type: typeof FLEX_ENABLED;
     manifest: ManifestPropertyDiagnosticData;
 }
 export type CreateModeMessageId = 'invalidCreateMode' | 'recommendCreationRows' | 'suggestAppLevel' | 'analyticalTableNotSupported';
@@ -32,4 +33,9 @@ export interface CreationModeForTable {
     messageId: CreateModeMessageId;
 }
 
-export type Diagnostic = RequireWidthIncludingColumnHeaderDiagnostic | RequireFlexEnabled | CreationModeForTable;
+export interface DisableCopyToClipboard {
+    type: typeof DISABLE_COPY_TO_CLIPBOARD;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
+export type Diagnostic = WidthIncludingColumnHeaderDiagnostic | FlexEnabled | DisableCopyToClipboard | CreationModeForTable;

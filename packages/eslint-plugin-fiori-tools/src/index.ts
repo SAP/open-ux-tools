@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-
+export { DiagnosticCache } from './language/diagnostic-cache';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import js from '@eslint/js';
@@ -232,6 +232,7 @@ export const configs: Record<string, Linter.Config[]> = {
             rules: {
                 '@sap-ux/fiori-tools/sap-flex-enabled': 'warn',
                 '@sap-ux/fiori-tools/sap-width-including-column-header': 'warn',
+                '@sap-ux/fiori-tools/sap-disable-copy-to-clipboard': 'warn',
                 '@sap-ux/fiori-tools/sap-creation-mode-for-table': 'warn',
             }
         }

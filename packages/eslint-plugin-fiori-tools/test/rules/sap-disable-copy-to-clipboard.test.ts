@@ -1,9 +1,6 @@
-import { join } from 'node:path';
-
 import { RuleTester } from 'eslint';
-import flexEnabledRule from '../../src/rules/sap-width-including-column-header';
+import disableCopyToClipboardRule from '../../src/rules/sap-disable-copy-to-clipboard';
 import { meta, languages } from '../../src/index';
-import type { FileChange } from '../test-helper';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,
@@ -86,28 +83,14 @@ const FACETS = {
     )
 };
 
-const ORIGINAL_ANNOTATIONS = {
-    filename: V4_ANNOTATIONS_PATH,
-    code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, '')
-};
-
-const TEST_NAME = 'sap-width-including-column-header';
+const TEST_NAME = 'sap-disable-copy-to-clipboard';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run(TEST_NAME, flexEnabledRule, {
+ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
     valid: [
-        // Non-manifest files should be ignored
         createValidTest(
             {
-                name: 'non manifest file',
-                filename: 'some-other-file.json',
-                code: JSON.stringify(V4_MANIFEST)
-            },
-            []
-        ),
-        createValidTest(
-            {
-                name: 'widthIncludingColumnHeader set to true for small table',
+                name: 'disableCopyToClipboard set to true',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, {
                     path: [
@@ -120,19 +103,40 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                         'controlConfiguration',
                         '@com.sap.vocabularies.UI.v1.LineItem',
                         'tableSettings',
-                        'widthIncludingColumnHeader'
+                        'disableCopyToClipboard'
                     ],
                     value: true
                 })
             },
-            [ORIGINAL_ANNOTATIONS]
+            [_6_COLUMNS_ANNOTATIONS]
         ),
         createValidTest(
             {
-                name: 'table with 6 columns',
+                name: 'disableCopyToClipboard missing',
                 filename: V4_MANIFEST_PATH,
-                only: true,
-                code: JSON.stringify(V4_MANIFEST)
+                code: JSON.stringify(V4_MANIFEST, undefined, 2)
+            },
+            [_6_COLUMNS_ANNOTATIONS]
+        ),
+        createValidTest(
+            {
+                name: 'disableCopyToClipboard is true',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, {
+                    path: [
+                        'sap.ui5',
+                        'routing',
+                        'targets',
+                        'IncidentsList',
+                        'options',
+                        'settings',
+                        'controlConfiguration',
+                        '@com.sap.vocabularies.UI.v1.LineItem',
+                        'tableSettings',
+                        'disableCopyToClipboard'
+                    ],
+                    value: true
+                })
             },
             [_6_COLUMNS_ANNOTATIONS]
         )
@@ -141,41 +145,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
     invalid: [
         createInvalidTest(
             {
-                name: 'widthIncludingColumnHeader missing for small table',
-                filename: V4_MANIFEST_PATH,
-                code: JSON.stringify(V4_MANIFEST, undefined, 2),
-                errors: [
-                    {
-                        messageId: 'width-including-column-header-manifest',
-                        line: 119,
-                        column: 19
-                    }
-                ]
-            },
-            [ORIGINAL_ANNOTATIONS]
-        ),
-        createInvalidTest(
-            {
-                name: 'small object page table (annotation file)',
-                ...FACETS,
-                errors: [
-                    {
-                        messageId: 'width-including-column-header',
-                        line: 29,
-                        column: 18
-                    }
-                ]
-            },
-            [
-                {
-                    filename: V4_MANIFEST_PATH,
-                    code: JSON.stringify(V4_MANIFEST, undefined, 2)
-                }
-            ]
-        ),
-        createInvalidTest(
-            {
-                name: 'small object page table',
+                name: 'object page table - redundant false value',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, {
                     path: [
@@ -188,19 +158,19 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                         'controlConfiguration',
                         '@com.sap.vocabularies.UI.v1.LineItem',
                         'tableSettings',
-                        'widthIncludingColumnHeader'
+                        'disableCopyToClipboard'
                     ],
-                    value: true
+                    value: false
                 }),
                 errors: [
                     {
-                        messageId: 'width-including-column-header-manifest',
-                        line: 134,
-                        column: 13
+                        messageId: 'sap-disable-copy-to-clipboard',
+                        line: 122,
+                        column: 21
                     }
                 ]
             },
-            [FACETS]
+            [FACETS, _6_COLUMNS_ANNOTATIONS]
         )
     ]
 });

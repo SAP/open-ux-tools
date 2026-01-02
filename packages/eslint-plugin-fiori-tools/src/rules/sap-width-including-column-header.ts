@@ -5,8 +5,8 @@ import type { MemberNode } from '@humanwhocodes/momoa';
 
 import { createFioriRule } from '../language/rule-factory';
 import type { FioriRuleDefinition } from '../types';
-import type { RequireWidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
-import { REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
+import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
+import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
 import { findDeepestExistingPath } from '../utils/helpers';
 
@@ -15,7 +15,7 @@ export type RequireWidthIncludingColumnHeaderOptions = {
 };
 
 const rule: FioriRuleDefinition = createFioriRule({
-    ruleId: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+    ruleId: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     meta: {
         type: 'suggestion',
         docs: {
@@ -32,7 +32,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
     },
     check(context) {
-        const problems: RequireWidthIncludingColumnHeaderDiagnostic[] = [];
+        const problems: WidthIncludingColumnHeaderDiagnostic[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
             if (app.type !== 'fe-v4') {
@@ -71,7 +71,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                         table.resolvedConfiguration.widthIncludingColumnHeader !== true
                     ) {
                         problems.push({
-                            type: REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+                            type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,
