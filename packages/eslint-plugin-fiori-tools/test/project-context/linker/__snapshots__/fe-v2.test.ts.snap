@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`FE V2 Linker linkTableSettings application level createMode 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui.generic.app",
+    "settings",
+    "tableSettings",
+    "createMode",
+  ],
+  "valueInFile": "creationRows",
+  "values": Array [
+    "creationRows",
+    "creationRowsHiddenInEditMode",
+    "newPage",
+  ],
+}
+`;
+
+exports[`FE V2 Linker linkTableSettings page level - object page createMode 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui.generic.app",
+    "pages",
+    "pages",
+    "ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS",
+    "component",
+    "settings",
+    "createMode",
+  ],
+  "valueInFile": "creationRows",
+  "values": Array [
+    "creationRows",
+    "creationRowsHiddenInEditMode",
+    "newPage",
+  ],
+}
+`;
+
+exports[`FE V2 Linker linkTableSettings section level - object page createMode - wrong value 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui.generic.app",
+    "pages",
+    "pages",
+    "component",
+    "settings",
+    "sections",
+    "to_Product::com.sap.vocabularies.UI.v1.LineItem",
+    "createMode",
+  ],
+  "valueInFile": "abc",
+  "values": Array [
+    "creationRows",
+    "creationRowsHiddenInEditMode",
+    "newPage",
+  ],
+}
+`;
+
+exports[`FE V2 Linker linkTableSettings section level - object page createMode 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui.generic.app",
+    "pages",
+    "pages",
+    "component",
+    "settings",
+    "sections",
+    "to_Product::com.sap.vocabularies.UI.v1.LineItem",
+    "createMode",
+  ],
+  "valueInFile": "creationRows",
+  "values": Array [
+    "creationRows",
+    "creationRowsHiddenInEditMode",
+    "newPage",
+  ],
+}
+`;
+
+exports[`FE V2 Linker linkTableSettings section level - object page orphan-node 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui.generic.app",
+    "pages",
+    "pages",
+    "component",
+    "settings",
+    "sections",
+    "to_Product::com.sap.vocabularies.UI.v1.LineItem#NOT_EXIST",
+    "createMode",
+  ],
+  "valueInFile": "creationRows",
+  "values": Array [
+    "creationRows",
+    "creationRowsHiddenInEditMode",
+    "newPage",
+  ],
+}
+`;
+
+exports[`FE V2 Linker linkTableSettings section level - object page tableType - wrong value 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui.generic.app",
+    "pages",
+    "pages",
+    "component",
+    "settings",
+    "sections",
+    "to_Product::com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "type",
+  ],
+  "valueInFile": "wrong-value",
+  "values": Array [
+    "Table",
+    "ResponsiveTable",
+    "AnalyticalTable",
+    "GridTable",
+  ],
+}
+`;
+
+exports[`FE V2 Linker linkTableSettings section level - object page tableType 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui.generic.app",
+    "pages",
+    "pages",
+    "component",
+    "settings",
+    "sections",
+    "to_Product::com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "type",
+  ],
+  "valueInFile": "ResponsiveTable",
+  "values": Array [
+    "Table",
+    "ResponsiveTable",
+    "AnalyticalTable",
+    "GridTable",
+  ],
+}
+`;

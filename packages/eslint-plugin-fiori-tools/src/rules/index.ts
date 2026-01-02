@@ -1,6 +1,10 @@
 import type { FioriRuleDefinition } from '../types';
 import type { FioriXMLRuleDefinition } from '../language/xml/types';
-import { REQUIRE_FLEX_ENABLED, REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
+import {
+    REQUIRE_FLEX_ENABLED,
+    REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+    CREATION_MODE_FOR_TABLE
+} from '../language/diagnostics';
 
 // Import all rules
 import sapBookmarkPerformance from './sap-bookmark-performance';
@@ -54,6 +58,7 @@ import sapUsageBasemastercontroller from './sap-usage-basemastercontroller';
 
 import flexEnabledRule from './sap-flex-enabled';
 import requireWidthIncludingColumnHeader from './sap-width-including-column-header';
+import creationModeForTable from './sap-creation-mode-for-table';
 import type { Rule } from 'eslint';
 
 export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | FioriXMLRuleDefinition> = {
@@ -106,5 +111,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-ui5-no-private-prop': sapUi5NoPrivateProp,
     'sap-usage-basemastercontroller': sapUsageBasemastercontroller,
     [REQUIRE_FLEX_ENABLED]: flexEnabledRule,
-    [REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader
+    [REQUIRE_WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
+    [CREATION_MODE_FOR_TABLE]: creationModeForTable
 };

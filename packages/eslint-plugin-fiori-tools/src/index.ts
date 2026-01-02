@@ -231,7 +231,8 @@ export const configs: Record<string, Linter.Config[]> = {
             language: '@sap-ux/fiori-tools/fiori',
             rules: {
                 '@sap-ux/fiori-tools/sap-flex-enabled': 'warn',
-                '@sap-ux/fiori-tools/sap-width-including-column-header': 'warn'
+                '@sap-ux/fiori-tools/sap-width-including-column-header': 'warn',
+                '@sap-ux/fiori-tools/sap-creation-mode-for-table': 'warn',
             }
         }
     ]

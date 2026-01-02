@@ -21,6 +21,11 @@ export const V4_MANIFEST = Object.freeze(JSON.parse(readFileSync(join(ROOT, V4_M
 export const V4_ANNOTATIONS_PATH = join('test', 'data', 'v4-xml-start', 'webapp', 'annotations', 'annotation.xml');
 export const V4_ANNOTATIONS = readFileSync(join(ROOT, V4_ANNOTATIONS_PATH), 'utf-8');
 
+export const V2_MANIFEST_PATH = join('test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
+export const V2_MANIFEST = Object.freeze(JSON.parse(readFileSync(join(ROOT, V2_MANIFEST_PATH), 'utf-8'))) as Manifest;
+export const V2_ANNOTATIONS_PATH = join('test', 'data', 'v2-xml-start', 'webapp', 'annotations', 'annotation.xml');
+export const V2_ANNOTATIONS = readFileSync(join(ROOT, V2_ANNOTATIONS_PATH), 'utf-8');
+
 export function setup(name: string) {
     const lookup: Record<string, FileChange[]> = {};
 
@@ -72,9 +77,11 @@ export function applyManifestChange(manifest: any, change: ManifestChange): void
 }
 
 let id = 0;
-export function getManifestAsCode(manifest: any, change: ManifestChange): string {
+export function getManifestAsCode(manifest: any, changes: ManifestChange[]): string {
     const clone = structuredClone(manifest);
-    applyManifestChange(clone, change);
+    for (const change of changes) {
+        applyManifestChange(clone, change);
+    }
     // force eslint to treat each manifest as unique test case
     id++;
     clone['__test_id'] = `test-id-${id}`;

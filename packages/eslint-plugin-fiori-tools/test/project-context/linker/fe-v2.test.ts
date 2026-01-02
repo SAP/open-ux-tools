@@ -56,17 +56,6 @@ describe('FE V2 Linker', () => {
             diagnostics: []
         };
     }
-    function findListPage(app: LinkedFeV2App): FeV2ListReport {
-        for (const page of app.pages) {
-            if (
-                page.componentName === 'sap.suite.ui.generic.template.AnalyticalListPage' ||
-                page.componentName === 'sap.suite.ui.generic.template.ListReport'
-            ) {
-                return page;
-            }
-        }
-        throw new Error('ListPage not found');
-    }
     function findObjectPage(app: LinkedFeV2App, index = 0): FeV2ObjectPage {
         let i = 0;
         for (const page of app.pages) {
@@ -81,58 +70,180 @@ describe('FE V2 Linker', () => {
     }
 
     describe('linkTableSettings', () => {
-        test('createMode setting default value', async () => {
-            const context = await setup();
+        describe('application level', () => {
+            test('createMode', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
+                            value: 'creationRows'
+                        }
+                    ]
+                });
 
-            const result = runFeV2Linker(context);
-
-            const page = findObjectPage(result);
-            const table = page.lookup['table'];
-            expect(table).toHaveLength(1);
-            expect(table![0].configuration.createMode).toBe(undefined);
-            expect(table![0].resolvedConfiguration.createMode).toBe('inline');
+                const result = runFeV2Linker(context);
+                expect(result.configuration.createMode).toMatchSnapshot();
+            });
         });
-
-        test('createMode setting', async () => {
-            const context = await setup({
-                manifestChanges: [
-                    {
-                        path: [
-                            'sap.ui.generic.app',
-                            'pages',
-                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
-                            'pages',
-                            'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
-                            'component',
-                            'settings',
-                            'sections',
-                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
-                            'createMode'
-                        ],
-                        value: 'newPage'
-                    }
-                ]
+        describe('page level - object page', () => {
+            test('createMode', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'createMode'
+                            ],
+                            value: 'creationRows'
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                expect(page.configuration.createMode).toMatchSnapshot();
+            });
+        });
+        describe('section level - object page', () => {
+            test('createMode', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'sections',
+                                'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                                'createMode'
+                            ],
+                            value: 'creationRows'
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.createMode).toMatchSnapshot();
+            });
+            test('createMode - wrong value', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'sections',
+                                'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                                'createMode'
+                            ],
+                            value: 'abc'
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.createMode).toMatchSnapshot();
+            });
+            test('orphan-node', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'sections',
+                                'to_Product::com.sap.vocabularies.UI.v1.LineItem#NOT_EXIST',
+                                'createMode'
+                            ],
+                            value: 'creationRows'
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                const orphanSections = page.lookup['orphan-section'];
+                expect(orphanSections).toHaveLength(1);
+                expect(orphanSections![0].configuration.createMode).toMatchSnapshot();
             });
 
-            const result = runFeV2Linker(context);
-
-            const page = findObjectPage(result);
-            const table = page.lookup['table'];
-            expect(table).toHaveLength(1);
-            expect(table![0].configuration.createMode).toBe('newPage');
-            expect(table![0].resolvedConfiguration.createMode).toBe('newPage');
-        });
-
-        test('createMode setting list report', async () => {
-            const context = await setup();
-
-            const result = runFeV2Linker(context);
-
-            const page = findListPage(result);
-            const table = page.lookup['table'];
-            expect(table).toHaveLength(1);
-            expect(table![0].configuration.createMode).toBe(undefined);
-            expect(table![0].resolvedConfiguration.createMode).toBe('inline');
+            test('tableType', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'sections',
+                                'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'type'
+                            ],
+                            value: 'ResponsiveTable'
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.tableType).toMatchSnapshot();
+            });
+            test('tableType - wrong value', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'sections',
+                                'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'type'
+                            ],
+                            value: 'wrong-value'
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.tableType).toMatchSnapshot();
+            });
         });
     });
 });
+// Todo => table type on list report
