@@ -1,8 +1,6 @@
 import path from 'node:path';
 import * as sapuxProjectAccess from '@sap-ux/project-access';
-import * as fioriGeneratorShared from '@sap-ux/fiori-generator-shared';
-import * as capHelpers from '../../../../src/prompts/datasources/cap-project/cap-helpers';
-import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
+import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
 
 describe('Test validators', () => {
@@ -14,12 +12,8 @@ describe('Test validators', () => {
         const bookshopPath = path.join(__dirname, 'fixtures/bookshop');
         const invalidBookshopPath = path.join(__dirname, 'no/such/path');
 
-        expect(await validateCapPath('')).toBe(
-            'The folder you have selected does not contain a valid CAP project. Please check and try again.'
-        );
-        expect(await validateCapPath(invalidBookshopPath)).toBe(
-            'The folder you have selected does not contain a valid CAP project. Please check and try again.'
-        );
+        expect(await validateCapPath('')).toBe(t('prompts.validationMessages.capProjectNotFound'));
+        expect(await validateCapPath(invalidBookshopPath)).toBe(t('prompts.validationMessages.capProjectNotFound'));
         expect(await validateCapPath(bookshopPath)).toBe(true);
     });
 
@@ -70,21 +64,15 @@ describe('Test validators', () => {
 
             // Test file not found error
             getCapProjectTypeSpy.mockRejectedValueOnce(new Error('ENOENT: no such file or directory'));
-            expect(await validateCapPath('../nonexistent')).toBe(
-                'The folder you have selected does not contain a valid CAP project. Please check and try again.'
-            );
+            expect(await validateCapPath('../nonexistent')).toBe(t('prompts.validationMessages.capProjectNotFound'));
 
             // Test permission error
             getCapProjectTypeSpy.mockRejectedValueOnce(new Error('EACCES: permission denied'));
-            expect(await validateCapPath('../restricted')).toBe(
-                'Permission denied accessing the specified path. Please check file permissions.'
-            );
+            expect(await validateCapPath('../restricted')).toBe(t('prompts.validationMessages.permissionDenied'));
 
             // Test other errors
             getCapProjectTypeSpy.mockRejectedValueOnce(new Error('Some other error'));
-            expect(await validateCapPath('../other-error')).toBe(
-                'The folder you have selected does not contain a valid CAP project. Please check and try again.'
-            );
+            expect(await validateCapPath('../other-error')).toBe(t('prompts.validationMessages.capProjectNotFound'));
         });
 
         test('validateCapPath: handles complex relative paths', async () => {
