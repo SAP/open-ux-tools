@@ -29,9 +29,17 @@ export const V4_ANNOTATIONS_PATH = join(
 );
 export const V4_ANNOTATIONS = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
-export const V2_MANIFEST_PATH = join('test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
+export const V2_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
 export const V2_MANIFEST = Object.freeze(JSON.parse(readFileSync(join(ROOT, V2_MANIFEST_PATH), 'utf-8'))) as Manifest;
-export const V2_ANNOTATIONS_PATH = join('test', 'data', 'v2-xml-start', 'webapp', 'annotations', 'annotation.xml');
+export const V2_ANNOTATIONS_PATH = join(
+    ROOT,
+    'test',
+    'data',
+    'v2-xml-start',
+    'webapp',
+    'annotations',
+    'annotation.xml'
+);
 export const V2_ANNOTATIONS = readFileSync(join(ROOT, V2_ANNOTATIONS_PATH), 'utf-8');
 
 export function setup(name: string) {
