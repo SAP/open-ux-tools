@@ -38,11 +38,12 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
     ast: AnnotationFile;
 
     /**
+     * Creates an instance of FioriAnnotationSourceCode.
      *
-     * @param root0
-     * @param root0.text
-     * @param root0.ast
-     * @param root0.projectContext
+     * @param root0 - Object containing text, ast, and projectContext.
+     * @param root0.text - The text content of the file.
+     * @param root0.ast - The Annotation AST.
+     * @param root0.projectContext - The project context associated with the given file.
      */
     constructor({ text, ast, projectContext }: { text: string; ast: AnnotationFile; projectContext: ProjectContext }) {
         super({ text, ast });
@@ -51,13 +52,13 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
     }
 
     /**
-     * Traversal of AST.
+     * Traverse the source code and return the steps that were taken.
      *
-     * @returns
+     * @returns The steps that were taken while traversing the source code.
      */
     traverse(): Iterable<TraversalStep> {
         const steps: TraversalStep[] = [];
-        const visit = (node: AnyNode, parent?: AnyNode) => {
+        const visit = (node: AnyNode, parent?: AnyNode): void => {
             steps.push(
                 new AnnotationTraversalStep({
                     target: node,
