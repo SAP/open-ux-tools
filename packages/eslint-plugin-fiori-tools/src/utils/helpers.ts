@@ -767,6 +767,11 @@ export function createDocumentBasedRuleVisitors(config: {
     };
 }
 
+export interface DeepestExistingPathResult {
+    validatedPath: string[];
+    missingSegments: string[];
+}
+
 /**
  * Validates that a path exists and returns the deepest existing level.
  *
@@ -779,7 +784,7 @@ export function findDeepestExistingPath(
     startObject: any,
     requiredPathSegments: string[],
     optionalPathSegments: string[]
-): { validatedPath: string[]; missingSegments: string[] } | undefined {
+): DeepestExistingPathResult | undefined {
     let current: any = startObject;
 
     for (let i = 0; i < requiredPathSegments.length; i++) {

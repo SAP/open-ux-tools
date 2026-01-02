@@ -1,4 +1,3 @@
-import type { RuleVisitor } from '@eslint/core';
 import type { Element } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
 import type { MemberNode } from '@humanwhocodes/momoa';
@@ -8,7 +7,7 @@ import type { FioriRuleDefinition } from '../types';
 import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
 import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
-import { findDeepestExistingPath } from '../utils/helpers';
+import { createJsonHandler } from '../utils/manifest';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -94,36 +93,18 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJson(context, diagnostics) {
-        const applicableDiagnostics = diagnostics.filter(
-            (diagnostic) => diagnostic.manifest.uri === context.sourceCode.uri
-        );
-        if (applicableDiagnostics.length === 0) {
-            return {};
-        }
-        const matchers: RuleVisitor = {};
-        for (const diagnostic of applicableDiagnostics) {
-            const paths = findDeepestExistingPath(
-                diagnostic.manifest.object,
-                diagnostic.manifest.requiredPropertyPath,
-                diagnostic.manifest.optionalPropertyPath
-            );
-            if (paths) {
-                matchers[context.sourceCode.createMatcherString(paths.validatedPath)] = function report(
-                    node: MemberNode
-                ): void {
-                    context.report({
-                        node,
-                        messageId: 'width-including-column-header-manifest',
-                        data: {
-                            table: diagnostic.annotation.annotationPath
-                        }
-                    });
-                };
+    createJson: createJsonHandler(
+        (context, diagnostic) =>
+            function report(node: MemberNode): void {
+                context.report({
+                    node,
+                    messageId: 'width-including-column-header-manifest',
+                    data: {
+                        table: diagnostic.annotation.annotationPath
+                    }
+                });
             }
-        }
-        return matchers;
-    },
+    ),
     createAnnotations(context, validationResult) {
         if (validationResult.length === 0) {
             return {};

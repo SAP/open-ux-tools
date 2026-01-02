@@ -1,9 +1,8 @@
-import type { RuleVisitor } from '@eslint/core';
 import type { FioriRuleDefinition } from '../types';
 import { DISABLE_COPY_TO_CLIPBOARD, type DisableCopyToClipboard } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import { findDeepestExistingPath } from '../utils/helpers';
+import { createJsonHandler } from '../utils/manifest';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: DISABLE_COPY_TO_CLIPBOARD,
@@ -55,34 +54,16 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJson(context, diagnostics) {
-        const applicableDiagnostics = diagnostics.filter(
-            (diagnostic) => diagnostic.manifest.uri === context.sourceCode.uri
-        );
-        if (applicableDiagnostics.length === 0) {
-            return {};
-        }
-        const matchers: RuleVisitor = {};
-        for (const diagnostic of applicableDiagnostics) {
-            const paths = findDeepestExistingPath(
-                diagnostic.manifest.object,
-                diagnostic.manifest.requiredPropertyPath,
-                diagnostic.manifest.optionalPropertyPath
-            );
-            if (paths) {
-                matchers[context.sourceCode.createMatcherString(paths.validatedPath)] = function report(
-                    node: MemberNode
-                ): void {
-                    context.report({
-                        node,
-                        messageId: DISABLE_COPY_TO_CLIPBOARD
-                        // fix
-                    });
-                };
+    createJson: createJsonHandler(
+        (context) =>
+            function report(node: MemberNode): void {
+                context.report({
+                    node,
+                    messageId: DISABLE_COPY_TO_CLIPBOARD
+                    // fix
+                });
             }
-        }
-        return matchers;
-    }
+    )
 });
 
 export default rule;

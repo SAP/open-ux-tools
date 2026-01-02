@@ -11,14 +11,14 @@ import type { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core
 import { DiagnosticCache } from './diagnostic-cache';
 import type { Diagnostic } from './diagnostics';
 
-type JSONRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
+export type JSONRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
     LangOptions: FioriLanguageOptions;
     Code: FioriJSONSourceCode;
     RuleOptions: RuleOptions;
     Node: AnyNode;
     MessageIds: MessageIds;
 }>;
-type XMLRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
+export type XMLRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
     LangOptions: FioriLanguageOptions;
     Code: FioriXMLSourceCode;
     RuleOptions: RuleOptions;
@@ -26,7 +26,7 @@ type XMLRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = 
     MessageIds: MessageIds;
 }>;
 
-type AnnotationRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
+export type AnnotationRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
     LangOptions: FioriLanguageOptions;
     Code: FioriAnnotationSourceCode;
     RuleOptions: RuleOptions;
