@@ -90,13 +90,19 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
     /**
      * Create an axios configuration for a new service instance.
      *
+     * **IMPORTANT:**
+     * This method intentionally mutates Axios instance defaults.
+     * Changing this behaviour (e.g. making defaults immutable) will break
+     * Axios header merging and interceptor resolution.
+     *
      * @param path path of the service relative to the service provider
      * @returns axios config
      */
     protected generateServiceConfig(path: string): AxiosRequestConfig {
-        const headers = { ...this.defaults.headers?.common, Cookie: this.cookies.toString() };
+        const config = Object.assign({}, this.defaults);
+        const headers = Object.assign(this.defaults.headers?.common ?? {}, { Cookie: this.cookies.toString() });
         return {
-            ...this.defaults,
+            ...config,
             baseURL: this.defaults.baseURL + path,
             headers
         };

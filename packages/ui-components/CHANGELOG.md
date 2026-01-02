@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.27.0
+
+### Minor Changes
+
+- f9f119d: Added icon StarBig which is a 24x24 start icon
+
 ## 1.26.19
 
 ### Patch Changes

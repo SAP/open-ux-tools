@@ -1,12 +1,9 @@
-const { defineConfig } = require('eslint/config');
-const js = require('@eslint/js');
-
 const jsdoc = require('eslint-plugin-jsdoc');
 const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const tsParser = require('@typescript-eslint/parser');
-const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+const fioriTools = require('@sap-ux/eslint-plugin-fiori-tools');
 
-module.exports = defineConfig([
+module.exports = [
     {
         ignores: [
             'test/fixtures/**',
@@ -55,4 +52,4 @@ module.exports = defineConfig([
             'jsdoc/require-jsdoc': 'off'
         }
     }
-]);
+];
