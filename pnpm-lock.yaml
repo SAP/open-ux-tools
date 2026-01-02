@@ -2361,6 +2361,9 @@ importers:
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
 
   packages/fiori-mcp-server:
     dependencies:
