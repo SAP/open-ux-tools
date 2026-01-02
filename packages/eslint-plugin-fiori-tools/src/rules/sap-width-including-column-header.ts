@@ -8,7 +8,6 @@ import type { FioriRuleDefinition } from '../types';
 import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
 import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
-import { findDeepestExistingPath } from '../utils/helpers';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -68,18 +67,15 @@ const rule: FioriRuleDefinition = createFioriRule({
                     if (
                         records.length < 6 &&
                         records.length > 0 &&
-                        table.resolvedConfiguration.widthIncludingColumnHeader !== true
+                        table.configuration.widthIncludingColumnHeader.valueInFile !== true
                     ) {
                         problems.push({
                             type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,
-                                requiredPropertyPath: page.configurationPath,
-                                optionalPropertyPath: [
-                                    ...table.configurationPath,
-                                    ...table.configurationPaths.widthIncludingColumnHeader
-                                ]
+                                requiredPropertyPath: page.configuration.widthIncludingColumnHeader.configurationPath,
+                                optionalPropertyPath: []
                             },
                             annotation: {
                                 file: table.annotation.annotation.source,
@@ -103,24 +99,17 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
         const matchers: RuleVisitor = {};
         for (const diagnostic of applicableDiagnostics) {
-            const paths = findDeepestExistingPath(
-                diagnostic.manifest.object,
-                diagnostic.manifest.requiredPropertyPath,
-                diagnostic.manifest.optionalPropertyPath
-            );
-            if (paths) {
-                matchers[context.sourceCode.createMatcherString(paths.validatedPath)] = function report(
-                    node: MemberNode
-                ): void {
-                    context.report({
-                        node,
-                        messageId: 'width-including-column-header-manifest',
-                        data: {
-                            table: diagnostic.annotation.annotationPath
-                        }
-                    });
-                };
-            }
+            matchers[context.sourceCode.createMatcherString(diagnostic.manifest.requiredPropertyPath)] = function report(
+                node: MemberNode
+            ): void {
+                context.report({
+                    node,
+                    messageId: 'width-including-column-header-manifest',
+                    data: {
+                        table: diagnostic.annotation.annotationPath
+                    }
+                });
+            };
         }
         return matchers;
     },

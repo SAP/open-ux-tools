@@ -3,7 +3,6 @@ import type { FioriRuleDefinition } from '../types';
 import { DISABLE_COPY_TO_CLIPBOARD, type DisableCopyToClipboard } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import { findDeepestExistingPath } from '../utils/helpers';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: DISABLE_COPY_TO_CLIPBOARD,
@@ -35,17 +34,14 @@ const rule: FioriRuleDefinition = createFioriRule({
                     continue;
                 }
                 for (const table of page.lookup['table'] ?? []) {
-                    if (table.resolvedConfiguration.disableCopyToClipboard === false) {
+                    if (!table.configuration.disableCopyToClipboard.valueInFile) {
                         problems.push({
                             type: DISABLE_COPY_TO_CLIPBOARD,
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,
-                                requiredPropertyPath: page.configurationPath,
-                                optionalPropertyPath: [
-                                    ...table.configurationPath,
-                                    ...(table.configurationPaths.disableCopyToClipboard ?? [])
-                                ]
+                                requiredPropertyPath: page.configuration.disableCopyToClipboard.configurationPath,
+                                optionalPropertyPath: []
                             }
                         });
                     }
@@ -64,22 +60,14 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
         const matchers: RuleVisitor = {};
         for (const diagnostic of applicableDiagnostics) {
-            const paths = findDeepestExistingPath(
-                diagnostic.manifest.object,
-                diagnostic.manifest.requiredPropertyPath,
-                diagnostic.manifest.optionalPropertyPath
-            );
-            if (paths) {
-                matchers[context.sourceCode.createMatcherString(paths.validatedPath)] = function report(
-                    node: MemberNode
-                ): void {
+            matchers[context.sourceCode.createMatcherString(diagnostic.manifest.requiredPropertyPath)] =
+                function report(node: MemberNode): void {
                     context.report({
                         node,
                         messageId: DISABLE_COPY_TO_CLIPBOARD
                         // fix
                     });
                 };
-            }
         }
         return matchers;
     }

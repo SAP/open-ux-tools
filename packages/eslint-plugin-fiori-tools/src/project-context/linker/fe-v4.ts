@@ -10,7 +10,7 @@ export interface LinkedFeV4App {
     pages: FeV4PageType[];
 }
 
-export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
+export interface FeV4ListReport extends ConfigurationBase<'list-report-page', TableSettings> {
     targetName: string;
     componentName: 'sap.fe.templates.ListReport';
     contextPath: string;
@@ -19,7 +19,7 @@ export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
     lookup: NodeLookup<Table | OrphanTable>;
 }
 
-export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
+export interface FeV4ObjectPage extends ConfigurationBase<'object-page', TableSettings> {
     targetName: string;
     componentName: 'sap.fe.templates.ObjectPage';
     contextPath: string;
@@ -40,24 +40,36 @@ export interface AnnotationBasedNode<T extends AnnotationNode, Configuration ext
 export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
     type: T;
     annotation?: unknown;
-    configurationPath: string[];
-    configuration: Partial<Configuration>;
-    resolvedConfiguration: Configuration;
-    configurationPaths: {
-        [K in keyof Configuration]: string[];
+    configuration: {
+        [K in keyof Configuration]: {
+            /**
+             * All possible supported configuration values. Empty means dynamic value resolved by framework at runtime.
+             */
+            values: Configuration[K][];
+            /**
+             * Actual value as defined in the manifest file.
+             */
+            valueInFile?: Configuration[K];
+            /**
+             * Absolute path in manifest where this configuration is defined or parent if configuration is not defined
+             */
+            configurationPath: string[];
+        };
     };
 }
 export type OrphanSection = ConfigurationBase<'orphan-section', {}>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
 export type Section = TableSection | OrphanSection;
 export interface TableSettings {
-    tableType: 'ResponsiveTable' | 'GridTable' | 'AnalyticalTable' | 'TreeTable';
+    tableType: string;
     widthIncludingColumnHeader: boolean;
-    disableCopyToClipboard?: boolean;
+    disableCopyToClipboard: boolean;
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+
+const tableTypeValues = ['ResponsiveTable', 'GridTable', 'AnalyticalTable', 'TreeTable'];
 
 /**
  *
@@ -67,17 +79,41 @@ export type Table = AnnotationBasedNode<TableNode, TableSettings>;
  */
 function createTable(configurationKey: string, table?: TableNode): Table | OrphanTable {
     const base: Omit<Table, 'type' | 'children'> = {
-        configurationPath: ['options', 'settings', 'controlConfiguration', configurationKey],
-        configuration: {},
-        resolvedConfiguration: {
-            tableType: 'ResponsiveTable',
-            widthIncludingColumnHeader: false,
-            disableCopyToClipboard: false
-        },
-        configurationPaths: {
-            tableType: ['tableSettings', 'type'],
-            widthIncludingColumnHeader: ['tableSettings', 'widthIncludingColumnHeader'],
-            disableCopyToClipboard: ['tableSettings', 'disableCopyToClipboard']
+        // configurationPath: ['options', 'settings', 'controlConfiguration', configurationKey],
+        configuration: {
+            tableType: {
+                configurationPath: [
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'type'
+                ],
+                values: tableTypeValues
+            },
+            widthIncludingColumnHeader: {
+                configurationPath: [
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'widthIncludingColumnHeader'
+                ],
+                values: [true, false]
+            },
+            disableCopyToClipboard: {
+                configurationPath: [
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'disableCopyToClipboard'
+                ],
+                values: [true, false]
+            }
         }
     };
     if (!table) {
@@ -141,12 +177,22 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                     type: 'object-page',
                     targetName: name,
                     componentName: target.name,
-                    configurationPath: [...path, name],
                     contextPath,
                     entity: entity,
-                    configuration: {},
-                    resolvedConfiguration: {},
-                    configurationPaths: {},
+                    configuration: {
+                        disableCopyToClipboard: {
+                            configurationPath: [...path, name, 'options', 'settings', 'disableCopyToClipboard'],
+                            values: [true, false]
+                        },
+                        tableType: {
+                            configurationPath: [...path, name, 'options', 'settings', 'tableType'],
+                            values: tableTypeValues
+                        },
+                        widthIncludingColumnHeader: {
+                            configurationPath: [...path, name, 'options', 'settings', 'widthIncludingColumnHeader'],
+                            values: [true, false]
+                        }
+                    },
                     sections: [],
                     lookup: {}
                 };
@@ -215,11 +261,21 @@ function linkListReport(
         targetName: name,
         componentName: 'sap.fe.templates.ListReport',
         contextPath,
-        configurationPath: [...path, name],
         entity: entity,
-        configuration: {},
-        resolvedConfiguration: {},
-        configurationPaths: {},
+        configuration: {
+            disableCopyToClipboard: {
+                configurationPath: [...path, name, 'options', 'settings', 'disableCopyToClipboard'],
+                values: [true, false]
+            },
+            tableType: {
+                configurationPath: [...path, name, 'options', 'settings', 'tableType'],
+                values: tableTypeValues
+            },
+            widthIncludingColumnHeader: {
+                configurationPath: [...path, name, 'options', 'settings', 'widthIncludingColumnHeader'],
+                values: [true, false]
+            }
+        },
         tables: [],
         lookup: {}
     };
@@ -253,23 +309,11 @@ function linkListReportTable(
         const tableControl = controls[`table|${controlKey}`];
         if (tableControl) {
             if (tableControl.type === 'table') {
-                if (controlConfiguration.tableSettings?.type !== undefined) {
-                    const value = getTableType(controlConfiguration.tableSettings.type);
-                    if (value) {
-                        tableControl.configuration.tableType = value;
-                        tableControl.resolvedConfiguration.tableType = value;
-                    } else {
-                        // TODO: report invalid value
-                    }
-                }
-                if (controlConfiguration.tableSettings?.widthIncludingColumnHeader !== undefined) {
-                    const value = controlConfiguration.tableSettings.widthIncludingColumnHeader;
-                    tableControl.configuration.widthIncludingColumnHeader = value;
-                    tableControl.resolvedConfiguration.widthIncludingColumnHeader = value;
-                }
+                tableControl.configuration.tableType.valueInFile = controlConfiguration.tableSettings?.type;
+                const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
+                tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
                 const value = controlConfiguration.tableSettings?.disableCopyToClipboard;
-                tableControl.configuration.disableCopyToClipboard = value;
-                tableControl.resolvedConfiguration.disableCopyToClipboard = value;
+                tableControl.configuration.disableCopyToClipboard.valueInFile = value;
             }
         } else {
             // no annotation definition found for this table, but configuration exists
@@ -312,10 +356,7 @@ function linkObjectPageSections(
             const linkedSection: TableSection = {
                 type: section.type,
                 annotation: section,
-                configurationPath: ['options', 'settings', 'controlConfiguration', configurationKey],
                 configuration: {},
-                resolvedConfiguration: {},
-                configurationPaths: {},
                 children: []
             };
             controls[`${section.type}|${configurationKey}`] = linkedSection;
@@ -334,33 +375,18 @@ function linkObjectPageSections(
             if (sectionControl.type === 'table-section') {
                 const tableControl = sectionControl.children[0];
                 if (tableControl.type === 'table') {
-                    if (controlConfiguration.tableSettings?.type !== undefined) {
-                        const value = getTableType(controlConfiguration.tableSettings.type);
-                        if (value) {
-                            tableControl.configuration.tableType = value;
-                            tableControl.resolvedConfiguration.tableType = value;
-                        } else {
-                            // TODO: report invalid value
-                        }
-                        if (controlConfiguration.tableSettings?.widthIncludingColumnHeader !== undefined) {
-                            const value = controlConfiguration.tableSettings.widthIncludingColumnHeader;
-                            tableControl.configuration.widthIncludingColumnHeader = value;
-                            tableControl.resolvedConfiguration.widthIncludingColumnHeader = value;
-                        }
-                        const disableCopyValue = controlConfiguration.tableSettings.disableCopyToClipboard;
-                        tableControl.configuration.disableCopyToClipboard = disableCopyValue;
-                        tableControl.resolvedConfiguration.disableCopyToClipboard = disableCopyValue;
-                    }
+                    tableControl.configuration.tableType.valueInFile = controlConfiguration.tableSettings?.type;
+                    const value = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
+                    tableControl.configuration.widthIncludingColumnHeader.valueInFile = value;
+                    const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
+                    tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
                 }
             }
         } else {
             // no annotation definition found for this section, but configuration exists
             const orphanedSection: OrphanSection = {
                 type: 'orphan-section',
-                configurationPath: ['options', 'settings', 'controlConfiguration', controlKey],
-                configuration: {},
-                resolvedConfiguration: {},
-                configurationPaths: {}
+                configuration: {}
             };
             controls[`${orphanedSection.type}|${controlKey}|`] = orphanedSection;
         }
@@ -371,22 +397,6 @@ function linkObjectPageSections(
         }
         page.lookup[control.type] ??= [];
         (page.lookup[control.type]! as Extract<Section | Table, { type: typeof control.type }>[]).push(control);
-    }
-}
-
-/**
- *
- * @param value
- */
-function getTableType(value: string): Table['configuration']['tableType'] | undefined {
-    switch (value) {
-        case 'ResponsiveTable':
-        case 'GridTable':
-        case 'AnalyticalTable':
-        case 'TreeTable':
-            return value;
-        default:
-            return undefined;
     }
 }
 
@@ -403,7 +413,8 @@ interface PageSettings {
 function getEntity(settings: PageSettings, service: ParsedService): MetadataElement | undefined {
     if (settings.contextPath) {
         return getEntityForContextPath(settings.contextPath, service);
-    } else if (settings.entitySet) {
+    }
+    if (settings.entitySet) {
         return service.index.entitySets[settings.entitySet];
     }
     return undefined;
