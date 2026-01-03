@@ -193,7 +193,7 @@ function linkPage(
             page.configuration.createMode.configurationPath.push('createMode');
             page.configuration.createMode.valueInFile = createMode;
         }
-        linkListReportTable(page, path, table, target);
+        linkListReportTable(page, [...path, name], table, target);
         linkedApp.pages.push(page);
     } else if (componentName === 'sap.suite.ui.generic.template.ObjectPage') {
         const entitySetName = target.entitySet;
@@ -234,12 +234,12 @@ function linkPage(
             page.configuration.createMode.valueInFile = createMode;
         }
 
-        linkObjectPageSections(page, path, entity, mainService, sections, target);
+        linkObjectPageSections(page, [...path, name], entity, mainService, sections, target);
         linkedApp.pages.push(page);
     }
     const pages = target.pages ?? {};
     for (const [key, child] of Object.entries(pages)) {
-        linkPage(context, service, linkedApp, [...path, 'pages'], key, child);
+        linkPage(context, service, linkedApp, [...path, name, 'pages'], key, child);
     }
 }
 
