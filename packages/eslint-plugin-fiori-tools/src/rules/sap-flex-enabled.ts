@@ -3,7 +3,6 @@ import { createFioriRule } from '../language/rule-factory';
 import { FLEX_ENABLED, type FlexEnabled } from '../language/diagnostics';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { isLowerThanMinimalUi5Version } from '../utils/version';
-import { createJsonHandler } from '../utils/manifest';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: FLEX_ENABLED,
@@ -36,8 +35,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                     manifest: {
                         uri: app.manifest.manifestUri,
                         object: app.manifestObject,
-                        requiredPropertyPath: ['sap.ui5'],
-                        optionalPropertyPath: ['flexEnabled']
+                        propertyPath: ['sap.ui5', 'flexEnabled']
                     }
                 });
             }
@@ -45,33 +43,31 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJson: createJsonHandler(
-        (context, _diagnostic, paths) =>
-            function report(node: MemberNode): void {
-                context.report({
-                    node,
-                    messageId: FLEX_ENABLED,
-                    fix(fixer) {
-                        if (paths.missingSegments.length === 0) {
-                            const expectedValue = true;
-                            if (node.value.type === 'Boolean') {
-                                return fixer.replaceTextRange(
-                                    node.value.range ?? [node.value.loc.start.offset, node.value.loc.end.offset],
-                                    expectedValue.toString()
-                                );
-                            }
-                            return null;
-                        } else {
-                            const valueOffset = node.value.loc.start.offset + 1;
-                            return fixer.insertTextBeforeRange(
-                                [valueOffset, valueOffset],
-                                `\n${new Array(node.value.loc.end.column + 1).join(' ')}"flexEnabled": true,`
+    createJsonVisitorHandler: (context, _diagnostic, paths) =>
+        function report(node: MemberNode): void {
+            context.report({
+                node,
+                messageId: FLEX_ENABLED,
+                fix(fixer) {
+                    if (paths.missingSegments.length === 0) {
+                        const expectedValue = true;
+                        if (node.value.type === 'Boolean') {
+                            return fixer.replaceTextRange(
+                                node.value.range ?? [node.value.loc.start.offset, node.value.loc.end.offset],
+                                expectedValue.toString()
                             );
                         }
+                        return null;
+                    } else {
+                        const valueOffset = node.value.loc.start.offset + 1;
+                        return fixer.insertTextBeforeRange(
+                            [valueOffset, valueOffset],
+                            `\n${new Array(node.value.loc.end.column + 1).join(' ')}"flexEnabled": true,`
+                        );
                     }
-                });
-            }
-    )
+                }
+            });
+        }
 });
 
 export default rule;

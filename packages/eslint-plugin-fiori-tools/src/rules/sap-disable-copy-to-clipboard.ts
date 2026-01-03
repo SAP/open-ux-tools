@@ -2,7 +2,6 @@ import type { FioriRuleDefinition } from '../types';
 import { DISABLE_COPY_TO_CLIPBOARD, type DisableCopyToClipboard } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import { createJsonHandler } from '../utils/manifest';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: DISABLE_COPY_TO_CLIPBOARD,
@@ -34,14 +33,13 @@ const rule: FioriRuleDefinition = createFioriRule({
                     continue;
                 }
                 for (const table of page.lookup['table'] ?? []) {
-                    if (!table.configuration.disableCopyToClipboard.valueInFile) {
+                    if (table.configuration.disableCopyToClipboard.valueInFile === true) {
                         problems.push({
                             type: DISABLE_COPY_TO_CLIPBOARD,
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,
-                                requiredPropertyPath: table.configuration.disableCopyToClipboard.configurationPath,
-                                optionalPropertyPath: []
+                                propertyPath: table.configuration.disableCopyToClipboard.configurationPath
                             }
                         });
                     }
@@ -51,16 +49,14 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJson: createJsonHandler(
-        (context) =>
-            function report(node: MemberNode): void {
-                context.report({
-                    node,
-                    messageId: DISABLE_COPY_TO_CLIPBOARD
-                    // fix
-                });
-            }
-    )
+    createJsonVisitorHandler: (context) =>
+        function report(node: MemberNode): void {
+            context.report({
+                node,
+                messageId: DISABLE_COPY_TO_CLIPBOARD
+                // fix
+            });
+        }
 });
 
 export default rule;

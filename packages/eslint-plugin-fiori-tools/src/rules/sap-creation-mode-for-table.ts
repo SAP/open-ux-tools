@@ -58,15 +58,14 @@ const rule: FioriRuleDefinition = createFioriRule({
             messageId: CreateModeMessageId,
             parsedApp: ParsedApp,
             configurationPath: string[]
-        ) => {
+        ): void => {
             problems.push({
                 type: CREATION_MODE_FOR_TABLE,
                 messageId,
                 manifest: {
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
-                    requiredPropertyPath: configurationPath,
-                    optionalPropertyPath: []
+                    propertyPath: configurationPath
                 }
             });
         };
@@ -178,8 +177,8 @@ const rule: FioriRuleDefinition = createFioriRule({
         for (const diagnostic of diagnostics) {
             const matcherString =
                 diagnostic.messageId === 'suggestAppLevel'
-                    ? context.sourceCode.createStrictMatcherString(diagnostic.manifest.requiredPropertyPath)
-                    : context.sourceCode.createMatcherString(diagnostic.manifest.requiredPropertyPath);
+                    ? context.sourceCode.createStrictMatcherString(diagnostic.manifest.propertyPath)
+                    : context.sourceCode.createMatcherString(diagnostic.manifest.propertyPath);
 
             if (!matchers[matcherString]) {
                 matchers[matcherString] = function report(node: MemberNode): void {

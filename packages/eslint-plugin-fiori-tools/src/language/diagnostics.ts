@@ -18,8 +18,7 @@ export interface WidthIncludingColumnHeaderDiagnostic {
 export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
-    requiredPropertyPath: string[];
-    optionalPropertyPath: string[];
+    propertyPath: string[];
 }
 
 export interface FlexEnabled {

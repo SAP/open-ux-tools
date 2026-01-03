@@ -7,7 +7,6 @@ import type { FioriRuleDefinition } from '../types';
 import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
 import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
-import { createJsonHandler } from '../utils/manifest';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
@@ -74,8 +73,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,
-                                requiredPropertyPath: table.configuration.widthIncludingColumnHeader.configurationPath,
-                                optionalPropertyPath: []
+                                propertyPath: table.configuration.widthIncludingColumnHeader.configurationPath
                             },
                             annotation: {
                                 file: table.annotation.annotation.source,
@@ -90,18 +88,16 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJson: createJsonHandler(
-        (context, diagnostic) =>
-            function report(node: MemberNode): void {
-                context.report({
-                    node,
-                    messageId: 'width-including-column-header-manifest',
-                    data: {
-                        table: diagnostic.annotation.annotationPath
-                    }
-                });
-            }
-    ),
+    createJsonVisitorHandler: (context, diagnostic) =>
+        function report(node: MemberNode): void {
+            context.report({
+                node,
+                messageId: 'width-including-column-header-manifest',
+                data: {
+                    table: diagnostic.annotation.annotationPath
+                }
+            });
+        },
     createAnnotations(context, validationResult) {
         if (validationResult.length === 0) {
             return {};
