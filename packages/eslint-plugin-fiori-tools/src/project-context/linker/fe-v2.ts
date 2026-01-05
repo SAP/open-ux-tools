@@ -190,7 +190,7 @@ function linkPage(
             lookup: {}
         };
         page.configuration.createMode.valueInFile = createMode;
-        linkListReportTable(page, path, table, target);
+        linkListReportTable(page, [...path, name], table, target);
         linkedApp.pages.push(page);
     } else if (componentName === 'sap.suite.ui.generic.template.ObjectPage') {
         const entitySetName = target.entitySet;
@@ -228,12 +228,12 @@ function linkPage(
         };
         page.configuration.createMode.valueInFile = createMode;
 
-        linkObjectPageSections(page, path, entity, mainService, sections, target);
+        linkObjectPageSections(page, [...path, name], entity, mainService, sections, target);
         linkedApp.pages.push(page);
     }
     const pages = target.pages ?? {};
     for (const [key, child] of Object.entries(pages)) {
-        linkPage(context, service, linkedApp, [...path, 'pages'], key, child);
+        linkPage(context, service, linkedApp, [...path, name, 'pages'], key, child);
     }
 }
 
@@ -368,14 +368,14 @@ function linkObjectPageSections(
             controls[`${section.type}|${configurationKey}`] = linkedSection;
             let createMode: string | undefined;
             let tableType: string | undefined;
-            let sectionEntityKey = '';
-            for (const [key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
+            // let sectionEntityKey = '';
+            for (const [_key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
                 if (value.createMode !== undefined) {
-                    sectionEntityKey = key;
+                    // sectionEntityKey = key;
                     createMode = value.createMode;
                 }
                 if (value.tableSettings?.type !== undefined) {
-                    sectionEntityKey = key;
+                    // sectionEntityKey = key;
                     tableType = value.tableSettings.type;
                 }
             }
@@ -385,11 +385,26 @@ function linkObjectPageSections(
                 configuration: {
                     createMode: {
                         values: createModeValues,
-                        configurationPath: [...pathToPage, 'component', 'settings', 'sections', 'createMode']
+                        configurationPath: [
+                            ...pathToPage,
+                            'component',
+                            'settings',
+                            'sections',
+                            configurationKey,
+                            'createMode'
+                        ]
                     },
                     tableType: {
                         values: tableTypeValues,
-                        configurationPath: [...pathToPage, 'component', 'settings', 'sections', 'type']
+                        configurationPath: [
+                            ...pathToPage,
+                            'component',
+                            'settings',
+                            'sections',
+                            configurationKey,
+                            'tableSettings',
+                            'type'
+                        ]
                     }
                 },
                 children: []

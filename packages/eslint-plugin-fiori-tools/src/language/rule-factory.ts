@@ -2,7 +2,7 @@ import type { RuleContext, RulesMeta, RuleVisitor } from '@eslint/core';
 import type { FioriLanguageOptions, FioriSourceCode, Node } from './fiori-language';
 import { JSONSourceCode } from '@eslint/json';
 import type { FioriJSONSourceCode } from './json/source-code';
-import type { AnyNode } from '@humanwhocodes/momoa';
+import type { AnyNode, MemberNode } from '@humanwhocodes/momoa';
 import { FioriXMLSourceCode } from './xml/source-code';
 import type { XMLAstNode, XMLToken } from '@xml-tools/ast';
 import type { FioriRuleDefinition } from '../types';
@@ -10,6 +10,8 @@ import { FioriAnnotationSourceCode } from './annotations/source-code';
 import type { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
 import { DiagnosticCache } from './diagnostic-cache';
 import type { Diagnostic } from './diagnostics';
+import type { DeepestExistingPathResult } from '../utils/helpers';
+import { findDeepestExistingPath } from '../utils/helpers';
 
 export type JSONRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
     LangOptions: FioriLanguageOptions;
@@ -40,6 +42,7 @@ export type AnnotationRuleContext<MessageIds extends string, RuleOptions extends
  * @param param0 - Rule definition.
  * @param param0.ruleId
  * @param param0.meta
+ * @param param0.createJsonVisitorHandler
  * @param param0.createJson
  * @param param0.createXml
  * @param param0.createAnnotations
@@ -55,6 +58,7 @@ export function createFioriRule<
     ruleId,
     meta,
     check,
+    createJsonVisitorHandler,
     createJson,
     createXml,
     createAnnotations
@@ -65,6 +69,11 @@ export function createFioriRule<
         context: JSONRuleContext<MessageIds, RuleOptions>,
         validationResult: Extract<Diagnostic, { type: T }>[]
     ) => RuleVisitor;
+    createJsonVisitorHandler?: (
+        context: JSONRuleContext<MessageIds, RuleOptions>,
+        diagnostic: Extract<Diagnostic, { type: T }>,
+        deepestPathResult: DeepestExistingPathResult
+    ) => (node: MemberNode) => void;
     createXml?: (
         context: XMLRuleContext<MessageIds, RuleOptions>,
         validationResult: Extract<Diagnostic, { type: T }>[]
@@ -98,6 +107,28 @@ export function createFioriRule<
             if (!cachedDiagnostics) {
                 cachedDiagnostics = check(context);
                 DiagnosticCache.addMessages(ruleId, cachedDiagnostics);
+            }
+            const sourceCode = context.sourceCode;
+            if (sourceCode instanceof JSONSourceCode && createJsonVisitorHandler) {
+                const applicableDiagnostics = cachedDiagnostics.filter(
+                    (diagnostic) => diagnostic.manifest.uri === sourceCode.uri
+                );
+                if (applicableDiagnostics.length === 0) {
+                    return {};
+                }
+                const matchers: RuleVisitor = {};
+                for (const diagnostic of applicableDiagnostics) {
+                    const paths = findDeepestExistingPath(diagnostic.manifest.object, diagnostic.manifest.propertyPath);
+                    if (paths?.validatedPath && paths.validatedPath.length > 0) {
+                        matchers[sourceCode.createMatcherString(paths.validatedPath)] = createJsonVisitorHandler(
+                            // typescript can't infer context based on source code instance
+                            context as JSONRuleContext<MessageIds, RuleOptions>,
+                            diagnostic,
+                            paths
+                        );
+                    }
+                }
+                return matchers;
             }
             if (context.sourceCode instanceof JSONSourceCode && createJson) {
                 return createJson(context as JSONRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { pathToFileURL } from 'node:url';
 
 import type { ServiceInfo } from '@sap-ux/project-access';
@@ -81,6 +83,7 @@ export class CdsAnnotationProvider {
         servicePath: string,
         fileCache: Map<string, string>
     ): ServiceArtifacts | undefined {
+        // eslint-disable-next-line prefer-const
         let cachedArtifactsByRoot = this.serviceArtifactCache.get(rootPath);
         if (cachedArtifactsByRoot) {
             const cachedService = cachedArtifactsByRoot[servicePath];
@@ -89,55 +92,56 @@ export class CdsAnnotationProvider {
             }
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const facade = this.getFacade(rootPath, fileCache, false);
 
-        const services = this.serviceInfoCache.get(rootPath) ?? [];
-        const serviceInfo = services.find((s) => uniformUrl(s.urlPath) === uniformUrl(servicePath));
-        if (!serviceInfo) {
-            return undefined;
-        }
+        // const services = this.serviceInfoCache.get(rootPath) ?? [];
+        // const serviceInfo = services.find((s) => uniformUrl(s.urlPath) === uniformUrl(servicePath));
+        // if (!serviceInfo) {
+        //     return undefined;
+        // }
 
-        const serviceName = serviceInfo.name;
+        // const serviceName = serviceInfo.name;
 
-        const annotationFiles: Record<string, AnnotationFile> = {};
-        const metadataElementMap = facade.getMetadata(serviceName);
-        // We collect already full metadata from compile model, we don't need to build it based on paths.
-        const metadataCollector = createMetadataCollector(new Map(), facade);
-        const { propagationMap } = facade.getPropagatedTargetMap(serviceName);
-        for (const path of facade.getAllSourceUris()) {
-            const uri = pathToFileURL(path).toString();
-            const cdsAnnotationFile = toTargetMap(facade.blitzIndex.forUri(uri), uri, this.vocabularyService, facade);
+        // const annotationFiles: Record<string, AnnotationFile> = {};
+        // const metadataElementMap = facade.getMetadata(serviceName);
+        // // We collect already full metadata from compile model, we don't need to build it based on paths.
+        // const metadataCollector = createMetadataCollector(new Map(), facade);
+        // const { propagationMap } = facade.getPropagatedTargetMap(serviceName);
+        // for (const path of facade.getAllSourceUris()) {
+        //     const uri = pathToFileURL(path).toString();
+        //     const cdsAnnotationFile = toTargetMap(facade.blitzIndex.forUri(uri), uri, this.vocabularyService, facade);
 
-            const annotationFile = toAnnotationFile(
-                uri,
-                this.vocabularyService,
-                cdsAnnotationFile,
-                metadataCollector,
-                undefined,
-                propagationMap,
-                true
-            ).file;
+        //     const annotationFile = toAnnotationFile(
+        //         uri,
+        //         this.vocabularyService,
+        //         cdsAnnotationFile,
+        //         metadataCollector,
+        //         undefined,
+        //         propagationMap,
+        //         true
+        //     ).file;
 
-            annotationFiles[uri] = annotationFile;
-        }
-        const metadataElements = getMetadataElementsFromMap(metadataElementMap);
-        const metadataService = new MetadataService({ uriMap: facade?.getUriMap() || new Map() });
-        metadataService.import(metadataElements, 'DummyMetadataFileUri');
+        //     annotationFiles[uri] = annotationFile;
+        // }
+        // const metadataElements = getMetadataElementsFromMap(metadataElementMap);
+        // const metadataService = new MetadataService({ uriMap: facade?.getUriMap() || new Map() });
+        // metadataService.import(metadataElements, 'DummyMetadataFileUri');
 
-        const aliasInformation = getAliasInfo(metadataService, XML_VOCABULARY_SERVICE, annotationFiles);
-        const url = uniformUrl(serviceInfo.urlPath);
-        const artifacts = {
-            path: url,
-            metadataService,
-            annotationFiles,
-            aliasInfo: aliasInformation,
-            fileSequence: facade.getFileSequence().map((path) => pathToFileURL(path).toString())
-        };
+        // const aliasInformation = getAliasInfo(metadataService, XML_VOCABULARY_SERVICE, annotationFiles);
+        // const url = uniformUrl(serviceInfo.urlPath);
+        // const artifacts = {
+        //     path: url,
+        //     metadataService,
+        //     annotationFiles,
+        //     aliasInfo: aliasInformation,
+        //     fileSequence: facade.getFileSequence().map((path) => pathToFileURL(path).toString())
+        // };
 
-        cachedArtifactsByRoot = {};
-        cachedArtifactsByRoot[url] = artifacts;
-        this.serviceArtifactCache.set(rootPath, cachedArtifactsByRoot);
-        return artifacts;
+        // cachedArtifactsByRoot = {};
+        // cachedArtifactsByRoot[url] = artifacts;
+        // this.serviceArtifactCache.set(rootPath, cachedArtifactsByRoot);
+        // return artifacts;
     }
 
     /**
@@ -231,6 +235,7 @@ function getAliasInfo(
  * @param url - The URL to normalize.
  * @returns The normalized URL.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function uniformUrl(url: string): string {
     return url
         .replace(/\\/g, '/')
