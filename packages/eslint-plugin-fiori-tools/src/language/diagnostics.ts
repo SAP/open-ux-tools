@@ -8,6 +8,7 @@ export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
     manifest: ManifestPropertyDiagnosticData;
+    pageName: string;
     annotation: {
         file: string;
         annotationPath: string;
@@ -29,15 +30,20 @@ export type CreateModeMessageId =
     | 'invalidCreateMode'
     | 'recommendCreationRows'
     | 'suggestAppLevel'
-    | 'analyticalTableNotSupported';
+    | 'analyticalTableNotSupported'
+    | 'invalidCreateModeV4'
+    | 'recommendInlineCreationRowsV4'
+    | 'suggestAppLevelV4';
 export interface CreationModeForTable {
     type: typeof CREATION_MODE_FOR_TABLE;
+    pageName: string;
     manifest: ManifestPropertyDiagnosticData;
     messageId: CreateModeMessageId;
 }
 
 export interface DisableCopyToClipboard {
     type: typeof DISABLE_COPY_TO_CLIPBOARD;
+    pageName: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 

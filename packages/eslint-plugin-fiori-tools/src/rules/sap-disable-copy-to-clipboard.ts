@@ -36,6 +36,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                     if (table.configuration.disableCopyToClipboard.valueInFile === true) {
                         problems.push({
                             type: DISABLE_COPY_TO_CLIPBOARD,
+                            pageName: page.targetName,
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,

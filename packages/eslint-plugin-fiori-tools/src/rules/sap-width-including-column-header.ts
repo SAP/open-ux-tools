@@ -70,6 +70,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                     ) {
                         problems.push({
                             type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+                            pageName: page.targetName,
                             manifest: {
                                 uri: parsedApp.manifest.manifestUri,
                                 object: parsedApp.manifestObject,
