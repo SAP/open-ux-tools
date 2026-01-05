@@ -11,3 +11,4 @@ export { getDefaultTargetFolder, isExtensionInstalled, isCommandRegistered } fro
 export { generateAppGenInfo } from './app-gen-info';
 export { getHostEnvironment } from './environment';
 export { getFlpId, getSemanticObject } from './app-helpers/app-helpers';
+export { setYeomanEnvConflicterForce } from './yeoman';

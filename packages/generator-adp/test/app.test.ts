@@ -438,8 +438,8 @@ describe('Adaptation Project Generator Integration Test', () => {
             jest.spyOn(ConfigPrompter.prototype, 'baseAppInbounds', 'get').mockReturnValue(inbounds);
             jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
 
-            const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockReturnValue();
-            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockReturnValue();
+            const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockResolvedValue();
+            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockResolvedValue();
 
             const runContext = yeomanTest
                 .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })

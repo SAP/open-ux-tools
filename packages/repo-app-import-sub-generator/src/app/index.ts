@@ -11,10 +11,10 @@ import {
     getDefaultTargetFolder,
     generateAppGenInfo,
     type AppGenInfo,
-    type YeomanEnvironment,
     sendTelemetry,
     TelemetryHelper,
-    isCli
+    isCli,
+    setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import type { RepoAppDownloadOptions, RepoAppDownloadAnswers, RepoAppDownloadQuestions, QfaJsonConfig } from './types';
 import { getPrompts } from '../prompts/prompts';
@@ -94,9 +94,7 @@ export default class extends Generator {
      * Initialises necessary settings and telemetry for the generator.
      */
     public async initializing(): Promise<void> {
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
         // Initialise telemetry settings
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
