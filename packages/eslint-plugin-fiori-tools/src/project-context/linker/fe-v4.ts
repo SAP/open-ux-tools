@@ -74,6 +74,7 @@ const tableTypeValues = ['ResponsiveTable', 'GridTable', 'AnalyticalTable', 'Tre
 /**
  *
  * @param configurationKey
+ * @param pathToPage
  * @param table
  * @returns
  */

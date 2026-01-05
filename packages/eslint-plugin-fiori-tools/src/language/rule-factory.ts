@@ -10,7 +10,8 @@ import { FioriAnnotationSourceCode } from './annotations/source-code';
 import type { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
 import { DiagnosticCache } from './diagnostic-cache';
 import type { Diagnostic } from './diagnostics';
-import { DeepestExistingPathResult, findDeepestExistingPath } from '../utils/helpers';
+import type { DeepestExistingPathResult } from '../utils/helpers';
+import { findDeepestExistingPath } from '../utils/helpers';
 
 export type JSONRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
     LangOptions: FioriLanguageOptions;
