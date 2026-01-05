@@ -1,4 +1,3 @@
-import type { RuleVisitor } from '@eslint/core';
 import type { MemberNode } from '@humanwhocodes/momoa';
 
 import { createFioriRule } from '../language/rule-factory';

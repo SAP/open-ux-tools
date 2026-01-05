@@ -45,7 +45,6 @@ export class FioriJSONSourceCode extends JSONSourceCode {
      *
      * @param path - Array of property names representing the path to the target node.
      *               Each element represents a nested level in the JSON structure.
-     * @param options - Optional configuration object.
      * @returns A selector string that matches the specified path through nested objects.
      * @example
      * ```typescript

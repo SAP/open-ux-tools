@@ -478,7 +478,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]
             },
             [LIST_REPORT_TABLE_ANNOTATIONS]
-        ),
+        )
         // createInvalidTest(
         //     {
         //         name: 'Object Page: 💡 Recommend at Page level (creationMode) → ⚠️ WARN - Inline over CreationDialog for TreeTable',
