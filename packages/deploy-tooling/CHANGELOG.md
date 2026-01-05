@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.21
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.4
+
 ## 0.17.20
 
 ### Patch Changes
