@@ -87,14 +87,16 @@ const tableTypeValues = ['ResponsiveTable', 'GridTable', 'AnalyticalTable', 'Tre
 /**
  *
  * @param configurationKey
+ * @param pathToPage
  * @param table
  * @returns
  */
-function createTable(configurationKey: string, table?: TableNode): Table | OrphanTable {
+function createTable(configurationKey: string, pathToPage: string[], table?: TableNode): Table | OrphanTable {
     const base: Omit<Table, 'type' | 'children'> = {
         configuration: {
             tableType: {
                 configurationPath: [
+                    ...pathToPage,
                     'options',
                     'settings',
                     'controlConfiguration',
@@ -106,6 +108,7 @@ function createTable(configurationKey: string, table?: TableNode): Table | Orpha
             },
             widthIncludingColumnHeader: {
                 configurationPath: [
+                    ...pathToPage,
                     'options',
                     'settings',
                     'controlConfiguration',
@@ -117,6 +120,7 @@ function createTable(configurationKey: string, table?: TableNode): Table | Orpha
             },
             disableCopyToClipboard: {
                 configurationPath: [
+                    ...pathToPage,
                     'options',
                     'settings',
                     'controlConfiguration',
@@ -128,6 +132,7 @@ function createTable(configurationKey: string, table?: TableNode): Table | Orpha
             },
             creationMode: {
                 configurationPath: [
+                    ...pathToPage,
                     'options',
                     'settings',
                     'controlConfiguration',
@@ -154,6 +159,10 @@ function createTable(configurationKey: string, table?: TableNode): Table | Orpha
     };
 }
 
+/**
+ *
+ * @param tableType
+ */
 function getCreationModeValues(tableType?: string): string[] {
     switch (tableType) {
         case 'ResponsiveTable':
@@ -216,7 +225,7 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
                     sections: [],
                     lookup: {}
                 };
-                linkObjectPageSections(page, path, entity, mainService, sections, target);
+                linkObjectPageSections(page, path, name, entity, mainService, sections, target);
                 linkedApp.pages.push(page);
             }
         }
@@ -289,7 +298,7 @@ function linkListReport(
         tables: [],
         lookup: {}
     };
-    linkListReportTable(page, path, tables, target);
+    linkListReportTable(page, [...path, name], tables, target);
     linkedApp.pages.push(page);
 }
 
@@ -310,7 +319,7 @@ function linkListReportTable(
 
     for (const table of tables) {
         const configurationKey = table.annotationPath;
-        const linkedTable = createTable(configurationKey, table);
+        const linkedTable = createTable(configurationKey, pathToPage, table);
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
 
@@ -331,7 +340,7 @@ function linkListReportTable(
             }
         } else {
             // no annotation definition found for this table, but configuration exists
-            const orphanedSection = createTable(controlKey);
+            const orphanedSection = createTable(controlKey, pathToPage);
             controls[`${orphanedSection.type}|${controlKey}`] = orphanedSection;
         }
     }
@@ -345,6 +354,7 @@ function linkListReportTable(
  *
  * @param page
  * @param pathToPage
+ * @param pageName
  * @param entity
  * @param service
  * @param sections
@@ -353,6 +363,7 @@ function linkListReportTable(
 function linkObjectPageSections(
     page: FeV4ObjectPage,
     pathToPage: string[],
+    pageName: string,
     entity: MetadataElement,
     service: ParsedService,
     sections: SectionNode[],
@@ -374,7 +385,7 @@ function linkObjectPageSections(
                 children: []
             };
             controls[`${section.type}|${configurationKey}`] = linkedSection;
-            const linkedTable = createTable(configurationKey, table);
+            const linkedTable = createTable(configurationKey, [...pathToPage, pageName], table);
             if (linkedTable.type === 'table') {
                 linkedSection.children.push(linkedTable);
                 controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
@@ -499,6 +510,10 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
     return current;
 }
 
+/**
+ *
+ * @param config
+ */
 function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV4App {
     const createMode = config.macros?.table?.defaultCreationMode;
     const linkedApp: LinkedFeV4App = {

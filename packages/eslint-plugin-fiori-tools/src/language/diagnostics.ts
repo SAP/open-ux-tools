@@ -8,6 +8,7 @@ export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
     manifest: ManifestPropertyDiagnosticData;
+    pageName: string;
     annotation: {
         file: string;
         annotationPath: string;
@@ -18,8 +19,7 @@ export interface WidthIncludingColumnHeaderDiagnostic {
 export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
-    requiredPropertyPath: string[];
-    optionalPropertyPath: string[];
+    propertyPath: string[];
 }
 
 export interface FlexEnabled {
@@ -36,6 +36,7 @@ export type CreateModeMessageId =
     | 'suggestAppLevelV4';
 export interface CreationModeForTable {
     type: typeof CREATION_MODE_FOR_TABLE;
+    pageName: string;
     manifest: ManifestPropertyDiagnosticData;
     messageId: CreateModeMessageId;
     tableType: string;
@@ -43,6 +44,7 @@ export interface CreationModeForTable {
 
 export interface DisableCopyToClipboard {
     type: typeof DISABLE_COPY_TO_CLIPBOARD;
+    pageName: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 

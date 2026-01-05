@@ -319,7 +319,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'invalidCreateMode'
+                        messageId: 'suggestAppLevel'
                     }
                 ]
             },

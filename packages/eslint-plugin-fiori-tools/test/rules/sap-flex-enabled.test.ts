@@ -10,14 +10,14 @@ const ruleTester = new RuleTester({
 
 ruleTester.run('sap-flex-enabled', flexEnabledRule, {
     valid: [
-        // Non-manifest files should be ignored
         {
+            name: ' Non-manifest files should be ignored',
             filename: 'some-other-file.json',
             code: '{"sap.ui5":{"flexEnabled":false}}'
         },
 
-        // flexEnabled is true - valid
         {
+            name: ' flexEnabled is true - valid',
             filename: V4_MANIFEST_PATH,
             code: JSON.stringify(
                 {
@@ -33,8 +33,8 @@ ruleTester.run('sap-flex-enabled', flexEnabledRule, {
             )
         },
 
-        // UI5 version below 1.56.0 - rule should not apply
         {
+            name: ' UI5 version below 1.56.0 - rule should not apply',
             filename: V4_MANIFEST_PATH,
             code: JSON.stringify(
                 {
@@ -50,8 +50,8 @@ ruleTester.run('sap-flex-enabled', flexEnabledRule, {
             )
         },
 
-        // No minUI5Version specified - rule should not apply
         {
+            name: ' No minUI5Version specified - rule should not apply',
             filename: V4_MANIFEST_PATH,
             code: JSON.stringify(
                 {
@@ -64,14 +64,14 @@ ruleTester.run('sap-flex-enabled', flexEnabledRule, {
             )
         },
 
-        // Non-object root - should be ignored
         {
+            name: ' Non-object root - should be ignored',
             filename: V4_MANIFEST_PATH,
             code: '"not an object"'
         },
 
-        // No sap.ui5 section - rule should not apply
         {
+            name: ' No sap.ui5 section - rule should not apply',
             filename: V4_MANIFEST_PATH,
             code: JSON.stringify(
                 {
@@ -86,8 +86,8 @@ ruleTester.run('sap-flex-enabled', flexEnabledRule, {
     ],
 
     invalid: [
-        // flexEnabled is false - should be fixed to true
         {
+            name: ' flexEnabled is false - should be fixed to true',
             filename: V4_MANIFEST_PATH,
             code: JSON.stringify(
                 {
@@ -122,8 +122,8 @@ ruleTester.run('sap-flex-enabled', flexEnabledRule, {
             ]
         },
 
-        // flexEnabled missing - should be created if this has minUI5Version >= 1.56.0
         {
+            name: ' flexEnabled missing - should be created if this has minUI5Version >= 1.56.0',
             filename: V4_MANIFEST_PATH,
             code: JSON.stringify(
                 {
@@ -157,8 +157,8 @@ ruleTester.run('sap-flex-enabled', flexEnabledRule, {
             ]
         },
 
-        // Higher UI5 version - should enforce flexEnabled
         {
+            name: 'Higher UI5 version - should enforce flexEnabled',
             filename: V4_MANIFEST_PATH,
             code: JSON.stringify(
                 {
@@ -193,8 +193,8 @@ ruleTester.run('sap-flex-enabled', flexEnabledRule, {
             ]
         },
 
-        // Complex manifest with flexEnabled missing
         {
+            name: 'Complex manifest with flexEnabled missing',
             filename: V4_MANIFEST_PATH,
             code: JSON.stringify(
                 {

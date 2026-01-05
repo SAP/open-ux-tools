@@ -16,39 +16,6 @@ const ruleTester = new RuleTester({
     language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
 });
 
-const _6_COLUMNS_ANNOTATIONS = {
-    filename: V4_ANNOTATIONS_PATH,
-    code: getAnnotationsAsXmlCode(
-        V4_ANNOTATIONS,
-        `
-            <Annotations Target="IncidentService.Incidents">
-                <Annotation Term="UI.LineItem">
-                    <Collection>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="identifier"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="title"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="category_code"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="priority_code"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="incidentStatus_code"/>
-                        </Record>
-                         <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="incidentStatus_code"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-                `
-    )
-};
-
 const FACETS = {
     filename: V4_ANNOTATIONS_PATH,
     code: getAnnotationsAsXmlCode(
@@ -90,64 +57,13 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
     valid: [
         createValidTest(
             {
-                name: 'disableCopyToClipboard set to true',
-                filename: V4_MANIFEST_PATH,
-                code: getManifestAsCode(V4_MANIFEST, [
-                    {
-                        path: [
-                            'sap.ui5',
-                            'routing',
-                            'targets',
-                            'IncidentsList',
-                            'options',
-                            'settings',
-                            'controlConfiguration',
-                            '@com.sap.vocabularies.UI.v1.LineItem',
-                            'tableSettings',
-                            'disableCopyToClipboard'
-                        ],
-                        value: true
-                    }
-                ])
-            },
-            [_6_COLUMNS_ANNOTATIONS]
-        ),
-        createValidTest(
-            {
                 name: 'disableCopyToClipboard missing',
                 filename: V4_MANIFEST_PATH,
                 code: JSON.stringify(V4_MANIFEST, undefined, 2)
             },
-            [_6_COLUMNS_ANNOTATIONS]
+            []
         ),
         createValidTest(
-            {
-                name: 'disableCopyToClipboard is true',
-                filename: V4_MANIFEST_PATH,
-                code: getManifestAsCode(V4_MANIFEST, [
-                    {
-                        path: [
-                            'sap.ui5',
-                            'routing',
-                            'targets',
-                            'IncidentsList',
-                            'options',
-                            'settings',
-                            'controlConfiguration',
-                            '@com.sap.vocabularies.UI.v1.LineItem',
-                            'tableSettings',
-                            'disableCopyToClipboard'
-                        ],
-                        value: true
-                    }
-                ])
-            },
-            [_6_COLUMNS_ANNOTATIONS]
-        )
-    ],
-
-    invalid: [
-        createInvalidTest(
             {
                 name: 'object page table - redundant false value',
                 filename: V4_MANIFEST_PATH,
@@ -167,6 +83,33 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
                         ],
                         value: false
                     }
+                ])
+            },
+            [FACETS]
+        )
+    ],
+
+    invalid: [
+        createInvalidTest(
+            {
+                name: 'disableCopyToClipboard is true',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'disableCopyToClipboard'
+                        ],
+                        value: true
+                    }
                 ]),
                 errors: [
                     {
@@ -176,7 +119,7 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
                     }
                 ]
             },
-            [FACETS, _6_COLUMNS_ANNOTATIONS]
+            []
         )
     ]
 });
