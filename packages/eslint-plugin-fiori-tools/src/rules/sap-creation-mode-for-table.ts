@@ -8,7 +8,8 @@ import { CREATION_MODE_FOR_TABLE } from '../language/diagnostics';
 import type { ParsedApp } from '../project-context/parser';
 
 const RECOMMENDED_MODE_V2 = 'creationRows';
-// const RECOMMENDED_MODE_V4 = 'InlineCreationRows';
+const RECOMMENDED_MODE_V4_RESPONSIVE_GRID = 'InlineCreationRows';
+const RECOMMENDED_MODE_V4_TREE = 'Inline';
 
 const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, CreationModeForTable['type']>({
     ruleId: CREATION_MODE_FOR_TABLE,
@@ -58,12 +59,14 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
             messageId: CreateModeMessageId,
             pageName: string,
             parsedApp: ParsedApp,
-            configurationPath: string[]
+            configurationPath: string[],
+            tableType: string
         ): void => {
             problems.push({
                 type: CREATION_MODE_FOR_TABLE,
                 messageId,
                 pageName,
+                tableType,
                 manifest: {
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
@@ -86,7 +89,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
 
                 for (const table of page.lookup['table'] ?? []) {
                     const sectionCreateMode = table.configuration.createMode;
-                    const tableType = table.configuration.tableType?.valueInFile;
+                    const tableType = table.configuration.tableType?.valueInFile ?? '';
 
                     // Check if it's an AnalyticalTable with createMode configured at any level
                     if (tableType === 'AnalyticalTable') {
@@ -95,7 +98,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'analyticalTableNotSupported',
                                 page.targetName,
                                 parsedApp,
-                                sectionCreateMode.configurationPath
+                                sectionCreateMode.configurationPath,
+                                tableType
                             );
                             continue;
                         }
@@ -104,7 +108,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'analyticalTableNotSupported',
                                 page.targetName,
                                 parsedApp,
-                                pageCreateMode.configurationPath
+                                pageCreateMode.configurationPath,
+                                tableType
                             );
                             continue;
                         }
@@ -113,7 +118,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'analyticalTableNotSupported',
                                 page.targetName,
                                 parsedApp,
-                                appCreateMode.configurationPath
+                                appCreateMode.configurationPath,
+                                tableType
                             );
                             continue;
                         }
@@ -127,7 +133,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'invalidCreateMode',
                                 page.targetName,
                                 parsedApp,
-                                sectionCreateMode.configurationPath
+                                sectionCreateMode.configurationPath,
+                                tableType
                             );
                             continue;
                         }
@@ -137,7 +144,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'recommendCreationRows',
                                 page.targetName,
                                 parsedApp,
-                                sectionCreateMode.configurationPath
+                                sectionCreateMode.configurationPath,
+                                tableType
                             );
                         }
                         continue;
@@ -151,7 +159,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'invalidCreateMode',
                                 page.targetName,
                                 parsedApp,
-                                pageCreateMode.configurationPath
+                                pageCreateMode.configurationPath,
+                                tableType
                             );
                             continue;
                         }
@@ -161,7 +170,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'recommendCreationRows',
                                 page.targetName,
                                 parsedApp,
-                                pageCreateMode.configurationPath
+                                pageCreateMode.configurationPath,
+                                tableType
                             );
                         }
                         continue;
@@ -175,7 +185,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'invalidCreateMode',
                                 page.targetName,
                                 parsedApp,
-                                appCreateMode.configurationPath
+                                appCreateMode.configurationPath,
+                                tableType
                             );
                             continue;
                         }
@@ -185,7 +196,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'recommendCreationRows',
                                 page.targetName,
                                 parsedApp,
-                                appCreateMode.configurationPath
+                                appCreateMode.configurationPath,
+                                tableType
                             );
                         }
                         continue;
@@ -202,7 +214,95 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                             'suggestAppLevel',
                             page.targetName,
                             parsedApp,
-                            appCreateMode.configurationPath
+                            appCreateMode.configurationPath,
+                            tableType
+                        );
+                    }
+                }
+            }
+        }
+
+        // Process all apps in the project for v4
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+            if (app.type !== 'fe-v4') {
+                continue;
+            }
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+
+            for (const page of app.pages) {
+                // Process tables from both list-report-page and object-page
+                const tables = page.lookup['table'] ?? [];
+
+                for (const table of tables) {
+                    const tableCreationMode = table.configuration.creationMode;
+                    const tableType = table.configuration.tableType?.valueInFile ?? '';
+
+                    // Check if it's an AnalyticalTable with createMode configured
+                    if (tableType === 'AnalyticalTable') {
+                        if (tableCreationMode.valueInFile) {
+                            reportDiagnostic(
+                                'analyticalTableNotSupported',
+                                page.targetName,
+                                parsedApp,
+                                tableCreationMode.configurationPath,
+                                tableType
+                            );
+                        }
+                        continue;
+                    }
+
+                    // Determine valid values and recommended value based on table type
+                    const validValues = table.configuration.creationMode.values;
+                    let recommendedValue: string;
+
+                    if (tableType === 'TreeTable') {
+                        recommendedValue = RECOMMENDED_MODE_V4_TREE;
+                    } else {
+                        // ResponsiveTable, GridTable, or default
+                        recommendedValue = RECOMMENDED_MODE_V4_RESPONSIVE_GRID;
+                    }
+
+                    // Check table level configuration
+                    if (tableCreationMode.valueInFile) {
+                        if (!validValues.includes(tableCreationMode.valueInFile)) {
+                            // invalid value
+                            reportDiagnostic(
+                                'invalidCreateModeV4',
+                                page.targetName,
+                                parsedApp,
+                                tableCreationMode.configurationPath,
+                                tableType
+                            );
+                            continue;
+                        }
+                        if (tableCreationMode.valueInFile !== recommendedValue) {
+                            // recommend better value
+                            reportDiagnostic(
+                                'recommendInlineCreationRowsV4',
+                                page.targetName,
+                                parsedApp,
+                                tableCreationMode.configurationPath,
+                                tableType
+                            );
+                        }
+                        continue;
+                    }
+
+                    // Suggest adding creationMode at table level only once per page
+                    if (
+                        !problems.some(
+                            (p) =>
+                                p.messageId === 'suggestAppLevelV4' &&
+                                p.manifest.uri === parsedApp.manifest.manifestUri &&
+                                JSON.stringify(p.manifest.propertyPath).includes(page.targetName)
+                        )
+                    ) {
+                        reportDiagnostic(
+                            'suggestAppLevelV4',
+                            page.targetName,
+                            parsedApp,
+                            tableCreationMode.configurationPath,
+                            tableType
                         );
                     }
                 }
@@ -213,11 +313,19 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
     },
     createJsonVisitorHandler: (context, diagnostic) =>
         function report(node: MemberNode): void {
+            let tableTypeName: string;
+            if (diagnostic.tableType === 'TreeTable') {
+                tableTypeName = 'Tree Table';
+            } else {
+                // ResponsiveTable, GridTable, or default
+                tableTypeName = diagnostic.tableType === 'GridTable' ? 'Grid Table' : 'Responsive Table';
+            }
             context.report({
                 node,
                 messageId: diagnostic.messageId,
                 data: {
-                    value: node.value.type === 'String' ? node.value.value : String(node.value)
+                    value: node.value.type === 'String' ? node.value.value : String(node.value),
+                    tableTypeName
                 }
             });
         }

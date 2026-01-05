@@ -26,7 +26,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
     valid: [
         createValidTest(
             {
-                name: 'V2: Scenario 1 - ✅ Valid at Section → ✅ PASS (Section stops flow)',
+                name: 'Scenario 1 - ✅ Valid at Section → ✅ PASS (Section stops flow)',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
@@ -50,7 +50,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
         ),
         createValidTest(
             {
-                name: 'V2: Scenario 3 - ✅ Valid at Page → ✅ PASS (Page stops flow)',
+                name: 'Scenario 3 - ✅ Valid at Page → ✅ PASS (Page stops flow)',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
@@ -72,7 +72,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
         ),
         createValidTest(
             {
-                name: 'V2: Scenario 5 - ✅ Valid at App → ✅ PASS (App validated)',
+                name: 'Scenario 5 - ✅ Valid at App → ✅ PASS (App validated)',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
@@ -87,7 +87,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
     invalid: [
         createInvalidTest(
             {
-                name: 'V2: Scenario 2 - ⚠️ Invalid at Section → ⚠️ WARN (Section stops flow)',
+                name: 'Scenario 2 - ⚠️ Invalid at Section → ⚠️ WARN (Section stops flow)',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
@@ -116,7 +116,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
         ),
         createInvalidTest(
             {
-                name: 'V2: Scenario 4 - ⚠️ Invalid at Page → ⚠️ WARN (Page stops flow)',
+                name: 'Scenario 4 - ⚠️ Invalid at Page → ⚠️ WARN (Page stops flow)',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
@@ -143,7 +143,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
         ),
         createInvalidTest(
             {
-                name: 'V2: Scenario 6 - ⚠️ Invalid at App → ⚠️ WARN (App validated)',
+                name: 'Scenario 6 - ⚠️ Invalid at App → ⚠️ WARN (App validated)',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
@@ -161,7 +161,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
         ),
         createInvalidTest(
             {
-                name: 'V2: AnalyticalTable at Section - ⚠️ Creation mode not supported for Analytical tables',
+                name: 'AnalyticalTable at Section - ⚠️ Creation mode not supported for Analytical tables',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
@@ -206,7 +206,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
         ),
         createInvalidTest(
             {
-                name: 'V2: AnalyticalTable at Page - ⚠️ Creation mode not supported for Analytical tables',
+                name: 'AnalyticalTable at Page - ⚠️ Creation mode not supported for Analytical tables',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
@@ -249,7 +249,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
         ),
         createInvalidTest(
             {
-                name: 'V2: AnalyticalTable at App - ⚠️ Creation mode not supported for Analytical tables',
+                name: 'AnalyticalTable at App - ⚠️ Creation mode not supported for Analytical tables',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
@@ -284,7 +284,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
         // TODO - check why test is failing
         // createInvalidTest(
         //     {
-        //         name: 'V2: Scenario 7 - 💡 SUGGEST (No config at any level)',
+        //         name: 'Scenario 7 - 💡 SUGGEST (No config at any level)',
         //         filename: V2_MANIFEST_PATH,
         //         code: JSON.stringify(V2_MANIFEST, undefined, 2),
         //         errors: [
@@ -298,8 +298,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
 
         createInvalidTest(
             {
-                // only: true,
-                name: 'V2: Report on parent level',
+                name: 'Report on parent level',
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {

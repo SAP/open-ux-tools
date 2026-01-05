@@ -119,7 +119,7 @@ export function createFioriRule<
                 const matchers: RuleVisitor = {};
                 for (const diagnostic of applicableDiagnostics) {
                     const paths = findDeepestExistingPath(diagnostic.manifest.object, diagnostic.manifest.propertyPath);
-                    if (paths) {
+                    if (paths?.validatedPath && paths.validatedPath.length > 0) {
                         matchers[sourceCode.createMatcherString(paths.validatedPath)] = createJsonVisitorHandler(
                             // typescript can't infer context based on source code instance
                             context as JSONRuleContext<MessageIds, RuleOptions>,

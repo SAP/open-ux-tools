@@ -5,7 +5,11 @@ import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, SectionNode, TableNode, TableSectionNode } from './annotations';
 import { collectTables, collectSections } from './annotations';
 
-export interface LinkedFeV4App {
+export interface ApplicationSetting {
+    createMode: string;
+}
+
+export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
     type: 'fe-v4';
     pages: FeV4PageType[];
 }
@@ -51,7 +55,7 @@ export interface ConfigurationBase<T extends string, Configuration extends objec
              */
             valueInFile?: Configuration[K];
             /**
-             * Absolute path in manifest where this configuration is defined or parent if configuration is not defined
+             * Absolute path in manifest where this configuration is defined.
              */
             configurationPath: string[];
         };
@@ -61,6 +65,7 @@ export type OrphanSection = ConfigurationBase<'orphan-section', {}>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
 export type Section = TableSection | OrphanSection;
 export interface TableSettings {
+    creationMode: string;
     tableType: string;
     widthIncludingColumnHeader: boolean;
     disableCopyToClipboard: boolean;
@@ -68,6 +73,14 @@ export interface TableSettings {
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+
+interface ManifestApplicationSettings {
+    macros?: {
+        table?: {
+            defaultCreationMode?: string;
+        };
+    };
+}
 
 const tableTypeValues = ['ResponsiveTable', 'GridTable', 'AnalyticalTable', 'TreeTable'];
 
@@ -80,7 +93,6 @@ const tableTypeValues = ['ResponsiveTable', 'GridTable', 'AnalyticalTable', 'Tre
  */
 function createTable(configurationKey: string, pathToPage: string[], table?: TableNode): Table | OrphanTable {
     const base: Omit<Table, 'type' | 'children'> = {
-        // configurationPath: ['options', 'settings', 'controlConfiguration', configurationKey],
         configuration: {
             tableType: {
                 configurationPath: [
@@ -117,6 +129,19 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                     'disableCopyToClipboard'
                 ],
                 values: [true, false]
+            },
+            creationMode: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'creationMode',
+                    'name'
+                ],
+                values: [] // filled later on based on table type
             }
         }
     };
@@ -134,6 +159,18 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
     };
 }
 
+function getCreationModeValues(tableType?: string): string[] {
+    switch (tableType) {
+        case 'ResponsiveTable':
+        case 'GridTable':
+            return ['InlineCreationRows', 'NewPage'];
+        case 'TreeTable':
+            return ['Inline', 'NewPage', 'CreationDialog'];
+        default:
+            return [];
+    }
+}
+
 export type Node = Section | Table | OrphanTable;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
@@ -144,10 +181,7 @@ export type NodeLookup<T extends Node> = {
  * @param context
  */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
-    const linkedApp: LinkedFeV4App = {
-        type: 'fe-v4',
-        pages: []
-    };
+    const linkedApp = linkApplicationSettings(context.app.manifestObject['sap.fe'] ?? {});
     const manifest = context.app.manifestObject;
     const routingTargets = manifest['sap.ui5']?.routing?.targets;
     if (routingTargets) {
@@ -211,6 +245,9 @@ interface TableConfiguration {
         type?: string;
         widthIncludingColumnHeader?: boolean;
         disableCopyToClipboard?: boolean;
+        creationMode?: {
+            name?: string;
+        };
     };
 }
 
@@ -287,11 +324,15 @@ function linkListReportTable(
         const tableControl = controls[`table|${controlKey}`];
         if (tableControl) {
             if (tableControl.type === 'table') {
-                tableControl.configuration.tableType.valueInFile = controlConfiguration.tableSettings?.type;
+                const tableType = controlConfiguration.tableSettings?.type;
+                tableControl.configuration.tableType.valueInFile = tableType;
                 const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
                 tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
                 const value = controlConfiguration.tableSettings?.disableCopyToClipboard;
                 tableControl.configuration.disableCopyToClipboard.valueInFile = value;
+                const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
+                tableControl.configuration.creationMode.valueInFile = creationModeValue;
+                tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
             }
         } else {
             // no annotation definition found for this table, but configuration exists
@@ -355,11 +396,15 @@ function linkObjectPageSections(
             if (sectionControl.type === 'table-section') {
                 const tableControl = sectionControl.children[0];
                 if (tableControl.type === 'table') {
-                    tableControl.configuration.tableType.valueInFile = controlConfiguration.tableSettings?.type;
+                    const tableType = controlConfiguration.tableSettings?.type;
+                    tableControl.configuration.tableType.valueInFile = tableType;
                     const value = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
                     tableControl.configuration.widthIncludingColumnHeader.valueInFile = value;
                     const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
                     tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+                    const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
+                    tableControl.configuration.creationMode.valueInFile = creationModeValue;
+                    tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
                 }
             }
         } else {
@@ -459,4 +504,20 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
         }
     }
     return current;
+}
+
+function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV4App {
+    const createMode = config.macros?.table?.defaultCreationMode;
+    const linkedApp: LinkedFeV4App = {
+        type: 'fe-v4',
+        pages: [],
+        configuration: {
+            createMode: {
+                values: ['InlineCreationRows', 'NewPage'],
+                configurationPath: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
+                valueInFile: createMode
+            }
+        }
+    };
+    return linkedApp;
 }

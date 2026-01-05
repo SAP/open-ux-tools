@@ -39,6 +39,7 @@ export interface CreationModeForTable {
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;
     messageId: CreateModeMessageId;
+    tableType: string;
 }
 
 export interface DisableCopyToClipboard {
