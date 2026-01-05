@@ -1,5 +1,18 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.7
+
+### Patch Changes
+
+- 62bb798: set conflicter option
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/cap-config-writer@0.12.38
+    - @sap-ux/fiori-elements-writer@2.8.29
+    - @sap-ux/fiori-freestyle-writer@2.5.21
+    - @sap-ux/odata-service-inquirer@2.13.5
+    - @sap-ux/ui5-application-inquirer@0.15.53
+
 ## 0.11.6
 
 ### Patch Changes

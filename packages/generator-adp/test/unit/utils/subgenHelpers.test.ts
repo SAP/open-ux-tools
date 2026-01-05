@@ -25,7 +25,7 @@ describe('Sub-generator helpers', () => {
             jest.clearAllMocks();
         });
 
-        it('should compose FLP generator with correct parameters', () => {
+        it('should compose FLP generator with correct parameters', async () => {
             const flpOptions = {
                 projectRootPath: '/test/path',
                 inbounds: {
@@ -63,7 +63,7 @@ describe('Sub-generator helpers', () => {
             const resolvePath = 'flp-generator';
             jest.spyOn(require, 'resolve').mockReturnValue(resolvePath);
 
-            addFlpGen(flpOptions, composeWith, logger, wizard);
+            await addFlpGen(flpOptions, composeWith, logger, wizard);
 
             expect(composeWith).toHaveBeenCalledWith(
                 expect.any(String),
@@ -77,11 +77,9 @@ describe('Sub-generator helpers', () => {
         });
 
         it('should handle errors and show user notification', async () => {
-            composeWith.mockImplementation(() => {
-                throw error;
-            });
+            composeWith.mockRejectedValueOnce(error);
 
-            expect(() => addFlpGen({} as any, composeWith, logger, wizard)).toThrow(
+            await expect(addFlpGen({} as any, composeWith, logger, wizard)).rejects.toThrow(
                 "Could not call '@sap/fiori:adp-flp-config' sub-generator: Failed to compose"
             );
 
@@ -90,13 +88,13 @@ describe('Sub-generator helpers', () => {
     });
 
     describe('addDeployGen', () => {
-        const composeWith = jest.fn();
-
         beforeEach(() => {
             jest.clearAllMocks();
         });
 
-        it('should compose deploy-config generator with merged options', () => {
+        it('should compose deploy-config generator with merged options', async () => {
+            const composeWith = jest.fn();
+
             const deployOptions = {
                 projectName: 'some.app',
                 projectPath: '/project',
@@ -108,7 +106,7 @@ describe('Sub-generator helpers', () => {
                 }
             };
 
-            addDeployGen(deployOptions, composeWith, logger, wizard);
+            await addDeployGen(deployOptions, composeWith, logger, wizard);
 
             expect(composeWith).toHaveBeenCalledWith(
                 '@sap/fiori:deploy-config',
@@ -127,11 +125,11 @@ describe('Sub-generator helpers', () => {
         });
 
         it('should handle errors and show user notification', async () => {
-            composeWith.mockImplementation(() => {
-                throw error;
-            });
+            const composeWith = jest.fn();
 
-            expect(() => addDeployGen({} as any, composeWith, logger, wizard)).toThrow(
+            composeWith.mockRejectedValueOnce(error);
+
+            await expect(addDeployGen({} as any, composeWith, logger, wizard)).rejects.toThrow(
                 "Could not call '@sap/fiori:deploy-config' sub-generator: Failed to compose"
             );
 

@@ -7,7 +7,8 @@ import {
     TelemetryHelper,
     isExtensionInstalled,
     YUI_EXTENSION_ID,
-    YUI_MIN_VER_FILES_GENERATED_MSG
+    YUI_MIN_VER_FILES_GENERATED_MSG,
+    setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isFullUrlDestination } from '@sap-ux/btp-utils';
@@ -35,7 +36,6 @@ import { loadManifest } from './utils';
 import { getMtaPath, findCapProjectRoot, FileName, type Package } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents';
 import { getCFQuestions, getCAPMTAQuestions } from './questions';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import { CfDeployConfigOptions } from './types';
@@ -108,9 +108,7 @@ export default class extends DeploymentGenerator {
 
         // hack to suppress yeoman's overwrite prompt when files already exist
         // required when running the deploy config generator in standalone mode
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
