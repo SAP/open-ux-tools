@@ -1,5 +1,31 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.18
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.28
+
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/adp-tooling@0.18.27
+
+## 0.0.16
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/adp-tooling@0.18.26
+    - @sap-ux/logger@0.7.3
+
 ## 0.0.15
 
 ### Patch Changes

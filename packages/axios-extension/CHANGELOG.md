@@ -1,5 +1,28 @@
 # @sap-ux/axios-extension
 
+## 1.25.3
+
+### Patch Changes
+
+- 14a1bc2: Refactor generateServiceConfig to use Object.assign
+
+## 1.25.2
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/btp-utils@1.1.6
+
+## 1.25.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/btp-utils@1.1.6
+
 ## 1.25.0
 
 ### Minor Changes

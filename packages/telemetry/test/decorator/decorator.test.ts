@@ -2,7 +2,7 @@ import { TelemetrySettings } from '../../src/base/config-state';
 import { logTelemetry, logTelemetryAsync } from '../../src/base/decorator';
 import { EventName, InterceptorTypes, SampleRate, ParamRecordConfig } from '../../src';
 import { ClientFactory } from '../../src/base/client';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 
 describe('Decorator Tests', () => {
     const timeOut = promisify(setTimeout);

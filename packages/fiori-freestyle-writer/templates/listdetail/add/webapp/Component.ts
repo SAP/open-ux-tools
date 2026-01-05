@@ -53,7 +53,7 @@ export default class Component extends UIComponent {
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
+            // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-proprietary-browser-api
             if (document.body.classList.contains("sapUiSizeCozy") || document.body.classList.contains("sapUiSizeCompact")) {
                 this.contentDensityClass = "";
             } else if (!support.touch) { // apply "compact" mode if touch is not supported

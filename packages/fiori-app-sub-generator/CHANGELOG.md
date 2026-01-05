@@ -1,5 +1,78 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.6
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+- Updated dependencies [d24f36d]
+    - @sap-ux/fiori-elements-writer@2.8.28
+    - @sap-ux/fiori-freestyle-writer@2.5.20
+    - @sap-ux/odata-service-inquirer@2.13.4
+
+## 0.11.5
+
+### Patch Changes
+
+- Updated dependencies [14a1bc2]
+    - @sap-ux/axios-extension@1.25.3
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/odata-service-inquirer@2.13.4
+    - @sap-ux/odata-service-writer@0.29.2
+
+## 0.11.4
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+- Updated dependencies [dad2bd7]
+    - @sap-ux/fiori-freestyle-writer@2.5.19
+    - @sap-ux/fiori-elements-writer@2.8.27
+    - @sap-ux/odata-service-inquirer@2.13.3
+
+## 0.11.3
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/axios-extension@1.25.2
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/cap-config-writer@0.12.37
+    - @sap-ux/fiori-elements-writer@2.8.26
+    - @sap-ux/fiori-freestyle-writer@2.5.18
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/launch-config@0.10.45
+    - @sap-ux/odata-service-inquirer@2.13.3
+    - @sap-ux/store@1.4.2
+    - @sap-ux/telemetry@0.6.50
+    - @sap-ux/ui5-info@0.13.6
+    - @sap-ux/annotation-generator@0.4.2
+    - @sap-ux/odata-service-writer@0.29.2
+    - @sap-ux/ui5-application-inquirer@0.15.52
+
+## 0.11.2
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-application-inquirer@0.15.51
+    - @sap-ux/fiori-freestyle-writer@2.5.17
+    - @sap-ux/odata-service-inquirer@2.13.2
+    - @sap-ux/fiori-elements-writer@2.8.25
+    - @sap-ux/annotation-generator@0.4.1
+    - @sap-ux/odata-service-writer@0.29.1
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/telemetry@0.6.49
+    - @sap-ux/ui5-info@0.13.5
+    - @sap-ux/store@1.4.1
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/cap-config-writer@0.12.36
+    - @sap-ux/launch-config@0.10.44
+    - @sap-ux/btp-utils@1.1.6
+
 ## 0.11.1
 
 ### Patch Changes

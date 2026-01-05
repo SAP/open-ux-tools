@@ -1,4 +1,4 @@
-import http from 'http';
+import http from 'node:http';
 import type { SetupRedirectOptions } from '../../../src/auth/reentrance-ticket/redirect';
 import { setupRedirectHandling } from '../../../src/auth/reentrance-ticket/redirect';
 import { ABAPVirtualHostProvider } from '../../../src/auth/reentrance-ticket/abap-virtual-host-provider';

@@ -34,7 +34,7 @@ export interface UI5ToolingTransportOptions extends TransportOptions {
  * on the console in different formats
  */
 export class UI5ToolingTransport extends Transport {
-    private static instances: Map<string, UI5ToolingTransport> = new Map();
+    private static readonly instances: Map<string, UI5ToolingTransport> = new Map();
     public readonly options: UI5ToolingTransportOptions;
 
     /**
@@ -73,7 +73,9 @@ export class NullTransport extends Transport {
 }
 
 export interface FileTransportOptions extends TransportOptions {
-    filename: string;
+    filename: string; //The filename of the logfile to write output to.
+    maxsize?: number; // Max size in bytes of the logfile, if the size is exceeded then a new file is created, a counter will become a suffix of the log file.
+    maxFiles?: number; // Limit the number of files created when the size of the logfile is exceeded.
 }
 
 /**
@@ -83,8 +85,9 @@ export class FileTransport extends Transport {
     public readonly options: FileTransportOptions;
 
     /**
+     * Constructor for FileTransport, expects the options for the transport, file name is mandatory.
      *
-     * @param opts
+     * @param opts - options for the transport
      */
     constructor(opts: FileTransportOptions) {
         super();
@@ -113,7 +116,7 @@ export interface VSCodeTransportOptions extends TransportOptions {
  *  https://code.visualstudio.com/api/extension-capabilities/common-capabilities#output-channel
  */
 export class VSCodeTransport extends Transport {
-    private static instances: Map<string, VSCodeTransport> = new Map();
+    private static readonly instances: Map<string, VSCodeTransport> = new Map();
     public readonly options: VSCodeTransportOptions;
 
     /**
@@ -163,7 +166,7 @@ export class ArrayTransport extends WinstonTransport {
      * @param info
      * @param next
      */
-    log(info: ArrayTransportLogEntry, next: () => void) {
+    log(info: ArrayTransportLogEntry, next: () => void): void {
         this.logs.push(info);
         next();
     }

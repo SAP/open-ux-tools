@@ -8,7 +8,7 @@ import {
     expect
 } from '@sap-ux-private/playwright';
 import type { Page } from '@sap-ux-private/playwright';
-import { writeFile } from 'fs/promises';
+import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant';

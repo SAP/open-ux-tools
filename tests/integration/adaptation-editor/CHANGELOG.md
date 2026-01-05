@@ -1,5 +1,24 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.31
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux-private/playwright@0.2.5
+    - @sap-ux/ui5-info@0.13.6
+
+## 0.0.30
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux-private/playwright@0.2.4
+    - @sap-ux/ui5-info@0.13.5
+
 ## 0.0.29
 
 ### Patch Changes

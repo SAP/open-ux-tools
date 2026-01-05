@@ -1,5 +1,66 @@
 # @sap-ux/create
 
+## 0.14.21
+
+### Patch Changes
+
+- Updated dependencies [e81640f]
+    - @sap-ux/preview-middleware@0.23.81
+    - @sap-ux/app-config-writer@0.6.72
+
+## 0.14.20
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.66
+- @sap-ux/adp-tooling@0.18.28
+- @sap-ux/app-config-writer@0.6.72
+- @sap-ux/flp-config-inquirer@0.4.87
+- @sap-ux/odata-service-writer@0.29.2
+- @sap-ux/preview-middleware@0.23.80
+- @sap-ux/system-access@0.6.37
+- @sap-ux/abap-deploy-config-writer@0.2.48
+
+## 0.14.19
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/abap-deploy-config-inquirer@1.6.65
+    - @sap-ux/adp-tooling@0.18.27
+    - @sap-ux/app-config-writer@0.6.71
+    - @sap-ux/cap-config-writer@0.12.37
+    - @sap-ux/preview-middleware@0.23.79
+    - @sap-ux/system-access@0.6.36
+    - @sap-ux/abap-deploy-config-writer@0.2.47
+    - @sap-ux/flp-config-inquirer@0.4.86
+    - @sap-ux/mockserver-config-writer@0.9.35
+    - @sap-ux/odata-service-writer@0.29.2
+    - @sap-ux/ui5-config@0.29.12
+
+## 0.14.18
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/abap-deploy-config-inquirer@1.6.64
+    - @sap-ux/abap-deploy-config-writer@0.2.46
+    - @sap-ux/odata-service-writer@0.29.1
+    - @sap-ux/flp-config-inquirer@0.4.85
+    - @sap-ux/preview-middleware@0.23.78
+    - @sap-ux/app-config-writer@0.6.70
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/adp-tooling@0.18.26
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/cap-config-writer@0.12.36
+    - @sap-ux/mockserver-config-writer@0.9.34
+
 ## 0.14.17
 
 ### Patch Changes

@@ -1,5 +1,43 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.95
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+- Updated dependencies [d24f36d]
+    - @sap-ux/ui5-library-writer@0.6.39
+
+## 0.1.94
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+- Updated dependencies [dad2bd7]
+    - @sap-ux/ui5-library-writer@0.6.38
+
+## 0.1.93
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.46
+- @sap-ux/nodejs-utils@0.2.11
+- @sap-ux/ui5-info@0.13.6
+- @sap-ux/ui5-library-inquirer@0.6.35
+- @sap-ux/ui5-library-writer@0.6.37
+
+## 0.1.92
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-library-inquirer@0.6.34
+    - @sap-ux/ui5-library-writer@0.6.36
+    - @sap-ux/nodejs-utils@0.2.11
+    - @sap-ux/ui5-info@0.13.5
+    - @sap-ux/fiori-generator-shared@0.13.45
+
 ## 0.1.91
 
 ### Patch Changes

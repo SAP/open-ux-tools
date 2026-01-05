@@ -1,5 +1,25 @@
 # @sap-ux/ui5-application-writer
 
+## 1.6.8
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+
+## 1.6.7
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+
+## 1.6.6
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-config@0.29.12
+
 ## 1.6.5
 
 ### Patch Changes

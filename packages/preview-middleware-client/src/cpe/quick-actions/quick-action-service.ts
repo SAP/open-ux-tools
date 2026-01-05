@@ -38,7 +38,7 @@ import { getUi5Version } from '../../utils/version';
  */
 export class QuickActionService implements Service {
     private sendAction: ActionSenderFunction = () => {};
-    private actions: QuickActionDefinition[] = [];
+    private readonly actions: QuickActionDefinition[] = [];
     private controlTreeIndex: ControlTreeIndex;
 
     private actionService: ActionService;
@@ -73,8 +73,7 @@ export class QuickActionService implements Service {
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
                 const actionInstance = this.actions
-                    .filter((quickActionDefinition) => quickActionDefinition.id === action.payload.id)
-                    .pop();
+                    .findLast((quickActionDefinition) => quickActionDefinition.id === action.payload.id);
                 if (!actionInstance) {
                     return;
                 }

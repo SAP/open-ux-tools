@@ -1,5 +1,20 @@
 # @sap-ux/project-input-validator
 
+## 0.6.40
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+
+## 0.6.39
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+
 ## 0.6.38
 
 ### Patch Changes
