@@ -7,6 +7,7 @@ import { generate } from '@sap-ux/ui5-library-reference-writer';
 import {
     isExtensionInstalled,
     sendTelemetry,
+    setYeomanEnvConflicterForce,
     TelemetryHelper,
     YUI_EXTENSION_ID,
     YUI_MIN_VER_FILES_GENERATED_MSG
@@ -70,9 +71,7 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
             internalFeature: isInternalFeaturesSettingEnabled(),
             watchTelemetrySettingStore: false
         });
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = true;
-        }
+        setYeomanEnvConflicterForce(this.env, true);
     }
 
     public async prompting(): Promise<void> {
