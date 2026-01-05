@@ -8,7 +8,8 @@ import { CREATION_MODE_FOR_TABLE } from '../language/diagnostics';
 import type { ParsedApp } from '../project-context/parser';
 
 const RECOMMENDED_MODE_V2 = 'creationRows';
-// const RECOMMENDED_MODE_V4 = 'InlineCreationRows';
+const RECOMMENDED_MODE_V4_RESPONSIVE_GRID = 'InlineCreationRows';
+const RECOMMENDED_MODE_V4_TREE = 'Inline';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: CREATION_MODE_FOR_TABLE,
@@ -57,11 +58,13 @@ const rule: FioriRuleDefinition = createFioriRule({
         const reportDiagnostic = (
             messageId: CreateModeMessageId,
             parsedApp: ParsedApp,
-            configurationPath: string[]
+            configurationPath: string[],
+            tableType: string
         ) => {
             problems.push({
                 type: CREATION_MODE_FOR_TABLE,
                 messageId,
+                tableType,
                 manifest: {
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
@@ -85,7 +88,7 @@ const rule: FioriRuleDefinition = createFioriRule({
 
                 for (const table of page.lookup['table'] ?? []) {
                     const sectionCreateMode = table.configuration.createMode;
-                    const tableType = table.configuration.tableType?.valueInFile;
+                    const tableType = table.configuration.tableType?.valueInFile ?? '';
 
                     // Check if it's an AnalyticalTable with createMode configured at any level
                     if (tableType === 'AnalyticalTable') {
@@ -93,7 +96,8 @@ const rule: FioriRuleDefinition = createFioriRule({
                             reportDiagnostic(
                                 'analyticalTableNotSupported',
                                 parsedApp,
-                                sectionCreateMode.configurationPath
+                                sectionCreateMode.configurationPath,
+                                tableType
                             );
                             continue;
                         }
@@ -101,12 +105,18 @@ const rule: FioriRuleDefinition = createFioriRule({
                             reportDiagnostic(
                                 'analyticalTableNotSupported',
                                 parsedApp,
-                                pageCreateMode.configurationPath
+                                pageCreateMode.configurationPath,
+                                tableType
                             );
                             continue;
                         }
                         if (appCreateMode.valueInFile) {
-                            reportDiagnostic('analyticalTableNotSupported', parsedApp, appCreateMode.configurationPath);
+                            reportDiagnostic(
+                                'analyticalTableNotSupported',
+                                parsedApp,
+                                appCreateMode.configurationPath,
+                                tableType
+                            );
                             continue;
                         }
                     }
@@ -115,12 +125,22 @@ const rule: FioriRuleDefinition = createFioriRule({
                     if (sectionCreateMode.valueInFile) {
                         if (!sectionCreateMode.values.includes(sectionCreateMode.valueInFile)) {
                             // invalid value
-                            reportDiagnostic('invalidCreateMode', parsedApp, sectionCreateMode.configurationPath);
+                            reportDiagnostic(
+                                'invalidCreateMode',
+                                parsedApp,
+                                sectionCreateMode.configurationPath,
+                                tableType
+                            );
                             continue;
                         }
                         if (sectionCreateMode.valueInFile !== RECOMMENDED_MODE_V2) {
                             // recommend better value
-                            reportDiagnostic('recommendCreationRows', parsedApp, sectionCreateMode.configurationPath);
+                            reportDiagnostic(
+                                'recommendCreationRows',
+                                parsedApp,
+                                sectionCreateMode.configurationPath,
+                                tableType
+                            );
                         }
                         continue;
                     }
@@ -129,12 +149,22 @@ const rule: FioriRuleDefinition = createFioriRule({
                         // check page level (second highest priority)
                         if (!pageCreateMode.values.includes(pageCreateMode.valueInFile)) {
                             // invalid value
-                            reportDiagnostic('invalidCreateMode', parsedApp, pageCreateMode.configurationPath);
+                            reportDiagnostic(
+                                'invalidCreateMode',
+                                parsedApp,
+                                pageCreateMode.configurationPath,
+                                tableType
+                            );
                             continue;
                         }
                         if (pageCreateMode.valueInFile !== RECOMMENDED_MODE_V2) {
                             // recommend better value
-                            reportDiagnostic('recommendCreationRows', parsedApp, pageCreateMode.configurationPath);
+                            reportDiagnostic(
+                                'recommendCreationRows',
+                                parsedApp,
+                                pageCreateMode.configurationPath,
+                                tableType
+                            );
                         }
                         continue;
                     }
@@ -143,12 +173,22 @@ const rule: FioriRuleDefinition = createFioriRule({
                         // check app level (lowest priority)
                         if (!appCreateMode.values.includes(appCreateMode.valueInFile)) {
                             // invalid value
-                            reportDiagnostic('invalidCreateMode', parsedApp, appCreateMode.configurationPath);
+                            reportDiagnostic(
+                                'invalidCreateMode',
+                                parsedApp,
+                                appCreateMode.configurationPath,
+                                tableType
+                            );
                             continue;
                         }
                         if (appCreateMode.valueInFile !== RECOMMENDED_MODE_V2) {
                             // recommend better value
-                            reportDiagnostic('recommendCreationRows', parsedApp, appCreateMode.configurationPath);
+                            reportDiagnostic(
+                                'recommendCreationRows',
+                                parsedApp,
+                                appCreateMode.configurationPath,
+                                tableType
+                            );
                         }
                         continue;
                     }
@@ -160,7 +200,93 @@ const rule: FioriRuleDefinition = createFioriRule({
                                 p.messageId === 'suggestAppLevel' && p.manifest.uri === parsedApp.manifest.manifestUri
                         )
                     ) {
-                        reportDiagnostic('suggestAppLevel', parsedApp, appCreateMode.configurationPath);
+                        reportDiagnostic('suggestAppLevel', parsedApp, appCreateMode.configurationPath, tableType);
+                    }
+                }
+            }
+        }
+
+        // Process all apps in the project for v4
+        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+            if (app.type !== 'fe-v4') {
+                continue;
+            }
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+
+            for (const page of app.pages) {
+                // Process tables from both list-report-page and object-page
+                const tables = page.lookup['table'] ?? [];
+
+                for (const table of tables) {
+                    const tableCreationMode = table.configuration.creationMode;
+                    const tableType = table.configuration.tableType?.valueInFile ?? '';
+
+                    // Check if it's an AnalyticalTable with createMode configured
+                    if (tableType === 'AnalyticalTable') {
+                        if (tableCreationMode.valueInFile) {
+                            reportDiagnostic(
+                                'analyticalTableNotSupported',
+                                parsedApp,
+                                tableCreationMode.configurationPath,
+                                tableType
+                            );
+                        }
+                        continue;
+                    }
+
+                    // Determine valid values and recommended value based on table type
+                    const validValues = table.configuration.creationMode.values;
+                    let recommendedValue: string;
+                    let tableTypeName: string;
+
+                    if (tableType === 'TreeTable') {
+                        recommendedValue = RECOMMENDED_MODE_V4_TREE;
+                        tableTypeName = 'Tree Table';
+                    } else {
+                        // ResponsiveTable, GridTable, or default
+                        recommendedValue = RECOMMENDED_MODE_V4_RESPONSIVE_GRID;
+                        tableTypeName = tableType === 'GridTable' ? 'Grid Table' : 'Responsive Table';
+                    }
+
+                    // Check table level configuration
+                    if (tableCreationMode.valueInFile) {
+                        if (!validValues.includes(tableCreationMode.valueInFile)) {
+                            // invalid value
+                            reportDiagnostic(
+                                'invalidCreateModeV4',
+                                parsedApp,
+                                tableCreationMode.configurationPath,
+                                tableType
+                            );
+                            continue;
+                        }
+                        if (tableCreationMode.valueInFile !== recommendedValue) {
+                            // recommend better value
+                            reportDiagnostic(
+                                'recommendInlineCreationRowsV4',
+                                parsedApp,
+                                tableCreationMode.configurationPath,
+                                tableType
+                            );
+                        }
+                        continue;
+                    }
+
+                    // Suggest adding creationMode at table level only once per page
+                    if (
+                        !problems.some(
+                            (p) =>
+                                p.messageId === 'suggestAppLevelV4' &&
+                                p.manifest.uri === parsedApp.manifest.manifestUri &&
+                                JSON.stringify(p.manifest.requiredPropertyPath).includes(page.targetName)
+                        )
+                    ) {
+                        reportDiagnostic(
+                            'suggestAppLevelV4',
+                            parsedApp,
+                            tableCreationMode.configurationPath,
+                            tableType
+                        );
                     }
                 }
             }
@@ -176,19 +302,38 @@ const rule: FioriRuleDefinition = createFioriRule({
         const matchers: RuleVisitor = {};
 
         for (const diagnostic of diagnostics) {
-            const matcherString = context.sourceCode.createMatcherString(
-                diagnostic.manifest.requiredPropertyPath,
-                { strict: diagnostic.messageId === 'suggestAppLevel' }
-            );
+            const matcherString = context.sourceCode.createMatcherString(diagnostic.manifest.requiredPropertyPath, {
+                strict: diagnostic.messageId === 'suggestAppLevel'
+            });
 
             if (!matchers[matcherString]) {
                 matchers[matcherString] = function report(node: MemberNode): void {
+                    const value = node.value.type === 'String' ? node.value.value : String(node.value);
+
+                    // Prepare data for V4 messages
+                    const data: Record<string, string> = { value };
+
+                    if (diagnostic.messageId === 'invalidCreateModeV4') {
+                        const tableType = diagnostic.tableType;
+                        const tableTypeName =
+                            tableType === 'TreeTable'
+                                ? 'Tree Table'
+                                : tableType === 'GridTable'
+                                  ? 'Grid Table'
+                                  : 'Responsive Table';
+                        const validValues =
+                            tableType === 'TreeTable'
+                                ? 'Inline, NewPage, CreationDialog'
+                                : 'InlineCreationRows, NewPage';
+
+                        data.tableType = tableTypeName;
+                        data.validValues = validValues;
+                    }
+
                     context.report({
                         node,
                         messageId: diagnostic.messageId,
-                        data: {
-                            value: node.value.type === 'String' ? node.value.value : String(node.value)
-                        }
+                        data
                     });
                 };
             }

@@ -30,11 +30,15 @@ export type CreateModeMessageId =
     | 'invalidCreateMode'
     | 'recommendCreationRows'
     | 'suggestAppLevel'
-    | 'analyticalTableNotSupported';
+    | 'analyticalTableNotSupported'
+    | 'invalidCreateModeV4'
+    | 'recommendInlineCreationRowsV4'
+    | 'suggestAppLevelV4';
 export interface CreationModeForTable {
     type: typeof CREATION_MODE_FOR_TABLE;
     manifest: ManifestPropertyDiagnosticData;
     messageId: CreateModeMessageId;
+    tableType: string;
 }
 
 export interface DisableCopyToClipboard {
