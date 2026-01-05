@@ -275,7 +275,6 @@ describe('<UITable />', () => {
         const input = container.querySelector('.ms-DetailsRow-cell input.ms-ComboBox-Input') as HTMLInputElement;
         expect(input).toBeTruthy();
 
-        // The combobox behavior in RTL might differ from the original Enzyme test
         // This test verifies the UI elements appear correctly during editing
         expect(input.value).toBeDefined();
     });
