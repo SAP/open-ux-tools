@@ -92,7 +92,6 @@ export class CdsAnnotationProvider {
             }
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const facade = this.getFacade(rootPath, fileCache, false);
 
         // const services = this.serviceInfoCache.get(rootPath) ?? [];
@@ -235,7 +234,7 @@ function getAliasInfo(
  * @param url - The URL to normalize.
  * @returns The normalized URL.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 function uniformUrl(url: string): string {
     return url
         .replace(/\\/g, '/')

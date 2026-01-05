@@ -159,6 +159,10 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
     };
 }
 
+/**
+ *
+ * @param tableType
+ */
 function getCreationModeValues(tableType?: string): string[] {
     switch (tableType) {
         case 'ResponsiveTable':
@@ -506,6 +510,10 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
     return current;
 }
 
+/**
+ *
+ * @param config
+ */
 function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV4App {
     const createMode = config.macros?.table?.defaultCreationMode;
     const linkedApp: LinkedFeV4App = {
