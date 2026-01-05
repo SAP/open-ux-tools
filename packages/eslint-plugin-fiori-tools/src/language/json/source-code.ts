@@ -37,34 +37,23 @@ export class FioriJSONSourceCode extends JSONSourceCode {
     }
 
     /**
-     * Create member string matcher from object path.
+     * Create a member string matcher from object path.
      *
-     * @param path Path to the node.
-     * @returns Matcher string.
-     */
-    createMatcherString(path: string[]): string {
-        return path.map((segment) => `Member[name.value="${segment}"]`).join(' ');
-    }
-
-    /**
-     * Create a strict member string matcher from object path.
-     *
-     * This method generates an ESLint selector pattern that strictly validates the hierarchy
-     * of JSON properties. Unlike `createMatcherString`, this ensures each property is directly
-     * nested within an Object, preventing matches in unrelated parts of the document.
+     * This method generates an ESQuery selector pattern to match JSON properties based on a path.
+     * Enforces strict hierarchy validation with direct child selectors (>),
+     * ensuring each property is directly nested within an Object.
      *
      * @param path - Array of property names representing the path to the target node.
      *               Each element represents a nested level in the JSON structure.
-     * @returns A strict selector string that matches only the exact path through nested objects.
-     *          The pattern enforces that each property (except the last) must be followed by
-     *          an Object before the next property.
+     * @param options - Optional configuration object.
+     * @returns A selector string that matches the specified path through nested objects.
      * @example
      * ```typescript
-     * // For path: ['sap.ui.generic.app', 'settings', 'createMode']
+     * createMatcherString(['sap.ui.generic.app', 'settings', 'createMode'], { strict: true })
      * // Returns: 'Member[name.value="sap.ui.generic.app"] > Object > Member[name.value="settings"] > Object > Member[name.value="createMode"]'
      * ```
      */
-    createStrictMatcherString(path: string[]): string {
+    createMatcherString(path: string[]): string {
         return path
             .map((segment, index) => {
                 const isLast = index === path.length - 1;

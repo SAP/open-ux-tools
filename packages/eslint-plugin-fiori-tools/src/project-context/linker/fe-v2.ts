@@ -61,7 +61,7 @@ export interface ConfigurationBase<T extends string, Configuration extends objec
              */
             valueInFile?: Configuration[K];
             /**
-             * Absolute path in manifest where this configuration is defined or parent if configuration is not defined
+             * Absolute path in manifest where this configuration is defined.
              */
             configurationPath: string[];
         };
@@ -181,7 +181,7 @@ function linkPage(
             configuration: {
                 createMode: {
                     values: createModeValues,
-                    configurationPath: [...path, name, 'component', 'settings']
+                    configurationPath: [...path, name, 'component', 'settings', 'createMode']
                 }
             },
             entitySetName: entitySetName,
@@ -189,10 +189,7 @@ function linkPage(
             tables: [],
             lookup: {}
         };
-        if (createMode) {
-            page.configuration.createMode.configurationPath.push('createMode');
-            page.configuration.createMode.valueInFile = createMode;
-        }
+        page.configuration.createMode.valueInFile = createMode;
         linkListReportTable(page, [...path, name], table, target);
         linkedApp.pages.push(page);
     } else if (componentName === 'sap.suite.ui.generic.template.ObjectPage') {
@@ -221,7 +218,7 @@ function linkPage(
             configuration: {
                 createMode: {
                     values: createModeValues,
-                    configurationPath: [...path, name, 'component', 'settings']
+                    configurationPath: [...path, name, 'component', 'settings', 'createMode']
                 }
             },
             entitySetName: entitySetName,
@@ -229,10 +226,7 @@ function linkPage(
             sections: [],
             lookup: {}
         };
-        if (createMode) {
-            page.configuration.createMode.configurationPath.push('createMode');
-            page.configuration.createMode.valueInFile = createMode;
-        }
+        page.configuration.createMode.valueInFile = createMode;
 
         linkObjectPageSections(page, [...path, name], entity, mainService, sections, target);
         linkedApp.pages.push(page);
@@ -273,23 +267,18 @@ function linkListReportTable(
             configuration: {
                 createMode: {
                     values: createModeValues,
-                    configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings']
+                    configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'createMode']
                 },
                 tableType: {
                     values: tableTypeValues,
-                    configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings']
+                    configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'type']
                 }
             },
             children: []
         };
-        if (createMode) {
-            linkedTable.configuration.createMode.configurationPath.push('createMode');
-            linkedTable.configuration.createMode.valueInFile = createMode;
-        }
-        if (tableType) {
-            linkedTable.configuration.tableType.configurationPath.push('type');
-            linkedTable.configuration.tableType.valueInFile = tableType;
-        }
+        linkedTable.configuration.createMode.valueInFile = createMode;
+        linkedTable.configuration.tableType.valueInFile = tableType;
+
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
 
@@ -312,7 +301,8 @@ function linkListReportTable(
                             'settings',
                             'sections',
                             sectionKey,
-                            'tableSettings'
+                            'tableSettings',
+                            'createMode'
                         ]
                     },
                     tableType: {
@@ -323,20 +313,15 @@ function linkListReportTable(
                             'settings',
                             'sections',
                             sectionKey,
-                            'tableSettings'
+                            'tableSettings',
+                            'type'
                         ]
                     }
                 }
             };
             controls[`${orphanedSection.type}|${sectionKey}`] = orphanedSection;
-            if (createMode) {
-                orphanedSection.configuration.createMode.configurationPath.push('createMode');
-                orphanedSection.configuration.createMode.valueInFile = createMode;
-            }
-            if (tableType) {
-                orphanedSection.configuration.tableType.configurationPath.push('type');
-                orphanedSection.configuration.tableType.valueInFile = tableType;
-            }
+            orphanedSection.configuration.createMode.valueInFile = createMode;
+            orphanedSection.configuration.tableType.valueInFile = tableType;
         }
     }
     for (const control of Object.values(controls)) {
@@ -383,14 +368,14 @@ function linkObjectPageSections(
             controls[`${section.type}|${configurationKey}`] = linkedSection;
             let createMode: string | undefined;
             let tableType: string | undefined;
-            let sectionEntityKey = '';
-            for (const [key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
+            // let sectionEntityKey = '';
+            for (const [_key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
                 if (value.createMode !== undefined) {
-                    sectionEntityKey = key;
+                    // sectionEntityKey = key;
                     createMode = value.createMode;
                 }
                 if (value.tableSettings?.type !== undefined) {
-                    sectionEntityKey = key;
+                    // sectionEntityKey = key;
                     tableType = value.tableSettings.type;
                 }
             }
@@ -400,23 +385,32 @@ function linkObjectPageSections(
                 configuration: {
                     createMode: {
                         values: createModeValues,
-                        configurationPath: [...pathToPage, 'component', 'settings', 'sections']
+                        configurationPath: [
+                            ...pathToPage,
+                            'component',
+                            'settings',
+                            'sections',
+                            configurationKey,
+                            'createMode'
+                        ]
                     },
                     tableType: {
                         values: tableTypeValues,
-                        configurationPath: [...pathToPage, 'component', 'settings', 'sections']
+                        configurationPath: [
+                            ...pathToPage,
+                            'component',
+                            'settings',
+                            'sections',
+                            configurationKey,
+                            'tableSettings',
+                            'type'
+                        ]
                     }
                 },
                 children: []
             };
-            if (createMode) {
-                linkedTable.configuration.createMode.configurationPath.push(sectionEntityKey, 'createMode');
-                linkedTable.configuration.createMode.valueInFile = createMode;
-            }
-            if (tableType) {
-                linkedTable.configuration.tableType.configurationPath.push(sectionEntityKey, 'tableSettings', 'type');
-                linkedTable.configuration.tableType.valueInFile = tableType;
-            }
+            linkedTable.configuration.createMode.valueInFile = createMode;
+            linkedTable.configuration.tableType.valueInFile = tableType;
             linkedSection.children.push(linkedTable);
             controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
         }
@@ -445,7 +439,14 @@ function linkObjectPageSections(
                 configuration: {
                     createMode: {
                         values: createModeValues,
-                        configurationPath: [...pathToPage, 'component', 'settings', 'sections', sectionKey]
+                        configurationPath: [
+                            ...pathToPage,
+                            'component',
+                            'settings',
+                            'sections',
+                            sectionKey,
+                            'createMode'
+                        ]
                     },
                     tableType: {
                         values: tableTypeValues,
@@ -455,19 +456,14 @@ function linkObjectPageSections(
                             'settings',
                             'sections',
                             sectionKey,
-                            'tableSettings'
+                            'tableSettings',
+                            'type'
                         ]
                     }
                 }
             };
-            if (createMode) {
-                orphanedSection.configuration.createMode.configurationPath.push('createMode');
-                orphanedSection.configuration.createMode.valueInFile = createMode;
-            }
-            if (tableType) {
-                orphanedSection.configuration.tableType.configurationPath.push('type');
-                orphanedSection.configuration.tableType.valueInFile = tableType;
-            }
+            orphanedSection.configuration.createMode.valueInFile = createMode;
+            orphanedSection.configuration.tableType.valueInFile = tableType;
             controls[`${orphanedSection.type}|${sectionKey}|`] = orphanedSection;
         }
     }
@@ -492,13 +488,10 @@ function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV
         configuration: {
             createMode: {
                 values: createModeValues,
-                configurationPath: ['sap.ui.generic.app', 'settings', 'tableSettings']
+                configurationPath: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
+                valueInFile: createMode
             }
         }
     };
-    if (createMode) {
-        linkedApp.configuration.createMode.configurationPath.push('createMode');
-        linkedApp.configuration.createMode.valueInFile = createMode;
-    }
     return linkedApp;
 }

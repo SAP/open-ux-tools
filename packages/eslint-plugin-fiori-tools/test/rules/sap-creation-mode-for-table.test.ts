@@ -280,7 +280,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]
             },
             []
-        )
+        ),
         // TODO - check why test is failing
         // createInvalidTest(
         //     {
@@ -295,5 +295,36 @@ ruleTester.run(TEST_NAME, createTableRule, {
         //     },
         //     []
         // )
+
+        createInvalidTest(
+            {
+                // only: true,
+                name: 'V2: Report on parent level',
+                filename: V2_MANIFEST_PATH,
+                code: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'pages',
+                            'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'sections',
+                            'SalesOrderItems'
+                            // here creationMode is missing, report on parent e.g. SalesOrderItems
+                        ],
+                        value: 'badValue'
+                    }
+                ]),
+                errors: [
+                    {
+                        messageId: 'suggestAppLevel'
+                    }
+                ]
+            },
+            []
+        )
     ]
 });

@@ -211,34 +211,16 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
 
         return problems;
     },
-    createJson(context, diagnostics) {
-        if (diagnostics.length === 0) {
-            return {};
+    createJsonVisitorHandler: (context, diagnostic) =>
+        function report(node: MemberNode): void {
+            context.report({
+                node,
+                messageId: diagnostic.messageId,
+                data: {
+                    value: node.value.type === 'String' ? node.value.value : String(node.value)
+                }
+            });
         }
-
-        const matchers: RuleVisitor = {};
-
-        for (const diagnostic of diagnostics) {
-            const matcherString =
-                diagnostic.messageId === 'suggestAppLevel'
-                    ? context.sourceCode.createStrictMatcherString(diagnostic.manifest.propertyPath)
-                    : context.sourceCode.createMatcherString(diagnostic.manifest.propertyPath);
-
-            if (!matchers[matcherString]) {
-                matchers[matcherString] = function report(node: MemberNode): void {
-                    context.report({
-                        node,
-                        messageId: diagnostic.messageId,
-                        data: {
-                            value: node.value.type === 'String' ? node.value.value : String(node.value)
-                        }
-                    });
-                };
-            }
-        }
-
-        return matchers;
-    }
 });
 
 export default rule;
