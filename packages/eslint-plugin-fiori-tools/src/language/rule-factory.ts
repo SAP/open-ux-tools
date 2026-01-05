@@ -128,7 +128,6 @@ export function createFioriRule<
                     }
                 }
                 return matchers;
-                // createJson(context as JSONRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
             }
             if (context.sourceCode instanceof JSONSourceCode && createJson) {
                 return createJson(context as JSONRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
