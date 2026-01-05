@@ -18,13 +18,14 @@ import type {
     TargetFolderPromptOptions,
     EnableTypeScriptPromptOptions,
     AddDeployConfigPromptOptions,
-    AddFlpConfigPromptOptions
+    AddFlpConfigPromptOptions,
+    ImportKeyUserConfigurationsPromptOptions
 } from '../types';
 import { t } from '../../utils/i18n';
 import { attributePromptNames } from '../types';
 import { getProjectNameTooltip } from './helper/tooltip';
 import { getVersionAdditionalMessages } from './helper/additional-messages';
-import { updateWizardSteps, getDeployPage, updateFlpWizardSteps } from '../../utils/steps';
+import { updateWizardSteps, getDeployPage, updateFlpWizardSteps, getKeyUserImportPage } from '../../utils/steps';
 import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
 
 interface Config {
@@ -74,6 +75,10 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
             prompts,
             isCloudProject,
             promptOptions?.[attributePromptNames.addFlpConfig]
+        ),
+        [attributePromptNames.importKeyUserConfigurations]: getImportKeyUserConfigurationsPrompt(
+            prompts,
+            promptOptions?.[attributePromptNames.importKeyUserConfigurations]
         )
     };
 
@@ -315,6 +320,32 @@ export function getFlpConfigPrompt(
         when: () => isCloudProject,
         validate: (value: boolean, answers: AttributesAnswers) => {
             updateFlpWizardSteps(!!options?.hasBaseAppInbounds, prompts, answers.projectName, value);
+            return true;
+        }
+    } as ConfirmQuestion<AttributesAnswers>;
+}
+
+/**
+ * Creates the Import Key User Configurations confirm prompt.
+ *
+ * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
+ * @param {ImportKeyUserConfigurationsPromptOptions} options - Optional prompt options.
+ * @returns {AttributesQuestion} The prompt configuration for copying key user changes.
+ */
+function getImportKeyUserConfigurationsPrompt(
+    prompts: YeomanUiSteps,
+    options?: ImportKeyUserConfigurationsPromptOptions
+): AttributesQuestion {
+    return {
+        type: 'confirm',
+        name: attributePromptNames.importKeyUserConfigurations,
+        message: t('prompts.importKeyUserConfigurationsLabel'),
+        default: options?.default ?? false,
+        guiOptions: {
+            breadcrumb: true
+        },
+        validate: (value: boolean) => {
+            updateWizardSteps(prompts, getKeyUserImportPage(), t('yuiNavSteps.projectAttributesName'), value);
             return true;
         }
     } as ConfirmQuestion<AttributesAnswers>;

@@ -4,6 +4,8 @@
         "configurationDescr": "Configure the system and select an application.",
         "projectAttributesName": "Project Attributes",
         "projectAttributesDescr": "Configure the main project attributes.",
+        "keyUserImportName": "Import Key User Adaptations",
+        "keyUserImportDescr": "Configure key user adaptations.",
         "flpConfigName": "SAP Fiori Launchpad Configuration: Tile Settings",
         "tileSettingsName": "SAP Fiori Launchpad Configuration: Tile Handling",
         "tileSettingsDescr": "Add a new tile or replace existing tiles of the base application.\nProject: {{projectName}}",
@@ -48,6 +50,12 @@
         "ui5VersionTooltip": "Select the SAPUI5 version you want to use to preview your app variant.",
         "addDeployConfig": "Add Deployment Configuration",
         "addFlpConfig": "Add SAP Fiori Launchpad Configuration",
+        "importKeyUserConfigurationsLabel": "Import Key User Configurations",
+        "keyUserSystemLabel": "Select the system from which key user changes should be taken over",
+        "keyUserAdaptationLabel": "Select adaptation",
+        "keyUserAdaptationLabelMulti": "There are multiple Context-Based Adaptations. Select one to take over as an App Variant.",
+        "keyUserChangesFoundDefault": "Key-user changes found for default adaptation and will be added after the generation of the project.",
+        "keyUserChangesFoundAdaptation": "Key-user changes found for adaptation {{adaptationId}} and will be added after the generation of the project.",
         "targetEnvLabel": "Environment",
         "targetEnvTooltip": "Select the target environment for your Adaptation Project.",
         "targetEnvBreadcrumb": "Target Environment",
@@ -104,7 +112,10 @@
         "projectDoesNotExist": "The project does not exist. Please select an MTA project.",
         "projectDoesNotExistMta": "Provide the path to the MTA project where you want to have your Adaptation Project created.",
         "noAdaptableBusinessServiceFoundInMta": "No adaptable business service found in the MTA.",
-        "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}."
+        "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}.",
+        "keyUserNoChangesDefault": "No key-user changes are found for default adaptation",
+        "keyUserNoChangesAdaptation": "No key-user changes are found for adaptation {{adaptationId}}",
+        "keyUserNoAdaptations": "No context-based adaptations found for the selected application."
     },
     "validators": {
         "ui5VersionNotDetectedError": "The SAPUI5 version of the selected system cannot be determined. You are able to create and edit adaptation projects that use the latest SAPUI5 version, but they are not usable on this system until the system's SAPUI5 version is upgraded to version 1.71 or higher."

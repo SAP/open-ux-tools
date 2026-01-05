@@ -133,6 +133,7 @@ export interface AttributesAnswers {
     enableTypeScript: boolean;
     addDeployConfig?: boolean;
     addFlpConfig?: boolean;
+    importKeyUserConfigurations?: boolean;
 }
 
 export interface SourceApplication {

@@ -360,4 +360,64 @@ describe('LayeredRepositoryService', () => {
             }
         });
     });
+
+    describe('listAdaptations', () => {
+        const appId = 'ZDEMOOVP_RESIZE';
+        const adaptationsResponse = {
+            adaptations: [
+                { id: 'CTX1', contexts: { role: ['/UI2/ADMIN'] } },
+                { id: 'DEFAULT', type: 'DEFAULT' }
+            ]
+        };
+
+        test('should fetch adaptations for an app', async () => {
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/apps/${encodeURIComponent(appId)}/adaptations/`)
+                .reply(200, JSON.stringify(adaptationsResponse));
+
+            const result = await service.listAdaptations(appId);
+            expect(result).toEqual(adaptationsResponse);
+        });
+
+        test('should throw on backend error', async () => {
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/apps/${encodeURIComponent(appId)}/adaptations/`)
+                .reply(500);
+            await expect(service.listAdaptations(appId)).rejects.toBeDefined();
+        });
+    });
+
+    describe('getKeyUserData', () => {
+        const componentId = 'ZDEMOOVP_RESIZE';
+        const adaptationId = 'DEFAULT';
+        const keyUserResponse = {
+            contents: [
+                {
+                    content: {
+                        changeType: 'page',
+                        fileName: 'id_1_page',
+                        namespace: 'apps/ZDEMOOVP_RESIZE/changes/',
+                        reference: 'ZDEMOOVP_RESIZE'
+                    }
+                }
+            ]
+        };
+
+        test('should fetch key user data for adaptation', async () => {
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/keyuserdata/${componentId}?adaptationId=${adaptationId}`)
+                .reply(200, JSON.stringify(keyUserResponse));
+
+            const result = await service.getKeyUserData(componentId, adaptationId);
+            expect(result).toEqual(keyUserResponse);
+        });
+
+        test('should throw on failure', async () => {
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/keyuserdata/${componentId}?adaptationId=${adaptationId}`)
+                .reply(404);
+
+            await expect(service.getKeyUserData(componentId, adaptationId)).rejects.toBeDefined();
+        });
+    });
 });

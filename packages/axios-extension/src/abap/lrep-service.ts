@@ -111,6 +111,30 @@ export interface SystemInfo {
     inbounds?: Inbound[];
 }
 
+export interface AdaptationDescriptor {
+    id: string;
+    type?: string;
+    title?: string;
+    contexts?: Record<string, string[]>;
+    createdBy?: string;
+    createdAt?: string;
+    changedBy?: string;
+    changedAt?: string;
+}
+
+export interface AdaptationsResponse {
+    adaptations: AdaptationDescriptor[];
+}
+
+export interface KeyUserChangeContent {
+    content: Record<string, unknown>;
+    texts?: Record<string, unknown>;
+}
+
+export interface KeyUserDataResponse {
+    contents: KeyUserChangeContent[];
+}
+
 interface Language {
     sap: string;
     description: string;
@@ -339,6 +363,54 @@ export class LayeredRepositoryService extends Axios implements Service {
                 this.log.error(
                     'Newer version of SAP_UI required, please check https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/delete-adaptation-project'
                 );
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Lists context-based adaptations for the given application.
+     *
+     * @param {string} appId - Technical application id.
+     * @returns {Promise<AdaptationsResponse>} Adaptations sorted by priority.
+     */
+    public async listAdaptations(appId: string): Promise<AdaptationsResponse> {
+        try {
+            const response = await this.get(`/flex/apps/${encodeURIComponent(appId)}/adaptations/`);
+            this.tryLogResponse(response, 'Successfully fetched adaptations.');
+            return typeof response.data === 'string'
+                ? JSON.parse(response.data)
+                : (response.data as AdaptationsResponse);
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves key user changes for the given component and adaptation id.
+     *
+     * @param {string} componentId - Technical component id.
+     * @param {string} adaptationId - Adaptation identifier (DEFAULT for default).
+     * @returns {Promise<KeyUserDataResponse>} Key user change payload.
+     */
+    public async getKeyUserData(componentId: string, adaptationId: string): Promise<KeyUserDataResponse> {
+        const params = new URLSearchParams(this.defaults?.params);
+        params.append('adaptationId', adaptationId);
+        try {
+            const response = await this.get(`/flex/keyuserdata/${componentId}`, {
+                params,
+                paramsSerializer: decodeUrlParams
+            });
+            this.tryLogResponse(response, 'Successfully fetched key user data.');
+            return typeof response.data === 'string'
+                ? JSON.parse(response.data)
+                : (response.data as KeyUserDataResponse);
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
             }
             throw error;
         }

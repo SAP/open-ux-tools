@@ -15,6 +15,7 @@ import {
     ChangeTypeMap
 } from '../types';
 import { renderFile } from 'ejs';
+import type { KeyUserChangeContent } from '@sap-ux/axios-extension';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -73,6 +74,36 @@ export async function writeAnnotationChange(
         }
     } catch (e) {
         throw new Error(`Could not write annotation changes. Reason: ${e.message}`);
+    }
+}
+
+/**
+ * Writes key-user change payloads to the generated adaptation project.
+ *
+ * @param projectPath - Project root path.
+ * @param changes - Key-user changes retrieved from the backend.
+ * @param fs - Yeoman mem-fs editor.
+ */
+export async function writeKeyUserChanges(
+    projectPath: string,
+    changes: KeyUserChangeContent[],
+    fs: Editor
+): Promise<void> {
+    for (const entry of changes ?? []) {
+        if (!entry?.content) {
+            continue;
+        }
+
+        const change = { ...(entry.content as Record<string, unknown>) };
+        if (!('texts' in change) && entry.texts) {
+            (change as Record<string, unknown>)['texts'] = entry.texts;
+        }
+
+        if (!change['fileName']) {
+            continue;
+        }
+
+        await writeChangeToFolder(projectPath, change as any, fs);
     }
 }
 

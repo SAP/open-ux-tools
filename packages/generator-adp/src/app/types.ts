@@ -110,7 +110,8 @@ export enum attributePromptNames {
     ui5ValidationCli = 'ui5ValidationCli',
     enableTypeScript = 'enableTypeScript',
     addDeployConfig = 'addDeployConfig',
-    addFlpConfig = 'addFlpConfig'
+    addFlpConfig = 'addFlpConfig',
+    importKeyUserConfigurations = 'importKeyUserConfigurations'
 }
 
 export type AttributesQuestion = YUIQuestion<AttributesAnswers>;
@@ -152,6 +153,11 @@ export interface AddFlpConfigPromptOptions {
     hasBaseAppInbounds?: boolean;
 }
 
+export interface ImportKeyUserConfigurationsPromptOptions {
+    hide?: boolean;
+    default?: boolean;
+}
+
 export type AttributePromptOptions = Partial<{
     [attributePromptNames.projectName]: ProjectNamePromptOptions;
     [attributePromptNames.title]: ApplicationTitlePromptOptions;
@@ -162,7 +168,57 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
     [attributePromptNames.addDeployConfig]: AddDeployConfigPromptOptions;
     [attributePromptNames.addFlpConfig]: AddFlpConfigPromptOptions;
+    [attributePromptNames.importKeyUserConfigurations]: ImportKeyUserConfigurationsPromptOptions;
 }>;
+
+export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
+
+/**
+ * Enumeration of prompt names used in the key-user import.
+ */
+export enum keyUserImportPromptNames {
+    keyUserSystem = 'keyUserSystem',
+    keyUserUsername = 'keyUserUsername',
+    keyUserPassword = 'keyUserPassword',
+    keyUserAdaptation = 'keyUserAdaptation'
+}
+
+export interface KeyUserSystemPromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface KeyUserUsernamePromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface KeyUserPasswordPromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface KeyUserAdaptationPromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+/**
+ * Options for the key-user import inquirer & the prompts.
+ */
+export type KeyUserImportPromptOptions = Partial<{
+    [keyUserImportPromptNames.keyUserSystem]: KeyUserSystemPromptOptions;
+    [keyUserImportPromptNames.keyUserUsername]: KeyUserUsernamePromptOptions;
+    [keyUserImportPromptNames.keyUserPassword]: KeyUserPasswordPromptOptions;
+    [keyUserImportPromptNames.keyUserAdaptation]: KeyUserAdaptationPromptOptions;
+}>;
+
+export interface KeyUserImportAnswers {
+    keyUserSystem: string;
+    keyUserUsername?: string;
+    keyUserPassword?: string;
+    keyUserAdaptation: string;
+}
 
 export enum targetEnvPromptNames {
     targetEnv = 'targetEnv'
