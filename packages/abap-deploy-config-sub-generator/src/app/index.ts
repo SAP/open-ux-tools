@@ -10,7 +10,8 @@ import {
     YUI_EXTENSION_ID,
     YUI_MIN_VER_FILES_GENERATED_MSG,
     sendTelemetry,
-    TelemetryHelper
+    TelemetryHelper,
+    setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from '@sap-ux/abap-deploy-config-inquirer';
 import { generate as generateAbapDeployConfig } from '@sap-ux/abap-deploy-config-writer';
@@ -32,7 +33,6 @@ import { initI18n } from '../utils/i18n';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { AbapDeployConfigOptions } from './types';
 import type {
@@ -88,11 +88,8 @@ export default class extends DeploymentGenerator {
             watchTelemetrySettingStore: false
         });
 
-        // hack to suppress yeoman's overwrite prompt when files already exist
-        // required when running the deploy config generator in standalone mode
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
+
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();
         }

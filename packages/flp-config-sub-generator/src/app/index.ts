@@ -13,14 +13,15 @@ import {
     TelemetryHelper,
     isExtensionInstalled,
     YUI_EXTENSION_ID,
-    YUI_MIN_VER_FILES_GENERATED_MSG
+    YUI_MIN_VER_FILES_GENERATED_MSG,
+    setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import { extendWithOptions } from '@sap-ux/inquirer-common';
 import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constants';
 import { t, getPromptOptions, getYUIDetails } from '../utils';
 import { EventName } from '../telemetryEvents';
 import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
-import type { YeomanEnvironment, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
+import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
@@ -86,9 +87,7 @@ export default class extends Generator {
     }
 
     public async initializing(): Promise<void> {
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
 
         const extensionPromptOpts = await getExtensionGenPromptOpts(
             this.env.create.bind(this.env),

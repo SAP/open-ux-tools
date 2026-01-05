@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.47
+
+### Patch Changes
+
+- 62bb798: set conflicter option
+
 ## 0.13.46
 
 ### Patch Changes

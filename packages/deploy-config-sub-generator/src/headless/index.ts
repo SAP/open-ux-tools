@@ -74,7 +74,7 @@ export default class extends DeploymentGenerator {
 
         if (deployConfigOpts && this.deployTarget) {
             const subGen = this.deployTarget === DeployTarget.CF ? cfChoice.name : abapChoice.name;
-            this.composeWith(generatorNamespace(this.genNamespace, subGen), {
+            await this.composeWith(generatorNamespace(this.genNamespace, subGen), {
                 arguments: this.args,
                 ...Object.assign(this.options, deployConfigOpts, {
                     telemetryData: additionalTelemetryData
