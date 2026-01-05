@@ -19,7 +19,6 @@ import {
     type CfUi5AppInfo
 } from '@sap-ux/adp-tooling';
 import type { CfConfig } from '@sap-ux/adp-tooling';
-import { log } from 'console';
 
 /**
  * Add the "setup adaptation-project-cf" command to a passed command.
@@ -179,26 +178,16 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
             return;
         }
 
-        const paths = reusableLibs.flatMap((lib) => {
+        const paths = reusableLibs.map((lib) => {
             const libName = String(lib.name);
             const html5AppName = String(lib.html5AppName);
             const resourcePath = '/resources/' + libName.replace(/\./g, '/');
 
-            const urlPath =
-                lib.url && typeof lib.url === 'object' && lib.url.url ? lib.url.url.split('/~')[0] : '/' + html5AppName;
-
-            return [
-                {
-                    path: resourcePath,
-                    src: `./.reuse/${html5AppName}`,
-                    fallthrough: false
-                },
-                {
-                    path: urlPath,
-                    src: `./.reuse/${html5AppName}`,
-                    fallthrough: false
-                }
-            ];
+            return {
+                path: resourcePath,
+                src: `./.reuse/${html5AppName}`,
+                fallthrough: false
+            };
         });
 
         // Add the serve-static-middleware configuration
@@ -252,13 +241,12 @@ async function addBackendProxyMiddleware(
             ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
         }
 
-        if (!serviceKeys || serviceKeys.length === 0) {
-            logger.warn('No service keys found. Backend proxy middleware will not be configured.');
+        const urlsWithPaths = getBackendUrlsWithPaths(serviceKeys, basePath);
+
+        if (urlsWithPaths.length === 0) {
+            logger.info('No backend URLs with paths found. Skipping backend-proxy-middleware-cf configuration.');
             return;
         }
-
-        const reusePath = join(basePath, '.reuse');
-        const urlsWithPaths = getBackendUrlsWithPaths(serviceKeys, reusePath);
 
         ui5Config.addCustomMiddleware([
             {
