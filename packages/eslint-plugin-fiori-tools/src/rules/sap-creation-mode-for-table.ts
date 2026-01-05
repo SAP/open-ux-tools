@@ -176,10 +176,10 @@ const rule: FioriRuleDefinition = createFioriRule({
         const matchers: RuleVisitor = {};
 
         for (const diagnostic of diagnostics) {
-            const matcherString =
-                diagnostic.messageId === 'suggestAppLevel'
-                    ? context.sourceCode.createStrictMatcherString(diagnostic.manifest.requiredPropertyPath)
-                    : context.sourceCode.createMatcherString(diagnostic.manifest.requiredPropertyPath);
+            const matcherString = context.sourceCode.createMatcherString(
+                diagnostic.manifest.requiredPropertyPath,
+                { strict: diagnostic.messageId === 'suggestAppLevel' }
+            );
 
             if (!matchers[matcherString]) {
                 matchers[matcherString] = function report(node: MemberNode): void {
