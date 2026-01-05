@@ -120,9 +120,6 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
             }
         }
     };
-    Object.defineProperty(base.configuration.disableCopyToClipboard, 'configurationPath', {
-        writable: false
-    });
     if (!table) {
         return {
             type: 'orphan-table',
