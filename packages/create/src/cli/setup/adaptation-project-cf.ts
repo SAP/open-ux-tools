@@ -8,7 +8,8 @@ import { create } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
-import {
+import type {
+    CfConfig,
     getBackendUrlsWithPaths,
     getServiceInstanceKeys,
     getCfUi5AppInfo,
@@ -18,7 +19,6 @@ import {
     type ServiceKeys,
     type CfUi5AppInfo
 } from '@sap-ux/adp-tooling';
-import type { CfConfig } from '@sap-ux/adp-tooling';
 
 /**
  * Add the "setup adaptation-project-cf" command to a passed command.
