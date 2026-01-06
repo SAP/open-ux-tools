@@ -203,6 +203,16 @@ function isBuffer(input: string | Buffer): input is Buffer {
 const decodeUrlParams: CustomParamsSerializer = (params: URLSearchParams) => decodeURIComponent(params.toString());
 
 /**
+ * Transform the response data to a JSON object.
+ *
+ * @param data the response data
+ * @returns the transformed data
+ */
+function transformResponse<T = unknown>(data: unknown): T {
+    return typeof data === 'string' ? JSON.parse(data) : (data as T);
+}
+
+/**
  * Path suffix for all DTA actions.
  */
 const DTA_PATH_SUFFIX = '/dta_folder/';
@@ -376,11 +386,14 @@ export class LayeredRepositoryService extends Axios implements Service {
      */
     public async listAdaptations(appId: string): Promise<AdaptationsResponse> {
         try {
-            const response = await this.get(`/flex/apps/${encodeURIComponent(appId)}/adaptations/`);
+            const response = await this.get<AdaptationsResponse>(
+                `/flex/apps/${encodeURIComponent(appId)}/adaptations/`,
+                {
+                    transformResponse
+                }
+            );
             this.tryLogResponse(response, `Successfully fetched adaptations for app ${appId}`);
-            return typeof response.data === 'string'
-                ? JSON.parse(response.data)
-                : (response.data as AdaptationsResponse);
+            return response.data;
         } catch (error) {
             if (isAxiosError(error)) {
                 this.tryLogResponse(error.response);
@@ -400,17 +413,16 @@ export class LayeredRepositoryService extends Axios implements Service {
         const params = new URLSearchParams(this.defaults?.params);
         params.append('adaptationId', adaptationId);
         try {
-            const response = await this.get(`/flex/keyuserdata/${componentId}`, {
+            const response = await this.get<KeyUserDataResponse>(`/flex/keyuserdata/${componentId}`, {
                 params,
-                paramsSerializer: decodeUrlParams
+                paramsSerializer: decodeUrlParams,
+                transformResponse
             });
             this.tryLogResponse(
                 response,
                 `Successfully fetched key user data for component ${componentId} and ${adaptationId} adaptation.`
             );
-            return typeof response.data === 'string'
-                ? JSON.parse(response.data)
-                : (response.data as KeyUserDataResponse);
+            return response.data;
         } catch (error) {
             if (isAxiosError(error)) {
                 this.tryLogResponse(error.response);

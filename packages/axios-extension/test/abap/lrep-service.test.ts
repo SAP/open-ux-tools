@@ -362,7 +362,7 @@ describe('LayeredRepositoryService', () => {
     });
 
     describe('listAdaptations', () => {
-        const appId = 'ZDEMOOVP_RESIZE';
+        const appId = 'my.app.id';
         const adaptationsResponse = {
             adaptations: [
                 { id: 'CTX1', contexts: { role: ['/UI2/ADMIN'] } },
@@ -379,16 +379,34 @@ describe('LayeredRepositoryService', () => {
             expect(result).toEqual(adaptationsResponse);
         });
 
-        test('should throw on backend error', async () => {
+        test('should log response when AxiosError is thrown', async () => {
+            const mockAxiosError = {
+                isAxiosError: true,
+                response: {
+                    status: 500,
+                    data: '{ "code": "500", "message": "Internal Server Error" }',
+                    headers: {},
+                    config: {} as any
+                },
+                message: 'Request failed with status code 500'
+            } as AxiosError;
+
             nock(server)
                 .get(`${LayeredRepositoryService.PATH}/flex/apps/${encodeURIComponent(appId)}/adaptations/`)
-                .reply(500);
-            await expect(service.listAdaptations(appId)).rejects.toBeDefined();
+                .replyWithError(mockAxiosError);
+
+            try {
+                await service.listAdaptations(appId);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe(mockAxiosError.message);
+            }
         });
     });
 
     describe('getKeyUserData', () => {
-        const componentId = 'ZDEMOOVP_RESIZE';
+        const componentId = 'my.app.id';
         const adaptationId = 'DEFAULT';
         const keyUserResponse = {
             contents: [
@@ -396,8 +414,8 @@ describe('LayeredRepositoryService', () => {
                     content: {
                         changeType: 'page',
                         fileName: 'id_1_page',
-                        namespace: 'apps/ZDEMOOVP_RESIZE/changes/',
-                        reference: 'ZDEMOOVP_RESIZE'
+                        namespace: 'apps/my.app.id/changes/',
+                        reference: 'my.app.id'
                     }
                 }
             ]
@@ -412,12 +430,29 @@ describe('LayeredRepositoryService', () => {
             expect(result).toEqual(keyUserResponse);
         });
 
-        test('should throw on failure', async () => {
+        test('should log response when AxiosError is thrown', async () => {
+            const mockAxiosError = {
+                isAxiosError: true,
+                response: {
+                    status: 404,
+                    data: '{ "code": "404", "message": "Not Found" }',
+                    headers: {},
+                    config: {} as any
+                },
+                message: 'Request failed with status code 404'
+            } as AxiosError;
+
             nock(server)
                 .get(`${LayeredRepositoryService.PATH}/flex/keyuserdata/${componentId}?adaptationId=${adaptationId}`)
-                .reply(404);
+                .replyWithError(mockAxiosError);
 
-            await expect(service.getKeyUserData(componentId, adaptationId)).rejects.toBeDefined();
+            try {
+                await service.getKeyUserData(componentId, adaptationId);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe(mockAxiosError.message);
+            }
         });
     });
 });
