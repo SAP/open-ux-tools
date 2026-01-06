@@ -151,13 +151,17 @@ async function saveSystem(
     systemPanelViewType: SystemPanelViewType
 ): Promise<void> {
     // ensure the user display name is set to the username
-    const newBackendSystem = { ...backendSystem, userDisplayName: backendSystem.username };
+    const newBackendSystem: BackendSystem = {
+        ...backendSystem,
+        userDisplayName: backendSystem.username,
+        connectionType: 'abap_catalog' // can be hardcoded until we support adding more types
+    };
     const systemService = await getBackendSystemService();
     await systemService.write(newBackendSystem, {
         force: systemExistsInStore
     });
     const i18nKey = systemPanelViewType === SystemPanelViewType.Create ? 'info.systemSaved' : 'info.systemUpdated';
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
     window.showInformationMessage(t(i18nKey, geti18nOpts(backendSystem.name)));
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

@@ -10,7 +10,7 @@ import {
     getWebappPath,
     readUi5Yaml
 } from '../../src';
-import { readFile, writeFile } from 'fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 
 describe('Test getAllUi5YamlFileNames()', () => {
     const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');

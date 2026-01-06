@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { readdir } from 'fs/promises';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
@@ -56,7 +56,7 @@ async function hasSpecificationDevDependency(root: string): Promise<boolean> {
  * @param [options.logger] - logger instance
  * @returns - specification instance
  */
-async function getSpecificationModule<T>(root: string, options?: { logger?: Logger }): Promise<T> {
+export async function getSpecificationModuleFromCache<T>(root: string, options?: { logger?: Logger }): Promise<T> {
     const logger = options?.logger;
     let specification: T;
     const version = await getSpecificationVersion(root, { logger });
@@ -91,7 +91,7 @@ export async function getSpecification<T>(root: string, options?: { logger?: Log
     } catch {
         logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
     }
-    return await getSpecificationModule(root, { logger });
+    return await getSpecificationModuleFromCache(root, { logger });
 }
 
 /**
@@ -207,7 +207,7 @@ export async function getSpecificationPath(root: string, options?: { logger?: Lo
         logger?.debug(`Specification root found in project '${root}'`);
         return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
     }
-    await getSpecificationModule(root, { logger });
+    await getSpecificationModuleFromCache(root, { logger });
     const version = await getSpecificationVersion(root, { logger });
     logger?.debug(`Specification not found in project '${root}', using path from cache with version '${version}'`);
     const moduleRoot = join(moduleCacheRoot, moduleName, version);

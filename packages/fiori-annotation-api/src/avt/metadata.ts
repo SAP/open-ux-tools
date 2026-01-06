@@ -34,7 +34,7 @@ class MetadataConverter {
      *
      * @param metadataService - Metadata service instance.
      */
-    constructor(private metadataService: MetadataService) {}
+    constructor(private readonly metadataService: MetadataService) {}
 
     /**
      * @returns AVT schema.

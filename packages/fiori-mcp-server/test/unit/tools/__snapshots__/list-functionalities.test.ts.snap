@@ -70,6 +70,13 @@ Array [
     ],
   },
   Object {
+    "description": "Define the default creation mode that is used for all tables, unless a specific creation mode has been set.",
+    "functionalityId": Array [
+      "settings",
+      "defaultCreationMode",
+    ],
+  },
+  Object {
     "description": "Defines the title for the application.",
     "functionalityId": Array [
       "settings",
@@ -186,221 +193,11 @@ To ensure a consistent experience, set this and 'Stay On Current Page After Save
     ],
   },
   Object {
-    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction",
-      "text",
-    ],
-  },
-  Object {
-    "description": "Relevant for extension actions; allows the definition of a target action handler.",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction",
-      "press",
-    ],
-  },
-  Object {
-    "description": "Defines if the action button is visible.",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction",
-      "visible",
-    ],
-  },
-  Object {
-    "description": "Defines if the action is enabled. The default value is true.",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction",
-      "enabled",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the action relative to other actions.",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another action to be used as placement anchor.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "TestHeaderAction",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "TestHeaderAction",
-      "position",
-      "placement",
-    ],
-  },
-  Object {
-    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction2",
-      "text",
-    ],
-  },
-  Object {
-    "description": "Relevant for extension actions; allows the definition of a target action handler.",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction2",
-      "press",
-    ],
-  },
-  Object {
-    "description": "Defines if the action button is visible.",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction2",
-      "visible",
-    ],
-  },
-  Object {
-    "description": "Defines if the action is enabled. The default value is true.",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction2",
-      "enabled",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the action relative to other actions.",
-    "functionalityId": Array [
-      "TravelList",
-      "header",
-      "actions",
-      "TestHeaderAction2",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another action to be used as placement anchor.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "TestHeaderAction2",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "TestHeaderAction2",
-      "position",
-      "placement",
-    ],
-  },
-  Object {
     "description": "Allows you to hide the filter bar.",
     "functionalityId": Array [
       "TravelList",
       "filterBar",
       "hideFilterBar",
-    ],
-  },
-  Object {
-    "description": "A static or i18n binding string.",
-    "functionalityId": Array [
-      "TravelList",
-      "filterBar",
-      "selectionFields",
-      "CustomFilterField",
-      "label",
-    ],
-  },
-  Object {
-    "description": "The full path to the property to be filtered.",
-    "functionalityId": Array [
-      "TravelList",
-      "filterBar",
-      "selectionFields",
-      "CustomFilterField",
-      "property",
-    ],
-  },
-  Object {
-    "description": "The path to the XML template containing the filter control.",
-    "functionalityId": Array [
-      "TravelList",
-      "filterBar",
-      "selectionFields",
-      "CustomFilterField",
-      "template",
-    ],
-  },
-  Object {
-    "description": "Determines whether the filter field requires a value.",
-    "functionalityId": Array [
-      "TravelList",
-      "filterBar",
-      "selectionFields",
-      "CustomFilterField",
-      "required",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the filter field relative to another filter field.",
-    "functionalityId": Array [
-      "TravelList",
-      "filterBar",
-      "selectionFields",
-      "CustomFilterField",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another filter field is to be used as a placement anchor.",
-    "functionalityId": Array [
-      "filterBar",
-      "selectionFields",
-      "CustomFilterField",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor filter field.",
-    "functionalityId": Array [
-      "filterBar",
-      "selectionFields",
-      "CustomFilterField",
-      "position",
-      "placement",
     ],
   },
   Object {
@@ -565,49 +362,22 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "0",
-    "functionalityId": Array [
-      "table",
-      "quickVariantSelection",
-      "paths",
-      0,
-    ],
-  },
-  Object {
-    "description": "Annotation Path",
-    "functionalityId": Array [
-      "table",
-      "quickVariantSelection",
-      "paths",
-      0,
-      "annotationPath",
-    ],
-  },
-  Object {
-    "description": "1",
-    "functionalityId": Array [
-      "table",
-      "quickVariantSelection",
-      "paths",
-      1,
-    ],
-  },
-  Object {
-    "description": "Annotation Path",
-    "functionalityId": Array [
-      "table",
-      "quickVariantSelection",
-      "paths",
-      1,
-      "annotationPath",
-    ],
-  },
-  Object {
     "description": "enableMassEdit",
     "functionalityId": Array [
       "TravelList",
       "table",
       "enableMassEdit",
+    ],
+  },
+  Object {
+    "description": "Define how the changes using mass edit should be applied. The default mode for mass editing is 'ChangeSet' on the Object Page and 'Isolated' in the List Report.
+
+- ChangeSet: Grouped for all objects within the same request.
+- Isolated: Separately for each object (as an individual OData change set in the same request).",
+    "functionalityId": Array [
+      "table",
+      "enableMassEdit",
+      "operationGroupingMode",
     ],
   },
   Object {
@@ -627,14 +397,47 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
+    "description": "Defines the page behavior when a new record is created.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "creationMode",
+    ],
+  },
+  Object {
+    "description": "Defines the creation mode to be used by the List Report table.
+The allowed values are \`NewPage\` or \`CreationDialog\`.
+
+- NewPage: The created document is shown in a new page, depending on whether 'Sync', 'Async' or 'Deferred' metadata is used.
+- CreationDialog: The creation is performed in the table, with a dialog which allows you to specify initial property values that are are listed in \`creationFields\`.
+
+If this is not set with a value, the default value is 'NewPage'.",
+    "functionalityId": Array [
+      "table",
+      "creationMode",
+      "name",
+    ],
+  },
+  Object {
     "description": "Enables single selection for a bound action.",
     "functionalityId": Array [
       "TravelList",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "enableOnSelect",
+    ],
+  },
+  Object {
+    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+      "group",
     ],
   },
   Object {
@@ -644,7 +447,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "afterExecution",
     ],
   },
@@ -654,7 +457,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "afterExecution",
       "navigateToInstance",
     ],
@@ -665,7 +468,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "afterExecution",
       "enableAutoScroll",
     ],
@@ -677,8 +480,19 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "enableOnSelect",
+    ],
+  },
+  Object {
+    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+      "group",
     ],
   },
   Object {
@@ -688,7 +502,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "afterExecution",
     ],
   },
@@ -698,7 +512,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "afterExecution",
       "navigateToInstance",
     ],
@@ -709,7 +523,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "afterExecution",
       "enableAutoScroll",
     ],
@@ -721,8 +535,19 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::",
       "enableOnSelect",
+    ],
+  },
+  Object {
+    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::",
+      "group",
     ],
   },
   Object {
@@ -732,7 +557,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::",
       "afterExecution",
     ],
   },
@@ -742,7 +567,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::",
       "afterExecution",
       "navigateToInstance",
     ],
@@ -753,271 +578,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "enableAutoScroll",
-    ],
-  },
-  Object {
-    "description": "Indicates whether the action requires a selection of items.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "TableAction",
-      "requiresSelection",
-    ],
-  },
-  Object {
-    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "TableAction",
-      "text",
-    ],
-  },
-  Object {
-    "description": "Relevant for extension actions; allows the definition of a target action handler.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "TableAction",
-      "press",
-    ],
-  },
-  Object {
-    "description": "Defines if the action button is visible.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "TableAction",
-      "visible",
-    ],
-  },
-  Object {
-    "description": "Defines if the action is enabled. The default value is true.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "TableAction",
-      "enabled",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the action relative to other actions.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "TableAction",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another action to be used as placement anchor.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "TableAction",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor action.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "TableAction",
-      "position",
-      "placement",
-    ],
-  },
-  Object {
-    "description": "Enables single selection for a bound action.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "enableOnSelect",
-    ],
-  },
-  Object {
-    "description": "Settings that control the behavior after creating a new entry.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-    ],
-  },
-  Object {
-    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "navigateToInstance",
-    ],
-  },
-  Object {
-    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "enableAutoScroll",
-    ],
-  },
-  Object {
-    "description": "Enables single selection for a bound action.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "enableOnSelect",
-    ],
-  },
-  Object {
-    "description": "Settings that control the behavior after creating a new entry.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-    ],
-  },
-  Object {
-    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "navigateToInstance",
-    ],
-  },
-  Object {
-    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "enableAutoScroll",
-    ],
-  },
-  Object {
-    "description": "Enables single selection for a bound action.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "enableOnSelect",
-    ],
-  },
-  Object {
-    "description": "Settings that control the behavior after creating a new entry.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-    ],
-  },
-  Object {
-    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "navigateToInstance",
-    ],
-  },
-  Object {
-    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "enableAutoScroll",
-    ],
-  },
-  Object {
-    "description": "Enables single selection for a bound action.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "enableOnSelect",
-    ],
-  },
-  Object {
-    "description": "Settings that control the behavior after creating a new entry.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-    ],
-  },
-  Object {
-    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "navigateToInstance",
-    ],
-  },
-  Object {
-    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
-    "functionalityId": Array [
-      "table",
-      "toolBar",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+      "DataFieldForAction::",
       "afterExecution",
       "enableAutoScroll",
     ],
@@ -1088,101 +649,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "columns",
       "DataField::AgencyID",
       "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "The header is shown on the table as header, as well as in the add/remove dialog.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "TestCustomColumn",
-      "header",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "TestCustomColumn",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines a target fragment.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "TestCustomColumn",
-      "template",
-    ],
-  },
-  Object {
-    "description": "Aligns the header as well as the content horizontally.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "TestCustomColumn",
-      "horizontalAlign",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-- Default: it will be shown by default in the table.
-- Adaptation: it will initially not be shown in the table but be available via end user adaptation
-- Hidden: the column is neither available in the table nor in adaptation",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "TestCustomColumn",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the column relative to other columns.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "TestCustomColumn",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another column to be used as placement anchor.",
-    "functionalityId": Array [
-      "table",
-      "columns",
-      "TestCustomColumn",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor column.",
-    "functionalityId": Array [
-      "table",
-      "columns",
-      "TestCustomColumn",
-      "position",
-      "placement",
-    ],
-  },
-  Object {
-    "description": "If provided and sorting for the table is enabled, the custom column header can be clicked.
-Once clicked, a list of properties that can be sorted by are displayed.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "TestCustomColumn",
-      "properties",
     ],
   },
   Object {
@@ -1328,7 +794,7 @@ Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
       "TravelList",
       "table",
       "columns",
-      "DataField::Memo",
+      "DataField::TravelStatus",
       "width",
     ],
   },
@@ -1341,7 +807,7 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "TravelList",
       "table",
       "columns",
-      "DataField::Memo",
+      "DataField::TravelStatus",
       "availability",
     ],
   },
@@ -1351,41 +817,7 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "TravelList",
       "table",
       "columns",
-      "DataField::Memo",
-      "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "DataField::Status",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-Default: it will be shown by default in the table.
-Adaptation: it will initially not be shown in the table but be available via end user adaptation.
-Hidden: the column is neither available in the table nor in adaptation.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "DataField::Status",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "columns",
-      "DataField::Status",
+      "DataField::TravelStatus",
       "widthIncludingColumnHeader",
     ],
   },
@@ -1423,223 +855,23 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
-    "description": "Settings that control the behavior after creating a new entry.",
+    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelObjectPage",
       "header",
       "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
+      "EditAction",
+      "group",
     ],
   },
   Object {
-    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "navigateToInstance",
-    ],
-  },
-  Object {
-    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "enableAutoScroll",
-    ],
-  },
-  Object {
-    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
+    "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
     "functionalityId": Array [
       "TravelObjectPage",
       "header",
       "actions",
-      "HeaderAction",
-      "text",
-    ],
-  },
-  Object {
-    "description": "Relevant for extension actions; allows the definition of a target action handler.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "actions",
-      "HeaderAction",
-      "press",
-    ],
-  },
-  Object {
-    "description": "Defines if the action button is visible.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "actions",
-      "HeaderAction",
-      "visible",
-    ],
-  },
-  Object {
-    "description": "Defines if the action is enabled. The default value is true.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "actions",
-      "HeaderAction",
-      "enabled",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the action relative to the anchor action.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "actions",
-      "HeaderAction",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another action to be used as placement anchor.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "HeaderAction",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "HeaderAction",
-      "position",
-      "placement",
-    ],
-  },
-  Object {
-    "description": "Settings that control the behavior after creating a new entry.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-    ],
-  },
-  Object {
-    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "navigateToInstance",
-    ],
-  },
-  Object {
-    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "enableAutoScroll",
-    ],
-  },
-  Object {
-    "description": "Settings that control the behavior after creating a new entry.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-    ],
-  },
-  Object {
-    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "navigateToInstance",
-    ],
-  },
-  Object {
-    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "enableAutoScroll",
-    ],
-  },
-  Object {
-    "description": "Settings that control the behavior after creating a new entry.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createBookingDraft::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-    ],
-  },
-  Object {
-    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createBookingDraft::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "navigateToInstance",
-    ],
-  },
-  Object {
-    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createBookingDraft::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "enableAutoScroll",
-    ],
-  },
-  Object {
-    "description": "Settings that control the behavior after creating a new entry.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-    ],
-  },
-  Object {
-    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "navigateToInstance",
-    ],
-  },
-  Object {
-    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
-    "functionalityId": Array [
-      "header",
-      "actions",
-      "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
-      "afterExecution",
-      "enableAutoScroll",
+      "DeleteAction",
+      "group",
     ],
   },
   Object {
@@ -1653,146 +885,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
-    "description": "Header facets marked as stashed are initially not visible on the UI. Key users can add these header facets via key user adaptation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#HeaderFormSection",
-      "stashed",
-    ],
-  },
-  Object {
-    "description": "Defines the key user adaptation behavior of the header facet.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#HeaderFormSection",
-      "flexSettings",
-    ],
-  },
-  Object {
-    "description": "Defines which settings are available for key user adaptation at design time.",
-    "functionalityId": Array [
-      "header",
-      "sections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#HeaderFormSection",
-      "flexSettings",
-      "designtime",
-    ],
-  },
-  Object {
-    "description": "Subtitle of header section.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "subTitle",
-    ],
-  },
-  Object {
-    "description": "The fragment for the editable version of the header facet.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "templateEdit",
-    ],
-  },
-  Object {
-    "description": "Defines the loading behavior of the Object Page header.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "requestGroupId",
-    ],
-  },
-  Object {
-    "description": "Defines if the header facet is displayed in the header area.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "visible",
-    ],
-  },
-  Object {
-    "description": "The path to the XML template containing the section control.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "fragmentName",
-    ],
-  },
-  Object {
-    "description": "Use the key of another section as a placement anchor.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "relatedFacet",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor section.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "relativePosition",
-    ],
-  },
-  Object {
-    "description": "The label of a custom section, preferably as an i18n key.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "title",
-    ],
-  },
-  Object {
-    "description": "Header facets marked as stashed are initially not visible on the UI. Key users can add these header facets via key user adaptation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "stashed",
-    ],
-  },
-  Object {
-    "description": "Defines the key user adaptation behavior of the header facet.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "flexSettings",
-    ],
-  },
-  Object {
-    "description": "Defines which settings are available for key user adaptation at design time.",
-    "functionalityId": Array [
-      "header",
-      "sections",
-      "HeaderCustomSection",
-      "flexSettings",
-      "designtime",
-    ],
-  },
-  Object {
     "description": "Defines the layout of the sections.
 - Page (default): In this mode, all the sections and subsections are added to the same page.
 - Tabs: In this mode, the sections are represented as tabs under the header facet.",
@@ -1800,1137 +892,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "TravelObjectPage",
       "layout",
       "sectionLayout",
-    ],
-  },
-  Object {
-    "description": "The path to the XML template containing the section control.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "fragmentName",
-    ],
-  },
-  Object {
-    "description": "Use the key of another section as a placement anchor.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "relatedFacet",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor section.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "relativePosition",
-    ],
-  },
-  Object {
-    "description": "The label of a custom section, preferably as an i18n key.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "title",
-    ],
-  },
-  Object {
-    "description": "Defines the path of the context used in the current page or block.
-This setting is defined by the framework.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "contextPath",
-    ],
-  },
-  Object {
-    "description": "If true, the search is triggered automatically when a filter value is changed.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "liveMode",
-    ],
-  },
-  Object {
-    "description": "Defines the relative path of the property in the metamodel, based on the current contextPath.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "metaPath",
-    ],
-  },
-  Object {
-    "description": "Handles the visibility of the 'Clear' button on the FilterBar.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "showClearButton",
-    ],
-  },
-  Object {
-    "description": "Displays possible errors during the search in a message box",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "showMessages",
-    ],
-  },
-  Object {
-    "description": "Parameter which sets the visibility of the FilterBar building block",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "visible",
-    ],
-  },
-  Object {
-    "description": "Unique id of control",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "id",
-    ],
-  },
-  Object {
-    "description": "This event is fired when the 'Clear' button is pressed. This is only possible when the 'Clear' button is enabled.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "afterClear",
-    ],
-  },
-  Object {
-    "description": "This event is fired after either a filter value or the visibility of a filter item has been changed. The event contains conditions that will be used as filters.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "filterChanged",
-    ],
-  },
-  Object {
-    "description": "This event is fired when the 'Go' button is pressed or after a condition change.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "controls",
-      "FilterBar",
-      "search",
-    ],
-  },
-  Object {
-    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "actions",
-      "CustomSectionAction",
-      "text",
-    ],
-  },
-  Object {
-    "description": "Relevant for extension actions; allows the definition of a target action handler.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "actions",
-      "CustomSectionAction",
-      "press",
-    ],
-  },
-  Object {
-    "description": "Defines if the action button is visible.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "actions",
-      "CustomSectionAction",
-      "visible",
-    ],
-  },
-  Object {
-    "description": "Defines if the action is enabled. The default value is true.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "actions",
-      "CustomSectionAction",
-      "enabled",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the action relative to the anchor action.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "CustomSection",
-      "actions",
-      "CustomSectionAction",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another action to be used as placement anchor.",
-    "functionalityId": Array [
-      "sections",
-      "CustomSection",
-      "actions",
-      "CustomSectionAction",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor action.",
-    "functionalityId": Array [
-      "sections",
-      "CustomSection",
-      "actions",
-      "CustomSectionAction",
-      "position",
-      "placement",
-    ],
-  },
-  Object {
-    "description": "Defines the table type. Note: Grid tables, analytical tables, and tree tables aren't rendered on small-screen devices. Responsive tables are shown instead.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "type",
-    ],
-  },
-  Object {
-    "description": "Enables full screen mode for this table. This adds a button to the table toolbar which opens the table in a full screen dialog.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "enableFullScreen",
-    ],
-  },
-  Object {
-    "description": "In the Object Page tables, it is possible to add several items at a time by copying and pasting data from an excel file, if this property is set to true.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "enablePaste",
-    ],
-  },
-  Object {
-    "description": "Mass editing allows end users to simultaneously change multiple objects that share the same editable properties.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "enableMassEdit",
-    ],
-  },
-  Object {
-    "description": "Allows you to enable or disable row selection and choose between single or multiple row selection.
-- Auto: This type is deprecated. Choose any of the following modes:
-- Multi (default): This type allows multiple table selections if relevant actions are available in the toolbar.
-- Single: This type allows single table selection if relevant actions are available in the toolbar.
-- None: No table selection is possible in display mode.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "selectionMode",
-    ],
-  },
-  Object {
-    "description": "The selectAll configuration overrides the selectionLimit and allows the user to select all the items. When set to true, the select all feature is enabled: a checkbox in the table header is displayed which selects all items when clicked.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "selectAll",
-    ],
-  },
-  Object {
-    "description": "You can define how many items can be selected at a time using the selectionLimit.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "selectionLimit",
-    ],
-  },
-  Object {
-    "description": "Defines whether the Export button is displayed in the table toolbar. The default value is true.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "enableExport",
-    ],
-  },
-  Object {
-    "description": "Determines whether the content density for ui.table is condensed.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "condensedTableLayout",
-    ],
-  },
-  Object {
-    "description": "Leading property that decides between either a recursive hierarchy or data aggregation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "hierarchyQualifier",
-    ],
-  },
-  Object {
-    "description": "Determines whether the column header is included in the column width calculation. By default, the column width is calculated based on the type of the content.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "Determines the visibility of the Copy to Clipboard button. By default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "disableCopyToClipboard",
-    ],
-  },
-  Object {
-    "description": "Defines how the table handles the visible rows. Does not apply to responsive tables. Allowed values are Auto and Fixed.
- - Fixed: The table always has as many rows as defined in the rowCount property.
- - Auto (default): The number of rows is changed by the table automatically. It will then adjust its row count to the space it is allowed to cover (limited by the surrounding container) but it cannot have less than defined in the rowCount property.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "rowCountMode",
-    ],
-  },
-  Object {
-    "description": "Number of rows to be displayed in the table.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "rowCount",
-    ],
-  },
-  Object {
-    "description": "Defines the page behavior when a new record is created.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "creationMode",
-    ],
-  },
-  Object {
-    "description": "The name property of TableCreationMode defines the creation mode; possible values are:
-- NewPage: The create action leads to a new page.
-- InlineCreationRows: No create button will be rendered, an empty row is directly given.
-- Inline: The create action leads to a new row at the table (not recommended, use InlineCreationRows instead).
-The default is \\"NewPage\\".",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "creationMode",
-      "name",
-    ],
-  },
-  Object {
-    "description": "In case of inline creation mode you can decide if the new row will be created at the end of the table, or direcly after the currently selected table. The default value is \\"true\\".",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "creationMode",
-      "createAtEnd",
-    ],
-  },
-  Object {
-    "description": "Supported starting SAPUI5 version 1.111.0, If set to 'true', the empty rows will be hidden when editing an existing object. Selecting the table's Create button will display the empty rows. The default value is \\"true\\".",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "creationMode",
-      "inlineCreationRowsHiddenInEditMode",
-    ],
-  },
-  Object {
-    "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.
-By default all table settings are enabled. You can change this for the different parts of the table by setting the properties \\"Column\\", \\"Sort\\" and \\"Filter\\" accordingly.
-Omitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "personalization",
-    ],
-  },
-  Object {
-    "description": "Defines whether the user can add and remove columns to a given table.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "personalization",
-      "column",
-    ],
-  },
-  Object {
-    "description": "Defines whether the user can sort a given table.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "personalization",
-      "sort",
-    ],
-  },
-  Object {
-    "description": "Defines whether the user can filter data of a given table.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "personalization",
-      "filter",
-    ],
-  },
-  Object {
-    "description": "With quickVariantSelection, you can switch to multiple views (single table mode). It links to a SelectionVariant (filters) or SelectionPresentationVariant (filters and sorters) that you have added to your annotations.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "quickVariantSelection",
-    ],
-  },
-  Object {
-    "description": "You can hide the table and display only the titles of the tabs. To do so, add the hideTableTitle option and set it to true.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "quickVariantSelection",
-      "hideTableTitle",
-    ],
-  },
-  Object {
-    "description": "You can show the counts of entries of each view. To do so, add the showCounts option and set it to true.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "quickVariantSelection",
-      "showCounts",
-    ],
-  },
-  Object {
-    "description": "List of annotation paths referring to SelectionVariant annotations.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "quickVariantSelection",
-      "paths",
-    ],
-  },
-  Object {
-    "description": "enableMassEdit",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "enableMassEdit",
-    ],
-  },
-  Object {
-    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "enableMassEdit",
-      "visibleFields",
-    ],
-  },
-  Object {
-    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "enableMassEdit",
-      "ignoredFields",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::BookingID",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-Default: it will be shown by default in the table.
-Adaptation: it will initially not be shown in the table but be available via end user adaptation.
-Hidden: the column is neither available in the table nor in adaptation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::BookingID",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::BookingID",
-      "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::BookingDate",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-Default: it will be shown by default in the table.
-Adaptation: it will initially not be shown in the table but be available via end user adaptation.
-Hidden: the column is neither available in the table nor in adaptation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::BookingDate",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::BookingDate",
-      "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "The header is shown on the table as header, as well as in the add/remove dialog.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "CustomColumns",
-      "header",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "CustomColumns",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines a target fragment.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "CustomColumns",
-      "template",
-    ],
-  },
-  Object {
-    "description": "Aligns the header as well as the content horizontally.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "CustomColumns",
-      "horizontalAlign",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-- Default: it will be shown by default in the table.
-- Adaptation: it will initially not be shown in the table but be available via end user adaptation
-- Hidden: the column is neither available in the table nor in adaptation",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "CustomColumns",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the column relative to the anchor column.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "CustomColumns",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another column to be used as placement anchor.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "CustomColumns",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor column.",
-    "functionalityId": Array [
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "CustomColumns",
-      "position",
-      "placement",
-    ],
-  },
-  Object {
-    "description": "If provided and sorting for the table is enabled, the custom column header can be clicked.
-Once clicked, a list of properties that can be sorted by are displayed.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "CustomColumns",
-      "properties",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::CustomerID",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-Default: it will be shown by default in the table.
-Adaptation: it will initially not be shown in the table but be available via end user adaptation.
-Hidden: the column is neither available in the table nor in adaptation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::CustomerID",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::CustomerID",
-      "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::AirlineID",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-Default: it will be shown by default in the table.
-Adaptation: it will initially not be shown in the table but be available via end user adaptation.
-Hidden: the column is neither available in the table nor in adaptation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::AirlineID",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::AirlineID",
-      "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::ConnectionID",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-Default: it will be shown by default in the table.
-Adaptation: it will initially not be shown in the table but be available via end user adaptation.
-Hidden: the column is neither available in the table nor in adaptation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::ConnectionID",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::ConnectionID",
-      "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::FlightDate",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-Default: it will be shown by default in the table.
-Adaptation: it will initially not be shown in the table but be available via end user adaptation.
-Hidden: the column is neither available in the table nor in adaptation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::FlightDate",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::FlightDate",
-      "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "A string type that represents CSS size values.
-Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::FlightPrice",
-      "width",
-    ],
-  },
-  Object {
-    "description": "Defines where the column should be shown.
-Default: it will be shown by default in the table.
-Adaptation: it will initially not be shown in the table but be available via end user adaptation.
-Hidden: the column is neither available in the table nor in adaptation.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::FlightPrice",
-      "availability",
-    ],
-  },
-  Object {
-    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "_Booking::@com.sap.vocabularies.UI.v1.LineItem",
-      "table",
-      "columns",
-      "DataField::FlightPrice",
-      "widthIncludingColumnHeader",
-    ],
-  },
-  Object {
-    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "GroupSection",
-      "subsections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#SubSection1",
-      "form",
-      "actions",
-      "SubSectionActipon",
-      "text",
-    ],
-  },
-  Object {
-    "description": "Relevant for extension actions; allows the definition of a target action handler.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "GroupSection",
-      "subsections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#SubSection1",
-      "form",
-      "actions",
-      "SubSectionActipon",
-      "press",
-    ],
-  },
-  Object {
-    "description": "Defines if the action button is visible.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "GroupSection",
-      "subsections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#SubSection1",
-      "form",
-      "actions",
-      "SubSectionActipon",
-      "visible",
-    ],
-  },
-  Object {
-    "description": "Defines if the action is enabled. The default value is true.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "GroupSection",
-      "subsections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#SubSection1",
-      "form",
-      "actions",
-      "SubSectionActipon",
-      "enabled",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the action relative to the anchor action.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "GroupSection",
-      "subsections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#SubSection1",
-      "form",
-      "actions",
-      "SubSectionActipon",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another action to be used as placement anchor.",
-    "functionalityId": Array [
-      "sections",
-      "GroupSection",
-      "subsections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#SubSection1",
-      "form",
-      "actions",
-      "SubSectionActipon",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor action.",
-    "functionalityId": Array [
-      "sections",
-      "GroupSection",
-      "subsections",
-      "@com.sap.vocabularies.UI.v1.FieldGroup#SubSection1",
-      "form",
-      "actions",
-      "SubSectionActipon",
-      "position",
-      "placement",
-    ],
-  },
-  Object {
-    "description": "The path to the XML template containing the section control.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "GroupSection",
-      "subsections",
-      "CustomSubSection",
-      "fragmentName",
-    ],
-  },
-  Object {
-    "description": "Use the key of another section as a placement anchor.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "GroupSection",
-      "subsections",
-      "CustomSubSection",
-      "relatedFacet",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor section.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "GroupSection",
-      "subsections",
-      "CustomSubSection",
-      "relativePosition",
-    ],
-  },
-  Object {
-    "description": "The label of a custom section, preferably as an i18n key.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "sections",
-      "GroupSection",
-      "subsections",
-      "CustomSubSection",
-      "title",
-    ],
-  },
-  Object {
-    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "footer",
-      "actions",
-      "CustomFooterAction",
-      "text",
-    ],
-  },
-  Object {
-    "description": "Relevant for extension actions; allows the definition of a target action handler.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "footer",
-      "actions",
-      "CustomFooterAction",
-      "press",
-    ],
-  },
-  Object {
-    "description": "Defines if the action button is visible.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "footer",
-      "actions",
-      "CustomFooterAction",
-      "visible",
-    ],
-  },
-  Object {
-    "description": "Defines if the action is enabled. The default value is true.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "footer",
-      "actions",
-      "CustomFooterAction",
-      "enabled",
-    ],
-  },
-  Object {
-    "description": "Defines the position of the action relative to the anchor action.",
-    "functionalityId": Array [
-      "TravelObjectPage",
-      "footer",
-      "actions",
-      "CustomFooterAction",
-      "position",
-    ],
-  },
-  Object {
-    "description": "The key of another action to be used as placement anchor.",
-    "functionalityId": Array [
-      "footer",
-      "actions",
-      "CustomFooterAction",
-      "position",
-      "anchor",
-    ],
-  },
-  Object {
-    "description": "Define the placement, either before or after the anchor action.",
-    "functionalityId": Array [
-      "footer",
-      "actions",
-      "CustomFooterAction",
-      "position",
-      "placement",
     ],
   },
 ]

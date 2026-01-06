@@ -1,5 +1,6 @@
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
 import { type EnhancedRouter, FlpSandbox } from '../base/flp';
 import type { MiddlewareConfig } from '../types';

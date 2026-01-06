@@ -25,7 +25,7 @@ export async function resolveEmbeddingsPath(): Promise<{
         // Try to require the embeddings package dynamically
         let embeddingsPackage: any;
         try {
-            // eslint-disable-next-line  import/no-extraneous-dependencies,@typescript-eslint/no-unsafe-assignment
+            // eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-require-imports
             embeddingsPackage = require('@sap-ux/fiori-docs-embeddings');
         } catch {
             // Try dynamic import as fallback with proper error handling

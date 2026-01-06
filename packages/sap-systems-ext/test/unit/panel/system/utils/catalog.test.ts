@@ -44,7 +44,8 @@ describe('Test catalog utils', () => {
             name: 'Test System',
             systemType: 'OnPrem',
             username: 'testuser',
-            password: 'password'
+            password: 'password',
+            connectionType: 'abap_catalog'
         };
         const counts = await getCatalogServiceCount(system);
         expect(counts).toEqual({ v2Request: { count: 3 }, v4Request: { count: 2 } });
@@ -59,7 +60,9 @@ describe('Test catalog utils', () => {
         const system: BackendSystem = {
             url: 'https://example.com',
             name: 'Test System',
-            systemType: 'AbapCloud'
+            systemType: 'AbapCloud',
+            authenticationType: 'oauth2',
+            connectionType: 'abap_catalog'
         };
         const counts = await getCatalogServiceCount(system);
         expect(counts).toEqual({ v2Request: { count: 3 }, v4Request: { count: undefined, error: v4Error } });

@@ -18,7 +18,9 @@ describe('Test the launch app generator command handler', () => {
     const mockContext = {
         panelManager,
         extContext: {
-            extensionPath: '/mock/extension/path'
+            vscodeExtContext: {
+                extensionPath: '/mock/extension/path'
+            }
         }
     } as SystemCommandContext;
 

@@ -1,4 +1,4 @@
-import type { AxiosBasicCredentials } from 'axios';
+import type { AxiosBasicCredentials, AxiosResponse } from 'axios';
 import { cyan } from 'chalk';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
@@ -91,17 +91,26 @@ function createSmartLinksProvider(config: TargetConfig) {
 export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): Promise<SystemDetailsResponse> {
     const target = isAppStudio() && config.target.destination ? config.target.destination : config.target.url;
     if (!target) {
-        throw Error(t('error.target'));
+        throw new Error(t('error.target'));
     }
     try {
         const provider = createSmartLinksProvider(config);
         logger?.info(`${cyan(t('info.connectTo'))} ${target}`);
-        const response = await provider.get('/sap/bc/ui2/start_up', { params: UrlParameters });
+        const response = (await provider.get('/sap/bc/ui2/start_up', { params: UrlParameters })) as AxiosResponse<
+            string | undefined
+        >;
         logger?.info(cyan(t('info.connectSuccess')));
-        return JSON.parse(response.data);
-    } catch (error: any) {
-        logger?.debug(error);
-        throw Error(error.message);
+        if (response.status !== 200 || !response.data) {
+            throw new Error(
+                `Invalid response from ${config.target.url ?? config.target.destination}: status: ${
+                    response.status
+                }. data: '${response.data}'.`
+            );
+        }
+        return JSON.parse(response.data) as SystemDetailsResponse;
+    } catch (error) {
+        logger?.debug(`Request failed. ${error}`);
+        throw new Error(error.message || 'Unknown error occurred');
     }
 }
 
@@ -118,9 +127,9 @@ export async function getTargetDefinition(basePath: string, logger?: ToolsLogger
         const target = await readUi5DeployConfigTarget(basePath);
         logger?.info(cyan(t('info.targetFound', { file: FileName.UI5DeployYaml })));
         return target;
-    } catch (err: any) {
-        logger?.warn(err.message);
-        logger?.debug(err);
+    } catch (error) {
+        logger?.warn(error.message);
+        logger?.debug(error);
         return undefined;
     }
 }
@@ -138,7 +147,7 @@ async function getTargetMappings(
 ): Promise<{ [key: string]: TargetMapping }> {
     const response: SystemDetailsResponse | undefined = await sendRequest(config, logger);
     if (!response?.targetMappings) {
-        throw Error(t('error.noTarget', { file: `${config.target.destination ?? config.target.url}` }));
+        throw new Error(t('error.noTarget', { file: `${config.target.destination ?? config.target.url}` }));
     }
     return response.targetMappings;
 }

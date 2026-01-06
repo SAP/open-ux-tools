@@ -1,9 +1,8 @@
 import nock from 'nock';
 import fs from 'node:fs';
 import type { Message } from '../../src/abap/lrep-service';
-import type { AdaptationConfig } from '../../src';
+import type { AdaptationConfig, AxiosError } from '../../src';
 import { LayeredRepositoryService, createForAbap } from '../../src';
-import type { AxiosError } from '../../src';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 

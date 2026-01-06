@@ -40,6 +40,9 @@
       "path": "../system-access"
     },
     {
+      "path": "../telemetry"
+    },
+    {
       "path": "../ui5-config"
     }
   ]

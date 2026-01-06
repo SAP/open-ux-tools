@@ -1,8 +1,8 @@
-import type { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { AxiosRequestConfig, ODataService, ODataServiceInfo } from '@sap-ux/axios-extension';
 
 import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
-import { SystemService } from '@sap-ux/store/dist/services/backend-system';
+import { getService } from '@sap-ux/store';
 import { ToolsLogger } from '@sap-ux/logger';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
 
@@ -13,7 +13,11 @@ import { parse as parseEdmx } from '@sap-ux/edmx-parser';
  */
 async function getSapSystems(): Promise<BackendSystem[]> {
     const logger = new ToolsLogger({ logPrefix: 'fiori-mcp-server' });
-    return new SystemService(logger).getAll({ includeSensitiveData: true });
+    const systemStore = await getService<BackendSystem, BackendSystemKey>({
+        logger: logger,
+        entityName: 'system'
+    });
+    return systemStore.getAll({ includeSensitiveData: true });
 }
 
 /**
@@ -60,7 +64,7 @@ function matchSystemByUrl(systems: BackendSystem[], url: string): BackendSystem[
     }
     if (!matchingSystems.length) {
         // system not stored. Return raw props for further processing
-        matchingSystems = [{ name: origin, url: origin, client }];
+        matchingSystems = [{ name: origin, url: origin, client } as BackendSystem];
     }
     return matchingSystems;
 }

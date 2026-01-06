@@ -8,11 +8,11 @@ import {
 } from '@sap-ux/btp-utils';
 import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import { HttpProxyAgent } from 'http-proxy-agent';
-import { type AgentOptions, Agent as HttpsAgent } from 'https';
+import { type AgentOptions, Agent as HttpsAgent } from 'node:https';
 import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
 import cloneDeep from 'lodash/cloneDeep';
 import { getProxyForUrl } from 'proxy-from-env';
-import { inspect } from 'util';
+import { inspect } from 'node:util';
 import { AbapServiceProvider } from './abap';
 import type { RefreshTokenChanged, ServiceInfo } from './auth';
 import {
@@ -31,7 +31,6 @@ type Class<T> = new (...args: any[]) => T;
 /**
  * PatchedHttpsProxyAgent is a custom implementation of HttpsProxyAgent that allows to pass additional options, currently not supported by the original implementation when calling tls.connect
  */
-// eslint-disable-next-line jsdoc/require-jsdoc
 export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<Uri> {
     private readonly extraOptions: any;
 

@@ -21,14 +21,14 @@ import type { VisitorState } from '../visitor-state';
 
 export const correctExpressionHandler: NodeHandler<CorrectExpression> = {
     type: CORRECT_EXPRESSION_TYPE,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     getChildren(state: VisitorState, expression: CorrectExpression): AnnotationValue[] {
         if (containsIncorrectExpressions(expression)) {
             return [];
         }
         return expression.operands;
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     convert(state: VisitorState, expression: CorrectExpression): ConvertResult {
         if (containsIncorrectExpressions(expression)) {
             return;
@@ -55,7 +55,7 @@ export const unknownOperatorExpressionHandler: NodeHandler<UnsupportedOperatorEx
     getChildren(): AnnotationValue[] {
         return [];
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     convert(state: VisitorState, expression: UnsupportedOperatorExpression): ConvertResult {
         const element: Element = createElementNode({
             name: expression.unsupportedOperator.value,

@@ -9,7 +9,6 @@ import type { Destination } from '@sap-ux/btp-utils';
 
 const mockIsAppStudio = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/btp-utils') as {}),
     isAppStudio: () => mockIsAppStudio()
 }));
@@ -312,7 +311,9 @@ describe('test helper functions', () => {
                 backendSystem: {
                     name: 'testSystem',
                     url: 'http://testsystem:44300',
-                    client: '001'
+                    client: '001',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
                 },
                 serviceProvider: providerMock
             }
@@ -364,7 +365,9 @@ describe('test helper functions', () => {
                 backendSystem: {
                     name: 'testSystem',
                     url: 'http://testsystem:44300',
-                    client: '001'
+                    client: '001',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
                 },
                 serviceProvider: providerMock
             }
@@ -422,7 +425,9 @@ describe('test helper functions', () => {
                 backendSystem: {
                     name: 'testSystem',
                     url: 'http://testsystem:44300',
-                    client: '001'
+                    client: '001',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
                 },
                 serviceProvider: providerMock
             }

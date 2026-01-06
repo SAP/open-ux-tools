@@ -1,143 +1,152 @@
 # @sap-ux/odata-annotation-core
 
+## 0.2.11
+
+### Patch Changes
+
+- 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
+- Updated dependencies [4ecfbe2]
+    - @sap-ux/odata-annotation-core-types@0.5.2
+    - @sap-ux/text-document-utils@0.3.3
+
 ## 0.2.10
 
 ### Patch Changes
 
--   cfe9c13: Add deep link to package and changelog to README.md
--   Updated dependencies [cfe9c13]
-    -   @sap-ux/odata-annotation-core-types@0.5.1
-    -   @sap-ux/text-document-utils@0.3.2
+- cfe9c13: Add deep link to package and changelog to README.md
+- Updated dependencies [cfe9c13]
+    - @sap-ux/odata-annotation-core-types@0.5.1
+    - @sap-ux/text-document-utils@0.3.2
 
 ## 0.2.9
 
 ### Patch Changes
 
--   43a2446: chore: fix Sonar issues
+- 43a2446: chore: fix Sonar issues
 
 ## 0.2.8
 
 ### Patch Changes
 
--   Updated dependencies [aa8bb7a]
-    -   @sap-ux/odata-annotation-core-types@0.5.0
+- Updated dependencies [aa8bb7a]
+    - @sap-ux/odata-annotation-core-types@0.5.0
 
 ## 0.2.7
 
 ### Patch Changes
 
--   Updated dependencies [1f18878]
-    -   @sap-ux/odata-annotation-core-types@0.4.6
+- Updated dependencies [1f18878]
+    - @sap-ux/odata-annotation-core-types@0.4.6
 
 ## 0.2.6
 
 ### Patch Changes
 
--   Updated dependencies [c7db726]
-    -   @sap-ux/odata-annotation-core-types@0.4.5
-    -   @sap-ux/text-document-utils@0.3.1
+- Updated dependencies [c7db726]
+    - @sap-ux/odata-annotation-core-types@0.4.5
+    - @sap-ux/text-document-utils@0.3.1
 
 ## 0.2.5
 
 ### Patch Changes
 
--   Updated dependencies [08ed948]
-    -   @sap-ux/odata-annotation-core-types@0.4.4
+- Updated dependencies [08ed948]
+    - @sap-ux/odata-annotation-core-types@0.4.4
 
 ## 0.2.4
 
 ### Patch Changes
 
--   Updated dependencies [a28357d]
-    -   @sap-ux/text-document-utils@0.3.0
-    -   @sap-ux/odata-annotation-core-types@0.4.3
+- Updated dependencies [a28357d]
+    - @sap-ux/text-document-utils@0.3.0
+    - @sap-ux/odata-annotation-core-types@0.4.3
 
 ## 0.2.3
 
 ### Patch Changes
 
--   2a16531: fix: `toFullyQualifiedPath` replaces unknown namespace or alias with `undefined`.
+- 2a16531: fix: `toFullyQualifiedPath` replaces unknown namespace or alias with `undefined`.
 
 ## 0.2.2
 
 ### Patch Changes
 
--   93f8a83: chore - upgrade typescript 5.6.2
--   Updated dependencies [93f8a83]
-    -   @sap-ux/odata-annotation-core-types@0.4.2
+- 93f8a83: chore - upgrade typescript 5.6.2
+- Updated dependencies [93f8a83]
+    - @sap-ux/odata-annotation-core-types@0.4.2
 
 ## 0.2.1
 
 ### Patch Changes
 
--   Updated dependencies [ac22b7e]
-    -   @sap-ux/text-document-utils@0.2.0
-    -   @sap-ux/odata-annotation-core-types@0.4.1
+- Updated dependencies [ac22b7e]
+    - @sap-ux/text-document-utils@0.2.0
+    - @sap-ux/odata-annotation-core-types@0.4.1
 
 ## 0.2.0
 
 ### Minor Changes
 
--   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+- c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
 
 ### Patch Changes
 
--   Updated dependencies [c2359077]
-    -   @sap-ux/odata-annotation-core-types@0.4.0
+- Updated dependencies [c2359077]
+    - @sap-ux/odata-annotation-core-types@0.4.0
 
 ## 0.1.8
 
 ### Patch Changes
 
--   eb0b7b37: Chore - TypeScript 5 upgrade
--   Updated dependencies [eb0b7b37]
-    -   @sap-ux/odata-annotation-core-types@0.3.1
+- eb0b7b37: Chore - TypeScript 5 upgrade
+- Updated dependencies [eb0b7b37]
+    - @sap-ux/odata-annotation-core-types@0.3.1
 
 ## 0.1.7
 
 ### Patch Changes
 
--   Updated dependencies [d6151909]
-    -   @sap-ux/odata-annotation-core-types@0.3.0
+- Updated dependencies [d6151909]
+    - @sap-ux/odata-annotation-core-types@0.3.0
 
 ## 0.1.6
 
 ### Patch Changes
 
--   Updated dependencies [5b256cea]
-    -   @sap-ux/odata-annotation-core-types@0.2.0
+- Updated dependencies [5b256cea]
+    - @sap-ux/odata-annotation-core-types@0.2.0
 
 ## 0.1.5
 
 ### Patch Changes
 
--   807e2857: Vocabularies types and interfaces definitions optimization
--   Updated dependencies [807e2857]
-    -   @sap-ux/odata-annotation-core-types@0.1.3
+- 807e2857: Vocabularies types and interfaces definitions optimization
+- Updated dependencies [807e2857]
+    - @sap-ux/odata-annotation-core-types@0.1.3
 
 ## 0.1.4
 
 ### Patch Changes
 
--   Updated dependencies [120d6631]
-    -   @sap-ux/odata-annotation-core-types@0.1.2
+- Updated dependencies [120d6631]
+    - @sap-ux/odata-annotation-core-types@0.1.2
 
 ## 0.1.3
 
 ### Patch Changes
 
--   b7bce4f4: feat: move odata-entity-model module
+- b7bce4f4: feat: move odata-entity-model module
 
 ## 0.1.2
 
 ### Patch Changes
 
--   be216df1: Fixed a bug
+- be216df1: Fixed a bug
 
 ## 0.1.1
 
 ### Patch Changes
 
--   dbffe7bd: odata-annotation-core packages moved from UXTools
--   Updated dependencies [dbffe7bd]
-    -   @sap-ux/odata-annotation-core-types@0.1.1
+- dbffe7bd: odata-annotation-core packages moved from UXTools
+- Updated dependencies [dbffe7bd]
+    - @sap-ux/odata-annotation-core-types@0.1.1

@@ -1,9 +1,9 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type Table from 'sap/m/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import UI5Element from 'sap/ui/core/Element';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type UI5Element from 'sap/ui/core/Element';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';

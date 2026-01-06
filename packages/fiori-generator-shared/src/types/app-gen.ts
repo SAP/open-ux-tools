@@ -72,6 +72,8 @@ export interface AppGenInfo {
     showMockDataInfo?: boolean;
     /** Text used to launch the application */
     launchText?: string;
+    /** Flag indicating whether value help metadata was downloaded */
+    valueHelpDownloaded?: boolean;
     /**
      * An array used to store information on the various entities, e.g main, navigation entity, and filter entity type.
      */

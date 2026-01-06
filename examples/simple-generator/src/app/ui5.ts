@@ -1,4 +1,4 @@
-import { request } from 'https';
+import { request } from 'node:https';
 import localVersionSupport from './version-support.json';
 
 /**

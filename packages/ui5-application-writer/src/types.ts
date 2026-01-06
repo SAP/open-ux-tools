@@ -137,7 +137,12 @@ export interface UI5 {
 
 // Additional configurable features
 export interface AppOptions {
-    codeAssist: boolean; // Enables code assist
+    /**
+     * @deprecated
+     * Enables code assist
+     * No longer supported. Will be removed from the interface in future releases.
+     */
+    codeAssist: boolean;
     eslint: boolean; // Enables Fiori linting
     sapux: boolean; // Enables Fiori Tools Suite integration
 

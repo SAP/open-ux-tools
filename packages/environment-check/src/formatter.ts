@@ -56,5 +56,5 @@ export function byteNumberToSizeString(byteNumber: number): string {
     }
     const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log(byteNumber) / Math.log(1024));
-    return `${parseFloat((byteNumber / Math.pow(1024, i)).toFixed(2))} ${units[i]}`;
+    return `${Number.parseFloat((byteNumber / Math.pow(1024, i)).toFixed(2))} ${units[i]}`;
 }

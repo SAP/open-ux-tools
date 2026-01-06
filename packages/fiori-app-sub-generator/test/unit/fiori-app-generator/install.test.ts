@@ -1,10 +1,10 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { DefaultLogger } from '@sap-ux/fiori-generator-shared';
-import childProcess from 'child_process';
+import childProcess from 'node:child_process';
 import os from 'node:os';
 import { installDependencies } from '../../../src/fiori-app-generator/install';
 import { CommandRunner, initI18nFioriAppSubGenerator, t } from '../../../src/utils';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockSpawn = require('mock-spawn');
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({

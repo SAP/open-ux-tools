@@ -3,7 +3,7 @@ import { buildControlData } from '../../../src/cpe/control-data';
 import { getNameMock } from 'mock/sap/ui/base/DataType';
 import { sapMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
-import { DesigntimeSetting, ManifestSettingsValue } from 'sap/ui/dt/DesignTimeMetadata';
+import type { DesigntimeSetting, ManifestSettingsValue } from 'sap/ui/dt/DesignTimeMetadata';
 
 describe('controlData', () => {
     // prepare

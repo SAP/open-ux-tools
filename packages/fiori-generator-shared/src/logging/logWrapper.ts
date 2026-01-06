@@ -124,7 +124,7 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
         if (extLogger) {
             LogWrapper._logLevel = vscode
                 ? vscode.workspace.getConfiguration().get(LOGGING_LEVEL_CONFIG_PROP)
-                : logLevel ?? 'info';
+                : (logLevel ?? 'info');
             LogWrapper._vscodeLogger = extLogger.getChildLogger({ label: logName });
         } else {
             if (!LogWrapper._yoLogger) {
