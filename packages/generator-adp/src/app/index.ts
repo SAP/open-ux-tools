@@ -68,8 +68,7 @@ import {
     type TargetEnvAnswers,
     type AdpGeneratorOptions,
     type AttributePromptOptions,
-    type JsonInput,
-    keyUserImportPromptNames
+    type JsonInput
 } from './types';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
 import type { AdpTelemetryData } from '../types';
@@ -329,9 +328,9 @@ export default class extends Generator {
                     this.logger
                 );
                 const keyUserQuestions = this.keyUserPrompter.getPrompts({
-                    [keyUserImportPromptNames.keyUserSystem]: { default: this.configAnswers.system },
-                    [keyUserImportPromptNames.keyUserUsername]: { default: this.configAnswers.username },
-                    [keyUserImportPromptNames.keyUserPassword]: { default: this.configAnswers.password }
+                    keyUserSystem: { default: this.configAnswers.system },
+                    keyUserUsername: { default: this.configAnswers.username },
+                    keyUserPassword: { default: this.configAnswers.password }
                 });
                 await this.prompt(keyUserQuestions);
                 this.keyUserChanges = this.keyUserPrompter.changes;

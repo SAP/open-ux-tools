@@ -377,7 +377,7 @@ export class LayeredRepositoryService extends Axios implements Service {
     public async listAdaptations(appId: string): Promise<AdaptationsResponse> {
         try {
             const response = await this.get(`/flex/apps/${encodeURIComponent(appId)}/adaptations/`);
-            this.tryLogResponse(response, 'Successfully fetched adaptations.');
+            this.tryLogResponse(response, `Successfully fetched adaptations for app ${appId}`);
             return typeof response.data === 'string'
                 ? JSON.parse(response.data)
                 : (response.data as AdaptationsResponse);
@@ -404,7 +404,10 @@ export class LayeredRepositoryService extends Axios implements Service {
                 params,
                 paramsSerializer: decodeUrlParams
             });
-            this.tryLogResponse(response, 'Successfully fetched key user data.');
+            this.tryLogResponse(
+                response,
+                `Successfully fetched key user data for component ${componentId} and ${adaptationId} adaptation.`
+            );
             return typeof response.data === 'string'
                 ? JSON.parse(response.data)
                 : (response.data as KeyUserDataResponse);

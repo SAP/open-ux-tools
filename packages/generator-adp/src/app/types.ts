@@ -176,7 +176,7 @@ export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
 /**
  * Enumeration of prompt names used in the key-user import.
  */
-export enum keyUserImportPromptNames {
+export enum keyUserPromptNames {
     keyUserSystem = 'keyUserSystem',
     keyUserUsername = 'keyUserUsername',
     keyUserPassword = 'keyUserPassword',
@@ -207,10 +207,10 @@ export interface KeyUserAdaptationPromptOptions {
  * Options for the key-user import inquirer & the prompts.
  */
 export type KeyUserImportPromptOptions = Partial<{
-    [keyUserImportPromptNames.keyUserSystem]: KeyUserSystemPromptOptions;
-    [keyUserImportPromptNames.keyUserUsername]: KeyUserUsernamePromptOptions;
-    [keyUserImportPromptNames.keyUserPassword]: KeyUserPasswordPromptOptions;
-    [keyUserImportPromptNames.keyUserAdaptation]: KeyUserAdaptationPromptOptions;
+    [keyUserPromptNames.keyUserSystem]: KeyUserSystemPromptOptions;
+    [keyUserPromptNames.keyUserUsername]: KeyUserUsernamePromptOptions;
+    [keyUserPromptNames.keyUserPassword]: KeyUserPasswordPromptOptions;
+    [keyUserPromptNames.keyUserAdaptation]: KeyUserAdaptationPromptOptions;
 }>;
 
 export interface KeyUserImportAnswers {
