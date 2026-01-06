@@ -142,7 +142,7 @@ async function buildProject(basePath: string, logger: ToolsLogger): Promise<void
 }
 
 /**
- * Add serve-static-middleware configuration to ui5.yaml if not already present.
+ * Add fiori-tools-servestatic configuration to ui5.yaml if not already present.
  *
  * @param basePath - path to application root
  * @param logger - logger instance
@@ -153,12 +153,12 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
 
         while (ui5Config.findCustomMiddleware('fiori-tools-servestatic')) {
-            ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
+            ui5Config.removeCustomMiddleware('fiori-tools-servestatic');
         }
 
         const ui5AppInfoPath = join(basePath, 'ui5AppInfo.json');
         if (!existsSync(ui5AppInfoPath)) {
-            logger.warn('ui5AppInfo.json not found in project root, skipping serve-static-middleware configuration');
+            logger.warn('ui5AppInfo.json not found in project root, skipping fiori-tools-servestatic configuration');
             return;
         }
 
@@ -172,7 +172,7 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
 
         if (reusableLibs.length === 0) {
             logger.info(
-                'No reusable libraries found in ui5AppInfo.json, skipping serve-static-middleware configuration'
+                'No reusable libraries found in ui5AppInfo.json, skipping fiori-tools-servestatic configuration'
             );
             return;
         }
@@ -189,7 +189,7 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
             };
         });
 
-        // Add the serve-static-middleware configuration
+        // Add the fiori-tools-servestatic configuration
         ui5Config.addCustomMiddleware([
             {
                 name: 'fiori-tools-servestatic',
@@ -212,9 +212,9 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
             });
         });
         await traceChanges(fs);
-        logger.info('Successfully added serve-static-middleware to ui5.yaml');
+        logger.info('Successfully added fiori-tools-servestatic to ui5.yaml');
     } catch (error) {
-        logger.warn(`Could not add serve-static-middleware configuration: ${(error as Error).message}`);
+        logger.warn(`Could not add fiori-tools-servestatic configuration: ${(error as Error).message}`);
         throw error;
     }
 }
