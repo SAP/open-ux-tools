@@ -8,14 +8,14 @@ import { create } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
-import type {
-    CfConfig,
+import {
     getBackendUrlsWithPaths,
     getServiceInstanceKeys,
     getCfUi5AppInfo,
     loadCfConfig,
     getAppHostIds,
     getVariant,
+    type CfConfig,
     type ServiceKeys,
     type CfUi5AppInfo
 } from '@sap-ux/adp-tooling';
