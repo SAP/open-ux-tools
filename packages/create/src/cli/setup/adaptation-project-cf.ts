@@ -135,7 +135,7 @@ async function buildProject(basePath: string, logger: ToolsLogger): Promise<void
 
         logger.info('Project built successfully');
     } catch (error) {
-        const exitCode = (error as any).status ?? 'unknown';
+        const exitCode = error.status ?? 'unknown';
         logger.error(`Build failed: ${(error as Error).message}`);
         throw new Error(`Build process exited with code ${exitCode}`);
     }
@@ -193,15 +193,14 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
         // Add the serve-static-middleware configuration
         ui5Config.addCustomMiddleware([
             {
-                name: 'serve-static-middleware',
-                beforeMiddleware: 'ui5-proxy-middleware',
+                name: 'fiori-tools-servestatic',
+                beforeMiddleware: 'compression',
                 configuration: {
                     paths
                 }
             }
         ]);
 
-        // Write the updated configuration back to the file
         const fs = create(createStorage());
         fs.write(ui5YamlPath, ui5Config.toString());
         await new Promise<void>((resolve, reject) => {

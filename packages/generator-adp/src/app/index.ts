@@ -210,11 +210,6 @@ export default class extends Generator {
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
 
-        // Force the generator to overwrite existing files without additional prompting
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
-
         if (!this.jsonInput) {
             this.env.lookup({
                 packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']

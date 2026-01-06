@@ -1,9 +1,5 @@
 import type { RequestHandler } from 'express';
-import type { MiddlewareParameters } from '@ui5/server'; // eslint-disable-line sonarjs/no-implicit-dependencies
-
-
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-
 import { setupProxyRoutes } from './proxy';
 import { validateConfig } from './validation';
 import { createTokenProvider } from './token';

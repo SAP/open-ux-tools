@@ -19,9 +19,9 @@
 		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
 	},
 	"devDependencies": {
-		"@sap-ux/create": "file:/home/milkov/Desktop/CF-reuse-setup/open-ux-tools/packages/create",
+		"@sap-ux/create": "^0.14.22",
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
-		"@sap-ux/backend-proxy-middleware-cf": "^0.0.1",
+		"@sap-ux/backend-proxy-middleware-cf": "0",
 		"@sapui5/ts-types": "^1.141.2",
 		"@sap/ux-ui5-tooling": "1",
 		"@ui5/cli": "^4.0.33",
