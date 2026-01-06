@@ -14,6 +14,7 @@ const TOKEN_REFRESH_BUFFER_SECONDS = 60;
 export class OAuthTokenProvider {
     private token: string | null = null;
     private tokenExpiry: number = 0;
+    private tokenFetchPromise: Promise<string> | null = null;
 
     /**
      * Creates a new OAuthTokenProvider instance.
@@ -40,6 +41,28 @@ export class OAuthTokenProvider {
             return this.token;
         }
 
+        // If a token fetch is already in progress, wait for it
+        if (this.tokenFetchPromise) {
+            return this.tokenFetchPromise;
+        }
+
+        this.tokenFetchPromise = this.fetchToken();
+
+        try {
+            const token = await this.tokenFetchPromise;
+            return token;
+        } finally {
+            // Clear the promise so future requests can start a new fetch if needed
+            this.tokenFetchPromise = null;
+        }
+    }
+
+    /**
+     * Fetches a new OAuth2 token from the token endpoint.
+     *
+     * @returns {Promise<string>} The access token.
+     */
+    private async fetchToken(): Promise<string> {
         try {
             this.logger.debug('Fetching new OAuth2 token...');
 
@@ -56,9 +79,10 @@ export class OAuthTokenProvider {
             });
 
             this.token = response.data.access_token;
-            this.tokenExpiry = Date.now() + (response.data.expires_in - TOKEN_REFRESH_BUFFER_SECONDS) * 1000;
+            const expiresIn = response.data.expires_in ?? 3600;
+            this.tokenExpiry = Date.now() + (expiresIn - TOKEN_REFRESH_BUFFER_SECONDS) * 1000;
 
-            this.logger.debug('OAuth2 token obtained successfully');
+            this.logger.debug(`OAuth2 token obtained successfully (expires in ${expiresIn}s)`);
             return this.token ?? '';
         } catch (e) {
             throw new Error(`Failed to fetch OAuth2 token: ${e.message}`);

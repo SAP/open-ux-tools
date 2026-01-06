@@ -14,7 +14,11 @@ import type { MiddlewareParameters, CfOAuthMiddlewareConfig } from './types';
  * @returns {Promise<RequestHandler>} Express middleware handler.
  */
 module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfig>): Promise<RequestHandler> => {
-    const config = options.configuration || {};
+    const config = options.configuration;
+    if (!config) {
+        throw new Error('Backend proxy middleware (CF) has no configuration.');
+    }
+
     const logger = new ToolsLogger({
         logLevel: config.debug ? LogLevel.Debug : LogLevel.Info,
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware-cf' })]
