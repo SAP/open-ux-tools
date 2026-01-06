@@ -10,10 +10,6 @@ import * as appModels from '../test-input/constants';
 const readAppMock = jest.fn();
 jest.mock('@sap-ux/project-access', () => ({
     ...(jest.requireActual('@sap-ux/project-access') as any),
-    getSpecification: jest.fn().mockResolvedValue({
-        ...(jest.requireActual('@sap-ux/project-access') as any).getSpecification,
-        readApp: () => readAppMock()
-    }),
     createApplicationAccess: jest.fn().mockResolvedValue({
         getSpecification: jest.fn().mockResolvedValue({
             readApp: () => readAppMock()

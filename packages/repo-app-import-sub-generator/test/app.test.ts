@@ -27,8 +27,6 @@ import { handleWorkspaceConfig } from '@sap-ux/launch-config';
 import { EventName } from '../src/telemetryEvents';
 import { getUI5Versions } from '@sap-ux/ui5-info';
 
-jest.setTimeout(20000);
-
 jest.mock('../src/prompts/prompt-helpers', () => ({
     ...jest.requireActual('../src/prompts/prompt-helpers'),
     fetchAppListForSelectedSystem: jest.fn()
@@ -83,6 +81,13 @@ const mockSendTelemetry = sendTelemetry as jest.Mock;
 jest.mock('@sap-ux/ui5-info', () => ({
     ...jest.requireActual('@sap-ux/ui5-info'),
     getUI5Versions: jest.fn()
+}));
+
+jest.mock('@sap-ux/project-access', () => ({
+    ...(jest.requireActual('@sap-ux/project-access') as any),
+    createApplicationAccess: jest.fn().mockResolvedValue({
+        getSpecification: jest.fn()
+    })
 }));
 
 function createAppConfig(appId: string, metadata: string): FioriElementsApp<LROPSettings> {
