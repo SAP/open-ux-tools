@@ -24,8 +24,10 @@ import {
     getParsedPropertyValue,
     parseStringToObject,
     writeAnnotationChange,
-    writeChangeToFolder
+    writeChangeToFolder,
+    writeKeyUserChanges
 } from '../../../src/base/change-utils';
+import type { KeyUserChangeContent } from '@sap-ux/axios-extension';
 import { create as createStorage } from 'mem-fs';
 
 jest.mock('fs', () => ({
@@ -520,6 +522,91 @@ describe('Change Utils', () => {
                     mockFs as unknown as Editor
                 )
             ).rejects.toThrow('Failed to render annotation file');
+        });
+    });
+
+    describe('writeKeyUserChanges', () => {
+        const projectPath = 'project';
+        const writeJsonSpy = jest.fn();
+        const mockFs = { writeJSON: writeJsonSpy } as unknown as Editor;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should return early if changes is undefined', async () => {
+            await writeKeyUserChanges(projectPath, undefined, mockFs);
+            await writeKeyUserChanges(projectPath, [], mockFs);
+            expect(writeJsonSpy).not.toHaveBeenCalled();
+        });
+
+        it('should skip entries without content', async () => {
+            const changes: KeyUserChangeContent[] = [
+                { content: { fileName: 'test.change' } },
+                {} as KeyUserChangeContent,
+                { content: { fileName: 'test2.change' } }
+            ];
+
+            await writeKeyUserChanges(projectPath, changes, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should skip entries without fileName', async () => {
+            const changes: KeyUserChangeContent[] = [
+                { content: { fileName: 'test.change' } },
+                { content: { changeType: 'page' } },
+                { content: { fileName: 'test2.change' } }
+            ];
+
+            await writeKeyUserChanges(projectPath, changes, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should add texts to change if not already present', async () => {
+            const texts = { variantName: { value: 'Test Variant', type: 'XFLD' } };
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_page.change',
+                        changeType: 'page'
+                    },
+                    texts
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, changes, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining('id_123_page.change'),
+                expect.objectContaining({
+                    fileName: 'id_123_page.change',
+                    changeType: 'page',
+                    texts
+                })
+            );
+        });
+
+        it('should write multiple changes', async () => {
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_page.change',
+                        changeType: 'page'
+                    }
+                },
+                {
+                    content: {
+                        fileName: 'id_456_variant.change',
+                        changeType: 'variant'
+                    }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, changes, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(2);
         });
     });
 });
