@@ -3,8 +3,7 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import { setupProxyRoutes } from './proxy';
 import { validateConfig } from './validation';
 import { createTokenProvider } from './token';
-import type { MiddlewareParameters } from './types';
-import type { CfOAuthMiddlewareConfig } from './types';
+import type { MiddlewareParameters, CfOAuthMiddlewareConfig } from './types';
 
 /**
  * UI5 middleware for proxying requests to Cloud Foundry destinations with OAuth2 authentication.
