@@ -379,7 +379,6 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
  */
 /**
  * Generate custom middleware configuration (fiori-tools-proxy and fiori-tools-preview only).
- * Note: backend-proxy-middleware-cf is now added by the setup command.
  *
  * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
  */
@@ -416,7 +415,6 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
 
 /**
  * Generate custom middleware configuration including backend-proxy-middleware-cf.
- * This function is used when backend URLs and OAuth paths are available during generation.
  *
  * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
  * @param {CfAdpWriterConfig} config - Full project configuration.
