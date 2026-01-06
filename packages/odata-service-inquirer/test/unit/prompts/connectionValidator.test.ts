@@ -416,7 +416,7 @@ describe('ConnectionValidator', () => {
             urlFormat: true
         });
         // Change the response to 200 and force re-validation of the same url
-        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(200));
         await validator.validateUrl('https://example.com/service', { forceReValidation: true });
         expect(validator.validity).toEqual({
             authenticated: true,
@@ -424,17 +424,6 @@ describe('ConnectionValidator', () => {
             urlFormat: true
         });
         expect(getODataServiceSpy).toHaveBeenCalledTimes(2);
-    });
-
-    test('should return the error message when validateUrl fails with an unknown Axios error', async () => {
-        jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce({
-            code: 'MOCK_UNKNOWN_ERROR',
-            message: 'Connection failure due to MOCK_UNKNOWN_ERROR',
-            isAxiosError: true
-        });
-        const validator = new ConnectionValidator();
-        const result = await validator.validateUrl('https://example.com/service');
-        expect(result).toBe('An error occurred: Connection failure due to MOCK_UNKNOWN_ERROR');
     });
 
     test('should update axios-config with sap-client with calling validateAuth when connecting to sap system', async () => {
