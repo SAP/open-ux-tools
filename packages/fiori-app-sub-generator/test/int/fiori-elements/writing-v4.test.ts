@@ -18,8 +18,8 @@ import {
 } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v4EntityConfig, v4Service } from './test-utils';
 
-const specMock = jest.spyOn(projectAccess, 'getSpecification');
-specMock.mockResolvedValue({} as any);
+const appAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess');
+appAccessMock.mockResolvedValue({} as any);
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');

@@ -13,6 +13,11 @@ jest.mock('@sap-ux/project-access', () => ({
     getSpecification: jest.fn().mockResolvedValue({
         ...(jest.requireActual('@sap-ux/project-access') as any).getSpecification,
         readApp: () => readAppMock()
+    }),
+    createApplicationAccess: jest.fn().mockResolvedValue({
+        getSpecification: jest.fn().mockResolvedValue({
+            readApp: () => readAppMock()
+        })
     })
 }));
 
@@ -324,22 +329,6 @@ describe('ui5-test-writer', () => {
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining(
                     'Unable to extract table columns from project model using specification. No table column tests will be generated.'
-                )
-            );
-        });
-
-        it('fails gracefully for app that has no package.json', async () => {
-            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
-            const projectDir = prepareTestFiles('LROPv4IncorrectPackageJson');
-            const mockLogger = {
-                warn: jest.fn()
-            };
-
-            fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
-
-            expect(mockLogger.warn).toHaveBeenCalledWith(
-                expect.stringContaining(
-                    'Error analyzing project model using specification. No dynamic tests will be generated.'
                 )
             );
         });

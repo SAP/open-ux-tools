@@ -10,7 +10,6 @@ import {
     FileName,
     DirName,
     getListReportPage,
-    getSpecification,
     getFilterFields,
     createApplicationAccess,
     getTableColumns
@@ -374,9 +373,9 @@ async function getFeatureData(basePath: string, fs?: Editor, log?: Logger): Prom
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
-        const specification: Specification = await getSpecification(basePath);
         // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
         const appAccess = await createApplicationAccess(basePath, { fs: fs });
+        const specification = await appAccess.getSpecification<Specification>();
         const appResult: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
         listReportPage = appResult.applicationModel ? getListReportPage(appResult.applicationModel) : listReportPage;
     } catch (error) {

@@ -27,8 +27,6 @@ import { handleWorkspaceConfig } from '@sap-ux/launch-config';
 import { EventName } from '../src/telemetryEvents';
 import { getUI5Versions } from '@sap-ux/ui5-info';
 
-jest.setTimeout(120000);
-
 jest.mock('../src/prompts/prompt-helpers', () => ({
     ...jest.requireActual('../src/prompts/prompt-helpers'),
     fetchAppListForSelectedSystem: jest.fn()

@@ -14,8 +14,8 @@ import { EXPECTED_OUTPUT_DIR_NAME } from './test-utils';
 const testDir: string = getTestDir('headless');
 const fixturesPath = join(__dirname, './fixtures');
 
-const specMock = jest.spyOn(projectAccess, 'getSpecification');
-specMock.mockResolvedValue({} as any);
+const appAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess');
+appAccessMock.mockResolvedValue({} as any);
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
