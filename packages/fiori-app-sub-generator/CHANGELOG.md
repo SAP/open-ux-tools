@@ -1,5 +1,20 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.8
+
+### Patch Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+- Updated dependencies [03598eb]
+    - @sap-ux/ui5-application-inquirer@0.16.0
+    - @sap-ux/fiori-freestyle-writer@2.5.22
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/ui5-info@0.13.7
+    - @sap-ux/odata-service-inquirer@2.13.6
+    - @sap-ux/cap-config-writer@0.12.39
+    - @sap-ux/fiori-elements-writer@2.8.30
+    - @sap-ux/launch-config@0.10.46
+
 ## 0.11.7
 
 ### Patch Changes
