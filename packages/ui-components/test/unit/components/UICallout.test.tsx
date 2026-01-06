@@ -15,7 +15,6 @@ import * as Utilities from '../../../src/utilities';
 import { compareStylesBySelector } from '../../utils/styles';
 
 describe('<UICallout />', () => {
-    let container: HTMLElement;
     let rerender: (ui: React.ReactElement) => void;
     let targetElement: HTMLElement;
     const selectors = {
@@ -25,6 +24,7 @@ describe('<UICallout />', () => {
         beakCurtain: '.ms-Callout-beakCurtain',
         container: '.ms-Callout-container'
     };
+    const focusToSiblingMock = Utilities.focusToSibling as jest.Mock;
 
     beforeEach(() => {
         // Create a target element for the callout
@@ -38,7 +38,6 @@ describe('<UICallout />', () => {
                 <div className="dummy"></div>
             </UICallout>
         );
-        container = result.container;
         rerender = result.rerender;
     });
 
@@ -127,8 +126,6 @@ describe('<UICallout />', () => {
     });
 
     describe('Property "focusTargetSiblingOnTabPress"', () => {
-        let getNextElementSpy: jest.SpyInstance;
-        let getPreviousElementSpy: jest.SpyInstance;
         const virtualElement = document.createElement('div');
         const testCases = [
             {
@@ -169,12 +166,6 @@ describe('<UICallout />', () => {
             }
         ];
 
-        beforeEach(() => {
-            const element = document.createElement('div');
-            getNextElementSpy = jest.spyOn(FluentUI, 'getNextElement').mockReturnValue(element);
-            getPreviousElementSpy = jest.spyOn(FluentUI, 'getPreviousElement').mockReturnValue(element);
-        });
-
         for (const testCase of testCases) {
             const { name, target, focusTargetSiblingOnTabPress, focusNext, focusPrevious, key, shiftKey } = testCase;
             it(name, () => {
@@ -184,11 +175,19 @@ describe('<UICallout />', () => {
                     </UICallout>
                 );
 
-                const dummyElement = container.querySelector('.dummy');
-                if (dummyElement) {
-                    fireEvent.keyDown(dummyElement, { key, shiftKey });
-                    expect(getNextElementSpy).toHaveBeenCalledTimes(focusNext ? 1 : 0);
-                    expect(getPreviousElementSpy).toHaveBeenCalledTimes(focusPrevious ? 1 : 0);
+                const dummyElement = document.querySelector('.dummy');
+                fireEvent.keyDown(dummyElement, { key, shiftKey });
+                expect(focusToSiblingMock).toHaveBeenCalledTimes(focusNext || focusPrevious ? 1 : 0);
+                if (focusNext || focusPrevious) {
+                    const getNextElementCall = focusToSiblingMock.mock.calls[0];
+                    expect(getNextElementCall[0]).toEqual(
+                        typeof target === 'string' ? document.querySelector(target) : target
+                    );
+                    if (focusNext) {
+                        expect(getNextElementCall[1]).toEqual(true);
+                    } else if (focusPrevious) {
+                        expect(getNextElementCall[1]).toEqual(false);
+                    }
                 }
             });
         }
@@ -217,33 +216,6 @@ describe('<UICallout />', () => {
             fireEvent.keyDown(callout, { key: 'a' });
         }
         expect(onKeyDown).toHaveBeenCalled();
-    });
-
-    it('handles target as string selector', () => {
-        (Utilities.focusToSibling as jest.Mock).mockReturnValue(document.createElement('div'));
-        rerender(
-            <UICallout focusTargetSiblingOnTabPress target={'.dummy'}>
-                <div className="dummy"></div>
-            </UICallout>
-        );
-        const callout = document.body.querySelector('.ms-Callout');
-        fireEvent.keyDown(callout, { key: 'Tab' });
-        expect(Utilities.focusToSibling).toHaveBeenCalled();
-    });
-
-    it('handles target as HTMLElement', () => {
-        (Utilities.focusToSibling as jest.Mock).mockReturnValue(document.createElement('div'));
-        const div = document.createElement('div');
-        div.className = 'dummy';
-        document.body.appendChild(div);
-        rerender(
-            <UICallout focusTargetSiblingOnTabPress target={div}>
-                <div className="dummy"></div>
-            </UICallout>
-        );
-        const callout = document.body.querySelector('.ms-Callout');
-        fireEvent.keyDown(callout, { key: 'Tab' });
-        expect(Utilities.focusToSibling).toHaveBeenCalled();
     });
 
     it('merges custom styles with default styles', () => {
