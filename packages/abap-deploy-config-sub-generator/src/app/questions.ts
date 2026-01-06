@@ -143,7 +143,7 @@ export async function getAbapQuestions({
                 useAutocomplete: true,
                 ...promptOptions?.packageAutocomplete
             },
-            overwriteAbapConfig: { hide: !showOverwriteQuestion },
+            overwrite: { hide: !showOverwriteQuestion, enableNamespace: true },
             transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false },
             targetSystem: promptOptions?.targetSystem
         },

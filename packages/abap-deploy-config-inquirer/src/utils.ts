@@ -264,10 +264,9 @@ export function reconcileAnswers(
         reconciledAnswers.index = answers.index;
     }
 
-    if (answers.overwrite !== undefined) {
-        reconciledAnswers.overwrite = answers.overwrite;
-    }
-
+    reconciledAnswers.overwrite = Object.entries(answers).some(
+        ([key, value]) => key.toLowerCase().includes('overwrite') && value === true
+    );
     return reconciledAnswers;
 }
 

@@ -80,7 +80,7 @@ export enum promptNames {
     transportFromList = 'transportFromList',
     transportManual = 'transportManual',
     index = 'index',
-    overwriteAbapConfig = 'overwriteAbapConfig'
+    overwrite = 'overwrite'
 }
 
 /**
@@ -157,6 +157,11 @@ export type OverwritePromptOptions = {
      * It should be set to false when existing configuration will be overwritten.
      */
     hide?: boolean;
+
+    /**
+     * If set to true, a namespace will be added to the prompt name.
+     */
+    enableNamespace?: boolean;
 };
 
 export type IndexPromptOptions = {
@@ -211,7 +216,7 @@ type abapPromptOptions = {
     [promptNames.packageManual]: PackageManualPromptOptions & CommonPromptOptions;
     [promptNames.transportManual]: TransportManualPromptOptions & CommonPromptOptions;
     [promptNames.transportCreated]: TransportCreatedPromptOptions & CommonPromptOptions;
-    [promptNames.overwriteAbapConfig]: OverwritePromptOptions & CommonPromptOptions;
+    [promptNames.overwrite]: OverwritePromptOptions & CommonPromptOptions;
     [promptNames.index]: IndexPromptOptions & CommonPromptOptions;
     [promptNames.packageAutocomplete]: PackageAutocompletePromptOptions & CommonPromptOptions;
     [promptNames.transportInputChoice]: TransportInputChoicePromptOptions & CommonPromptOptions;

@@ -4,6 +4,8 @@ import { t } from '../../i18n';
 import { promptNames, type AbapDeployConfigPromptOptions, type AbapDeployConfigAnswersInternal } from '../../types';
 import type { ConfirmQuestion, Question } from 'inquirer';
 
+const abapInquirerNamespace = 'abapDeployConfigInquirer';
+
 /**
  * Returns the index prompt.
  *
@@ -26,11 +28,14 @@ function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDe
 /**
  * Returns the overwrite prompt.
  *
+ * @param options - abap deploy config prompt options
  * @returns confirm question for overwriting the files
  */
-function getOverwritePrompt(): Question<AbapDeployConfigAnswersInternal> {
+function getOverwritePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+    const addOverwriteNamespace = options.overwrite?.enableNamespace === true;
+    const promptName = `${addOverwriteNamespace ? abapInquirerNamespace + ':' : ''}${promptNames.overwrite}`;
     return {
-        name: promptNames.overwriteAbapConfig,
+        name: promptName,
         type: 'confirm',
         message: t('prompts.confirm.overwrite.message'),
         guiOptions: {
@@ -47,10 +52,12 @@ function getOverwritePrompt(): Question<AbapDeployConfigAnswersInternal> {
  * @param options - abap deploy config prompt options
  * @returns list of questions for confirm prompting
  */
-export function getConfirmPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
+export function getConfirmPrompts(
+    options: AbapDeployConfigPromptOptions
+): Question<AbapDeployConfigAnswersInternal>[] {
     const questions = [getIndexPrompt(options)];
-    if (options.overwriteAbapConfig?.hide !== true) {
-        questions.push(getOverwritePrompt());
+    if (options.overwrite?.hide !== true) {
+        questions.push(getOverwritePrompt(options));
     }
     return questions;
 }

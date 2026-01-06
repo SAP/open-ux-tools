@@ -17,6 +17,7 @@ import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers';
 import type { Logger } from '@sap-ux/logger';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
+const cfDeployConfigInquirer = 'cfDeployConfigInquirer';
 /**
  * Retrieves the prompt configuration for selecting a Cloud Foundry destination name.
  *
@@ -101,12 +102,14 @@ function getAddManagedAppRouterPrompt(): CfDeployConfigQuestions {
 
 /**
  *
+ * @param {boolean} [addOverwriteNamespace=true] - Flag to enable namespacing for prompt names.
  * @returns A confirmation question object which overwrites destination.
  */
-function getOverwritePrompt(): CfDeployConfigQuestions {
+function getOverwritePrompt(addOverwriteNamespace: boolean = false): CfDeployConfigQuestions {
+    const promptName = `${addOverwriteNamespace ? cfDeployConfigInquirer + ':' : ''}${promptNames.overwrite}`;
     return {
         type: 'confirm',
-        name: promptNames.overwriteCfConfig,
+        name: promptName,
         guiOptions: {
             hint: t('prompts.overwriteHintMessage')
         },
@@ -158,12 +161,13 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
  */
 export async function getQuestions(
     promptOptions: CfDeployConfigPromptOptions,
-    log?: Logger
+    log?: Logger,
 ): Promise<CfDeployConfigQuestions[]> {
     const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
-    const addOverwriteQuestion = !promptOptions.overwriteCfConfig?.hide;
+    const addOverwriteQuestion = !promptOptions.overwrite?.hide;
     const addManagedAppRouterQuestions = !promptOptions.addManagedAppRouter?.hide;
     const addRouterTypeQuestion = !promptOptions.routerType?.hide;
+    const addOverwriteNamespace = promptOptions.overwrite?.enableNamespace === true;
 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array
@@ -176,7 +180,7 @@ export async function getQuestions(
 
     if (addOverwriteQuestion) {
         log?.info(t('info.overwriteDestination'));
-        questions.push(getOverwritePrompt());
+        questions.push(getOverwritePrompt(addOverwriteNamespace));
     }
 
     if (addRouterTypeQuestion) {

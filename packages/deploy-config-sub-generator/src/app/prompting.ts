@@ -6,6 +6,7 @@ import type { Target, DeployConfigOptions, DeployConfigSubGenPromptOptions } fro
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 import type { GeneratorOptions } from 'yeoman-generator';
+import { DeployTarget } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Determines the target deployment and runs all prompting if required.
@@ -77,6 +78,9 @@ export async function promptDeployConfigQuestions(
         );
         const subGenAnswers = await prompt(questions);
         Object.assign(answers, subGenAnswers, abapAnswers);
+        answers.overwrite = Object.entries(answers).some(
+            ([key, value]) => key.toLowerCase().includes('overwrite') && value === true
+        );
     } else {
         answers = await prompt(getDeployTargetQuestion([...supportedTargets], options.projectRoot));
     }

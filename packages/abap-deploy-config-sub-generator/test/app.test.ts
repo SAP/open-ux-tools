@@ -391,7 +391,7 @@ describe('Test abap deploy configuration generator', () => {
                         shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
-                overwriteAbapConfig: { hide: true },
+                overwrite: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: false
                 },
@@ -500,7 +500,7 @@ describe('Test abap deploy configuration generator', () => {
                         shouldValidateFormatAndSpecialCharacters: true
                     }
                 },
-                overwriteAbapConfig: { hide: true },
+                overwrite: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: true
                 },
@@ -604,7 +604,7 @@ describe('Test abap deploy configuration generator', () => {
                         shouldValidateFormatAndSpecialCharacters: true
                     }
                 },
-                overwriteAbapConfig: { hide: true },
+                overwrite: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: true
                 },

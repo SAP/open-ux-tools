@@ -121,7 +121,7 @@ export async function getSubGenPrompts(
         questions = targetDeployment === TargetName.ABAP ? (abapPrompts as Question[]) : (cfPrompts as Question[]);
     }
 
-    return { questions, abapAnswers: abapAnswers };
+    return { questions, abapAnswers };
 }
 
 /**

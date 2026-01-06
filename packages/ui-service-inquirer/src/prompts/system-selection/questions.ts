@@ -24,7 +24,6 @@ export async function getSystemQuestions(
     PromptState.reset();
     const systemQuestions = await getSystemSelectionQuestions(
         {
-            serviceSelection: { hide: true },
             systemSelection: {
                 defaultChoice: systemName,
                 destinationFilters: {

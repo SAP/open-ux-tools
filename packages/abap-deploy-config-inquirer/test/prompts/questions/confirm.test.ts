@@ -2,7 +2,7 @@ import { initI18n, t } from '../../../src/i18n';
 import { getConfirmPrompts } from '../../../src/prompts/questions';
 import * as conditions from '../../../src/prompts/conditions';
 import * as validators from '../../../src/prompts/validators';
-import { promptNames } from '../../../src/types';
+import {type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions, promptNames } from '../../../src/types';
 
 describe('getConfirmPrompts', () => {
     beforeAll(async () => {
@@ -51,14 +51,25 @@ describe('getConfirmPrompts', () => {
 
     test('should return expected values from overwrite prompt methods', async () => {
         jest.spyOn(validators, 'validateConfirmQuestion').mockReturnValue(true);
-
         const confirmPrompts = getConfirmPrompts({});
-        const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwriteAbapConfig);
+        const overwritePrompt = confirmPrompts.find((prompt) => prompt.name === promptNames.overwrite);
+        expect(overwritePrompt?.message).toBe(t('prompts.confirm.overwrite.message'));
+        expect(overwritePrompt?.default).toBe(true);
+        expect((overwritePrompt?.validate as Function)()).toBe(true);
+    });
 
-        if (overwritePrompt) {
-            expect(overwritePrompt.message).toBe(t('prompts.confirm.overwrite.message'));
-            expect(overwritePrompt.default).toBe(true);
-            expect((overwritePrompt.validate as Function)()).toBe(true);
-        }
+    test('should return expected values from overwrite prompt method with namespace', async () => {
+        jest.spyOn(validators, 'validateConfirmQuestion').mockReturnValue(true);
+        const promptOptions = {} as AbapDeployConfigPromptOptions;
+            promptOptions[promptNames.overwrite] = {
+            hide: false,
+            enableNamespace: true
+        };
+        const confirmPrompts = getConfirmPrompts(promptOptions);
+        const overwritePrompt = confirmPrompts.find((prompt) => prompt?.name?.includes(promptNames.overwrite));
+        expect(overwritePrompt?.message).toBe(t('prompts.confirm.overwrite.message'));
+        expect(overwritePrompt?.default).toBe(true);
+        expect((overwritePrompt?.validate as Function)()).toBe(true);
+        expect(overwritePrompt?.type).toBe('confirm');
     });
 });

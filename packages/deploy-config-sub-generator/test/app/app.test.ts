@@ -167,6 +167,7 @@ describe('Deployment Generator', () => {
     it('Validate deployment generator is loaded as sub generator', async () => {
         cwd = join(OUTPUT_DIR_PREFIX, 'mta-app/project1');
         mockIsAppStudio.mockReturnValueOnce(true);
+        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
         const getABAPPromptsSpy = jest
             .spyOn(abapDeploySubGen, 'getAbapQuestions')
@@ -175,6 +176,9 @@ describe('Deployment Generator', () => {
             {
                 [`.${OUTPUT_DIR_PREFIX}/mta-app/project1/ui5.yaml`]: testFixture.getContents(
                     'mta1/app1/ui5-client-value.yaml'
+                ),
+                [`.${OUTPUT_DIR_PREFIX}/mta-app/project1/ui5-deploy.yaml`]: testFixture.getContents(
+                    'mta1/app1/ui5-deploy.yaml'
                 ),
                 [`.${OUTPUT_DIR_PREFIX}/mta-app/mta.yaml`]: testFixture.getContents(
                     'mta1/mta-with-router-deployer.yaml'
@@ -199,10 +203,12 @@ describe('Deployment Generator', () => {
                     data: {
                         destinationRoot: appDir,
                         launchDeployConfigAsSubGenerator: true
-                    }
+                    },
+                    destinationName: 'TestDestination'
                 })
                 .withPrompts({
-                    targetName: TargetName.ABAP
+                    targetName: TargetName.CF,
+                    destinationName: 'TestDestination'
                 })
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'abap')]])
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
@@ -218,6 +224,12 @@ describe('Deployment Generator', () => {
                     scp: true,
                     url: 'https://abap.staging.hana.ondemand.com'
                 }
+            })
+        );
+        expect(composeWithSpy).toHaveBeenCalledWith(
+            'gen:test_cf',
+            expect.objectContaining({
+                overwrite: true
             })
         );
     });

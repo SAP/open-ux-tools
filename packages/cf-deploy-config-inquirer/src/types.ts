@@ -13,7 +13,7 @@ export enum promptNames {
     /** The prompt to specify if a managed app router should be added to the deployment. */
     addManagedAppRouter = 'addManagedAppRouter',
     /** The prompt for confirming cf config overwrite. */
-    overwriteCfConfig = 'overwriteCfConfig',
+    overwrite = 'overwrite',
     /** The prompt for confirming the router type. */
     routerType = 'routerType'
 }
@@ -67,6 +67,13 @@ export type DestinationNamePromptOptions = {
     useAutocomplete?: boolean;
 };
 
+export type OverwritePromptOptions = {
+    /**
+     * If set to true, a namespace will be added to the prompt name.
+     */
+    enableNamespace?: boolean;
+};
+
 /**
  * Configuration options for the 'destinationName' prompt used in deployment settings.
  */
@@ -81,7 +88,7 @@ export type DestinationRouterPromptOptions = {
 type cfDeployConfigPromptOptions = {
     [promptNames.destinationName]: DestinationNamePromptOptions & CommonPromptOptions;
     [promptNames.addManagedAppRouter]: CommonPromptOptions;
-    [promptNames.overwriteCfConfig]: CommonPromptOptions;
+    [promptNames.overwrite]: OverwritePromptOptions & CommonPromptOptions;
     [promptNames.routerType]: CommonPromptOptions;
 };
 
