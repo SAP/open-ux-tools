@@ -151,10 +151,9 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
     try {
         const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
-        const existingMiddleware = ui5Config.findCustomMiddleware('fiori-tools-servestatic');
 
-        if (existingMiddleware) {
-            ui5Config.removeCustomMiddleware('fiori-tools-servestatic');
+        while (ui5Config.findCustomMiddleware('fiori-tools-servestatic')) {
+            ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
         }
 
         const ui5AppInfoPath = join(basePath, 'ui5AppInfo.json');
