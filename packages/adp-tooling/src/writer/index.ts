@@ -7,6 +7,7 @@ import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
 import { getApplicationType } from '../source';
+import { writeKeyUserChanges } from '../base/change-utils';
 
 const baseTmplPath = join(__dirname, '../../templates');
 
@@ -23,7 +24,8 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         ui5: { ...config.ui5 },
         deploy: config.deploy ? { ...config.deploy } : undefined,
         options: { ...config.options },
-        customConfig: config.customConfig ? { ...config.customConfig } : undefined
+        customConfig: config.customConfig ? { ...config.customConfig } : undefined,
+        keyUserChanges: config.keyUserChanges
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
     configWithDefaults.app.layer ??= FlexLayer.CUSTOMER_BASE;
@@ -67,6 +69,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     writeTemplateToFolder(templatePath, join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
+    await writeKeyUserChanges(basePath, fullConfig.keyUserChanges, fs);
 
     return fs;
 }

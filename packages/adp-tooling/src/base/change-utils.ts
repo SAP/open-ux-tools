@@ -86,10 +86,14 @@ export async function writeAnnotationChange(
  */
 export async function writeKeyUserChanges(
     projectPath: string,
-    changes: KeyUserChangeContent[],
+    changes: KeyUserChangeContent[] | undefined,
     fs: Editor
 ): Promise<void> {
-    for (const entry of changes ?? []) {
+    if (!changes?.length) {
+        return;
+    }
+
+    for (const entry of changes) {
         if (!entry?.content) {
             continue;
         }

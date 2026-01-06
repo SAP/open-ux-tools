@@ -21,8 +21,7 @@ import {
     isLoggedInCf,
     isMtaProject,
     loadApps,
-    loadCfConfig,
-    writeKeyUserChanges
+    loadCfConfig
 } from '@sap-ux/adp-tooling';
 import {
     getDefaultTargetFolder,
@@ -412,7 +411,8 @@ export default class extends Generator {
                 layer: this.layer,
                 packageJson,
                 logger: this.toolsLogger,
-                toolsId: this.toolsId
+                toolsId: this.toolsId,
+                keyUserChanges: this.keyUserChanges
             });
 
             if (config.options) {
@@ -420,10 +420,6 @@ export default class extends Generator {
             }
 
             await generate(this._getProjectPath(), config, this.fs);
-
-            if (this.attributeAnswers.importKeyUserConfigurations && this.keyUserChanges?.length) {
-                await writeKeyUserChanges(this._getProjectPath(), this.keyUserChanges, this.fs);
-            }
         } catch (e) {
             this.logger.error(`Writing phase failed: ${e}`);
             throw new Error(t('error.updatingApp'));
