@@ -10,7 +10,6 @@ import * as React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { UICallout, UICalloutContentPadding } from '../../../src/components/UICallout';
-import * as FluentUI from '@fluentui/react';
 import * as Utilities from '../../../src/utilities';
 import { compareStylesBySelector } from '../../utils/styles';
 
