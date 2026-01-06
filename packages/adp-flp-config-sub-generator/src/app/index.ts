@@ -34,7 +34,7 @@ import {
     sendTelemetry,
     isCli,
     type ILogWrapper,
-    type YeomanEnvironment
+    setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName, getAppType } from '@sap-ux/project-access';
@@ -104,9 +104,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         await initI18n();
 
         // Force the generator to overwrite existing files without additional prompting
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
 
         this._setupFLPConfigPage();
 

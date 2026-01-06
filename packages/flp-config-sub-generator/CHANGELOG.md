@@ -1,5 +1,17 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.91
+
+### Patch Changes
+
+- 62bb798: set conflicter option
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/deploy-config-generator-shared@0.1.66
+    - @sap-ux/flp-config-inquirer@0.4.88
+    - @sap-ux/inquirer-common@0.10.4
+    - @sap-ux/app-config-writer@0.6.72
+
 ## 0.3.90
 
 ### Patch Changes

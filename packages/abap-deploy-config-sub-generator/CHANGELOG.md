@@ -1,5 +1,15 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.116
+
+### Patch Changes
+
+- 62bb798: set conflicter option
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/abap-deploy-config-inquirer@1.6.67
+    - @sap-ux/deploy-config-generator-shared@0.1.66
+
 ## 0.1.115
 
 ### Patch Changes
