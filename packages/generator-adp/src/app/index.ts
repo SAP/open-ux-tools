@@ -33,8 +33,7 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import type { AbapServiceProvider, KeyUserChangeContent } from '@sap-ux/axios-extension';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
@@ -193,10 +192,6 @@ export default class extends Generator {
      * Key-user import prompter instance.
      */
     private keyUserPrompter?: KeyUserImportPrompter;
-    /**
-     * Result of the key-user import selection.
-     */
-    private keyUserChanges: KeyUserChangeContent[] = [];
 
     /**
      * Creates an instance of the generator.
@@ -331,7 +326,6 @@ export default class extends Generator {
                     keyUserPassword: { default: this.configAnswers.password }
                 });
                 await this.prompt(keyUserQuestions);
-                this.keyUserChanges = this.keyUserPrompter.changes;
             }
 
             this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
@@ -411,7 +405,7 @@ export default class extends Generator {
                 packageJson,
                 logger: this.toolsLogger,
                 toolsId: this.toolsId,
-                keyUserChanges: this.keyUserChanges
+                keyUserChanges: this.keyUserPrompter?.changes
             });
 
             if (config.options) {
