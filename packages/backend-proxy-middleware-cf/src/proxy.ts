@@ -3,7 +3,7 @@ import type { Url } from 'node:url';
 import type { Socket } from 'node:net';
 import { type Request, Router } from 'express';
 import type { Options } from 'http-proxy-middleware';
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -23,11 +23,11 @@ export function createProxyOptions(targetUrl: string, logger: ToolsLogger): Opti
     return {
         target: targetUrl,
         changeOrigin: true,
-        pathRewrite: (path: string, req: EnhancedIncomingMessage) => {
+        pathRewrite: (path: string, req: EnhancedIncomingMessage): string => {
             // Express router.use() strips the matched path from req.url,
             // use originalUrl to get the full path before Express stripped it
-            const originalUrl = req.originalUrl || req.url || path;
-            const urlPath = originalUrl.split('?')[0];
+            const originalUrl = req.originalUrl ?? req.url ?? path;
+            const urlPath = originalUrl.split('?')?.[0];
             const queryString = originalUrl.includes('?') ? originalUrl.substring(originalUrl.indexOf('?')) : '';
             const fullPath = urlPath + queryString;
             logger.debug(`Rewrite path ${path} > ${fullPath}`);
