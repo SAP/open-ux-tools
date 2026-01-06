@@ -354,15 +354,22 @@ export class ConnectionValidator {
             return 200;
         } catch (e) {
             LoggerHelper.logger.debug(`ConnectionValidator.checkUrl() - error: ${e.message}`);
-            if (e?.isAxiosError) {
-                // Error handling for BAS specific 500 errors
-                if (e?.response?.status.toString().match(/5\d\d/) && isBAS) {
-                    throw e;
-                }
-                return e?.response?.status || e?.code;
-            } else {
+            if (!e?.isAxiosError) {
                 throw e;
             }
+
+            const status = e?.response?.status || e?.code;
+            // Error handling for BAS specific 500 errors
+            if (isBAS && status.toString().match(/5\d\d/)) {
+                throw e;
+            }
+
+            if (ErrorHandler.getErrorType(status)) {
+                // the error handler will generate user friendly messages for known error types
+                return status;
+            }
+
+            throw e;
         }
     }
 
