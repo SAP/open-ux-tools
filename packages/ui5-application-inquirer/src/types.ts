@@ -12,7 +12,6 @@ export interface UI5ApplicationAnswers {
     addFlpConfig?: boolean;
     ui5Theme?: string;
     enableEslint?: boolean;
-    enableCodeAssist?: boolean;
     skipAnnotations?: boolean;
     enableTypeScript?: boolean;
     enableVirtualEndpoints?: boolean;
@@ -52,7 +51,6 @@ export enum promptNames {
     addFlpConfig = 'addFlpConfig',
     ui5Theme = 'ui5Theme',
     enableEslint = 'enableEslint',
-    enableCodeAssist = 'enableCodeAssist',
     skipAnnotations = 'skipAnnotations',
     enableTypeScript = 'enableTypeScript',
     enableVirtualEndpoints = 'enableVirtualEndpoints',
@@ -128,7 +126,6 @@ type booleanPromptKeys =
     | 'enableEslint'
     | 'skipAnnotations'
     | 'enableTypeScript'
-    | 'enableCodeAssist'
     | 'showAdvanced';
 
 // Creates a general type for all string value prompt options
@@ -148,7 +145,6 @@ type DefaultValueInputPrompts =
     | promptNames.targetFolder;
 type DefaultValueConfirmPrompts =
     | promptNames.enableTypeScript
-    | promptNames.enableCodeAssist
     | promptNames.enableEslint
     | promptNames.skipAnnotations
     | promptNames.addDeployConfig;
