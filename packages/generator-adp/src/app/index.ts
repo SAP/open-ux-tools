@@ -398,7 +398,7 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
-        if (!this.shouldInstallDeps || this.shouldCreateExtProject || this.isCfEnv) {
+        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
             return;
         }
 
@@ -581,7 +581,7 @@ export default class extends Generator {
      * Generates the ADP project artifacts for the CF environment.
      */
     private async _generateAdpProjectArtifactsCF(): Promise<void> {
-        const projectPath = this.isMtaYamlFound ? process.cwd() : this.destinationPath();
+        const projectPath = this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
         this.telemetryCollector.setBatch({ ui5VersionSelected: getLatestVersion(publicVersions) });
 
