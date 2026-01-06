@@ -1,6 +1,5 @@
 export {
     defaultVersion,
-    minUi5VersionSupportingCodeAssist,
     minUi5VersionV4Template,
     minUI5VersionForLocalDev,
     latestVersionString,

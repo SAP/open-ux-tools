@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.0
+
+### Minor Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+
 ## 1.6.8
 
 ### Patch Changes
