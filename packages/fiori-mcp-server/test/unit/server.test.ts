@@ -191,7 +191,12 @@ describe('FioriFunctionalityServer', () => {
             ]);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'list_functionality',
-                { tool: 'list_functionality', functionalityId: '', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'list_functionality',
+                    functionalityId: '',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -232,7 +237,12 @@ describe('FioriFunctionalityServer', () => {
             ]);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'get_functionality_details',
-                { tool: 'get_functionality_details', functionalityId: 'add-page', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'get_functionality_details',
+                    functionalityId: 'add-page',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -282,7 +292,12 @@ describe('FioriFunctionalityServer', () => {
             ]);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'execute_functionality',
-                { tool: 'execute_functionality', functionalityId: 'add-page', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'execute_functionality',
+                    functionalityId: 'add-page',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -404,7 +419,12 @@ describe('FioriFunctionalityServer', () => {
             expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'get_functionality_details',
-                { tool: 'get_functionality_details', functionalityId: 'add-page-123', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'get_functionality_details',
+                    functionalityId: 'add-page-123',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -434,7 +454,12 @@ describe('FioriFunctionalityServer', () => {
             expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'get_functionality_details',
-                { tool: 'get_functionality_details', functionalityId: 'add/page/new', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'get_functionality_details',
+                    functionalityId: 'add/page/new',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -464,7 +489,12 @@ describe('FioriFunctionalityServer', () => {
             expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'get_functionality_details',
-                { tool: 'get_functionality_details', functionalityId: 'add\\page\\new', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'get_functionality_details',
+                    functionalityId: 'add\\page\\new',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -494,7 +524,12 @@ describe('FioriFunctionalityServer', () => {
             expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'get_functionality_details',
-                { tool: 'get_functionality_details', functionalityId: '', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'get_functionality_details',
+                    functionalityId: '',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -524,7 +559,12 @@ describe('FioriFunctionalityServer', () => {
             expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'get_functionality_details',
-                { tool: 'get_functionality_details', functionalityId: '', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'get_functionality_details',
+                    functionalityId: '',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -554,7 +594,12 @@ describe('FioriFunctionalityServer', () => {
             expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'get_functionality_details',
-                { tool: 'get_functionality_details', functionalityId: 'add page new', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'get_functionality_details',
+                    functionalityId: 'add page new',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -584,7 +629,12 @@ describe('FioriFunctionalityServer', () => {
             expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'get_functionality_details',
-                { tool: 'get_functionality_details', functionalityId: '', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
+                {
+                    tool: 'get_functionality_details',
+                    functionalityId: '',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
