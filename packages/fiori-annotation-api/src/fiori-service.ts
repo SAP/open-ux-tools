@@ -1,7 +1,7 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { create as createStore } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, MemFsEditorFileDump} from 'mem-fs-editor';
 import { create as createEditor } from 'mem-fs-editor';
 
 import type { RawMetadata } from '@sap-ux/vocabularies-types';
@@ -407,7 +407,7 @@ export class FioriAnnotationService {
 
     private async commit(): Promise<void> {
         await new Promise<void>((resolve, reject) => {
-            this.fs.commit((error: any) => {
+            this.fs.commit().catch(error => {
                 if (error instanceof Error) {
                     reject(error);
                 } else if (typeof error === 'string') {
@@ -474,9 +474,9 @@ async function getService(
     } else if (project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs') {
         const fileCache = new Map<string, string>();
         if (fsEditor) {
-            for (const [relativePath, value] of Object.entries(fsEditor.dump())) {
+            for (const [relativePath, value] of Object.entries(fsEditor.dump()) as [string, MemFsEditorFileDump][]) {
                 const absolute = pathToFileURL(join(process.cwd(), relativePath)).toString();
-                fileCache.set(absolute, value.contents);
+                fileCache.set(absolute, value.contents ?? '');
             }
         }
         return getCDSService(project.root, serviceName, fileCache, clearCache);

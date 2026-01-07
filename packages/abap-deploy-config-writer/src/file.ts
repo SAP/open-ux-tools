@@ -4,7 +4,7 @@ import { platform } from 'node:os';
 import { FileName, type Package, getReuseLibs } from '@sap-ux/project-access';
 import { UI5_CLI_LIB, UI5_CLI_MIN_VERSION, UI5_REPO_IGNORE, UI5_REPO_TEXT_FILES } from './constants';
 import { coerce, satisfies } from 'semver';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Adds a new UI5 dependency to the package.json.
@@ -66,7 +66,7 @@ export const writeUi5RepositoryFile = (
     const filePath = join(basePath, ui5RepositoryFile);
     let content: string;
     if (fs.exists(filePath)) {
-        content = fs.read(filePath);
+        content = fs.read(filePath) ?? '';
         if (!content.includes(addContent)) {
             content = `${content}\n${addContent}`;
         }

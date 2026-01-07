@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import cloneDeep from 'lodash/cloneDeep';
 import type { UI5LibConfig } from './types';

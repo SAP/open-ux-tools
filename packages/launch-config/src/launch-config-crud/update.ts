@@ -4,7 +4,7 @@ import type { FioriOptions, LaunchJSON } from '../types';
 import { LAUNCH_JSON_FILE } from '../types';
 import type { JSONPath, ModificationOptions, Node } from 'jsonc-parser';
 import { findNodeAtLocation, parse, parseTree } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig, mergeArgs } from './utils';
 import { join } from 'node:path';
 import { DirName } from '@sap-ux/project-access';
@@ -161,7 +161,7 @@ export async function updateLaunchConfig(
     const launchJSONPath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
     if (fs.exists(launchJSONPath)) {
         // edit existing launch config
-        const launchJSONString = fs.read(launchJSONPath);
+        const launchJSONString = fs.read(launchJSONPath) ?? '';
         const launchJSON = parse(launchJSONString) as LaunchJSON;
         const launchJSONTree = parseTree(launchJSONString);
         const launchConfig = generateNewFioriLaunchConfig(rootFolder, fioriOptions);

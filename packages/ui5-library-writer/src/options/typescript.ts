@@ -1,5 +1,5 @@
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { UI5LibInput, UI5LibInputTS } from '../types';
 import { getFilePaths } from '@sap-ux/project-access';
 import { mergeObjects, UI5Config } from '@sap-ux/ui5-config';
@@ -33,8 +33,8 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
                 globOptions: { dot: true }
             });
         } else {
-            const add = JSON.parse(render(fs.read(tsTmplFilePath), tsLibInput, {}));
-            const existingFile = JSON.parse(fs.read(outPath));
+            const add = JSON.parse(render(fs.read(tsTmplFilePath) ?? '', tsLibInput, {}));
+            const existingFile = JSON.parse(fs.read(outPath) ?? '');
             const merged = mergeObjects(existingFile, add);
             fs.writeJSON(outPath, merged);
         }
@@ -42,7 +42,7 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
 
     // ui5 yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath) ?? '');
 
     ui5Config.updateCustomMiddleware({
         name: 'fiori-tools-appreload',
