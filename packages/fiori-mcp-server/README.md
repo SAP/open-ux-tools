@@ -108,7 +108,7 @@ Executes a specific functionality to create a new or modify an existing SAP Fior
 
 ## [Logging](#logging)
 
-By default, logging is done for level `error`. To adjust the log level or disable logging completely you can use the respective `env` property in your configuration.
+By default, logging is done for level `error`. To adjust the log level or disable logging completely you can use the `env` property in your configuration.
 
 ```json
 {
