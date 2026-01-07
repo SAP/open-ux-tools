@@ -55,7 +55,7 @@ export function addCustomSectionFragment(
             const fragmentPath = `${path}.fragment.xml`;
             const fullPath = join(basePath, fragmentPath);
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', customFragmentConfig.path);
-            const text = fs.read(fragmentTemplatePath);
+            const text = fs.read(fragmentTemplatePath) ?? '';
             const template = render(text, customFragmentConfig.getData());
             fs.write(fullPath, template);
             logger.info(`XML Fragment "${fragmentPath}" was created`);
