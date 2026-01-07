@@ -117,12 +117,14 @@ By default, logging is done for level `error`. To adjust the log level or disabl
       "command": "npx",
       "args": ["--yes","@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
       "env": {
-        "LOG_LEVEL": "debug" // Options: off, error, warn, info, debug, verbose
+        "LOG_LEVEL": "debug"
       }
     }
   }
 }
 ```
+The following log levels are supported: `off`, `error`, `warn`, `info`, `debug`, `verbose`.
+
 The logs will be stored in the file system at `~/.fioritools/fiori-mcp-server.log`
 
 ## [Telemetry](#telemetry)
