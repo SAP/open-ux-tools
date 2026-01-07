@@ -80,6 +80,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -90,11 +91,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"start\\": \\"npm run setup-cf && npm run build && ui5 serve --open /test/flp.html#app-preview --verbose\\",
-		\\"start-nobuild\\": \\"ui5 serve --open /test/flp.html#app-preview --verbose\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
-		\\"start-editor-nobuild\\": \\"ui5 serve --open /local/editor.html --verbose\\",
-		\\"start-editor\\": \\"npm run setup-cf && ui5 serve --open /local/editor.html --verbose\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -311,6 +312,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -321,11 +323,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"start\\": \\"npm run setup-cf && npm run build && ui5 serve --open /test/flp.html#app-preview --verbose\\",
-		\\"start-nobuild\\": \\"ui5 serve --open /test/flp.html#app-preview --verbose\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
-		\\"start-editor-nobuild\\": \\"ui5 serve --open /local/editor.html --verbose\\",
-		\\"start-editor\\": \\"npm run setup-cf && ui5 serve --open /local/editor.html --verbose\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -547,6 +549,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -557,11 +560,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"start\\": \\"npm run setup-cf && npm run build && ui5 serve --open /test/flp.html#app-preview --verbose\\",
-		\\"start-nobuild\\": \\"ui5 serve --open /test/flp.html#app-preview --verbose\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
-		\\"start-editor-nobuild\\": \\"ui5 serve --open /local/editor.html --verbose\\",
-		\\"start-editor\\": \\"npm run setup-cf && ui5 serve --open /local/editor.html --verbose\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -752,6 +755,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -762,11 +766,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"start\\": \\"npm run setup-cf && npm run build && ui5 serve --open /test/flp.html#app-preview --verbose\\",
-		\\"start-nobuild\\": \\"ui5 serve --open /test/flp.html#app-preview --verbose\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
-		\\"start-editor-nobuild\\": \\"ui5 serve --open /local/editor.html --verbose\\",
-		\\"start-editor\\": \\"npm run setup-cf && ui5 serve --open /local/editor.html --verbose\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -1019,6 +1023,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -1029,11 +1034,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"start\\": \\"npm run setup-cf && npm run build && ui5 serve --open /test/flp.html#app-preview --verbose\\",
-		\\"start-nobuild\\": \\"ui5 serve --open /test/flp.html#app-preview --verbose\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
-		\\"start-editor-nobuild\\": \\"ui5 serve --open /local/editor.html --verbose\\",
-		\\"start-editor\\": \\"npm run setup-cf && ui5 serve --open /local/editor.html --verbose\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -1229,6 +1234,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -1239,11 +1245,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"start\\": \\"npm run setup-cf && npm run build && ui5 serve --open /test/flp.html#app-preview --verbose\\",
-		\\"start-nobuild\\": \\"ui5 serve --open /test/flp.html#app-preview --verbose\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
 		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
-		\\"start-editor-nobuild\\": \\"ui5 serve --open /local/editor.html --verbose\\",
-		\\"start-editor\\": \\"npm run setup-cf && ui5 serve --open /local/editor.html --verbose\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
