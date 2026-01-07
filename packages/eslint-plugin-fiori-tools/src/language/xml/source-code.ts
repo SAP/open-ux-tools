@@ -48,7 +48,7 @@ export class FioriXMLSourceCode extends TextSourceCodeBase {
      * @returns The parent of the node.
      * @throws {Error} If the method is not implemented in the subclass.
      */
-    getParent(node: XMLAstNode | XMLToken): object | undefined {
+    getParent(node: XMLAstNode | XMLToken): XMLAstNode | undefined {
         if (isNode(node)) {
             if (node.type === 'XMLDocument') {
                 return undefined;

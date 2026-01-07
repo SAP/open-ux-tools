@@ -33,6 +33,66 @@ describe('FioriXMLSourceCode', () => {
         expect(sourceCode.ast).toBe(ast);
     });
 
+    it('should provide location for nodes', () => {
+        const xmlText = `<root><child attr="value">Text</child></root>`;
+        const ast = getAst(xmlText);
+        const sourceCode = new FioriXMLSourceCode({
+            text: xmlText,
+            ast,
+            projectContext: DUMMY_PROJECT_CONTEXT
+        });
+
+        expect(sourceCode.getLoc(ast.rootElement!)).toMatchSnapshot();
+    });
+
+    it('should provide location for tokens', () => {
+        const xmlText = `<root><child attr="value">Text</child></root>`;
+        const ast = getAst(xmlText);
+        const sourceCode = new FioriXMLSourceCode({
+            text: xmlText,
+            ast,
+            projectContext: DUMMY_PROJECT_CONTEXT
+        });
+
+        expect(sourceCode.getLoc(ast.rootElement!.syntax.openName!)).toMatchSnapshot();
+    });
+
+    it('should provide parent for nodes', () => {
+        const xmlText = `<root><child attr="value">Text</child></root>`;
+        const ast = getAst(xmlText);
+        const sourceCode = new FioriXMLSourceCode({
+            text: xmlText,
+            ast,
+            projectContext: DUMMY_PROJECT_CONTEXT
+        });
+
+        expect(sourceCode.getParent(ast.rootElement!)?.type).toStrictEqual('XMLDocument');
+    });
+
+    it('parent should be undefined for document node', () => {
+        const xmlText = `<root><child attr="value">Text</child></root>`;
+        const ast = getAst(xmlText);
+        const sourceCode = new FioriXMLSourceCode({
+            text: xmlText,
+            ast,
+            projectContext: DUMMY_PROJECT_CONTEXT
+        });
+
+        expect(sourceCode.getParent(ast)).toStrictEqual(undefined);
+    });
+
+    it('parent should be undefined for tokens', () => {
+        const xmlText = `<root><child attr="value">Text</child></root>`;
+        const ast = getAst(xmlText);
+        const sourceCode = new FioriXMLSourceCode({
+            text: xmlText,
+            ast,
+            projectContext: DUMMY_PROJECT_CONTEXT
+        });
+
+        expect(sourceCode.getParent(ast.rootElement!.syntax.openName!)).toStrictEqual(undefined);
+    });
+
     it('should traverse the XML AST correctly', () => {
         const xmlText = `<root><child attr="value">Text</child></root>`;
         const ast = getAst(xmlText);
