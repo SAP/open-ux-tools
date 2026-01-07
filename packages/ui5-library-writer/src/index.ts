@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import type { MemFsEditor as Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import cloneDeep from 'lodash/cloneDeep';
 import type { UI5LibConfig } from './types';
@@ -38,7 +38,7 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
                 .replace('baselibrary', libInput.libraryNamespaceURI)
                 .replace(/gitignore.tmpl/g, '.gitignore')
                 .replace(/karma.conf.tmpl/g, 'karma.conf.js')
-    });
+    } as CopyOptions);
 
     if (reuseLib.typescript) {
         await enableTypescript(libInput, basePath, tmplPath, fs);

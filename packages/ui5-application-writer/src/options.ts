@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { MemFsEditor as Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { UI5, Ui5App } from './types';
 import { getFilePaths } from '@sap-ux/project-access';
@@ -45,7 +45,7 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
             fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
                 globOptions: { dot: true },
                 processDestinationPath: processDestinationPath
-            });
+            } as CopyOptions);
         } else {
             const add = JSON.parse(render(fs.read(optTmplFilePath) ?? '', ui5App, {}));
             const existingFile = JSON.parse(fs.read(outPath) ?? '');
