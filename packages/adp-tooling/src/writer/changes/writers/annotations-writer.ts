@@ -1,5 +1,5 @@
 import path, { isAbsolute } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
 import { FlexLayer, type IWriter, type AnnotationsData } from '../../../types';

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import type { LaunchConfig, LaunchConfigInfo, LaunchJSON } from '../types';
 import { LAUNCH_JSON_FILE } from '../types';
 import { parse } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { promises as fs } from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
 
@@ -61,7 +61,7 @@ export async function getLaunchConfigs(rootFolder: string, memFs?: Editor): Prom
     try {
         if (launchJsonPath) {
             if (memFs) {
-                launchJsonString = memFs.read(launchJsonPath);
+                launchJsonString = memFs.read(launchJsonPath) ?? '';
                 launchJson = parse(launchJsonString);
             } else {
                 launchJsonString = await fs.readFile(launchJsonPath, { encoding: 'utf8' });
@@ -89,7 +89,7 @@ export async function getAllLaunchConfigs(rootFolder: string | string[], memFs?:
 
     if (memFs) {
         for (const filePath of configFiles) {
-            const launchJsonString = memFs.read(filePath);
+            const launchJsonString = memFs.read(filePath) ?? '';
             const config = parse(launchJsonString) as LaunchJSON;
 
             if (Array.isArray(config.configurations)) {
@@ -130,7 +130,7 @@ export async function getLaunchConfigByName(
     const logger = options?.logger;
     try {
         if (memFs) {
-            launchJsonString = memFs.read(launchConfigPath);
+            launchJsonString = memFs.read(launchConfigPath) ?? '';
             launchJson = parse(launchJsonString);
         } else {
             launchJsonString = await fs.readFile(launchConfigPath, { encoding: 'utf8' });

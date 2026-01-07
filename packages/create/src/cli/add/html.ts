@@ -47,14 +47,18 @@ async function addHtmlFiles(basePath: string, simulate: boolean, yamlPath: strin
         await validateBasePath(basePath, ui5ConfigPath);
 
         const fs = create(createStorage());
-        const ui5Conf = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+        const ui5ConfigFile = await fs.read(ui5ConfigPath);
+        if (!ui5ConfigFile) {
+            throw new Error(`UI5 configuration file '${ui5ConfigPath}' could not be read.`);
+        }
+        const ui5Conf = await UI5Config.newInstance(ui5ConfigFile);
         const preview =
             ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
             ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
 
         await generatePreviewFiles(basePath, preview?.configuration ?? {}, fs, logger);
         if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
+            await fs.commit();
         } else {
             await traceChanges(fs);
         }

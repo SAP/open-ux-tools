@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Choice, PromptObject } from 'prompts';
 import type { Manifest } from '@sap-ux/project-access';
 import { getODataSources, getMainServiceDataSource } from '../app-info';
@@ -28,7 +28,7 @@ export function getMockserverConfigQuestions(params?: {
     };
     if (params?.webappPath) {
         const fs = params.fs ?? create(createStorage());
-        const manifest: Manifest = JSON.parse(fs.read(join(params.webappPath, 'manifest.json')));
+        const manifest: Manifest = JSON.parse(fs.read(join(params.webappPath, 'manifest.json')) ?? '');
         const mainDataSourceUri = getMainServiceDataSource(manifest)?.uri ?? '';
         const oDataSources = getODataSources(manifest);
         const choices: Choice[] = [];

@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomAction, CustomActionTarget, InternalCustomAction } from './types';
 import { TargetControl } from './types';
@@ -115,7 +115,7 @@ export async function generateCustomAction(basePath: string, actionConfig: Custo
 
     // enhance manifest with action definition and controller reference
     const actions = enhanceManifestAndGetActionsElementReference(manifest, config.target);
-    Object.assign(actions, JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action.json`)), config, {})));
+    Object.assign(actions, JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action.json`)) ?? '', config, {})));
     if (config.target.menuId) {
         // The action should be part of the menu
         actions[config.target.menuId].menu.push(config.name);

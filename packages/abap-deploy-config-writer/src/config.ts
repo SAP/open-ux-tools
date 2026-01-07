@@ -1,6 +1,6 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { UI5_TASK_FLATTEN_LIB } from './constants';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { AbapDeployConfig, AbapTarget, CustomTask, NodeComment } from '@sap-ux/ui5-config';
 
 /**

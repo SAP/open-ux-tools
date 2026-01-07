@@ -3,7 +3,7 @@ import type { Package } from '@sap-ux/ui5-application-writer';
 import type { FreestyleApp, BasicAppSettings } from './types';
 import { TemplateType } from './types';
 import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { t } from './i18n';
 
 /**

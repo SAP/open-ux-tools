@@ -51,7 +51,7 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
         );
 
         if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
+            await fs.commit();
         } else {
             await traceChanges(fs);
         }

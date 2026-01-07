@@ -20,7 +20,7 @@ import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPCon
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
 import { t } from '../i18n';
-import { type Editor } from 'mem-fs-editor';
+import { type MemFsEditor as Editor } from 'mem-fs-editor';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { FileName } from '@sap-ux/project-access';
 

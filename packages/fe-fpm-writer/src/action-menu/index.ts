@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
@@ -36,7 +36,7 @@ export async function generateActionMenu(basePath: string, actionMenuConfig: Act
         const actionsContainer = enhanceManifestAndGetActionsElementReference(manifest, actionMenuConfig.target);
         Object.assign(
             actionsContainer,
-            JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action-menu.json`)), actionMenuConfig, {}))
+            JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action-menu.json`)) ?? '', actionMenuConfig, {}))
         );
         for (const { key, position } of actionMenuConfig.positionUpdates ?? []) {
             if (['__proto__', 'constructor', 'prototype'].includes(key)) {

@@ -5,7 +5,7 @@ import type { I18nPropertiesPaths, Manifest } from '../../types';
 import { join, dirname } from 'node:path';
 import { readJSON, writeFile } from '../../file';
 import { mkdir } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Maintains new translation entries in CAP i18n files.

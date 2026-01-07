@@ -81,7 +81,7 @@ async function generateAdaptationProject(
         const fs = await generate(basePath, config);
 
         if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
+            await fs.commit();
             if (!skipInstall) {
                 runNpmInstallCommand(basePath);
                 logger.info('Executed npm install');

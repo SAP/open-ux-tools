@@ -2,7 +2,7 @@ import type { NewI18nEntry } from '../../types';
 import { doesExist, writeFile } from '../../utils';
 import { writeToExistingI18nPropertiesFile } from '../utils';
 import { basename } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Creates new i18n entries in `i18n.properties` file.

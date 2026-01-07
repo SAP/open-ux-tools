@@ -1,6 +1,6 @@
 import { render } from 'ejs';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { CustomTableColumn, InternalCustomTableColumn } from './types';
@@ -99,7 +99,7 @@ export async function generateCustomColumn(
 
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.minUI5Version);
-    const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn, {});
+    const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)) ?? '', completeColumn, {});
     extendJSON(fs, {
         filepath: manifestPath,
         content: filledTemplate,

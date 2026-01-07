@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml';
 import { deleteFiles } from '../common/utils';

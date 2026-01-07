@@ -55,7 +55,7 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
         );
 
         if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
+            await fs.commit();
         } else {
             await traceChanges(fs);
         }

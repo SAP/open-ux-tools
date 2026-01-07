@@ -6,7 +6,7 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Range, Position } from '@sap-ux/text-document-utils';
 import { parseCsv } from '../../parser/csv/parser';
 import type { CsvField } from '../../parser/csv/types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Add CSV text for fallback.

@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { EdmxAnnotationsInfo, OdataService, ProjectPaths } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { deleteServiceFromManifest } from './data/manifest';
@@ -49,7 +49,7 @@ export async function deleteServiceData(
         let ui5MockConfig: UI5Config | undefined;
         // Delete service data from manifest.json
         if (paths.ui5Yaml) {
-            ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+            ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml) ?? '');
             // Delete service backend from fiori-tools-proxy middleware config
             ui5Config.removeBackendFromFioriToolsProxyMiddleware(service.path);
             fs.write(paths.ui5Yaml, ui5Config.toString());
@@ -58,7 +58,7 @@ export async function deleteServiceData(
             service.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
         );
         if (paths.ui5LocalYaml) {
-            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml) ?? '');
             // Delete service backend from fiori-tools-proxy middleware config
             ui5LocalConfig.removeBackendFromFioriToolsProxyMiddleware(service.path);
             // Delete service from mockserver middleware config
@@ -66,7 +66,7 @@ export async function deleteServiceData(
             fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
         }
         if (paths.ui5MockYaml) {
-            ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+            ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml) ?? '');
             // Delete service backend from fiori-tools-proxy middleware config
             ui5MockConfig.removeBackendFromFioriToolsProxyMiddleware(service.path);
             // Delete service from mockserver config

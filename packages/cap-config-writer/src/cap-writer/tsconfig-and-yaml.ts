@@ -1,5 +1,5 @@
 import { FileName } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { YamlDocument, yamlDocumentToYamlString } from '@sap-ux/yaml';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
@@ -48,7 +48,7 @@ export async function updateStaticLocationsInApplicationYaml(
     logger?: Logger
 ): Promise<void> {
     try {
-        const applicationYamlDocuments = fs.read(applicationYamlPath).toString();
+        const applicationYamlDocuments = fs.read(applicationYamlPath) ?? '';
         const yamlDoc = await YamlDocument.newInstance(applicationYamlDocuments);
         const stringifiedYaml = JSON.stringify(yamlDoc);
         const parsedApplicationYamlDocuments = JSON.parse(stringifiedYaml).documents;

@@ -8,7 +8,7 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
 import type { ProviderSystem, ServiceConnectivityData } from '@sap/service-provider-apis';
 import { ProviderType } from '@sap/service-provider-apis';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { basename, dirname, join } from 'node:path';
 import type { GeneratorOptions } from 'yeoman-generator';
 import { SAP_NAMESPACE, SERVICE_GENERATION_FAIL, UI_SERVICE_CACHE } from '../utils';

@@ -1,5 +1,5 @@
 import type { Answers, Question } from 'inquirer';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { getProject, type Project } from '@sap-ux/project-access';
 import { getAnswer } from './utils';

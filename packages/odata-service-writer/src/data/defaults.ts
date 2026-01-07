@@ -4,7 +4,7 @@ import { ServiceType } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 import type { Manifest } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
@@ -174,7 +174,7 @@ async function setDefaultPreviewSettings(basePath: string, service: OdataService
     const ui5Yamlpath = join(basePath, FileName.Ui5Yaml);
     if (fs.exists(ui5Yamlpath)) {
         const yamlContents = fs.read(ui5Yamlpath);
-        const ui5Config = await UI5Config.newInstance(yamlContents);
+        const ui5Config = await UI5Config.newInstance(yamlContents ?? '');
         const backends = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
         // There should be only one /sap entry
         if (backends.find((existingBackend) => existingBackend.path === '/sap')) {

@@ -53,9 +53,8 @@ async function removeMockserverConfiguration(basePath: string, force: boolean): 
             ).doCommit;
         }
         if (doCommit) {
-            fs.commit(() => {
-                logger.info(`Mockserver config removed`);
-            });
+            await fs.commit();
+            logger.info(`Mockserver config removed`);
         }
     } catch (error) {
         logger.error(`Error while executing remove mockserver-config '${(error as Error).message}'`);

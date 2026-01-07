@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { type Logger } from '@sap-ux/logger';
 import { generateSupportingConfig, fileExists } from '../utils';
 import LoggerHelper from '../logger-helper';

@@ -2,7 +2,7 @@ import { gte } from 'semver';
 import { type UI5, type TemplateOptions } from './types';
 import { join } from 'node:path';
 import { FileName } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
 
 export const ui5LtsVersion_1_71 = '1.71.0';
 export const ui5LtsVersion_1_120 = '1.120.0';
@@ -82,7 +82,7 @@ export function copyTemplates(options: {
     // Copy version-specific template files
     fs.copyTpl(join(tmplPath, 'core', templateUi5Version, '**/*.*'), join(basePath), templateOptions, undefined, {
         globOptions: { dot: true, ignore }
-    });
+    } as CopyOptions);
 
     // Copy remaining common files
     fs.copyTpl(
@@ -93,6 +93,6 @@ export function copyTemplates(options: {
         {
             globOptions: { dot: true, ignore },
             processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-        }
+        } as CopyOptions
     );
 }

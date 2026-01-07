@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join, relative } from 'node:path';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, readJSON } from '../file';

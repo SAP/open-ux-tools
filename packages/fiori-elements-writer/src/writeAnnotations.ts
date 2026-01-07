@@ -7,7 +7,7 @@ import {
     type AnnotationServiceParameters,
     type GenerateAnnotationsOptions
 } from '@sap-ux/annotation-generator';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { TemplateTypeAttributes } from './data/templateAttributes';
 import type { Logger } from '@sap-ux/logger';
 import { t } from './i18n';

@@ -7,7 +7,7 @@ import type {
 } from '@sap-ux/fe-fpm-writer';
 import inquirer from 'inquirer';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { promisify } from 'node:util';

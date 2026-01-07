@@ -1,7 +1,7 @@
 import type { Logger } from '@sap-ux/logger';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { existsSync, readdirSync, statSync, unlinkSync } from 'node:fs';
 import { join, parse, sep } from 'node:path';
 import type { CommonChangeProperties } from '@sap-ux/adp-tooling';

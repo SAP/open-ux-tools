@@ -3,7 +3,7 @@ import { FileName, getCapCustomPaths, getWebappPath } from '@sap-ux/project-acce
 import { join, normalize, posix } from 'node:path';
 import { enableCdsUi5Plugin } from '../cap-config';
 import type { CapServiceCdsInfo } from '../cap-config/types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Manifest, Package } from '@sap-ux/project-access';
 
 /**

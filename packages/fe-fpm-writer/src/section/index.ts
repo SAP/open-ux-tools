@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomHeaderSection, CustomSection, InternalCustomSection, CustomSubSection } from './types';
 import { join } from 'node:path';
@@ -110,7 +110,7 @@ async function generate(
     const completeSection = enhanceConfig(fs, customSection, manifestPath, manifest);
 
     // enhance manifest with section definition
-    const filledTemplate = render(fs.read(join(manifestTemplateRoot, `manifest.json`)), completeSection, {});
+    const filledTemplate = render(fs.read(join(manifestTemplateRoot, `manifest.json`)) ?? '', completeSection, {});
     extendJSON(fs, {
         filepath: manifestPath,
         content: filledTemplate,

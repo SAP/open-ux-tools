@@ -2,7 +2,7 @@ import type { FioriElementsApp, LROPSettings } from '../types';
 import { TemplateType } from '../types';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { render } from 'ejs';
 import semVer from 'semver';
@@ -84,7 +84,7 @@ export function extendManifestJson<T>(
     extendTemplatePaths.forEach((extendTemplatePath) => {
         const manifestTemplatePath = join(extendTemplatePath, 'manifest.json');
         if (fs.exists(manifestTemplatePath)) {
-            fs.extendJSON(manifestPath, JSON.parse(render(fs.read(manifestTemplatePath), templateSettings, {})));
+            fs.extendJSON(manifestPath, JSON.parse(render(fs.read(manifestTemplatePath) ?? '', templateSettings, {})));
         }
     });
 }

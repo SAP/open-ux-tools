@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
 
 import { getManifestContent } from './manifest';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
@@ -91,14 +91,14 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
     // Copy the specified files to target project
     fs.copyTpl(join(tmplPath, '**/ui5.yaml'), join(basePath), fullConfig, undefined, {
         globOptions: { dot: true }
-    });
+    } as CopyOptions);
     fs.copyTpl(join(tmplPath, '**/package.json'), join(basePath), fullConfig, undefined, {
         globOptions: { dot: true }
-    });
+    } as CopyOptions);
     fs.copyTpl(join(tmplPath, '**/gitignore.tmpl'), join(basePath), fullConfig, undefined, {
         globOptions: { dot: true },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-    });
+    } as CopyOptions);
 
     // delete .che folder
     if (fs.exists(join(basePath, '.che/project.json'))) {

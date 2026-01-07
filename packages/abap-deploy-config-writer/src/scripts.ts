@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { addPackageDevDependency, updatePackageScript } from '@sap-ux/project-access';
 

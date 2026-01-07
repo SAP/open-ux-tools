@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { Manifest } from '@sap-ux/project-access';
@@ -26,7 +26,7 @@ export function getI18nDescription(layer: FlexLayer, appTitle?: string): string 
  * @param {ResourceModel[]} [i18nModels] - An optional array of i18n models to be written. Each model contains
  *                                         the key, path, and content for an i18n file.
  * @param {Editor} fs - The file system editor interface used for writing files.
- 
+
  *
  * This function ensures that:
  * - Only i18n models that are not the main i18n file (`i18n/i18n.properties`) are processed.

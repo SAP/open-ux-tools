@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
 import type { IWriter, ComponentUsagesData, ComponentUsagesDataWithLibrary } from '../../../types';
@@ -18,7 +18,7 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
     ) {}
 
     /**
-     * Constructs the content for an component usages change based on provided data.
+     * Constructs the content for a component usages change based on provided data.
      *
      * @param {ComponentUsagesData} data - The answers object containing information needed to construct the content property.
      * @returns {object} The constructed content object for the component usages change.

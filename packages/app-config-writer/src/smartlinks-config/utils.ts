@@ -1,7 +1,7 @@
 import type { AxiosBasicCredentials, AxiosResponse } from 'axios';
 import { cyan } from 'chalk';
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
@@ -227,7 +227,7 @@ export async function writeSmartLinksConfig(
         fs.copyTpl(templatePath, appConfigPath, { inboundTargets });
     } else {
         inboundTargets = mergeTargetMappings(appConfigPath, inboundTargets, fs);
-        const filledTemplate = render(fs.read(templatePath), { inboundTargets }, {});
+        const filledTemplate = render(fs.read(templatePath) ?? '', { inboundTargets }, {});
         fs.extendJSON(appConfigPath, JSON.parse(filledTemplate));
     }
     await addUi5YamlServeStaticMiddleware(basePath, fs, logger);

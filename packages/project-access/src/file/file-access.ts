@@ -1,5 +1,5 @@
 import { promises as fs } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Manifest, Package } from '../types';
 import parseJsonError from 'json-parse-even-better-errors';
 
@@ -12,7 +12,11 @@ import parseJsonError from 'json-parse-even-better-errors';
  */
 export async function readFile(path: string, memFs?: Editor): Promise<string> {
     if (memFs) {
-        return memFs.read(path);
+        const content = memFs.read(path);
+        if (!content) {
+            throw new Error(`File '${path}' does not exist.`);
+        }
+        return content;
     } else {
         return fs.readFile(path, { encoding: 'utf8' });
     }

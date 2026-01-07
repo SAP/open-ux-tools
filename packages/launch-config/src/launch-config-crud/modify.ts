@@ -5,7 +5,7 @@ import type { LaunchConfig, LaunchConfigEnv } from '../types';
 import { Arguments } from '../types';
 import { getIndexOfArgument } from './utils';
 import { parse } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { promises as fs } from 'node:fs';
 
 const RUN_SCRIPT = 'run-script';
@@ -146,9 +146,9 @@ export async function convertOldLaunchConfigToFioriRun(
         moveOldArgsToEnv(launchConfig);
         if (projectRootPath) {
             const pckJsonPath = join(projectRootPath, FileName.Package);
-            let packageJsonString;
+            let packageJsonString: string;
             if (memFs) {
-                packageJsonString = memFs.read(pckJsonPath);
+                packageJsonString = memFs.read(pckJsonPath) ?? '';
             } else {
                 packageJsonString = await fs.readFile(pckJsonPath, { encoding: 'utf8' });
             }

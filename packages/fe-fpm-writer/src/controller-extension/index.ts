@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { render } from 'ejs';
 import type {
@@ -225,7 +225,7 @@ export async function generateControllerExtension(
     const internalConfig = enhanceConfig(controllerConfig, manifestPath, manifest);
 
     // enhance manifest with view definition
-    const filledTemplate = render(fs.read(getTemplatePath('controller-extension/manifest.json')), internalConfig, {});
+    const filledTemplate = render(fs.read(getTemplatePath('controller-extension/manifest.json')) ?? '', internalConfig, {});
     extendJSON(fs, {
         filepath: manifestPath,
         content: filledTemplate,

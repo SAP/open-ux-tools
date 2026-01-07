@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ReuseLibConfig } from './types';
 import { UI5Config, type ServeStaticPath } from '@sap-ux/ui5-config';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
@@ -41,7 +41,7 @@ export function updateYaml(projectPath: string, reuseLibs: ReuseLibConfig[], fs:
     yamlFiles.forEach(async (yaml) => {
         const yamlPath = join(projectPath, yaml);
         if (fs.exists(yamlPath)) {
-            const ui5Config = await UI5Config.newInstance(fs.read(yamlPath));
+            const ui5Config = await UI5Config.newInstance(fs.read(yamlPath) ?? '');
             const serveStaticPaths: ServeStaticPath[] = getServeStaticPaths(reuseLibs, projectPath);
             ui5Config.addServeStaticConfig(serveStaticPaths);
 

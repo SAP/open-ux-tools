@@ -3,7 +3,7 @@ import { stringify } from 'node:querystring';
 import type { Package } from '@sap-ux/project-access';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions } from '../types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { satisfies } from 'semver';
 import { getPreviewMiddleware, getIntentFromPreviewConfig, isFioriToolsDeprecatedPreviewConfig } from '../common/utils';
 

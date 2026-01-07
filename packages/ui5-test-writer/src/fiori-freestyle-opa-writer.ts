@@ -1,6 +1,6 @@
 import { join, sep } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { CopyOptions, MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { FFOPAConfig } from './types';
 import type { Logger } from '@sap-ux/logger';
@@ -173,7 +173,7 @@ export async function generateFreestyleOPAFiles(
             const destinationFilePath = join(testOutDir, renameMap?.[destFilePath] ?? destFilePath);
             fsEditor.copyTpl(filePath, destinationFilePath, config, undefined, {
                 globOptions: { dot: true }
-            });
+            } as CopyOptions);
         });
         freestyleTestTemplatesCopied = true;
     } catch (error) {

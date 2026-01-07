@@ -1,7 +1,7 @@
 import { basename, join } from 'node:path';
 import { extractYamlConfigFileName } from '../common/package-json';
 import { generateVariantsConfig } from '../variants-config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { type Package, hasDependency } from '@sap-ux/project-access';
 

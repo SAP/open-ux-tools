@@ -1,6 +1,6 @@
 import { join, relative } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { CustomPage, InternalCustomPage } from './types';
@@ -141,7 +141,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     // enhance manifest.json
     extendJSON(fs, {
         filepath: manifestPath,
-        content: render(fs.read(join(root, `manifest.json`)), config, {}),
+        content: render(fs.read(join(root, `manifest.json`)) ?? '', config, {}),
         replacer: getManifestJsonExtensionHelper(config),
         tabInfo: data.tabInfo
     });
@@ -157,7 +157,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
         const i18nPath = join(basePath, 'webapp', customI18nPath ?? defaultI18nPath);
         const i18TemplatePath = join(root, 'i18n', 'i18n.properties');
         if (fs.exists(i18nPath)) {
-            fs.append(i18nPath, render(fs.read(i18TemplatePath), config, {}));
+            fs.append(i18nPath, render(fs.read(i18TemplatePath) ?? '', config, {}));
         } else {
             fs.copyTpl(i18TemplatePath, i18nPath, config);
         }
