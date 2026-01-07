@@ -376,9 +376,12 @@ export default class extends DeploymentGenerator {
 
     public async end(): Promise<void> {
         try {
+            if (this.abort || this.answers.overwrite === false) {
+                return;
+            }
+
             if (
-                (this.options.launchStandaloneFromYui || !this.launchDeployConfigAsSubGenerator) &&
-                !this.abort &&
+                (this.options.launchStandaloneFromYui || !this.launchDeployConfigAsSubGenerator) && !this.abort &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
             ) {
                 this.appWizard?.showInformation(t('cfGen.info.filesGenerated'), MessageType.notification);

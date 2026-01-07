@@ -258,6 +258,9 @@ export default class extends Generator {
     }
 
     public async end(): Promise<void> {
+        if (this.abort || this.answers.overwrite === false) {
+            return;
+        }
         // The app would not have been generated until after the writing phase due to the current ordering of the composeWith from Fiori generators
         if (this.abort === false && !this.existingApp) {
             this.manifestPath = join(await getWebappPath(this.appRootPath), FileName.Manifest);
@@ -267,8 +270,7 @@ export default class extends Generator {
 
         try {
             if (
-                !this.options.launchFlpConfigAsSubGenerator &&
-                this.abort !== true &&
+                !this.options.launchFlpConfigAsSubGenerator && !this.abort &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
             ) {
                 this.appWizard?.showInformation(t('info.filesGenerated'), MessageType.notification);
