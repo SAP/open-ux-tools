@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types';
 
 const CHAR_SPACE = ' ';
@@ -67,7 +67,7 @@ export function detectTabSpacing(content: string): TabInfo | undefined {
 export function getJsonSpace(fs: Editor, filePath: string, tabInfo?: TabInfo | undefined): WriteJsonSpace | undefined {
     if (!tabInfo) {
         // 'tabInfo'  was not passed - calculate 'tabInfo' by checking existing content of target file
-        const content = fs.read(filePath);
+        const content = fs.read(filePath) ?? '';
         tabInfo = detectTabSpacing(content);
     }
     let space: WriteJsonSpace | undefined;

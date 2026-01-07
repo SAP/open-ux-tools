@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
@@ -282,7 +282,7 @@ export async function extendPageJSON(
     // enhance manifest.json
     extendJSON(fs, {
         filepath: manifestPath,
-        content: render(fs.read(getTemplatePath(templatePath)), config, {}),
+        content: render(fs.read(getTemplatePath(templatePath)) ?? '', config, {}),
         replacer: getManifestJsonExtensionHelper(config),
         tabInfo: data.tabInfo
     });

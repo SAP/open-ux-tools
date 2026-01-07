@@ -1,5 +1,5 @@
 import { render } from 'ejs';
-import type { MemFsEditor as Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
 import type { UI5LibInput, UI5LibInputTS } from '../types';
 import { getFilePaths } from '@sap-ux/project-access';
 import { mergeObjects, UI5Config } from '@sap-ux/ui5-config';
@@ -31,7 +31,7 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
         if (!fs.exists(outPath)) {
             fs.copyTpl(tsTmplFilePath, outPath, tsLibInput, undefined, {
                 globOptions: { dot: true }
-            });
+            } as CopyOptions);
         } else {
             const add = JSON.parse(render(fs.read(tsTmplFilePath) ?? '', tsLibInput, {}));
             const existingFile = JSON.parse(fs.read(outPath) ?? '');

@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomFilter, InternalCustomFilter, PageOptions } from './types';
 import { join } from 'node:path';
@@ -76,7 +76,7 @@ export async function generateCustomFilter(basePath: string, filterConfig: Custo
 
     // enhance manifest with the filter definition and controller reference
     const filters = enhanceManifestAndGetFiltersReference(manifest);
-    Object.assign(filters, JSON.parse(render(fs.read(getTemplatePath(`filter/manifest.json`)), config, {})));
+    Object.assign(filters, JSON.parse(render(fs.read(getTemplatePath(`filter/manifest.json`)) ?? '', config, {})));
     fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, filterConfig.tabInfo));
 
     // create a fragment file

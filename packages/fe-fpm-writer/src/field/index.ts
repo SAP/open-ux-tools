@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomField, InternalCustomField } from './types';
 import { join } from 'node:path';
@@ -72,7 +72,7 @@ export async function generateCustomField(basePath: string, customField: CustomF
 
     // enhance manifest with field definition
     const templatePath = getTemplatePath('/field/manifest.json');
-    const filledTemplate = render(fs.read(templatePath), completeField, {});
+    const filledTemplate = render(fs.read(templatePath) ?? '', completeField, {});
     extendJSON(fs, {
         filepath: manifestPath,
         content: filledTemplate,
