@@ -9,7 +9,7 @@ import { getLogger } from './logger';
  *
  * @param fs - mem-fs-editor
  */
-export async function traceChanges(fs: MemFsEditor): Promise<void> {
+export async function traceChanges(fs: Editor): Promise<void> {
     const changedFiles = fs.dump() || {};
     const logger = getLogger();
 

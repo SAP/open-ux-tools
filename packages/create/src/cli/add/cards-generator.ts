@@ -42,7 +42,8 @@ async function addCardsGeneratorConfig(basePath: string, simulate: boolean, yaml
 
         const fs = await enableCardGeneratorConfig(basePath, yamlPath, logger);
         if (!simulate) {
-            fs.commit(() => logger.info(`Card Generator configuration written.`));
+            await fs.commit();
+            logger.info(`Card Generator configuration written.`);
         } else {
             await traceChanges(fs);
         }

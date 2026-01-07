@@ -28,7 +28,7 @@ export async function validateBasePath(basePath: string, ui5YamlPath?: string): 
  * @param fs - the memfs editor instance
  * @returns - true if fs contains deletions; false otherwise
  */
-export function hasFileDeletes(fs: MemFsEditor): boolean {
+export function hasFileDeletes(fs: Editor): boolean {
     const changedFiles = fs.dump() || {};
     return !!Object.keys(changedFiles).find((fileName) => changedFiles[fileName].state === 'deleted');
 }
