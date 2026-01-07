@@ -1,5 +1,5 @@
 import { promises } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Read the entire contents of a file.
@@ -10,7 +10,7 @@ import type { Editor } from 'mem-fs-editor';
  */
 export async function readFile(filePath: string, fs?: Editor): Promise<string> {
     if (fs) {
-        return fs.read(filePath);
+        return fs.read(filePath) as string;
     }
     return promises.readFile(filePath, { encoding: 'utf8' });
 }

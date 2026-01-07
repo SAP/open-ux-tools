@@ -2,7 +2,7 @@ import type { CdsEnvironment, NewI18nEntry } from '../../types';
 import { printPropertiesI18nEntry, capPropertiesPath, doesExist, writeFile } from '../../utils';
 import { tryAddCsvTexts } from './csv';
 import { writeToExistingI18nPropertiesFile } from '../utils';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Add i18n entries to respective i18n file.
