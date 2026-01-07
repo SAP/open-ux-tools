@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import { type Editor, create } from 'mem-fs-editor';
+import { type MemFsEditor as Editor, create } from 'mem-fs-editor';
 
 import { type NewI18nEntry, SapShortTextType, removeAndCreateI18nEntries } from '@sap-ux/i18n';
 
