@@ -224,6 +224,24 @@ describe('CF Services CLI', () => {
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
         });
 
+        test('should throw error when response is empty', async () => {
+            const mockResponse = {
+                exitCode: 0,
+                stdout: '',
+                stderr: ''
+            };
+            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+
+            await expect(requestCfApi(url)).rejects.toThrow(
+                t('error.failedToRequestCFAPI', {
+                    error:
+                        'Empty response from CF API. This typically indicates an authentication issue. ' +
+                        "Please verify your CF login status with 'cf target' and re-authenticate if needed with 'cf login'."
+                })
+            );
+            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+        });
+
         test('should throw error when curl command fails', async () => {
             const mockResponse = {
                 exitCode: 1,

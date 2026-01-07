@@ -322,7 +322,7 @@ metadata:
             );
             expect(writeFilesSpy).toHaveBeenCalledWith(
                 path.join(projectPath, 'ui5.yaml'),
-                expect.stringContaining('useLocal: dist')
+                expect.stringContaining('cfBuildPath: dist')
             );
         });
 

@@ -1,11 +1,27 @@
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
+import { readFileSync, existsSync } from 'fs';
 
 import { initI18n, t } from '../../../../src/i18n';
 import { getFDCApps } from '../../../../src/cf/services/api';
 import { extractXSApp } from '../../../../src/cf/utils/validation';
-import { getAppHostIds, getCfApps, getOAuthPathsFromXsApp } from '../../../../src/cf/app/discovery';
+import {
+    getAppHostIds,
+    getCfApps,
+    getOAuthPathsFromXsApp,
+    getBackendUrlsFromServiceKeys,
+    getBackendUrlsWithPaths
+} from '../../../../src/cf/app/discovery';
 import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types';
+
+jest.mock('fs', () => ({
+    readFileSync: jest.fn(),
+    existsSync: jest.fn()
+}));
+
+jest.mock('@sap-ux/btp-utils', () => ({
+    isAppStudio: jest.fn()
+}));
 
 jest.mock('../../../../src/cf/services/api', () => ({
     ...jest.requireActual('../../../../src/cf/services/api'),
@@ -19,6 +35,8 @@ jest.mock('../../../../src/cf/utils/validation', () => ({
 
 const mockGetFDCApps = getFDCApps as jest.MockedFunction<typeof getFDCApps>;
 const mockExtractXSApp = extractXSApp as jest.MockedFunction<typeof extractXSApp>;
+const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
+const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
 
 const mockApps: CFApp[] = [
     {
@@ -325,6 +343,369 @@ describe('CF App Discovery', () => {
             mockGetFDCApps.mockRejectedValue(error);
 
             await expect(getCfApps(serviceKeys, mockCfConfig, mockLogger)).rejects.toThrow('API Error');
+        });
+    });
+
+    describe('getBackendUrlsFromServiceKeys', () => {
+        test('should extract URLs from endpoints', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-service': { url: 'https://backend.example.com/api' },
+                            'odata-service': { url: 'https://odata.example.com/odata' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const result = getBackendUrlsFromServiceKeys(serviceKeys);
+
+            expect(result).toEqual(['https://backend.example.com/api', 'https://odata.example.com/odata']);
+        });
+
+        test('should return empty array when no service keys', () => {
+            expect(getBackendUrlsFromServiceKeys([])).toEqual([]);
+        });
+
+        test('should return empty array when service keys is undefined', () => {
+            expect(getBackendUrlsFromServiceKeys(undefined as any)).toEqual([]);
+        });
+
+        test('should return empty array when endpoints is missing', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {},
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const result = getBackendUrlsFromServiceKeys(serviceKeys);
+
+            expect(result).toEqual([]);
+        });
+
+        test('should skip endpoints without url property', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-service': { url: 'https://backend.example.com/api' },
+                            'invalid-service': {}
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const result = getBackendUrlsFromServiceKeys(serviceKeys);
+
+            expect(result).toEqual(['https://backend.example.com/api']);
+        });
+
+        test('should handle empty endpoints object', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {},
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const result = getBackendUrlsFromServiceKeys(serviceKeys);
+
+            expect(result).toEqual([]);
+        });
+    });
+
+    describe('getBackendUrlsWithPaths', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should map URLs to paths from .reuse folder', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' },
+                            'odata-dest': { url: 'https://odata.example.com', destination: 'odata-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [
+                    { source: '/sap/opu/odata', destination: 'backend-dest' },
+                    { source: '/api/v1', destination: 'odata-dest' }
+                ]
+            };
+
+            mockExistsSync.mockImplementation((path: any) => path.includes('.reuse'));
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([
+                { url: 'https://backend.example.com', paths: ['/sap/opu/odata'] },
+                { url: 'https://odata.example.com', paths: ['/api/v1'] }
+            ]);
+        });
+
+        test('should use dist folder when .reuse does not exist', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [{ source: '/sap/opu/odata', destination: 'backend-dest' }]
+            };
+
+            mockExistsSync.mockImplementation((path: any) => !path.includes('.reuse'));
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([{ url: 'https://backend.example.com', paths: ['/sap/opu/odata'] }]);
+        });
+
+        test('should handle multiple paths for same destination', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [
+                    { source: '/sap/opu/odata', destination: 'backend-dest' },
+                    { source: '/api/v1', destination: 'backend-dest' },
+                    { source: '/api/v2', destination: 'backend-dest' }
+                ]
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].url).toBe('https://backend.example.com');
+            expect(result[0].paths).toHaveLength(3);
+            expect(result[0].paths).toContain('/sap/opu/odata');
+            expect(result[0].paths).toContain('/api/v1');
+            expect(result[0].paths).toContain('/api/v2');
+        });
+
+        test('should skip routes without destination', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [{ source: '/sap/opu/odata', destination: 'backend-dest' }, { source: '/no-destination' }]
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([{ url: 'https://backend.example.com', paths: ['/sap/opu/odata'] }]);
+        });
+
+        test('should skip html5-apps-repo-rt service routes', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [
+                    { source: '/sap/opu/odata', destination: 'backend-dest' },
+                    { source: '/static', destination: 'static-dest', service: 'html5-apps-repo-rt' }
+                ]
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([{ url: 'https://backend.example.com', paths: ['/sap/opu/odata'] }]);
+        });
+
+        test('should handle missing xs-app.json file', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            mockExistsSync.mockReturnValue(false);
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([]);
+        });
+
+        test('should handle invalid JSON in xs-app.json', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue('invalid json');
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([]);
+        });
+
+        test('should skip destinations not in endpoint mapping', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [
+                    { source: '/sap/opu/odata', destination: 'backend-dest' },
+                    { source: '/unknown', destination: 'unknown-dest' }
+                ]
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([{ url: 'https://backend.example.com', paths: ['/sap/opu/odata'] }]);
+        });
+
+        test('should clean regex patterns from paths', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [{ source: '^/sap/opu/odata(.*)$', destination: 'backend-dest' }]
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([{ url: 'https://backend.example.com', paths: ['/sap/opu/odata'] }]);
+        });
+
+        test('should skip routes without source', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [{ source: '/sap/opu/odata', destination: 'backend-dest' }, { destination: 'backend-dest' }]
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([{ url: 'https://backend.example.com', paths: ['/sap/opu/odata'] }]);
         });
     });
 
