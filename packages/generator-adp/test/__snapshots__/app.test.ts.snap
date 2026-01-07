@@ -221,7 +221,6 @@ builder:
         module: app.variant
         appHostId: test-app-host-id
         appName: test-app-name
-        appVersion: test-app-version
         org: org-guid
         space: space-guid
         sapCloudService: test-solution
@@ -244,7 +243,7 @@ server:
         flp:
           theme: sap_horizon
         adp:
-          useLocal: dist
+          cfBuildPath: dist
 "
 `;
 
@@ -354,9 +353,11 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"prestart": "npm run build",
-		"start": "fiori run --open /test/flp.html#app-preview",
-		"start-editor": "fiori run --open /test/adaptation-editor.html",
+		"start": "npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview",
+		"start-nobuild": "fiori run --open /test/flp.html#app-preview",
+		"setup-cf": "sap-ux setup adaptation-project-cf",
+		"start-editor-nobuild": "fiori run --open /test/adaptation-editor.html",
+		"start-editor": "npm run setup-cf && fiori run --open /test/adaptation-editor.html",
 		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",
 		"zip": "cd dist && npx bestzip ../app.variant.zip *",
 		"clean": "npx rimraf app.variant.zip dist",
@@ -366,14 +367,10 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 		"type": "git",
 		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
 	},
-	"ui5": {
-		"dependencies": [
-			"@sap/ui5-builder-webide-extension",
-			"@ui5/task-adaptation"
-		]
-	},
 	"devDependencies": {
+		"@sap-ux/create": "^0.14.22",
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
+		"@sap-ux/backend-proxy-middleware-cf": "0",
 		"@sapui5/ts-types": "^1.141.2",
 		"@sap/ux-ui5-tooling": "1",
 		"@ui5/cli": "^4.0.33",
