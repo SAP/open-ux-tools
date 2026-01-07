@@ -368,14 +368,14 @@ function linkObjectPageSections(
             controls[`${section.type}|${configurationKey}`] = linkedSection;
             let createMode: string | undefined;
             let tableType: string | undefined;
-            // let sectionEntityKey = '';
-            for (const [_key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
+            let sectionEntityKey = '';
+            for (const [key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
                 if (value.createMode !== undefined) {
-                    // sectionEntityKey = key;
+                    sectionEntityKey = key;
                     createMode = value.createMode;
                 }
                 if (value.tableSettings?.type !== undefined) {
-                    // sectionEntityKey = key;
+                    sectionEntityKey = key;
                     tableType = value.tableSettings.type;
                 }
             }
@@ -390,7 +390,7 @@ function linkObjectPageSections(
                             'component',
                             'settings',
                             'sections',
-                            configurationKey,
+                            sectionEntityKey,
                             'createMode'
                         ]
                     },
@@ -401,7 +401,7 @@ function linkObjectPageSections(
                             'component',
                             'settings',
                             'sections',
-                            configurationKey,
+                            sectionEntityKey,
                             'tableSettings',
                             'type'
                         ]

@@ -22,17 +22,17 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
         },
         messages: {
             invalidCreateMode:
-                'Invalid createMode value "{{value}}". Recommended value is "creationRows". Other possible values are "creationRowsHiddenInEditMode", or "newPage".',
+                'Invalid createMode value "{{value}}" for {{tableType}}. Recommended value is "creationRows". Valid values are: {{validValues}}.',
             recommendCreationRows: 'Consider using "creationRows" for better user experience instead of "{{value}}".',
             suggestAppLevel:
-                'Consider adding createMode at application level (sap.ui.generic.app.settings.tableSettings.createMode).',
+                'Consider adding createMode at application level for better user experience.',
             analyticalTableNotSupported:
-                'Creation mode is not supported for Analytical tables. Remove the createMode property.',
+                'Creation mode is not supported for Analytical tables. Remove the createMode/creationMode property.',
             invalidCreateModeV4:
-                'Invalid creationMode value "{{value}}" for {{tableType}}. Valid values are: {{validValues}}.',
+                'Invalid creationMode value "{{value}}" for {{tableType}}. Recommended value is "InlineCreationRows". Valid values are: {{validValues}}.',
             recommendInlineCreationRowsV4:
                 'Consider using "InlineCreationRows" for better user experience instead of "{{value}}".',
-            suggestAppLevelV4: 'Consider adding creationMode in table settings for better user experience.'
+            suggestAppLevelV4: 'Consider adding creationMode at application level for better user experience.'
         }
     },
     check(context) {
@@ -118,7 +118,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 page.targetName,
                                 parsedApp,
                                 sectionCreateMode.configurationPath,
-                                tableType
+                                tableType,
+                                sectionCreateMode.values
                             );
                             continue;
                         }
@@ -144,7 +145,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 page.targetName,
                                 parsedApp,
                                 pageCreateMode.configurationPath,
-                                tableType
+                                tableType,
+                                pageCreateMode.values
                             );
                             continue;
                         }
@@ -170,7 +172,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 page.targetName,
                                 parsedApp,
                                 appCreateMode.configurationPath,
-                                tableType
+                                tableType,
+                                appCreateMode.values
                             );
                             continue;
                         }
