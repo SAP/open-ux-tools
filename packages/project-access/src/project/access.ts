@@ -27,7 +27,7 @@ import {
 import { getProject } from './info';
 import { findAllApps } from './search';
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readFile, readJSON, updateManifestJSON, updatePackageJSON } from '../file';
 import { FileName } from '../constants';
 import { getSpecification } from './specification';

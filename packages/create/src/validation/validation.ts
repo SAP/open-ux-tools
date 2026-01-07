@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { existsSync } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { getAppType, getWebappPath } from '@sap-ux/project-access';
 import { type DescriptorVariantContent, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
 
@@ -28,7 +28,7 @@ export async function validateBasePath(basePath: string, ui5YamlPath?: string): 
  * @param fs - the memfs editor instance
  * @returns - true if fs contains deletions; false otherwise
  */
-export function hasFileDeletes(fs: Editor): boolean {
+export function hasFileDeletes(fs: MemFsEditor): boolean {
     const changedFiles = fs.dump() || {};
     return !!Object.keys(changedFiles).find((fileName) => changedFiles[fileName].state === 'deleted');
 }

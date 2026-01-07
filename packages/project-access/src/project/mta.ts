@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { findFileUp } from '../file/file-search';
 import { FileName } from '../constants';
 import { dirname } from 'node:path';

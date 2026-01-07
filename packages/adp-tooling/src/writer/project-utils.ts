@@ -1,7 +1,6 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
-
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import {
     type CloudApp,
     type AdpWriterConfig,

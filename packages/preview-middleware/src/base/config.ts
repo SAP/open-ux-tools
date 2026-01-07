@@ -16,7 +16,7 @@ import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } 
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
-import { type Editor, create } from 'mem-fs-editor';
+import { type MemFsEditor as Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
