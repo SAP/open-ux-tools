@@ -1,6 +1,6 @@
 import { PromptsAPI } from '@sap-ux/fe-fpm-writer';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { PromptsType } from '../utils';
 import type { ApplicationInformation } from '../addons/project';
 

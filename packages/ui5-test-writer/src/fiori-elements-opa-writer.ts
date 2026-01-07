@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
@@ -247,7 +247,7 @@ function writePageObject(
         undefined,
         {
             globOptions: { dot: true }
-        }
+        } as CopyOptions
     );
 }
 
@@ -288,7 +288,7 @@ export function generateOPAFiles(
         undefined,
         {
             globOptions: { dot: true }
-        }
+        } as CopyOptions
     );
 
     // Integration (OPA) test files - version-specific
@@ -299,7 +299,7 @@ export function generateOPAFiles(
         undefined,
         {
             globOptions: { dot: true }
-        }
+        } as CopyOptions
     );
 
     // Pages files (one for each page in the app)
@@ -323,7 +323,7 @@ export function generateOPAFiles(
         undefined,
         {
             globOptions: { dot: true }
-        }
+        } as CopyOptions
     );
     // Journey Runner
     editor.copyTpl(
@@ -333,7 +333,7 @@ export function generateOPAFiles(
         undefined,
         {
             globOptions: { dot: true }
-        }
+        } as CopyOptions
     );
 
     return editor;
