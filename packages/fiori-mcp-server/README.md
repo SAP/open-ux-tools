@@ -10,6 +10,9 @@ The server helps AI models create or modify SAP Fiori applications based on prom
 - _Generate a new CAP project and SAP Fiori app based on my_picture.png_
 - _Add the FCL to the SAP Fiori elements app_
 - _Enable initial load for the fiori app_
+- _Generate a new SAP Fiori elements list report app for odata service `https://hostname:port/sap/opu/odata4/sap/my_v4_service?sap-client=000`_.
+
+  ℹ️This prompt requires a Stored System for credentials using extension [Connection Manager for SAP Systems](https://marketplace.visualstudio.com/items?itemName=SAPOSS.sap-ux-sap-systems-ext).
 
 For the best experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
 
