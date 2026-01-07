@@ -112,14 +112,15 @@ export class KeyUserImportPrompter {
         return {
             type: 'list',
             name: keyUserPromptNames.keyUserSystem,
-            message: t('prompts.keyUserSystemLabel'),
+            message: t('prompts.systemLabel'),
             choices: async (): Promise<string[]> => {
                 const systems = await this.systemLookup.getSystems();
                 return getEndpointNames(systems);
             },
             guiOptions: {
                 mandatory: true,
-                breadcrumb: t('prompts.systemLabel')
+                breadcrumb: true,
+                hint: t('prompts.keyUserSystemTooltip')
             },
             default: options?.default ?? '',
             validate: async (value: string, answers: KeyUserImportAnswers) => await this.validateSystem(value, answers),
