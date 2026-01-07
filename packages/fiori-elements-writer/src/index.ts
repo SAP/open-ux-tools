@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
@@ -177,7 +177,7 @@ async function generate<T extends {}>(
         undefined,
         {
             globOptions: { ignore, dot: true }
-        }
+        } as CopyOptions
     );
 
     fs.copyTpl(
@@ -191,7 +191,7 @@ async function generate<T extends {}>(
         undefined,
         {
             globOptions: { ignore, dot: true }
-        }
+        } as CopyOptions
     );
 
     // Extend common files
@@ -200,7 +200,7 @@ async function generate<T extends {}>(
     // Extend package.json
     fs.extendJSON(
         packagePath,
-        JSON.parse(render(fs.read(join(rootTemplatesPath, 'common', 'extend', 'package.json')), feApp, {}))
+        JSON.parse(render(fs.read(join(rootTemplatesPath, 'common', 'extend', 'package.json')) ?? '', feApp, {}))
     );
 
     // Special handling for FPM because it is not based on template files but used the fpm writer
@@ -211,13 +211,10 @@ async function generate<T extends {}>(
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
         [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
             (templatePath) => {
-                fs!.copyTpl(
-                    join(templatePath, '**/*.*'),
-                    basePath,
-                    feApp,
-                    {},
-                    { ignoreNoMatch: true, globOptions: { ignore, dot: true } }
-                );
+                fs!.copyTpl(join(templatePath, '**/*.*'), basePath, feApp, {}, {
+                    ignoreNoMatch: true,
+                    globOptions: { ignore, dot: true }
+                } as CopyOptions);
             }
         );
     }
@@ -225,7 +222,7 @@ async function generate<T extends {}>(
     // Update manifest.json with template specific settings
     extendManifestJson(fs, basePath, rootTemplatesPath, feApp);
 
-    const packageJson: Package = JSON.parse(fs.read(packagePath));
+    const packageJson: Package = JSON.parse(fs.read(packagePath) ?? '');
     const addTest = shouldAddTest(feApp.service, feApp.appOptions?.addTests);
 
     if (isEdmxProjectType) {
