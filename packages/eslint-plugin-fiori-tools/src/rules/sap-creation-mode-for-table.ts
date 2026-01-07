@@ -312,19 +312,19 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
     },
     createJsonVisitorHandler: (context, diagnostic) =>
         function report(node: MemberNode): void {
-            let tableTypeName: string;
+            let tableType: string;
             if (diagnostic.tableType === 'TreeTable') {
-                tableTypeName = 'Tree Table';
+                tableType = 'Tree Table';
             } else {
                 // ResponsiveTable, GridTable, or default
-                tableTypeName = diagnostic.tableType === 'GridTable' ? 'Grid Table' : 'Responsive Table';
+                tableType = diagnostic.tableType === 'GridTable' ? 'Grid Table' : 'Responsive Table';
             }
             context.report({
                 node,
                 messageId: diagnostic.messageId,
                 data: {
                     value: node.value.type === 'String' ? node.value.value : String(node.value),
-                    tableTypeName
+                    tableType
                 }
             });
         }
