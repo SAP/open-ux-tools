@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join, normalize, posix } from 'node:path';
 import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
@@ -94,12 +94,12 @@ async function removeCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
     // Remove annotation config from index or service file
     if (indexFilePath && fs.exists(indexFilePath)) {
         // Read old annotations content and replace it with empty string
-        const initialIndexContent = fs.read(indexFilePath);
+        const initialIndexContent = fs.read(indexFilePath) ?? '';
         const updatedContent = initialIndexContent.replace(annotationConfig, '');
         fs.write(indexFilePath, updatedContent);
     } else if (fs.exists(serviceFilePath)) {
         // Read old annotations content and replace it with empty string
-        const initialServiceFileContent = fs.read(serviceFilePath);
+        const initialServiceFileContent = fs.read(serviceFilePath) ?? '';
         const updatedContent = initialServiceFileContent.replace(annotationConfig, '');
         fs.write(serviceFilePath, updatedContent);
     }
@@ -130,7 +130,7 @@ export async function removeAnnotationsFromCDSFiles(
             // Remove from annotations.cds file
             if (fs.exists(annotationCdsPath)) {
                 // Read old annotations content and replace it with empty string
-                const initialCDSContent = fs.read(annotationCdsPath);
+                const initialCDSContent = fs.read(annotationCdsPath) ?? '';
                 const updatedContent = initialCDSContent.replace(annotation.cdsFileContents, '');
                 fs.write(annotationCdsPath, updatedContent);
             }
@@ -146,7 +146,7 @@ export async function removeAnnotationsFromCDSFiles(
         // Write into annotations.cds file
         if (fs.exists(annotationCdsPath)) {
             // Read old annotations content and replace it with empty string
-            const initialCDSContent = fs.read(annotationCdsPath);
+            const initialCDSContent = fs.read(annotationCdsPath) ?? '';
             const updatedContent = initialCDSContent.replace(annotations.cdsFileContents, '');
             fs.write(annotationCdsPath, updatedContent);
         }

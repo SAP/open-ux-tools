@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { join as joinPosix } from 'node:path/posix';
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import prettifyXml from 'prettify-xml';
 
 import type {

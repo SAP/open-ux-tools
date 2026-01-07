@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import type { EdmxOdataService, OdataService, ProjectPaths } from './types';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
@@ -31,7 +31,7 @@ async function generateMockserverMiddlewareBasedOnUi5MockYaml(
 ): Promise<void> {
     // Update ui5-local.yaml with mockserver middleware from ui5-mock.yaml
     const ui5MockYamlPath = join(dirname(ui5YamlPath), FileName.Ui5MockYaml);
-    const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+    const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath) ?? '');
     const mockserverMiddlewareFromUi5Mock = ui5MockYamlConfig.findCustomMiddleware(
         'sap-fe-mockserver'
     ) as CustomMiddleware;
@@ -101,11 +101,11 @@ async function updateUI5YamlConfigs(
     let ui5LocalConfig: UI5Config | undefined;
 
     if (paths.ui5Yaml) {
-        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml) ?? '');
         extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
 
         if (paths.ui5LocalYaml) {
-            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml) ?? '');
             extendBackendMiddleware(fs, service, ui5LocalConfig, paths.ui5LocalYaml);
         }
     }
@@ -146,7 +146,7 @@ async function generateAndUpdateMockserverConfig(
     await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml!, paths.ui5LocalYaml, ui5LocalConfig);
 
     if (paths.ui5MockYaml) {
-        const ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+        const ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml) ?? '');
         extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml);
     }
 }
@@ -216,13 +216,13 @@ export async function updateServicesData(
 
     if (updateMiddlewares) {
         if (paths.ui5Yaml) {
-            ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+            ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml) ?? '');
             // Update ui5.yaml with backend middleware
             extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml, true);
         }
         // Update ui5-local.yaml with backend middleware
         if (paths.ui5LocalYaml) {
-            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml) ?? '');
             extendBackendMiddleware(fs, service, ui5LocalConfig, paths.ui5LocalYaml, true);
         }
     }
@@ -290,7 +290,7 @@ async function updateMetadata(
         await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, paths.ui5LocalYaml, ui5LocalConfig);
         // Update ui5-mock.yaml with backend middleware
         if (paths.ui5MockYaml) {
-            const ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+            const ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml) ?? '');
             extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml, true);
         }
     }
