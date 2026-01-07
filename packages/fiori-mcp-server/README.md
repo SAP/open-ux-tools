@@ -92,6 +92,8 @@ Gets the list of supported functionalities to create a new or modify an existing
 The main functionalities are:
 
 - Generating a Fiori elements app within an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
+- Generating a Fiori elements app within an [ABAP RESTful Application Programming Model (RAP)](https://pages.community.sap.com/topics/abap/rap) project
+- Generating a Fiori elements app within an OData service based project (that are not CAP or RAP based)
 - Adding and deleting pages from an app
 - Adding and modifying controller extensions
 - Modifying `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
@@ -102,6 +104,26 @@ Gets the required parameters and detailed information for a specific functionali
 #### `execute_functionality` (Step 3 of 3)
 Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
 
+## [Logging](#logging)
+
+By default, logging is done for level `error`. To adjust the log level or disable logging completely you can set the respective `.env` variable in your configuration.
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes","@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
+      "env": {
+        "LOG_LEVEL": "debug" // Options: off, error, warn, info, debug, verbose
+      }
+    }
+  }
+}
+```
+The logs will be stored in the file system at `~/.fioritools/fiori-mcp-server.log`
 
 ## [Telemetry](#telemetry)
 
