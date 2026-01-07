@@ -1,5 +1,22 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.2
+
+### Patch Changes
+
+- c7f9a60: Log to file instead of STDIO
+    - @sap-ux/fiori-docs-embeddings@0.4.7
+    - @sap-ux/store@1.4.2
+
+## 0.6.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/fiori-docs-embeddings@0.4.7
+    - @sap-ux/store@1.4.1
+
 ## 0.6.0
 
 ### Minor Changes

@@ -2,7 +2,7 @@ import type { SystemConfigFile } from '../../../../../src/types';
 import { exportSystem } from '../../../../../src/panel/system/actions/exportSystem';
 import { initI18n } from '../../../../../src/utils';
 import * as vscodeMod from 'vscode';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import * as panelActionUtils from '../../../../../src/panel/system/utils';
 
 const systemServiceReadMock = jest.fn();

@@ -1,5 +1,57 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.16.1
+
+### Patch Changes
+
+- Updated dependencies [6382440]
+    - @sap-ux/inquirer-common@0.10.6
+
+## 0.16.0
+
+### Minor Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/ui5-info@0.13.7
+    - @sap-ux/inquirer-common@0.10.5
+
+## 0.15.53
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.4
+
+## 0.15.52
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/inquirer-common@0.10.3
+    - @sap-ux/ui5-info@0.13.6
+    - @sap-ux/project-input-validator@0.6.40
+
+## 0.15.51
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-input-validator@0.6.39
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/ui5-info@0.13.5
+
+## 0.15.50
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.1
+
 ## 0.15.49
 
 ### Patch Changes

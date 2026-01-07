@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import { existsSync } from 'fs';
+import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { basename, join, dirname } from 'path';
 import type { AssertionValueFunctionContext, AssertionValueFunctionResult } from 'promptfoo';
 import { FOLDER_PATHS } from '../types';

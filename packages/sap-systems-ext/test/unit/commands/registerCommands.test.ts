@@ -20,12 +20,14 @@ describe('Test registering commands', () => {
             return { dispose: () => {} };
         });
 
-        registerCommands(mockContext);
+        registerCommands({ vscodeExtContext: mockContext });
 
         expect(vscodeCommandsRegisterSpy).toHaveBeenCalledWith(
             'sap.ux.tools.sapSystems.openOutputChannel',
             expect.any(Function)
         );
-        expect(registerSystemViewCommandsSpy).toHaveBeenCalledWith(mockContext);
+        expect(registerSystemViewCommandsSpy).toHaveBeenCalledWith({
+            vscodeExtContext: mockContext
+        });
     });
 });

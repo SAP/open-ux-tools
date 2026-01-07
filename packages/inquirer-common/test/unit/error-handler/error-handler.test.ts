@@ -53,6 +53,7 @@ describe('Test ErrorHandler', () => {
         );
         expect(ErrorHandler.getErrorType(new Error('CERT_HAS_EXPIRED'))).toEqual(ERROR_TYPE.CERT_EXPIRED);
         expect(ErrorHandler.isCertError('unable to get local issuer certificate')).toEqual(true);
+        expect(ErrorHandler.getErrorType('EPROTO') === ERROR_TYPE.CONNECTION).toEqual(true);
     });
 
     test('Maintains last error state', () => {

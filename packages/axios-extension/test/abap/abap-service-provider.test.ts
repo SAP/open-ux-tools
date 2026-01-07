@@ -58,6 +58,7 @@ describe('AbapServiceProvider', () => {
                 .get(AdtServices.DISCOVERY)
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'));
             expect(await provider.getAtoInfo()).toBe(ato);
+            expect(provider.defaults.headers.common).toMatchObject({});
         });
 
         test('AtoInfo - Invalid XML response', async () => {
@@ -70,6 +71,9 @@ describe('AbapServiceProvider', () => {
                 .get(AdtServices.ATO_SETTINGS)
                 .reply(200, 'Some error message');
             expect(await provider.getAtoInfo()).toStrictEqual({});
+            expect(provider.defaults.headers.common).toMatchObject({
+                'Cookie': ''
+            });
         });
     });
 

@@ -5,6 +5,7 @@ import { createApplicationAccess } from '@sap-ux/project-access';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import type { Parser } from '@sap/ux-specification/dist/types/src';
 import { ensureSpecificationLoaded, readAppWithModel } from '../utils';
+import { specificationLogger } from '../../../src/utils/logger';
 
 const appPathLropV2 = join(__dirname, '../../test-data/original/lrop-v2');
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
@@ -27,7 +28,9 @@ describe('getTree', () => {
     }
 
     async function loadAppModel(path: string): Promise<Parser.ApplicationModel> {
-        const result = await readAppWithModel(path, applications);
+        const result = await readAppWithModel(path, applications, {
+            logger: specificationLogger
+        });
         return result.applicationModel as Parser.ApplicationModel;
     }
 

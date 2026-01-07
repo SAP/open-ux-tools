@@ -15,7 +15,7 @@ import { getTextBundle } from '../../../src/i18n';
 import * as syncViewsUtils from '../../../src/adp/sync-views-utils';
 
 describe('Dialogs', () => {
-    let isReuseComponentMock = jest.fn().mockReturnValue(false);
+    const isReuseComponentMock = jest.fn().mockReturnValue(false);
     jest.spyOn(syncViewsUtils, 'getSyncViewIds').mockReturnValue(new Set<string>());
     describe('initDialogs', () => {
         afterEach(() => {

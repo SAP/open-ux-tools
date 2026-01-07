@@ -4,7 +4,7 @@ import * as fileSystemAccess from '../../../src/data-access/filesystem';
 import { SystemDataProvider } from '../../../src/data-provider/backend-system';
 import { Entities } from '../../../src/data-provider/constants';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 jest.mock('fs');
 

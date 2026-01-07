@@ -1,4 +1,4 @@
-import type { ClientRequest, IncomingMessage } from 'http';
+import type { ClientRequest, IncomingMessage } from 'node:http';
 import type { Options } from 'http-proxy-middleware';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import {

@@ -1,5 +1,101 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.30
+
+### Patch Changes
+
+- Updated dependencies [6382440]
+    - @sap-ux/inquirer-common@0.10.6
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.103
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+    - @sap-ux/odata-service-inquirer@2.13.7
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.118
+
+## 0.5.29
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/odata-service-inquirer@2.13.6
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.117
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.102
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+    - @sap-ux/inquirer-common@0.10.5
+
+## 0.5.28
+
+### Patch Changes
+
+- 62bb798: set conflicter option
+- Updated dependencies [62bb798]
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.116
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.101
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/deploy-config-generator-shared@0.1.66
+    - @sap-ux/inquirer-common@0.10.4
+    - @sap-ux/odata-service-inquirer@2.13.5
+
+## 0.5.27
+
+### Patch Changes
+
+- @sap-ux/deploy-config-generator-shared@0.1.65
+- @sap-ux/fiori-generator-shared@0.13.46
+- @sap-ux/odata-service-inquirer@2.13.4
+- @sap-ux/abap-deploy-config-sub-generator@0.1.115
+
+## 0.5.26
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.114
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.100
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/inquirer-common@0.10.3
+    - @sap-ux/odata-service-inquirer@2.13.3
+    - @sap-ux/store@1.4.2
+    - @sap-ux/deploy-config-generator-shared@0.1.65
+    - @sap-ux/ui5-config@0.29.12
+
+## 0.5.25
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.113
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.99
+    - @sap-ux/odata-service-inquirer@2.13.2
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/store@1.4.1
+    - @sap-ux/deploy-config-generator-shared@0.1.64
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.5.24
+
+### Patch Changes
+
+- Updated dependencies [cda79d4]
+    - @sap-ux/odata-service-inquirer@2.13.1
+
+## 0.5.23
+
+### Patch Changes
+
+- Updated dependencies [691ab27]
+    - @sap-ux/odata-service-inquirer@2.13.0
+    - @sap-ux/inquirer-common@0.10.1
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.98
+    - @sap-ux/deploy-config-generator-shared@0.1.63
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.112
+
 ## 0.5.22
 
 ### Patch Changes

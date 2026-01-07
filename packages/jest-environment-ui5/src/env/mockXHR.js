@@ -129,7 +129,7 @@ function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData, X
                     responseText: this.responseText
                 });
             } else {
-                this['onload'].apply(this, []);
+                this.onload();
             }
         },
         /**

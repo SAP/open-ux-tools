@@ -1,5 +1,19 @@
 # @sap-ux/fe-fpm-cli
 
+## 0.1.74
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.40.2
+
+## 0.1.73
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/fe-fpm-writer@0.40.1
+
 ## 0.1.72
 
 ### Patch Changes

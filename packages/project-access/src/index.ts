@@ -1,4 +1,11 @@
-export { FileName, DirName, FioriToolsSettings, MinCdsPluginUi5Version, MinCdsVersion } from './constants';
+export {
+    FileName,
+    DirName,
+    FioriToolsSettings,
+    MinCdsPluginUi5Version,
+    MinCdsVersion,
+    fioriToolsDirectory
+} from './constants';
 export { getFilePaths } from './file';
 export {
     addPackageDevDependency,

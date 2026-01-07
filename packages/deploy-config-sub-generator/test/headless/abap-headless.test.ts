@@ -1,7 +1,7 @@
 import { join } from 'node:path';
-import * as childProcess from 'child_process';
+import * as childProcess from 'node:child_process';
 import { copy, readdirSync } from 'fs-extra';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import { rimraf } from 'rimraf';
 import { runHeadlessGen } from './utils';
 import { DeployTarget, type TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
