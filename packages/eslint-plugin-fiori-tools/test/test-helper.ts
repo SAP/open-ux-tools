@@ -94,6 +94,10 @@ export function applyManifestChange(manifest: any, change: ManifestChange): void
     current[change.path[change.path.length - 1]] = change.value;
 }
 
+export function applyXmlAnnotationsChange(current: string, change: string): string {
+    return current.replace('</Schema>', change + '</Schema>');
+}
+
 let id = 0;
 export function getManifestAsCode(manifest: any, changes: ManifestChange[]): string {
     const clone = structuredClone(manifest);
