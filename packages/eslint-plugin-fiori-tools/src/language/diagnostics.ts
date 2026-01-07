@@ -40,6 +40,7 @@ export interface CreationModeForTable {
     manifest: ManifestPropertyDiagnosticData;
     messageId: CreateModeMessageId;
     tableType: string;
+    validValues: string[];
 }
 
 export interface DisableCopyToClipboard {

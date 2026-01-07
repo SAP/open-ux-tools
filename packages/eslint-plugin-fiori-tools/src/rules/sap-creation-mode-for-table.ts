@@ -33,24 +33,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
             recommendInlineCreationRowsV4:
                 'Consider using "InlineCreationRows" for better user experience instead of "{{value}}".',
             suggestAppLevelV4: 'Consider adding creationMode in table settings for better user experience.'
-        },
-        schema: [
-            {
-                type: 'object',
-                properties: {
-                    recommendedMode: {
-                        type: 'string',
-                        description: 'The recommended createMode value for V2 applications',
-                        enum: ['creationRows', 'creationRowsHiddenInEditMode', 'newPage']
-                    }
-                    // allowInline: {
-                    //     type: 'boolean',
-                    //     description: 'Whether to allow the deprecated "inline" createMode'
-                    // }
-                },
-                additionalProperties: false
-            }
-        ]
+        }
     },
     check(context) {
         const problems: CreationModeForTable[] = [];
@@ -59,13 +42,15 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
             pageName: string,
             parsedApp: ParsedApp,
             configurationPath: string[],
-            tableType: string
+            tableType: string,
+            validValues: string[] = []
         ): void => {
             problems.push({
                 type: CREATION_MODE_FOR_TABLE,
                 messageId,
                 pageName,
                 tableType,
+                validValues,
                 manifest: {
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
@@ -227,16 +212,18 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                 continue;
             }
             const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
-
+            const appCreateMode = app.configuration.createMode;
             for (const page of app.pages) {
-                // Process tables from both list-report-page and object-page
+                if (page.type !== 'object-page') {
+                    continue;
+                }
                 const tables = page.lookup['table'] ?? [];
 
                 for (const table of tables) {
                     const tableCreationMode = table.configuration.creationMode;
                     const tableType = table.configuration.tableType?.valueInFile ?? '';
 
-                    // Check if it's an AnalyticalTable with createMode configured
+                    // Check if it's an AnalyticalTable with createMode configured at any level
                     if (tableType === 'AnalyticalTable') {
                         if (tableCreationMode.valueInFile) {
                             reportDiagnostic(
@@ -246,8 +233,18 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 tableCreationMode.configurationPath,
                                 tableType
                             );
+                            continue;
                         }
-                        continue;
+                        if (appCreateMode.valueInFile) {
+                            reportDiagnostic(
+                                'analyticalTableNotSupported',
+                                page.targetName,
+                                parsedApp,
+                                appCreateMode.configurationPath,
+                                tableType
+                            );
+                            continue;
+                        }
                     }
 
                     // Determine valid values and recommended value based on table type
@@ -261,7 +258,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                         recommendedValue = RECOMMENDED_MODE_V4_RESPONSIVE_GRID;
                     }
 
-                    // Check table level configuration
+                    // Check table level configuration (highest priority)
                     if (tableCreationMode.valueInFile) {
                         if (!validValues.includes(tableCreationMode.valueInFile)) {
                             // invalid value
@@ -270,7 +267,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 page.targetName,
                                 parsedApp,
                                 tableCreationMode.configurationPath,
-                                tableType
+                                tableType,
+                                validValues
                             );
                             continue;
                         }
@@ -281,6 +279,33 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 page.targetName,
                                 parsedApp,
                                 tableCreationMode.configurationPath,
+                                tableType
+                            );
+                        }
+                        continue;
+                    }
+
+                    // Check application level configuration (lower priority)
+                    if (appCreateMode.valueInFile) {
+                        if (!appCreateMode.values.includes(appCreateMode.valueInFile)) {
+                            // invalid value at application level
+                            reportDiagnostic(
+                                'invalidCreateModeV4',
+                                page.targetName,
+                                parsedApp,
+                                appCreateMode.configurationPath,
+                                tableType,
+                                appCreateMode.values
+                            );
+                            continue;
+                        }
+                        // Application level is a generic fallback - only warn if it's not the application-level recommended value (InlineCreationRows)
+                        if (appCreateMode.valueInFile !== RECOMMENDED_MODE_V4_RESPONSIVE_GRID) {
+                            reportDiagnostic(
+                                'recommendInlineCreationRowsV4',
+                                page.targetName,
+                                parsedApp,
+                                appCreateMode.configurationPath,
                                 tableType
                             );
                         }
@@ -300,7 +325,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                             'suggestAppLevelV4',
                             page.targetName,
                             parsedApp,
-                            tableCreationMode.configurationPath,
+                            appCreateMode.configurationPath,
                             tableType
                         );
                     }
@@ -324,7 +349,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                 messageId: diagnostic.messageId,
                 data: {
                     value: node.value.type === 'String' ? node.value.value : String(node.value),
-                    tableTypeName
+                    tableType: tableTypeName,
+                    validValues: diagnostic.validValues?.join(', ') ?? ''
                 }
             });
         }

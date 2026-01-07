@@ -281,21 +281,19 @@ ruleTester.run(TEST_NAME, createTableRule, {
             },
             []
         ),
-        // TODO - check why test is failing
-        // createInvalidTest(
-        //     {
-        //         name: 'Scenario 7 - 💡 SUGGEST (No config at any level)',
-        //         filename: V2_MANIFEST_PATH,
-        //         code: JSON.stringify(V2_MANIFEST, undefined, 2),
-        //         errors: [
-        //             {
-        //                 messageId: 'suggestAppLevel'
-        //             }
-        //         ]
-        //     },
-        //     []
-        // )
-
+        createInvalidTest(
+            {
+                name: 'Scenario 7 - 💡 SUGGEST (No config at any level)',
+                filename: V2_MANIFEST_PATH,
+                code: JSON.stringify(V2_MANIFEST, undefined, 2),
+                errors: [
+                    {
+                        messageId: 'suggestAppLevel'
+                    }
+                ]
+            },
+            []
+        ),
         createInvalidTest(
             {
                 name: 'Report on parent level',
