@@ -2,7 +2,12 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import {
+    CallToolRequestSchema,
+    InitializeRequestSchema,
+    ListToolsRequestSchema,
+    type CallToolResult
+} from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json';
 import {
     docSearch,
@@ -35,6 +40,8 @@ type ToolArgs =
  */
 export class FioriFunctionalityServer {
     private readonly server: Server;
+    private mcpClientName = 'unknown-client';
+    private mcpClientVersion = 'unknown-version';
 
     /**
      * Initializes a new instance of the FioriFunctionalityServer.
@@ -77,10 +84,56 @@ export class FioriFunctionalityServer {
     }
 
     /**
+     * Extracts and returns the functionalityId from arguments as a string.
+     * Only returns the functionalityId if it contains valid characters: letters, numbers, hyphens, forward slashes, backslashes, or spaces.
+     *
+     * @param args - The arguments object containing functionalityId
+     * @returns The functionalityId as a string if valid, otherwise an empty string
+     */
+    private getfunctionalityIdFromArgs(args: unknown): string {
+        if (typeof args === 'object' && args !== null && 'functionalityId' in args) {
+            const functionalityId = (args as Record<string, unknown>).functionalityId;
+
+            // Convert to string if not already
+            let idString = '';
+            if (typeof functionalityId === 'string') {
+                idString = functionalityId;
+            } else if (functionalityId !== null && functionalityId !== undefined) {
+                idString = String(functionalityId);
+            }
+
+            // Validate: only allow characters, numbers, hyphens, forward slashes, backslashes, and spaces
+            const validPattern = /^[a-zA-Z0-9\-\/\\ ]+$/;
+            if (idString && validPattern.test(idString)) {
+                return idString;
+            }
+        }
+
+        return '';
+    }
+
+    /**
      * Sets up handlers for various MCP tools.
      * Configures handlers for listing tools, and calling specific Fiori functionality tools.
      */
     private setupToolHandlers(): void {
+        this.server.setRequestHandler(InitializeRequestSchema, async (request) => {
+            this.mcpClientName = request.params.clientInfo?.name || 'unknown-client';
+            this.mcpClientVersion = request.params.clientInfo?.version || 'unknown-version';
+            logger.info(`MCP Client connected: ${this.mcpClientName} v${this.mcpClientVersion}`);
+
+            return {
+                protocolVersion: '2024-11-05', // MCP protocol version
+                capabilities: {
+                    tools: {}
+                },
+                serverInfo: {
+                    name: 'fiori-mcp',
+                    version: packageJson.version
+                }
+            };
+        });
+
         this.server.setRequestHandler(ListToolsRequestSchema, async () => {
             return {
                 tools
@@ -93,10 +146,13 @@ export class FioriFunctionalityServer {
             try {
                 let result;
                 TelemetryHelper.markToolStartTime();
-                const telemetryProperties: TelemetryData = { tool: name };
-                if ('functionalityId' in args) {
-                    telemetryProperties.functionalityId = args.functionalityId as string;
-                }
+                const telemetryProperties: TelemetryData = {
+                    tool: name,
+                    mcpClientName: this.mcpClientName,
+                    mcpClientVersion: this.mcpClientVersion
+                };
+                telemetryProperties.functionalityId = this.getfunctionalityIdFromArgs(args);
+
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
 
                 switch (name) {
