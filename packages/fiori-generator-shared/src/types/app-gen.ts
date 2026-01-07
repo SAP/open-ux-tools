@@ -62,8 +62,6 @@ export interface AppGenInfo {
     generatorPlatform?: string;
     /** The filename of the metadata file */
     metadataFilename?: string;
-    /** Flag indicating whether code assistance is enabled. */
-    enableCodeAssist?: boolean;
     /** Flag indicating whether TypeScript is enabled. */
     enableTypeScript?: boolean;
     /** Flag indicating whether ESLint is enabled. */

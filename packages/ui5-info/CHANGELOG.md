@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.13.7
+
+### Patch Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+
 ## 0.13.6
 
 ### Patch Changes
