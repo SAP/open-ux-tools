@@ -1,5 +1,24 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.22
+
+### Patch Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/ui5-application-writer@1.7.0
+    - @sap-ux/cap-config-writer@0.12.39
+    - @sap-ux/ui5-test-writer@0.7.49
+
+## 2.5.21
+
+### Patch Changes
+
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/cap-config-writer@0.12.38
+
 ## 2.5.20
 
 ### Patch Changes

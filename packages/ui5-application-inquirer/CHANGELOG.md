@@ -1,5 +1,23 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.16.0
+
+### Minor Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/ui5-info@0.13.7
+    - @sap-ux/inquirer-common@0.10.5
+
+## 0.15.53
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.4
+
 ## 0.15.52
 
 ### Patch Changes

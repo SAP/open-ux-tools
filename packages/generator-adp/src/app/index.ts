@@ -28,12 +28,12 @@ import {
     isCli,
     isExtensionInstalled,
     sendTelemetry,
+    setYeomanEnvConflicterForce,
     TelemetryHelper
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
@@ -228,9 +228,7 @@ export default class extends Generator {
 
     async initializing(): Promise<void> {
         // Force the generator to overwrite existing files without additional prompting
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
 
         await initI18n();
         this.isCli = isCli();
@@ -311,7 +309,7 @@ export default class extends Generator {
             this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
             if (this.attributeAnswers.addDeployConfig) {
                 const system = await this.systemLookup.getSystemByName(this.configAnswers.system);
-                addDeployGen(
+                await addDeployGen(
                     {
                         projectName: this.attributeAnswers.projectName,
                         projectPath: this.attributeAnswers.targetFolder,
@@ -325,7 +323,7 @@ export default class extends Generator {
             }
 
             if (this.attributeAnswers?.addFlpConfig) {
-                addFlpGen(
+                await addFlpGen(
                     {
                         vscode: this.vscode,
                         projectRootPath: this._getProjectPath(),

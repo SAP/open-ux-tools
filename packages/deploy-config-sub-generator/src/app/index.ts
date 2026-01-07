@@ -197,7 +197,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         }
 
         if (this.target) {
-            this._composeWithSubGenerator(this.target, this.answers);
+            await this._composeWithSubGenerator(this.target, this.answers);
         } else {
             DeploymentGenerator.logger?.debug(t('debug.exit'));
             process.exit(0); // only relevant for CLI
@@ -212,10 +212,10 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
      * @param target - the target deployment
      * @param answers - the answers from the prompting
      */
-    private _composeWithSubGenerator(
+    private async _composeWithSubGenerator(
         target: string,
         answers?: AbapDeployConfigAnswersInternal | CfDeployConfigAnswers
-    ): void {
+    ): Promise<void> {
         try {
             const generatorName = target;
             const subGenOpts = this.launchDeployConfigAsSubGenerator
@@ -230,7 +230,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             if (this.apiHubConfig) {
                 (subGenOpts as CfDeployConfigOptions).apiHubConfig = this.apiHubConfig;
             }
-            this.composeWith(generatorNamespace(this.genNamespace, generatorName), subGenOpts);
+            await this.composeWith(generatorNamespace(this.genNamespace, generatorName), subGenOpts);
         } catch (error) {
             DeploymentGenerator.logger?.error(error.message);
         }

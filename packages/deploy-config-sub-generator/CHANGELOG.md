@@ -1,5 +1,30 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.29
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/odata-service-inquirer@2.13.6
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.117
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.102
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+    - @sap-ux/inquirer-common@0.10.5
+
+## 0.5.28
+
+### Patch Changes
+
+- 62bb798: set conflicter option
+- Updated dependencies [62bb798]
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.116
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.101
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/deploy-config-generator-shared@0.1.66
+    - @sap-ux/inquirer-common@0.10.4
+    - @sap-ux/odata-service-inquirer@2.13.5
+
 ## 0.5.27
 
 ### Patch Changes
