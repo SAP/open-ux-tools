@@ -1,6 +1,6 @@
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { mergeObjects } from '@sap-ux/ui5-config';
