@@ -1,16 +1,29 @@
+import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { initI18n, t } from '../../../../src/i18n';
 import { getFDCApps } from '../../../../src/cf/services/api';
-import { getAppHostIds, getCfApps } from '../../../../src/cf/app/discovery';
-import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa } from '../../../../src/types';
+import { extractXSApp } from '../../../../src/cf/utils/validation';
+import {
+    getAppHostIds,
+    getBackendUrlFromServiceKeys,
+    getCfApps,
+    getOAuthPathsFromXsApp
+} from '../../../../src/cf/app/discovery';
+import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types';
 
 jest.mock('../../../../src/cf/services/api', () => ({
     ...jest.requireActual('../../../../src/cf/services/api'),
     getFDCApps: jest.fn()
 }));
 
+jest.mock('../../../../src/cf/utils/validation', () => ({
+    ...jest.requireActual('../../../../src/cf/utils/validation'),
+    extractXSApp: jest.fn()
+}));
+
 const mockGetFDCApps = getFDCApps as jest.MockedFunction<typeof getFDCApps>;
+const mockExtractXSApp = extractXSApp as jest.MockedFunction<typeof extractXSApp>;
 
 const mockApps: CFApp[] = [
     {
@@ -317,6 +330,196 @@ describe('CF App Discovery', () => {
             mockGetFDCApps.mockRejectedValue(error);
 
             await expect(getCfApps(serviceKeys, mockCfConfig, mockLogger)).rejects.toThrow('API Error');
+        });
+    });
+
+    describe('getBackendUrlFromServiceKeys', () => {
+        test('should extract backend URL from first endpoint with URL', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as Uaa,
+                        uri: 'test-uri',
+                        endpoints: {
+                            endpoint1: {
+                                url: '/backend.example'
+                            },
+                            endpoint2: {
+                                url: '/another-backend.example'
+                            }
+                        }
+                    }
+                }
+            ];
+
+            const result = getBackendUrlFromServiceKeys(serviceKeys);
+
+            expect(result).toBe('/backend.example');
+        });
+
+        test('should return first endpoint with URL when multiple endpoints exist', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as Uaa,
+                        uri: 'test-uri',
+                        endpoints: {
+                            endpoint1: {},
+                            endpoint2: {
+                                url: '/backend.example'
+                            },
+                            endpoint3: {
+                                url: '/another-backend.example'
+                            }
+                        }
+                    }
+                }
+            ];
+
+            const result = getBackendUrlFromServiceKeys(serviceKeys);
+
+            expect(result).toBe('/backend.example');
+        });
+
+        test('should return undefined when no endpoints have URL', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as Uaa,
+                        uri: 'test-uri',
+                        endpoints: {
+                            endpoint1: {},
+                            endpoint2: {}
+                        }
+                    }
+                }
+            ];
+
+            const result = getBackendUrlFromServiceKeys(serviceKeys);
+
+            expect(result).toBeUndefined();
+        });
+
+        test('should return undefined for various edge cases', () => {
+            expect(getBackendUrlFromServiceKeys([])).toBeUndefined();
+            expect(getBackendUrlFromServiceKeys(null as any)).toBeUndefined();
+            expect(getBackendUrlFromServiceKeys(undefined as any)).toBeUndefined();
+            expect(
+                getBackendUrlFromServiceKeys([
+                    {
+                        credentials: {
+                            uaa: {} as Uaa,
+                            uri: 'test-uri',
+                            endpoints: {}
+                        }
+                    }
+                ])
+            ).toBeUndefined();
+        });
+    });
+
+    describe('getOAuthPathsFromXsApp', () => {
+        const mockZipEntries = [] as AdmZip.IZipEntry[];
+
+        beforeEach(() => {
+            mockExtractXSApp.mockReturnValue(undefined);
+        });
+
+        test('should return empty array when xs-app or routes are missing', () => {
+            mockExtractXSApp.mockReturnValue(undefined);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual([]);
+
+            mockExtractXSApp.mockReturnValue({} as XsApp);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual([]);
+
+            mockExtractXSApp.mockReturnValue({ routes: [] } as XsApp);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual([]);
+        });
+
+        test('should extract paths from routes', () => {
+            mockExtractXSApp.mockReturnValue({
+                routes: [
+                    { source: '/sap/opu/odata', service: 'odata-service' },
+                    { source: '/api/v1', service: 'api-service' },
+                    { source: '/static', service: 'html5-apps-repo-rt' },
+                    { service: 'api-service' }
+                ]
+            } as XsApp);
+
+            const result = getOAuthPathsFromXsApp(mockZipEntries);
+
+            expect(result).toEqual(['/sap/opu/odata', '/api/v1']);
+        });
+
+        test('should clean regex patterns from paths', () => {
+            // Test removing leading ^ and trailing $
+            mockExtractXSApp.mockReturnValue({
+                routes: [{ source: '^/sap/opu/odata$', service: 'odata-service' }]
+            } as XsApp);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual(['/sap/opu/odata']);
+
+            // Test removing capture groups (note: /api/(.*)/v1 becomes /api/v1 after normalization)
+            mockExtractXSApp.mockReturnValue({
+                routes: [
+                    { source: '/sap/opu/odata(.*)', service: 'odata-service' },
+                    { source: '/api/(.*)/v1', service: 'api-service' }
+                ]
+            } as XsApp);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual(['/sap/opu/odata', '/api/v1']);
+
+            // Test removing regex quantifiers
+            mockExtractXSApp.mockReturnValue({
+                routes: [
+                    { source: '/sap/opu/odata$1', service: 'odata-service' },
+                    { source: '/api/v1$2', service: 'api-service' }
+                ]
+            } as XsApp);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual(['/sap/opu/odata', '/api/v1']);
+
+            // Test removing trailing * and optional /
+            mockExtractXSApp.mockReturnValue({
+                routes: [
+                    { source: '/sap/opu/odata/*', service: 'odata-service' },
+                    { source: '/api/v1*', service: 'api-service' }
+                ]
+            } as XsApp);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual(['/sap/opu/odata', '/api/v1']);
+
+            // Test complex regex pattern
+            mockExtractXSApp.mockReturnValue({
+                routes: [{ source: '^/sap/opu/odata(.*)$1/*', service: 'odata-service' }]
+            } as XsApp);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual(['/sap/opu/odata']);
+        });
+
+        test('should remove duplicate paths', () => {
+            mockExtractXSApp.mockReturnValue({
+                routes: [
+                    { source: '/sap/opu/odata', service: 'odata-service' },
+                    { source: '/sap/opu/odata', service: 'another-service' },
+                    { source: '/api/v1', service: 'api-service' }
+                ]
+            } as XsApp);
+
+            const result = getOAuthPathsFromXsApp(mockZipEntries);
+
+            expect(result).toEqual(['/sap/opu/odata', '/api/v1']);
+        });
+
+        test('should handle edge cases', () => {
+            mockExtractXSApp.mockReturnValue({
+                routes: [
+                    { source: '/sap/opu/odata', service: 'odata-service' },
+                    { source: '^$', service: 'api-service' },
+                    { source: '(.*)', service: 'another-service' }
+                ]
+            } as XsApp);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual(['/sap/opu/odata']);
+
+            mockExtractXSApp.mockReturnValue({
+                routes: [{ source: '/sap/opu/odata(.*)(.*)', service: 'odata-service' }]
+            } as XsApp);
+            expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual(['/sap/opu/odata']);
         });
     });
 });

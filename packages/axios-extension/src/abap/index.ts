@@ -19,4 +19,16 @@ export { AppIndex, AppIndexService, Ui5AppInfo, Ui5AppInfoContent, App } from '.
 export * from './message';
 export * from './catalog';
 export * from './adt-catalog';
-export { TenantType, ArchiveFileNode, AtoSettings, BusinessObject, OperationsType } from './types';
+export {
+    TenantType,
+    ArchiveFileNode,
+    AtoSettings,
+    BusinessObject,
+    OperationsType,
+    CodeListReference,
+    ValueListReference,
+    CodeListService,
+    ValueListService,
+    ExternalServiceReference,
+    ExternalService
+} from './types';

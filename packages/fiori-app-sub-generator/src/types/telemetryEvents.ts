@@ -31,7 +31,6 @@ export interface AppGenEventProperties extends TelemetryProperties {
 
     AppGenSapSystemType: TelemetrySapSystemType;
     EnableEslint: boolean;
-    EnableCodeAssist: boolean;
     AppGenLaunchSource: LaunchSource;
     /**
      * Version of the module which launches the generator

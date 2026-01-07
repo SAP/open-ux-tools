@@ -7,7 +7,7 @@ import { adjustMtaYaml } from '../cf';
 import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
 import type { CfAdpWriterConfig, Content } from '../types';
-import { getCfVariant, writeCfTemplates, writeCfUI5Yaml, writeCfUI5BuildYaml } from './project-utils';
+import { getCfVariant, writeCfTemplates, writeCfUI5Yaml } from './project-utils';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
 
 /**
@@ -54,7 +54,6 @@ export async function generateCf(
 
     await writeCfTemplates(basePath, variant, fullConfig, fs);
     await writeCfUI5Yaml(fullConfig.project.folder, fullConfig, fs);
-    await writeCfUI5BuildYaml(fullConfig.project.folder, fullConfig, fs);
 
     return fs;
 }

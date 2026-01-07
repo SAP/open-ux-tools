@@ -1,5 +1,6 @@
 import FlexBox from 'sap/m/FlexBox';
-import RuntimeAuthoring, { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
 import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
@@ -18,7 +19,7 @@ import { FeatureService } from '../../../../src/cpe/feature-service';
 
 import FEV2QuickActionRegistry from '../../../../src/adp/quick-actions/fe-v2/registry';
 import { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
-import { sapCoreMock } from 'mock/window';
+import { sapCoreMock, fetchMock } from 'mock/window';
 import NavContainer from 'mock/sap/m/NavContainer';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
@@ -27,9 +28,7 @@ import Component from 'mock/sap/ui/core/Component';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import FlexUtils from 'mock/sap/ui/fl/Utils';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
-import { fetchMock } from 'mock/window';
-import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
-import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
+import OverlayRegistry, { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 import ManagedObject from 'mock/sap/ui/base/ManagedObject';
 import {
     ANALYTICAL_TABLE_TYPE,
@@ -85,7 +84,7 @@ describe('FE V2 quick actions', () => {
             });
         });
         afterEach(() => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
             if (typeof closeDialogFunction === 'function') {
                 // make sure that dialog factory is in clean state after each test
@@ -512,7 +511,7 @@ describe('FE V2 quick actions', () => {
                 });
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
-                let attachedEvent: (() => Promise<void>) | undefined = undefined;
+                let attachedEvent: (() => Promise<void>) | undefined;
                 const tableId = 'SmartTable' + testCase.isWithIconTabBar ? '-tab1' : '';
                 if (testCase.variantManagementDisabled) {
                     jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
@@ -1473,16 +1472,16 @@ describe('FE V2 quick actions', () => {
                                           }
                                       ]
                                     : testCase.versionInfo === '1.134.0' && testCase.isManifestPagesAsArray // support manifest pages as array from version 1.134 and above
-                                    ? [
-                                          {
-                                              enabled: true,
-                                              id: 'listReport0-enable-semantic-daterange-filterbar',
-                                              kind: 'simple',
-                                              title: 'Enable Semantic Date Range in Filter Bar',
-                                              tooltip: undefined
-                                          }
-                                      ]
-                                    : []
+                                      ? [
+                                            {
+                                                enabled: true,
+                                                id: 'listReport0-enable-semantic-daterange-filterbar',
+                                                kind: 'simple',
+                                                title: 'Enable Semantic Date Range in Filter Bar',
+                                                tooltip: undefined
+                                            }
+                                        ]
+                                      : []
                         }
                     ])
                 );
@@ -2165,9 +2164,10 @@ describe('FE V2 quick actions', () => {
                         } as any
                     ]
                 });
-                let tooltip = undefined;
+                let tooltip;
                 let enabled = true;
                 if (!testCase.isEnabled) {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                     (tooltip =
                         'This option has been disabled because variant management is already enabled for tables and charts'),
                         (enabled = false);
@@ -3030,7 +3030,7 @@ describe('FE V2 quick actions', () => {
                 expectDisabledReason?: string;
                 expectUnsupported?: boolean;
                 expectToThrow?: string;
-                manifestPages?: Object;
+                manifestPages?: object;
             }[] = [
                 {
                     innerTableType: M_TABLE_TYPE,

@@ -18,6 +18,17 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => {
     };
 });
 
+// Mock StdioServerTransport to prevent open handles
+jest.mock('@modelcontextprotocol/sdk/server/stdio.js', () => {
+    return {
+        StdioServerTransport: jest.fn().mockImplementation(() => {
+            return {
+                start: jest.fn()
+            };
+        })
+    };
+});
+
 jest.mock('../../src/telemetry', () => ({
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
@@ -34,6 +45,7 @@ describe('FioriFunctionalityServer', () => {
 
     // version cannot be hard coded as it will update on each new patch update
     test('Constructor', () => {
+        // eslint-disable-next-line no-new
         new FioriFunctionalityServer();
         // Check initialization
         expect(Server).toHaveBeenCalledWith(
@@ -44,6 +56,7 @@ describe('FioriFunctionalityServer', () => {
     });
 
     test('setup tools', async () => {
+        // eslint-disable-next-line no-new
         new FioriFunctionalityServer();
         const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
         const onRequestCB = setRequestHandlerCall[1];
@@ -79,6 +92,7 @@ describe('FioriFunctionalityServer', () => {
                     }
                 ]
             });
+            // eslint-disable-next-line no-new
             new FioriFunctionalityServer();
             const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
             const onRequestCB = setRequestHandlerCall[1];
@@ -184,6 +198,7 @@ describe('FioriFunctionalityServer', () => {
                 name: 'add-page',
                 parameters: {}
             });
+            // eslint-disable-next-line no-new
             new FioriFunctionalityServer();
             const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
             const onRequestCB = setRequestHandlerCall[1];
@@ -227,6 +242,7 @@ describe('FioriFunctionalityServer', () => {
                 parameters: [],
                 timestamp: ''
             });
+            // eslint-disable-next-line no-new
             new FioriFunctionalityServer();
             const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
             const onRequestCB = setRequestHandlerCall[1];
@@ -267,6 +283,7 @@ describe('FioriFunctionalityServer', () => {
         });
 
         test('Unknown tool', async () => {
+            // eslint-disable-next-line no-new
             new FioriFunctionalityServer();
             const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
             const onRequestCB = setRequestHandlerCall[1];

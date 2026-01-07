@@ -6,7 +6,7 @@ import { OutlineService } from '../../../src/cpe/outline/service';
 import { CommunicationService } from '../../../src/cpe/communication-service';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import Element from 'mock/sap/ui/core/Element';

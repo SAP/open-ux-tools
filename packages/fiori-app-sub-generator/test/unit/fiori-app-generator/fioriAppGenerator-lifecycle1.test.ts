@@ -14,16 +14,15 @@ import yeomanTest from 'yeoman-test';
 import { FioriAppGenerator, type FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { promptOdataServiceAnswers, promptUI5ApplicationAnswers } from '../../../src/fiori-app-generator/prompting';
 import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers';
-import type { Project } from '../../../src/types';
 import {
     FIORI_STEPS,
     FloorplanFE,
     FloorplanFF,
-    type Service,
     STEP_DATASOURCE_AND_SERVICE,
     STEP_FLP_CONFIG,
     STEP_PROJECT_ATTRIBUTES
 } from '../../../src/types';
+import type { Project, Service } from '../../../src/types';
 import * as commonUtils from '../../../src/utils';
 import {
     type AppWizardCache,
@@ -835,7 +834,9 @@ describe('Test FioriAppGenerator', () => {
                 backendSystem: {
                     name: 'testSystemName',
                     url: 'http:/s4hsystem:1234',
-                    authenticationType: 'reentranceTicket'
+                    authenticationType: 'reentranceTicket',
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
                 }
             }
         };
@@ -869,7 +870,9 @@ describe('Test FioriAppGenerator', () => {
                         backendSystem: {
                             authenticationType: 'reentranceTicket',
                             name: 'testSystemName',
-                            url: 'http:/s4hsystem:1234'
+                            url: 'http:/s4hsystem:1234',
+                            systemType: 'AbapCloud',
+                            connectionType: 'abap_catalog'
                         },
                         serviceProvider: {} as ServiceProvider
                     }

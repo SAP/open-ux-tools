@@ -154,8 +154,7 @@ export interface CfDeployConfigRouterAnswers extends Omit<CfDeployConfigAnswers,
 export const RouterModuleType = {
     Standard: 'standard',
     Managed: 'managed',
-    AppFront: 'appFront',
-    None: 'none'
+    AppFront: 'appFront'
 } as const;
 
 export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];

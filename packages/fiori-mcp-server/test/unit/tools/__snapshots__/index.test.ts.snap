@@ -6,7 +6,7 @@ Object {
   "description": "Input object for executing a functionality. Only three top-level properties are allowed: \\"functionalityId\\", \\"parameters\\", and \\"appPath\\". All other dynamic or functionality-specific inputs must be included inside the \\"parameters\\" object. Do not place any additional fields at the root level.",
   "properties": Object {
     "appPath": Object {
-      "description": "Path to the Fiori application. Path should be an absolute path.",
+      "description": "Path to the Fiori application if one exists or to the current directory. Path should be an absolute path.",
       "type": "string",
     },
     "functionalityId": Object {
@@ -110,7 +110,7 @@ Object {
   "additionalProperties": false,
   "properties": Object {
     "appPath": Object {
-      "description": "Path to the Fiori application. Path should be an absolute path.",
+      "description": "Path to the Fiori application if one exists or to the current directory. Path should be an absolute path.",
       "type": "string",
     },
     "functionalityId": Object {
@@ -381,7 +381,7 @@ Object {
   "additionalProperties": false,
   "properties": Object {
     "appPath": Object {
-      "description": "Path to the root folder of the Fiori application (where package.json and ui5.yaml reside). Path should be an absolute path.",
+      "description": "Path to the root folder of the Fiori application (where package.json and ui5.yaml reside) if one exists or to the current directory. Path should be an absolute path.",
       "type": "string",
     },
   },

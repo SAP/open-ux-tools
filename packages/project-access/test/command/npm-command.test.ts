@@ -1,4 +1,4 @@
-import childProcessMock from 'child_process';
+import childProcessMock from 'node:child_process';
 import type { Logger } from '@sap-ux/logger';
 import { execNpmCommand } from '../../src/command';
 

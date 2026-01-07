@@ -10,7 +10,7 @@ import {
     README_GENERATOR_REGEX,
     YAML_VERSION_REGEX
 } from '@sap-ux/jest-file-matchers';
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import os from 'node:os';
 import { join } from 'node:path';

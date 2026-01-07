@@ -112,7 +112,7 @@ export class ChangeService extends EventTarget {
                     }
 
                     const error = getError(exception);
-                    // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
+
                     const modifiedMessage = modifyRTAErrorMessage(error.toString(), id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
@@ -210,7 +210,7 @@ export class ChangeService extends EventTarget {
                                 };
                             }
                             throw new Error('Unknown change type');
-                        } catch (error) {
+                        } catch {
                             // Gracefully handle change files with invalid content
                             const flexObject = await getFlexObject(change);
                             const selectorId = await getControlIdByChange(

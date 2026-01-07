@@ -15,7 +15,7 @@ describe('Test the extension activate/deactivate', () => {
 
         await activate(mockContext);
 
-        expect(registerViewsSpy).toHaveBeenCalledWith(mockContext);
-        expect(registerCommandsSpy).toHaveBeenCalledWith(mockContext);
+        expect(registerViewsSpy).toHaveBeenCalledWith({ vscodeExtContext: mockContext });
+        expect(registerCommandsSpy).toHaveBeenCalledWith({ vscodeExtContext: mockContext });
     });
 });

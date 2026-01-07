@@ -6,10 +6,10 @@ import { tokenize } from '../lexer';
  * Parse CSV
  */
 class ParseCsv {
-    private text: string;
-    private lineOffsets: number[];
+    private readonly text: string;
+    private readonly lineOffsets: number[];
     private i: number;
-    private tokens: Token[];
+    private readonly tokens: Token[];
 
     /**
      * Constructor of ParseCsv class.

@@ -1,4 +1,4 @@
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import {
     ADD_PAGE_FUNCTIONALITY,
     addPageHandlers,
@@ -27,7 +27,7 @@ const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', '
 const copyProjectRoot = join(originProjectRoot, '..', '..', 'copy', `node-ai-created-add-page`);
 const appPath = join(copyProjectRoot, 'app', 'managetravels');
 
-let importProjectMock = jest.fn();
+let readAppMock = jest.fn();
 const memFsDumpMock = jest.fn();
 const commitMock = jest.fn();
 const exportConfigMock = jest.fn();
@@ -39,7 +39,9 @@ beforeEach(() => {
     memFsDumpMock.mockReturnValue({
         'manifest.json': {}
     });
-    importProjectMock = jest.fn().mockResolvedValue([]);
+    readAppMock = jest.fn().mockResolvedValue({
+        files: []
+    });
     // get actual createProjectProvider from the module
     const actualCreateApplicationAccess = jest.requireActual('@sap-ux/project-access').createApplicationAccess;
 
@@ -50,9 +52,10 @@ beforeEach(() => {
         const manifest = await getManifest(realApplicationAccess);
         // Mock only the getSpecification method
         const mockSpecification = {
-            importProject: importProjectMock,
+            readApp: readAppMock,
             exportConfig: exportConfigMock.mockReturnValue({ manifest }),
-            generateCustomExtension: generateCustomExtensionMock
+            generateCustomExtension: generateCustomExtensionMock,
+            getApiVersion: () => ({ version: '99' })
         };
 
         jest.spyOn(realApplicationAccess, 'getSpecification').mockResolvedValue(mockSpecification);
@@ -95,12 +98,14 @@ describe('add-page', () => {
             const manifestData = JSON.parse(readFileSync(manifestSrcPath, 'utf8'));
             writeFileSync(manifestDestPath, JSON.stringify(manifestData, null, 4));
             const fileContent = readFileSync(join(__dirname, 'test-data', 'empty-page-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             const result = await addPageHandlers.getFunctionalityDetails({
                 appPath,
                 functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
@@ -109,12 +114,14 @@ describe('add-page', () => {
         });
         test('case 3: one or more pages', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             const result = await addPageHandlers.getFunctionalityDetails({
                 appPath,
                 functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
@@ -123,12 +130,14 @@ describe('add-page', () => {
         });
         test('case 4: v2', async () => {
             const appJson = getMockAppJsonV2('two-pages-spec-app.json');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent: JSON.stringify(appJson)
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent: JSON.stringify(appJson)
+                    }
+                ]
+            });
             const result = await addPageHandlers.getFunctionalityDetails({
                 appPath,
                 functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
@@ -159,12 +168,14 @@ describe('add-page', () => {
             const manifestData = JSON.parse(readFileSync(manifestSrcPath, 'utf8'));
             writeFileSync(manifestDestPath, JSON.stringify(manifestData, null, 4));
             const fileContent = readFileSync(join(__dirname, 'test-data', 'empty-page-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
                 functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
@@ -189,12 +200,14 @@ describe('add-page', () => {
         });
         test('case 3: one or more pages', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
                 functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
@@ -298,12 +311,14 @@ describe('add-page', () => {
 
         test('case 6: add custom page', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
                 functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
@@ -349,12 +364,14 @@ describe('add-page', () => {
 
         test('case 7: add custom page without "pageViewName"', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             await expect(
                 addPageHandlers.executeFunctionality({
                     appPath,
@@ -380,12 +397,14 @@ describe('add-page', () => {
 
         test('case 8: validate incorrect "pageViewName"', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             await expect(
                 addPageHandlers.executeFunctionality({
                     appPath,
@@ -422,12 +441,14 @@ describe('add-page', () => {
             });
             test('Add page', async () => {
                 const appJson = getMockAppJsonV2();
-                importProjectMock.mockResolvedValue([
-                    {
-                        dataSourceUri: 'app.json',
-                        fileContent: JSON.stringify(appJson)
-                    }
-                ]);
+                readAppMock.mockResolvedValue({
+                    files: [
+                        {
+                            dataSourceUri: 'app.json',
+                            fileContent: JSON.stringify(appJson)
+                        }
+                    ]
+                });
                 const result = await addPageHandlers.executeFunctionality({
                     appPath,
                     functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
@@ -472,12 +493,14 @@ describe('add-page', () => {
             test('Add page when navigation is not set in parent', async () => {
                 const appJson = getMockAppJsonV2();
                 delete appJson.pages['TravelsObjectPage'].navigation;
-                importProjectMock.mockResolvedValue([
-                    {
-                        dataSourceUri: 'app.json',
-                        fileContent: JSON.stringify(appJson)
-                    }
-                ]);
+                readAppMock.mockResolvedValue({
+                    files: [
+                        {
+                            dataSourceUri: 'app.json',
+                            fileContent: JSON.stringify(appJson)
+                        }
+                    ]
+                });
                 await addPageHandlers.executeFunctionality({
                     appPath,
                     functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
@@ -512,12 +535,14 @@ describe('add-page', () => {
             test('Add page when no any page', async () => {
                 const appJson = getMockAppJsonV2();
                 delete appJson.pages;
-                importProjectMock.mockResolvedValue([
-                    {
-                        dataSourceUri: 'app.json',
-                        fileContent: JSON.stringify(appJson)
-                    }
-                ]);
+                readAppMock.mockResolvedValue({
+                    files: [
+                        {
+                            dataSourceUri: 'app.json',
+                            fileContent: JSON.stringify(appJson)
+                        }
+                    ]
+                });
                 await addPageHandlers.executeFunctionality({
                     appPath,
                     functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
@@ -559,12 +584,14 @@ describe('delete-page', () => {
         });
         test('case 2: zero or more pages', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             const result = await deletePageHandlers.getFunctionalityDetails({
                 appPath,
                 functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId
@@ -595,12 +622,14 @@ describe('delete-page', () => {
             const manifestData = JSON.parse(readFileSync(manifestSrcPath, 'utf8'));
             writeFileSync(manifestDestPath, JSON.stringify(manifestData, null, 4));
             const fileContent = readFileSync(join(__dirname, 'test-data', 'empty-page-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,
@@ -624,12 +653,14 @@ describe('delete-page', () => {
         });
         test('case 3: one or more pages', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             const result = await deletePageHandlers.executeFunctionality({
                 appPath,
                 functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
@@ -646,12 +677,14 @@ describe('delete-page', () => {
         });
         test('case 4: missing page id', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,
@@ -676,12 +709,14 @@ describe('delete-page', () => {
         });
         test('case 5: invalid page id', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,
@@ -708,12 +743,14 @@ describe('delete-page', () => {
         });
         test('case 5: unexisting page id', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
-            importProjectMock.mockResolvedValue([
-                {
-                    dataSourceUri: 'app.json',
-                    fileContent
-                }
-            ]);
+            readAppMock.mockResolvedValue({
+                files: [
+                    {
+                        dataSourceUri: 'app.json',
+                        fileContent
+                    }
+                ]
+            });
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,

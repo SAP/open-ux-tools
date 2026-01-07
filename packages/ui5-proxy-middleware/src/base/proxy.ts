@@ -1,6 +1,6 @@
 import type { Filter, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
 import type { ProxyConfig } from './types';
 import {
     proxyRequestHandler,

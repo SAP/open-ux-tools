@@ -1,0 +1,10 @@
+specVersion: "3.0"
+type: library
+metadata:
+  name: test.custom.library
+resources:
+  configuration:
+    paths:
+      src: custom/src
+      test: custom/test
+

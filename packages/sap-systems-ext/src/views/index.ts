@@ -1,4 +1,4 @@
-import type { ExtensionContext } from 'vscode';
+import type { SapSystemsExtContext } from '../types';
 import { initSapSystemsView } from './sapSystems';
 
 /**
@@ -6,7 +6,7 @@ import { initSapSystemsView } from './sapSystems';
  *
  * @param context - the extension context
  */
-export function registerViews(context: ExtensionContext): void {
+export function registerViews(context: SapSystemsExtContext): void {
     // stored systems view
     initSapSystemsView(context);
 }

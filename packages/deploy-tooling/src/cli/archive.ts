@@ -3,7 +3,7 @@ import { readFile } from 'node:fs';
 import ZipFile from 'adm-zip';
 import type { CliOptions } from '../types';
 import type { Logger } from '@sap-ux/logger';
-import { Agent } from 'https';
+import { Agent } from 'node:https';
 
 /**
  * Get/read zip file from the given path.

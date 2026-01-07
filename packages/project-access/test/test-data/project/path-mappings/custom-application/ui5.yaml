@@ -1,0 +1,9 @@
+specVersion: "3.0"
+type: application
+metadata:
+  name: test.custom.application
+resources:
+  configuration:
+    paths:
+      webapp: src/main/webapp
+

@@ -97,7 +97,7 @@ test.describe(`@toolbar @preview-scale @cpe @adp`, () => {
  * @returns the difference between a and b in number format e.g. 30
  */
 function subtractPercent(a: string, b: string): number {
-    const numA = parseFloat(a.replace('%', ''));
-    const numB = parseFloat(b.replace('%', ''));
+    const numA = Number.parseFloat(a.replace('%', ''));
+    const numB = Number.parseFloat(b.replace('%', ''));
     return numA - numB;
 }

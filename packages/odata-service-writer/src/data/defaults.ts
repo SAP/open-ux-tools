@@ -160,7 +160,7 @@ function setDefaultAnnotationsName(service: OdataService): void {
 async function setDefaultPreviewSettings(basePath: string, service: OdataService, fs: Editor): Promise<void> {
     service.previewSettings = service.previewSettings ?? {};
     service.previewSettings.path =
-        service.previewSettings.path ?? `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
+        service.previewSettings.path ?? `/${service.path?.split('/').find((s: string) => s !== '') ?? ''}`;
     service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
     if (service.client && !service.previewSettings.client) {
         service.previewSettings.client = service.client;

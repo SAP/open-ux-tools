@@ -1,9 +1,12 @@
-import { BackendSystem, BackendSystemKey } from '../../../src';
+import { BackendSystem, BackendSystemKey, SystemType } from '../../../src';
 import * as dataAccessHybrid from '../../../src/data-access/hybrid';
 import * as fileSystemAccess from '../../../src/data-access/filesystem';
 import { SystemDataProvider } from '../../../src/data-provider/backend-system';
 import { Entities } from '../../../src/data-provider/constants';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import * as fs from 'node:fs';
+
+jest.mock('fs');
 
 describe('Backend system data provider', () => {
     const mockGetHybridStore = jest.spyOn(dataAccessHybrid, 'getHybridStore');
@@ -35,7 +38,9 @@ describe('Backend system data provider', () => {
             url: 'url',
             client: 'client',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
         };
         mockHybridStore.read.mockResolvedValueOnce(expectedSystem);
         await expect(
@@ -49,7 +54,9 @@ describe('Backend system data provider', () => {
             url: 'url',
             client: 'client',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
         });
         mockHybridStore.write.mockResolvedValueOnce(expectedSystem);
         await expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(
@@ -68,7 +75,9 @@ describe('Backend system data provider', () => {
             url: 'url',
             client: 'client',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
         });
         mockHybridStore.write.mockResolvedValueOnce(expectedSystem);
         await expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(
@@ -87,7 +96,9 @@ describe('Backend system data provider', () => {
             url: 'url',
             client: 'client',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
         });
         mockHybridStore.del.mockResolvedValueOnce(true);
         await expect(new SystemDataProvider(logger).delete(new BackendSystem(expectedSystem))).resolves.toBe(true);
@@ -98,28 +109,41 @@ describe('Backend system data provider', () => {
     });
 
     it('getAll delegates to the data accessor', async () => {
+        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
+        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
+            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
+        });
         const sys1: BackendSystem = Object.freeze({
             name: 'sys1',
             url: 'url1',
             client: 'client',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
         });
         const sys2: BackendSystem = Object.freeze({
             name: 'sys2',
             url: 'url2',
             client: 'client',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
         });
         const sys3: BackendSystem = Object.freeze({
             name: 'sys3',
             url: 'url3',
             client: 'client',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
         });
-        mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3 });
+        mockHybridStore.readAll.mockResolvedValueOnce({ sys1: sys1, sys2: sys2, sys3: sys3 });
         await expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1, sys2, sys3]);
         expect(mockHybridStore.readAll).toHaveBeenCalledWith({
             entityName: Entities.BackendSystem,
@@ -127,124 +151,139 @@ describe('Backend system data provider', () => {
         });
     });
 
-    it('getAll culls systems with empty urls', async () => {
+    it('getAll returns only the relevant system types', async () => {
+        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
+        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
+            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
+        });
         const sys1: BackendSystem = Object.freeze({
             name: 'sys1',
             url: 'url1',
             client: 'client',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
         });
         const sys2: BackendSystem = Object.freeze({
             name: 'sys2',
-            url: '',
+            url: 'url2',
             client: 'client',
             username: 'user',
-            password: 'pass'
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
         });
         const sys3: BackendSystem = Object.freeze({
             name: 'sys3',
-            url: '    ',
+            url: 'url3',
             client: 'client',
-            username: 'user',
-            password: 'pass'
+            hasSensitiveData: true,
+            systemType: SystemType.AbapCloud,
+            connectionType: 'abap_catalog'
         });
-        const sys4: BackendSystem = Object.freeze({
+        mockHybridStore.readAll.mockResolvedValueOnce({ sys1: sys1, sys2: sys2, sys3: sys3 });
+        await expect(
+            new SystemDataProvider(logger).getAll({ backendSystemFilter: { systemType: SystemType.AbapOnPrem } })
+        ).resolves.toEqual([sys1, sys2]);
+    });
+
+    it('getAll performs necessary migration to add hasSensitveData', async () => {
+        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => false);
+        const sys1: BackendSystem = {
+            name: 'sys1',
+            url: 'url1',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
+        };
+        const sys2: BackendSystem = {
+            name: 'sys2',
+            url: 'url2',
+            serviceKeys: '<serviceKey>',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
+        };
+        const sys3: BackendSystem = {
             name: 'sys3',
-            url: undefined,
-            client: 'client',
-            username: 'user',
-            password: 'pass'
-        }) as unknown as BackendSystem; // We want url to be undefined for the test
-        mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3, sys4, sys5: undefined });
-        await expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1]);
+            url: 'url3',
+            username: 'username',
+            password: 'password',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
+        };
+
+        mockHybridStore.readAll
+            .mockResolvedValueOnce({ 'sys1': sys1, 'sys2': sys2, 'sys3': sys3 })
+            .mockResolvedValueOnce({
+                sys1: new BackendSystem(sys1),
+                sys2: new BackendSystem(sys2),
+                sys3: new BackendSystem(sys3)
+            });
+
+        mockHybridStore.write.mockResolvedValue(Promise.resolve());
+        mockHybridStore.del.mockResolvedValue(Promise.resolve());
+
+        await expect(new SystemDataProvider(logger).getAll({ includeSensitiveData: true })).resolves.toEqual([
+            { ...sys1, hasSensitiveData: false },
+            { ...sys2, hasSensitiveData: true },
+            { ...sys3, hasSensitiveData: true }
+        ]);
+
+        expect(mockHybridStore.readAll).toHaveBeenCalledTimes(2);
         expect(mockHybridStore.readAll).toHaveBeenCalledWith({
             entityName: Entities.BackendSystem,
             includeSensitiveData: true
         });
     });
 
-    it('getAll performs necessary migration to add the system type', async () => {
+    it('getAll does not crash which migration fails ', async () => {
+        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => false);
         const sys1: BackendSystem = {
             name: 'sys1',
-            url: 'url1'
+            url: 'url1',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         };
         const sys2: BackendSystem = {
             name: 'sys2',
-            url: 'url2'
+            url: 'url2',
+            serviceKeys: '<serviceKey>',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
         };
         const sys3: BackendSystem = {
             name: 'sys3',
-            url: 'url3'
+            url: 'url3',
+            username: 'username',
+            password: 'password',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         };
 
-        mockHybridStore.readAll.mockResolvedValue({ sys1, sys2, sys3 });
+        mockHybridStore.readAll
+            .mockResolvedValueOnce({ 'url1': sys1, 'url2': sys2, 'sys3': sys3 })
+            .mockResolvedValueOnce({
+                sys1: new BackendSystem(sys1),
+                sys2: new BackendSystem(sys2),
+                sys3: new BackendSystem(sys3)
+            });
 
-        mockHybridStore.read
-            .mockResolvedValueOnce({ ...sys1, authenticationType: 'reentranceTicket' })
-            .mockResolvedValueOnce({ ...sys2, serviceKeys: '<serviceKey>' })
-            .mockResolvedValueOnce({ ...sys3, username: 'username' });
-
-        mockHybridStore.partialUpdate.mockResolvedValue(Promise.resolve());
-
-        await expect(new SystemDataProvider(logger).getAll({ includeSensitiveData: false })).resolves.toEqual([
-            sys1,
-            sys2,
-            sys3
+        mockHybridStore.write.mockResolvedValue(Promise.resolve());
+        mockHybridStore.del.mockImplementationOnce(() => {
+            throw new Error('Simulated failure');
+        });
+        await expect(new SystemDataProvider(logger).getAll({ includeSensitiveData: true })).resolves.toEqual([
+            { ...sys1, hasSensitiveData: false },
+            { ...sys2, hasSensitiveData: true },
+            { ...sys3, hasSensitiveData: true }
         ]);
-
-        expect(mockHybridStore.partialUpdate).toHaveBeenCalledTimes(3);
-        expect(mockHybridStore.partialUpdate).toHaveBeenNthCalledWith(1, {
-            entityName: Entities.BackendSystem,
-            id: 'sys1',
-            entity: { systemType: 'AbapCloud' }
-        });
-        expect(mockHybridStore.partialUpdate).toHaveBeenNthCalledWith(2, {
-            entityName: Entities.BackendSystem,
-            id: 'sys2',
-            entity: { systemType: 'AbapCloud' }
-        });
-        expect(mockHybridStore.partialUpdate).toHaveBeenNthCalledWith(3, {
-            entityName: Entities.BackendSystem,
-            id: 'sys3',
-            entity: { systemType: 'OnPrem' }
-        });
 
         expect(mockHybridStore.readAll).toHaveBeenCalledTimes(2);
         expect(mockHybridStore.readAll).toHaveBeenCalledWith({
             entityName: Entities.BackendSystem,
-            includeSensitiveData: false
+            includeSensitiveData: true
         });
-    });
-
-    it('getAll retrieves system urls from keys if required', async () => {
-        mockHybridStore.readAll.mockResolvedValueOnce({
-            'http://example1/000': {
-                username: 'user1',
-                password: 'pass1'
-            },
-            'mock$not_a_url': {
-                username: 'user2'
-            }
-        });
-        const systems = await new SystemDataProvider(logger).getAll();
-        expect(mockFilesystemStore.write).toHaveBeenCalledWith({
-            entityName: Entities.BackendSystem,
-            id: 'http://example1/000',
-            entity: {
-                url: 'http://example1',
-                client: '000',
-                name: 'http://example1, client 000'
-            }
-        });
-        expect(systems).toEqual([
-            {
-                url: 'http://example1',
-                client: '000',
-                name: 'http://example1, client 000',
-                username: 'user1',
-                password: 'pass1'
-            }
-        ]);
     });
 });

@@ -22,7 +22,7 @@ export const createSystemCommandHandler = (context: SystemCommandContext) => asy
  * @returns - the created system panel
  */
 function createNewPanel(context: SystemCommandContext): SystemPanel {
-    const extensionPath = context.extContext.extensionPath;
+    const extensionPath = context.extContext.vscodeExtContext.extensionPath;
     return new SystemPanel({
         extensionPath,
         systemPanelViewType: SystemPanelViewType.Create,

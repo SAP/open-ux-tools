@@ -65,6 +65,6 @@ function errorHandler(error: string, systemName = 'unknown'): void {
     });
 
     SystemsLogger.logger.debug(error);
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
     window.showErrorMessage(errorMsg);
 }

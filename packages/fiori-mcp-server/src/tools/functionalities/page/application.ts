@@ -10,7 +10,7 @@ import { DirName } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
 import type { Application as ApplicationConfig, CustomExtensionData, v4 } from '@sap/ux-specification/dist/types/src';
-import { getDefaultExtensionFolder } from '../../utils';
+import { getDefaultExtensionFolder } from '../../../utils';
 
 /**
  * Represents an application instance with its metadata, access configuration and functionality details.
@@ -50,7 +50,7 @@ export class Application {
         this.appData = appData;
         this.appId = appId;
         this.applicationAccess = applicationAccess;
-        this.version = getFioriElementsVersion(appData);
+        this.version = getFioriElementsVersion(appData.config);
     }
 
     /**

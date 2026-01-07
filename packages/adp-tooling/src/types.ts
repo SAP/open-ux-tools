@@ -1,4 +1,4 @@
-import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { AxiosRequestConfig, OperationsType } from '@sap-ux/axios-extension';
@@ -39,6 +39,10 @@ export interface AdpPreviewConfig {
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
+    /**
+     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
+     */
+    cfBuildPath?: string;
 }
 
 export interface OnpremApp {
@@ -493,16 +497,16 @@ export const ChangeTypeMap: Record<ChangeType, string> = {
 export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOTATIONS_TO_ODATA
     ? AnnotationsData
     : T extends ChangeType.ADD_COMPONENT_USAGES
-    ? ComponentUsagesData
-    : T extends ChangeType.ADD_LIBRARY_REFERENCE
-    ? ComponentUsagesData
-    : T extends ChangeType.ADD_NEW_MODEL
-    ? NewModelData
-    : T extends ChangeType.CHANGE_DATA_SOURCE
-    ? DataSourceData
-    : T extends ChangeType.CHANGE_INBOUND
-    ? InboundData
-    : never;
+      ? ComponentUsagesData
+      : T extends ChangeType.ADD_LIBRARY_REFERENCE
+        ? ComponentUsagesData
+        : T extends ChangeType.ADD_NEW_MODEL
+          ? NewModelData
+          : T extends ChangeType.CHANGE_DATA_SOURCE
+            ? DataSourceData
+            : T extends ChangeType.CHANGE_INBOUND
+              ? InboundData
+              : never;
 
 export interface AnnotationsData {
     variant: DescriptorVariant;
@@ -884,6 +888,8 @@ export interface UI5YamlCustomTaskConfiguration {
     space: string;
     html5RepoRuntime: string;
     sapCloudService: string;
+    serviceInstanceName: string;
+    serviceInstanceGuid: string;
 }
 
 export interface UI5YamlCustomTask {
@@ -1039,12 +1045,25 @@ export interface CfAdpWriterConfig {
         approuter: AppRouterType;
         businessService: string;
         businessSolutionName?: string;
+        /**
+         * GUID of the business service instance.
+         */
+        serviceInstanceGuid?: string;
+        /**
+         * Backend URL from service instance keys.
+         */
+        backendUrl?: string;
+        /**
+         * OAuth paths extracted from xs-app.json routes that have a source property.
+         */
+        oauthPaths?: string[];
     };
     project: {
         name: string;
         path: string;
         folder: string;
     };
+    customConfig?: CustomConfig;
     ui5: {
         version: string;
     };
@@ -1068,9 +1087,14 @@ export interface CreateCfConfigParams {
     layer: FlexLayer;
     manifest: Manifest;
     html5RepoRuntimeGuid: string;
+    serviceInstanceGuid?: string;
+    backendUrl?: string;
+    oauthPaths?: string[];
     projectPath: string;
     addStandaloneApprouter?: boolean;
     publicVersions: UI5Version;
+    packageJson: Package;
+    toolsId: string;
 }
 
 export const AppRouterType = {
@@ -1137,7 +1161,6 @@ export interface CFApp {
     messages?: string[];
     serviceInstanceGuid?: string;
 }
-
 /**
  * CF services (application sources) prompts
  */

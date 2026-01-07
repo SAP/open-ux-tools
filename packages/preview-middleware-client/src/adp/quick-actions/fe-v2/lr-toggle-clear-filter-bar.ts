@@ -1,8 +1,11 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type FilterBar from 'sap/ui/comp/filterbar/FilterBar';
 
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';

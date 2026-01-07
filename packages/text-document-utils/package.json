@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/text-document-utils",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "description": "Library for text document utility functions and types",
     "repository": {
         "type": "git",
@@ -14,8 +14,8 @@
         "build": "tsc --build",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
