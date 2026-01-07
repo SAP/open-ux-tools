@@ -2,7 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { NewI18nEntry } from '@sap-ux/i18n';
 import type { I18nBundles } from '../i18n';
 import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Package } from '../package';
 import type { AnnotationFile, Manifest } from '../webapp';
 
