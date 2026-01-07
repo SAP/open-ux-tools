@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.10.6
+
+### Patch Changes
+
+- 6382440: update error map to add EPROTO code
+
 ## 0.10.5
 
 ### Patch Changes
