@@ -104,7 +104,7 @@ export class FioriFunctionalityServer {
             }
 
             // Validate: only allow characters, numbers, hyphens, forward slashes, backslashes, and spaces
-            const validPattern = /^[a-zA-Z0-9\-\/\\ ]+$/;
+            const validPattern = /^[a-zA-Z0-9\-/\\ ]+$/;
             if (idString && validPattern.test(idString)) {
                 return idString;
             }
