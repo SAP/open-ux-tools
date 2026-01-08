@@ -730,8 +730,8 @@ importers:
   packages/annotation-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.9
-        version: 0.10.9
+        specifier: 0.10.19
+        version: 0.10.19
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -1831,8 +1831,8 @@ importers:
   packages/fe-fpm-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.9
-        version: 0.10.9
+        specifier: 0.10.19
+        version: 0.10.19
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -1913,8 +1913,8 @@ importers:
   packages/fiori-annotation-api:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.9
-        version: 0.10.9
+        specifier: 0.10.19
+        version: 0.10.19
       '@sap-ux/cds-annotation-parser':
         specifier: workspace:*
         version: link:../cds-annotation-parser
@@ -1980,8 +1980,8 @@ importers:
   packages/fiori-app-sub-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.9
-        version: 0.10.9
+        specifier: 0.10.19
+        version: 0.10.19
       '@sap-ux/annotation-generator':
         specifier: workspace:*
         version: link:../annotation-generator
@@ -2402,8 +2402,8 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       '@sap-ux/annotation-converter':
-        specifier: 0.10.9
-        version: 0.10.9
+        specifier: 0.10.19
+        version: 0.10.19
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -2757,8 +2757,8 @@ importers:
   packages/inquirer-common:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.9
-        version: 0.10.9
+        specifier: 0.10.19
+        version: 0.10.19
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -3057,8 +3057,8 @@ importers:
   packages/odata-service-inquirer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.9
-        version: 0.10.9
+        specifier: 0.10.19
+        version: 0.10.19
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -3157,8 +3157,8 @@ importers:
   packages/odata-service-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.9
-        version: 0.10.9
+        specifier: 0.10.19
+        version: 0.10.19
       '@sap-ux/edmx-parser':
         specifier: 0.9.1
         version: 0.9.1
@@ -13424,6 +13424,11 @@ packages:
   /@sap-devx/yeoman-ui-types@1.16.9:
     resolution: {integrity: sha512-GpyTtj2RGWopUWROS3dfAV+0MQzARSRpqoWGDLQflCQpQWCkEFUQlj/dgowrEblj+1oJDTYBEdLu7nPc5lkNMA==}
 
+  /@sap-ux/annotation-converter@0.10.19:
+    resolution: {integrity: sha512-KuIuaD3nhV2pO09CX5xMtLQYFAFFVNbDcfyuidjG3PECm3kbxTaC5Ldh1QHzO0eLNpnb2jE6hjFs4Kr/csdPCQ==}
+    dependencies:
+      '@sap-ux/vocabularies-types': 0.14.5
+
   /@sap-ux/annotation-converter@0.10.3:
     resolution: {integrity: sha512-mLQTJv4SXyxbizE2guXi/m9BuFi+jcn7Vk8pGzkbdjWhBgI2OK0F30GXEsy7lprYFGycCLzXbBj/X7Unz+pIeg==}
     dependencies:
@@ -13435,11 +13440,6 @@ packages:
     dependencies:
       '@sap-ux/vocabularies-types': 0.13.1
     dev: true
-
-  /@sap-ux/annotation-converter@0.10.9:
-    resolution: {integrity: sha512-3FZsUB9G/PhxyMuYs6tIcXEvStQl5NXHwLLyy94UGNAwYCYxwrST7UgiirlVCY9Krb03wb8RdPCldTEyyO5iEg==}
-    dependencies:
-      '@sap-ux/vocabularies-types': 0.13.2
 
   /@sap-ux/cds-annotation-parser@0.2.21:
     resolution: {integrity: sha512-PouMuIrSlRETc2oOTYFQB22fzxG06fFe83saIsHDIhOohp0cGbAcVstbDziGoAMCujSIz8hh4P29PF7PZ2IhUA==}
@@ -13675,6 +13675,10 @@ packages:
 
   /@sap-ux/vocabularies-types@0.13.2:
     resolution: {integrity: sha512-lPFiWVXyA4yUBeQBJePxnqXZ/bMKk6vR3GoLtW/5ayBcQAJxWTpeyK8QX91sR+AajDmzkCF/8ND2ewi8SewySg==}
+    engines: {node: '>=18.x'}
+
+  /@sap-ux/vocabularies-types@0.14.5:
+    resolution: {integrity: sha512-66Q7Q4zVVSirPopU7oRw0ZDtUiOhAF2DuKy70uJl2wRfQ2WXLbrezEkHRxVdiVpQYm5n5qTkr6sX/I+/WXQjXQ==}
     engines: {node: '>=18.x'}
 
   /@sap-ux/xml-odata-annotation-converter@0.4.2:
@@ -23971,6 +23975,7 @@ packages:
   /isobject@3.0.1:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
     engines: {node: '>=0.10.0'}
+    requiresBuild: true
     dev: true
 
   /isstream@0.1.2:
@@ -28665,6 +28670,7 @@ packages:
 
   /psl@1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
+    requiresBuild: true
 
   /pump@3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
@@ -28845,6 +28851,7 @@ packages:
 
   /querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
+    requiresBuild: true
 
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -32458,6 +32465,7 @@ packages:
   /universalify@0.2.0:
     resolution: {integrity: sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==}
     engines: {node: '>= 4.0.0'}
+    requiresBuild: true
 
   /universalify@2.0.0:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
@@ -32591,6 +32599,7 @@ packages:
 
   /url-parse@1.5.10:
     resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
+    requiresBuild: true
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
@@ -32687,6 +32696,7 @@ packages:
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
+    requiresBuild: true
     dev: true
 
   /uuid@9.0.1:
