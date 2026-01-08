@@ -64,7 +64,9 @@ describe('flp/WorkspaceConnector', () => {
         test('setItem, generator - tool-variant', async () => {
             const change = { data: '~Data' };
             documentMock.getElementById.mockReturnValueOnce({
-                getAttribute: () => JSON.stringify({ generator: 'tool-variant' })
+                dataset: {
+                    openUxPreviewFlexSettings: JSON.stringify({ generator: 'tool-variant' })
+                }
             });
 
             await connector.storage.setItem('~notUsed', change);
@@ -137,7 +139,9 @@ describe('flp/WorkspaceConnector', () => {
                 libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
             });
             documentMock.getElementById.mockReturnValueOnce({
-                getAttribute: () => JSON.stringify({ developerMode: true })
+                dataset:{
+                    openUxPreviewFlexSettings: JSON.stringify({ developerMode: true })
+                }
             });
             const features = await connector.loadFeatures();
             expect(features.isVariantAdaptationEnabled).toBe(false);
@@ -149,7 +153,9 @@ describe('flp/WorkspaceConnector', () => {
                 libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
             });
             documentMock.getElementById.mockReturnValueOnce({
-                getAttribute: () => JSON.stringify({ scenario: 'ADAPTATION_PROJECT' })
+                dataset: {
+                    openUxPreviewFlexSettings: JSON.stringify({ scenario: 'ADAPTATION_PROJECT' })
+                }
             });
             const features = await connector.loadFeatures();
             expect(features.isVariantAdaptationEnabled).toBe(true);

@@ -1,4 +1,4 @@
-import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { AxiosRequestConfig, OperationsType } from '@sap-ux/axios-extension';
@@ -497,16 +497,16 @@ export const ChangeTypeMap: Record<ChangeType, string> = {
 export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOTATIONS_TO_ODATA
     ? AnnotationsData
     : T extends ChangeType.ADD_COMPONENT_USAGES
-    ? ComponentUsagesData
-    : T extends ChangeType.ADD_LIBRARY_REFERENCE
-    ? ComponentUsagesData
-    : T extends ChangeType.ADD_NEW_MODEL
-    ? NewModelData
-    : T extends ChangeType.CHANGE_DATA_SOURCE
-    ? DataSourceData
-    : T extends ChangeType.CHANGE_INBOUND
-    ? InboundData
-    : never;
+      ? ComponentUsagesData
+      : T extends ChangeType.ADD_LIBRARY_REFERENCE
+        ? ComponentUsagesData
+        : T extends ChangeType.ADD_NEW_MODEL
+          ? NewModelData
+          : T extends ChangeType.CHANGE_DATA_SOURCE
+            ? DataSourceData
+            : T extends ChangeType.CHANGE_INBOUND
+              ? InboundData
+              : never;
 
 export interface AnnotationsData {
     variant: DescriptorVariant;
@@ -1063,6 +1063,7 @@ export interface CfAdpWriterConfig {
         path: string;
         folder: string;
     };
+    customConfig?: CustomConfig;
     ui5: {
         version: string;
     };
@@ -1092,6 +1093,8 @@ export interface CreateCfConfigParams {
     projectPath: string;
     addStandaloneApprouter?: boolean;
     publicVersions: UI5Version;
+    packageJson: Package;
+    toolsId: string;
 }
 
 export const AppRouterType = {

@@ -1,4 +1,4 @@
-import type { ClientRequest, IncomingMessage } from 'http';
+import type { ClientRequest, IncomingMessage } from 'node:http';
 import type { Options } from 'http-proxy-middleware';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import {
@@ -10,8 +10,8 @@ import {
     type EnhancedIncomingMessage
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
-import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
-import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
+import { type BackendSystem, AuthenticationType } from '@sap-ux/store';
 import { getInstance } from '@sap-ux/store/dist/services/backend-system';
 
 jest.mock('@sap-ux/store/dist/services/api-hub', () => ({
@@ -314,7 +314,9 @@ describe('proxy', () => {
     describe('enhanceConfigForSystem', () => {
         const system: BackendSystem = {
             name: 'example',
-            url: 'http://backend.example'
+            url: 'http://backend.example',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         };
 
         test('simple system', async () => {
@@ -439,7 +441,7 @@ describe('proxy', () => {
             };
             mockListDestinations.mockResolvedValueOnce({
                 [backend.destination]: {
-                    Host: 'http://backend.example/sap',
+                    Host: 'http://backend.example/sap'
                 }
             });
             mockIsFullUrlDestination.mockResolvedValueOnce(false);
@@ -479,7 +481,7 @@ describe('proxy', () => {
             };
             mockListDestinations.mockResolvedValueOnce({
                 [backend.destination]: {
-                    Host: 'http://backend.example/my/other/path',
+                    Host: 'http://backend.example/my/other/path'
                 }
             });
             mockIsFullUrlDestination.mockResolvedValueOnce(true);

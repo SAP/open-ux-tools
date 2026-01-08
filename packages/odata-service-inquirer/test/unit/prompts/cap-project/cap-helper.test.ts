@@ -12,7 +12,7 @@ import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-pr
 import os from 'node:os';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { PathLike } from 'node:fs';
-import * as fsPromises from 'fs/promises';
+import * as fsPromises from 'node:fs/promises';
 
 const initMockCapModelAndServices = {
     model: {},

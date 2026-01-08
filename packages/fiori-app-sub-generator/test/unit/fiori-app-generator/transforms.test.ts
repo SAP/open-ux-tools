@@ -148,7 +148,9 @@ describe('Test transform state', () => {
                     backendSystem: {
                         authenticationType: AuthenticationType.ReentranceTicket,
                         name: 'some-backend-system',
-                        url: 'https://abap.cloud.system'
+                        url: 'https://abap.cloud.system',
+                        systemType: 'AbapCloud',
+                        connectionType: 'abap_catalog'
                     },
                     serviceProvider: {} as ServiceProvider
                 }
@@ -190,7 +192,9 @@ describe('Test transform state', () => {
                     backendSystem: {
                         authenticationType: AuthenticationType.ReentranceTicket,
                         name: 'some-backend-system',
-                        url: 'https://abap.cloud.system'
+                        url: 'https://abap.cloud.system',
+                        systemType: 'AbapCloud',
+                        connectionType: 'abap_catalog'
                     },
                     serviceProvider: {} as ServiceProvider
                 }

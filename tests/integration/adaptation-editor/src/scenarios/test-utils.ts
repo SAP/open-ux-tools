@@ -1,4 +1,4 @@
-import { readdir, readFile } from 'fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect, test, type FrameLocator, type Page, type Locator } from '@sap-ux-private/playwright';
 import { gte, lte } from 'semver';

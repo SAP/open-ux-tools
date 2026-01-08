@@ -58,10 +58,11 @@ export function updateAnswers(
 ): Answers {
     let updatedAnswers = setAnswer(structuredClone(answers), name, value);
     const dependantPromptNames = getDependantQuestions(questions, name);
-    dependantPromptNames?.length &&
+    if (dependantPromptNames?.length) {
         dependantPromptNames.forEach((dependantName) => {
             updatedAnswers = setAnswer(updatedAnswers, dependantName, undefined);
         });
+    }
     return updatedAnswers;
 }
 

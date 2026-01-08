@@ -1,5 +1,5 @@
 import type { SystemConfig, SystemCommandContext, SystemConfigFile } from '../../types/system';
-import { BackendSystem, BackendSystemKey, type SystemType } from '@sap-ux/store';
+import { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { window, workspace } from 'vscode';
 import { platform } from 'node:os';
 import { readFileSync } from 'node:fs';
@@ -34,7 +34,6 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
         if (existingSystem) {
             overwrite = await confirmPrompt(ConfirmationPromptType.Overwrite, existingSystem.name);
             if (!overwrite) {
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 window.showWarningMessage(t('warn.importCancelled'));
                 return;
             }
@@ -49,7 +48,7 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
         }
     } catch (err) {
         const msg = err instanceof Error ? err.message : t('error.importConfigFailed');
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
         window.showErrorMessage(msg);
         logImportTelemetry(SystemActionStatus.IMPORT_FAIL);
     }
@@ -75,13 +74,14 @@ function createNewPanel(
         name,
         url: systemConfig.url,
         client: systemConfig.client,
-        systemType: 'OnPrem' satisfies SystemType,
+        systemType: 'OnPrem',
+        connectionType: 'abap_catalog',
         username: existingSystem?.username,
         password: existingSystem?.password
     });
 
     return new SystemPanel({
-        extensionPath: context.extContext.extensionPath,
+        extensionPath: context.extContext.vscodeExtContext.extensionPath,
         systemPanelViewType: existingSystem ? SystemPanelViewType.View : SystemPanelViewType.Import,
         disposeCallback: (): void => {
             context.panelManager.deleteAndDispose(panelKey);

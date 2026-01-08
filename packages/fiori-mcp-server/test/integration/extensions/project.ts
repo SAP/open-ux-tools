@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import { existsSync } from 'fs';
+import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join } from 'path';
 import type { TestSuite, TestCase } from 'promptfoo';
 import { FOLDER_PATHS } from '../types';

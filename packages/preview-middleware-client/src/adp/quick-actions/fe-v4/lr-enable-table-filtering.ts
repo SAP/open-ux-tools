@@ -1,7 +1,10 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
-import Table from 'sap/ui/mdc/Table';
+import type {
+    NestedQuickActionDefinition,
+    QuickActionContext
+} from '../../../cpe/quick-actions/quick-action-definition';
+import type Table from 'sap/ui/mdc/Table';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { createManifestPropertyChange } from '../../../utils/fe-v4';

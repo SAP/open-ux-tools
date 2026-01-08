@@ -2,7 +2,7 @@ import type { FioriElementsApp, LROPSettings } from '../src';
 import { generate, TableType, TemplateType } from '../src';
 import { join } from 'node:path';
 import { removeSync } from 'fs-extra';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import {
     testOutputDir,
     debug,
@@ -18,7 +18,6 @@ import {
     applyBaseConfigToFEApp,
     sampleCapService
 } from './common';
-import { ServiceType } from '@sap-ux/odata-service-writer';
 import { type OdataService } from '@sap-ux/odata-service-writer';
 import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { create as createStorage } from 'mem-fs';

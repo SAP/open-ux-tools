@@ -1,6 +1,6 @@
 import { DestinationProxyType } from '../dist';
 import {
-    Destination,
+    type Destination,
     isAbapEnvironmentOnBtp,
     isAbapSystem,
     isGenericODataDestination,
