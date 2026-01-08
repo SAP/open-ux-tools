@@ -70,6 +70,136 @@ describe('FioriFunctionalityServer', () => {
         ]);
     });
 
+    describe('InitializeRequestSchema handler', () => {
+        test('should set client info and return correct initialization response', async () => {
+            const server = new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    clientInfo: {
+                        name: 'test-client',
+                        version: '1.2.3'
+                    }
+                }
+            });
+
+            // Verify the response structure
+            expect(result).toEqual({
+                protocolVersion: expect.any(String),
+                capabilities: {
+                    tools: {}
+                },
+                serverInfo: {
+                    name: 'fiori-mcp',
+                    version: expect.any(String)
+                }
+            });
+            expect(result.protocolVersion).toBeTruthy();
+        });
+
+        test('should use default values when clientInfo is not provided', async () => {
+            const server = new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {}
+            });
+
+            // Verify the response structure
+            expect(result).toEqual({
+                protocolVersion: expect.any(String),
+                capabilities: {
+                    tools: {}
+                },
+                serverInfo: {
+                    name: 'fiori-mcp',
+                    version: expect.any(String)
+                }
+            });
+            expect(result.protocolVersion).toBeTruthy();
+        });
+
+        test('should use default values when clientInfo.name is missing', async () => {
+            const server = new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    clientInfo: {
+                        version: '1.2.3'
+                    }
+                }
+            });
+
+            expect(result.serverInfo.name).toBe('fiori-mcp');
+            expect(result.serverInfo.version).toBeDefined();
+        });
+
+        test('should use default values when clientInfo.version is missing', async () => {
+            const server = new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    clientInfo: {
+                        name: 'test-client'
+                    }
+                }
+            });
+
+            expect(result.serverInfo.name).toBe('fiori-mcp');
+            expect(result.serverInfo.version).toBeDefined();
+        });
+
+        test('should track client info for telemetry in subsequent tool calls', async () => {
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+            const listFioriAppsSpy = jest.spyOn(tools, 'listFioriApps').mockResolvedValue({
+                applications: []
+            });
+
+            const server = new FioriFunctionalityServer();
+
+            // First, call the initialize handler with client info
+            const initHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const initCallback = initHandlerCall[1];
+            await initCallback({
+                params: {
+                    clientInfo: {
+                        name: 'my-custom-client',
+                        version: '2.0.0'
+                    }
+                }
+            });
+
+            // Then call a tool to verify telemetry includes the client info
+            const toolHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const toolCallback = toolHandlerCall[1];
+            await toolCallback({
+                params: {
+                    name: 'list_fiori_apps',
+                    arguments: {
+                        projectPath: '/test/path'
+                    }
+                }
+            });
+
+            expect(sendTelemetryMock).toHaveBeenCalledWith(
+                'list_fiori_apps',
+                expect.objectContaining({
+                    tool: 'list_fiori_apps',
+                    functionalityId: '',
+                    mcpClientName: 'my-custom-client',
+                    mcpClientVersion: '2.0.0'
+                }),
+                undefined
+            );
+
+            listFioriAppsSpy.mockRestore();
+            sendTelemetryMock.mockRestore();
+        });
+    });
+
     describe('FioriFunctionalityServer', () => {
         const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
 
