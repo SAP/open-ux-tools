@@ -300,7 +300,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'invalidCreateModeV4',
                                 page.targetName,
                                 parsedApp,
-                                appCreateMode.configurationPath,
+                                table.configuration.creationMode.configurationPath,
                                 tableType,
                                 validValues,
                                 recommendedValue
@@ -313,7 +313,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                                 'recommendInlineCreationRowsV4',
                                 page.targetName,
                                 parsedApp,
-                                appCreateMode.configurationPath,
+                                table.configuration.creationMode.configurationPath,
                                 tableType,
                                 [],
                                 recommendedValue
@@ -328,7 +328,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                             (p) =>
                                 p.messageId === 'suggestAppLevelV4' &&
                                 p.manifest.uri === parsedApp.manifest.manifestUri &&
-                                JSON.stringify(p.manifest.propertyPath).includes(page.targetName)
+                                p.manifest.propertyPath.includes(page.targetName)
                         )
                     ) {
                         reportDiagnostic(
@@ -354,11 +354,17 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                 // ResponsiveTable, GridTable, or default
                 tableType = diagnostic.tableType === 'GridTable' ? 'Grid Table' : 'Responsive Table';
             }
+            let value = String(node.value);
+            if (node.value.type === 'String') {
+                value = node.value.value;
+            } else if (node.name.type === 'String') {
+                value = node.name.value;
+            }
             context.report({
                 node,
                 messageId: diagnostic.messageId,
                 data: {
-                    value: node.value.type === 'String' ? node.value.value : String(node.value),
+                    value,
                     tableType,
                     validValues: diagnostic.validValues?.join(', ') ?? '',
                     recommendedValue: diagnostic.recommendedValue ?? ''
