@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 0.18.32
+
+### Patch Changes
+
+- Updated dependencies [4e0f204]
+    - @sap-ux/axios-extension@1.25.4
+    - @sap-ux/odata-service-writer@0.29.2
+    - @sap-ux/system-access@0.6.38
+
 ## 0.18.31
 
 ### Patch Changes
