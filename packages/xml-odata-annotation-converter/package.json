@@ -2,6 +2,11 @@
     "name": "@sap-ux/xml-odata-annotation-converter",
     "description": "Converter for OData annotations in XML format.",
     "version": "0.4.4",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/xml-odata-annotation-converter"
+    },
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",
