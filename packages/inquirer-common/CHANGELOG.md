@@ -1,5 +1,19 @@
 # @sap-ux/inquirer-common
 
+## 0.10.6
+
+### Patch Changes
+
+- 6382440: update error map to add EPROTO code
+
+## 0.10.5
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/ui5-info@0.13.7
+
 ## 0.10.4
 
 ### Patch Changes
