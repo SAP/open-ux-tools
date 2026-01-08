@@ -187,13 +187,11 @@ export class KeyUserImportPrompter {
         return {
             type: 'list',
             name: keyUserPromptNames.keyUserAdaptation,
-            message: (_: KeyUserImportAnswers) =>
-                this.adaptations.some((a) => a.id !== DEFAULT_ADAPTATION_ID)
-                    ? t('prompts.keyUserAdaptationLabelMulti')
-                    : t('prompts.keyUserAdaptationLabel'),
+            message: t('prompts.keyUserAdaptationLabel'),
             guiOptions: {
                 mandatory: true,
-                breadcrumb: true
+                breadcrumb: true,
+                hint: t('prompts.keyUserAdaptationLabelMulti')
             },
             default: options?.default ?? DEFAULT_ADAPTATION_ID,
             choices: () => this.getAdaptationChoices(),
@@ -214,6 +212,7 @@ export class KeyUserImportPrompter {
                 message: t('error.keyUserNoAdaptations'),
                 severity: Severity.error
             };
+            this.logger.error(`No adaptations found for component ${this.componentId}`);
             return [];
         }
         return this.adaptations.map((adaptation) => adaptation.id);
@@ -234,6 +233,7 @@ export class KeyUserImportPrompter {
     private async loadAdaptations(): Promise<void> {
         const response = await this.provider.getLayeredRepository().listAdaptations(this.componentId);
         this.adaptations = response?.adaptations ?? [];
+        this.logger.log(`Loaded adaptations: ${JSON.stringify(this.adaptations, null, 2)}`);
     }
 
     /**
@@ -261,7 +261,7 @@ export class KeyUserImportPrompter {
             return validationResult;
         }
 
-        if (system === this.defaultSystem) {
+        if (system === this.defaultSystem && this.defaultProvider) {
             this.provider = this.defaultProvider;
             this.isAuthRequired = false;
             try {
@@ -331,11 +331,21 @@ export class KeyUserImportPrompter {
             const data = await this.provider?.getLayeredRepository().getKeyUserData(this.componentId, adaptationId);
 
             this.keyUserChanges = data?.contents ?? [];
+            this.logger.debug(
+                `Retrieved ${this.keyUserChanges.length} key-user change(s) for adaptation ${adaptationId}`
+            );
+
             if (!this.keyUserChanges.length) {
-                this.latestMessage = undefined;
-                return adaptationId === DEFAULT_ADAPTATION_ID
-                    ? t('error.keyUserNoChangesDefault')
-                    : t('error.keyUserNoChangesAdaptation', { adaptationId });
+                const errorMessage =
+                    adaptationId === DEFAULT_ADAPTATION_ID
+                        ? t('error.keyUserNoChangesDefault')
+                        : t('error.keyUserNoChangesAdaptation', { adaptationId });
+                this.latestMessage = {
+                    message: errorMessage,
+                    severity: Severity.error
+                };
+                this.logger.warn(`No key-user changes found for adaptation: ${adaptationId}`);
+                return errorMessage;
             }
 
             const message =
@@ -346,9 +356,12 @@ export class KeyUserImportPrompter {
                 message,
                 severity: Severity.information
             };
+            this.logger.debug(`Key-user changes validation successful for adaptation: ${adaptationId}`);
 
             return true;
         } catch (e) {
+            this.logger.error(`Error validating key-user changes for adaptation ${adaptationId}: ${e.message}`);
+            this.logger.debug(e);
             return e.message;
         }
     }

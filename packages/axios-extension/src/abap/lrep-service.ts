@@ -411,7 +411,7 @@ export class LayeredRepositoryService extends Axios implements Service {
      */
     public async getKeyUserData(componentId: string, adaptationId: string): Promise<KeyUserDataResponse> {
         const params = new URLSearchParams(this.defaults?.params);
-        params.append('adaptationId', adaptationId);
+        params.append('adaptationId', encodeURIComponent(adaptationId));
         try {
             const response = await this.get<KeyUserDataResponse>(`/flex/keyuserdata/${componentId}`, {
                 params,
