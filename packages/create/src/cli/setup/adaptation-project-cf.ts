@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
-import { join } from 'path';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { join } from 'node:path';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { readUi5Yaml, FileName } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
@@ -193,7 +193,7 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
         const paths = reusableLibs.map((lib) => {
             const libName = String(lib.name);
             const html5AppName = String(lib.html5AppName);
-            const resourcePath = '/resources/' + libName.replace(/\./g, '/');
+            const resourcePath = '/resources/' + libName.replaceAll('.', '/');
 
             return {
                 path: resourcePath,

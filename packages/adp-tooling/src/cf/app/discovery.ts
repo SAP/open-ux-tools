@@ -1,6 +1,6 @@
 import type AdmZip from 'adm-zip';
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -149,7 +149,7 @@ function extractDestinationToPathsMap(xsAppPath: string): Map<string, Set<string
             }
         }
     } catch (e) {
-        // Skip invalid xs-app.json files
+        throw new Error(t('error.invalidXsAppJson', { error: (e as Error).message }));
     }
 
     return destinationToPaths;
