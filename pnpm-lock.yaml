@@ -745,8 +745,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.5
+        version: 0.14.5
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -880,8 +880,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.5
+        version: 0.14.5
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -1843,8 +1843,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.5
+        version: 0.14.5
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
@@ -1940,8 +1940,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.5
+        version: 0.14.5
       '@sap-ux/xml-odata-annotation-converter':
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
@@ -2818,8 +2818,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.5
+        version: 0.14.5
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -3139,8 +3139,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.5
+        version: 0.14.5
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -3197,8 +3197,8 @@ importers:
         specifier: workspace:*
         version: link:../axios-extension
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.5
+        version: 0.14.5
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
