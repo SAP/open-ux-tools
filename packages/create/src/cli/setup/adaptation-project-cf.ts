@@ -1,10 +1,11 @@
 import type { Command } from 'commander';
 import { join } from 'path';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { execSync } from 'child_process';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { readUi5Yaml, FileName } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { Cli } from '@sap/cf-tools';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
@@ -19,6 +20,8 @@ import {
     type ServiceKeys,
     type CfUi5AppInfo
 } from '@sap-ux/adp-tooling';
+
+const ENV = { env: { 'CF_COLOR': 'false' } };
 
 /**
  * Add the "setup adaptation-project-cf" command to a passed command.
@@ -37,7 +40,7 @@ Example:
             if (options.verbose === true) {
                 setLogLevelVerbose();
             }
-            await setupAdaptationProjectCF(path || process.cwd());
+            await setupAdaptationProjectCF(path ?? process.cwd());
         });
 }
 
@@ -50,18 +53,10 @@ async function setupAdaptationProjectCF(basePath: string): Promise<void> {
     const logger = getLogger();
     await validateBasePath(basePath);
 
-    // Step 0: Verify user is logged in to Cloud Foundry
-    try {
-        execSync('cf oauth-token', { stdio: 'pipe' });
-    } catch (error) {
-        logger.error(
-            'You are not logged in to Cloud Foundry or your session has expired. Please run "cf login" first.'
-        );
-        throw new Error();
-    }
+    await verifyCfLogin(logger);
 
     try {
-        // Step 1: Verify this is an adaptation project
+        //Verify this is an adaptation project
         const manifestVariantPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
         if (!existsSync(manifestVariantPath)) {
             throw new Error('Not an adaptation project. manifest.appdescr_variant not found.');
@@ -81,6 +76,25 @@ async function setupAdaptationProjectCF(basePath: string): Promise<void> {
     } catch (error) {
         logger.error(`Failed to setup CF adaptation project: ${(error as Error).message}`);
         throw error;
+    }
+}
+
+/**
+ * Verify that the user is logged in to Cloud Foundry.
+ *
+ * @param logger - logger instance
+ */
+async function verifyCfLogin(logger: ToolsLogger): Promise<void> {
+    try {
+        const response = await Cli.execute(['oauth-token'], ENV);
+        if (response.exitCode !== 0) {
+            logger.error(
+                'You are not logged in to Cloud Foundry or your session has expired. Please run "cf login" first.'
+            );
+            throw new Error(response.stderr);
+        }
+    } catch (error) {
+        throw new Error(`Error checking Cloud Foundry login status: ${error.message}`);
     }
 }
 
@@ -122,11 +136,11 @@ async function fetchUi5AppInfo(basePath: string, logger: ToolsLogger, serviceKey
  */
 async function buildProject(basePath: string, logger: ToolsLogger): Promise<void> {
     try {
-        logger.info('Building the project...');
+        logger.info('Building the project');
 
-        execSync('npm run build', {
+        const commandRunner = new CommandRunner();
+        await commandRunner.run('npm', ['run', 'build'], {
             cwd: basePath,
-            stdio: 'inherit',
             env: {
                 ...process.env,
                 ADP_BUILDER_MODE: 'preview'
@@ -135,9 +149,8 @@ async function buildProject(basePath: string, logger: ToolsLogger): Promise<void
 
         logger.info('Project built successfully');
     } catch (error) {
-        const exitCode = error.status ?? 'unknown';
         logger.error(`Build failed: ${(error as Error).message}`);
-        throw new Error(`Build process exited with code ${exitCode}`);
+        throw new Error(`Build process failed: ${(error as Error).message}`);
     }
 }
 

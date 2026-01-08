@@ -9,13 +9,15 @@ import * as tracer from '../../../../src/tracing/trace';
 import * as validation from '../../../../src/validation';
 import * as projectAccess from '@sap-ux/project-access';
 import * as adpTooling from '@sap-ux/adp-tooling';
-import * as childProcess from 'child_process';
 import * as fs from 'fs';
+import { Cli } from '@sap/cf-tools';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
-jest.mock('child_process');
 jest.mock('fs');
 jest.mock('@sap-ux/project-access');
 jest.mock('@sap-ux/adp-tooling');
+jest.mock('@sap/cf-tools');
+jest.mock('@sap-ux/nodejs-utils');
 
 const mockCommit = jest.fn().mockImplementation((_, cb) => cb(null));
 jest.mock('mem-fs-editor', () => {
@@ -30,7 +32,6 @@ jest.mock('mem-fs-editor', () => {
     };
 });
 
-const mockExecSync = childProcess.execSync as jest.Mock;
 const mockExistsSync = fs.existsSync as jest.Mock;
 const mockReadFileSync = fs.readFileSync as jest.Mock;
 const mockWriteFileSync = fs.writeFileSync as jest.Mock;
@@ -41,6 +42,8 @@ const mockGetAppHostIds = adpTooling.getAppHostIds as jest.Mock;
 const mockGetVariant = adpTooling.getVariant as jest.Mock;
 const mockGetCfUi5AppInfo = adpTooling.getCfUi5AppInfo as jest.Mock;
 const mockGetBackendUrlsWithPaths = adpTooling.getBackendUrlsWithPaths as jest.Mock;
+const mockCliExecute = Cli.execute as jest.Mock;
+const mockCommandRunnerRun = CommandRunner.prototype.run as jest.Mock;
 
 describe('setup/adaptation-project-cf', () => {
     const appRoot = join(__dirname, '../../../fixtures/adaptation-project');
@@ -118,7 +121,8 @@ describe('setup/adaptation-project-cf', () => {
         validateSpy = jest.spyOn(validation, 'validateBasePath').mockResolvedValue(undefined);
         traceChangesSpy = jest.spyOn(tracer, 'traceChanges').mockResolvedValue(undefined);
 
-        mockExecSync.mockReturnValue(Buffer.from(''));
+        mockCliExecute.mockResolvedValue({ exitCode: 0, stdout: '', stderr: '' });
+        mockCommandRunnerRun.mockResolvedValue(undefined);
         mockExistsSync.mockReturnValue(true);
         mockReadFileSync.mockReturnValue(JSON.stringify(mockUi5AppInfo));
         mockWriteFileSync.mockReturnValue(undefined);
@@ -172,7 +176,7 @@ describe('setup/adaptation-project-cf', () => {
             await command.parseAsync(getArgv(appRoot));
 
             expect(validateSpy).toHaveBeenCalledWith(appRoot);
-            expect(mockExecSync).toHaveBeenCalledWith('cf oauth-token', { stdio: 'pipe' });
+            expect(mockCliExecute).toHaveBeenCalledWith(['oauth-token'], { env: { 'CF_COLOR': 'false' } });
             expect(loggerMock.info).toHaveBeenCalledWith('CF adaptation project setup complete!');
         });
 
@@ -185,9 +189,7 @@ describe('setup/adaptation-project-cf', () => {
         });
 
         test('should throw error when not logged in to CF', async () => {
-            mockExecSync.mockImplementationOnce(() => {
-                throw new Error('Command failed');
-            });
+            mockCliExecute.mockResolvedValueOnce({ exitCode: 1, stdout: '', stderr: 'Not logged in' });
 
             const command = new Command('setup');
             addSetupAdaptationProjectCFCommand(command);
@@ -248,8 +250,9 @@ describe('setup/adaptation-project-cf', () => {
             addSetupAdaptationProjectCFCommand(command);
             await command.parseAsync(getArgv(appRoot));
 
-            expect(mockExecSync).toHaveBeenCalledWith(
-                'npm run build',
+            expect(mockCommandRunnerRun).toHaveBeenCalledWith(
+                'npm',
+                ['run', 'build'],
                 expect.objectContaining({
                     cwd: appRoot,
                     env: expect.objectContaining({ ADP_BUILDER_MODE: 'preview' })
@@ -259,13 +262,7 @@ describe('setup/adaptation-project-cf', () => {
         });
 
         test('should throw error when build fails', async () => {
-            mockExecSync
-                .mockImplementationOnce(() => Buffer.from(''))
-                .mockImplementationOnce(() => {
-                    const error: any = new Error('Build failed');
-                    error.status = 1;
-                    throw error;
-                });
+            mockCommandRunnerRun.mockRejectedValueOnce(new Error('Build failed'));
 
             const command = new Command('setup');
             addSetupAdaptationProjectCFCommand(command);
@@ -275,11 +272,7 @@ describe('setup/adaptation-project-cf', () => {
         });
 
         test('should handle build error without status code', async () => {
-            mockExecSync
-                .mockImplementationOnce(() => Buffer.from(''))
-                .mockImplementationOnce(() => {
-                    throw new Error('Build failed without status');
-                });
+            mockCommandRunnerRun.mockRejectedValueOnce(new Error('Build failed without status'));
 
             const command = new Command('setup');
             addSetupAdaptationProjectCFCommand(command);
