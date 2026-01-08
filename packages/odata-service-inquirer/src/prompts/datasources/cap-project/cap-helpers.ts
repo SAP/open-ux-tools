@@ -1,14 +1,12 @@
 import type { CSN, ServiceInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import {
     findCapProjects,
-    findCapProjectRoot,
     getCapCustomPaths,
     getCapModelAndServices,
     getCdsRoots,
-    isCapProject,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import { basename, isAbsolute, relative } from 'node:path';
+import { basename, isAbsolute, relative, resolve } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice } from '../../../types';
 import type { CapService } from '@sap-ux/cap-config-writer';
@@ -17,61 +15,37 @@ import { errorHandler } from '../../prompt-helpers';
 import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { realpath } from 'node:fs/promises';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 export const enterCapPathChoiceValue = 'enterCapPath';
 
 /**
- * Creates a CAP project root path object with platform-specific path normalization
+ * Resolve relative paths to absolute paths for CLI environment.
  *
- * @param capRoot - The CAP project root path
- * @returns A CapProjectRootPath object
+ * @param projectPath - The path to resolve
+ * @returns The resolved absolute path, or the original path if already absolute or not in CLI
  */
-async function createCapProjectRootPath(capRoot: string): Promise<CapProjectRootPath> {
-    const folderName = basename(capRoot);
-    const realPath = process.platform === 'win32' ? await realpath(capRoot) : capRoot;
-
-    return {
-        folderName,
-        path: realPath
-    };
-}
-
-/**
- * Creates a CAP project choice with formatted display name
- *
- * @param capProjectPath - The CAP project path
- * @param isAutoDetected - Whether the project was auto-detected
- * @param folderCount - Number of folders with the same name
- * @returns A CAP project choice
- */
-async function createCapProjectChoice(
-    capProjectPath: CapProjectRootPath,
-    isAutoDetected: boolean,
-    folderCount: number
-): Promise<CapProjectChoice> {
-    const customCapPaths = await getCapCustomPaths(capProjectPath.path);
-
-    // Build display name with auto-detect label and path suffix if needed
-    const autoDetectedLabel = isAutoDetected ? ' (auto-detected)' : '';
-    const pathSuffix = folderCount > 1 ? ` (${capProjectPath.path})` : '';
-    const displayName = `${capProjectPath.folderName}${autoDetectedLabel}${pathSuffix}`;
-
-    return {
-        name: displayName,
-        value: Object.assign(capProjectPath, customCapPaths)
-    };
+export function resolveRelativeCliPath(projectPath: string): string {
+    const isCli = getHostEnvironment() === hostEnvironment.cli;
+    if (isCli && !isAbsolute(projectPath)) {
+        return resolve(process.cwd(), projectPath.trim());
+    }
+    return projectPath;
 }
 
 /**
  * Search for CAP projects in the specified paths.
+ * Resolves relative paths to absolute paths before searching.
  *
- * @param paths - The paths used to search for CAP projects
+ * @param paths - The paths used to search for CAP projects (can be relative or absolute)
  * @returns The CAP project paths and the number of folders with the same name
  */
 async function getCapProjectPaths(
     paths: string[]
 ): Promise<{ capProjectPaths: CapProjectRootPath[]; folderCounts: Map<string, number> }> {
-    const capProjectRoots = await findCapProjects({ wsFolders: paths });
+    // Resolve relative paths to absolute paths
+    const absolutePaths = paths.map((path) => (isAbsolute(path) ? path : resolveRelativeCliPath(path)));
+    const capProjectRoots = await findCapProjects({ wsFolders: absolutePaths });
     const capRootPaths: CapProjectRootPath[] = [];
     // Keep track of duplicate folder names to append the path to the name when displaying the choices
     const folderNameCount = new Map<string, number>();
@@ -93,51 +67,24 @@ async function getCapProjectPaths(
 /**
  * Search for CAP projects in the specified paths and create prompt choices from the results.
  * The resulting choices will include an additional entry to enter a custom path.
- * If no CAP projects are found in the specified paths, auto-detection will be attempted.
  *
  * @param paths - The paths used to search for CAP projects
+ * @param workspaceContext - Optional workspace context for auto-detection
  * @returns The CAP project prompt choices
  */
-export async function getCapProjectChoices(paths: string[]): Promise<CapProjectChoice[]> {
+export async function getCapProjectChoices(paths: string[], searchSubFolders?: boolean): Promise<CapProjectChoice[]> {
     const { capProjectPaths, folderCounts } = await getCapProjectPaths(paths);
-    const allFolderCounts = new Map(folderCounts);
+    const capChoices: CapProjectChoice[] = [];
 
-    // Auto-detect if no projects found in specified paths
-    const autoDetectedProjects: CapProjectRootPath[] = [];
-    if (capProjectPaths.length === 0) {
-        const autoDetectionPaths = [process.cwd(), ...paths.filter((path) => path && path.trim() !== '')];
+    for (const capProjectPath of capProjectPaths) {
+        const customCapPaths = await getCapCustomPaths(capProjectPath.path);
+        const folderCount = folderCounts.get(capProjectPath.folderName) ?? 1;
 
-        try {
-            const detectedRoots = new Set<string>();
-
-            // Use findCapProjectRoot to traverse up from each path
-            for (const searchPath of autoDetectionPaths) {
-                const capRoot = await findCapProjectRoot(searchPath, false);
-
-                if (capRoot && !detectedRoots.has(capRoot) && (await isCapProject(capRoot))) {
-                    detectedRoots.add(capRoot);
-                    const project = await createCapProjectRootPath(capRoot);
-                    autoDetectedProjects.push(project);
-                    allFolderCounts.set(project.folderName, (allFolderCounts.get(project.folderName) ?? 0) + 1);
-                }
-            }
-        } catch (error) {
-            LoggerHelper.logger.debug(
-                `Auto-detection of CAP projects failed, proceeding without auto-detected projects: ${error}`
-            );
-        }
+        capChoices.push({
+            name: `${capProjectPath.folderName}${folderCount > 1 ? ' (' + capProjectPath.path + ')' : ''}`,
+            value: Object.assign(capProjectPath, customCapPaths)
+        });
     }
-
-    const allCapPaths = [...capProjectPaths, ...autoDetectedProjects];
-
-    // Create choices for all CAP projects in parallel
-    const capChoices = await Promise.all(
-        allCapPaths.map((capProjectPath) => {
-            const isAutoDetected = !capProjectPaths.includes(capProjectPath);
-            const folderCount = allFolderCounts.get(capProjectPath.folderName) ?? 1;
-            return createCapProjectChoice(capProjectPath, isAutoDetected, folderCount);
-        })
-    );
 
     return [
         ...capChoices,

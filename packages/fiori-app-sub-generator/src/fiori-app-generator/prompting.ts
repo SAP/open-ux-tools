@@ -23,7 +23,7 @@ import { prompt as promptUI5App, promptNames as ui5AppInquirerPromptNames } from
 import { getSapSystemUI5Version, getUI5Versions, latestVersionString } from '@sap-ux/ui5-info';
 import type { Question } from 'inquirer';
 import merge from 'lodash/merge';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
 import { Features, defaultPromptValues } from '../types';
@@ -388,6 +388,7 @@ export interface OdataServiceInquirerOptions {
 function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): OdataServicePromptOptions {
     let defaultDatasourceSelection;
     const isYUI = getHostEnvironment() !== hostEnvironment.cli;
+    const wsCwd = options.workspaceFolders?.[0] ?? process.cwd();
 
     if (options.capService) {
         defaultDatasourceSelection = DatasourceType.capProject;
@@ -406,7 +407,7 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
             ...options.promptOptions?.metadataFilePath
         },
         [odataServiceInquirerPromptNames.capProject]: {
-            capSearchPaths: options.workspaceFolders ?? [],
+            capSearchPaths: (!isYUI ? [join(wsCwd, `..${sep}..`)] : options.workspaceFolders) ?? [],
             defaultChoice: options.capService?.projectPath,
             ...options.promptOptions?.capProject
         },

@@ -355,7 +355,6 @@ exports[`getQuestions getQuestions 1`] = `
   },
   {
     "default": [Function],
-    "filter": [Function],
     "guiOptions": {
       "breadcrumb": "CAP Project",
       "mandatory": true,
@@ -363,6 +362,7 @@ exports[`getQuestions getQuestions 1`] = `
     "guiType": "folder-browser",
     "message": "CAP Project Folder Path",
     "name": "capProjectPath",
+    "transformer": [Function],
     "type": "input",
     "validate": [Function],
     "when": [Function],

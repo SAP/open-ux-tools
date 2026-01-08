@@ -335,7 +335,6 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
   },
   {
     "default": [Function],
-    "filter": [Function],
     "guiOptions": {
       "breadcrumb": "CAP Project",
       "mandatory": true,
@@ -343,6 +342,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "guiType": "folder-browser",
     "message": "CAP Project Folder Path",
     "name": "capProjectPath",
+    "transformer": [Function],
     "type": "input",
     "validate": [Function],
     "when": [Function],

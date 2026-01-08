@@ -17,7 +17,6 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
   },
   {
     "default": [Function],
-    "filter": [Function],
     "guiOptions": {
       "breadcrumb": "CAP Project",
       "mandatory": true,
@@ -25,6 +24,7 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
     "guiType": "folder-browser",
     "message": "CAP Project Folder Path",
     "name": "capProjectPath",
+    "transformer": [Function],
     "type": "input",
     "validate": [Function],
     "when": [Function],

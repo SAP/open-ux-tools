@@ -1,21 +1,6 @@
 import { getCapProjectType } from '@sap-ux/project-access';
-import { resolve, isAbsolute } from 'node:path';
 import { t } from '../../../i18n';
-
-/**
- * Context-aware path resolution for CAP project paths
- * Handles both absolute and relative paths by resolving relative paths against process.cwd()
- *
- * @param inputPath - The input path (can be relative or absolute)
- * @returns Resolved absolute path
- */
-function resolveCapProjectPath(inputPath: string): string {
-    if (isAbsolute(inputPath)) {
-        return inputPath;
-    }
-
-    return resolve(process.cwd(), inputPath);
-}
+import { resolveRelativeCliPath } from './cap-helpers';
 
 /**
  * Ensure the path specified is a valid CAP project.
@@ -36,10 +21,8 @@ export async function validateCapPath(capProjectPath: string): Promise<boolean |
     }
 
     try {
-        // Path should already be resolved by filter, but resolve relative paths just in case
-        const resolvedPath = resolveCapProjectPath(capProjectPath.trim());
-
         // Validate the resolved path
+        const resolvedPath = resolveRelativeCliPath(capProjectPath);
         const capProjectType = await getCapProjectType(resolvedPath);
 
         if (capProjectType) {

@@ -1,15 +1,21 @@
 import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { findCapProjectRoot, getCapCustomPaths, isCapProject } from '@sap-ux/project-access';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { getCapCustomPaths } from '@sap-ux/project-access';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Question } from 'inquirer';
-import { resolve, isAbsolute } from 'node:path';
+import { isAbsolute, join } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types';
 import { promptNames } from '../../../types';
 import { PromptState, getPromptHostEnvironment } from '../../../utils';
 import { errorHandler } from '../../prompt-helpers';
-import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
+import {
+    enterCapPathChoiceValue,
+    getCapEdmx,
+    getCapProjectChoices,
+    getCapServiceChoices,
+    resolveRelativeCliPath
+} from './cap-helpers';
 import {
     capInternalPromptNames,
     type CapProjectChoice,
@@ -43,6 +49,7 @@ function getDefaultCapChoice(
     }
     return -1;
 }
+
 /**
  * Get the prompts for selecting a CAP project from local path discovery.
  * Two prompts are returned, one for selecting a CAP project from a list of discovered projects and
@@ -95,26 +102,17 @@ export function getLocalCapProjectPrompts(
                 }
             },
             guiOptions: { mandatory: true, breadcrumb: t('prompts.capProject.breadcrumb') },
-            filter: async (projectPath: string): Promise<string> => {
-                // Handle empty input with auto-detection for CLI
-                if (!projectPath || projectPath.trim() === '') {
-                    const isCli = getHostEnvironment() === hostEnvironment.cli;
-                    if (isCli) {
-                        const capRoot = await findCapProjectRoot(process.cwd(), false);
-                        if (capRoot && (await isCapProject(capRoot))) {
-                            return capRoot;
-                        }
-                    }
-                    // Return empty string to let validation handle the error
-                    return '';
+            transformer: (projectPath: string): string => {
+                // maybe check here if platform is cli, but i don't see transformer doing anything for gui(yet)
+                if (projectPath && !isAbsolute(projectPath)) {
+                    return join(process.cwd(), projectPath);
                 }
-                // Resolve relative paths to absolute paths for consistent handling
-                if (!isAbsolute(projectPath)) {
-                    return resolve(process.cwd(), projectPath.trim());
-                }
-                return projectPath;
+                return '';
             },
             validate: async (projectPath: string): Promise<string | boolean> => {
+                // Resolve relative paths to absolute before validation
+                projectPath = resolveRelativeCliPath(projectPath);
+
                 validCapPath = await validateCapPath(projectPath);
                 // Load the cap paths if the path is valid
                 if (validCapPath === true) {
