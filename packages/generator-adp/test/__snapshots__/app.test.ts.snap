@@ -221,6 +221,7 @@ builder:
         module: app.variant
         appHostId: test-app-host-id
         appName: test-app-name
+        appVersion: test-app-version
         org: org-guid
         space: space-guid
         sapCloudService: test-solution
