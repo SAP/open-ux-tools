@@ -100,7 +100,7 @@ export class FioriFunctionalityServer {
             if (typeof functionalityId === 'string') {
                 idString = functionalityId;
             } else if (functionalityId !== null && functionalityId !== undefined) {
-                idString = String(functionalityId);
+                idString = JSON.stringify(functionalityId);
             }
 
             // Validate: only allow characters, numbers, hyphens, forward slashes, backslashes, and spaces
