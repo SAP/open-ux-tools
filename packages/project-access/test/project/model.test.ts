@@ -284,7 +284,10 @@ describe('Test getFilterFields()', () => {
             schema: {}
         } as unknown as TreeModel;
         const result = getFilterFields(mockPageModel);
-        expect(result).toEqual(['Filter Field 1', 'Filter Field 2']);
+        expect(result).toEqual({
+            'field1': { 'description': 'Filter Field 1' },
+            'field2': { 'description': 'Filter Field 2' }
+        });
     });
 
     test('should return empty array when filterBar is missing', () => {
@@ -296,7 +299,7 @@ describe('Test getFilterFields()', () => {
             schema: {}
         } as unknown as TreeModel;
         const result = getFilterFields(mockPageModel);
-        expect(result).toEqual([]);
+        expect(result).toEqual({});
     });
 
     test('should return empty array when selectionFields is missing', () => {
@@ -312,7 +315,7 @@ describe('Test getFilterFields()', () => {
             schema: {}
         } as unknown as TreeModel;
         const result = getFilterFields(mockPageModel);
-        expect(result).toEqual([]);
+        expect(result).toEqual({});
     });
 
     test('should return empty array when root has no aggregations', () => {
@@ -322,7 +325,7 @@ describe('Test getFilterFields()', () => {
             schema: {}
         } as unknown as TreeModel;
         const result = getFilterFields(mockPageModel);
-        expect(result).toEqual([]);
+        expect(result).toEqual({});
     });
 });
 
