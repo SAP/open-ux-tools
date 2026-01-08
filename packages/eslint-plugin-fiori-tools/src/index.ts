@@ -146,7 +146,8 @@ const prodConfig: Linter.Config[] = [
         ignores: [
             'target/**',
             'webapp/test/**',
-            'webapp/localservice/**',
+            'webapp/localService/**', // Ignore everything in the 'localService' folder
+            '!webapp/localService/**/*.{ts,js}', // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
             'backup/**',
             '**/Gruntfile.js',
             '**/changes_preview.js',
@@ -242,8 +243,8 @@ const typescriptConfig: Linter.Config[] = [
             'target/**',
             'webapp/test/changes_loader.ts',
             'webapp/test/changes_preview.ts',
-            'webapp/localservice/**',
-            'webapp/localService/**',
+            'webapp/localService/**', // Ignore everything in the 'localService' folder
+            '!webapp/localService/**/*.{ts,js}', // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
             'undefined/**/Example.qunit.ts',
             'backup/**',
             '**/*.d.ts'
