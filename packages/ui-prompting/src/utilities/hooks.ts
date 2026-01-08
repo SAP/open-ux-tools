@@ -3,6 +3,7 @@ import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components
 import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
 import type { Answers, ChoiceOptions, AsyncDynamicQuestionProperty } from 'inquirer';
+import type { MultiSelectProps } from '../components/Inputs/MultiSelect/MultiSelect';
 
 interface RequestedChoices {
     [key: string]: boolean;
@@ -66,6 +67,41 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
         setOptions(options);
     }, [question, choices]);
     return options;
+}
+
+/**
+ * Hook to manage the value state for a multi-select input component.
+ *
+ * @param props - The MultiSelectProps for the component, including value and onChange handler.
+ * @param options - The selectable options for the multi-select including checked states.
+ * @returns current value and a set value function.
+ */
+export function useMultiSelectValue(props: MultiSelectProps, options: UISelectableOption<ChoiceOptions>[]) {
+    const [value, setValue] = useValue('', props.value?.toString() ?? '');
+    /**
+     * Determines the default value for the multi-select. If a value is provided in props, it is used.
+     * Otherwise, collects all option values that are checked by default.
+     * Returns a comma-separated string of checked option values.
+     */
+    const getDefaultValue = (): string => {
+        if (props.value !== undefined) {
+            return props.value.toString();
+        }
+        const checkedValues = (options ?? [])
+            .filter((opt) => opt.data && 'checked' in opt.data && opt.data.checked === true)
+            .map((opt) => opt.data?.value ?? opt.key);
+        return checkedValues.join(',');
+    };
+
+    useEffect(() => {
+        const defaultValue = getDefaultValue();
+        if (defaultValue && defaultValue !== value) {
+            setValue(defaultValue);
+            props.onChange(props.name, defaultValue);
+        }
+    }, [options]);
+
+    return [value, setValue] as const;
 }
 
 /**

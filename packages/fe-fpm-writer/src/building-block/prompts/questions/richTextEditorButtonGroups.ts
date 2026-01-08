@@ -20,7 +20,6 @@ export type RichTextEditorButtonGroupsPromptsAnswer = BuildingBlockConfig<RichTe
      */
     async function getButtonGroupsChoices(context: PromptContext, answers: Answers) {
         const { project, appPath, fs } = context;
-        debugger;
         
         if (!project) {
             return [];

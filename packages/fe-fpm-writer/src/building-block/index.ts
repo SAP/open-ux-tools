@@ -94,7 +94,7 @@ export const BUILDING_BLOCK_CONFIG: Partial<Record<BuildingBlockType, BuildingBl
     },
     [BuildingBlockType.RichTextEditorButtonGroups]: {
         aggregationConfig: { aggregationName: 'buttonGroups', elementName: 'ButtonGroup' },
-        namespace: { uri: 'sap.fe.macros.richtexteditor', prefix: 'richtexteditor' },
+        namespace: { uri: 'sap.fe.macros', prefix: 'macros' },
         processor: processRichTextEditorButtonGroups
     }
 };
