@@ -137,6 +137,7 @@ builder:
         module: test-cf-project
         appHostId: app-host-id
         appName: Base App
+        appVersion: 1.0.0
         html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
@@ -369,6 +370,7 @@ builder:
         module: test-cf-project
         appHostId: app-host-id
         appName: Base App
+        appVersion: 1.0.0
         html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
@@ -606,6 +608,7 @@ builder:
         module: test-cf-project
         appHostId: app-host-id
         appName: Base App
+        appVersion: 1.0.0
         html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
@@ -812,6 +815,7 @@ builder:
         module: test-cf-project
         appHostId: app-host-id
         appName: Base App
+        appVersion: 1.0.0
         html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
@@ -1080,6 +1084,7 @@ builder:
         module: test-cf-project
         appHostId: app-host-id
         appName: Base App
+        appVersion: 1.0.0
         html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
@@ -1291,6 +1296,7 @@ builder:
         module: test-cf-project
         appHostId: app-host-id
         appName: Base App
+        appVersion: 1.0.0
         html5RepoRuntime: runtime-guid
         org: org-guid
         space: space-guid
