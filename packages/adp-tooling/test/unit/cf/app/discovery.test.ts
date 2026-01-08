@@ -622,9 +622,7 @@ describe('CF App Discovery', () => {
             mockExistsSync.mockReturnValue(true);
             mockReadFileSync.mockReturnValue('invalid json');
 
-            expect(() => getBackendUrlsWithPaths(serviceKeys, '/test/base')).toThrow(
-                /The xs-app.json file is invalid/
-            );
+            expect(() => getBackendUrlsWithPaths(serviceKeys, '/test/base')).toThrow(/The xs-app.json file is invalid/);
         });
 
         test('should skip destinations not in endpoint mapping', () => {
