@@ -24,7 +24,7 @@
         "@playwright/test": "1.56.1",
         "adm-zip": "0.5.10",
         "dotenv": "16.3.1",
-        "express": "4.21.2",
+        "express": "4.22.1",
         "jest-dev-server": "10.0.0",
         "npm-run-all2": "6.2.0",
         "portfinder": "1.0.32",
