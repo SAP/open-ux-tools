@@ -95,7 +95,7 @@ Gets the list of supported functionalities to create a new or modify an existing
 The main functionalities are:
 
 - Generating an SAP Fiori elements app within an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
-- Generating an SAP Fiori elements app for an existing OData service (that is not CAP based), e.g. an [ABAP RESTful Application Programming Model (RAP)](https://pages.community.sap.com/topics/abap/rap) based OData service
+- Generating an SAP Fiori elements app for an existing OData service, e.g. an [ABAP RESTful Application Programming Model (RAP)](https://pages.community.sap.com/topics/abap/rap) based OData service
 - Adding and deleting pages from an app
 - Adding and modifying controller extensions
 - Modifying `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
