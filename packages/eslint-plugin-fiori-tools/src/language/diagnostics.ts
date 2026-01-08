@@ -41,6 +41,7 @@ export interface CreationModeForTable {
     messageId: CreateModeMessageId;
     tableType: string;
     validValues: string[];
+    recommendedValue?: string;
 }
 
 export interface DisableCopyToClipboard {
