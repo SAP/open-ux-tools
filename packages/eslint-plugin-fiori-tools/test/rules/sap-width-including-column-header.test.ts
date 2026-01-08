@@ -99,9 +99,25 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
         // Non-manifest files should be ignored
         createValidTest(
             {
-                name: 'non manifest file',
+                name: 'non manifest file - json',
                 filename: 'some-other-file.json',
                 code: JSON.stringify(V4_MANIFEST)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'non manifest file - xml',
+                filename: 'some-other-file.xml',
+                code: ''
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'non manifest file - cds',
+                filename: 'some-other-file.cds',
+                code: ''
             },
             []
         ),
@@ -133,7 +149,6 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
             {
                 name: 'table with 6 columns',
                 filename: V4_MANIFEST_PATH,
-                only: true,
                 code: JSON.stringify(V4_MANIFEST)
             },
             [_6_COLUMNS_ANNOTATIONS]
