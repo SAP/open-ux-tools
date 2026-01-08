@@ -381,7 +381,7 @@ export default class extends DeploymentGenerator {
             }
 
             if (
-                (this.options.launchStandaloneFromYui || !this.launchDeployConfigAsSubGenerator) && !this.abort &&
+                (this.options.launchStandaloneFromYui || !this.launchDeployConfigAsSubGenerator) &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
             ) {
                 this.appWizard?.showInformation(t('cfGen.info.filesGenerated'), MessageType.notification);
