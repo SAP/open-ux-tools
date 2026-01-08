@@ -80,12 +80,12 @@ export function getSelectionFieldItems(selectionFieldsAgg: TreeAggregations): st
  * @param pageModel - The tree model containing filter bar definitions.
  * @returns An array of filter field descriptions.
  */
-export function getFilterFields(pageModel: TreeModel): string[] {
+export function getFilterFields(pageModel: TreeModel): TreeAggregations {
     const filterBar = getAggregations(pageModel.root)['filterBar'];
     const filterBarAggregations = getAggregations(filterBar);
     const selectionFields = filterBarAggregations['selectionFields'];
     const selectionFieldsAggregations = getAggregations(selectionFields);
-    return getSelectionFieldItems(selectionFieldsAggregations);
+    return selectionFieldsAggregations;
 }
 
 /**

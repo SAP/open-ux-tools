@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, AggregationItem } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
@@ -17,7 +17,7 @@ import {
 import type { Logger } from '@sap-ux/logger/src/types';
 import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
-import type { TreeModel } from '@sap/ux-specification/dist/types/src/parser';
+import type { TreeAggregation, TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser';
 
 type FeatureData = {
     filterBarItems?: string[];
@@ -306,6 +306,25 @@ function transformTableColumns(columnAggregations: Record<string, any>): Record<
 }
 
 /**
+ * Retrieves selection field items from the given selection fields aggregation.
+ *
+ * @param selectionFieldsAgg - The selection fields aggregation containing field definitions.
+ * @returns An array of selection field descriptions.
+ */
+export function getSelectionFieldItems(selectionFieldsAgg: TreeAggregations): string[] {
+    if (selectionFieldsAgg && typeof selectionFieldsAgg === 'object') {
+        const items: string[] = [];
+        for (const itemKey in selectionFieldsAgg) {
+            items.push(
+                (selectionFieldsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem).description
+            );
+        }
+        return items;
+    }
+    return [];
+}
+
+/**
  * Retrieves filter field names from the page model using ux-specification.
  *
  * @param pageModel - the tree model containing filter bar definitions
@@ -316,7 +335,8 @@ function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[] {
     let filterBarItems: string[] = [];
 
     try {
-        filterBarItems = getFilterFields(pageModel);
+        const filterBarAggregations = getFilterFields(pageModel);
+        filterBarItems = getSelectionFieldItems(filterBarAggregations);
     } catch (error) {
         log?.debug(error);
     }

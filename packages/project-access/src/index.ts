@@ -66,7 +66,8 @@ export {
     getFilterFields,
     getTableColumns,
     getListReportPage,
-    getObjectPages
+    getObjectPages,
+    AggregationItem
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';
