@@ -171,6 +171,53 @@ describe('getLocalCapProjectPrompts', () => {
         expect((capProjectPrompt!.default as Function)()).toEqual(1);
     });
 
+    test('prompt: capProject - type is autocomplete with source function for filtering', async () => {
+        mockCapProjectChoices = [
+            {
+                name: 'project1',
+                value: { path: '/project1', folderName: 'project1', app: 'app/', srv: 'srv/', db: 'db/' }
+            },
+            {
+                name: 'project2',
+                value: { path: '/project2', folderName: 'project2', app: 'app/', srv: 'srv/', db: 'db/' }
+            },
+            { name: 'Manually select CAP project folder path', value: enterCapPathChoiceValue }
+        ];
+
+        const prompts = getLocalCapProjectPrompts({
+            [promptNames.capProject]: {
+                useAutoComplete: true,
+                capSearchPaths: ['/workspace']
+            }
+        });
+
+        const capProjectPrompt = prompts.find((p) => p.name === promptNames.capProject) as any;
+        expect(capProjectPrompt).toBeDefined();
+        expect(capProjectPrompt.type).toBe('autocomplete');
+        expect(typeof capProjectPrompt.source).toBe('function');
+    });
+
+    test('prompt: capProject - type is list without useAutoComplete option', async () => {
+        mockCapProjectChoices = [
+            {
+                name: 'project1',
+                value: { path: '/project1', folderName: 'project1', app: 'app/', srv: 'srv/', db: 'db/' }
+            },
+            { name: 'Manually select CAP project folder path', value: enterCapPathChoiceValue }
+        ];
+
+        const prompts = getLocalCapProjectPrompts({
+            [promptNames.capProject]: {
+                useAutoComplete: false,
+                capSearchPaths: ['/workspace']
+            }
+        });
+
+        const capProjectPrompt = prompts.find((p) => p.name === promptNames.capProject);
+        expect(capProjectPrompt).toBeDefined();
+        expect(capProjectPrompt!.type).toBe('list');
+    });
+
     test('prompt: capProjectPath', async () => {
         let realpathSpy: jest.SpyInstance | undefined;
         if (os.platform() === 'win32') {
@@ -208,60 +255,6 @@ describe('getLocalCapProjectPrompts', () => {
         });
         capProjectPathPrompt = capPrompts.find((prompt) => prompt.name === capInternalPromptNames.capProjectPath);
         expect(await (capProjectPathPrompt!.default as Function)()).toEqual('/abs/path/to/cap/project1');
-
-        // Filter tests
-        const mockCapProjectPath = '/auto/detected/cap/project';
-
-        // Empty input in CLI with successful auto-detection
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        (findCapProjectRoot as jest.Mock).mockResolvedValue(mockCapProjectPath);
-        (isCapProject as jest.Mock).mockResolvedValue(true);
-        expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual(mockCapProjectPath);
-        expect(findCapProjectRoot).toHaveBeenCalledWith(process.cwd(), false);
-
-        // Whitespace-only input in CLI with successful auto-detection
-        (findCapProjectRoot as jest.Mock).mockClear();
-        (isCapProject as jest.Mock).mockClear();
-        (findCapProjectRoot as jest.Mock).mockResolvedValue(mockCapProjectPath);
-        (isCapProject as jest.Mock).mockResolvedValue(true);
-        expect(await (capProjectPathPrompt!.filter as Function)('   ')).toEqual(mockCapProjectPath);
-        expect(findCapProjectRoot).toHaveBeenCalledWith(process.cwd(), false);
-
-        // Empty input in CLI without auto-detection (no CAP project found)
-        (findCapProjectRoot as jest.Mock).mockClear();
-        (findCapProjectRoot as jest.Mock).mockResolvedValue(null);
-        expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual('');
-
-        // Empty input in non-CLI environment (should return empty string)
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-        (findCapProjectRoot as jest.Mock).mockClear();
-        expect(await (capProjectPathPrompt!.filter as Function)('')).toEqual('');
-        expect(findCapProjectRoot).not.toHaveBeenCalled();
-
-        // Relative path resolution
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        const relativePath = './my-cap-project';
-        const expectedAbsolutePath = await (capProjectPathPrompt!.filter as Function)(relativePath);
-        expect(expectedAbsolutePath).toContain('my-cap-project');
-        expect(expectedAbsolutePath).not.toContain('./');
-
-        // Relative path with ../ resolution
-        const relativePathUp = '../sibling-cap-project';
-        const expectedAbsolutePathUp = await (capProjectPathPrompt!.filter as Function)(relativePathUp);
-        expect(expectedAbsolutePathUp).toContain('sibling-cap-project');
-        expect(expectedAbsolutePathUp).not.toContain('../');
-
-        // Absolute path input
-        const absolutePath = '/absolute/path/to/cap/project';
-        expect(await (capProjectPathPrompt!.filter as Function)(absolutePath)).toEqual(absolutePath);
-
-        // Path with trailing/leading whitespace should be trimmed and resolved
-        const pathWithWhitespace = '  ./relative/path/with/whitespace  ';
-        const trimmedPath = await (capProjectPathPrompt!.filter as Function)(pathWithWhitespace);
-        // Check path contains expected parts (platform-agnostic)
-        const expectedPath = path.join('relative', 'path', 'with', 'whitespace');
-        expect(trimmedPath).toContain(expectedPath);
-        expect(trimmedPath).not.toContain('  ');
 
         // Validate
         expect(await (capProjectPathPrompt!.validate as Function)()).toEqual(false);

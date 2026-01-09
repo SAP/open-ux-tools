@@ -1,21 +1,15 @@
 import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { searchChoices } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Question } from 'inquirer';
-import { isAbsolute, join } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types';
 import { promptNames } from '../../../types';
 import { PromptState, getPromptHostEnvironment } from '../../../utils';
 import { errorHandler } from '../../prompt-helpers';
-import {
-    enterCapPathChoiceValue,
-    getCapEdmx,
-    getCapProjectChoices,
-    getCapServiceChoices,
-    resolveRelativeCliPath
-} from './cap-helpers';
+import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
 import {
     capInternalPromptNames,
     type CapProjectChoice,
@@ -70,26 +64,27 @@ export function getLocalCapProjectPrompts(
     let validCapPath: string | boolean = false;
     PromptState.reset();
 
-    const prompts: (ListQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
+    const prompts: (YUIQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
         {
             when: async (): Promise<boolean> => {
                 capChoices = await getCapProjectChoices(promptOptions?.[promptNames.capProject]?.capSearchPaths ?? []);
                 return capChoices?.length > 1;
             },
-            type: 'list',
+            type: promptOptions?.[promptNames.capProject]?.useAutoComplete ? 'autocomplete' : 'list',
             name: promptNames.capProject,
             message: t('prompts.capProject.message'),
             default: () => {
                 const defChoice = getDefaultCapChoice(capChoices, defaultCapPath);
                 return defChoice;
             },
+            source: (prevAnswers: unknown, input: string) => searchChoices(input, capChoices),
             choices: () => capChoices,
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 mandatory: true,
                 breadcrumb: t('prompts.capProject.breadcrumb')
             }
-        } as ListQuestion<CapServiceAnswers>,
+        } as YUIQuestion<CapServiceAnswers>,
         {
             when: (answers): boolean => capChoices.length === 1 || answers?.capProject === enterCapPathChoiceValue,
             type: 'input',
@@ -102,17 +97,7 @@ export function getLocalCapProjectPrompts(
                 }
             },
             guiOptions: { mandatory: true, breadcrumb: t('prompts.capProject.breadcrumb') },
-            transformer: (projectPath: string): string => {
-                // maybe check here if platform is cli, but i don't see transformer doing anything for gui(yet)
-                if (projectPath && !isAbsolute(projectPath)) {
-                    return join(process.cwd(), projectPath);
-                }
-                return '';
-            },
             validate: async (projectPath: string): Promise<string | boolean> => {
-                // Resolve relative paths to absolute before validation
-                projectPath = resolveRelativeCliPath(projectPath);
-
                 validCapPath = await validateCapPath(projectPath);
                 // Load the cap paths if the path is valid
                 if (validCapPath === true) {

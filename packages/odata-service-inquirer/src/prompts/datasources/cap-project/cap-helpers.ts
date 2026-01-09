@@ -6,7 +6,7 @@ import {
     getCdsRoots,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import { basename, isAbsolute, relative, resolve } from 'node:path';
+import { basename, isAbsolute, relative, resolve, sep } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice } from '../../../types';
 import type { CapService } from '@sap-ux/cap-config-writer';
@@ -20,32 +20,35 @@ import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-sha
 export const enterCapPathChoiceValue = 'enterCapPath';
 
 /**
- * Resolve relative paths to absolute paths for CLI environment.
+ * Searches for CAP project root paths from given paths, searching up to 2 parent levels if needed in CLI environment.
+ * Returns sorted paths with priority given to projects matching the original paths, and tracks duplicate folder names.
  *
- * @param projectPath - The path to resolve
- * @returns The resolved absolute path, or the original path if already absolute or not in CLI
- */
-export function resolveRelativeCliPath(projectPath: string): string {
-    const isCli = getHostEnvironment() === hostEnvironment.cli;
-    if (isCli && !isAbsolute(projectPath)) {
-        return resolve(process.cwd(), projectPath.trim());
-    }
-    return projectPath;
-}
-
-/**
- * Search for CAP projects in the specified paths.
- * Resolves relative paths to absolute paths before searching.
- *
- * @param paths - The paths used to search for CAP projects (can be relative or absolute)
+ * @param paths - Array of file system paths to search for CAP projects
  * @returns The CAP project paths and the number of folders with the same name
  */
 async function getCapProjectPaths(
     paths: string[]
 ): Promise<{ capProjectPaths: CapProjectRootPath[]; folderCounts: Map<string, number> }> {
-    // Resolve relative paths to absolute paths
-    const absolutePaths = paths.map((path) => (isAbsolute(path) ? path : resolveRelativeCliPath(path)));
-    const capProjectRoots = await findCapProjects({ wsFolders: absolutePaths });
+    const capProjectRoots = await findCapProjects({ wsFolders: paths });
+    if (capProjectRoots.length === 0 && getHostEnvironment() === hostEnvironment.cli) {
+        // If no CAP projects found, search parent directories (up to 2 levels)
+        const parentPaths = paths.flatMap((p) => {
+            const parts = p.split(sep);
+            const parentLevels = Math.min(parts.length - 1, 2);
+
+            return Array.from({ length: parentLevels }, (_, i) =>
+                resolve(parts.slice(0, parts.length - (i + 1)).join(sep))
+            );
+        });
+        // Second call is needed, since we don't want to traverse the whole fs
+        const capProjectsTwoLevelsUp = await findCapProjects({
+            wsFolders: parentPaths,
+            noTraversal: true
+        });
+        if (capProjectsTwoLevelsUp.length > 0) {
+            capProjectRoots.push(...capProjectsTwoLevelsUp);
+        }
+    }
     const capRootPaths: CapProjectRootPath[] = [];
     // Keep track of duplicate folder names to append the path to the name when displaying the choices
     const folderNameCount = new Map<string, number>();
@@ -57,7 +60,30 @@ async function getCapProjectPaths(
         capRootPaths.push({ folderName, path: process.platform === 'win32' ? await realpath(root) : root });
         folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
-    capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName));
+
+    // Get the priority index of the matching path in the paths array, or -1 if no match is found
+    const getPathPriority = (projectPath: string): number => {
+        return paths.findIndex((searchPath) => searchPath === projectPath || searchPath.startsWith(projectPath + sep));
+    };
+
+    // Sort CAP projects by match priority, then alphabetically. Non-matching projects appear last.
+    capRootPaths.sort((a, b) => {
+        const priorityA = getPathPriority(a.path);
+        const priorityB = getPathPriority(b.path);
+        let result;
+
+        if (priorityA === -1) {
+            result = 1;
+        } else if (priorityB === -1) {
+            result = -1;
+        } else if (priorityA !== priorityB) {
+            result = priorityA - priorityB;
+        } else {
+            result = a.folderName.localeCompare(b.folderName);
+        }
+        return result;
+    });
+
     return {
         capProjectPaths: capRootPaths,
         folderCounts: folderNameCount
@@ -69,10 +95,9 @@ async function getCapProjectPaths(
  * The resulting choices will include an additional entry to enter a custom path.
  *
  * @param paths - The paths used to search for CAP projects
- * @param workspaceContext - Optional workspace context for auto-detection
  * @returns The CAP project prompt choices
  */
-export async function getCapProjectChoices(paths: string[], searchSubFolders?: boolean): Promise<CapProjectChoice[]> {
+export async function getCapProjectChoices(paths: string[]): Promise<CapProjectChoice[]> {
     const { capProjectPaths, folderCounts } = await getCapProjectPaths(paths);
     const capChoices: CapProjectChoice[] = [];
 

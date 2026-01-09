@@ -568,20 +568,24 @@ export async function findFioriArtifacts(options: {
  *
  * @param options - find options
  * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @param options.noTraversal - optional flag to disable folder traversal for given paths
  * @returns - root file paths that may contain a CAP project
  */
 export async function findCapProjects(options: {
     readonly wsFolders: WorkspaceFolder[] | string[];
+    noTraversal?: boolean;
 }): Promise<string[]> {
     const result = new Set<string>();
     const excludeFolders = ['node_modules', 'dist', 'webapp', 'MDKModule', 'gen'];
     const fileNames = [FileName.Pom, FileName.Package, FileName.CapJavaApplicationYaml];
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
+    const noTraversal = options.noTraversal ?? false;
     for (const root of wsRoots) {
         const filesToCheck = await findBy({
             fileNames,
             root,
-            excludeFolders
+            excludeFolders,
+            noTraversal
         });
         const appYamlsToCheck = Array.from(
             new Set(

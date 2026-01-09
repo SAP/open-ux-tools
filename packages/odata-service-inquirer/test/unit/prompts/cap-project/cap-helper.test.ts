@@ -13,6 +13,7 @@ import os from 'node:os';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { PathLike } from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 const initMockCapModelAndServices = {
     model: {},
@@ -76,6 +77,11 @@ jest.mock('fs/promises', () => ({
     ...jest.requireActual('fs/promises')
 }));
 
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
+
 describe('cap-helper', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
@@ -86,6 +92,7 @@ describe('cap-helper', () => {
         // Ensure each test is isolated, reset mocked function return values to initial states
         mockEdmx = initialMockEdmx;
         currentMockCapModelAndServices = initMockCapModelAndServices;
+        jest.clearAllMocks();
     });
 
     test('getCapProjectChoices', async () => {
@@ -148,6 +155,46 @@ describe('cap-helper', () => {
             ]
         `);
         expect(findCapProjectsSpy).toHaveBeenCalledWith({ 'wsFolders': ['/test/mock/'] });
+    });
+    test('getCapProjectChoices: Searches parent directories in CLI when no projects found', async () => {
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects');
+
+        // First call returns empty, second call returns project from parent
+        findCapProjectsSpy.mockResolvedValueOnce([]).mockResolvedValueOnce(['/parent/cap-project']);
+
+        const choices = await getCapProjectChoices(['/parent/cap-project/app/my-app']);
+
+        // Verify parent search was called with noTraversal flag
+        expect(findCapProjectsSpy).toHaveBeenCalledTimes(2);
+        expect(findCapProjectsSpy).toHaveBeenNthCalledWith(2, {
+            wsFolders: expect.any(Array),
+            noTraversal: true
+        });
+        expect(choices.length).toBeGreaterThan(1);
+    });
+
+    test('getCapProjectChoices: Does not search parent directories in YUI environment', async () => {
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects').mockResolvedValueOnce([]);
+
+        await getCapProjectChoices(['/some/path']);
+
+        // Should only be called once (no parent search)
+        expect(findCapProjectsSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('getCapProjectChoices: Prioritises projects matching search paths', async () => {
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const findCapProjectsSpy = jest
+            .spyOn(sapuxProjectAccess, 'findCapProjects')
+            .mockResolvedValueOnce(['/project-a', '/project-b', '/project-c']);
+
+        const choices = await getCapProjectChoices(['/project-b/subfolder/app']);
+        const choiceNames = choices.filter((c) => typeof c.value === 'object').map((c) => (c.value as any).folderName);
+
+        // project-b should be prioritized first
+        expect(choiceNames[0]).toBe('project-b');
     });
 
     if (os.platform() === 'win32') {
@@ -298,75 +345,6 @@ describe('cap-helper', () => {
         expect(logErrorSpy).toHaveBeenCalledWith(
             t('errors.capModelAndServicesLoadError', { error: 'getCapModelAndServices error' })
         );
-    });
-
-    test('getCapProjectChoices: no auto-detection when projects are found in search paths', async () => {
-        // Clear all previous spy calls before this test
-        jest.clearAllMocks();
-
-        const findCapProjectsSpy = jest
-            .spyOn(sapuxProjectAccess, 'findCapProjects')
-            .mockResolvedValue(['/found/project']);
-        const findCapProjectRootSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjectRoot');
-
-        if (os.platform() === 'win32') {
-            jest.spyOn(fsPromises, 'realpath').mockImplementation(async (path: PathLike) => path as string);
-        }
-
-        await getCapProjectChoices(['/search/path']);
-
-        // Auto-detection should not be triggered when projects are found
-        expect(findCapProjectRootSpy).not.toHaveBeenCalled();
-    });
-
-    test('getCapServiceChoices: enhanced path resolution with relative service paths', async () => {
-        // Test the enhanced path resolution in createCapServiceChoice
-        currentMockCapModelAndServices = {
-            model: {
-                definitions: {
-                    TestService: {
-                        $location: {
-                            file: '../srv/test-service.cds'
-                        },
-                        kind: 'service',
-                        name: 'TestService'
-                    }
-                },
-                $sources: ['/project/root/srv/test-service.cds']
-            },
-            services: [
-                {
-                    name: 'TestService',
-                    urlPath: '/test/',
-                    runtime: 'Node.js'
-                }
-            ]
-        };
-
-        const capProjectPaths: CapProjectPaths = {
-            app: 'app/',
-            db: 'db/',
-            folderName: 'testproject',
-            path: '/project/root',
-            srv: 'srv/'
-        };
-
-        const choices = await getCapServiceChoices(capProjectPaths);
-
-        expect(choices).toEqual([
-            {
-                name: 'TestService (Node.js)',
-                value: {
-                    appPath: 'app/',
-                    capType: 'Node.js',
-                    cdsVersionInfo: undefined,
-                    projectPath: '/project/root',
-                    serviceCdsPath: `srv${sep}test-service`,
-                    serviceName: 'TestService',
-                    urlPath: '/test/'
-                }
-            }
-        ]);
     });
 
     /**
