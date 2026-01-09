@@ -328,7 +328,9 @@ resources:
     config:
       tenant-mode: dedicated
       xsappname: standalonewithabapserviceprovider-\${space-guid}
+    path: ./xs-security.json
     service: xsuaa
+    service-name: standalonewithabapserviceprovider-xsuaa-service
     service-plan: application
 - name: standalonewithabapserviceprovider-html5-repo-runtime
   type: org.cloudfoundry.managed-service
@@ -478,7 +480,9 @@ resources:
     config:
       tenant-mode: dedicated
       xsappname: standalone-with-connectivity-service-\${space-guid}
+    path: ./xs-security.json
     service: xsuaa
+    service-name: standalone-with-connectivity-service-xsuaa-service
     service-plan: application
 - name: standalone-with-connectivity-service-html5-repo-runtime
   type: org.cloudfoundry.managed-service
