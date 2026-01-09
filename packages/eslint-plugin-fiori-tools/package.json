@@ -2,6 +2,11 @@
     "name": "@sap-ux/eslint-plugin-fiori-tools",
     "version": "9.0.4",
     "description": "Custom linting plugin for Fiori tools apps",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/eslint-plugin-fiori-tools"
+    },
     "keywords": [
         "eslint",
         "eslintplugin",
