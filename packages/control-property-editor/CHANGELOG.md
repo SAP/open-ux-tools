@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.7
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 0.7.6
 
 ### Patch Changes

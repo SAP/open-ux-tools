@@ -22,7 +22,7 @@ interface ExtendJsonParams {
  */
 function getLineTabInfo(line: string): TabInfo | undefined {
     let tabSize: TabInfo | undefined;
-    const symbol = line[0] === CHAR_TAB ? CHAR_TAB : CHAR_SPACE;
+    const symbol = line.startsWith(CHAR_TAB) ? CHAR_TAB : CHAR_SPACE;
     // get count of tabs
     for (let i = 0; i < line.length; i++) {
         const char = line[i];
@@ -45,10 +45,10 @@ function getLineTabInfo(line: string): TabInfo | undefined {
  */
 export function detectTabSpacing(content: string): TabInfo | undefined {
     let tabSize: TabInfo | undefined;
-    const tabSymbols = [CHAR_SPACE, CHAR_TAB];
+    const tabSymbols = new Set([CHAR_SPACE, CHAR_TAB]);
     const lines = content.split(/\r\n|\n/);
     const lineWithSpacing = lines.find((line: string): boolean => {
-        return tabSymbols.includes(line[0]);
+        return tabSymbols.has(line[0]);
     });
     if (lineWithSpacing) {
         tabSize = getLineTabInfo(lineWithSpacing);

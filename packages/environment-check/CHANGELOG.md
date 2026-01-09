@@ -1,5 +1,14 @@
 # @sap-ux/environment-check
 
+## 0.18.66
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/project-access@1.33.1
+
 ## 0.18.65
 
 ### Patch Changes

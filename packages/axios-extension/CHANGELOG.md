@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.6
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 1.25.5
 
 ### Patch Changes
