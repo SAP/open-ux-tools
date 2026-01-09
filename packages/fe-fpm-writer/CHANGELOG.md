@@ -1,5 +1,13 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.40.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+- Updated dependencies [2204ad3]
+    - @sap-ux/fiori-annotation-api@0.8.3
+
 ## 0.40.2
 
 ### Patch Changes
