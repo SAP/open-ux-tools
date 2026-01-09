@@ -439,7 +439,7 @@ export async function getSelectedServiceMessage(
         }
     }
     // If any catalog request errors, show a warning. We know this is a catalog error since there is no service selected.
-    if (errorHandler.hasError()) {
+    if (errorHandler.hasError()) { // todo: Should we check the error type here before reporting?
         return {
             message: `There was an error accessing the service catalogs: ${errorHandler.getErrorMsg()}`,
             severity: Severity.warning
