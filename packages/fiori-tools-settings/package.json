@@ -28,12 +28,12 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0"
+        "mem-fs": "2.3.0",
+        "mem-fs-editor": "9.7.0"
     },
     "devDependencies": {
-        "@types/mem-fs-editor": "7.0.1",
-        "@types/mem-fs": "1.1.2"
+        "@types/mem-fs-editor": "7.0.7",
+        "@types/mem-fs": "1.1.5"
     },
     "engines": {
         "node": ">=20.x"
