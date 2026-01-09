@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+
 ## 0.29.2
 
 ### Patch Changes
