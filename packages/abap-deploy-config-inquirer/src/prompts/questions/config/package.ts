@@ -34,7 +34,7 @@ export function getPackagePrompts(
 ): Question<AbapDeployConfigAnswersInternal>[] {
     let packageInputChoiceValid: boolean | string | IValidationLink;
     let morePackageResultsMsg = '';
-    let answersCache = {};
+    let prevAnswers = {};
     let prevValidationResult: boolean | string = false;
 
     PromptState.isYUI = isYUI;
@@ -93,7 +93,7 @@ export function getPackagePrompts(
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackage(previousAnswers.packageManual || options.packageManual?.default, options?.packageManual),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> => {
-                if (shouldValidatePackage(answersCache as AbapDeployConfigAnswersInternal, answers)) {
+                if (shouldValidatePackage(prevAnswers as AbapDeployConfigAnswersInternal, answers)) {
                     prevValidationResult = await validatePackage(
                         input,
                         answers,
@@ -102,7 +102,7 @@ export function getPackagePrompts(
                         options.backendTarget
                     );
                 }
-                answersCache = answers;
+                prevAnswers = answers;
                 return prevValidationResult;
             }
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
@@ -146,7 +146,7 @@ export function getPackagePrompts(
                 const pkgValue: string = (input as ListChoiceOptions)?.value
                     ? (input as ListChoiceOptions).value
                     : input;
-                if (shouldValidatePackage(answersCache as AbapDeployConfigAnswersInternal, answers)) {
+                if (shouldValidatePackage(prevAnswers as AbapDeployConfigAnswersInternal, answers)) {
                     prevValidationResult = await validatePackage(
                         pkgValue,
                         answers,
@@ -155,7 +155,7 @@ export function getPackagePrompts(
                         options.backendTarget
                     );
                 }
-                answersCache = answers;
+                prevAnswers = answers;
                 return prevValidationResult;
             }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>

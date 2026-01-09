@@ -271,40 +271,40 @@ export async function getPackageChoices(
 /**
  * Simple utility to get the keys which have different values between two answer objects.
  *
- * @param answersCache - cached answers
+ * @param prevAnswers - previous answers
  * @param newAnswers - new answers
  * @returns - list of keys which have different values
  */
 function getKeysWithDifferentValues(
-    answersCache: AbapDeployConfigAnswersInternal,
+    prevAnswers: AbapDeployConfigAnswersInternal,
     newAnswers: AbapDeployConfigAnswersInternal
 ): string[] {
     const keys = new Set<keyof AbapDeployConfigAnswersInternal>([
-        ...(Object.keys(answersCache) as (keyof AbapDeployConfigAnswersInternal)[]),
+        ...(Object.keys(prevAnswers) as (keyof AbapDeployConfigAnswersInternal)[]),
         ...(Object.keys(newAnswers) as (keyof AbapDeployConfigAnswersInternal)[])
     ]);
 
-    return [...keys].filter((key) => answersCache[key] !== newAnswers[key]);
+    return [...keys].filter((key) => prevAnswers[key] !== newAnswers[key]);
 }
 
 /**
  * Determines whether to validate the package again based on changed answers.
  * The description change does not require re-validation of the package.
  *
- * @param answersCache - cached answers
+ * @param prevAnswers - previous answers
  * @param newAnswers - new answers
  * @returns - whether to validate the package again
  */
 export function shouldValidatePackage(
-    answersCache: AbapDeployConfigAnswersInternal,
+    prevAnswers: AbapDeployConfigAnswersInternal,
     newAnswers: AbapDeployConfigAnswersInternal
 ): boolean {
-    if (Object.keys(answersCache).length === 0) {
+    if (Object.keys(prevAnswers).length === 0) {
         // first time validation if no cache
         return true;
     }
 
-    const keys = getKeysWithDifferentValues(answersCache, newAnswers);
+    const keys = getKeysWithDifferentValues(prevAnswers, newAnswers);
     // if no value has change or only the description has changed, no need to validate the package
     if (keys.length === 0 || (keys.length === 1 && keys[0] === promptNames.description)) {
         return false;

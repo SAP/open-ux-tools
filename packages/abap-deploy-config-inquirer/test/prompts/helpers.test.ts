@@ -245,7 +245,7 @@ describe('helpers', () => {
     });
 
     describe('shouldValidatePackage', () => {
-        it('should return true if cache object is empty', () => {
+        it('should return true if prev answers object is empty', () => {
             const newAnswers = {
                 url: 'https://mock.url.com',
                 package: 'package1',
@@ -256,7 +256,7 @@ describe('helpers', () => {
         });
 
         it('should return false if no changes', () => {
-            const answersCache = {
+            const prevAnswers = {
                 url: 'https://mock.url.com',
                 package: 'package1',
                 description: 'desc1'
@@ -266,12 +266,12 @@ describe('helpers', () => {
                 package: 'package1',
                 description: 'desc1'
             };
-            const result = shouldValidatePackage(answersCache, newAnswers);
+            const result = shouldValidatePackage(prevAnswers, newAnswers);
             expect(result).toBe(false);
         });
 
         it('should return false if only description changed', () => {
-            const answersCache = {
+            const prevAnswers = {
                 url: 'https://mock.url.com',
                 package: 'package1',
                 description: 'desc1'
@@ -281,12 +281,12 @@ describe('helpers', () => {
                 package: 'package1',
                 description: 'desc2'
             };
-            const result = shouldValidatePackage(answersCache, newAnswers);
+            const result = shouldValidatePackage(prevAnswers, newAnswers);
             expect(result).toBe(false);
         });
 
         it('should return true if url changed', () => {
-            const answersCache = {
+            const prevAnswers = {
                 url: 'https://mock.url.com',
                 package: 'package1',
                 description: 'desc1'
@@ -296,7 +296,7 @@ describe('helpers', () => {
                 package: 'package1',
                 description: 'desc1'
             };
-            const result = shouldValidatePackage(answersCache, newAnswers);
+            const result = shouldValidatePackage(prevAnswers, newAnswers);
             expect(result).toBe(true);
         });
     });
