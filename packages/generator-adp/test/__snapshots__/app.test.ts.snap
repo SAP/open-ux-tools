@@ -229,8 +229,21 @@ builder:
         serviceInstanceGuid: test-guid
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+        adp:
+          cfBuildPath: dist
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
@@ -238,13 +251,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-proxy
-      configuration:
-        flp:
-          theme: sap_horizon
-        adp:
-          cfBuildPath: dist
 "
 `;
 

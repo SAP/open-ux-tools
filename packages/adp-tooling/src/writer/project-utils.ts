@@ -186,8 +186,6 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
         /** Middlewares */
         // Add fiori-tools-proxy and fiori-tools-preview for local development
         enhanceUI5YamlWithFioriToolsMiddleware(ui5Config);
-        // Note: backend-proxy-middleware-cf configuration is handled by the setup command
-        // which reads OAuth paths from .reuse folder xs-app.json files
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {

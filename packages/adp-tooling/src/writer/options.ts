@@ -388,87 +388,31 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
         url: UI5_CDN_URL
     };
 
+    // Add fiori-tools-appreload for live reload during development
+    ui5Config.addFioriToolsAppReloadMiddleware();
+
+    // Add fiori-tools-preview (for local preview)
+    ui5Config.addCustomMiddleware([
+        {
+            name: 'fiori-tools-preview',
+            afterMiddleware: 'fiori-tools-appreload',
+            configuration: {
+                flp: {
+                    theme: 'sap_horizon'
+                },
+                adp: {
+                    cfBuildPath: 'dist'
+                }
+            }
+        }
+    ]);
+
     // Add fiori-tools-proxy (for UI5 resources)
     ui5Config.addFioriToolsProxyMiddleware(
         {
             ui5: ui5ConfigOptions,
             backend: []
         },
-        'compression'
+        'fiori-tools-preview'
     );
-
-    // Add fiori-tools-preview (for local preview)
-    ui5Config.addCustomMiddleware([
-        {
-            name: 'fiori-tools-preview',
-            afterMiddleware: 'fiori-tools-proxy',
-            configuration: {
-                flp: {
-                    theme: 'sap_horizon'
-                },
-                adp: {
-                    cfBuildPath: 'dist'
-                }
-            }
-        }
-    ]);
-}
-
-/**
- * Generate custom middleware configuration including backend-proxy-middleware-cf.
- *
- * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
- * @param {CfAdpWriterConfig} config - Full project configuration.
- */
-export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, config: CfAdpWriterConfig): void {
-    const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
-        url: UI5_CDN_URL
-    };
-
-    const oauthPaths = config.cf?.oauthPaths;
-    const backendUrls = config.cf?.backendUrls;
-    if (oauthPaths && oauthPaths.length > 0 && backendUrls && backendUrls.length > 0) {
-        // Add a separate middleware instance for each backend URL
-        backendUrls.forEach((url) => {
-            ui5Config.addCustomMiddleware([
-                {
-                    name: 'backend-proxy-middleware-cf',
-                    afterMiddleware: 'compression',
-                    configuration: {
-                        url,
-                        paths: oauthPaths
-                    }
-                }
-            ]);
-        });
-        ui5Config.addFioriToolsProxyMiddleware(
-            {
-                ui5: ui5ConfigOptions,
-                backend: []
-            },
-            'backend-proxy-middleware-cf'
-        );
-    } else {
-        ui5Config.addFioriToolsProxyMiddleware(
-            {
-                ui5: ui5ConfigOptions,
-                backend: []
-            },
-            'compression'
-        );
-    }
-    ui5Config.addCustomMiddleware([
-        {
-            name: 'fiori-tools-preview',
-            afterMiddleware: 'fiori-tools-proxy',
-            configuration: {
-                flp: {
-                    theme: 'sap_horizon'
-                },
-                adp: {
-                    cfBuildPath: 'dist'
-                }
-            }
-        }
-    ]);
 }
