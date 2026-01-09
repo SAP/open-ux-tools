@@ -85,7 +85,7 @@ export class CdsAnnotationProvider {
             }
         }
         return undefined;
-        /* eslint-disable @typescript-eslint/no-unused-vars -- Commented out implementation kept for future reference */
+
         // const facade = this.getFacade(rootPath, fileCache, false);
         // const services = this.serviceInfoCache.get(rootPath) ?? [];
         // const serviceInfo = services.find((s) => uniformUrl(s.urlPath) === uniformUrl(servicePath));
@@ -164,7 +164,7 @@ export class CdsAnnotationProvider {
         _ignoreCache = false
     ): CdsCompilerFacade {
         throw new Error('Not implemented yet.');
-        /* eslint-disable @typescript-eslint/no-unused-vars -- Commented out implementation kept for future reference */
+
         // const cachedValue = this.cdsCache.get(rootPath);
         // if (cachedValue && ignoreCache === false) {
         //     return cachedValue;
@@ -222,7 +222,6 @@ function getAliasInfo(
     return aliasInformation;
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars -- Commented out implementation kept for future reference */
 /**
  * Normalizes a URL by replacing backslashes with forward slashes and removing leading slashes.
  *
