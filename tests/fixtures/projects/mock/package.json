@@ -3,7 +3,7 @@
     "version": "0.0.2",
     "private": true,
     "devDependencies": {
-        "@sap-ux/ui5-middleware-fe-mockserver": "2.2.97",
+        "@sap-ux/ui5-middleware-fe-mockserver": "2.3.38",
         "@sap-ux/fe-mockserver-plugin-cds": "1.2.6",
         "@sap-ux/preview-middleware": "workspace:*",
         "@sap-ux/reload-middleware": "workspace:*",

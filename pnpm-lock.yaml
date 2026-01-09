@@ -715,8 +715,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       express:
-        specifier: 4.21.2
-        version: 4.21.2
+        specifier: 4.22.1
+        version: 4.22.1
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -953,8 +953,8 @@ importers:
         specifier: ^3.7.0
         version: 3.7.0
       express:
-        specifier: 4.21.2
-        version: 4.21.2
+        specifier: 4.22.1
+        version: 4.22.1
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -999,8 +999,8 @@ importers:
         specifier: ^3.7.0
         version: 3.7.0
       express:
-        specifier: 4.21.2
-        version: 4.21.2
+        specifier: 4.22.1
+        version: 4.22.1
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -1369,8 +1369,8 @@ importers:
         specifier: 3.0.4
         version: 3.0.4
       body-parser:
-        specifier: 1.20.3
-        version: 1.20.3
+        specifier: 1.20.4
+        version: 1.20.4
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -3364,8 +3364,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       express:
-        specifier: 4.21.2
-        version: 4.21.2
+        specifier: 4.22.1
+        version: 4.22.1
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -3521,8 +3521,8 @@ importers:
         specifier: 1.12.2
         version: 1.12.2(debug@4.4.3)
       express:
-        specifier: 4.21.2
-        version: 4.21.2
+        specifier: 4.22.1
+        version: 4.22.1
       supertest:
         specifier: 7.1.4
         version: 7.1.4
@@ -3820,8 +3820,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       express:
-        specifier: 4.21.2
-        version: 4.21.2
+        specifier: 4.22.1
+        version: 4.22.1
       serve-static:
         specifier: 1.16.2
         version: 1.16.2
@@ -4820,8 +4820,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       express:
-        specifier: 4.21.2
-        version: 4.21.2
+        specifier: 4.22.1
+        version: 4.22.1
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -4940,8 +4940,8 @@ importers:
         specifier: workspace:*
         version: link:../../../../packages/reload-middleware
       '@sap-ux/ui5-middleware-fe-mockserver':
-        specifier: 2.2.97
-        version: 2.2.97
+        specifier: 2.3.38
+        version: 2.3.38
       '@sap-ux/ui5-proxy-middleware':
         specifier: workspace:*
         version: link:../../../../packages/ui5-proxy-middleware
@@ -4973,8 +4973,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       express:
-        specifier: 4.21.2
-        version: 4.21.2
+        specifier: 4.22.1
+        version: 4.22.1
       jest-dev-server:
         specifier: 10.0.0
         version: 10.0.0
@@ -13429,12 +13429,6 @@ packages:
     dependencies:
       '@sap-ux/vocabularies-types': 0.14.5
 
-  /@sap-ux/annotation-converter@0.10.3:
-    resolution: {integrity: sha512-mLQTJv4SXyxbizE2guXi/m9BuFi+jcn7Vk8pGzkbdjWhBgI2OK0F30GXEsy7lprYFGycCLzXbBj/X7Unz+pIeg==}
-    dependencies:
-      '@sap-ux/vocabularies-types': 0.13.0
-    dev: true
-
   /@sap-ux/annotation-converter@0.10.8:
     resolution: {integrity: sha512-eUSTT0oPBdyDC/jGay+VVgW9BB80NSpl/HeTo3H+K99or88MR2eHtXH8wCabH55Qgzyrnc7BSWaYXk9AMbYWJg==}
     dependencies:
@@ -13470,9 +13464,16 @@ packages:
     resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
     dependencies:
       xml-js: 1.6.11
+    dev: false
 
   /@sap-ux/edmx-parser@0.9.6:
     resolution: {integrity: sha512-6dj+nTRNcnA37vqSBJm+xCdJC1u3Dg+4KWTPxveqI/c+1NvvvVlZ18SbZaHEKBFDX2HJU2345IiszrfYU1P3ng==}
+    dependencies:
+      xml-js: 1.6.11
+    dev: true
+
+  /@sap-ux/edmx-parser@0.9.8:
+    resolution: {integrity: sha512-GFyrixCHRvPVN07RjJYMQJE9xY2J3EpLuOsOXyAhuAoePqBjbAFuE+lJyyJMmJK3oltDBVDB+dqyA0eMSeCD/A==}
     dependencies:
       xml-js: 1.6.11
     dev: true
@@ -13499,13 +13500,13 @@ packages:
       - typescript
     dev: true
 
-  /@sap-ux/fe-mockserver-core@1.4.25:
-    resolution: {integrity: sha512-NoYqHT5cwR5rmOY5phQNHk9jIfZNL1rwTr4RSnEvz6gBQAXCmjOUhSK3N9RFRdCy749MJRKuftH65f9zS6lanQ==}
+  /@sap-ux/fe-mockserver-core@1.6.38:
+    resolution: {integrity: sha512-05bX1pmCwotRMVSx6WmqJZKgCOAF9Ql02CPbfWNfs0cIkEIUieoJKuPgUhrm18dh0RMSZt+gicUaJIpqe+znjw==}
     dependencies:
-      '@sap-ux/annotation-converter': 0.10.3
-      '@sap-ux/edmx-parser': 0.9.1
+      '@sap-ux/annotation-converter': 0.10.19
+      '@sap-ux/edmx-parser': 0.9.8
       balanced-match: 1.0.2
-      body-parser: 1.20.3
+      body-parser: 1.20.4
       braces: 3.0.3
       chevrotain: 9.1.0
       chokidar: 3.6.0
@@ -13655,17 +13656,12 @@ packages:
       - debug
     dev: true
 
-  /@sap-ux/ui5-middleware-fe-mockserver@2.2.97:
-    resolution: {integrity: sha512-QQBvLo0EkmVJd+VfF99xvrgiIanSiwS8SrsqMgMzu7ZL1I2iKIC719QQcXCW2trEntRKmvgCKghbBxceuTa9JA==}
+  /@sap-ux/ui5-middleware-fe-mockserver@2.3.38:
+    resolution: {integrity: sha512-7HBYgqIfdlPA537JhbDtGyzDSUWB6FSeS4favvWlv64tfJeUTKXLfOOCAQo74jY5R58IvY+3pPWVSksxQINACQ==}
     dependencies:
-      '@sap-ux/fe-mockserver-core': 1.4.25
+      '@sap-ux/fe-mockserver-core': 1.6.38
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@sap-ux/vocabularies-types@0.13.0:
-    resolution: {integrity: sha512-srR9ffXpgvVxsrD/3ZvX6PnxXyY6yeth6LuKfCDgcyDoPeRj1jQknpgVF+k9hHDv7LkGkDiHYvjWY+JP8OlDLw==}
-    engines: {node: '>=18.x'}
     dev: true
 
   /@sap-ux/vocabularies-types@0.13.1:
@@ -16673,13 +16669,13 @@ packages:
       '@ui5/builder': 4.1.1
       '@ui5/fs': 4.0.3
       '@ui5/logger': 4.0.2
-      body-parser: 1.20.3
+      body-parser: 1.20.4
       compression: 1.8.1
       cors: 2.8.5
       devcert-sanscache: 0.5.1
       escape-html: 1.0.3
       etag: 1.8.1
-      express: 4.21.2
+      express: 4.22.1
       fresh: 0.5.2
       graceful-fs: 4.2.11
       mime-types: 2.1.35
@@ -18432,8 +18428,8 @@ packages:
     resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
     dev: true
 
-  /body-parser@1.20.3:
-    resolution: {integrity: sha512-7rAxByjUMqQ3/bHJy7D6OGXvx/MMc4IqBn/X0fcM1QUcAItpZrBEYhWGem+tzXH90c+G01ypMcYJBO9Y30203g==}
+  /body-parser@1.20.4:
+    resolution: {integrity: sha512-ZTgYYLMOXY9qKU/57FAo8F+HA2dGX7bqGc71txDRC1rS4frdFI5R7NhluHxH6M0YItAP0sHB4uqAOcYKxO6uGA==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
     dependencies:
       bytes: 3.1.2
@@ -18441,11 +18437,11 @@ packages:
       debug: 2.6.9
       depd: 2.0.0
       destroy: 1.2.0
-      http-errors: 2.0.0
+      http-errors: 2.0.1
       iconv-lite: 0.4.24
       on-finished: 2.4.1
-      qs: 6.13.0
-      raw-body: 2.5.2
+      qs: 6.14.1
+      raw-body: 2.5.3
       type-is: 1.6.18
       unpipe: 1.0.0
     transitivePeerDependencies:
@@ -19493,14 +19489,9 @@ packages:
     engines: {node: '>=6.6.0'}
     dev: true
 
-  /cookie@0.7.1:
-    resolution: {integrity: sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==}
-    engines: {node: '>= 0.6'}
-
   /cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
-    dev: true
 
   /cookiejar@2.1.4:
     resolution: {integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==}
@@ -21619,16 +21610,16 @@ packages:
       express: 5.1.0
     dev: true
 
-  /express@4.21.2:
-    resolution: {integrity: sha512-28HqgMZAmih1Czt9ny7qr6ek2qddF4FclbMzwhCREB6OFfH+rXAnuNCwo1/wFvrtbgsQDb4kSbX9de9lFbrXnA==}
+  /express@4.22.1:
+    resolution: {integrity: sha512-F2X8g9P1X7uCPZMA3MVf9wcTqlyNp7IhH5qPCI0izhaOIYXaW9L535tGA3qmjRzpH+bZczqq7hVKxTR4NWnu+g==}
     engines: {node: '>= 0.10.0'}
     dependencies:
       accepts: 1.3.8
       array-flatten: 1.1.1
-      body-parser: 1.20.3
+      body-parser: 1.20.4
       content-disposition: 0.5.4
       content-type: 1.0.5
-      cookie: 0.7.1
+      cookie: 0.7.2
       cookie-signature: 1.0.6
       debug: 2.6.9
       depd: 2.0.0
@@ -21644,7 +21635,7 @@ packages:
       parseurl: 1.3.3
       path-to-regexp: 0.1.12
       proxy-addr: 2.0.7
-      qs: 6.13.0
+      qs: 6.14.1
       range-parser: 1.2.1
       safe-buffer: 5.2.1
       send: 0.19.0
@@ -23081,6 +23072,16 @@ packages:
       inherits: 2.0.4
       setprototypeof: 1.2.0
       statuses: 2.0.1
+      toidentifier: 1.0.1
+
+  /http-errors@2.0.1:
+    resolution: {integrity: sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      depd: 2.0.0
+      inherits: 2.0.4
+      setprototypeof: 1.2.0
+      statuses: 2.0.2
       toidentifier: 1.0.1
 
   /http-proxy-agent@4.0.1:
@@ -28828,12 +28829,6 @@ packages:
       yargs: 15.4.1
     dev: false
 
-  /qs@6.13.0:
-    resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
-    engines: {node: '>=0.6'}
-    dependencies:
-      side-channel: 1.1.0
-
   /qs@6.14.1:
     resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
     engines: {node: '>=0.6'}
@@ -28908,12 +28903,12 @@ packages:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
 
-  /raw-body@2.5.2:
-    resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
+  /raw-body@2.5.3:
+    resolution: {integrity: sha512-s4VSOf6yN0rvbRZGxs8Om5CWj6seneMwK3oDb4lWDH0UPhWcxwOWw5+qk24bxq87szX1ydrwylIOp2uG1ojUpA==}
     engines: {node: '>= 0.8'}
     dependencies:
       bytes: 3.1.2
-      http-errors: 2.0.0
+      http-errors: 2.0.1
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
@@ -31035,6 +31030,10 @@ packages:
 
   /statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
+    engines: {node: '>= 0.8'}
+
+  /statuses@2.0.2:
+    resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
 
   /stop-iteration-iterator@1.1.0:
