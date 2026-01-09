@@ -2,7 +2,7 @@
  * Service selection prompting for SAP systems. Used by new and existing system prompts.
  *
  */
-import type { CatalogService } from '@sap-ux/axios-extension';
+import type { CatalogService, CatalogRequestResult } from '@sap-ux/axios-extension';
 import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -31,7 +31,8 @@ import {
     getSelectedServiceMessage,
     getServiceChoices,
     sendDestinationServiceSuccessTelemetryEvent,
-    validateService
+    validateService,
+    type ServiceChoicesResult
 } from '../service-selection/service-helper';
 import type { SystemSelectionAnswers } from '../system-selection';
 import { type ServiceAnswer } from './types';
@@ -56,6 +57,8 @@ export function getSystemServiceQuestion(
     showValueHelpDownloadPrompt = false
 ): Question<ServiceAnswer>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
+    // Store catalog results for error display
+    let catalogResults: Partial<Record<ODataVersion, CatalogRequestResult>> = {};
     // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
     let previousSystemUrl: string | undefined;
     let previousClient: string | undefined;
@@ -92,12 +95,14 @@ export function getSystemServiceQuestion(
                 previousClient !== connectValidator.validatedClient
             ) {
                 // if we have a catalog, use it to list services
-                if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
-                    serviceChoices = await createServiceChoicesFromCatalog(
+                if (connectValidator.catalogs[ODataVersion.v2] || connectValidator.catalogs[ODataVersion.v4]) {
+                    const result = await createServiceChoicesFromCatalog(
                         connectValidator.catalogs,
                         requiredOdataVersion,
                         promptOptions?.serviceFilter
                     );
+                    serviceChoices = result.choices;
+                    catalogResults = result.catalogResults;
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
 
@@ -122,6 +127,7 @@ export function getSystemServiceQuestion(
                             } as ServiceAnswer
                         }
                     ];
+                    catalogResults = {}; // No catalog results for direct service endpoint
                     // Telemetry event for successful service listing using a destination
                     if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
                         sendDestinationServiceSuccessTelemetryEvent(
@@ -143,7 +149,8 @@ export function getSystemServiceQuestion(
                           showCollabDraftWarning: !!promptOptions?.showCollaborativeDraftWarning,
                           edmx: convertedMetadataRef.convertedMetadata
                       }
-                    : undefined
+                    : undefined,
+                catalogResults
             }),
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI and cli when automcomplete is used
@@ -241,13 +248,13 @@ export function getSystemServiceQuestion(
  * @param availableCatalogs catalogs that can be used to list services
  * @param requiredOdataVersion the required OData version to list services for, if not provided all available catalogs will be used
  * @param serviceFilter list of service ids used for filtering the choices
- * @returns service choices
+ * @returns service choices and catalog results for error display
  */
 async function createServiceChoicesFromCatalog(
     availableCatalogs: Record<ODataVersion, CatalogService | undefined>,
     requiredOdataVersion?: OdataVersion,
     serviceFilter?: string[]
-): Promise<ListChoiceOptions<ServiceAnswer>[]> {
+): Promise<ServiceChoicesResult> {
     let catalogs: CatalogService[] = [];
     if (requiredOdataVersion && availableCatalogs[requiredOdataVersion]) {
         catalogs.push(availableCatalogs[requiredOdataVersion] as CatalogService);

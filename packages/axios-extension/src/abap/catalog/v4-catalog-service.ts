@@ -206,4 +206,13 @@ export class V4CatalogService extends CatalogService {
     public getServiceType(): Promise<undefined> {
         return Promise.resolve(undefined);
     }
+
+    /**
+     * Get the OData version for this catalog.
+     *
+     * @returns ODataVersion.v4
+     */
+    public getVersion(): ODataVersion {
+        return ODataVersion.v4;
+    }
 }

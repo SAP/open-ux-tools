@@ -67,7 +67,10 @@
             "noServicesAvailable": "There are no services available for the selected system. For more information, see the logs.",
             "noServicesAvailableForOdataVersion": "There are no OData V{{odataVersion}} services available from the selected system and the template you have chosen only supports OData V{{odataVersion}} services.",
             "noAnnotations": "No back-end annotations associated with this service were retrieved. This can result in an invalid application.",
-            "collaborativeDraftMessage": "The selected service is draft-enabled but does not support collaborative draft."
+            "collaborativeDraftMessage": "The selected service is draft-enabled but does not support collaborative draft.",
+            "catalogV2Forbidden": "The OData V2 catalog is not accessible (HTTP 403). You may not have permission to view V2 services. Contact your system administrator.",
+            "catalogV4Forbidden": "The OData V4 catalog is not accessible (HTTP 403). You may not have permission to view V4 services. Contact your system administrator.",
+            "catalogPartialAvailable": "The OData V{{unavailable}} catalog is not accessible (HTTP {{errorCode}}). Only V{{available}} services are shown."
         },
         "systemUrl": {
             "message": "System URL",

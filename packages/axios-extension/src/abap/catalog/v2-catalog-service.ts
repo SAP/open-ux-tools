@@ -242,4 +242,13 @@ export class V2CatalogService extends CatalogService {
         }
         return serviceType;
     }
+
+    /**
+     * Get the OData version for this catalog.
+     *
+     * @returns ODataVersion.v2
+     */
+    public getVersion(): ODataVersion {
+        return ODataVersion.v2;
+    }
 }

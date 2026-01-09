@@ -1,5 +1,6 @@
 import type { ODataVersion } from '../../base/odata-service';
 import { ODataService } from '../../base/odata-service';
+import { isAxiosError } from '../../base/odata-request-error';
 
 export const ServiceType = {
     UI: 'UI',
@@ -9,6 +10,35 @@ export const ServiceType = {
 } as const;
 
 export type ServiceType = (typeof ServiceType)[keyof typeof ServiceType];
+
+/**
+ * HTTP status codes for catalog request errors
+ */
+export const CatalogErrorCode = {
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404
+} as const;
+
+export type CatalogErrorCode = (typeof CatalogErrorCode)[keyof typeof CatalogErrorCode];
+
+/**
+ * Result of fetching services from a catalog, including error status.
+ * Provides structured error information instead of throwing exceptions.
+ */
+export interface CatalogRequestResult {
+    /** OData version of the catalog (v2 or v4) */
+    version: ODataVersion;
+    /** Whether the catalog request was successful */
+    success: boolean;
+    /** Services returned from the catalog (empty array on failure) */
+    services: ODataServiceInfo[];
+    /** HTTP status code if the request failed */
+    errorCode?: CatalogErrorCode;
+    /** Error message if the request failed */
+    errorMessage?: string;
+}
 
 export interface ODataServiceInfo {
     id: string;
@@ -72,4 +102,41 @@ export abstract class CatalogService extends ODataService {
 
     abstract getAnnotations({ id, title, path }: FilterOptions): Promise<Annotations[]>;
     abstract getServiceType(path: string): Promise<ServiceType | undefined>;
+
+    /**
+     * Get the OData version for this catalog.
+     *
+     * @returns the OData version (v2 or v4)
+     */
+    abstract getVersion(): ODataVersion;
+
+    /**
+     * List services with structured error handling.
+     * Returns success/error status instead of throwing exceptions.
+     *
+     * @param useNextLink if true, use next link for pagination
+     * @returns CatalogRequestResult with services or error information
+     */
+    async listServicesWithStatus(useNextLink = false): Promise<CatalogRequestResult> {
+        try {
+            const services = await this.listServices(useNextLink);
+            return {
+                version: this.getVersion(),
+                success: true,
+                services
+            };
+        } catch (error) {
+            const errorCode = isAxiosError(error)
+                ? (error.response?.status as CatalogErrorCode)
+                : undefined;
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            return {
+                version: this.getVersion(),
+                success: false,
+                services: [],
+                errorCode,
+                errorMessage
+            };
+        }
+    }
 }

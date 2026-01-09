@@ -1,4 +1,4 @@
-import { createForAbap, ODataVersion, V2CatalogService, ServiceType } from '../../../src';
+import { createForAbap, ODataVersion, V2CatalogService, ServiceType, CatalogErrorCode } from '../../../src';
 import { join } from 'node:path';
 import nock from 'nock';
 
@@ -185,6 +185,83 @@ describe('V2CatalogService', () => {
 
             const serviceType = catalog.getServiceType(path);
             await expect(serviceType).resolves.toBe(ServiceType.UI);
+        });
+    });
+
+    describe('listServicesWithStatus', () => {
+        test('returns success result on successful request', async () => {
+            const provider = createForAbap(config);
+            nock(server)
+                .get(`${V2CatalogService.PATH}/?$format=json`)
+                .reply(200, { d: { EntitySets: ['ServiceCollection'] } });
+            nock(server)
+                .get((path) => path.startsWith(`${V2CatalogService.PATH}/ServiceCollection?`))
+                .replyWithFile(200, join(__dirname, '../mockResponses/v2ServiceCollection.json'));
+
+            const catalog = provider.catalog(ODataVersion.v2);
+            const result = await catalog.listServicesWithStatus();
+
+            expect(result.success).toBe(true);
+            expect(result.version).toBe(ODataVersion.v2);
+            expect(result.services).toBeDefined();
+            expect(result.errorCode).toBeUndefined();
+            expect(result.errorMessage).toBeUndefined();
+        });
+
+        test('returns error result with 403 Forbidden', async () => {
+            const provider = createForAbap(config);
+            nock(server)
+                .get((path) => path.startsWith(V2CatalogService.PATH))
+                .reply(403, { error: { code: 'FORBIDDEN', message: 'Access denied' } });
+
+            const catalog = provider.catalog(ODataVersion.v2);
+            const result = await catalog.listServicesWithStatus();
+
+            expect(result.success).toBe(false);
+            expect(result.version).toBe(ODataVersion.v2);
+            expect(result.services).toEqual([]);
+            expect(result.errorCode).toBe(CatalogErrorCode.FORBIDDEN);
+            expect(result.errorMessage).toBeDefined();
+        });
+
+        test('returns error result with 401 Unauthorized', async () => {
+            const provider = createForAbap(config);
+            nock(server)
+                .get((path) => path.startsWith(V2CatalogService.PATH))
+                .reply(401, { error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+
+            const catalog = provider.catalog(ODataVersion.v2);
+            const result = await catalog.listServicesWithStatus();
+
+            expect(result.success).toBe(false);
+            expect(result.version).toBe(ODataVersion.v2);
+            expect(result.services).toEqual([]);
+            expect(result.errorCode).toBe(CatalogErrorCode.UNAUTHORIZED);
+            expect(result.errorMessage).toBeDefined();
+        });
+
+        test('returns error result with 404 Not Found', async () => {
+            const provider = createForAbap(config);
+            nock(server)
+                .get((path) => path.startsWith(V2CatalogService.PATH))
+                .reply(404, { error: { code: 'NOT_FOUND', message: 'Catalog not found' } });
+
+            const catalog = provider.catalog(ODataVersion.v2);
+            const result = await catalog.listServicesWithStatus();
+
+            expect(result.success).toBe(false);
+            expect(result.version).toBe(ODataVersion.v2);
+            expect(result.services).toEqual([]);
+            expect(result.errorCode).toBe(CatalogErrorCode.NOT_FOUND);
+            expect(result.errorMessage).toBeDefined();
+        });
+    });
+
+    describe('getVersion', () => {
+        test('returns ODataVersion.v2', () => {
+            const provider = createForAbap(config);
+            const catalog = provider.catalog(ODataVersion.v2);
+            expect(catalog.getVersion()).toBe(ODataVersion.v2);
         });
     });
 });

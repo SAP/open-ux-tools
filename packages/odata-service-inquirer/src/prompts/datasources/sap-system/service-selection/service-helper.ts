@@ -3,6 +3,8 @@ import {
     type Annotations,
     type AxiosRequestConfig,
     type CatalogService,
+    type CatalogRequestResult,
+    CatalogErrorCode,
     createForAbap,
     type ODataService,
     type ODataServiceInfo,
@@ -29,6 +31,16 @@ import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 const nonUIServicePaths = ['/IWBEP/COMMON'];
 // Telemetry event name for successful service validation on BAS, note: legacy event names should not be changed
 export const telemEventBASServiceSuccess = 'SERVICE_INQUIRER_BAS_SUCCESS';
+
+/**
+ * Result of fetching service choices from catalogs, including catalog status for error display
+ */
+export interface ServiceChoicesResult {
+    /** Service choices available for selection */
+    choices: ListChoiceOptions<ServiceAnswer>[];
+    /** Results from each catalog request, keyed by OData version */
+    catalogResults: Partial<Record<ODataVersion, CatalogRequestResult>>;
+}
 /**
  * Builds and formats the service choices list.
  *
@@ -99,64 +111,70 @@ function logServiceCatalogErrorsForHelp(
  *
  * @param catalogs catalogs to get the services from. There should be one per odata version required.
  * @param serviceFilter list of service ids used for filtering the choices
- * @returns service choices based on the provided catalogs
+ * @returns service choices and catalog results for error display
  */
 export async function getServiceChoices(
     catalogs: CatalogService[],
     serviceFilter?: string[]
-): Promise<ListChoiceOptions<ServiceAnswer>[]> {
+): Promise<ServiceChoicesResult> {
+    const catalogResults: Partial<Record<ODataVersion, CatalogRequestResult>> = {};
     const requestErrors: Record<ODataVersion, unknown> | {} = {};
     // Performance tracking for the requests
     const requestTimes: Record<string, { serviceCount: number; duration: string }> = {}; // [v2, v4] request times in ms
-    const listServicesRequests = [];
+    const allServices: ODataServiceInfo[] = [];
 
     for (const catalog of catalogs) {
-        const catalogVer = catalog instanceof V2CatalogService ? ODataVersion.v2 : ODataVersion.v4;
-        try {
-            const startTime = Date.now();
-            const res = await catalog.listServices();
-            const endTime = Date.now();
-            const duration = endTime - startTime === 0 ? '<1 ms' : `${endTime - startTime}ms`;
-            requestTimes[`v${catalogVer}`] = {
-                serviceCount: res.length,
+        const startTime = Date.now();
+        const result = await catalog.listServicesWithStatus();
+        const endTime = Date.now();
+        const duration = endTime - startTime === 0 ? '<1 ms' : `${endTime - startTime}ms`;
+
+        // Store the catalog result for error display
+        catalogResults[result.version] = result;
+
+        if (result.success) {
+            requestTimes[`v${result.version}`] = {
+                serviceCount: result.services.length,
                 duration
             };
             LoggerHelper.logger.debug(
-                `Number of service${catalogVer === ODataVersion.v4 ? ' groups' : 's'}: ${
-                    res.length
+                `Number of service${result.version === ODataVersion.v4 ? ' groups' : 's'}: ${
+                    result.services.length
                 } returned in: ${duration}}`
             );
-            listServicesRequests.push(res);
-        } catch (error) {
+            allServices.push(...result.services);
+        } else {
             LoggerHelper.logger.error(
                 t('errors.serviceCatalogRequest', {
                     catalogRequestUri: catalog.getUri(),
                     entitySet: catalog.entitySet,
-                    error
+                    error: result.errorMessage
                 })
             );
             // Save any errors for processing later as we may show more useful message to the user
             Object.assign(requestErrors, {
-                [catalogVer]: error
+                [result.version]: result.errorMessage
             });
-            listServicesRequests.push([]);
         }
     }
     // Log the request times for debugging purposes
     LoggerHelper.logger.debug(`Service catalog request times: ${JSON.stringify(requestTimes, undefined, '    ')}`);
 
-    // Flatten the array of arrays
-    let flatServices = listServicesRequests?.flat() ?? [];
-    LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
+    LoggerHelper.logger.debug(`Number of services available: ${allServices.length}`);
 
-    if (flatServices.length === 0) {
+    if (allServices.length === 0) {
         logServiceCatalogErrorsForHelp(requestErrors, catalogs.length);
     }
 
+    let filteredServices = allServices;
     if (serviceFilter) {
-        flatServices = flatServices.filter((service) => serviceFilter.includes(service.id));
+        filteredServices = allServices.filter((service) => serviceFilter.includes(service.id));
     }
-    return createServiceChoices(flatServices);
+
+    return {
+        choices: createServiceChoices(filteredServices),
+        catalogResults
+    };
 }
 
 /**
@@ -360,6 +378,46 @@ type ShowCollabDraftWarnOptions = {
     edmx: ConvertedMetadata;
     showCollabDraftWarning: boolean;
 };
+
+/**
+ * Generate a warning message for catalog errors (403 Forbidden, etc.)
+ *
+ * @param catalogResults results from catalog requests
+ * @returns warning message for catalog errors, or undefined if no errors
+ */
+function getCatalogErrorMessage(
+    catalogResults?: Partial<Record<ODataVersion, CatalogRequestResult>>
+): string | undefined {
+    if (!catalogResults) {
+        return undefined;
+    }
+
+    const warnings: string[] = [];
+    const v2Result = catalogResults[ODataVersion.v2];
+    const v4Result = catalogResults[ODataVersion.v4];
+
+    // Check for 403 Forbidden errors specifically
+    if (v2Result && !v2Result.success && v2Result.errorCode === CatalogErrorCode.FORBIDDEN) {
+        warnings.push(t('warnings.catalogV2Forbidden'));
+    }
+    if (v4Result && !v4Result.success && v4Result.errorCode === CatalogErrorCode.FORBIDDEN) {
+        warnings.push(t('warnings.catalogV4Forbidden'));
+    }
+
+    // If one catalog succeeded but the other failed with 403, show partial availability message
+    if (warnings.length === 1) {
+        const failedVersion = v2Result?.errorCode === CatalogErrorCode.FORBIDDEN ? '2' : '4';
+        const availableVersion = failedVersion === '2' ? '4' : '2';
+        return t('warnings.catalogPartialAvailable', {
+            unavailable: failedVersion,
+            available: availableVersion,
+            errorCode: CatalogErrorCode.FORBIDDEN
+        });
+    }
+
+    return warnings.length > 0 ? warnings.join(' ') : undefined;
+}
+
 /**
  * Get the service selection prompt additional message. This prompt will make an additional call to the system backend
  * to retrieve the service type and display a warning message if the service type is not UI.
@@ -372,6 +430,7 @@ type ShowCollabDraftWarnOptions = {
  * @param options.hasAnnotations used to determine whether to show a warning message that annotations could not be retrieved
  * @param options.showCollabDraftWarnOptions to show the collaborative draft warning, the option `showCollabDraftWarning` must be true
  *  and the edmx metadata must be provided
+ * @param options.catalogResults results from catalog requests for error display
  * @returns the service selection prompt additional message
  */
 export async function getSelectedServiceMessage(
@@ -381,14 +440,33 @@ export async function getSelectedServiceMessage(
     {
         requiredOdataVersion,
         hasAnnotations = true,
-        showCollabDraftWarnOptions
+        showCollabDraftWarnOptions,
+        catalogResults
     }: {
         requiredOdataVersion?: OdataVersion;
         hasAnnotations?: boolean;
         showCollabDraftWarnOptions?: ShowCollabDraftWarnOptions;
+        catalogResults?: Partial<Record<ODataVersion, CatalogRequestResult>>;
     }
 ): Promise<IMessageSeverity | undefined> {
+    // Check for catalog errors first (403 Forbidden, etc.)
+    const catalogErrorMessage = getCatalogErrorMessage(catalogResults);
+    if (catalogErrorMessage && serviceChoices?.length > 0) {
+        // Some services available but one catalog failed
+        return {
+            message: catalogErrorMessage,
+            severity: Severity.warning
+        };
+    }
+
     if (serviceChoices?.length === 0) {
+        // No services available - check if due to catalog errors
+        if (catalogErrorMessage) {
+            return {
+                message: catalogErrorMessage,
+                severity: Severity.warning
+            };
+        }
         if (requiredOdataVersion) {
             return {
                 message: t('warnings.noServicesAvailableForOdataVersion', {

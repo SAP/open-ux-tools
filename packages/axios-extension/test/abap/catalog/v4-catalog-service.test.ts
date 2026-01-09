@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import nock from 'nock';
-import { createForAbap, ODataVersion, V4CatalogService } from '../../../src';
+import { createForAbap, ODataVersion, V4CatalogService, CatalogErrorCode } from '../../../src';
 
 const mockRespPath = join(__dirname, '../mockResponses');
 
@@ -213,6 +213,88 @@ describe('V4CatalogService', () => {
         it('get the service type', async () => {
             const serviceType = catalog.getServiceType('mock/v4/service');
             await expect(serviceType).resolves.toBe(undefined);
+        });
+    });
+
+    describe('listServicesWithStatus', () => {
+        const reqPath = `${V4CatalogService.PATH}/ServiceGroups`;
+
+        test('returns success result on successful request', async () => {
+            const provider = createForAbap(config);
+            const catalog = provider.catalog(ODataVersion.v4);
+
+            nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, '<METADATA />');
+            nock(server)
+                .get((path) => path.startsWith(reqPath))
+                .replyWithFile(200, join(mockRespPath, 'v4ServiceGroups.json'), { 'Content-Type': 'application/json' });
+
+            const result = await catalog.listServicesWithStatus();
+
+            expect(result.success).toBe(true);
+            expect(result.version).toBe(ODataVersion.v4);
+            expect(result.services).toBeDefined();
+            expect(result.services.length).toBeGreaterThan(0);
+            expect(result.errorCode).toBeUndefined();
+            expect(result.errorMessage).toBeUndefined();
+        });
+
+        test('returns error result with 403 Forbidden', async () => {
+            const provider = createForAbap(config);
+            const catalog = provider.catalog(ODataVersion.v4);
+
+            nock(server)
+                .get(`${V4CatalogService.PATH}/$metadata`)
+                .reply(403, { error: { code: 'FORBIDDEN', message: 'Access denied' } });
+
+            const result = await catalog.listServicesWithStatus();
+
+            expect(result.success).toBe(false);
+            expect(result.version).toBe(ODataVersion.v4);
+            expect(result.services).toEqual([]);
+            expect(result.errorCode).toBe(CatalogErrorCode.FORBIDDEN);
+            expect(result.errorMessage).toBeDefined();
+        });
+
+        test('returns error result with 401 Unauthorized', async () => {
+            const provider = createForAbap(config);
+            const catalog = provider.catalog(ODataVersion.v4);
+
+            nock(server)
+                .get(`${V4CatalogService.PATH}/$metadata`)
+                .reply(401, { error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+
+            const result = await catalog.listServicesWithStatus();
+
+            expect(result.success).toBe(false);
+            expect(result.version).toBe(ODataVersion.v4);
+            expect(result.services).toEqual([]);
+            expect(result.errorCode).toBe(CatalogErrorCode.UNAUTHORIZED);
+            expect(result.errorMessage).toBeDefined();
+        });
+
+        test('returns error result with 404 Not Found', async () => {
+            const provider = createForAbap(config);
+            const catalog = provider.catalog(ODataVersion.v4);
+
+            nock(server)
+                .get(`${V4CatalogService.PATH}/$metadata`)
+                .reply(404, { error: { code: 'NOT_FOUND', message: 'Catalog not found' } });
+
+            const result = await catalog.listServicesWithStatus();
+
+            expect(result.success).toBe(false);
+            expect(result.version).toBe(ODataVersion.v4);
+            expect(result.services).toEqual([]);
+            expect(result.errorCode).toBe(CatalogErrorCode.NOT_FOUND);
+            expect(result.errorMessage).toBeDefined();
+        });
+    });
+
+    describe('getVersion', () => {
+        test('returns ODataVersion.v4', () => {
+            const provider = createForAbap(config);
+            const catalog = provider.catalog(ODataVersion.v4);
+            expect(catalog.getVersion()).toBe(ODataVersion.v4);
         });
     });
 });
