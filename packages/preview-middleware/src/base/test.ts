@@ -30,6 +30,9 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
  * @returns merged test configuration
  */
 export function mergeTestConfigDefaults(config: TestConfig): CompleteTestConfig {
+    //todo: Adjust to support ui5 type 'component'
+    // * type 'application' serves test sources at '/test/*'
+    // * type 'component' serves test sources at '/test-resources/the/app/id/*'
     const defaults = DEFAULTS[config.framework.toLowerCase()] ?? {};
     const merged: CompleteTestConfig = { ...defaults, ...config };
     if (!merged.path.startsWith('/')) {
