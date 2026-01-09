@@ -1,5 +1,6 @@
 import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
-import {
+import type {
+    V2CatalogService,
     type Annotations,
     type AxiosRequestConfig,
     type CatalogService,
@@ -9,8 +10,7 @@ import {
     type ODataService,
     type ODataServiceInfo,
     ODataVersion,
-    ServiceType,
-    V2CatalogService
+    ServiceType
 } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';

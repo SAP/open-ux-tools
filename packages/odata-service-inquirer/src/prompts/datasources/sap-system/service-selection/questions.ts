@@ -16,7 +16,7 @@ import {
     withCondition,
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';

@@ -126,9 +126,7 @@ export abstract class CatalogService extends ODataService {
                 services
             };
         } catch (error) {
-            const errorCode = isAxiosError(error)
-                ? (error.response?.status as CatalogErrorCode)
-                : undefined;
+            const errorCode = isAxiosError(error) ? (error.response?.status as CatalogErrorCode) : undefined;
             const errorMessage = error instanceof Error ? error.message : String(error);
             return {
                 version: this.getVersion(),
