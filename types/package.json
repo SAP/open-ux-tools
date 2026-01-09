@@ -16,7 +16,7 @@
         "lint:fix": "eslint --fix"
     },
     "devDependencies": {
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs-editor": "7.0.7",
         "@types/vinyl": "2.0.7"
     }
 }

@@ -43,13 +43,13 @@
     "devDependencies": {
         "@jest/types": "30.0.0",
         "@sap-ux/jest-file-matchers": "workspace:*",
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs-editor": "7.0.7",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.11",
         "@types/yeoman-test": "4.0.6",
         "@vscode-logging/logger": "2.0.0",
         "jest-extended": "6.0.0",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs-editor": "9.7.0",
         "rimraf": "6.0.1",
         "yeoman-test": "6.3.0"
     },
