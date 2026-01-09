@@ -6,28 +6,24 @@ import {
     UIContextualMenu
 } from '../../../src/components/UIContextualMenu';
 import { UiIcons, initIcons } from '../../../src/components/Icons';
+import { findStyleFromStyleSheets } from '../../utils/styles';
 
 describe('<UIContextualMenu />', () => {
-    let container: HTMLElement;
     let rerender: (ui: React.ReactElement) => void;
+    const items = [
+        {
+            key: 'item1',
+            text: 'menu item 1'
+        },
+        {
+            key: 'item2',
+            text: 'menu item 2'
+        }
+    ];
     initIcons();
 
     beforeEach(() => {
-        const result = render(
-            <UIContextualMenu
-                items={[
-                    {
-                        key: 'item1',
-                        text: 'menu item 1'
-                    },
-                    {
-                        key: 'item2',
-                        text: 'menu item 2'
-                    }
-                ]}
-            />
-        );
-        container = result.container;
+        const result = render(<UIContextualMenu items={items} />);
         rerender = result.rerender;
     });
 
@@ -45,21 +41,7 @@ describe('<UIContextualMenu />', () => {
         const contextualMenu = document.body.querySelector('.ts-ContextualMenu');
         expect(contextualMenu).toHaveClass('ts-ContextualMenu ts-ContextualMenu--dropdown');
 
-        rerender(
-            <UIContextualMenu
-                items={[
-                    {
-                        key: 'item1',
-                        text: 'menu item 1'
-                    },
-                    {
-                        key: 'item2',
-                        text: 'menu item 2'
-                    }
-                ]}
-                className="dummy"
-            />
-        );
+        rerender(<UIContextualMenu items={items} className="dummy" />);
 
         const contextualMenuWithClass = document.body.querySelector('.ts-ContextualMenu');
         expect(contextualMenuWithClass).toHaveClass('ts-ContextualMenu ts-ContextualMenu--dropdown dummy');
@@ -67,23 +49,12 @@ describe('<UIContextualMenu />', () => {
 
     for (const testMaxWidth of [350, undefined]) {
         it('Styles', () => {
-            rerender(
-                <UIContextualMenu
-                    items={[
-                        {
-                            key: 'item1',
-                            text: 'menu item 1'
-                        },
-                        {
-                            key: 'item2',
-                            text: 'menu item 2'
-                        }
-                    ]}
-                    maxWidth={testMaxWidth}
-                />
+            rerender(<UIContextualMenu items={items} maxWidth={testMaxWidth} />);
+            const container = document.querySelector('.ms-Callout');
+            expect(container).toBeInTheDocument();
+            expect(findStyleFromStyleSheets('max-width', container)).toEqual(
+                testMaxWidth ? `${testMaxWidth}px` : testMaxWidth
             );
-            // Use document.body for portal-rendered menu
-            expect(document.body.querySelector('.ts-ContextualMenu')).toBeInTheDocument();
         });
     }
 
@@ -113,7 +84,8 @@ describe('<UIContextualMenu />', () => {
         );
 
         // Check if submenu icon is rendered
-        const containerElements = container.querySelectorAll('.ms-ContextualMenu-linkContent');
+        const containerElements = document.querySelectorAll('.ms-ContextualMenu-linkContent');
+        expect(containerElements.length).toEqual(2);
         containerElements.forEach((containerElement, index) => {
             const textElement = containerElement.querySelector('.ms-ContextualMenu-itemText');
             if (index === 0) {
@@ -148,11 +120,10 @@ describe('<UIContextualMenu />', () => {
         const containerElement = document.body.querySelector('.ms-ContextualMenu-linkContent');
         const textElement = document.body.querySelector('.ms-ContextualMenu-itemText');
         const iconElement = document.body.querySelector('i.ms-ContextualMenu-icon');
-
-        if (containerElement && textElement && iconElement) {
-            expect(containerElement.childNodes[0]).toBe(textElement);
-            expect(containerElement.childNodes[1]).toBe(iconElement);
-        }
+        expect(textElement).toBeInTheDocument();
+        expect(iconElement).toBeInTheDocument();
+        expect(containerElement.childNodes[0]).toBe(textElement);
+        expect(containerElement.childNodes[1]).toBe(iconElement);
     });
 
     it('Test mexture menu - item with icon and item without icon', () => {
@@ -183,14 +154,39 @@ describe('<UIContextualMenu />', () => {
 
     it('getUIContextualMenuItemStyles - validates style properties exist', () => {
         const styles = getUIContextualMenuItemStyles();
-        expect(styles).toHaveProperty('checkmarkIcon');
-        expect(styles).toHaveProperty('icon');
-        expect(styles).toHaveProperty('label');
-        expect(styles).toHaveProperty('linkContent');
-        expect(styles).toHaveProperty('root');
-        expect(styles).toHaveProperty('subMenuIcon');
-        expect(styles.checkmarkIcon).toHaveProperty('color');
-        expect(styles.linkContent).toHaveProperty('fontSize');
+        expect(styles).toEqual({
+            'checkmarkIcon': {
+                'color': 'var(--vscode-foreground)',
+                'fontSize': 16,
+                'lineHeight': 18,
+                'margin': 0,
+                'maxHeight': 18
+            },
+            'icon': {
+                'marginLeft': 0,
+                'marginRight': 6
+            },
+            'label': {
+                'height': 18,
+                'lineHeight': 18,
+                'paddingLeft': undefined
+            },
+            'linkContent': {
+                'fontSize': 13,
+                'height': 'auto'
+            },
+            'root': {
+                'padding': undefined,
+                'paddingRight': undefined
+            },
+            'subMenuIcon': {
+                'height': 16,
+                'lineHeight': 0,
+                'transform': 'rotate(-90deg)',
+                'transformOrigin': '50% 50%',
+                'width': 16
+            }
+        });
     });
 
     describe('<getUIcontextualMenuCalloutStyles />', () => {
