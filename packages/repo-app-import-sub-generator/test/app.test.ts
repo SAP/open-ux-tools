@@ -83,6 +83,13 @@ jest.mock('@sap-ux/ui5-info', () => ({
     getUI5Versions: jest.fn()
 }));
 
+jest.mock('@sap-ux/project-access', () => ({
+    ...(jest.requireActual('@sap-ux/project-access') as any),
+    createApplicationAccess: jest.fn().mockResolvedValue({
+        getSpecification: jest.fn()
+    })
+}));
+
 function createAppConfig(appId: string, metadata: string): FioriElementsApp<LROPSettings> {
     return {
         app: {

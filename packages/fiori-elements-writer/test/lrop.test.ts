@@ -1,3 +1,5 @@
+jest.mock('@sap-ux/project-access');
+
 import type { FioriElementsApp, LROPSettings } from '../src';
 import { generate, TableType, TemplateType } from '../src';
 import { join } from 'node:path';

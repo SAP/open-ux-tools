@@ -58,3 +58,4 @@ export {
     refreshSpecificationDistTags
 } from './specification';
 export { readFlexChanges } from './flex-changes';
+export { getListReportPage, getObjectPages, getFilterFields, getTableColumns, AggregationItem } from './model';
