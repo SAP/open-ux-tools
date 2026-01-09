@@ -1,0 +1,168 @@
+{
+    "_version": "1.8.0",
+    "sap.app": {
+        "id": "soa.salesorderanalysis",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "tags": {
+            "keywords": []
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/here/goes/your/serviceurl/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [
+                        "annotation"
+                    ],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "2.0"
+                }
+            },
+            "annotation": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation.xml",
+                "settings": {
+                    "localUri": "annotations/annotation.xml"
+                }
+            }
+        },
+        "offline": false,
+        "sourceTemplate": {
+            "id": "ui5template.smartTemplate",
+            "version": "1.40.12"
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        },
+        "supportedThemes": [
+            "sap_hcb",
+            "sap_belize"
+        ]
+    },
+    "sap.ui5": {
+        "resources": {
+            "js": [],
+            "css": []
+        },
+        "dependencies": {
+            "minUI5Version": "1.65.0",
+            "libs": {
+                "sap.ui.core": {
+                    "lazy": false
+                },
+                "sap.ui.generic.app": {
+                    "lazy": false
+                },
+                "sap.suite.ui.generic.template": {
+                    "lazy": false
+                }
+            },
+            "components": {}
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties",
+                "preload": false
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            },
+            "i18n|sap.suite.ui.generic.template.ListReport|Z_SEPMRA_SO_SALESORDERANALYSIS": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/ListReport/Z_SEPMRA_SO_SALESORDERANALYSIS/i18n.properties"
+            },
+            "i18n|sap.suite.ui.generic.template.ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/ObjectPage/Z_SEPMRA_SO_SALESORDERANALYSIS/i18n.properties"
+            },
+            
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Inline",
+                    "refreshAfterChange": false,
+                    "metadataUrlParams": {
+                        "sap-value-list": "none"
+                    }
+                }
+            }
+        },
+        "extends": {
+            "extensions": {}
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        }
+    },
+    "sap.ui.generic.app": {
+        "_version": "1.3.0",
+        "settings": {
+            "forceGlobalRefresh": false,
+            "objectPageHeaderType": "Dynamic",
+            "showDraftToggle": false
+        },
+        "pages": {
+            "AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS": {
+                "entitySet": "Z_SEPMRA_SO_SALESORDERANALYSIS",
+                "component": {
+                    "name": "sap.suite.ui.generic.template.AnalyticalListPage",
+                    "list": true,
+                    "settings": {
+                        "condensedTableLayout": true,
+                        "showGoButtonOnFilterBar": true,
+                        "tableType": "",
+                        "multiSelect": false,
+                        "qualifier": "",
+                        "autoHide": true,
+                        "smartVariantManagement": false,
+                        "keyPerformanceIndicators": {}
+                    }
+                },
+                "pages": {
+                    "ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS": {
+                        "entitySet": "Z_SEPMRA_SO_SALESORDERANALYSIS",
+                        "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+                        "component": {
+                            "name": "sap.suite.ui.generic.template.ObjectPage"
+                        }
+                        
+                    }
+                }
+            }
+        }
+    },
+    "sap.platform.abap": {
+        "uri": ""
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    },
+    "sap.platform.hcp": {
+        "uri": ""
+    }
+}

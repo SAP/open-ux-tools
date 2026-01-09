@@ -21,7 +21,7 @@ import type { Rule } from 'eslint';
  * @param string The value to check
  * @returns True if the value is a string
  */
-function isString(string): boolean {
+function isString(string: unknown): string is string {
     return typeof string === 'string';
 }
 
@@ -32,7 +32,7 @@ function isString(string): boolean {
  * @param substring The substring to search for
  * @returns True if the string contains the substring
  */
-function contains(string, substring): boolean {
+function contains(string: string, substring: string): boolean {
     return string.includes(substring);
 }
 

@@ -1,0 +1,38 @@
+{
+	"name": "salesorderanalysis",
+	"version": "0.0.1",
+	"private": true,
+	"sapux": true,
+	"description": "A Fiori application.",
+	"keywords": [
+		"ui5",
+		"openui5",
+		"sapui5"
+	],
+	"main": "webapp/index.html",
+	"scripts": {
+		"start": " echo \"\\033[33mThis application was generated with a local metadata file and does not reference a live server. Please start this application with mock data using the target: npm run start-mock\"",
+		"start-mock": "fiori run --open test/flpSandboxMockServer.html#masterDetail-display",
+		"start-local": "",
+		"build": "rimraf dist && ui5 build -a --include-task=generateManifestBundle generateCachebusterInfo",
+		"deploy": "fiori add deploy-config"
+	},
+	"remarkConfig": {
+		"plugins": [
+			"remark-preset-lint-consistent"
+		]
+	},
+	"devDependencies": {
+		"rimraf": "3.0.0",
+		"@ui5/cli": "2.3.2",
+		"@ui5/fs": "2.0.1",
+		"@ui5/logger": "2.0.0",
+		"@sap/ux-specification": "",
+		"@sap/ux-ui5-tooling": "1"
+	},
+	"ui5": {
+		"dependencies": [
+			"@sap/ux-ui5-tooling"
+		]
+	}
+}

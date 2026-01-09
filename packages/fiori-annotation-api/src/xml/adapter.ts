@@ -151,6 +151,19 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }
 
     /**
+     * Get annotation documents.
+     *
+     * @returns Annotation documents.
+     */
+    public getDocuments(): Record<string, AnnotationFile> {
+        const annotationFiles: Record<string, AnnotationFile> = {};
+        for (const [uri, document] of this.documents.entries()) {
+            annotationFiles[uri] = document.annotationFile;
+        }
+        return annotationFiles;
+    }
+
+    /**
      * Returns all relevant service files.
      *
      * @returns All relevant service files.

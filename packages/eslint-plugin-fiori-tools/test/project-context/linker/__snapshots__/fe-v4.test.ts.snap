@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`FE V4 Linker linkTableSettings application level createMode 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.fe",
+    "macros",
+    "table",
+    "defaultCreationMode",
+  ],
+  "valueInFile": undefined,
+  "values": Array [
+    "InlineCreationRows",
+    "NewPage",
+  ],
+}
+`;
+
+exports[`FE V4 Linker linkTableSettings page level - listReport page creationMode 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui5",
+    "routing",
+    "targets",
+    "IncidentsList",
+    "options",
+    "settings",
+    "controlConfiguration",
+    "@com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "creationMode",
+    "name",
+  ],
+  "valueInFile": "InlineCreationRows",
+  "values": Array [
+    "InlineCreationRows",
+    "NewPage",
+  ],
+}
+`;
+
+exports[`FE V4 Linker linkTableSettings section level - object page creationMode - wrong value 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui5",
+    "routing",
+    "targets",
+    "IncidentsObjectPage",
+    "options",
+    "settings",
+    "controlConfiguration",
+    "@com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "creationMode",
+    "name",
+  ],
+  "valueInFile": "abc",
+  "values": Array [],
+}
+`;
+
+exports[`FE V4 Linker linkTableSettings section level - object page creationMode 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui5",
+    "routing",
+    "targets",
+    "IncidentsObjectPage",
+    "options",
+    "settings",
+    "controlConfiguration",
+    "@com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "creationMode",
+    "name",
+  ],
+  "valueInFile": "InlineCreationRows",
+  "values": Array [],
+}
+`;
+
+exports[`FE V4 Linker linkTableSettings section level - object page creationMode with contextPath 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui5",
+    "routing",
+    "targets",
+    "IncidentsObjectPage",
+    "options",
+    "settings",
+    "controlConfiguration",
+    "@com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "creationMode",
+    "name",
+  ],
+  "values": Array [],
+}
+`;
+
+exports[`FE V4 Linker linkTableSettings section level - object page orphan-node 1`] = `Object {}`;
+
+exports[`FE V4 Linker linkTableSettings section level - object page orphan-table 1`] = `
+Object {
+  "creationMode": Object {
+    "configurationPath": Array [
+      "sap.ui5",
+      "routing",
+      "targets",
+      "IncidentsList",
+      "options",
+      "settings",
+      "controlConfiguration",
+      "@com.sap.vocabularies.UI.v1.LineItem",
+      "tableSettings",
+      "creationMode",
+      "name",
+    ],
+    "values": Array [],
+  },
+  "disableCopyToClipboard": Object {
+    "configurationPath": Array [
+      "sap.ui5",
+      "routing",
+      "targets",
+      "IncidentsList",
+      "options",
+      "settings",
+      "controlConfiguration",
+      "@com.sap.vocabularies.UI.v1.LineItem",
+      "tableSettings",
+      "disableCopyToClipboard",
+    ],
+    "values": Array [
+      true,
+      false,
+    ],
+  },
+  "tableType": Object {
+    "configurationPath": Array [
+      "sap.ui5",
+      "routing",
+      "targets",
+      "IncidentsList",
+      "options",
+      "settings",
+      "controlConfiguration",
+      "@com.sap.vocabularies.UI.v1.LineItem",
+      "tableSettings",
+      "type",
+    ],
+    "values": Array [
+      "ResponsiveTable",
+      "GridTable",
+      "AnalyticalTable",
+      "TreeTable",
+    ],
+  },
+  "widthIncludingColumnHeader": Object {
+    "configurationPath": Array [
+      "sap.ui5",
+      "routing",
+      "targets",
+      "IncidentsList",
+      "options",
+      "settings",
+      "controlConfiguration",
+      "@com.sap.vocabularies.UI.v1.LineItem",
+      "tableSettings",
+      "widthIncludingColumnHeader",
+    ],
+    "values": Array [
+      true,
+      false,
+    ],
+  },
+}
+`;
+
+exports[`FE V4 Linker linkTableSettings section level - object page tableType - wrong value 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui5",
+    "routing",
+    "targets",
+    "IncidentsObjectPage",
+    "options",
+    "settings",
+    "controlConfiguration",
+    "@com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "type",
+  ],
+  "values": Array [
+    "ResponsiveTable",
+    "GridTable",
+    "AnalyticalTable",
+    "TreeTable",
+  ],
+}
+`;
+
+exports[`FE V4 Linker linkTableSettings section level - object page tableType 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui5",
+    "routing",
+    "targets",
+    "IncidentsObjectPage",
+    "options",
+    "settings",
+    "controlConfiguration",
+    "@com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "type",
+  ],
+  "valueInFile": "ResponsiveTable",
+  "values": Array [
+    "ResponsiveTable",
+    "GridTable",
+    "AnalyticalTable",
+    "TreeTable",
+  ],
+}
+`;

@@ -53,7 +53,7 @@ function isMember(node: any): boolean {
  * @param obj The object to search for
  * @returns True if the array contains the object
  */
-function contains(a, obj): boolean {
+function contains(a: unknown[], obj: object): boolean {
     return a.includes(obj);
 }
 

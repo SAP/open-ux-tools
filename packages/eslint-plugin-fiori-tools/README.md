@@ -162,3 +162,11 @@ module.exports = [
 | [sap-ui5-legacy-jquerysap-usage](docs/rules/sap-ui5-legacy-jquerysap-usage.md) | Detect legacy jQuery.sap usage | ✅ |
 | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect usage of private properties and functions of UI5 elements | |
 | [sap-usage-basemastercontroller](docs/rules/sap-usage-basemastercontroller.md) | Detect usage of deprecated BaseMasterController | ✅ |
+
+</br>
+
+✅ Set in the `recommended-for-s4hana` configuration
+| Rule | Description | Recommended |
+|------|-------------|:-----------:|
+| [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the manifest file for applications using UI5 versions 1.56 or higher. | ✅ |
+| [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than 6 columns) include the `widthIncludingColumnHeader` property set to `true` for better column width calculation. | ✅ |
