@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { readUi5Yaml, FileName } from '@sap-ux/project-access';
+import type { UI5Config } from '@sap-ux/ui5-config';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { Cli } from '@sap/cf-tools';
@@ -129,6 +130,55 @@ async function fetchUi5AppInfo(basePath: string, logger: ToolsLogger, serviceKey
 }
 
 /**
+ * Remove existing middleware from ui5.yaml configuration.
+ *
+ * @param basePath - path to application root
+ * @param middlewareName - name of the middleware to remove
+ * @returns UI5 configuration object
+ */
+async function removeExistingMiddleware(basePath: string, middlewareName: string): Promise<UI5Config> {
+    const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
+
+    while (ui5Config.findCustomMiddleware(middlewareName)) {
+        ui5Config.removeCustomMiddleware(middlewareName);
+    }
+
+    return ui5Config;
+}
+
+/**
+ * Commit ui5.yaml changes to the file system.
+ *
+ * @param basePath - path to application root
+ * @param ui5Config - UI5 configuration object
+ * @param successMessage - success message to log
+ * @param logger - logger instance
+ */
+async function commitUi5YamlChanges(
+    basePath: string,
+    ui5Config: UI5Config,
+    successMessage: string,
+    logger: ToolsLogger
+): Promise<void> {
+    const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
+    const fs = create(createStorage());
+    fs.write(ui5YamlPath, ui5Config.toString());
+
+    await new Promise<void>((resolve, reject) => {
+        fs.commit([], (err: Error | null) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+
+    await traceChanges(fs);
+    logger.info(successMessage);
+}
+
+/**
  * Build the project using npm run build.
  *
  * @param basePath - path to application root
@@ -162,12 +212,7 @@ async function buildProject(basePath: string, logger: ToolsLogger): Promise<void
  */
 async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): Promise<void> {
     try {
-        const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
-        const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
-
-        while (ui5Config.findCustomMiddleware('fiori-tools-servestatic')) {
-            ui5Config.removeCustomMiddleware('fiori-tools-servestatic');
-        }
+        const ui5Config = await removeExistingMiddleware(basePath, 'fiori-tools-servestatic');
 
         const ui5AppInfoPath = join(basePath, 'ui5AppInfo.json');
         if (!existsSync(ui5AppInfoPath)) {
@@ -175,7 +220,7 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
             return;
         }
 
-        const ui5AppInfoData = JSON.parse(readFileSync(ui5AppInfoPath, 'utf-8'));
+        const ui5AppInfoData = JSON.parse(readFileSync(ui5AppInfoPath, 'utf-8')) as Record<string, unknown>;
         const ui5AppInfo = ui5AppInfoData[Object.keys(ui5AppInfoData)[0]] as CfUi5AppInfo;
 
         const reusableLibs =
@@ -213,19 +258,12 @@ async function addServeStaticMiddleware(basePath: string, logger: ToolsLogger): 
             }
         ]);
 
-        const fs = create(createStorage());
-        fs.write(ui5YamlPath, ui5Config.toString());
-        await new Promise<void>((resolve, reject) => {
-            fs.commit([], (err: Error | null) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-        await traceChanges(fs);
-        logger.info('Successfully added fiori-tools-servestatic to ui5.yaml');
+        await commitUi5YamlChanges(
+            basePath,
+            ui5Config,
+            'Successfully added fiori-tools-servestatic to ui5.yaml',
+            logger
+        );
     } catch (error) {
         logger.warn(`Could not add fiori-tools-servestatic configuration: ${(error as Error).message}`);
         throw error;
@@ -245,12 +283,7 @@ async function addBackendProxyMiddleware(
     serviceKeys: ServiceKeys[]
 ): Promise<void> {
     try {
-        const ui5YamlPath = join(basePath, FileName.Ui5Yaml);
-        const ui5Config = await readUi5Yaml(basePath, FileName.Ui5Yaml);
-
-        while (ui5Config.findCustomMiddleware('backend-proxy-middleware-cf')) {
-            ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
-        }
+        const ui5Config = await removeExistingMiddleware(basePath, 'backend-proxy-middleware-cf');
 
         const urlsWithPaths = getBackendUrlsWithPaths(serviceKeys, basePath);
 
@@ -269,19 +302,12 @@ async function addBackendProxyMiddleware(
             }
         ]);
 
-        const fs = create(createStorage());
-        fs.write(ui5YamlPath, ui5Config.toString());
-        await new Promise<void>((resolve, reject) => {
-            fs.commit([], (err: Error | null) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-        await traceChanges(fs);
-        logger.info('Successfully added backend-proxy-middleware-cf to ui5.yaml');
+        await commitUi5YamlChanges(
+            basePath,
+            ui5Config,
+            'Successfully added backend-proxy-middleware-cf to ui5.yaml',
+            logger
+        );
     } catch (error) {
         logger.warn(`Could not add backend-proxy-middleware-cf configuration: ${(error as Error).message}`);
     }
