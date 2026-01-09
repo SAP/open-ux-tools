@@ -1,23 +1,33 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
-import { DefaultButton } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
-import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDefaultButton';
 import { UiIcons } from '../../../src/components/Icons';
-import { compareStylesByElement } from '../../utils/styles';
+import { compareStylesByElement, findStyleFromStyleSheets } from '../../utils/styles';
 
 describe('<UIDefaultButton />', () => {
+    const selectors = {
+        button: '.ms-Button'
+    };
     it('Should render a UIDefaultButton component', () => {
         const { container } = render(<UIDefaultButton>Dummy</UIDefaultButton>);
-        expect(container.querySelector('.ms-Button')).toBeInTheDocument();
+        expect(container.querySelector(selectors.button)).toBeInTheDocument();
         expect(screen.getByText('Dummy')).toBeInTheDocument();
     });
 
     it('Styles - primary', () => {
         const { container } = render(<UIDefaultButton primary={true}>Dummy</UIDefaultButton>);
-        const button = container.querySelector('.ms-Button');
+        const button = container.querySelector(selectors.button);
         expect(button).toBeInTheDocument();
         expect(button).toHaveClass('ms-Button--primary');
+        // Validate basic color styles
+        compareStylesByElement(button, {
+            backgroundColor: 'var(--vscode-button-background)',
+            borderColor: 'var(--vscode-button-border, transparent)',
+            color: 'var(--vscode-button-foreground)'
+        });
+        expect(findStyleFromStyleSheets('backgroundColor', button, `:hover`)).toEqual(
+            'var(--vscode-button-hoverBackground)'
+        );
     });
 
     it('Styles - primary and checked', () => {
@@ -26,17 +36,35 @@ describe('<UIDefaultButton />', () => {
                 Dummy
             </UIDefaultButton>
         );
-        const button = container.querySelector('.ms-Button');
+        const button = container.querySelector(selectors.button);
         expect(button).toBeInTheDocument();
         expect(button).toHaveClass('ms-Button--primary');
         expect(button).toHaveClass('is-checked');
+        // Validate basic color styles
+        compareStylesByElement(button, {
+            backgroundColor: 'var(--vscode-button-background)',
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
+            color: 'var(--vscode-button-foreground)'
+        });
+        expect(findStyleFromStyleSheets('backgroundColor', button, `:hover`)).toEqual(
+            'var(--vscode-button-hoverBackground)'
+        );
     });
 
     it('Styles - secondary', () => {
         const { container } = render(<UIDefaultButton primary={false}>Dummy</UIDefaultButton>);
-        const button = container.querySelector('.ms-Button');
+        const button = container.querySelector(selectors.button);
         expect(button).toBeInTheDocument();
         expect(button).not.toHaveClass('ms-Button--primary');
+        // Validate basic color styles
+        compareStylesByElement(button, {
+            backgroundColor: 'var(--vscode-button-secondaryBackground)',
+            borderColor: 'var(--vscode-button-border, transparent)',
+            color: 'var(--vscode-button-secondaryForeground)'
+        });
+        expect(findStyleFromStyleSheets('backgroundColor', button, `:hover`)).toEqual(
+            'var(--vscode-button-secondaryHoverBackground)'
+        );
     });
 
     it('Styles - secondary and checked', () => {
@@ -45,22 +73,35 @@ describe('<UIDefaultButton />', () => {
                 Dummy
             </UIDefaultButton>
         );
-        const button = container.querySelector('.ms-Button');
+        const button = container.querySelector(selectors.button);
         expect(button).toBeInTheDocument();
         expect(button).not.toHaveClass('ms-Button--primary');
         expect(button).toHaveClass('is-checked');
+        // Validate basic color styles
+        compareStylesByElement(button, {
+            backgroundColor: 'var(--vscode-button-secondaryBackground)',
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
+            color: 'var(--vscode-button-secondaryForeground)'
+        });
+        expect(findStyleFromStyleSheets('backgroundColor', button, `:hover`)).toEqual(
+            'var(--vscode-button-secondaryHoverBackground)'
+        );
     });
 
     it('Styles - alert', () => {
         const { container } = render(<UIDefaultButton alert={true}>Dummy</UIDefaultButton>);
-        const button = container.querySelector('.ms-Button');
+        const button = container.querySelector(selectors.button);
         expect(button).toBeInTheDocument();
-        
+
         // Validate alert styles are applied
         compareStylesByElement(button, {
             backgroundColor: 'var(--vscode-errorForeground)',
-            borderColor: 'var(--vscode-button-border, transparent)'
-        } as Partial<CSSStyleDeclaration>);
+            borderColor: 'var(--vscode-button-border, transparent)',
+            color: 'var(--vscode-button-foreground)'
+        });
+        expect(findStyleFromStyleSheets('backgroundColor', button, `:hover`)).toEqual(
+            'var(--vscode-editorError-foreground)'
+        );
     });
 
     it('Styles - alert and checked', () => {
@@ -69,23 +110,39 @@ describe('<UIDefaultButton />', () => {
                 Dummy
             </UIDefaultButton>
         );
-        const button = container.querySelector('.ms-Button');
+        const button = container.querySelector(selectors.button);
         expect(button).toBeInTheDocument();
         expect(button).toHaveClass('is-checked');
-        
+
         // Validate alert and checked styles are both applied
         // When checked=true, checkedBorderColor is used instead of alert borderColor
         compareStylesByElement(button, {
             backgroundColor: 'var(--vscode-errorForeground)',
-            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))'
-        } as Partial<CSSStyleDeclaration>);
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
+            color: 'var(--vscode-button-foreground)'
+        });
+        expect(findStyleFromStyleSheets('backgroundColor', button, `:hover`)).toEqual(
+            'var(--vscode-editorError-foreground)'
+        );
     });
 
     it('Styles - transparent', () => {
         const { container } = render(<UIDefaultButton transparent={true}>Dummy</UIDefaultButton>);
-        const button = container.querySelector('.ms-Button');
+        const button = container.querySelector(selectors.button);
         expect(button).toBeInTheDocument();
         expect(screen.getByText('Dummy')).toBeInTheDocument();
+        // Validate basic color styles
+        expect({
+            backgroundColor: findStyleFromStyleSheets('backgroundColor', button),
+            borderColor: findStyleFromStyleSheets('borderColor', button),
+            color: findStyleFromStyleSheets('color', button),
+            backgroundColorHover: findStyleFromStyleSheets('backgroundColor', button, `:hover`)
+        }).toEqual({
+            backgroundColor: 'transparent',
+            backgroundColorHover: 'var(--vscode-toolbar-hoverBackground, var(--vscode-menubar-selectionBackground))',
+            borderColor: 'transparent',
+            color: 'var(--vscode-foreground)'
+        });
     });
 
     it('Styles - transparent and checked', () => {
@@ -94,10 +151,22 @@ describe('<UIDefaultButton />', () => {
                 Dummy
             </UIDefaultButton>
         );
-        const button = container.querySelector('.ms-Button');
+        const button = container.querySelector(selectors.button);
         expect(button).toBeInTheDocument();
         expect(button).toHaveClass('is-checked');
         expect(screen.getByText('Dummy')).toBeInTheDocument();
+        // Validate basic color styles
+        expect({
+            backgroundColor: findStyleFromStyleSheets('backgroundColor', button),
+            borderColor: findStyleFromStyleSheets('borderColor', button),
+            color: findStyleFromStyleSheets('color', button),
+            backgroundColorHover: findStyleFromStyleSheets('backgroundColor', button, `:hover`)
+        }).toEqual({
+            backgroundColor: 'var(--vscode-button-background)',
+            backgroundColorHover: 'var(--vscode-button-background)',
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
+            color: 'var(--vscode-button-foreground)'
+        });
     });
 
     describe('Menu', () => {

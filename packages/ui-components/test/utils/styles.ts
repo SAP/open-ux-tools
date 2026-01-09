@@ -19,7 +19,7 @@ export const findStyleFromStyleSheets = (styleProperty: string, element?: Elemen
                 const rule = sheet.cssRules[j];
                 if (
                     rule instanceof CSSStyleRule &&
-                    rule.selectorText?.includes(className) &&
+                    rule.selectorText?.endsWith(className) &&
                     styleProperty in rule.style
                 ) {
                     return rule.style[styleProperty];
@@ -34,13 +34,15 @@ export const compareStyles = (
     expectedStyles: Partial<CSSStyleDeclaration>,
     element?: Element
 ): void => {
+    const resolvedStyles: Partial<CSSStyleDeclaration> = {};
     for (const name in expectedStyles) {
         if (typeof expectedStyles[name] === 'string' && expectedStyles[name].startsWith('var(')) {
-            expect(findStyleFromStyleSheets(name, element)).toEqual(expectedStyles[name]);
+            resolvedStyles[name] = findStyleFromStyleSheets(name, element);
         } else {
-            expect(styles[name]).toEqual(expectedStyles[name]);
+            resolvedStyles[name] = styles[name];
         }
     }
+    expect(resolvedStyles).toEqual(expectedStyles);
 };
 
 export const compareStylesByElement = (
