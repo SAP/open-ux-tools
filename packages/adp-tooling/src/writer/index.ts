@@ -69,7 +69,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     writeTemplateToFolder(templatePath, join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
-    await writeKeyUserChanges(basePath, fullConfig.keyUserChanges, fs);
+    await writeKeyUserChanges(basePath, fullConfig, fs);
 
     return fs;
 }

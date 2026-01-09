@@ -12,10 +12,11 @@ import {
     type InboundContent,
     type ManifestChangeProperties,
     type PropertyValueType,
-    ChangeTypeMap
+    ChangeTypeMap,
+    type AdpWriterConfig,
+    type ToolsSupport
 } from '../types';
 import { renderFile } from 'ejs';
-import type { KeyUserChangeContent } from '@sap-ux/axios-extension';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -78,17 +79,14 @@ export async function writeAnnotationChange(
 }
 
 /**
- * Writes key-user change payloads to the generated adaptation project.
+ * Writes key-user change payloads to the generated adaptation project. Transforms key-user changes from the backend format to the ADP format.
  *
  * @param projectPath - Project root path.
- * @param changes - Key-user changes retrieved from the backend.
+ * @param config - The writer configuration.
  * @param fs - Yeoman mem-fs editor.
  */
-export async function writeKeyUserChanges(
-    projectPath: string,
-    changes: KeyUserChangeContent[] | undefined,
-    fs: Editor
-): Promise<void> {
+export async function writeKeyUserChanges(projectPath: string, config: AdpWriterConfig, fs: Editor): Promise<void> {
+    const changes = config.keyUserChanges;
     if (!changes?.length) {
         return;
     }
@@ -107,8 +105,55 @@ export async function writeKeyUserChanges(
             continue;
         }
 
-        await writeChangeToFolder(projectPath, change as any, fs);
+        const transformedChange = transformKeyUserChangeForAdp(
+            change,
+            config.app.id,
+            config.customConfig?.adp?.support
+        );
+
+        await writeChangeToFolder(projectPath, transformedChange as unknown as ManifestChangeProperties, fs);
     }
+}
+
+/**
+ * Transforms a key-user change from backend format to ADP format.
+ *
+ * @param change - The key-user change from the backend.
+ * @param appId - The ID of the newly created Adaptation Project.
+ * @param support - The support information for the change.
+ * @returns {Record<string, unknown>} The transformed change object.
+ */
+export function transformKeyUserChangeForAdp(
+    change: Record<string, unknown>,
+    appId: string,
+    support: ToolsSupport | undefined
+): Record<string, unknown> {
+    const transformed = { ...change };
+
+    if (transformed.layer === 'CUSTOMER') {
+        transformed.layer = 'CUSTOMER_BASE';
+    }
+
+    transformed.reference = appId;
+
+    transformed.namespace = path.posix.join('apps', appId, DirName.Changes, '/');
+
+    if (transformed.projectId) {
+        transformed.projectId = appId;
+    }
+
+    delete transformed.adaptationId;
+    delete transformed.version;
+    delete transformed.context;
+    delete transformed.versionId;
+
+    transformed.support ??= {};
+    const supportObject = transformed.support as Record<string, unknown>;
+    if (support?.id) {
+        supportObject.generator = `${support.id} (converted from key user changes)`;
+    }
+
+    return transformed;
 }
 
 /**
