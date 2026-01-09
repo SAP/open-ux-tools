@@ -34,7 +34,7 @@ export class ApplicationParser {
      * @param projectType
      * @param fileCache
      */
-    private reset(projectType: ProjectType, fileCache: Map<string, string>) {
+    private reset(projectType: ProjectType, fileCache: Map<string, string>): void {
         this.index = { projectType, apps: {}, documents: {} };
         this.diagnostics = [];
         this.context = { projectType, fileCache };
@@ -95,6 +95,105 @@ export class ApplicationParser {
 
     /**
      *
+     * @param index
+     * @param fileCache
+     */
+    private reparseCDS(index: ParsedProject, fileCache: Map<string, string>): void {
+        // there is assumption that only one eslint config exists in CAP project and its run for the whole project
+        const projectRoot = index.apps[Object.keys(index.apps)[0]]?.projectRootPath;
+        if (projectRoot) {
+            CdsAnnotationProvider.resetCache(projectRoot, fileCache);
+        }
+        for (const app of Object.values(index.apps)) {
+            for (const service of Object.values(app.services)) {
+                if (service.config.type === 'cap') {
+                    const artifacts = this.parseService(app.projectRootPath, service.config);
+                    if (artifacts) {
+                        const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                        service.artifacts = artifacts;
+                        service.index = serviceIndex;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param uri
+     * @param index
+     * @param fileCache
+     */
+    private reparseJSON(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
+        for (const [key, previousApp] of Object.entries(index.apps)) {
+            if (previousApp.manifest.manifestUri === uri) {
+                const manifestContent = fileCache.get(uri) ?? '';
+                const manifestAst = parseJson(manifestContent, {
+                    mode: 'json',
+                    ranges: true,
+                    tokens: true,
+                    allowTrailingCommas: false
+                });
+                index.documents[uri] = manifestAst;
+                const manifest = JSON.parse(manifestContent) as Manifest;
+                const webappPath = dirname(fileURLToPath(uri));
+                const [parsedManifest, services] = this.parseManifest(webappPath, uri, manifest);
+                index.documents[uri] = manifestAst;
+
+                const parsedApp: ParsedApp = {
+                    manifest: parsedManifest,
+                    manifestObject: manifest,
+                    projectRootPath: previousApp.projectRootPath,
+                    services: {}
+                };
+
+                const previouslyFoundServices = Object.values(previousApp.services).map((service) => service.config);
+                if (JSON.stringify(previouslyFoundServices) === JSON.stringify(services)) {
+                    // keep existing services
+                    parsedApp.services = previousApp.services;
+                } else {
+                    // services have changed, reset existing services
+                    parsedApp.services = {};
+                    for (const service of services) {
+                        const artifacts = this.parseService(parsedApp.projectRootPath, service);
+                        if (artifacts) {
+                            const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                            parsedApp.services[service.name] = { config: service, artifacts, index: serviceIndex };
+                        }
+                    }
+                }
+                index.apps[key] = parsedApp;
+                break;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param uri
+     * @param index
+     */
+    private reparseXML(uri: string, index: ParsedProject): void {
+        for (const app of Object.values(index.apps)) {
+            for (const service of Object.values(app.services)) {
+                if (service.config.type === 'local') {
+                    const annotationFile = service.config.annotationFiles.find((file) => file.uri === uri);
+                    if (annotationFile) {
+                        const artifacts = this.parseService(app.projectRootPath, service.config);
+                        if (artifacts) {
+                            const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                            service.artifacts = artifacts;
+                            service.index = serviceIndex;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     *
      * @param uri
      * @param index
      * @param fileCache
@@ -102,85 +201,11 @@ export class ApplicationParser {
     public reparse(uri: string, index: ParsedProject, fileCache: Map<string, string>): ParseResult {
         this.reset(index.projectType, fileCache);
         if (uri.endsWith('.cds')) {
-            // there is assumption that only one eslint config exists in CAP project and its run for the whole project
-            const projectRoot = index.apps[Object.keys(index.apps)[0]]?.projectRootPath;
-            if (projectRoot) {
-                CdsAnnotationProvider.resetCache(projectRoot, fileCache);
-            }
-            for (const app of Object.values(index.apps)) {
-                for (const service of Object.values(app.services)) {
-                    if (service.config.type === 'cap') {
-                        const artifacts = this.parseService(app.projectRootPath, service.config);
-                        if (artifacts) {
-                            const serviceIndex = buildServiceIndex(artifacts, index.documents);
-                            service.artifacts = artifacts;
-                            service.index = serviceIndex;
-                        }
-                    }
-                }
-            }
+            this.reparseCDS(index, fileCache);
         } else if (uri.endsWith('manifest.json')) {
-            for (const [key, previousApp] of Object.entries(index.apps)) {
-                if (previousApp.manifest.manifestUri === uri) {
-                    const manifestContent = fileCache.get(uri) ?? '';
-                    const manifestAst = parseJson(manifestContent, {
-                        mode: 'json',
-                        ranges: true,
-                        tokens: true,
-                        allowTrailingCommas: false
-                    });
-                    index.documents[uri] = manifestAst;
-                    const manifest = JSON.parse(manifestContent) as Manifest;
-                    const webappPath = dirname(fileURLToPath(uri));
-                    const [parsedManifest, services] = this.parseManifest(webappPath, uri, manifest);
-                    index.documents[uri] = manifestAst;
-
-                    const parsedApp: ParsedApp = {
-                        manifest: parsedManifest,
-                        manifestObject: manifest,
-                        projectRootPath: previousApp.projectRootPath,
-                        services: {}
-                    };
-
-                    const previouslyFoundServices = [...Object.values(previousApp.services)].map(
-                        (service) => service.config
-                    );
-                    if (JSON.stringify(previouslyFoundServices) !== JSON.stringify(services)) {
-                        // TODO: consider using more sophisticated algorithm like in XML Annotation LSP
-                        // services have changed, reset existing services
-                        parsedApp.services = {};
-                        for (const service of services) {
-                            const artifacts = this.parseService(parsedApp.projectRootPath, service);
-                            if (artifacts) {
-                                const serviceIndex = buildServiceIndex(artifacts, index.documents);
-                                parsedApp.services[service.name] = { config: service, artifacts, index: serviceIndex };
-                            }
-                        }
-                    } else {
-                        // keep existing services
-                        parsedApp.services = previousApp.services;
-                    }
-                    index.apps[key] = parsedApp;
-                    break;
-                }
-            }
+            this.reparseJSON(uri, index, fileCache);
         } else if (uri.endsWith('.xml')) {
-            for (const app of Object.values(index.apps)) {
-                for (const service of Object.values(app.services)) {
-                    if (service.config.type === 'local') {
-                        const annotationFile = service.config.annotationFiles.find((file) => file.uri === uri);
-                        if (annotationFile) {
-                            const artifacts = this.parseService(app.projectRootPath, service.config);
-                            if (artifacts) {
-                                const serviceIndex = buildServiceIndex(artifacts, index.documents);
-                                service.artifacts = artifacts;
-                                service.index = serviceIndex;
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
+            this.reparseXML(uri, index);
         }
         return { index: index, diagnostics: [] };
     }
