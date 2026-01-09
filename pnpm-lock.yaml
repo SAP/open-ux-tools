@@ -2387,11 +2387,11 @@ importers:
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@langchain/core':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.1.8
+        version: 1.1.8
       '@langchain/mcp-adapters':
         specifier: 1.0.2
-        version: 1.0.2(@langchain/core@1.1.1)(@langchain/langgraph@1.0.2)
+        version: 1.0.2(@langchain/core@1.1.8)(@langchain/langgraph@1.0.2)
       '@modelcontextprotocol/sdk':
         specifier: 1.24.1
         version: 1.24.1(zod@4.1.13)
@@ -2472,7 +2472,7 @@ importers:
         version: 4.0.1
       promptfoo:
         specifier: 0.119.14
-        version: 0.119.14(@langchain/core@1.1.1)(@types/node@18.19.130)(pg@8.16.3)
+        version: 0.119.14(@langchain/core@1.1.8)(@types/node@18.19.130)(pg@8.16.3)
       zod:
         specifier: 4.1.13
         version: 4.1.13
@@ -10627,7 +10627,7 @@ packages:
     dev: true
     optional: true
 
-  /@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@1.1.1):
+  /@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@1.1.8):
     resolution: {integrity: sha512-HvJSYql3lOPYZcGb23mBw0kcWLlCX+n7EDRgJQxz7gIzx9WafUuDyl1IlTCXGfxolm0EhNIub79u9v7owtks0w==}
     requiresBuild: true
     peerDependencies:
@@ -10637,7 +10637,7 @@ packages:
         optional: true
     dependencies:
       '@ai-zen/node-fetch-event-source': 2.1.4
-      '@langchain/core': 1.1.1
+      '@langchain/core': 1.1.8
       fetch-retry: 5.0.6
       http-status-codes: 2.3.0
       openapi-fetch: 0.8.2
@@ -11743,8 +11743,8 @@ packages:
       '@lancedb/lancedb-win32-arm64-msvc': 0.22.0
       '@lancedb/lancedb-win32-x64-msvc': 0.22.0
 
-  /@langchain/core@1.1.1:
-    resolution: {integrity: sha512-vdUoj2CVbb+0Qszi8llP34vdUCfP7bfA9VoFr4Se1pFGu7VAPnk8lBnRat9IvqSxMfTvOHJSd7Rn6TUPjzKsnA==}
+  /@langchain/core@1.1.8:
+    resolution: {integrity: sha512-kIUidOgc0ZdyXo4Ahn9Zas+OayqOfk4ZoKPi7XaDipNSWSApc2+QK5BVcjvwtzxstsNOrmXJiJWEN6WPF/MvAw==}
     engines: {node: '>=20'}
     dependencies:
       '@cfworker/json-schema': 4.1.1
@@ -11752,10 +11752,9 @@ packages:
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.21
-      langsmith: 0.3.78
+      langsmith: 0.4.5
       mustache: 4.2.0
       p-queue: 6.6.2
-      p-retry: 7.1.0
       uuid: 10.0.0
       zod: 4.1.13
     transitivePeerDependencies:
@@ -11765,17 +11764,17 @@ packages:
       - openai
     dev: true
 
-  /@langchain/langgraph-checkpoint@1.0.0(@langchain/core@1.1.1):
+  /@langchain/langgraph-checkpoint@1.0.0(@langchain/core@1.1.8):
     resolution: {integrity: sha512-xrclBGvNCXDmi0Nz28t3vjpxSH6UYx6w5XAXSiiB1WEdc2xD2iY/a913I3x3a31XpInUW/GGfXXfePfaghV54A==}
     engines: {node: '>=18'}
     peerDependencies:
       '@langchain/core': ^1.0.1
     dependencies:
-      '@langchain/core': 1.1.1
+      '@langchain/core': 1.1.8
       uuid: 10.0.0
     dev: true
 
-  /@langchain/langgraph-sdk@1.0.3(@langchain/core@1.1.1)(react-dom@16.14.0)(react@16.14.0):
+  /@langchain/langgraph-sdk@1.0.3(@langchain/core@1.1.8)(react-dom@16.14.0)(react@16.14.0):
     resolution: {integrity: sha512-6M4i0XsVO5Eb2vv/3OtIPHW3UqO4zYyXl6AOfS0Jf6d7JiWiSXqzLN8UoS0hpu1ItkcW1j575CRiP/6jn6XXFg==}
     peerDependencies:
       '@langchain/core': ^1.0.1
@@ -11789,7 +11788,7 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      '@langchain/core': 1.1.1
+      '@langchain/core': 1.1.8
       p-queue: 6.6.2
       p-retry: 4.6.2
       react: 16.14.0
@@ -11797,7 +11796,7 @@ packages:
       uuid: 9.0.1
     dev: true
 
-  /@langchain/langgraph@1.0.2(@langchain/core@1.1.1)(react-dom@16.14.0)(react@16.14.0)(zod@4.1.13):
+  /@langchain/langgraph@1.0.2(@langchain/core@1.1.8)(react-dom@16.14.0)(react@16.14.0)(zod@4.1.13):
     resolution: {integrity: sha512-syxzzWTnmpCL+RhUEvalUeOXFoZy/KkzHa2Da2gKf18zsf9Dkbh3rfnRDrTyUGS1XSTejq07s4rg1qntdEDs2A==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -11808,9 +11807,9 @@ packages:
       zod-to-json-schema:
         optional: true
     dependencies:
-      '@langchain/core': 1.1.1
-      '@langchain/langgraph-checkpoint': 1.0.0(@langchain/core@1.1.1)
-      '@langchain/langgraph-sdk': 1.0.3(@langchain/core@1.1.1)(react-dom@16.14.0)(react@16.14.0)
+      '@langchain/core': 1.1.8
+      '@langchain/langgraph-checkpoint': 1.0.0(@langchain/core@1.1.8)
+      '@langchain/langgraph-sdk': 1.0.3(@langchain/core@1.1.8)(react-dom@16.14.0)(react@16.14.0)
       uuid: 10.0.0
       zod: 4.1.13
     transitivePeerDependencies:
@@ -11818,15 +11817,15 @@ packages:
       - react-dom
     dev: true
 
-  /@langchain/mcp-adapters@1.0.2(@langchain/core@1.1.1)(@langchain/langgraph@1.0.2):
+  /@langchain/mcp-adapters@1.0.2(@langchain/core@1.1.8)(@langchain/langgraph@1.0.2):
     resolution: {integrity: sha512-UPbutXCt57qmC8gvr9z8Du+wMap4V6OYOnxRlWHcKxuF3YmZdqF2Z/N2V7tC3QfwG8waYsnkRNJlKBtby2Qzag==}
     engines: {node: '>=20.10.0'}
     peerDependencies:
       '@langchain/core': ^1.0.0
       '@langchain/langgraph': ^1.0.0
     dependencies:
-      '@langchain/core': 1.1.1
-      '@langchain/langgraph': 1.0.2(@langchain/core@1.1.1)(react-dom@16.14.0)(react@16.14.0)(zod@4.1.13)
+      '@langchain/core': 1.1.8
+      '@langchain/langgraph': 1.0.2(@langchain/core@1.1.8)(react-dom@16.14.0)(react@16.14.0)(zod@4.1.13)
       '@modelcontextprotocol/sdk': 1.24.1(zod@4.1.13)
       debug: 4.4.3
       zod: 4.1.13
@@ -13307,7 +13306,7 @@ packages:
   /@sap-ai-sdk/langchain@2.3.0:
     resolution: {integrity: sha512-5aniGM14dYkemO0LZJ4pWnm6Ra0+S5N1e1tQ08fbTy3DQyfrBbtd9V8yKLqK/8bEB777kmcj0D5tPnwKjelpOw==}
     dependencies:
-      '@langchain/core': 1.1.1
+      '@langchain/core': 1.1.8
       '@sap-ai-sdk/ai-api': 2.3.0
       '@sap-ai-sdk/core': 2.3.0
       '@sap-ai-sdk/foundation-models': 2.3.0
@@ -23720,11 +23719,6 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /is-network-error@1.3.0:
-    resolution: {integrity: sha512-6oIwpsgRfnDiyEDLMay/GqCl3HoAtH5+RUKW29gYkL0QA+ipzpDLA16yQs7/RHCSu+BwgbJaOUqa4A99qNVQVw==}
-    engines: {node: '>=16'}
-    dev: true
-
   /is-npm@6.0.0:
     resolution: {integrity: sha512-JEjxbSmtPSt1c8XTkVrlujcXdKV1/tvuQ7GwKcAlyiVLeYFQ2VHat8xfrDJsIkhCdF/tZ7CiIR3sy141c6+gPQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -25191,8 +25185,8 @@ packages:
     dev: true
     optional: true
 
-  /langsmith@0.3.78:
-    resolution: {integrity: sha512-PVrog/DiTsiyOQ38GeZEIVadgk55/dfE3axagQksT3dt6KhFuRxhNaZrC0rp3dNW9RQJCm/c3tn+PiybwQNY0Q==}
+  /langsmith@0.4.5:
+    resolution: {integrity: sha512-9N4JSQLz6fWiZwVXaiy0erlvNHlC68EtGJZG2OX+1y9mqj7KvKSL+xJnbCFc+ky3JN8s1d6sCfyyDdi4uDdLnQ==}
     peerDependencies:
       '@opentelemetry/api': '*'
       '@opentelemetry/exporter-trace-otlp-proto': '*'
@@ -25212,7 +25206,6 @@ packages:
       chalk: 4.1.2
       console-table-printer: 2.15.0
       p-queue: 6.6.2
-      p-retry: 4.6.2
       semver: 7.7.1
       uuid: 10.0.0
     dev: true
@@ -27424,13 +27417,6 @@ packages:
       retry: 0.13.1
     dev: true
 
-  /p-retry@7.1.0:
-    resolution: {integrity: sha512-xL4PiFRQa/f9L9ZvR4/gUCRNus4N8YX80ku8kv9Jqz+ZokkiZLM0bcvX0gm1F3PDi9SPRsww1BDsTWgE6Y1GLQ==}
-    engines: {node: '>=20'}
-    dependencies:
-      is-network-error: 1.3.0
-    dev: true
-
   /p-timeout-compat@1.0.8:
     resolution: {integrity: sha512-+7LpKr1ilnWU0LbV2r+Wz4srwMcFTUysmgL824ZxJcZP3u4Hyi/D/39pbyEs4j0XXCHvbv069+LDPxlCijfVRQ==}
     engines: {node: '>=12'}
@@ -28391,7 +28377,7 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /promptfoo@0.119.14(@langchain/core@1.1.1)(@types/node@18.19.130)(pg@8.16.3):
+  /promptfoo@0.119.14(@langchain/core@1.1.8)(@types/node@18.19.130)(pg@8.16.3):
     resolution: {integrity: sha512-xqHbnixhY7Z+wpCp23IWzKvTrwEn2AuY8O/smQbxI8A20ybhozHn06S5vf0OSW+GZiJLMeWJN7rWSan1SJ4vpA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
@@ -28497,7 +28483,7 @@ packages:
       '@biomejs/cli-win32-x64': 2.3.7
       '@fal-ai/client': 1.7.2
       '@ibm-cloud/watsonx-ai': 1.7.4
-      '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@1.1.1)
+      '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@1.1.8)
       '@openai/codex-sdk': 0.63.0
       '@playwright/browser-chromium': 1.57.0
       '@rollup/rollup-linux-x64-gnu': 4.53.3
@@ -31801,6 +31787,7 @@ packages:
 
   /tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
+    requiresBuild: true
 
   /tr46@3.0.0:
     resolution: {integrity: sha512-l7FvfAHlcmulp8kr+flpQZmVwtu7nfRV7NZujtN0OqES8EL4O4e0qqzL0DC5gAvx/ZC/9lk6rhcUwYvkBnBnYA==}
@@ -32916,6 +32903,7 @@ packages:
 
   /webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
+    requiresBuild: true
 
   /webidl-conversions@7.0.0:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
