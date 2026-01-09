@@ -185,6 +185,9 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
  * @returns a full configuration with default values
  */
 export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpConfig {
+    //todo: Adjust to support ui5 type 'component'
+    // * type 'application' serves test sources at '/test/*'
+    // * type 'component' serves test sources at '/the/app/id/*'
     const flpConfig = {
         path: config.path ?? DEFAULT_PATH,
         intent: config.intent ?? DEFAULT_INTENT,
