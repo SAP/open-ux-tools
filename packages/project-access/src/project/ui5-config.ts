@@ -35,13 +35,42 @@ async function getBaseDir(appRoot: string, memFs?: Editor): Promise<string> {
  * @returns - path to webapp folder
  */
 export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<string> {
+    //Shortcut: if webapp/manifest.json exists, return webapp path w/o reading the YAML content
+    if (await fileExists(join(appRoot, DirName.Webapp, FileName.Manifest), memFs)) {
+        return join(appRoot, DirName.Webapp);
+    }
     let pathMappings: PathMappings = {};
     try {
         pathMappings = await getPathMappings(appRoot, memFs);
     } catch {
         // For backward compatibility ignore errors and use default
     }
-    return pathMappings?.webapp ?? join(appRoot, DirName.Webapp);
+    return pathMappings?.webapp ?? pathMappings?.src ?? join(appRoot, DirName.Webapp);
+}
+
+/**
+ * Get path to test.
+ *
+ * @param appRoot - root to the application
+ * @param [memFs] - optional mem-fs editor instance
+ * @returns - path to test folder
+ * @throws {Error} if ui5.yaml or 'type' cannot be read
+ * @throws {Error} if project type is not 'application', 'library', 'theme-library' or 'module'
+ */
+export async function getWebappTestPath(appRoot: string, memFs?: Editor): Promise<string> {
+    //Shortcut: if webapp/manifest.json exists, return webapp/test path w/o reading the YAML content
+    if (await fileExists(join(appRoot, DirName.Webapp, FileName.Manifest), memFs)) {
+        return join(appRoot, DirName.Webapp, 'test');
+    }
+    let pathMappings: PathMappings = {};
+    try {
+        pathMappings = await getPathMappings(appRoot, memFs);
+    } catch {
+        // For backward compatibility ignore errors and use default
+    }
+    return pathMappings?.webapp
+        ? join(pathMappings?.webapp, 'test')
+        : (pathMappings?.test ?? join(appRoot, DirName.Webapp, 'test'));
 }
 
 /**
@@ -49,7 +78,7 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
  *
  * @param appRoot - root to the application
  * @param memFs - optional mem-fs editor instance
- * @param fileName - optional name of yaml file to be read. Defaults to 'ui5.yaml'.
+ * @param fileName - optional name of the yaml file to be read. Defaults to 'ui5.yaml'.
  * @returns - path mappings
  * @throws {Error} if ui5.yaml or 'type' cannot be read
  * @throws {Error} if project type is not 'application', 'library', 'theme-library' or 'module'
