@@ -1,5 +1,113 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.31
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/annotation-generator@0.4.3
+    - @sap-ux/odata-service-writer@0.29.3
+    - @sap-ux/fe-fpm-writer@0.40.3
+    - @sap-ux/fiori-generator-shared@0.13.48
+
+## 2.8.30
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/ui5-application-writer@1.7.0
+    - @sap-ux/cap-config-writer@0.12.39
+    - @sap-ux/ui5-test-writer@0.7.49
+
+## 2.8.29
+
+### Patch Changes
+
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/cap-config-writer@0.12.38
+
+## 2.8.28
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+- Updated dependencies [d24f36d]
+    - @sap-ux/ui5-application-writer@1.6.8
+    - @sap-ux/ui5-test-writer@0.7.48
+
+## 2.8.27
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+- Updated dependencies [dad2bd7]
+    - @sap-ux/ui5-application-writer@1.6.7
+    - @sap-ux/ui5-test-writer@0.7.47
+
+## 2.8.26
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/cap-config-writer@0.12.37
+    - @sap-ux/fe-fpm-writer@0.40.2
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/ui5-test-writer@0.7.46
+    - @sap-ux/annotation-generator@0.4.2
+    - @sap-ux/odata-service-writer@0.29.2
+    - @sap-ux/ui5-application-writer@1.6.6
+    - @sap-ux/ui5-config@0.29.12
+
+## 2.8.25
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-application-writer@1.6.6
+    - @sap-ux/annotation-generator@0.4.1
+    - @sap-ux/odata-service-writer@0.29.1
+    - @sap-ux/ui5-test-writer@0.7.45
+    - @sap-ux/fe-fpm-writer@0.40.1
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/cap-config-writer@0.12.36
+
+## 2.8.24
+
+### Patch Changes
+
+- Updated dependencies [691ab27]
+    - @sap-ux/odata-service-writer@0.29.0
+
+## 2.8.23
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/annotation-generator@0.4.0
+    - @sap-ux/odata-service-writer@0.28.0
+    - @sap-ux/fe-fpm-writer@0.40.0
+    - @sap-ux/fiori-generator-shared@0.13.44
+
+## 2.8.22
+
+### Patch Changes
+
+- Updated dependencies [63c0f52]
+    - @sap-ux/ui5-application-writer@1.6.5
+    - @sap-ux/ui5-test-writer@0.7.44
+
+## 2.8.21
+
+### Patch Changes
+
+- 7db4f79: Append the enableLazyLoading attribute for all newly generated FE V4 apps
+
 ## 2.8.20
 
 ### Patch Changes

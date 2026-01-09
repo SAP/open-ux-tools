@@ -1,3 +1,4 @@
+import type { JSONSchema7 } from 'json-schema';
 import type {
     v4,
     ExportParametersV4Type,
@@ -18,7 +19,7 @@ import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import { getSpecificationModuleFromCache, readFlexChanges } from '@sap-ux/project-access';
 import { getFlexChangeLayer, getManifest, getUI5Version } from './project';
-import { logger } from '../utils/logger';
+import { logger, specificationLogger } from '../utils/logger';
 import { mergeChanges, writeFlexChanges } from './flex';
 
 export interface PageData {
@@ -89,7 +90,8 @@ export class SapuxFtfsFileIO {
         const specification = await this.getSpecification();
         return specification.readApp({
             app: this.appAccess,
-            skipParsing
+            skipParsing,
+            logger: specificationLogger
         });
     }
 
@@ -173,20 +175,22 @@ export class SapuxFtfsFileIO {
     public async writePage(pageData: PageData): Promise<ExportResults | undefined> {
         const manifest = await getManifest(this.appAccess);
         if (!manifest) {
-            return;
+            return undefined;
         }
         const specification = await this.getSpecification();
         const schemaType = pageData.pageType === PageTypeV4.ObjectPage ? SchemaType.ObjectPage : SchemaType.ListReport;
         const exportParams = {
             [schemaType]: {
                 appId: this.getAppId(manifest),
-                jsonSchema: JSON.parse(pageData.schema),
+                jsonSchema: JSON.parse(pageData.schema) as JSONSchema7,
                 manifest,
                 page: {
                     ...pageData.page,
                     name: pageData.pageId,
-                    config: pageData.config
-                } as v4.PageV4
+                    config: pageData.config,
+                    logger: specificationLogger
+                } as v4.PageV4,
+                logger: specificationLogger
             }
         };
         const exportConfig = await this.getExportConfigParameters(manifest, exportParams);
@@ -216,14 +220,15 @@ export class SapuxFtfsFileIO {
         const { config, schema } = appData;
         const manifest = await getManifest(this.appAccess);
         if (!manifest) {
-            return;
+            return undefined;
         }
         const specification = await this.getSpecification();
         const exportParams: ExportParametersV4Type = {
             [SchemaType.Application]: {
                 application: config as v4.ApplicationV4,
                 manifest,
-                jsonSchema: JSON.parse(schema)
+                jsonSchema: JSON.parse(schema) as JSONSchema7,
+                logger: specificationLogger
             }
         };
         const exportConfig = await this.getExportConfigParameters(manifest, exportParams);

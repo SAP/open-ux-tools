@@ -1,7 +1,7 @@
 import { CommandRunner } from '../../../src/utils/command-runner';
 import { initI18nFioriAppSubGenerator } from '../../../src/utils/i18n';
 import { platform } from 'node:os';
-import childProcess from 'child_process';
+import childProcess from 'node:child_process';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockSpawn = require('mock-spawn');
 

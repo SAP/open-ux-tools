@@ -20,9 +20,9 @@ export function mergeWithDefaults(ui5App: Ui5App): {
     validate(ui5App);
     ui5App.app = mergeApp(ui5App.app);
     ui5App.appOptions = ui5App.appOptions || {};
-    // if typescript and codeAssist is enabled disable codeAssist
-    if (ui5App.appOptions.typescript && ui5App.appOptions.codeAssist) {
-        ui5App.appOptions.codeAssist = false;
+    // if typescript is enabled then enable eslint too
+    if (ui5App.appOptions.typescript) {
+        ui5App.appOptions.eslint = true;
     }
     ui5App.ui5 = mergeUi5(ui5App.ui5 || {}, ui5App.appOptions);
     // Determine if the project type is 'EDMXBackend'.

@@ -240,8 +240,8 @@ describe('Test FioriAppGenerator', () => {
                 AppGenBusinessHubType: undefined,
                 EnableEslint: undefined,
                 EnableTypeScript: undefined,
-                EnableCodeAssist: undefined,
-                ToolsId: 'abcd1234'
+                ToolsId: 'abcd1234',
+                ValueHelpCount: 0
             });
             expect(writeAppGenInfoFiles).toHaveBeenCalledWith(
                 {
@@ -319,8 +319,7 @@ describe('Test FioriAppGenerator', () => {
         const mockState: State = {
             project: {
                 name: 'testApp',
-                targetFolder,
-                enableCodeAssist: false
+                targetFolder
             } as Project,
             service: {
                 capService: {

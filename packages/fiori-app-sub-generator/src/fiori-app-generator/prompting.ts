@@ -195,6 +195,7 @@ export async function promptOdataServiceAnswers(
         serviceId: answers.serviceId,
         edmx: answers.metadata,
         annotations: answers.annotations,
+        valueListMetadata: answers.valueListMetadata,
         version: answers.odataVersion,
         capService: answers.capService,
         source: answers.datasourceType,
@@ -302,9 +303,6 @@ export async function createUI5ApplicationPromptOptions(
         },
         [ui5AppInquirerPromptNames.enableTypeScript]: {
             default: defaultPromptValues[ui5AppInquirerPromptNames.enableTypeScript]
-        },
-        [ui5AppInquirerPromptNames.enableCodeAssist]: {
-            hide: true
         },
         [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
             hide: service.capService?.capType === 'Java'
@@ -436,6 +434,10 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
             useAutoComplete: !isYUI,
             includeCloudFoundryAbapEnvChoice: true,
             ...options.promptOptions?.systemSelection
+        },
+        [odataServiceInquirerPromptNames.valueHelpDownload]: {
+            hide: true,
+            ...options.promptOptions?.valueHelpDownload
         }
     };
 }

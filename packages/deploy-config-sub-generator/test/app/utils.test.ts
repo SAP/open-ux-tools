@@ -1,4 +1,4 @@
-import { getYUIDetails, parseTarget, registerNamespaces } from '../../src/app/utils';
+import { getYUIDetails, parseTarget } from '../../src/app/utils';
 import { isMTAInstalled, getEnvApiHubConfig } from '../../src/utils';
 import type { DeployConfigOptions } from '../../src/types';
 import hasbin from 'hasbin';
@@ -60,15 +60,5 @@ describe('Test utils - Deploy', () => {
         expect(yuiDetails).toHaveLength(1);
         expect(yuiDetails[0].name).toEqual('Deployment Configuration');
         expect(yuiDetails[0].description).toEqual('Configure Deployment settings - project1');
-    });
-
-    it('should perform registration of package namespaces', () => {
-        const isPackageRegistered = jest.fn();
-        const lookup = jest.fn();
-        const rootGenerator = 'main@generator';
-        const generatorNamespace = 'sub-generator';
-        registerNamespaces(rootGenerator, generatorNamespace, isPackageRegistered, lookup);
-        expect(isPackageRegistered).toHaveBeenCalledWith(generatorNamespace);
-        expect(lookup).toHaveBeenCalledWith({ packagePatterns: [rootGenerator] });
     });
 });

@@ -81,7 +81,7 @@ function createNewPanel(
     });
 
     return new SystemPanel({
-        extensionPath: context.extContext.extensionPath,
+        extensionPath: context.extContext.vscodeExtContext.extensionPath,
         systemPanelViewType: existingSystem ? SystemPanelViewType.View : SystemPanelViewType.Import,
         disposeCallback: (): void => {
             context.panelManager.deleteAndDispose(panelKey);

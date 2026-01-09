@@ -1,5 +1,103 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.71
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/axios-extension@1.25.5
+    - @sap-ux/inquirer-common@0.10.7
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/system-access@0.6.39
+
+## 1.6.70
+
+### Patch Changes
+
+- Updated dependencies [4e0f204]
+    - @sap-ux/axios-extension@1.25.4
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/system-access@0.6.38
+
+## 1.6.69
+
+### Patch Changes
+
+- Updated dependencies [6382440]
+    - @sap-ux/inquirer-common@0.10.6
+
+## 1.6.68
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/inquirer-common@0.10.5
+
+## 1.6.67
+
+### Patch Changes
+
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/inquirer-common@0.10.4
+
+## 1.6.66
+
+### Patch Changes
+
+- Updated dependencies [14a1bc2]
+    - @sap-ux/axios-extension@1.25.3
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/system-access@0.6.37
+
+## 1.6.65
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/axios-extension@1.25.2
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/inquirer-common@0.10.3
+    - @sap-ux/nodejs-utils@0.2.11
+    - @sap-ux/store@1.4.2
+    - @sap-ux/system-access@0.6.36
+    - @sap-ux/ui5-config@0.29.12
+
+## 1.6.64
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/nodejs-utils@0.2.11
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/store@1.4.1
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/btp-utils@1.1.6
+
+## 1.6.63
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.1
+
+## 1.6.62
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/inquirer-common@0.10.0
+    - @sap-ux/fiori-generator-shared@0.13.44
+    - @sap-ux/system-access@0.6.34
+
 ## 1.6.61
 
 ### Patch Changes

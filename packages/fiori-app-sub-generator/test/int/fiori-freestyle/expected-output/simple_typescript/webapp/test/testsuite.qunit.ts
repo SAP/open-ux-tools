@@ -1,6 +1,6 @@
 /* global window, parent, location */
 
-// eslint-disable-next-line fiori-custom/sap-no-global-define,@typescript-eslint/ban-ts-comment
+// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-global-define,@typescript-eslint/ban-ts-comment
 // @ts-nocheck
 window.suite = function() {
 	// eslint-disable-next-line

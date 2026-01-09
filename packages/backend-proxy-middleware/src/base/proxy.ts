@@ -9,7 +9,7 @@ import {
     listDestinations
 } from '@sap-ux/btp-utils';
 import { ToolsLogger, UI5ToolingTransport, type Logger } from '@sap-ux/logger';
-import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
 import type { ServerOptions } from 'http-proxy';
 import type { Options, RequestHandler } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';

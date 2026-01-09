@@ -1,5 +1,117 @@
 # @sap-ux/adp-tooling
 
+## 0.18.33
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/odata-service-writer@0.29.3
+    - @sap-ux/axios-extension@1.25.5
+    - @sap-ux/inquirer-common@0.10.7
+    - @sap-ux/system-access@0.6.39
+
+## 0.18.32
+
+### Patch Changes
+
+- Updated dependencies [4e0f204]
+    - @sap-ux/axios-extension@1.25.4
+    - @sap-ux/odata-service-writer@0.29.2
+    - @sap-ux/system-access@0.6.38
+
+## 0.18.31
+
+### Patch Changes
+
+- Updated dependencies [6382440]
+    - @sap-ux/inquirer-common@0.10.6
+
+## 0.18.30
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/ui5-info@0.13.7
+    - @sap-ux/inquirer-common@0.10.5
+
+## 0.18.29
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.4
+
+## 0.18.28
+
+### Patch Changes
+
+- Updated dependencies [14a1bc2]
+    - @sap-ux/axios-extension@1.25.3
+    - @sap-ux/odata-service-writer@0.29.2
+    - @sap-ux/system-access@0.6.37
+
+## 0.18.27
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/axios-extension@1.25.2
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/inquirer-common@0.10.3
+    - @sap-ux/nodejs-utils@0.2.11
+    - @sap-ux/store@1.4.2
+    - @sap-ux/system-access@0.6.36
+    - @sap-ux/ui5-info@0.13.6
+    - @sap-ux/odata-service-writer@0.29.2
+    - @sap-ux/project-input-validator@0.6.40
+    - @sap-ux/ui5-config@0.29.12
+
+## 0.18.26
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-input-validator@0.6.39
+    - @sap-ux/odata-service-writer@0.29.1
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/nodejs-utils@0.2.11
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/ui5-info@0.13.5
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/store@1.4.1
+    - @sap-ux/i18n@0.3.7
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.18.25
+
+### Patch Changes
+
+- Updated dependencies [691ab27]
+    - @sap-ux/odata-service-writer@0.29.0
+    - @sap-ux/inquirer-common@0.10.1
+
+## 0.18.24
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/odata-service-writer@0.28.0
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/inquirer-common@0.10.0
+    - @sap-ux/system-access@0.6.34
+
+## 0.18.23
+
+### Patch Changes
+
+- a79eb1b: feat: Adding points of telemetry data for ADP generator
+
 ## 0.18.22
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import { rm, stat, symlink } from 'fs/promises';
+import { rm, stat, symlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { existsSync } from 'node:fs';
 

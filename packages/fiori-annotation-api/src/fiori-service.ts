@@ -124,7 +124,7 @@ export class FioriAnnotationService {
         protected changeConverter: ChangeConverter,
         protected fs: Editor,
         protected options: FioriAnnotationServiceOptions,
-        private project: Project,
+        private readonly project: Project,
         protected serviceName: string,
         appName: string
     ) {

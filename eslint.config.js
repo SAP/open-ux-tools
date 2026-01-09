@@ -54,6 +54,7 @@ module.exports = [
             '.storybook',
             '**/snapshotResolver.js',
             '**/expected-output/**',
+            '**/playwright-report/**'
         ]
     },
     eslintPluginPrettierRecommended,

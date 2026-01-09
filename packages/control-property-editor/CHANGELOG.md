@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.7.6
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
+## 0.7.5
+
+### Patch Changes
+
+- ffcf1b2: fix sonar issues: replace getAttribute() with .dataset
+
 ## 0.7.4
 
 ### Patch Changes

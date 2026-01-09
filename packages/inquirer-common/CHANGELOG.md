@@ -1,5 +1,79 @@
 # @sap-ux/inquirer-common
 
+## 0.10.7
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+- Updated dependencies [2204ad3]
+    - @sap-ux/odata-service-writer@0.29.3
+    - @sap-ux/fiori-generator-shared@0.13.48
+
+## 0.10.6
+
+### Patch Changes
+
+- 6382440: update error map to add EPROTO code
+
+## 0.10.5
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/ui5-info@0.13.7
+
+## 0.10.4
+
+### Patch Changes
+
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+
+## 0.10.3
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/telemetry@0.6.50
+    - @sap-ux/ui5-info@0.13.6
+    - @sap-ux/odata-service-writer@0.29.2
+
+## 0.10.2
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/odata-service-writer@0.29.1
+    - @sap-ux/telemetry@0.6.49
+    - @sap-ux/ui5-info@0.13.5
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies [691ab27]
+    - @sap-ux/odata-service-writer@0.29.0
+
+## 0.10.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/odata-service-writer@0.28.0
+    - @sap-ux/fiori-generator-shared@0.13.44
+
 ## 0.9.17
 
 ### Patch Changes

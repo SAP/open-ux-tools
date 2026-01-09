@@ -306,7 +306,7 @@ export class FioriAppGenerator extends Generator {
                         t('steps.deployConfig.title')
                     );
                 }
-                addDeployGen(
+                await addDeployGen(
                     {
                         service: this.state.service,
                         projectName: this.state.project.name,
@@ -334,7 +334,7 @@ export class FioriAppGenerator extends Generator {
                         t('steps.flpConfig.title')
                     );
                 }
-                addFlpGen(
+                await addFlpGen(
                     {
                         projectName: this.state.project.name,
                         targetFolder: this.state.project.targetFolder,
@@ -410,7 +410,8 @@ export class FioriAppGenerator extends Generator {
                 EnableEslint: project.enableEslint,
                 EnableTypeScript: project.enableTypeScript,
                 EnableVirtualEndpoints: project.enableVirtualEndpoints,
-                ToolsId: appConfig.app.sourceTemplate?.toolsId
+                ToolsId: appConfig.app.sourceTemplate?.toolsId,
+                ValueHelpCount: service.valueListMetadata?.length ?? 0
             });
 
             if (service.apiHubConfig && isAppStudio()) {

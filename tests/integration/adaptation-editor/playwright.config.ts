@@ -1,4 +1,4 @@
-import { exit } from 'process';
+import { exit } from 'node:process';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { defineConfig, devices } from '@sap-ux-private/playwright';

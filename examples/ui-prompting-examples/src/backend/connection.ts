@@ -6,7 +6,7 @@ import type {
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer
 } from '@sap-ux/fe-fpm-writer';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';

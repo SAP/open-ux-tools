@@ -1,5 +1,11 @@
 # @sap-ux/i18n
 
+## 0.3.7
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 0.3.6
 
 ### Patch Changes

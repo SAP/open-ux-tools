@@ -1,5 +1,11 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.4.4
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 0.4.3
 
 ### Patch Changes

@@ -210,7 +210,7 @@ export class ChangeService extends EventTarget {
                                 };
                             }
                             throw new Error('Unknown change type');
-                        } catch (error) {
+                        } catch {
                             // Gracefully handle change files with invalid content
                             const flexObject = await getFlexObject(change);
                             const selectorId = await getControlIdByChange(
