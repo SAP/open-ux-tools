@@ -239,5 +239,5 @@ export const configs: Record<string, Linter.Config[]> = {
     ]
 };
 
-export { rules };
+export { rules } from './rules';
 export default plugin;

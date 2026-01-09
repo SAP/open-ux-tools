@@ -62,13 +62,14 @@ export class FioriLanguage
     nodeTypeKey = 'type';
 
     constructor() {}
+
     /**
      *
      * @param _languageOptions
      */
     validateLanguageOptions(_languageOptions: FioriLanguageOptions): void {}
 
-    visitorKeys = { ...xmlVisitorKeys, ...Object.fromEntries([...jsonVisitorKeys]), ...annotationVisitorKeys };
+    visitorKeys = { ...xmlVisitorKeys, ...Object.fromEntries(jsonVisitorKeys), ...annotationVisitorKeys };
 
     /**
      *
@@ -239,7 +240,7 @@ export class FioriLanguage
         throw new Error('Unsupported parse result AST type');
     }
 
-    defaultLanguageOptions?: LanguageOptions | undefined;
+    defaultLanguageOptions?: LanguageOptions;
 
     //matchesSelectorClass(className: string, node: unknown, ancestry: unknown[]): boolean {}
 
