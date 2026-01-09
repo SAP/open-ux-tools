@@ -40,11 +40,7 @@ export type NodeLookup = {
  * @param entityType
  * @param service
  */
-export function collectTables(
-    feVersion: 'v2' | 'v4',
-    entityType: string,
-    service: ParsedService
-): TableNode[] {
+export function collectTables(feVersion: 'v2' | 'v4', entityType: string, service: ParsedService): TableNode[] {
     const tables: TableNode[] = [];
     const lineItemKey = buildAnnotationIndexKey(entityType, UI_LINE_ITEM);
     const lineItems = service.index.annotations[lineItemKey]?.['undefined'];
@@ -101,6 +97,13 @@ export function collectSections(
 
 /**
  * Process a single reference facet record and create a table section if applicable.
+ *
+ * @param record
+ * @param aliasInfo
+ * @param entityType
+ * @param service
+ * @param facets
+ * @param index
  */
 function processReferenceFacetRecord(
     record: Element,
@@ -151,6 +154,11 @@ function processReferenceFacetRecord(
 
 /**
  * Get the referenced entity type from an annotation path.
+ *
+ * @param aliasInfo
+ * @param entityType
+ * @param annotationPath
+ * @param service
  */
 function getReferencedEntityType(
     aliasInfo: AliasInformation,
@@ -173,6 +181,14 @@ function getReferencedEntityType(
 
 /**
  * Create a table section node with its child table node.
+ *
+ * @param facets
+ * @param index
+ * @param referencedEntityType
+ * @param qualifier
+ * @param annotationPath
+ * @param aliasInfo
+ * @param service
  */
 function createTableSection(
     facets: IndexedAnnotation,
