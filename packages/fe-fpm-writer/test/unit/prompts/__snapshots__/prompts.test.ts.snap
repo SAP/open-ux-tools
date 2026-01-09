@@ -1824,6 +1824,68 @@ Object {
 }
 `;
 
+exports[`Prompts getRichTextEditorButtonGroupsBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "rich-text-editor-button-groups",
+    },
+  },
+  "questions": Array [
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Font Style (Bold, Italic, Underline, Strikethrough)",
+          "value": "font-style",
+        },
+        Object {
+          "name": "Font Settings (Family, Size, Colors)",
+          "value": "font",
+        },
+        Object {
+          "name": "Clipboard (Cut, Copy, Paste)",
+          "value": "clipboard",
+        },
+        Object {
+          "name": "List Structure (Bullets, Numbers, Indentation)",
+          "value": "structure",
+        },
+        Object {
+          "name": "Undo/Redo Actions",
+          "value": "undo",
+        },
+        Object {
+          "name": "Insert Elements (Image, Emoticons)",
+          "value": "insert",
+        },
+        Object {
+          "name": "Link Management (Add, Remove Links)",
+          "value": "link",
+        },
+        Object {
+          "name": "Text Alignment (Left, Center, Right, Justify)",
+          "value": "text-align",
+        },
+        Object {
+          "name": "Table Operations",
+          "value": "table",
+        },
+        Object {
+          "name": "Style Selection",
+          "value": "styleselect",
+        },
+      ],
+      "guiOptions": Object {
+        "hint": "Adding button groups will replace the default button groups in the Rich Text Editor with your chosen configuration.",
+      },
+      "message": "Buttons",
+      "name": "buildingBlockData.buttonGroups",
+      "type": "checkbox",
+    },
+  ],
+}
+`;
+
 exports[`Prompts getTableBuildingBlockPrompts 1`] = `
 Object {
   "groups": Array [

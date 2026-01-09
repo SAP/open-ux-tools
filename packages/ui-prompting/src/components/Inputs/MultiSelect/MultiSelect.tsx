@@ -1,6 +1,6 @@
 import React from 'react';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
+import { getLabelRenderer, useOptions, useMultiSelectValue } from '../../../utilities';
 import type { AnswerValue, CheckboxPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface MultiSelectProps extends CheckboxPromptQuestion {
@@ -15,8 +15,8 @@ export interface MultiSelectProps extends CheckboxPromptQuestion {
 export const MultiSelect = (props: MultiSelectProps) => {
     const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id } = props;
     const { mandatory, hint, placeholder } = guiOptions;
-    const [value, setValue] = useValue('', props.value?.toString() ?? '');
     const options = useOptions(props, dynamicChoices);
+    const [value, setValue] = useMultiSelectValue(props, options);
 
     return (
         <UIComboBox
@@ -33,12 +33,22 @@ export const MultiSelect = (props: MultiSelectProps) => {
             disabled={false}
             onChange={(_, changedOption) => {
                 let updatedValue: string | undefined = '';
-                if (changedOption?.selected) {
-                    updatedValue = [...(value?.split(',').filter((option) => option) ?? []), changedOption.key].join();
+                if (!changedOption) {
+                    return;
+                }
+
+                const optionValue = changedOption.data?.value ?? changedOption.key;
+                const currentValues = value?.split(',').filter((v) => v) ?? [];
+                // If the option was selected, add it to the list if not already present.
+                // If the option was unselected, remove it from the list.
+                if (changedOption.selected) {
+                    // Add value if not already present
+                    updatedValue = currentValues.includes(optionValue)
+                        ? currentValues.join(',')
+                        : [...currentValues, optionValue].join(',');
                 } else {
-                    updatedValue = (value?.split(',') ?? [])
-                        .filter((option) => option && option !== changedOption?.key)
-                        .join();
+                    // Remove value if it was unselected
+                    updatedValue = currentValues.filter((v) => v !== optionValue).join(',');
                 }
                 setValue(updatedValue);
                 onChange(name, updatedValue);

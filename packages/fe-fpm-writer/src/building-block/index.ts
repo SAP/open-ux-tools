@@ -9,7 +9,6 @@ import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
 
 import { getMinimumUI5Version } from '@sap-ux/project-access';
-
 import {
     BuildingBlockType,
     type BuildingBlock,
@@ -20,7 +19,9 @@ import {
     bindingContextAbsolute,
     type TemplateConfig,
     type CustomFilterField,
-    type EmbededFragment
+    type EmbededFragment,
+    type RichTextEditorButtonGroups,
+    type ButtonGroupConfig
 } from './types';
 import type { Manifest, InternalCustomElement } from '../common/types';
 
@@ -46,27 +47,33 @@ const PLACEHOLDERS = {
 type EmbeddedFragmentData = InternalCustomElement & EmbededFragment;
 
 /**
+ * Namespace for XML elements.
+ */
+interface NamespaceConfig {
+    uri: string;
+    prefix: string;
+}
+
+interface ProcessingContext {
+    fs: Editor;
+    xmlDocument?: Document;
+    viewPath?: string;
+    embeddedFragment?: EmbeddedFragmentData;
+    updatedAggregationPath?: string;
+    hasAggregation?: boolean;
+}
+
+/**
  * Configuration for building block templates.
  */
 interface BuildingBlockTemplateConfig {
-    nodes: {
-        explicit: string;
-        default: string;
+    aggregationConfig: {
+        aggregationName: string;
+        elementName: string;
     };
-    templateType: string;
-    templateFile: string;
-    namespace: {
-        uri: string;
-        prefix: string;
-    };
-    resultPropertyName: string;
-    processor: (
-        buildingBlockData: BuildingBlock,
-        fs: Editor,
-        viewPath: string,
-        config: BuildingBlockTemplateConfig,
-        embededFragment?: EmbeddedFragmentData
-    ) => void;
+    templateFile?: string;
+    namespace: NamespaceConfig;
+    processor: (buildingBlockData: BuildingBlock, context: ProcessingContext) => void;
 }
 
 /**
@@ -74,35 +81,27 @@ interface BuildingBlockTemplateConfig {
  */
 export const BUILDING_BLOCK_CONFIG: Partial<Record<BuildingBlockType, BuildingBlockTemplateConfig>> = {
     [BuildingBlockType.CustomColumn]: {
-        nodes: { explicit: 'columns', default: 'Column' },
-        templateType: 'common',
+        aggregationConfig: { aggregationName: 'columns', elementName: 'Column' },
         templateFile: 'common/Fragment.xml',
         namespace: { uri: 'sap.fe.macros.table', prefix: 'macrosTable' },
-        resultPropertyName: 'hasTableColumns',
         processor: processCustomColumn
     },
     [BuildingBlockType.CustomFilterField]: {
-        nodes: { explicit: 'filterFields', default: 'FilterField' },
-        templateType: 'filter',
+        aggregationConfig: { aggregationName: 'filterFields', elementName: 'FilterField' },
         templateFile: 'filter/fragment.xml',
         namespace: { uri: 'sap.fe.macros.filterBar', prefix: 'macros' },
-        resultPropertyName: 'hasFilterFields',
         processor: processCustomFilterField
+    },
+    [BuildingBlockType.RichTextEditorButtonGroups]: {
+        aggregationConfig: { aggregationName: 'buttonGroups', elementName: 'ButtonGroup' },
+        namespace: { uri: 'sap.fe.macros', prefix: 'macros' },
+        processor: processRichTextEditorButtonGroups
     }
 };
 
 interface MetadataPath {
     contextPath?: string;
     metaPath: string;
-}
-
-/**
- * Configuration for aggregation path update.
- */
-interface AggregationConfig {
-    aggregationName: string;
-    elementName: string;
-    resultPropertyName: string;
 }
 
 /**
@@ -142,7 +141,10 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     };
     const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest, templateConfig);
 
-    if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
+    if (
+        buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
+        buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditorButtonGroups
+    ) {
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
         if (minUI5Version && lt(minUI5Version, '1.117.0')) {
             const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
@@ -182,20 +184,18 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
  *
  * @param {Document} xmlDocument - The XML document to analyze
  * @param {string} aggregationPath - The current aggregation path
- * @param {CustomColumn | CustomFilterField} buildingBlockData - The building block data with embedded fragment
- * @param {AggregationConfig} config - Configuration specifying aggregation and element names
+ * @param {{ aggregationName: string; elementName: string }} config - Configuration specifying aggregation and element names
+ * @param config.aggregationName - Aggregation name to check in the XML
+ * @param config.elementName - Element name to check in the XML
+ * @param namespace - Optional namespace configuration
  * @returns {object} Object containing the updated aggregation path
  */
-function updateAggregationPath<T extends CustomColumn | CustomFilterField>(
+function updateAggregationPath(
     xmlDocument: Document,
     aggregationPath: string,
-    buildingBlockData: T,
-    config: AggregationConfig
+    config: { aggregationName: string; elementName: string },
+    namespace?: NamespaceConfig
 ): { updatedAggregationPath: string; hasElement: boolean } {
-    if (!buildingBlockData.embededFragment) {
-        return { updatedAggregationPath: aggregationPath, hasElement: false };
-    }
-
     const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
 
     // First, get the target element from the aggregationPath
@@ -210,7 +210,8 @@ function updateAggregationPath<T extends CustomColumn | CustomFilterField>(
     const hasAggregation = xpathSelect(`./*[local-name()='${config.aggregationName}']`, targetNode);
     if (hasAggregation && Array.isArray(hasAggregation) && hasAggregation.length > 0) {
         return {
-            updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:${config.aggregationName}`,
+            updatedAggregationPath:
+                aggregationPath + `/${getOrAddNamespace(xmlDocument, namespace?.uri)}:${config.aggregationName}`,
             hasElement: true
         };
     } else {
@@ -222,6 +223,21 @@ function updateAggregationPath<T extends CustomColumn | CustomFilterField>(
     }
 
     return { updatedAggregationPath: aggregationPath, hasElement: false };
+}
+
+/**
+ * Retrieves the configuration for a building block type.
+ *
+ * @param buildingBlockType - The building block type
+ * @returns The building block configuration (aggregation, namespace, processor)
+ * @throws {Error} If configuration not found for the specified type
+ */
+function getBuildingBlockConfig(buildingBlockType: BuildingBlockType): BuildingBlockTemplateConfig {
+    const config = BUILDING_BLOCK_CONFIG[buildingBlockType];
+    if (!config) {
+        throw new Error(`No configuration found for building block type: ${buildingBlockType}`);
+    }
+    return config;
 }
 
 /**
@@ -251,7 +267,7 @@ function processBuildingBlock<T extends BuildingBlock>(
     let updatedAggregationPath = aggregationPath;
     let hasAggregation = false;
     let aggregationNamespace = 'macrosTable';
-    let embededFragment: EmbeddedFragmentData | undefined;
+    let embeddedFragment: EmbeddedFragmentData | undefined;
     let viewPath: string | undefined;
 
     // Get configuration for the building block type
@@ -266,21 +282,53 @@ function processBuildingBlock<T extends BuildingBlock>(
         };
     }
 
+    if (isRichTextEditorButtonGroups(buildingBlockData)) {
+        const result = updateAggregationPath(
+            xmlDocument,
+            aggregationPath,
+            {
+                aggregationName: config.aggregationConfig.aggregationName,
+                elementName: config.aggregationConfig.elementName
+            },
+            {
+                uri: config.namespace.uri,
+                prefix: config.namespace.prefix
+            }
+        );
+
+        const context: ProcessingContext = {
+            fs,
+            xmlDocument,
+            updatedAggregationPath: result.updatedAggregationPath,
+            hasAggregation: result.hasElement
+        };
+
+        config.processor(buildingBlockData, context);
+        aggregationNamespace = getOrAddNamespace(xmlDocument, config.namespace.uri, config.namespace.prefix);
+    }
+
     // Process embedded fragment for types that support it
     if (
         (isCustomColumn(buildingBlockData) || isCustomFilterField(buildingBlockData)) &&
         buildingBlockData.embededFragment
     ) {
-        embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
-        viewPath = join(embededFragment.path, `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`);
+        embeddedFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
+        viewPath = join(
+            embeddedFragment.path,
+            `${embeddedFragment.fragmentFile ?? embeddedFragment.name}.fragment.xml`
+        );
 
         // Use the processor function from the configuration
-        config.processor(buildingBlockData, fs, viewPath, config, embededFragment);
+        const context: ProcessingContext = {
+            fs,
+            viewPath,
+            embeddedFragment
+        };
+        config.processor(buildingBlockData, context);
 
-        const result = updateAggregationPath(xmlDocument, aggregationPath, buildingBlockData, {
-            aggregationName: config.nodes.explicit,
-            elementName: config.nodes.default,
-            resultPropertyName: config.resultPropertyName
+        const result = updateAggregationPath(xmlDocument, aggregationPath, {
+            aggregationName: config.aggregationConfig.aggregationName,
+            elementName: config.aggregationConfig.elementName
         });
         updatedAggregationPath = result.updatedAggregationPath;
         hasAggregation = result.hasElement;
@@ -296,23 +344,136 @@ function processBuildingBlock<T extends BuildingBlock>(
 }
 
 /**
+ * Default button group configurations.
+ */
+const BUTTON_GROUP_CONFIGS: Record<string, { name: string; buttons: string }> = {
+    'font-style': { name: 'font-style', buttons: 'bold,italic,underline,strikethrough' },
+    'font': { name: 'font', buttons: 'fontfamily,fontsize,forecolor,backcolor' },
+    'clipboard': { name: 'clipboard', buttons: 'cut,copy,paste' },
+    'structure': { name: 'structure', buttons: 'bullist,numlist,outdent,indent' },
+    'undo': { name: 'undo', buttons: 'undo,redo' },
+    'insert': { name: 'insert', buttons: 'image,emoticons' },
+    'link': { name: 'link', buttons: 'link,unlink' },
+    'text-align': { name: 'text-align', buttons: 'alignleft,aligncenter,alignright,alignjustify' },
+    'table': { name: 'table', buttons: 'table' },
+    'styleselect': { name: 'styleselect', buttons: 'styleselect' }
+};
+
+/**
+ * Processes rich text editor button groups building block.
+ *
+ * @param {BuildingBlock} buildingBlockData - The building block data
+ * @param {ProcessingContext} context - Processing context
+ */
+function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, context: ProcessingContext): void {
+    const { xmlDocument, updatedAggregationPath, hasAggregation } = context;
+    const rteButtonGroups = buildingBlockData as RichTextEditorButtonGroups;
+
+    // Map to store existing button groups with their attributes
+    const existingButtonGroupsMap = new Map<string, ButtonGroupConfig>();
+
+    if (hasAggregation && xmlDocument && updatedAggregationPath) {
+        const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+        // Example: [<Element: richtexteditor:buttonGroups>] containing all ButtonGroup children
+        const buttonGroupsElements = xpathSelect(updatedAggregationPath, xmlDocument) as Element[];
+
+        if (buttonGroupsElements.length > 0) {
+            const buttonGroupsWrapper = buttonGroupsElements[0];
+            const config = getBuildingBlockConfig(BuildingBlockType.RichTextEditorButtonGroups);
+            // Read all existing <ButtonGroup> child elements and store their attributes
+            const existingButtonGroupElements = Array.from(buttonGroupsWrapper.childNodes).filter(
+                (node) => node.nodeType === 1 && (node as Element).localName === config.aggregationConfig.elementName
+            ) as Element[];
+
+            // Build map of existing button groups with their custom attributes
+            existingButtonGroupElements.forEach((element) => {
+                const name = element.getAttribute('name');
+                // extract attributes
+                const buttons = element.getAttribute('buttons');
+                if (!name || !buttons) {
+                    return;
+                }
+
+                const buttonGroupConfig: ButtonGroupConfig = { 
+                    name, 
+                    buttons 
+                };
+                
+                if (buttons) buttonGroupConfig.buttons = buttons;
+                
+                const visible = element.getAttribute('visible');
+                if (visible) buttonGroupConfig.visible = visible === 'true';
+                
+                const priority = element.getAttribute('priority');
+                if (priority) buttonGroupConfig.priority = parseInt(priority, 10);
+                
+                const customToolbarPriority = element.getAttribute('customToolbarPriority');
+                if (customToolbarPriority) buttonGroupConfig.customToolbarPriority = parseInt(customToolbarPriority, 10);
+                
+                const row = element.getAttribute('row');
+                if (row) buttonGroupConfig.row = parseInt(row, 10);
+                
+                const id = element.getAttribute('id');
+                if (id) buttonGroupConfig.id = id;
+                
+                existingButtonGroupsMap.set(name, buttonGroupConfig);
+                
+            });
+             // Remove existing <buttonGroups> wrapper - will be recreated with merged data
+            const buttonGroupsElement = buttonGroupsElements[0] as Element;
+            // @xmldom/xmldom doesn't support Element.remove(), must use removeChild()
+            // eslint-disable-next-line sonarjs/prefer-immediate-return
+            buttonGroupsElement.parentNode?.removeChild(buttonGroupsElement);
+        }
+    }
+
+    // Merge new selection with existing selections 
+    const btnGroups = rteButtonGroups.buttonGroups.map((selectedButtonGroup: ButtonGroupConfig) => {
+        const defaultConfig = BUTTON_GROUP_CONFIGS[selectedButtonGroup.name];
+        if (!defaultConfig) {
+            throw new Error(`Unknown button group: ${selectedButtonGroup.name}`);
+        }
+
+         const existingConfig = existingButtonGroupsMap.get(selectedButtonGroup.name);
+        
+        // Check if user provided any new attributes (other than just 'name')
+        const hasNewAttributes = Object.keys(selectedButtonGroup).some(
+            key => key !== 'name' && selectedButtonGroup[key as keyof ButtonGroupConfig] !== undefined
+        );
+
+        if (existingConfig && !hasNewAttributes) {
+            // Preserve existing attributes if no new attributes provided
+            return existingConfig;
+        } 
+
+        // Use new attributes or defaults (for both existing with new attrs and new button groups)
+        return {
+            name: selectedButtonGroup.name,
+            buttons: selectedButtonGroup.buttons ?? defaultConfig.buttons,
+            visible: selectedButtonGroup.visible,
+            priority: selectedButtonGroup.priority,
+            customToolbarPriority: selectedButtonGroup.customToolbarPriority,
+            row: selectedButtonGroup.row,
+            id: selectedButtonGroup.id
+        };
+    });
+
+    rteButtonGroups.buttonGroups = btnGroups;
+}
+
+/**
  * Processes custom column building block.
  *
  * @param {BuildingBlock} buildingBlockData - The building block data
- * @param {Editor} fs - The memfs editor instance
- * @param {string} viewPath - The view path
- * @param {BuildingBlockTemplateConfig} config - The building block configuration
+ * @param {ProcessingContext} context - Processing context
  */
-function processCustomColumn(
-    buildingBlockData: BuildingBlock,
-    fs: Editor,
-    viewPath: string,
-    config: BuildingBlockTemplateConfig
-): void {
+function processCustomColumn(buildingBlockData: BuildingBlock, context: ProcessingContext): void {
+    const { fs, viewPath } = context;
     if (!isCustomColumn(buildingBlockData)) {
         throw new Error('Expected CustomColumn building block data');
     }
 
+    const config = getBuildingBlockConfig(BuildingBlockType.CustomColumn);
     const columnConfig = buildingBlockData.embededFragment!;
     let processedEventHandler: string | undefined;
 
@@ -326,7 +487,7 @@ function processCustomColumn(
     }
 
     columnConfig.content = getDefaultFragmentContent('Sample Text', processedEventHandler);
-    if (!fs.exists(viewPath)) {
+    if (viewPath && !fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath(config.templateFile), viewPath, columnConfig);
     }
 }
@@ -335,25 +496,18 @@ function processCustomColumn(
  * Processes custom filter field building block.
  *
  * @param {BuildingBlock} buildingBlockData - The building block data
- * @param {Editor} fs - The memfs editor instance
- * @param {string} viewPath - The view path
- * @param {BuildingBlockTemplateConfig} config - The building block configuration
- * @param {EmbeddedFragmentData} embededFragment - The embedded fragment data
+ * @param {ProcessingContext} context - Processing context
  */
-function processCustomFilterField(
-    buildingBlockData: BuildingBlock,
-    fs: Editor,
-    viewPath: string,
-    config: BuildingBlockTemplateConfig,
-    embededFragment?: EmbeddedFragmentData
-): void {
+function processCustomFilterField(buildingBlockData: BuildingBlock, context: ProcessingContext): void {
+    const { fs, viewPath, embeddedFragment } = context;
     if (!isCustomFilterField(buildingBlockData)) {
         throw new Error('Expected CustomFilterField building block data');
     }
 
-    if (!embededFragment) {
+    if (!embeddedFragment) {
         throw new Error('EmbeddedFragment is required for CustomFilterField');
     }
+    const config = getBuildingBlockConfig(BuildingBlockType.CustomFilterField);
 
     const filterConfig = {
         label: buildingBlockData.label,
@@ -361,9 +515,9 @@ function processCustomFilterField(
         required: buildingBlockData.required ?? false,
         position: buildingBlockData.position!,
         eventHandler: buildingBlockData.embededFragment?.eventHandler,
-        ns: embededFragment.ns,
-        name: embededFragment.name,
-        path: embededFragment.path
+        ns: embeddedFragment.ns,
+        name: embeddedFragment.name,
+        path: embeddedFragment.path
     };
 
     // Apply event handler
@@ -375,7 +529,7 @@ function processCustomFilterField(
         });
     }
 
-    if (!fs.exists(viewPath)) {
+    if (viewPath && !fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath(config.templateFile), viewPath, filterConfig);
     }
 }
@@ -398,6 +552,16 @@ function isCustomColumn(data: BuildingBlock): data is CustomColumn {
  */
 function isCustomFilterField(data: BuildingBlock): data is CustomFilterField {
     return data.buildingBlockType === BuildingBlockType.CustomFilterField;
+}
+
+/**
+ * Type guard to check if the building block data is a rich text editor button groups.
+ *
+ * @param {BuildingBlock} data - The building block data to check
+ * @returns {boolean} True if the data is a rich text editor button groups
+ */
+function isRichTextEditorButtonGroups(data: BuildingBlock): data is RichTextEditorButtonGroups {
+    return data.buildingBlockType === BuildingBlockType.RichTextEditorButtonGroups;
 }
 
 /**

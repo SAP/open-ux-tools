@@ -130,4 +130,68 @@ describe('MultiSelect', () => {
         const { container } = render(<MultiSelect {...props} pending={true} />);
         expect(container.getElementsByClassName('ms-Spinner-circle')).toBeDefined();
     });
+
+    it('should add and remove values when selecting and unselecting options', () => {
+        const onChangeFn = jest.fn();
+        render(<MultiSelect {...props} onChange={onChangeFn} />);
+        const button = document.getElementsByClassName('ms-Button')[0];
+        fireEvent.click(button);
+        const options = screen.queryAllByRole('option');
+
+        // Select first item
+        fireEvent.click(options[0]);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testValue0');
+
+        // Select second item
+        fireEvent.click(options[1]);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testValue0,testValue1');
+
+        // Unselect first item
+        fireEvent.click(options[0]);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testValue1');
+
+        // Unselect second item
+        fireEvent.click(options[1]);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', '');
+    });
+
+    it('should initialise with checked options and update when options change', () => {
+        const choices = [
+            { name: 'testText0', value: 'testValue0', checked: true },
+            { name: 'testText1', value: 'testValue1', checked: false },
+            { name: 'testText2', value: 'testValue2', checked: true }
+        ];
+        const checkedProps: MultiSelectProps = {
+            ...props,
+            dynamicChoices: choices,
+            value: undefined,
+            onChange: jest.fn()
+        };
+
+        render(<MultiSelect {...checkedProps} />);
+
+        const combobox = screen.getByRole('combobox');
+        const button = combobox.parentElement?.querySelector('.ms-Button') as HTMLElement;
+        fireEvent.click(button);
+        const options = screen.queryAllByRole('option');
+        const selectedOptions = options.filter(opt => opt.getAttribute('aria-selected') === 'true');
+        expect(selectedOptions.length).toBe(2);
+
+        // Select the unchecked option
+        fireEvent.click(options[1]);
+        expect(checkedProps.onChange).toHaveBeenCalledWith('testList', 'testValue0,testValue2,testValue1');
+
+        // Unselect one of the initially checked options
+        fireEvent.click(options[0]);
+        expect(checkedProps.onChange).toHaveBeenCalledWith('testList', 'testValue2,testValue1');
+
+        // Unselect the other initially checked option
+        fireEvent.click(options[2]);
+        expect(checkedProps.onChange).toHaveBeenCalledWith('testList', 'testValue1');
+
+        // Unselect the last option
+        fireEvent.click(options[1]);
+        expect(checkedProps.onChange).toHaveBeenCalledWith('testList', '');
+    });
+
 });
