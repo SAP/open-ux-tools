@@ -70,8 +70,8 @@ export type DocumentType = AnnotationFile | XMLDocument | DocumentNode;
  *
  */
 export class ProjectContext {
-    private artifacts: FoundFioriArtifacts;
-    private _index: ParsedProject;
+    private readonly artifacts: FoundFioriArtifacts;
+    private readonly _index: ParsedProject;
 
     /**
      *
@@ -116,7 +116,7 @@ export class ProjectContext {
      * @param app
      */
     public getManifest(app?: string): Manifest | undefined {
-        const key = app ? app : Object.keys(this.index.apps)[0];
+        const key = app ?? Object.keys(this.index.apps)[0];
         const appIndex = this.index.apps[key];
         if (!appIndex) {
             return;
@@ -146,12 +146,12 @@ export class ProjectContext {
         this._linkedModel = linkedModel;
     }
 
-    private static parser = new ApplicationParser();
+    private static readonly parser = new ApplicationParser();
     /**
      * Project file mapping to artifacts. Used to find out to which project the file belongs.
      * It should only be used by `findProjectRoot` method.
      */
-    private static projectArtifactCache = new Map<string, WorkerResult>();
+    private static readonly projectArtifactCache = new Map<string, WorkerResult>();
 
     /**
      *
@@ -159,7 +159,7 @@ export class ProjectContext {
      */
     private static findFioriArtifacts(_uri: string): WorkerResult {
         // potential issue when called from application modeler or via ESLint API
-        const root = normalizePath(process.cwd()); // TODO: check if root detection is needed? seems to work also with workspaces
+        const root = normalizePath(process.cwd());
         try {
             const cachedValue = this.projectArtifactCache.get(root);
             if (cachedValue) {
@@ -174,9 +174,9 @@ export class ProjectContext {
         }
     }
 
-    private static instanceCache = new Map<string, ProjectContext>();
-    private static updateCache = new Map<string, number>();
-    private static appRoots = new Set<string>();
+    private static readonly instanceCache = new Map<string, ProjectContext>();
+    private static readonly updateCache = new Map<string, number>();
+    private static readonly appRoots = new Set<string>();
 
     /**
      * If set to true, forces re-indexing on the first update of a file.
@@ -216,8 +216,8 @@ export class ProjectContext {
 
         return context;
     }
-    private static fileCache = new Map<string, string>();
-    private static fileCacheProxy = new Proxy(this.fileCache, {
+    private static readonly fileCache = new Map<string, string>();
+    private static readonly fileCacheProxy = new Proxy(this.fileCache, {
         get: (target, prop: string) => {
             if (prop === 'get') {
                 return (key: string): string | undefined => {

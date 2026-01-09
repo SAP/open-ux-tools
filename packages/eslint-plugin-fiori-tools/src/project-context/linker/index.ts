@@ -36,7 +36,6 @@ export function linkProject(parsedProject: ParsedProject): [LinkedModel, Diagnos
         }
         if (linkedFeV4App.pages.length > 0 && linkedFeV2App.pages.length === 0) {
             model.apps[appRoot] = linkedFeV4App;
-            continue;
         }
         // TODO: Report error if both FEv4 and FEv2 pages are detected
     }

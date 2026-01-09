@@ -72,18 +72,19 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const child = node[key];
 
-                if (child) {
-                    if (Array.isArray(child)) {
-                        for (const grandchild of child) {
-                            visit(grandchild, node);
-                        }
-                    } else if (node.type === 'element' && key === 'attributes') {
-                        for (const grandchild of Object.values(child as Record<string, Attribute>)) {
-                            visit(grandchild, node);
-                        }
-                    } else {
-                        visit(child, node);
+                if (!child) {
+                    return;
+                }
+                if (Array.isArray(child)) {
+                    for (const grandchild of child) {
+                        visit(grandchild, node);
                     }
+                } else if (node.type === 'element' && key === 'attributes') {
+                    for (const grandchild of Object.values(child as Record<string, Attribute>)) {
+                        visit(grandchild, node);
+                    }
+                } else {
+                    visit(child, node);
                 }
             }
             steps.push(
@@ -94,7 +95,7 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
                 })
             );
         };
-        visit(this.ast, undefined);
+        visit(this.ast);
 
         return steps;
     }

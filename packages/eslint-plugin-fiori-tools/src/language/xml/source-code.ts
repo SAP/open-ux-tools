@@ -98,7 +98,7 @@ export class FioriXMLSourceCode extends TextSourceCodeBase {
                 })
             );
         };
-        visit(this.ast, undefined);
+        visit(this.ast);
 
         return steps;
     }

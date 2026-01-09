@@ -360,7 +360,7 @@ function getMinUI5Version(manifest: Manifest): MinUI5Version | undefined {
             patch: 0
         };
     }
-    const [major, minor, patch] = rawValue.split('.').map((part) => parseInt(part, 10));
+    const [major, minor, patch] = rawValue.split('.').map((part) => Number.parseInt(part, 10));
     return {
         raw: rawValue,
         major: Number.isNaN(major) ? 0 : major,
