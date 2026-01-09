@@ -133,6 +133,11 @@ export function createFioriRule<
 
 /**
  * Creates a JSON visitor with matchers for applicable diagnostics.
+ *
+ * @param sourceCode
+ * @param cachedDiagnostics
+ * @param context
+ * @param createJsonVisitorHandler
  */
 function createJsonVisitorWithMatchers<
     MessageIds extends string,
