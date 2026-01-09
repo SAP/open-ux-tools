@@ -1,17 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { pathToFileURL } from 'node:url';
 
 import type { ServiceInfo } from '@sap-ux/project-access';
 import type { AliasInformation, AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
-import {
-    createMetadataCollector,
-    getMetadataElementsFromMap
-    // createCdsCompilerFacadeForRootSync
-} from '@sap/ux-cds-compiler-facade';
-import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 import { MetadataService } from '@sap-ux/odata-entity-model';
 
 import { XML_VOCABULARY_SERVICE, XMLAnnotationServiceAdapter } from './xml';
@@ -65,10 +58,10 @@ export function getXmlServiceArtifacts(
  *
  */
 export class CdsAnnotationProvider {
-    private static serviceInfoCache = new Map<string, ServiceInfo[]>();
-    private static serviceArtifactCache = new Map<string, Record<string, ServiceArtifacts>>();
-    private static cdsCache = new Map<string, CdsCompilerFacade>();
-    private static vocabularyService = new VocabularyService(true);
+    private static readonly serviceInfoCache = new Map<string, ServiceInfo[]>();
+    private static readonly serviceArtifactCache = new Map<string, Record<string, ServiceArtifacts>>();
+    private static readonly cdsCache = new Map<string, CdsCompilerFacade>();
+    private static readonly vocabularyService = new VocabularyService(true);
 
     /**
      * Get CDS service artifacts.
@@ -91,9 +84,9 @@ export class CdsAnnotationProvider {
                 return cachedService;
             }
         }
-
-        const facade = this.getFacade(rootPath, fileCache, false);
-
+        return undefined;
+        /* eslint-disable @typescript-eslint/no-unused-vars -- Commented out implementation kept for future reference */
+        // const facade = this.getFacade(rootPath, fileCache, false);
         // const services = this.serviceInfoCache.get(rootPath) ?? [];
         // const serviceInfo = services.find((s) => uniformUrl(s.urlPath) === uniformUrl(servicePath));
         // if (!serviceInfo) {
@@ -171,6 +164,7 @@ export class CdsAnnotationProvider {
         _ignoreCache = false
     ): CdsCompilerFacade {
         throw new Error('Not implemented yet.');
+        /* eslint-disable @typescript-eslint/no-unused-vars -- Commented out implementation kept for future reference */
         // const cachedValue = this.cdsCache.get(rootPath);
         // if (cachedValue && ignoreCache === false) {
         //     return cachedValue;
@@ -228,6 +222,7 @@ function getAliasInfo(
     return aliasInformation;
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars -- Commented out implementation kept for future reference */
 /**
  * Normalizes a URL by replacing backslashes with forward slashes and removing leading slashes.
  *
@@ -235,9 +230,9 @@ function getAliasInfo(
  * @returns The normalized URL.
  */
 
-function uniformUrl(url: string): string {
-    return url
-        .replace(/\\/g, '/')
-        .replace(/\/\//g, '/')
-        .replace(/(?:^\/)/g, '');
-}
+// function uniformUrl(url: string): string {
+//     return url
+//         .replaceAll(/\\/g, '/')
+//         .replaceAll(/\/\//g, '/')
+//         .replaceAll(/(?:^\/)/g, '');
+// }

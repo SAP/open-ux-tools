@@ -25,11 +25,10 @@ export interface AnnotationBasedNode<T extends string, Children = never> {
 }
 
 export type TableSectionNode = AnnotationBasedNode<'table-section', TableNode>;
-export type SectionNode = TableSectionNode;
 
 export type TableNode = AnnotationBasedNode<'table'>;
 
-export type AnnotationNode = SectionNode | TableNode;
+export type AnnotationNode = TableSectionNode | TableNode;
 export type NodeLookup = {
     [K in AnnotationNode['type']]?: Extract<AnnotationNode, { type: K }>[];
 };
@@ -62,8 +61,12 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
  * @param entityType
  * @param service
  */
-export function collectSections(feVersion: 'v2' | 'v4', entityType: string, service: ParsedService): SectionNode[] {
-    const sections: SectionNode[] = [];
+export function collectSections(
+    feVersion: 'v2' | 'v4',
+    entityType: string,
+    service: ParsedService
+): TableSectionNode[] {
+    const sections: TableSectionNode[] = [];
     const facetsKey = buildAnnotationIndexKey(entityType, 'com.sap.vocabularies.UI.v1.Facets');
     const facets = service.index.annotations[facetsKey]?.['undefined'];
 
@@ -107,7 +110,7 @@ export function collectSections(feVersion: 'v2' | 'v4', entityType: string, serv
                     }
                     const [term, qualifier] = _annotationPath.split('#');
                     if (term === UI_LINE_ITEM) {
-                        const section: SectionNode = {
+                        const section: TableSectionNode = {
                             type: 'table-section',
                             annotationPath: `@com.sap.vocabularies.UI.v1.Facets/${index}`,
                             annotation: facets,

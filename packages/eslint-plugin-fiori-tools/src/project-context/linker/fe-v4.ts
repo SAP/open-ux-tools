@@ -2,7 +2,7 @@ import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
 import type { LinkerContext } from './types';
 import { getParsedServiceByName } from '../utils';
-import type { AnnotationNode, SectionNode, TableNode, TableSectionNode } from './annotations';
+import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectTables, collectSections } from './annotations';
 
 export interface ApplicationSetting {
@@ -353,7 +353,7 @@ function linkListReportTable(
  * @param pagePath
  */
 function collectTableSections(
-    section: SectionNode,
+    section: TableSectionNode,
     controls: Record<string, Section | Table>,
     pagePath: string[]
 ): void {
@@ -391,7 +391,7 @@ function linkObjectPageSections(
     page: FeV4ObjectPage,
     pathToPage: string[],
     pageName: string,
-    sections: SectionNode[],
+    sections: TableSectionNode[],
     configuration: Target
 ): void {
     const controls: Record<string, Section | Table> = {};

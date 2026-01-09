@@ -181,7 +181,7 @@ export class ProjectContext {
     /**
      * If set to true, forces re-indexing on the first update of a file.
      */
-    public static forceReindexOnFirstUpdate = false;
+    public static forceReindexOnFirstUpdate = false; // NOSONAR - Property must be mutable for test setup
 
     /**
      * Creates a ProjectContext for the given file path.

@@ -11,9 +11,9 @@ export class DiagnosticCache {
     /**
      * If set to true, forces cache clear on the first update of a file.
      */
-    public static forceReindexOnFirstUpdate = false;
+    public static forceReindexOnFirstUpdate = false; // NOSONAR - Property must be mutable for test setup
     private static cache: InternalDiagnosticCache = {};
-    private static requests: Map<string, number> = new Map();
+    private static readonly requests: Map<string, number> = new Map();
 
     /**
      * Get diagnostics for a given key.

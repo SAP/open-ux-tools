@@ -61,13 +61,11 @@ export class FioriLanguage
     columnStart = 1 as const;
     nodeTypeKey = 'type';
 
-    constructor() {}
-
     /**
      *
      * @param _languageOptions
      */
-    validateLanguageOptions(_languageOptions: FioriLanguageOptions): void {}
+    validateLanguageOptions(_languageOptions: FioriLanguageOptions): void {} // NOSONAR - Empty method required by ESLint Language interface
 
     visitorKeys = { ...xmlVisitorKeys, ...Object.fromEntries(jsonVisitorKeys), ...annotationVisitorKeys };
 

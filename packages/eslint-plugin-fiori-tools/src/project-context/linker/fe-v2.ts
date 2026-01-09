@@ -3,7 +3,7 @@ import type { LinkerContext } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { ParsedService } from '../parser';
 
-import type { AnnotationNode, SectionNode, TableNode, TableSectionNode } from './annotations';
+import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectSections, collectTables } from './annotations';
 
 export interface ApplicationSetting {
@@ -326,7 +326,7 @@ function linkListReportTable(
     }
     for (const control of Object.values(controls)) {
         page.lookup[control.type] ??= [];
-        (page.lookup[control.type]! as Extract<Table | OrphanTable, { type: typeof control.type }>[])!.push(control);
+        (page.lookup[control.type] as (Table | OrphanTable)[]).push(control);
     }
 }
 
@@ -344,7 +344,7 @@ function linkObjectPageSections(
     pathToPage: string[],
     entity: MetadataElement,
     service: ParsedService,
-    sections: SectionNode[],
+    sections: TableSectionNode[],
     configuration: ManifestPageSettings
 ): void {
     const controls: Record<string, Section | Table> = {};
@@ -424,13 +424,10 @@ function linkObjectPageSections(
 
             let createMode: string | undefined;
             let tableType: string | undefined;
-            // let sectionEntityKey = '';
             if (sectionConfig.createMode !== undefined) {
-                // sectionEntityKey = sectionKey;
                 createMode = sectionConfig.createMode;
             }
             if (sectionConfig.tableSettings?.type !== undefined) {
-                // sectionEntityKey = sectionKey;
                 tableType = sectionConfig.tableSettings.type;
             }
 
