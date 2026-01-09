@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.27.1
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 1.27.0
 
 ### Minor Changes

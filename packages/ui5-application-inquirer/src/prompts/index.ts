@@ -14,13 +14,7 @@ import {
     getAddFlpConfigPrompt,
     getEnableVirtualEndpoints
 } from './prompts1';
-import {
-    getShowAdvancedPrompt,
-    getUI5ThemePrompt,
-    getEnableEsLintPrompt,
-    getEnableCodeAssistPrompt,
-    getSkipAnnotationsPrompt
-} from './prompts2';
+import { getShowAdvancedPrompt, getUI5ThemePrompt, getEnableEsLintPrompt, getSkipAnnotationsPrompt } from './prompts2';
 import { validateFioriAppProjectFolder } from '@sap-ux/project-input-validator';
 import { promptNames } from '../types';
 import { hidePrompts } from './prompt-helpers';
@@ -82,7 +76,6 @@ export async function getQuestions(
         [promptNames.showAdvanced]: getShowAdvancedPrompt(),
         [promptNames.ui5Theme]: getUI5ThemePrompt(),
         [promptNames.enableEslint]: getEnableEsLintPrompt(),
-        [promptNames.enableCodeAssist]: getEnableCodeAssistPrompt(),
         [promptNames.skipAnnotations]: getSkipAnnotationsPrompt()
     };
 

@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.8
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 0.4.7
 
 ### Patch Changes
