@@ -3,9 +3,8 @@ import { t } from '../../../i18n';
 
 /**
  * Ensure the path specified is a valid CAP project.
- * Now supports relative paths like "../my-cap-project" by resolving them properly.
  *
- * @param capProjectPath - The path to the CAP project (can be relative or absolute)
+ * @param capProjectPath - The path to the CAP project
  * @returns A boolean indicating if the path is a valid CAP project or an error message
  */
 export async function validateCapPath(capProjectPath: string): Promise<boolean | string> {

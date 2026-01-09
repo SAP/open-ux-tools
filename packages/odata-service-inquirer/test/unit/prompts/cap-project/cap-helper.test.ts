@@ -184,23 +184,6 @@ describe('cap-helper', () => {
         expect(findCapProjectsSpy).toHaveBeenCalledTimes(1);
     });
 
-    test('getCapProjectChoices: Prioritises projects matching search paths', async () => {
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-        // Use platform-specific path separators for cross-platform compatibility
-        const projectPaths = [`${sep}project-a`, `${sep}project-b`, `${sep}project-c`];
-        const searchPath = `${sep}project-b${sep}subfolder${sep}app`;
-
-        const findCapProjectsSpy = jest
-            .spyOn(sapuxProjectAccess, 'findCapProjects')
-            .mockResolvedValueOnce(projectPaths);
-
-        const choices = await getCapProjectChoices([searchPath]);
-        const choiceNames = choices.filter((c) => typeof c.value === 'object').map((c) => (c.value as any).folderName);
-
-        // project-b should be prioritized first
-        expect(choiceNames[0]).toBe('project-b');
-    });
-
     if (os.platform() === 'win32') {
         test('getCapProjectChoices: Windows specific drive letter casing test', async () => {
             const findCapProjectsSpy = jest

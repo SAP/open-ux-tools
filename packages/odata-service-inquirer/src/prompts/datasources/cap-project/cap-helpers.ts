@@ -6,7 +6,7 @@ import {
     getCdsRoots,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import { basename, isAbsolute, relative, resolve, sep } from 'node:path';
+import { basename, dirname, isAbsolute, relative } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice } from '../../../types';
 import type { CapService } from '@sap-ux/cap-config-writer';
@@ -16,6 +16,7 @@ import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './ty
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { realpath } from 'node:fs/promises';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { cwd } from 'node:process';
 
 export const enterCapPathChoiceValue = 'enterCapPath';
 
@@ -32,21 +33,16 @@ async function getCapProjectPaths(
     const capProjectRoots = await findCapProjects({ wsFolders: paths });
     if (capProjectRoots.length === 0 && getHostEnvironment() === hostEnvironment.cli) {
         // If no CAP projects found, search parent directories (up to 2 levels)
-        const parentPaths = paths.flatMap((p) => {
-            const parts = p.split(sep);
-            const parentLevels = Math.min(parts.length - 1, 2);
-
-            return Array.from({ length: parentLevels }, (_, i) =>
-                resolve(parts.slice(0, parts.length - (i + 1)).join(sep))
-            );
-        });
+        const parentPath = dirname(cwd());
+        const grandparentPath = dirname(parentPath);
         // Second call is needed, since we don't want to traverse the whole fs
-        const capProjectsTwoLevelsUp = await findCapProjects({
-            wsFolders: parentPaths,
+        const capProjectsUp = await findCapProjects({
+            wsFolders: [parentPath, grandparentPath],
             noTraversal: true
         });
-        if (capProjectsTwoLevelsUp.length > 0) {
-            capProjectRoots.push(...capProjectsTwoLevelsUp);
+        if (capProjectsUp.length > 0) {
+            // Add only the first found project from parent search, since we only want the current project's parent
+            capProjectRoots.push(capProjectsUp[0]);
         }
     }
     const capRootPaths: CapProjectRootPath[] = [];
@@ -61,28 +57,7 @@ async function getCapProjectPaths(
         folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
 
-    // Get the priority index of the matching path in the paths array, or -1 if no match is found
-    const getPathPriority = (projectPath: string): number => {
-        return paths.findIndex((searchPath) => searchPath === projectPath || searchPath.startsWith(projectPath + sep));
-    };
-
-    // Sort CAP projects by match priority, then alphabetically. Non-matching projects appear last.
-    capRootPaths.sort((a, b) => {
-        const priorityA = getPathPriority(a.path);
-        const priorityB = getPathPriority(b.path);
-        let result;
-
-        if (priorityA === -1) {
-            result = 1;
-        } else if (priorityB === -1) {
-            result = -1;
-        } else if (priorityA !== priorityB) {
-            result = priorityA - priorityB;
-        } else {
-            result = a.folderName.localeCompare(b.folderName);
-        }
-        return result;
-    });
+    capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName));
 
     return {
         capProjectPaths: capRootPaths,
