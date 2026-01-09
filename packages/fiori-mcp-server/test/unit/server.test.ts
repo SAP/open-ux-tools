@@ -188,7 +188,6 @@ describe('FioriFunctionalityServer', () => {
                 'list_fiori_apps',
                 expect.objectContaining({
                     tool: 'list_fiori_apps',
-                    functionalityId: '',
                     mcpClientName: 'my-custom-client',
                     mcpClientVersion: '2.0.0'
                 }),
@@ -265,7 +264,6 @@ describe('FioriFunctionalityServer', () => {
                 'list_fiori_apps',
                 {
                     tool: 'list_fiori_apps',
-                    functionalityId: '',
                     mcpClientName: 'unknown-client',
                     mcpClientVersion: 'unknown-version'
                 },
@@ -323,7 +321,6 @@ describe('FioriFunctionalityServer', () => {
                 'list_functionality',
                 {
                     tool: 'list_functionality',
-                    functionalityId: '',
                     mcpClientName: 'unknown-client',
                     mcpClientVersion: 'unknown-version'
                 },
@@ -451,16 +448,7 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                unknownTool,
-                {
-                    tool: 'unknown-tool-id',
-                    functionalityId: '',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                undefined
-            );
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(unknownTool, {}, undefined);
         });
         test('Unknown tool - valid characters in functionalityId', async () => {
             // eslint-disable-next-line no-new
@@ -481,16 +469,7 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                unknownTool,
-                {
-                    tool: 'unknown-tool-id2',
-                    functionalityId: 'f1',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                undefined
-            );
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(unknownTool, {}, undefined);
         });
 
         test('Unknown tool - invalid characters in functionalityId', async () => {
@@ -512,261 +491,7 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                unknownTool,
-                {
-                    tool: 'unknown-tool-id2',
-                    functionalityId: '',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                undefined
-            );
-        });
-
-        test('getfunctionalityIdFromArgs - valid functionalityId with letters, numbers, and hyphens', async () => {
-            const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
-                functionalityId: 'add-page',
-                description: 'Add page...',
-                name: 'add-page',
-                parameters: {}
-            });
-            // eslint-disable-next-line no-new
-            new FioriFunctionalityServer();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const onRequestCB = setRequestHandlerCall[1];
-            await onRequestCB({
-                params: {
-                    name: 'get_functionality_details',
-                    arguments: {
-                        appPath: 'app1',
-                        functionalityId: 'add-page-123'
-                    }
-                }
-            });
-            expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'get_functionality_details',
-                {
-                    tool: 'get_functionality_details',
-                    functionalityId: 'add-page-123',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                'app1'
-            );
-        });
-
-        test('getfunctionalityIdFromArgs - valid functionalityId with forward slashes', async () => {
-            const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
-                functionalityId: 'add/page',
-                description: 'Add page...',
-                name: 'add/page',
-                parameters: {}
-            });
-            // eslint-disable-next-line no-new
-            new FioriFunctionalityServer();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const onRequestCB = setRequestHandlerCall[1];
-            await onRequestCB({
-                params: {
-                    name: 'get_functionality_details',
-                    arguments: {
-                        appPath: 'app1',
-                        functionalityId: 'add/page/new'
-                    }
-                }
-            });
-            expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'get_functionality_details',
-                {
-                    tool: 'get_functionality_details',
-                    functionalityId: 'add/page/new',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                'app1'
-            );
-        });
-
-        test('getfunctionalityIdFromArgs - valid functionalityId with backslashes', async () => {
-            const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
-                functionalityId: 'add\\page',
-                description: 'Add page...',
-                name: 'add\\page',
-                parameters: {}
-            });
-            // eslint-disable-next-line no-new
-            new FioriFunctionalityServer();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const onRequestCB = setRequestHandlerCall[1];
-            await onRequestCB({
-                params: {
-                    name: 'get_functionality_details',
-                    arguments: {
-                        appPath: 'app1',
-                        functionalityId: 'add\\page\\new'
-                    }
-                }
-            });
-            expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'get_functionality_details',
-                {
-                    tool: 'get_functionality_details',
-                    functionalityId: 'add\\page\\new',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                'app1'
-            );
-        });
-
-        test('getfunctionalityIdFromArgs - empty string for functionalityId with invalid characters (JSON object)', async () => {
-            const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
-                functionalityId: 'add-page',
-                description: 'Add page...',
-                name: 'add-page',
-                parameters: {}
-            });
-            // eslint-disable-next-line no-new
-            new FioriFunctionalityServer();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const onRequestCB = setRequestHandlerCall[1];
-            await onRequestCB({
-                params: {
-                    name: 'get_functionality_details',
-                    arguments: {
-                        appPath: 'app1',
-                        functionalityId: { id: 'add-page' }
-                    }
-                }
-            });
-            expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'get_functionality_details',
-                {
-                    tool: 'get_functionality_details',
-                    functionalityId: '',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                'app1'
-            );
-        });
-
-        test('getfunctionalityIdFromArgs - empty string for functionalityId with special characters', async () => {
-            const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
-                functionalityId: 'add-page',
-                description: 'Add page...',
-                name: 'add-page',
-                parameters: {}
-            });
-            // eslint-disable-next-line no-new
-            new FioriFunctionalityServer();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const onRequestCB = setRequestHandlerCall[1];
-            await onRequestCB({
-                params: {
-                    name: 'get_functionality_details',
-                    arguments: {
-                        appPath: 'app1',
-                        functionalityId: 'add-page@123'
-                    }
-                }
-            });
-            expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'get_functionality_details',
-                {
-                    tool: 'get_functionality_details',
-                    functionalityId: '',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                'app1'
-            );
-        });
-
-        test('getfunctionalityIdFromArgs - valid functionalityId with spaces', async () => {
-            const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
-                functionalityId: 'add page',
-                description: 'Add page...',
-                name: 'add page',
-                parameters: {}
-            });
-            // eslint-disable-next-line no-new
-            new FioriFunctionalityServer();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const onRequestCB = setRequestHandlerCall[1];
-            await onRequestCB({
-                params: {
-                    name: 'get_functionality_details',
-                    arguments: {
-                        appPath: 'app1',
-                        functionalityId: 'add page new'
-                    }
-                }
-            });
-            expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'get_functionality_details',
-                {
-                    tool: 'get_functionality_details',
-                    functionalityId: 'add page new',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                'app1'
-            );
-        });
-
-        test('getfunctionalityIdFromArgs - empty string for empty functionalityId', async () => {
-            const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
-                functionalityId: 'add-page',
-                description: 'Add page...',
-                name: 'add-page',
-                parameters: {}
-            });
-            // eslint-disable-next-line no-new
-            new FioriFunctionalityServer();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const onRequestCB = setRequestHandlerCall[1];
-            await onRequestCB({
-                params: {
-                    name: 'get_functionality_details',
-                    arguments: {
-                        appPath: 'app1',
-                        functionalityId: ''
-                    }
-                }
-            });
-            expect(getFunctionalityDetailsSpy).toHaveBeenCalledTimes(1);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                'get_functionality_details',
-                {
-                    tool: 'get_functionality_details',
-                    functionalityId: '',
-                    mcpClientName: 'unknown-client',
-                    mcpClientVersion: 'unknown-version'
-                },
-                'app1'
-            );
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(unknownTool, {}, undefined);
         });
     });
 

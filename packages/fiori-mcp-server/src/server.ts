@@ -85,35 +85,6 @@ export class FioriFunctionalityServer {
     }
 
     /**
-     * Extracts and returns the functionalityId from arguments as a string.
-     * Only returns the functionalityId if it contains valid characters: letters, numbers, hyphens, forward slashes, backslashes, or spaces.
-     *
-     * @param args - The arguments object containing functionalityId
-     * @returns The functionalityId as a string if valid, otherwise an empty string
-     */
-    private getfunctionalityIdFromArgs(args: unknown): string {
-        if (typeof args === 'object' && args !== null && 'functionalityId' in args) {
-            const functionalityId = (args as Record<string, unknown>).functionalityId;
-
-            // Convert to string if not already
-            let idString = '';
-            if (typeof functionalityId === 'string') {
-                idString = functionalityId;
-            } else if (functionalityId !== null && functionalityId !== undefined) {
-                idString = JSON.stringify(functionalityId);
-            }
-
-            // Validate: only allow characters, numbers, hyphens, forward slashes, backslashes, and spaces
-            const validPattern = /^[a-zA-Z0-9\-/\\ ]+$/;
-            if (idString && validPattern.test(idString)) {
-                return idString;
-            }
-        }
-
-        return '';
-    }
-
-    /**
      * Sets up handlers for various MCP tools.
      * Configures handlers for listing tools, and calling specific Fiori functionality tools.
      */
@@ -152,7 +123,9 @@ export class FioriFunctionalityServer {
                     mcpClientName: this.mcpClientName,
                     mcpClientVersion: this.mcpClientVersion
                 };
-                telemetryProperties.functionalityId = this.getfunctionalityIdFromArgs(args);
+                if ('functionalityId' in args) {
+                    telemetryProperties.functionalityId = args.functionalityId as string;
+                }
 
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
 
@@ -173,7 +146,8 @@ export class FioriFunctionalityServer {
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
                     default:
-                        await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);
+                        // Do not pass telemetryProperties to unknownTool
+                        await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
                             `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
                         );
