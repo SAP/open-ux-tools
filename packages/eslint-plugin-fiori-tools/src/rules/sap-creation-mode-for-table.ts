@@ -1,14 +1,493 @@
 import type { MemberNode } from '@humanwhocodes/momoa';
+import type { RuleContext } from '@eslint/core';
 
 import { createFioriRule } from '../language/rule-factory';
 import type { FioriRuleDefinition } from '../types';
 import type { CreateModeMessageId, CreationModeForTable } from '../language/diagnostics';
 import { CREATION_MODE_FOR_TABLE } from '../language/diagnostics';
 import type { ParsedApp } from '../project-context/parser';
+import type { FioriLanguageOptions, FioriSourceCode, Node } from '../language/fiori-language';
+import type { Table as V2Table, FeV2ObjectPage } from '../project-context/linker/fe-v2';
+import type { Table as V4Table, FeV4ObjectPage } from '../project-context/linker/fe-v4';
 
 const RECOMMENDED_MODE_V2 = 'creationRows';
 const RECOMMENDED_MODE_V4_RESPONSIVE_GRID = 'InlineCreationRows';
 const RECOMMENDED_MODE_V4_TREE = 'Inline';
+
+interface CreateModeConfig {
+    valueInFile?: string | undefined;
+    values: string[];
+    configurationPath: string[];
+}
+
+/**
+ * Reports a diagnostic issue related to creation mode configuration.
+ *
+ * @param problems - Array to collect diagnostic problems
+ * @param options - Diagnostic options
+ * @param options.messageId - The message identifier for the diagnostic
+ * @param options.pageName - Name of the page where the issue occurs
+ * @param options.parsedApp - Parsed application context
+ * @param options.configurationPath - Path to the configuration in manifest
+ * @param options.tableType - Type of table (e.g., 'GridTable', 'ResponsiveTable')
+ * @param options.validValues - Valid values for the configuration
+ * @param options.recommendedValue - Recommended value for the configuration
+ */
+function reportDiagnostic(
+    problems: CreationModeForTable[],
+    {
+        messageId,
+        pageName,
+        parsedApp,
+        configurationPath,
+        tableType,
+        validValues = [],
+        recommendedValue
+    }: {
+        messageId: CreateModeMessageId;
+        pageName: string;
+        parsedApp: ParsedApp;
+        configurationPath: string[];
+        tableType: string;
+        validValues?: string[];
+        recommendedValue?: string;
+    }
+): void {
+    problems.push({
+        type: CREATION_MODE_FOR_TABLE,
+        messageId,
+        pageName,
+        tableType,
+        validValues,
+        recommendedValue,
+        manifest: {
+            uri: parsedApp.manifest.manifestUri,
+            object: parsedApp.manifestObject,
+            propertyPath: configurationPath
+        }
+    });
+}
+
+/**
+ * Checks if an analytical table has createMode configured at any level in V2 applications.
+ * Analytical tables do not support creation mode and this function reports diagnostics if configured.
+ *
+ * @param tableType - Type of the table
+ * @param sectionCreateMode - Create mode configuration at section level
+ * @param pageCreateMode - Create mode configuration at page level
+ * @param appCreateMode - Create mode configuration at application level
+ * @param pageName - Name of the page
+ * @param parsedApp - Parsed application context
+ * @param problems - Array to collect diagnostic problems
+ * @returns True if analytical table issue was found and reported, false otherwise
+ */
+function checkAnalyticalTableV2(
+    tableType: string,
+    sectionCreateMode: CreateModeConfig,
+    pageCreateMode: CreateModeConfig,
+    appCreateMode: CreateModeConfig,
+    pageName: string,
+    parsedApp: ParsedApp,
+    problems: CreationModeForTable[]
+): boolean {
+    if (tableType !== 'AnalyticalTable') {
+        return false;
+    }
+
+    if (sectionCreateMode.valueInFile) {
+        reportDiagnostic(problems, {
+            messageId: 'analyticalTableNotSupported',
+            pageName,
+            parsedApp,
+            configurationPath: sectionCreateMode.configurationPath,
+            tableType
+        });
+        return true;
+    }
+    if (pageCreateMode.valueInFile) {
+        reportDiagnostic(problems, {
+            messageId: 'analyticalTableNotSupported',
+            pageName,
+            parsedApp,
+            configurationPath: pageCreateMode.configurationPath,
+            tableType
+        });
+        return true;
+    }
+    if (appCreateMode.valueInFile) {
+        reportDiagnostic(problems, {
+            messageId: 'analyticalTableNotSupported',
+            pageName,
+            parsedApp,
+            configurationPath: appCreateMode.configurationPath,
+            tableType
+        });
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Validates the create mode configuration for V2 applications.
+ * Checks if the value is valid and recommends the best practice value.
+ *
+ * @param createMode - Create mode configuration to validate
+ * @param pageName - Name of the page
+ * @param parsedApp - Parsed application context
+ * @param tableType - Type of the table
+ * @param problems - Array to collect diagnostic problems
+ * @returns True if validation found and reported an issue, false if no configuration exists
+ */
+function validateCreateModeV2(
+    createMode: CreateModeConfig,
+    pageName: string,
+    parsedApp: ParsedApp,
+    tableType: string,
+    problems: CreationModeForTable[]
+): boolean {
+    if (!createMode.valueInFile) {
+        return false;
+    }
+
+    if (!createMode.values.includes(createMode.valueInFile)) {
+        reportDiagnostic(problems, {
+            messageId: 'invalidCreateMode',
+            pageName,
+            parsedApp,
+            configurationPath: createMode.configurationPath,
+            tableType,
+            validValues: createMode.values
+        });
+        return true;
+    }
+
+    if (createMode.valueInFile !== RECOMMENDED_MODE_V2) {
+        reportDiagnostic(problems, {
+            messageId: 'recommendCreationRows',
+            pageName,
+            parsedApp,
+            configurationPath: createMode.configurationPath,
+            tableType
+        });
+    }
+    return true;
+}
+
+/**
+ * Processes a single table in a V2 application.
+ * Validates create mode at section, page, and application levels with proper priority.
+ *
+ * @param table - The table node to process
+ * @param page - The object page containing the table
+ * @param appCreateMode - Application-level create mode configuration
+ * @param parsedApp - Parsed application context
+ * @param problems - Array to collect diagnostic problems
+ */
+function processTableV2(
+    table: V2Table,
+    page: FeV2ObjectPage,
+    appCreateMode: CreateModeConfig,
+    parsedApp: ParsedApp,
+    problems: CreationModeForTable[]
+): void {
+    const sectionCreateMode = table.configuration.createMode;
+    const pageCreateMode = page.configuration.createMode;
+    const tableType = table.configuration.tableType?.valueInFile ?? '';
+
+    // Check analytical table
+    if (
+        checkAnalyticalTableV2(
+            tableType,
+            sectionCreateMode,
+            pageCreateMode,
+            appCreateMode,
+            page.targetName,
+            parsedApp,
+            problems
+        )
+    ) {
+        return;
+    }
+
+    // Check section, page, then app level
+    if (validateCreateModeV2(sectionCreateMode, page.targetName, parsedApp, tableType, problems)) {
+        return;
+    }
+    if (validateCreateModeV2(pageCreateMode, page.targetName, parsedApp, tableType, problems)) {
+        return;
+    }
+    if (validateCreateModeV2(appCreateMode, page.targetName, parsedApp, tableType, problems)) {
+        return;
+    }
+
+    // Suggest app level only once
+    if (!problems.some((p) => p.messageId === 'suggestAppLevel' && p.manifest.uri === parsedApp.manifest.manifestUri)) {
+        reportDiagnostic(problems, {
+            messageId: 'suggestAppLevel',
+            pageName: page.targetName,
+            parsedApp,
+            configurationPath: appCreateMode.configurationPath,
+            tableType
+        });
+    }
+}
+
+/**
+ * Checks if an analytical table has creationMode configured at any level in V4 applications.
+ * Analytical tables do not support creation mode and this function reports diagnostics if configured.
+ *
+ * @param tableType - Type of the table
+ * @param tableCreationMode - Creation mode configuration at table level
+ * @param appCreateMode - Create mode configuration at application level
+ * @param pageName - Name of the page
+ * @param parsedApp - Parsed application context
+ * @param problems - Array to collect diagnostic problems
+ * @returns True if analytical table issue was found and reported, false otherwise
+ */
+function checkAnalyticalTableV4(
+    tableType: string,
+    tableCreationMode: CreateModeConfig,
+    appCreateMode: CreateModeConfig,
+    pageName: string,
+    parsedApp: ParsedApp,
+    problems: CreationModeForTable[]
+): boolean {
+    if (tableType !== 'AnalyticalTable') {
+        return false;
+    }
+
+    if (tableCreationMode.valueInFile) {
+        reportDiagnostic(problems, {
+            messageId: 'analyticalTableNotSupported',
+            pageName,
+            parsedApp,
+            configurationPath: tableCreationMode.configurationPath,
+            tableType
+        });
+        return true;
+    }
+    if (appCreateMode.valueInFile) {
+        reportDiagnostic(problems, {
+            messageId: 'analyticalTableNotSupported',
+            pageName,
+            parsedApp,
+            configurationPath: appCreateMode.configurationPath,
+            tableType
+        });
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Gets the recommended creation mode value based on table type for V4 applications.
+ *
+ * @param tableType - Type of the table
+ * @returns 'Inline' for TreeTable, 'InlineCreationRows' for other table types
+ */
+function getRecommendedValueV4(tableType: string): string {
+    return tableType === 'TreeTable' ? RECOMMENDED_MODE_V4_TREE : RECOMMENDED_MODE_V4_RESPONSIVE_GRID;
+}
+
+/**
+ * Validates the creation mode configuration for V4 applications.
+ * Checks if the value is valid and recommends the best practice value based on table type.
+ *
+ * @param creationMode - Creation mode configuration to validate
+ * @param pageName - Name of the page
+ * @param parsedApp - Parsed application context
+ * @param tableType - Type of the table
+ * @param recommendedValue - The recommended value for this table type
+ * @param problems - Array to collect diagnostic problems
+ * @returns True if validation found and reported an issue, false if no configuration exists
+ */
+function validateCreationModeV4(
+    creationMode: CreateModeConfig,
+    pageName: string,
+    parsedApp: ParsedApp,
+    tableType: string,
+    recommendedValue: string,
+    problems: CreationModeForTable[]
+): boolean {
+    if (!creationMode.valueInFile) {
+        return false;
+    }
+
+    const validValues = creationMode.values;
+    if (!validValues.includes(creationMode.valueInFile)) {
+        reportDiagnostic(problems, {
+            messageId: 'invalidCreateModeV4',
+            pageName,
+            parsedApp,
+            configurationPath: creationMode.configurationPath,
+            tableType,
+            validValues,
+            recommendedValue
+        });
+        return true;
+    }
+
+    if (creationMode.valueInFile !== recommendedValue) {
+        reportDiagnostic(problems, {
+            messageId: 'recommendInlineCreationRowsV4',
+            pageName,
+            parsedApp,
+            configurationPath: creationMode.configurationPath,
+            tableType,
+            validValues: [],
+            recommendedValue
+        });
+    }
+    return true;
+}
+
+/**
+ * Processes a single table in a V4 application.
+ * Validates creation mode at table and application levels with proper priority.
+ * Different table types have different recommended values.
+ *
+ * @param table - The table node to process
+ * @param page - The object page containing the table
+ * @param appCreateMode - Application-level create mode configuration
+ * @param parsedApp - Parsed application context
+ * @param problems - Array to collect diagnostic problems
+ */
+function processTableV4(
+    table: V4Table,
+    page: FeV4ObjectPage,
+    appCreateMode: CreateModeConfig,
+    parsedApp: ParsedApp,
+    problems: CreationModeForTable[]
+): void {
+    const tableCreationMode = table.configuration.creationMode;
+    const tableType = table.configuration.tableType?.valueInFile ?? '';
+
+    // Check analytical table
+    if (checkAnalyticalTableV4(tableType, tableCreationMode, appCreateMode, page.targetName, parsedApp, problems)) {
+        return;
+    }
+
+    const recommendedValue = getRecommendedValueV4(tableType);
+
+    // Check table level
+    if (validateCreationModeV4(tableCreationMode, page.targetName, parsedApp, tableType, recommendedValue, problems)) {
+        return;
+    }
+
+    // Check app level
+    if (appCreateMode.valueInFile) {
+        const validValues = tableCreationMode.values;
+        if (!validValues.includes(appCreateMode.valueInFile)) {
+            reportDiagnostic(problems, {
+                messageId: 'invalidCreateModeV4',
+                pageName: page.targetName,
+                parsedApp,
+                configurationPath: tableCreationMode.configurationPath,
+                tableType,
+                validValues,
+                recommendedValue
+            });
+            return;
+        }
+        if (appCreateMode.valueInFile !== recommendedValue) {
+            reportDiagnostic(problems, {
+                messageId: 'recommendInlineCreationRowsV4',
+                pageName: page.targetName,
+                parsedApp,
+                configurationPath: tableCreationMode.configurationPath,
+                tableType,
+                validValues: [],
+                recommendedValue
+            });
+        }
+        return;
+    }
+
+    // Suggest app level only once
+    if (
+        !problems.some((p) => p.messageId === 'suggestAppLevelV4' && p.manifest.uri === parsedApp.manifest.manifestUri)
+    ) {
+        reportDiagnostic(problems, {
+            messageId: 'suggestAppLevelV4',
+            pageName: '',
+            parsedApp,
+            configurationPath: appCreateMode.configurationPath,
+            tableType
+        });
+    }
+}
+
+/**
+ * Processes all V2 applications in the project context.
+ * Iterates through apps, pages, and tables to validate creation mode configuration.
+ *
+ * @param context - Rule context containing source code and project information
+ * @param problems - Array to collect diagnostic problems
+ */
+function processV2Apps(
+    context: RuleContext<{
+        LangOptions: FioriLanguageOptions;
+        Code: FioriSourceCode;
+        RuleOptions: [];
+        Node: Node;
+        MessageIds: CreateModeMessageId;
+    }>,
+    problems: CreationModeForTable[]
+): void {
+    for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+        if (app.type !== 'fe-v2') {
+            continue;
+        }
+        const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+        const appCreateMode = app.configuration.createMode;
+
+        for (const page of app.pages) {
+            if (page.type !== 'object-page') {
+                continue;
+            }
+
+            for (const table of page.lookup['table'] ?? []) {
+                processTableV2(table, page, appCreateMode, parsedApp, problems);
+            }
+        }
+    }
+}
+
+/**
+ * Processes all V4 applications in the project context.
+ * Iterates through apps, pages, and tables to validate creation mode configuration.
+ *
+ * @param context - Rule context containing source code and project information
+ * @param problems - Array to collect diagnostic problems
+ */
+function processV4Apps(
+    context: RuleContext<{
+        LangOptions: FioriLanguageOptions;
+        Code: FioriSourceCode;
+        RuleOptions: [];
+        Node: Node;
+        MessageIds: CreateModeMessageId;
+    }>,
+    problems: CreationModeForTable[]
+): void {
+    for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
+        if (app.type !== 'fe-v4') {
+            continue;
+        }
+        const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+        const appCreateMode = app.configuration.createMode;
+
+        for (const page of app.pages) {
+            if (page.type !== 'object-page') {
+                continue;
+            }
+
+            for (const table of page.lookup['table'] ?? []) {
+                processTableV4(table, page, appCreateMode, parsedApp, problems);
+            }
+        }
+    }
+}
 
 const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, CreationModeForTable['type']>({
     ruleId: CREATION_MODE_FOR_TABLE,
@@ -36,310 +515,9 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
     },
     check(context) {
         const problems: CreationModeForTable[] = [];
-        const reportDiagnostic = (
-            messageId: CreateModeMessageId,
-            pageName: string,
-            parsedApp: ParsedApp,
-            configurationPath: string[],
-            tableType: string,
-            validValues: string[] = [],
-            recommendedValue?: string
-        ): void => {
-            problems.push({
-                type: CREATION_MODE_FOR_TABLE,
-                messageId,
-                pageName,
-                tableType,
-                validValues,
-                recommendedValue,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: configurationPath
-                }
-            });
-        };
-        // Process all apps in the project for v2
-        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
-            if (app.type !== 'fe-v2') {
-                continue;
-            }
-            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
-            const appCreateMode = app.configuration.createMode;
-            for (const page of app.pages) {
-                if (page.type !== 'object-page') {
-                    continue;
-                }
-                const pageCreateMode = page.configuration.createMode;
 
-                for (const table of page.lookup['table'] ?? []) {
-                    const sectionCreateMode = table.configuration.createMode;
-                    const tableType = table.configuration.tableType?.valueInFile ?? '';
-
-                    // Check if it's an AnalyticalTable with createMode configured at any level
-                    if (tableType === 'AnalyticalTable') {
-                        if (sectionCreateMode.valueInFile) {
-                            reportDiagnostic(
-                                'analyticalTableNotSupported',
-                                page.targetName,
-                                parsedApp,
-                                sectionCreateMode.configurationPath,
-                                tableType
-                            );
-                            continue;
-                        }
-                        if (pageCreateMode.valueInFile) {
-                            reportDiagnostic(
-                                'analyticalTableNotSupported',
-                                page.targetName,
-                                parsedApp,
-                                pageCreateMode.configurationPath,
-                                tableType
-                            );
-                            continue;
-                        }
-                        if (appCreateMode.valueInFile) {
-                            reportDiagnostic(
-                                'analyticalTableNotSupported',
-                                page.targetName,
-                                parsedApp,
-                                appCreateMode.configurationPath,
-                                tableType
-                            );
-                            continue;
-                        }
-                    }
-
-                    // Check section level first (highest priority)
-                    if (sectionCreateMode.valueInFile) {
-                        if (!sectionCreateMode.values.includes(sectionCreateMode.valueInFile)) {
-                            // invalid value
-                            reportDiagnostic(
-                                'invalidCreateMode',
-                                page.targetName,
-                                parsedApp,
-                                sectionCreateMode.configurationPath,
-                                tableType,
-                                sectionCreateMode.values
-                            );
-                            continue;
-                        }
-                        if (sectionCreateMode.valueInFile !== RECOMMENDED_MODE_V2) {
-                            // recommend better value
-                            reportDiagnostic(
-                                'recommendCreationRows',
-                                page.targetName,
-                                parsedApp,
-                                sectionCreateMode.configurationPath,
-                                tableType
-                            );
-                        }
-                        continue;
-                    }
-
-                    if (pageCreateMode.valueInFile) {
-                        // check page level (second highest priority)
-                        if (!pageCreateMode.values.includes(pageCreateMode.valueInFile)) {
-                            // invalid value
-                            reportDiagnostic(
-                                'invalidCreateMode',
-                                page.targetName,
-                                parsedApp,
-                                pageCreateMode.configurationPath,
-                                tableType,
-                                pageCreateMode.values
-                            );
-                            continue;
-                        }
-                        if (pageCreateMode.valueInFile !== RECOMMENDED_MODE_V2) {
-                            // recommend better value
-                            reportDiagnostic(
-                                'recommendCreationRows',
-                                page.targetName,
-                                parsedApp,
-                                pageCreateMode.configurationPath,
-                                tableType
-                            );
-                        }
-                        continue;
-                    }
-
-                    if (appCreateMode.valueInFile) {
-                        // check app level (lowest priority)
-                        if (!appCreateMode.values.includes(appCreateMode.valueInFile)) {
-                            // invalid value
-                            reportDiagnostic(
-                                'invalidCreateMode',
-                                page.targetName,
-                                parsedApp,
-                                appCreateMode.configurationPath,
-                                tableType,
-                                appCreateMode.values
-                            );
-                            continue;
-                        }
-                        if (appCreateMode.valueInFile !== RECOMMENDED_MODE_V2) {
-                            // recommend better value
-                            reportDiagnostic(
-                                'recommendCreationRows',
-                                page.targetName,
-                                parsedApp,
-                                appCreateMode.configurationPath,
-                                tableType
-                            );
-                        }
-                        continue;
-                    }
-
-                    // suggest adding at app level only once
-                    if (
-                        !problems.some(
-                            (p) =>
-                                p.messageId === 'suggestAppLevel' && p.manifest.uri === parsedApp.manifest.manifestUri
-                        )
-                    ) {
-                        reportDiagnostic(
-                            'suggestAppLevel',
-                            page.targetName,
-                            parsedApp,
-                            appCreateMode.configurationPath,
-                            tableType
-                        );
-                    }
-                }
-            }
-        }
-
-        // Process all apps in the project for v4
-        for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
-            if (app.type !== 'fe-v4') {
-                continue;
-            }
-            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
-            const appCreateMode = app.configuration.createMode;
-            for (const page of app.pages) {
-                if (page.type !== 'object-page') {
-                    continue;
-                }
-                const tables = page.lookup['table'] ?? [];
-
-                for (const table of tables) {
-                    const tableCreationMode = table.configuration.creationMode;
-                    const tableType = table.configuration.tableType?.valueInFile ?? '';
-
-                    // Check if it's an AnalyticalTable with createMode configured at any level
-                    if (tableType === 'AnalyticalTable') {
-                        if (tableCreationMode.valueInFile) {
-                            reportDiagnostic(
-                                'analyticalTableNotSupported',
-                                page.targetName,
-                                parsedApp,
-                                tableCreationMode.configurationPath,
-                                tableType
-                            );
-                            continue;
-                        }
-                        if (appCreateMode.valueInFile) {
-                            reportDiagnostic(
-                                'analyticalTableNotSupported',
-                                page.targetName,
-                                parsedApp,
-                                appCreateMode.configurationPath,
-                                tableType
-                            );
-                            continue;
-                        }
-                    }
-
-                    // Determine valid values and recommended value based on table type
-                    const validValues = table.configuration.creationMode.values;
-                    let recommendedValue: string;
-
-                    if (tableType === 'TreeTable') {
-                        recommendedValue = RECOMMENDED_MODE_V4_TREE;
-                    } else {
-                        // ResponsiveTable, GridTable, or default
-                        recommendedValue = RECOMMENDED_MODE_V4_RESPONSIVE_GRID;
-                    }
-
-                    // Check table level configuration (highest priority)
-                    if (tableCreationMode.valueInFile) {
-                        if (!validValues.includes(tableCreationMode.valueInFile)) {
-                            // invalid value
-                            reportDiagnostic(
-                                'invalidCreateModeV4',
-                                page.targetName,
-                                parsedApp,
-                                tableCreationMode.configurationPath,
-                                tableType,
-                                validValues,
-                                recommendedValue
-                            );
-                            continue;
-                        }
-                        if (tableCreationMode.valueInFile !== recommendedValue) {
-                            // recommend better value
-                            reportDiagnostic(
-                                'recommendInlineCreationRowsV4',
-                                page.targetName,
-                                parsedApp,
-                                tableCreationMode.configurationPath,
-                                tableType,
-                                [],
-                                recommendedValue
-                            );
-                        }
-                        continue;
-                    }
-
-                    // Check application level configuration (lower priority)
-                    if (appCreateMode.valueInFile) {
-                        if (!validValues.includes(appCreateMode.valueInFile)) {
-                            // invalid value at application level for this table type
-                            reportDiagnostic(
-                                'invalidCreateModeV4',
-                                page.targetName,
-                                parsedApp,
-                                table.configuration.creationMode.configurationPath,
-                                tableType,
-                                validValues,
-                                recommendedValue
-                            );
-                            continue;
-                        }
-                        // Only warn if it's not the recommended value for this table type
-                        if (appCreateMode.valueInFile !== recommendedValue) {
-                            reportDiagnostic(
-                                'recommendInlineCreationRowsV4',
-                                page.targetName,
-                                parsedApp,
-                                table.configuration.creationMode.configurationPath,
-                                tableType,
-                                [],
-                                recommendedValue
-                            );
-                        }
-                        continue;
-                    }
-
-                    // Suggest adding creationMode at table level only once per page
-                    if (
-                        !problems.some(
-                            (p) =>
-                                p.messageId === 'suggestAppLevelV4' && p.manifest.uri === parsedApp.manifest.manifestUri
-                        )
-                    ) {
-                        reportDiagnostic(
-                            'suggestAppLevelV4',
-                            '',
-                            parsedApp,
-                            appCreateMode.configurationPath,
-                            tableType
-                        );
-                    }
-                }
-            }
-        }
+        processV2Apps(context, problems);
+        processV4Apps(context, problems);
 
         return problems;
     },
