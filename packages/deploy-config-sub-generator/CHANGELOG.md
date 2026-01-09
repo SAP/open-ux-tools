@@ -1,5 +1,13 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.33
+
+### Patch Changes
+
+- 8275370: Handle the overwrite answer
+- Updated dependencies [8275370]
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.105
+
 ## 0.5.32
 
 ### Patch Changes
