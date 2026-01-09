@@ -360,4 +360,99 @@ describe('LayeredRepositoryService', () => {
             }
         });
     });
+
+    describe('listAdaptations', () => {
+        const appId = 'my.app.id';
+        const adaptationsResponse = {
+            adaptations: [
+                { id: 'CTX1', contexts: { role: ['/UI2/ADMIN'] } },
+                { id: 'DEFAULT', type: 'DEFAULT' }
+            ]
+        };
+
+        test('should fetch adaptations for an app', async () => {
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/apps/${encodeURIComponent(appId)}/adaptations/`)
+                .reply(200, JSON.stringify(adaptationsResponse));
+
+            const result = await service.listAdaptations(appId);
+            expect(result).toEqual(adaptationsResponse);
+        });
+
+        test('should log response when AxiosError is thrown', async () => {
+            const mockAxiosError = {
+                isAxiosError: true,
+                response: {
+                    status: 500,
+                    data: '{ "code": "500", "message": "Internal Server Error" }',
+                    headers: {},
+                    config: {} as any
+                },
+                message: 'Request failed with status code 500'
+            } as AxiosError;
+
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/apps/${encodeURIComponent(appId)}/adaptations/`)
+                .replyWithError(mockAxiosError);
+
+            try {
+                await service.listAdaptations(appId);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe(mockAxiosError.message);
+            }
+        });
+    });
+
+    describe('getKeyUserData', () => {
+        const componentId = 'my.app.id';
+        const adaptationId = 'DEFAULT';
+        const keyUserResponse = {
+            contents: [
+                {
+                    content: {
+                        changeType: 'page',
+                        fileName: 'id_1_page',
+                        namespace: 'apps/my.app.id/changes/',
+                        reference: 'my.app.id'
+                    }
+                }
+            ]
+        };
+
+        test('should fetch key user data for adaptation', async () => {
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/keyuserdata/${componentId}?adaptationId=${adaptationId}`)
+                .reply(200, JSON.stringify(keyUserResponse));
+
+            const result = await service.getKeyUserData(componentId, adaptationId);
+            expect(result).toEqual(keyUserResponse);
+        });
+
+        test('should log response when AxiosError is thrown', async () => {
+            const mockAxiosError = {
+                isAxiosError: true,
+                response: {
+                    status: 404,
+                    data: '{ "code": "404", "message": "Not Found" }',
+                    headers: {},
+                    config: {} as any
+                },
+                message: 'Request failed with status code 404'
+            } as AxiosError;
+
+            nock(server)
+                .get(`${LayeredRepositoryService.PATH}/flex/keyuserdata/${componentId}?adaptationId=${adaptationId}`)
+                .replyWithError(mockAxiosError);
+
+            try {
+                await service.getKeyUserData(componentId, adaptationId);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe(mockAxiosError.message);
+            }
+        });
+    });
 });

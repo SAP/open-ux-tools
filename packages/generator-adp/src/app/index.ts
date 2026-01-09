@@ -50,7 +50,8 @@ import {
     getWizardPages,
     updateCfWizardSteps,
     updateFlpWizardSteps,
-    updateWizardSteps
+    updateWizardSteps,
+    getKeyUserImportPage
 } from '../utils/steps';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getTemplatesOverwritePath } from '../utils/templates';
@@ -70,6 +71,7 @@ import {
 } from './types';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
 import type { AdpTelemetryData } from '../types';
+import { KeyUserImportPrompter } from './questions/key-user-import';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -186,6 +188,10 @@ export default class extends Generator {
      * Telemetry collector instance.
      */
     private telemetryCollector: TelemetryCollector;
+    /**
+     * Key-user import prompter instance.
+     */
+    private keyUserPrompter?: KeyUserImportPrompter;
 
     /**
      * Creates an instance of the generator.
@@ -306,6 +312,22 @@ export default class extends Generator {
             // Steps need to be updated here to be available after back navigation in Yeoman UI.
             this._updateWizardStepsAfterNavigation();
 
+            if (this.attributeAnswers.importKeyUserConfigurations) {
+                this.keyUserPrompter = new KeyUserImportPrompter(
+                    this.systemLookup,
+                    this.configAnswers.application.id,
+                    this.prompter.provider,
+                    this.configAnswers.system,
+                    this.logger
+                );
+                const keyUserQuestions = this.keyUserPrompter.getPrompts({
+                    keyUserSystem: { default: this.configAnswers.system },
+                    keyUserUsername: { default: this.configAnswers.username },
+                    keyUserPassword: { default: this.configAnswers.password }
+                });
+                await this.prompt(keyUserQuestions);
+            }
+
             this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
             if (this.attributeAnswers.addDeployConfig) {
                 const system = await this.systemLookup.getSystemByName(this.configAnswers.system);
@@ -382,7 +404,8 @@ export default class extends Generator {
                 layer: this.layer,
                 packageJson,
                 logger: this.toolsLogger,
-                toolsId: this.toolsId
+                toolsId: this.toolsId,
+                keyUserChanges: this.keyUserPrompter?.changes
             });
 
             if (config.options) {
@@ -730,6 +753,13 @@ export default class extends Generator {
                 this.attributeAnswers.addDeployConfig
             );
         }
+
+        updateWizardSteps(
+            this.prompts,
+            getKeyUserImportPage(),
+            t('yuiNavSteps.projectAttributesName'),
+            !!this.attributeAnswers.importKeyUserConfigurations
+        );
 
         if (!flpPagesExist) {
             updateFlpWizardSteps(

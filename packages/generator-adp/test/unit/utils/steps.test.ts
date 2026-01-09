@@ -9,7 +9,8 @@ import {
     updateWizardSteps,
     updateFlpWizardSteps,
     getSubGenErrorPage,
-    getSubGenAuthPages
+    getSubGenAuthPages,
+    getKeyUserImportPage
 } from '../../../src/utils/steps';
 import { initI18n, t } from '../../../src/utils/i18n';
 
@@ -30,6 +31,11 @@ describe('Wizard Steps Utility', () => {
 
         const steps = prompts['items'] as IPrompt[];
         expect(steps.map((s) => s.name)).toContain(flpStep.name);
+    });
+
+    it('returns key user import page definition', () => {
+        const keyUserStep = getKeyUserImportPage();
+        expect(keyUserStep.name).toBe(t('yuiNavSteps.keyUserImportName'));
     });
 
     it('should not add the step twice if it already exists', () => {

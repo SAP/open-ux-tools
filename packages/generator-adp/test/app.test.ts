@@ -406,7 +406,8 @@ describe('Adaptation Project Generator Integration Test', () => {
                         namespace: 'customer.app.variant',
                         projectName: 'app.variant',
                         title: 'App Title',
-                        ui5Version: '1.134.1'
+                        ui5Version: '1.134.1',
+                        importKeyUserConfigurations: false
                     },
                     configAnswers: {
                         application: apps[0],
