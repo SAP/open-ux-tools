@@ -1,20 +1,133 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
-import type { UIIContextualMenuProps } from '../../../src/components/UIContextualMenu';
+import { render, cleanup } from '@testing-library/react';
 import {
     getUIcontextualMenuCalloutStyles,
     getUIContextualMenuItemStyles,
     UIContextualMenu
 } from '../../../src/components/UIContextualMenu';
-import { ContextualMenu } from '@fluentui/react';
 import { UiIcons, initIcons } from '../../../src/components/Icons';
+import { findStyleFromStyleSheets } from '../../utils/styles';
 
-describe('<UIDropdown />', () => {
-    let wrapper: Enzyme.ReactWrapper<UIIContextualMenuProps>;
+describe('<UIContextualMenu />', () => {
+    let rerender: (ui: React.ReactElement) => void;
+    const items = [
+        {
+            key: 'item1',
+            text: 'menu item 1'
+        },
+        {
+            key: 'item2',
+            text: 'menu item 2'
+        }
+    ];
     initIcons();
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(
+        const result = render(<UIContextualMenu items={items} />);
+        rerender = result.rerender;
+    });
+
+    afterEach(() => {
+        cleanup();
+    });
+
+    it('Existence', () => {
+        // Use document.body for portal-rendered menu
+        expect(document.body.querySelectorAll('div.ts-ContextualMenu').length).toEqual(1);
+    });
+
+    it('Test className property', () => {
+        // Use document.body for portal-rendered menu
+        const contextualMenu = document.body.querySelector('.ts-ContextualMenu');
+        expect(contextualMenu).toHaveClass('ts-ContextualMenu ts-ContextualMenu--dropdown');
+
+        rerender(<UIContextualMenu items={items} className="dummy" />);
+
+        const contextualMenuWithClass = document.body.querySelector('.ts-ContextualMenu');
+        expect(contextualMenuWithClass).toHaveClass('ts-ContextualMenu ts-ContextualMenu--dropdown dummy');
+    });
+
+    for (const testMaxWidth of [350, undefined]) {
+        it('Styles', () => {
+            rerender(<UIContextualMenu items={items} maxWidth={testMaxWidth} />);
+            const container = document.querySelector('.ms-Callout');
+            expect(container).toBeInTheDocument();
+            expect(findStyleFromStyleSheets('max-width', container)).toEqual(
+                testMaxWidth ? `${testMaxWidth}px` : testMaxWidth
+            );
+        });
+    }
+
+    it('iconToLeft prop', () => {
+        rerender(
+            <UIContextualMenu
+                items={[
+                    {
+                        key: 'item1',
+                        text: 'menu item 1',
+                        subMenuProps: {
+                            items: [
+                                {
+                                    key: 'item1',
+                                    text: 'item 1 - submenu1'
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: 'item2',
+                        text: 'menu item 2'
+                    }
+                ]}
+                iconToLeft={true}
+            />
+        );
+
+        // Check if submenu icon is rendered
+        const containerElements = document.querySelectorAll('.ms-ContextualMenu-linkContent');
+        expect(containerElements.length).toEqual(2);
+        containerElements.forEach((containerElement, index) => {
+            const textElement = containerElement.querySelector('.ms-ContextualMenu-itemText');
+            if (index === 0) {
+                const iconElement = containerElement.querySelector('i.ms-ContextualMenu-submenuIcon');
+                expect(containerElement.childNodes[0]).toBe(iconElement);
+                expect(containerElement.childNodes[1]).toBe(textElement);
+            } else {
+                expect(containerElement.childNodes[0]).toBe(textElement);
+            }
+        });
+    });
+
+    it('Test item with icon', () => {
+        rerender(
+            <UIContextualMenu
+                items={[
+                    {
+                        key: 'item1',
+                        iconProps: {
+                            iconName: UiIcons.GuidedDevelopment
+                        },
+                        text: 'menu item 1'
+                    }
+                ]}
+            />
+        );
+
+        // Use document.body for portal-rendered icon
+        expect(document.body.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
+
+        // Check if icon is on right side
+        const containerElement = document.body.querySelector('.ms-ContextualMenu-linkContent');
+        const textElement = document.body.querySelector('.ms-ContextualMenu-itemText');
+        const iconElement = document.body.querySelector('i.ms-ContextualMenu-icon');
+        expect(textElement).toBeInTheDocument();
+        expect(iconElement).toBeInTheDocument();
+        expect(containerElement.childNodes[0]).toBe(textElement);
+        expect(containerElement.childNodes[1]).toBe(iconElement);
+    });
+
+    it('Test mexture menu - item with icon and item without icon', () => {
+        rerender(
             <UIContextualMenu
                 items={[
                     {
@@ -23,131 +136,23 @@ describe('<UIDropdown />', () => {
                     },
                     {
                         key: 'item2',
+                        iconProps: {
+                            iconName: UiIcons.GuidedDevelopment
+                        },
                         text: 'menu item 2'
                     }
                 ]}
             />
         );
-    });
 
-    afterEach(() => {
-        wrapper.unmount();
-    });
+        // Use document.body for portal-rendered icon
+        expect(document.body.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
 
-    it('Existence', () => {
-        expect(wrapper.find('div.ts-ContextualMenu').length).toEqual(1);
-    });
-
-    it('Test className property', () => {
-        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu ts-ContextualMenu--dropdown');
-        wrapper.setProps({
-            className: 'dummy'
-        });
-        expect(wrapper.find(ContextualMenu).prop('className')).toEqual(
-            'ts-ContextualMenu ts-ContextualMenu--dropdown dummy'
-        );
-    });
-
-    for (const testMaxWidth of [350, undefined]) {
-        it('Styles', () => {
-            wrapper.setProps({
-                maxWidth: testMaxWidth
-            });
-            const calloutProps = wrapper.find(ContextualMenu).prop('calloutProps');
-            expect(calloutProps?.styles).toEqual({
-                root: {
-                    maxWidth: testMaxWidth
-                }
-            });
-        });
-    }
-
-    it('iconToLeft prop', () => {
-        wrapper.setProps({
-            items: [
-                {
-                    key: 'item1',
-                    text: 'menu item 1',
-                    subMenuProps: {
-                        items: [
-                            {
-                                key: 'item1',
-                                text: 'item 1 - submenu1'
-                            }
-                        ]
-                    }
-                },
-                {
-                    key: 'item2',
-                    text: 'menu item 2'
-                }
-            ],
-            iconToLeft: true
-        });
-        wrapper.update();
-        //Check if submenu icon is rendered
-        // Check if icon is on left side
-
-        const containerElements = wrapper.find('.ms-ContextualMenu-linkContent');
-        containerElements.forEach((containerElement, index) => {
-            const textElement = containerElement.find('.ms-ContextualMenu-itemText').getDOMNode();
-            if (index === 0) {
-                const iconElement = containerElement.find('i.ms-ContextualMenu-submenuIcon').getDOMNode();
-                expect(containerElement.getDOMNode().childNodes[0]).toBe(iconElement);
-                expect(containerElement.getDOMNode().childNodes[1]).toBe(textElement);
-            } else {
-                expect(containerElement.getDOMNode().childNodes[0]).toBe(textElement);
-            }
-        });
-    });
-
-    it('Test item with icon', () => {
-        wrapper.setProps({
-            items: [
-                {
-                    key: 'item1',
-                    iconProps: {
-                        iconName: UiIcons.GuidedDevelopment
-                    },
-                    text: 'menu item 1'
-                }
-            ]
-        });
-        wrapper.update();
-        //Check if icon is rendered
-        expect(wrapper.find(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
-        // Check if icon is on right side
-        const containerElement = wrapper.find('.ms-ContextualMenu-linkContent').getDOMNode();
-        const textElement = wrapper.find('.ms-ContextualMenu-itemText').getDOMNode();
-        const iconElement = wrapper.find('i.ms-ContextualMenu-icon').getDOMNode();
-        expect(containerElement.childNodes[0]).toBe(textElement);
-        expect(containerElement.childNodes[1]).toBe(iconElement);
-    });
-
-    it('Test mexture menu - item with icon and item without icon', () => {
-        wrapper.setProps({
-            items: [
-                {
-                    key: 'item1',
-                    text: 'menu item 1'
-                },
-                {
-                    key: 'item2',
-                    iconProps: {
-                        iconName: UiIcons.GuidedDevelopment
-                    },
-                    text: 'menu item 2'
-                }
-            ]
-        });
-        wrapper.update();
-        //Check if only one icon is rendered
-        expect(wrapper.find(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
         // Check if two menu items are rendered
-        expect(wrapper.find('.ms-ContextualMenu-linkContent').length).toEqual(2);
+        expect(document.body.querySelectorAll('.ms-ContextualMenu-linkContent').length).toEqual(2);
     });
 
-    it('getUIContextualMenuItemStyles - call without params', () => {
+    it('getUIContextualMenuItemStyles - validates style properties exist', () => {
         const styles = getUIContextualMenuItemStyles();
         expect(styles).toEqual({
             'checkmarkIcon': {
