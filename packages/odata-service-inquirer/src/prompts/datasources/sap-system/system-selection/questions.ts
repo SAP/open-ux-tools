@@ -120,7 +120,8 @@ export async function getSystemSelectionQuestions(
                 getSystemServiceQuestion(
                     connectValidator,
                     systemSelectionPromptNamespace,
-                    promptOptions?.serviceSelection
+                    promptOptions?.serviceSelection,
+                    false // Hide value help download prompt
                 ) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
             )
@@ -209,7 +210,6 @@ export async function getSystemConnectionQuestions(
                 );
             },
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
-                // Backend systems credentials may need to be updated
                 if (
                     selectedSystem.type === 'backendSystem' &&
                     connectionValidator.systemAuthType === 'basic' &&
@@ -301,7 +301,9 @@ export async function getSystemConnectionQuestions(
             name: `${systemSelectionPromptNames.systemSelectionCli}`
         });
     }
-    questions.push(...getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace));
+    questions.push(
+        ...getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace, undefined, requiredOdataVersion)
+    );
 
     return questions;
 }

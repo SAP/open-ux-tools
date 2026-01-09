@@ -140,7 +140,7 @@ export class UISplitter extends React.Component<UISplitterProps> {
             document.body.removeEventListener('mouseup', this.stopMousemoveResize);
             document.body.removeEventListener('mouseleave', this.stopMousemoveResize);
             document.body.removeEventListener('mousemove', this.doMousemoveResize);
-            document.body.removeChild(this.splitterOverlay);
+            this.splitterOverlay.remove();
         }
         if (start && this.props.onResizeStart) {
             this.props.onResizeStart();

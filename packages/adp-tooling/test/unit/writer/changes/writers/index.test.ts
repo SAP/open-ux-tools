@@ -369,7 +369,7 @@ describe('InboundWriter', () => {
             variant: {} as DescriptorVariant
         };
 
-        findChangeWithInboundIdMock.mockReturnValue({ changeWithInboundId: null, filePath: '' });
+        findChangeWithInboundIdMock.mockResolvedValue({ changeWithInboundId: null, filePath: '' });
 
         await writer.write(mockData);
 
@@ -389,7 +389,7 @@ describe('InboundWriter', () => {
         };
 
         const existingChangeContent = { inboundId: 'testInboundId', entityPropertyChange: [] };
-        findChangeWithInboundIdMock.mockReturnValue({
+        findChangeWithInboundIdMock.mockResolvedValue({
             changeWithInboundId: { content: existingChangeContent },
             filePath: `${mockProjectPath}/webapp/changes/manifest/inboundChange.change`
         });

@@ -10,11 +10,8 @@
   "main": "webapp/index.html",
   "dependencies": {},
   "devDependencies": {
-    "@ui5/cli": "^4.0.16",
+    "@ui5/cli": "^4.0.33",
     "@sap/ux-ui5-tooling": "1",
-    "eslint": "8.57.0",
-    "@sap/eslint-plugin-ui5-jsdocs": "2.0.5",
-    "@sapui5/ts-types": "~1.76.0",
     "@sap-ux/ui5-middleware-fe-mockserver": "2"
   },
   "scripts": {

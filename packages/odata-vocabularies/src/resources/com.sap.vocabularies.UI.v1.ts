@@ -1,4 +1,4 @@
-// Last content update: Wed Oct 15 2025 09:21:20 GMT+0200 (Central European Summer Time)
+// Last content update: Wed Dec 03 2025 11:11:43 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -2260,12 +2260,13 @@ export default {
         },
         'Recommendations': {
             '$Kind': 'Term',
-            '$Type': 'Edm.ComplexType',
+            '$Type': 'Edm.Untyped',
             '$AppliesTo': ['EntityType'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description': 'Recommendations for an entity',
             '@Org.OData.Core.V1.LongDescription':
-                'This complex-typed annotation contains structural properties corresponding via name equality\nto non-key structural primitive properties of the entity type for which recommendations are available.\nThe type of such a property is a collection of a informal specialization of [`PropertyRecommendationType`](#PropertyRecommendationType).\n(The specializiations are called "informal" because they may omit the property `RecommendedFieldDescription`.)\n\nClients retrieve the recommendations with a GET request that includes this annotation in a `$select` clause.\nThe recommendations MAY be computed asynchronously, see [this diagram](../docs/recommendations.md).'
+                'This complex- or entity-typed annotation contains structural properties corresponding via name equality\nto non-key structural primitive properties of the entity type for which recommendations are available.\nThe type of such a property is a collection of a informal specialization of [`PropertyRecommendationType`](#PropertyRecommendationType).\n(The specializiations are called "informal" because they may omit the property `RecommendedFieldDescription`.)\n\nClients retrieve the recommendations with a GET request that includes this annotation in a `$select` or `$expand` clause.\nThe recommendations MAY be computed asynchronously, see [this diagram](../docs/recommendations.md).',
+            '@Org.OData.Validation.V1.DerivedTypeConstraint': ['Edm.ComplexType', 'Edm.EntityType']
         },
         'PropertyRecommendationType': {
             '$Kind': 'ComplexType',

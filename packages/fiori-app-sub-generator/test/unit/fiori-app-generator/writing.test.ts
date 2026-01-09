@@ -32,7 +32,6 @@ describe('`writing` tests', () => {
             ui5Theme: 'a_ui5_theme',
             ui5Version: '1.2.3',
             localUI5Version: '1.2.3',
-            enableCodeAssist: false,
             enableEslint: false,
             enableTypeScript: false,
             targetFolder: '/some/path/to/target'
@@ -62,7 +61,6 @@ describe('`writing` tests', () => {
                 template: 'List Report Page V4',
                 generatorName,
                 launchText: t('readme.texts.runInstruction'),
-                enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,
                 entityRelatedConfig: []
@@ -110,7 +108,6 @@ describe('`writing` tests', () => {
                 appNamespace: 'projectNamespace',
                 ui5Theme: 'a_ui5_theme',
                 ui5Version: '1.2.3',
-                enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,
                 showMockDataInfo: false,
@@ -161,7 +158,6 @@ describe('`writing` tests', () => {
                 launchText:
                     'To launch the generated app, start your CAP project:  and navigate to the following location in your browser:' +
                     '\n\nhttp://localhost:4004/someProjectName/webapp/index.html',
-                enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,
                 entityRelatedConfig: [],
@@ -218,7 +214,6 @@ describe('`writing` tests', () => {
                 launchText:
                     'To launch the generated app, start your CAP project:  and navigate to the following location in your browser:' +
                     '\n\nhttp://localhost:4004/someProjectName/webapp/index.html',
-                enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,
                 entityRelatedConfig: [

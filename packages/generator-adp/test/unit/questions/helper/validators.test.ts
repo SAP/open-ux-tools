@@ -4,7 +4,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { SystemLookup } from '@sap-ux/adp-tooling';
 import { isExternalLoginEnabled, isMtaProject, getMtaServices } from '@sap-ux/adp-tooling';
-import { validateNamespaceAdp, validateProjectName, validateEmptyString } from '@sap-ux/project-input-validator';
+import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import {
     validateJsonInput,
@@ -191,7 +191,7 @@ describe('validateEnvironment', () => {
     });
 
     test('should return true for ABAP environment', async () => {
-        const result = await validateEnvironment('ABAP', false, mockVscode);
+        const result = await validateEnvironment('ABAP', false);
         expect(result).toBe(true);
     });
 
@@ -199,19 +199,19 @@ describe('validateEnvironment', () => {
         mockIsAppStudio.mockReturnValue(false);
         mockIsExternalLoginEnabled.mockResolvedValue(true);
 
-        const result = await validateEnvironment('CF', true, mockVscode);
+        const result = await validateEnvironment('CF', true);
         expect(result).toBe(true);
     });
 
     test('should return error when CF selected but not logged in', async () => {
-        const result = await validateEnvironment('CF', false, mockVscode);
+        const result = await validateEnvironment('CF', false);
         expect(result).toBe(t('error.cfNotLoggedIn'));
     });
 
     test('should return true for CF when logged in and in AppStudio', async () => {
         mockIsAppStudio.mockReturnValue(true);
 
-        const result = await validateEnvironment('CF', true, mockVscode);
+        const result = await validateEnvironment('CF', true);
         expect(result).toBe(true);
     });
 
@@ -219,17 +219,8 @@ describe('validateEnvironment', () => {
         mockIsAppStudio.mockReturnValue(false);
         mockIsExternalLoginEnabled.mockResolvedValue(true);
 
-        const result = await validateEnvironment('CF', true, mockVscode);
+        const result = await validateEnvironment('CF', true);
         expect(result).toBe(true);
-        expect(mockIsExternalLoginEnabled).toHaveBeenCalledWith(mockVscode);
-    });
-
-    test('should return error when external login not enabled', async () => {
-        mockIsAppStudio.mockReturnValue(false);
-        mockIsExternalLoginEnabled.mockResolvedValue(false);
-
-        const result = await validateEnvironment('CF', true, mockVscode);
-        expect(result).toBe(t('error.cfLoginCannotBeDetected'));
     });
 });
 

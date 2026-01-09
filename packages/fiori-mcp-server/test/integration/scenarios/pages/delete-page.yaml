@@ -1,0 +1,11 @@
+config:
+    project: 'node-ai-created'
+vars:
+    appPath: '{{APP_PATH}}'
+    query: 'Delete TravelList page in {{appPath}}'
+assert:
+    - type: javascript
+      value: file://../assertions/snapshots.ts:validate
+      config:
+          file: webapp/manifest.json
+          snapshot: delete-page

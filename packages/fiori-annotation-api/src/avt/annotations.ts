@@ -8,7 +8,9 @@ import type {
     CollectionExpression,
     Expression,
     PropertyValue,
-    RawAnnotation
+    RawAnnotation,
+    RecordExpression,
+    StringExpression
 } from '@sap-ux/vocabularies-types';
 import {
     toFullyQualifiedName,
@@ -95,7 +97,7 @@ export function convertAnnotationFile(
     const annotations: AnnotationListWithOrigins[] = [];
     const namespaceMap = getNamespaceMap(file.references);
     const namespace =
-        file.uri.startsWith(GHOST_FILENAME_PREFIX) || !file.namespace ? serviceName : file.namespace?.name ?? '';
+        file.uri.startsWith(GHOST_FILENAME_PREFIX) || !file.namespace ? serviceName : (file.namespace?.name ?? '');
     const alias = file.namespace?.alias ?? '';
     Object.freeze(namespaceMap);
 
@@ -478,7 +480,7 @@ function createExpression(
         case 'Decimal':
             return {
                 type: 'Decimal',
-                Decimal: parseFloat(value)
+                Decimal: Number.parseFloat(value)
             };
         case 'Date':
             return {
@@ -638,17 +640,16 @@ function convertCollection(
         .filter((child): child is Element => child.type === ELEMENT_TYPE)
         .forEach((collectionEntryElement: Element) => {
             const value = convertExpression(namespaceMap, currentNamespace, collectionEntryElement, options);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let entry = value as any;
-            if (value && value.type) {
-                // record and string can be used directly as collection entries
-                if (value.type === 'Record') {
-                    entry = value.Record;
-                } else if (value.type === 'String') {
-                    entry = value.String;
+            let entry: Expression | AnnotationRecord | string = value;
+            if (value && typeof value === 'object' && 'type' in value) {
+                if (value.type === 'Record' && 'Record' in value) {
+                    entry = (value as RecordExpression).Record;
+                } else if (value.type === 'String' && 'String' in value) {
+                    entry = (value as StringExpression).String;
                 }
             }
-            collection.push(entry);
+            // TypeScript cannot infer the complex Collection union type, so we cast to unknown first
+            (collection as unknown as (Expression | AnnotationRecord | string)[]).push(entry);
             if (options?.addOrigins && collectionEntryElement.range) {
                 collectionOrigins.push(collectionEntryElement.range);
             }

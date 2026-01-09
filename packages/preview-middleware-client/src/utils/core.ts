@@ -2,6 +2,7 @@ import Component from 'sap/ui/core/Component';
 import type { ID } from 'sap/ui/core/library';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import Element from 'sap/ui/core/Element';
+import View from 'sap/ui/core/mvc/View';
 
 /**
  * Gets Component by id.
@@ -69,6 +70,38 @@ export function hasParent(component: ManagedObject, parentIdToFind: string): boo
         return true;
     }
     return hasParent(parent, parentIdToFind);
+}
+
+/**
+ * Utility function to safely call getParent on UI5 elements
+ * @param element UI5 element
+ * @returns parent element or null
+ */
+function getElementParent(element: Element | ManagedObject): ManagedObject | null {
+    if (typeof element.getParent === 'function') {
+        return element.getParent();
+    }
+    return null;
+}
+
+/**
+ * Finds the view that contains the given control.
+ *
+ * @param control - Control instance  
+ * @returns View instance if found, undefined otherwise
+ */
+export function findViewByControl(control: Element | ManagedObject): View | undefined {
+    if (!control) {
+        return undefined;
+    }
+    if (isA<View>('sap.ui.core.mvc.View', control)) {
+        return control;
+    }
+    const parent = getElementParent(control);
+    if (!parent) {
+        return undefined;
+    }
+    return findViewByControl(parent);
 }
 
 export function findNestedElements(

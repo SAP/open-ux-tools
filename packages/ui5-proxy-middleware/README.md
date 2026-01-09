@@ -1,4 +1,6 @@
-#  `@sap-ux/ui5-proxy-middleware`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-proxy-middleware/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-proxy-middleware)
+
+# [`@sap-ux/ui5-proxy-middleware`](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-proxy-middleware)
 
 The `@sap-ux/ui5-proxy-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for loading the UI5 sources in your application. It can be used either with the `ui5 serve` or the `fiori run` commands.
 

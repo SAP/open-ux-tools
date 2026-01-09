@@ -1,4 +1,6 @@
-# @sap-ux/app-config-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/app-config-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/app-config-writer)
+
+# [`@sap-ux/app-config-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/app-config-writer)
 
 The `@sap-ux/app-config-writer` adds or updates configurations to a SAP Fiori tools project.
 

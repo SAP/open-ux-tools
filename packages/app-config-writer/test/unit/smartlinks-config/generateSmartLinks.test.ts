@@ -2,7 +2,6 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
 import { generateSmartLinksConfig } from '../../../src';
-import { t } from '../../../src/i18n';
 import type { TargetConfig } from '../../../src/types';
 
 jest.mock('@sap-ux/axios-extension', () => ({
@@ -40,6 +39,7 @@ describe('Test generateSmartLinksConfig', () => {
         }
     };
     const targetResponseMock = {
+        status: 200,
         data: JSON.stringify({
             'version': '1.2.02',
             'targetMappings': inboundTargetsMock
@@ -60,7 +60,7 @@ describe('Test generateSmartLinksConfig', () => {
         expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
     });
     test(`No target response - Add config to project with existing smartlinks config`, async () => {
-        createGetMock.mockResolvedValue({ data: JSON.stringify({}) });
+        createGetMock.mockResolvedValue({ status: 200, data: JSON.stringify({}) });
         const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
         let fs: Editor | undefined;
         try {

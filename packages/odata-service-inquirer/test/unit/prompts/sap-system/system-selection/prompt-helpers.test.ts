@@ -15,14 +15,16 @@ const backendSystemBasic: BackendSystem = {
     url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1',
-    systemType: 'OnPrem'
+    systemType: 'OnPrem',
+    connectionType: 'abap_catalog'
 };
 
 const backendSystemReentrance: BackendSystem = {
     name: 'http://s4hc:1234',
     url: 'http:/s4hc:1234',
     authenticationType: 'reentranceTicket',
-    systemType: 'S4HC'
+    systemType: 'AbapCloud',
+    connectionType: 'abap_catalog'
 };
 
 const backendSystems: BackendSystem[] = [backendSystemBasic, backendSystemReentrance];
@@ -44,6 +46,11 @@ jest.mock('@sap-ux/store', () => ({
     // Mock store access
     getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValueOnce(backendSystems),
+        read: jest.fn().mockImplementation((key) => {
+            // Mock read to return systems with credentials
+            const system = backendSystems.find((s) => s.url === key.url);
+            return Promise.resolve(system);
+        }),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
             return Promise.resolve(system);
         })

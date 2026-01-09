@@ -21,7 +21,7 @@ export const ListFunctionalitiesInputSchema = zod.object({
     appPath: zod
         .string()
         .describe(
-            'Path to the root folder of the Fiori application (where package.json and ui5.yaml reside). Path should be an absolute path.'
+            'Path to the root folder of the Fiori application (where package.json and ui5.yaml reside) if one exists or to the current directory. Path should be an absolute path.'
         )
 });
 
@@ -30,7 +30,11 @@ export const ListFunctionalitiesInputSchema = zod.object({
  */
 export const GetFunctionalityDetailsInputSchema = zod.object({
     /** Path to the Fiori application */
-    appPath: zod.string().describe('Path to the Fiori application. Path should be an absolute path.'),
+    appPath: zod
+        .string()
+        .describe(
+            'Path to the Fiori application if one exists or to the current directory. Path should be an absolute path.'
+        ),
     /** ID or array of IDs of the functionality(ies) */
     functionalityId: FunctionalityIdSchema.describe('The ID of the functionality to get details for')
 });
@@ -38,14 +42,25 @@ export const GetFunctionalityDetailsInputSchema = zod.object({
 /**
  * Input interface for the 'execute_functionality' functionality
  */
-export const ExecuteFunctionalityInputSchema = zod.object({
-    /** ID or array of IDs of the functionality(ies) to execute */
-    functionalityId: FunctionalityIdSchema.describe('The ID of the functionality to execute'),
-    /** Parameters for the functionality execution */
-    parameters: zod.record(zod.string(), zod.unknown()).describe('Parameters for the functionality execution'),
-    /** Path to the Fiori application */
-    appPath: zod.string().describe('Path to the Fiori application. Path should be an absolute path.')
-});
+export const ExecuteFunctionalityInputSchema = zod
+    .object({
+        /** ID or array of IDs of the functionality(ies) to execute */
+        functionalityId: FunctionalityIdSchema.describe('The ID of the functionality to execute'),
+        /** Parameters for the functionality execution */
+        parameters: zod.record(zod.string(), zod.unknown()).describe('Parameters for the functionality execution'),
+        /** Path to the Fiori application */
+        appPath: zod
+            .string()
+            .describe(
+                'Path to the Fiori application if one exists or to the current directory. Path should be an absolute path.'
+            )
+    })
+    .describe(
+        'Input object for executing a functionality. ' +
+            'Only three top-level properties are allowed: "functionalityId", "parameters", and "appPath". ' +
+            'All other dynamic or functionality-specific inputs must be included inside the "parameters" object. ' +
+            'Do not place any additional fields at the root level.'
+    );
 
 export const DocSearchInputSchema = zod.object({
     query: zod

@@ -80,7 +80,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
      * @param {ITextFieldStyleProps} props Component properties.
      * @returns {Partial<ITextFieldStyles>} Styles to apply for text field.
      */
-    private getStyles = (props: ITextFieldStyleProps): Partial<ITextFieldStyles> => {
+    private readonly getStyles = (props: ITextFieldStyleProps): Partial<ITextFieldStyles> => {
         const messageInfo = getMessageInfo(this.props);
         return {
             ...{

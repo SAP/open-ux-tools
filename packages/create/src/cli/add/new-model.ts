@@ -14,8 +14,12 @@ import { validateAdpProject } from '../../validation/validation';
  */
 export function addNewModelCommand(cmd: Command): void {
     cmd.command('model [path]')
-        .description('Add a new OData service and UI5 model to an existing adaptation project.')
-        .option('-s, --simulate', 'simulate only do not write or install')
+        .description(
+            `Add a new OData service and SAPUI5 model to an existing adaptation project.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add model\``
+        )
+        .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .action(async (path, options) => {
             await addNewModel(path, !!options.simulate);
         });

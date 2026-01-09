@@ -508,7 +508,7 @@ describe('ControllerExtension', () => {
                 () =>
                     ({
                         toISOString: () => '2020-01-01T00:00:00.000Z'
-                    } as unknown as Date)
+                    }) as unknown as Date
             );
             jest.spyOn(apiHandler, 'writeChange').mockImplementation(async (data) => {
                 return Promise.resolve(data);
@@ -739,7 +739,7 @@ describe('ControllerExtension', () => {
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                 showInfoCenterMessage({
                     title: 'SAPUI5 Version Retrieval Failed',
-                    description: 'Could not get the SAPUI5 version of the application. Using 1.130.0 as fallback.',
+                    description: 'Could not get the SAPUI5 version of the application. Using 1.130.9 as fallback.',
                     type: MessageBarType.error
                 })
             );

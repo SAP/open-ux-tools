@@ -1,4 +1,6 @@
-# @sap-ux/jest-environment-ui5
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/jest-environment-ui5/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-environment-ui5)
+
+# [`@sap-ux/jest-environment-ui5`](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-environment-ui5)
 
 Test environment for Jest for SAPUI5.
 

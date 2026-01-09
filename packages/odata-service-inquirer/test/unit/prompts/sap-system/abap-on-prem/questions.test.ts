@@ -108,6 +108,18 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
+                "default": false,
+                "guiOptions": {
+                  "breadcrumb": "Store Credentials",
+                },
+                "message": "Do you want to store the system credentials?",
+                "name": "abapOnPrem:storeSystemCredentials",
+                "type": "confirm",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
                 "default": [Function],
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
@@ -221,7 +233,9 @@ describe('questions', () => {
     test('Should validate sap-client input', () => {
         jest.spyOn(utils, 'isBackendSystemKeyExisting').mockReturnValue({
             name: 'System1234',
-            url: 'http://some.system.hos'
+            url: 'http://some.system.hos',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         });
         const newSystemQuestions = getAbapOnPremQuestions();
         const sapClientPrompt = newSystemQuestions.find((question) => question.name === `sapClient`);

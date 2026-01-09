@@ -33,10 +33,10 @@ const TRANSFORMATION_OFFSET = 20;
  */
 export class CalloutCollisionTransform {
     // Option properties
-    private props: CalloutCollisionTransformProps;
+    private readonly props: CalloutCollisionTransformProps;
     // Source reference of anchor element
-    private source: React.RefObject<HTMLElement>;
-    private callout: React.RefObject<HTMLElement>;
+    private readonly source: React.RefObject<HTMLElement>;
+    private readonly callout: React.RefObject<HTMLElement>;
     // Placeholder element for additional space
     private placeholder?: HTMLElement;
     // Original style properties of container
@@ -162,7 +162,7 @@ export class CalloutCollisionTransform {
         if (!elements) {
             return;
         }
-        const { container, target } = elements;
+        const { container } = elements;
         for (const styleName in this.originalStyle) {
             const styleValue = this.originalStyle[styleName];
             if (typeof styleValue === 'string') {
@@ -172,7 +172,7 @@ export class CalloutCollisionTransform {
         this.originalStyle = {};
         // Remove placeholder element
         if (this.placeholder) {
-            target.dom.removeChild(this.placeholder);
+            this.placeholder.remove();
             this.placeholder = undefined;
         }
     }

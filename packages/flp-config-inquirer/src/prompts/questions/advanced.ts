@@ -1,5 +1,6 @@
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InboundContent } from '@sap-ux/axios-extension';
+import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
 import type { FLPConfigQuestion, FLPConfigAnswers, IconPromptOptions } from '../../types';
@@ -105,5 +106,24 @@ export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
             return answers?.inboundId?.icon ?? '';
         },
         filter: (val: string): string => val?.trim()
+    };
+}
+
+/**
+ * Creates the 'confirmReplace' prompt for confirming tile replacement.
+ *
+ * @returns {FLPConfigQuestion} The prompt configuration for confirming tile replacement.
+ */
+export function getConfirmReplacePrompt(): FLPConfigQuestion {
+    return {
+        type: 'confirm',
+        name: promptNames.confirmReplace,
+        message: t('prompts.confirmReplace'),
+        default: false,
+        validate: (value): string | boolean => (value ? true : ' '),
+        additionalMessages: (): IMessageSeverity => ({
+            severity: Severity.information,
+            message: t('additionalMessages.confirmReplaceAdditionalMessage')
+        })
     };
 }

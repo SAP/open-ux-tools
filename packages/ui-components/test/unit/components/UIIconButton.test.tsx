@@ -21,6 +21,8 @@ describe('<UIIconButton />', () => {
         expect(container.firstElementChild?.classList.contains('is-checked')).toBeFalsy();
         const icon = container.querySelector('i') as Element;
         expect(getStyle(icon).alignItems).toEqual('center');
+        const flexContainer = container.querySelector('.ms-Button-flexContainer') as Element;
+        expect(getStyle(flexContainer).pointerEvents).toEqual('none');
     });
 
     it('Render button - checked', () => {

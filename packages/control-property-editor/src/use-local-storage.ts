@@ -27,7 +27,7 @@ export function useLocalStorage<T>(key: string, defaultValue: T): [T, React.Disp
 
         try {
             return JSON.parse(savedValue);
-        } catch (e) {
+        } catch {
             return defaultValue;
         }
     });

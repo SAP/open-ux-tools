@@ -67,24 +67,19 @@ builder:
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"test.ui5.lib\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"private\\": true,
-  \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"2.9.9\\",
-    \\"rimraf\\": \\"^5.0.5\\",
-    \\"ui5-task-flatten-library\\": \\"^3.1.0\\"
-  },
-  \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && fiori deploy --config deploy-config.yaml\\",
-    \\"undeploy\\": \\"npm run build && fiori undeploy --config deploy-config.yaml\\",
-    \\"deploy-test\\": \\"npm run build && fiori deploy --config deploy-config.yaml --testMode true\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"ui5-task-flatten-library\\"
-    ]
-  }
+    \\"name\\": \\"test.ui5.lib\\",
+    \\"version\\": \\"1.0.0\\",
+    \\"private\\": true,
+    \\"devDependencies\\": {
+        \\"@ui5/cli\\": \\"^4.0.0\\",
+        \\"rimraf\\": \\"^5.0.5\\",
+        \\"ui5-task-flatten-library\\": \\"^3.1.0\\"
+    },
+    \\"scripts\\": {
+        \\"deploy\\": \\"npm run build && fiori deploy --config deploy-config.yaml\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config deploy-config.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config deploy-config.yaml --testMode true\\"
+    }
 }
 ",
     "state": "modified",
@@ -96,24 +91,19 @@ exports[`generate Generate deployment configs: test.ui5.typescript.library1 1`] 
 Object {
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"test.ui5.typescript.library1\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"private\\": true,
-  \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"2.9.9\\",
-    \\"rimraf\\": \\"^5.0.5\\",
-    \\"ui5-task-flatten-library\\": \\"^3.1.0\\"
-  },
-  \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
-    \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
-    \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"ui5-task-flatten-library\\"
-    ]
-  }
+    \\"name\\": \\"test.ui5.typescript.library1\\",
+    \\"version\\": \\"1.0.0\\",
+    \\"private\\": true,
+    \\"devDependencies\\": {
+        \\"@ui5/cli\\": \\"^4.0.0\\",
+        \\"rimraf\\": \\"^5.0.5\\",
+        \\"ui5-task-flatten-library\\": \\"^3.1.0\\"
+    },
+    \\"scripts\\": {
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+    }
 }
 ",
     "state": "modified",

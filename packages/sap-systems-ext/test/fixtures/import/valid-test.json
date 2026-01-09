@@ -1,0 +1,10 @@
+{
+    "systems": [
+        {
+            "name": "Test System 1",
+            "type": "OnPrem",
+            "url": "https://import.test.url.com",
+            "client": "100"
+        }
+    ]
+}

@@ -1,4 +1,6 @@
-#  `@sap-ux/deploy-tooling`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/deploy-tooling/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling)
+
+# [`@sap-ux/deploy-tooling`](https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling)
 
 `@sap-ux/deploy-tooling` exposes the capabilities of custom tasks to deploy and undeploy SAP Fiori projects against ABAP servers.
 
@@ -154,7 +156,7 @@ Using YAML configuration;
 ```YAML
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: "3.1"
+specVersion: "4.0"
 metadata:
   name: my.namespace.myappname
 type: application
@@ -233,4 +235,3 @@ Ensure you restart any running processes to apply the changes.
 Example Scenario
 
 If you're using a proxy server to route your HTTPS traffic, the proxy server will need to create a secure, TLS-encrypted connection to the target server on your behalf. `tls.connect()` will be used to establish that encrypted tunnel between your client, the proxy, and the server.
-

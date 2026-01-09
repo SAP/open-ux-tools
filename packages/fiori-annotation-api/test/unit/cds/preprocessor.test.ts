@@ -21,7 +21,8 @@ import {
     createDeletePrimitiveValueChange,
     createDeleteAnnotationGroupChange,
     createDeleteAnnotationGroupItemsChange,
-    createInsertEmbeddedAnnotationChange
+    createInsertEmbeddedAnnotationChange,
+    createMoveCollectionChange
 } from '../../../src/cds/change';
 import { preprocessChanges } from '../../../src/cds/preprocessor';
 
@@ -629,6 +630,48 @@ annotate S.E with {
                             '/targets/0/assignments/0/value/properties/0/value/properties/0/value',
                             'title2'
                         )
+                    ]
+                );
+            });
+        });
+        describe('combinations', () => {
+            test('move after deleted item', async () => {
+                const fixture = `Service S { entity E {}; };
+                annotate S.E with @(
+                    UI.Identification : [
+                        {
+                            Value: test0,
+                        },
+                        {
+                            Value: [
+                                {
+                                    value: test1
+                                } 
+                            ]
+                        },
+                        {
+                            Value: test2,
+                        },
+                    ]
+                );`;
+
+                await runTest(
+                    fixture,
+                    [
+                        createMoveCollectionChange(
+                            '/targets/0/assignments/0/value',
+                            ['/targets/0/assignments/0/value/items/1/properties/0/value/items/0'],
+                            2
+                        ),
+                        createDeleteRecordChange('/targets/0/assignments/0/value/items/1')
+                    ],
+                    [
+                        createMoveCollectionChange(
+                            '/targets/0/assignments/0/value',
+                            ['/targets/0/assignments/0/value/items/1/properties/0/value/items/0'],
+                            1
+                        ),
+                        createDeleteRecordChange('/targets/0/assignments/0/value/items/1')
                     ]
                 );
             });

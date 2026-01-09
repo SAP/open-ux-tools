@@ -81,6 +81,18 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
+                "default": false,
+                "guiOptions": {
+                  "breadcrumb": "Store Credentials",
+                },
+                "message": "Do you want to store the system credentials?",
+                "name": "abapOnPrem:storeSystemCredentials",
+                "type": "confirm",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
                 "default": [Function],
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
@@ -203,7 +215,9 @@ describe('questions', () => {
         const backendSystemReentrance: BackendSystem = {
             name: 'http://s4hc:1234',
             url: 'http:/s4hc:1234',
-            authenticationType: 'reentranceTicket'
+            authenticationType: 'reentranceTicket',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
         };
         const cachedConnectedSystem: ConnectedSystem = {
             serviceProvider: {

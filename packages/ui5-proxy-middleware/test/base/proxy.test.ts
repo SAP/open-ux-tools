@@ -1,5 +1,5 @@
 import { ui5Proxy } from '../../src';
-import * as hpm from 'http-proxy-middleware';
+import type * as hpm from 'http-proxy-middleware';
 import * as utils from '../../src/base/utils';
 import { ToolsLogger } from '@sap-ux/logger';
 

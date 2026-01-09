@@ -1,4 +1,6 @@
-#  `@sap-ux/preview-middleware`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/preview-middleware/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware)
+
+#  [`@sap-ux/preview-middleware`](https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware)
 
 The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for previewing an application in a local SAP Fiori launchpad. It can be used either with the `ui5 serve` or the `fiori run` commands.
 It hosts a local SAP Fiori launchpad based on your configuration as well as offers an API to modify flex changes in your project. The API is available at `/preview/api` and additional client code required for the preview is available at `/preview/client`.
@@ -27,12 +29,13 @@ When this middleware is used together with the `reload-middleware`, then the ord
 | `flp.enhancedHomePage`  | `boolean`  | optional                                       | `false`          | Flag for enabling enhanced FLP homepage, available only from UI5 version 1.123.0 onwards                                                                                                                                                              |
 | `adp.target`            | ---        | mandatory for adaptation projects              | ---              | Configuration object defining the connected back end                                                                                                                                                                                                  |
 | `adp.ignoreCertErrors`  | `boolean`  | optional                                       | `false`          | Flag to ignore certification validation errors when working with development systems with self-signed certificates, for example                                                                                                                       |
+| `adp.cfBuildPath`       | `string`   | optional (experimental, CF only)               | `undefined`      | **Experimental**: For CF ADP projects only. Path to build output folder (e.g., `dist`) to serve built resources directly. When set, the middleware serves static files from this path and reads manifest.json from it. |
 | `rta`                   | ---        | 🚫 deprecated</br> *use `editors.rta` instead* | ---              | Configuration allowing to add mount points for runtime adaptation                                                                                                                                                                                     |
 | `editors`               | `array`    | optional                                       | `undefined`      | List of configurations allowing to add mount points for additional editors                                                                                                                                                                            |
 | `editors.rta`           | `array`    | optional                                       | `undefined`      | Configuration allowing to add mount points for runtime adaptation                                                                                                                                                                                     |
 | `editors.rta.layer`     | `string`   | optional                                       | `(calculated)`   | Property for defining the runtime adaptation layer for changes (default is `CUSTOMER_BASE` or read from the project for adaptation projects)                                                                                                          |
 | `editors.rta.endpoints` | `array`    | optional                                       | `undefined`      | List of mount points for editing                                                                                                                                                                                                                      |
-| `editors.cardGenerator` | ---    | optional                                       | `undefined`      | Configuration object to enable card generation for an application (only supported for non-CAP apps).                                                                                                                                                  |
+| `editors.cardGenerator` | ---    | optional                                       | `undefined`      | Configuration object that enables card generation for an application. The generated cards are only available when the application is deployed to an ABAP-based SAP Fiori launchpad, such as SAP Fiori launchpad in SAP S/4HANA Cloud Public Edition.                                                                                                                                                |
 | `editors.cardGenerator.path` | `string`   | optional                              | `test/flpGeneratorSandbox.html`      | The mount point of the local SAP Fiori launchpad which will be considered for card generation.                                                                                                                                                        |
 | `test`                  | `array`    | optional                                       | `undefined`      | List of configurations for automated testing.                                                                                                                                                                                                         |
 | `debug`                 | `boolean`  | optional                                       | `false`          | Enables the debug output                                                                                                                                                                                                                              |
@@ -169,7 +172,31 @@ server:
           - path: /test/adaptation-editor.html
             developerMode: true
 ```
-When the middleware is used in an adaptation project together with a middleware proxying requests to the back end e.g. the `backend-proxy-middleware`, then it is critically important that the `preview-middleware` is handling requests before the back-end proxy because it intercepts requests to the `manifest.json` of the original application and merges it with the local variant.
+
+### [CF ADP Build Path Mode (Experimental)](#cf-adp-build-path-mode-experimental)
+**⚠️ Experimental feature - CF ADP projects only**
+
+For Cloud Foundry ADP projects, you can use the `cfBuildPath` option to serve built resources directly from a build output folder. This is useful for testing built applications without requiring backend connectivity.
+
+When `cfBuildPath` is set:
+- The middleware serves static files directly from the specified path (e.g., `dist` or `build/dist`)
+- The manifest.json is read from the build output folder
+- Static resources are served directly without backend services
+
+**Note:** This feature is experimental and only works with CF ADP projects. The path should be relative to the project root and must contain a `manifest.json` file.
+
+```Yaml
+server:
+  customMiddleware:
+  - name: preview-middleware
+    afterMiddleware: compression
+    configuration:
+      adp: 
+        target: 
+          url: http://sap.example
+        cfBuildPath: dist  # Path to build output folder (experimental, CF only)
+```
+When the middleware is used in an adaptation project together with a middleware proxying requests to the back end e.g. the `backend-proxy-middleware`, then it is critically important that the `preview-middleware` is handling requests before the back-end proxy because it intercepts requests to the `manifest.json` of the original application and merges it with the variant.
 ```Yaml
 - name: preview-middleware
   afterMiddleware: rcompression

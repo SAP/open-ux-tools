@@ -1,6 +1,6 @@
 import { expect } from '@sap-ux-private/playwright';
 import { test } from '../../fixture';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from './test-utils';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
 import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
 import { lt, satisfies } from 'semver';
 
@@ -30,10 +30,11 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             const lr = new ListReport(previewFrame);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.enableEmptyRowMode.click();
             await editor.toolbar.saveAndReloadButton.click();
             await editor.toolbar.isDisabled();
@@ -72,9 +73,10 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             const tableSettings = new TableSettings(previewFrame, 'Rearrange Toolbar Content');
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.changeTableActions.click();
             await tableSettings.expectItemsToBeVisible([
                 'SearchField - fiori.elements.v2.0::sap.suite.ui.generic.template.ObjectPage.view.Details::RootEntity--toFirstAssociatedEntity::com.sap.vocabularies.UI.v1.LineItem::tableSection::Table::Toolbar::SearchField',
@@ -110,13 +112,15 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.locatorForListReportTableRow(0).click();
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             if (satisfies(ui5Version, '~1.71.0')) {
                 await page.waitForTimeout(1000);
             }
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addControllerToPage.click();
 
             await dialog.fillField('Controller Name', 'TestController');
@@ -126,7 +130,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             } else {
                 await editor.toolbar.saveButton.click();
             }
-
+            await editor.quickActions.showPageController.waitFor({ state: 'visible' });
             await verifyChanges(projectCopy, {
                 coding: {
                     ['TestController.js']: /ControllerExtension\.extend\("adp\.fiori\.elements\.v2\.TestController"/
@@ -170,11 +174,11 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.locatorForListReportTableRow(0).click();
 
             await editor.toolbar.uiAdaptationModeButton.click();
-
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addCustomTableAction.click();
 
             await dialog.fillField('Fragment Name', 'op-table-action');
@@ -185,11 +189,16 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await editor.toolbar.isDisabled();
             await verifyChanges(projectCopy, {
                 fragments: {
-                    'op-table-action.fragment.xml': `<!-- Use stable and unique IDs!-->
-<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
-    <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
-</core:FragmentDefinition>`
+                    'op-table-action.fragment.xml': new RegExp(
+                        `<!-- Use stable and unique IDs!-->\\s*` +
+                            `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
+                            `<!-- viewName: sap.suite.ui.generic.template.(ObjectPage.view.Details|ListReport.view.ListReport) -->\\s*` +
+                            `<!-- controlType: sap.m.OverflowToolbar -->\\s*` +
+                            `<!-- targetAggregation: content -->\\s*` +
+                            `<!-- add your xml here -->\\s*` +
+                            `<Button text="New Button"  id="btn-[a-z0-9]+"><\\/Button>\\s*` +
+                            `<\\/core:FragmentDefinition>`
+                    )
                 },
                 changes: [
                     {
@@ -218,10 +227,11 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.changeTableColumns.click();
             await tableSettings.expectItemsToBeVisible(['String Property', 'Date Property']);
         }
@@ -241,12 +251,12 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
             await editor.reloadCompleted();
-
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addCustomTableColumn.click();
 
             await dialog.fillField('Column Fragment Name', 'table-column');
@@ -259,25 +269,34 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
             await verifyChanges(projectCopy, {
                 fragments: {
-                    'table-cell.fragment.xml': `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
-    <Text id="cell-text-[a-z0-9]+" text="Sample data" />
-</core:FragmentDefinition>`,
-                    'table-column.fragment.xml': `<!-- Use stable and unique IDs!-->
-<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
-     <Column id="column-[a-z0-9]+"
-        width="12em"
-        hAlign="Left"
-        vAlign="Middle">
-        <Text id="column-title-[a-z0-9]+" text="New column" />
-
-        <customData>
-            <core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"
-                value='\\\\{"columnKey": "column-[a-z0-9]+", "columnIndex": "3"}' />
-        </customData>
-    </Column>
-</core:FragmentDefinition>`
+                    'table-cell.fragment.xml': new RegExp(
+                        `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
+                            `<!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->\\s*` +
+                            `<!-- controlType: sap.m.Table -->\\s*` +
+                            `<!-- targetAggregation: cells -->\\s*` +
+                            `<!-- ?add your xml here ?-->\\s*` +
+                            `<Text id="cell-text-[a-z0-9]+" text="Sample data" \/>\\s*` +
+                            `<\/core:FragmentDefinition>`
+                    ),
+                    'table-column.fragment.xml': new RegExp(
+                        `<!-- Use stable and unique IDs!-->\\s*` +
+                            `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
+                            `<!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->\\s*` +
+                            `<!-- controlType: sap.m.Table -->\\s*` +
+                            `<!-- targetAggregation: columns -->\\s*` +
+                            `<!-- ?add your xml here ?-->\\s*` +
+                            `<Column id="column-[a-z0-9]+"\\s*` +
+                            `width="12em"\\s*` +
+                            `hAlign="Left"\\s*` +
+                            `vAlign="Middle">\\s*` +
+                            `<Text id="column-title-[a-z0-9]+" text="New column" \/>\\s*` +
+                            `<customData>\\s*` +
+                            `<core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"\\s*` +
+                            `value='.*"columnKey": "column-[a-z0-9]+", "columnIndex": "3".*' \/>\\s*` +
+                            `<\/customData>\\s*` +
+                            `<\/Column>\\s*` +
+                            `<\/core:FragmentDefinition>`
+                    )
                 },
                 changes: [
                     {
@@ -332,11 +351,11 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
-
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addHeaderField.click();
 
             await dialog.fillField('Fragment Name', 'op-header-field');
@@ -346,16 +365,17 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
             await editor.toolbar.isDisabled();
             await verifyChanges(projectCopy, {
                 fragments: {
-                    'op-header-field.fragment.xml': `<!-- Use stable and unique IDs!-->
-<core:FragmentDefinition
-    xmlns:uxap="sap.uxap"
-    xmlns:core='sap.ui.core'
-    xmlns='sap.m'
->
-     <VBox id="vBox-[a-z0-9]+">
-         <Label id="label-[a-z0-9]+" text="New Field"></Label>
-    </VBox>
-</core:FragmentDefinition>`
+                    'op-header-field.fragment.xml': new RegExp(
+                        `<!-- Use stable and unique IDs!-->\\s*` +
+                            `<core:FragmentDefinition[\\s\\S]*?>\\s*` +
+                            `<!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->\\s*` +
+                            `<!-- controlType: (sap.uxap.ObjectPageLayout|sap.m.FlexBox) -->\\s*` +
+                            `<!-- targetAggregation: (headerContent|items) -->\\s*` +
+                            `<VBox id="vBox-[a-z0-9]+"\\s*>\\s*` +
+                            `<Label id="label-[a-z0-9]+" text="New Field"><\\/Label>\\s*` +
+                            `<\\/VBox>\\s*` +
+                            `<\\/core:FragmentDefinition>`
+                    )
                 },
                 changes: [
                     {
@@ -377,11 +397,11 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
 
         await editor.toolbar.navigationModeButton.click();
 
-        await lr.clickOnGoButton();
+        await lr.clickOnButton();
         await lr.clickOnTableNthRow(0);
 
         await editor.toolbar.uiAdaptationModeButton.click();
-
+        await editor.quickActions.waitForObjectPageQuickActionLoaded();
         await editor.quickActions.addCustomSection.click();
 
         await dialog.fillField('Fragment Name', 'op-section');
@@ -392,23 +412,23 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
         await editor.toolbar.isDisabled();
         await verifyChanges(projectCopy, {
             fragments: {
-                ['op-section.fragment.xml']: `<!-- Use stable and unique IDs!-->
-<core:FragmentDefinition
-    xmlns:uxap="sap.uxap"
-    xmlns:core='sap.ui.core'
-    xmlns='sap.m'
->
-    <uxap:ObjectPageSection
-        id="op-section-[a-z0-9]+"
-        title="New Custom Section"
-    >
-        <uxap:ObjectPageSubSection id="op-subsection-[a-z0-9]+">
-            <HBox id="hbox-[a-z0-9]+">
-                <!--  add your xml here -->
-            </HBox>
-        </uxap:ObjectPageSubSection>
-    </uxap:ObjectPageSection>
-</core:FragmentDefinition>`
+                ['op-section.fragment.xml']: new RegExp(
+                    `<!-- Use stable and unique IDs!-->\\s*` +
+                        `<core:FragmentDefinition[\\s\\S]*?>\\s*` +
+                        `<!-- viewName: sap.suite.ui.generic.template.ObjectPage.view.Details -->\\s*` +
+                        `<!-- controlType: sap\\.uxap\\.ObjectPageLayout -->\\s*` +
+                        `<!-- targetAggregation: sections -->\\s*` +
+                        `<uxap:ObjectPageSection\\s*` +
+                        `id="op-section-[a-z0-9]+"\\s*` +
+                        `title="New Custom Section"\\s*>\\s*` +
+                        `<uxap:ObjectPageSubSection id="op-subsection-[a-z0-9]+">\\s*` +
+                        `<HBox id="hbox-[a-z0-9]+">\\s*` +
+                        `<!-- ?add your xml here ?-->\\s*` +
+                        `<\\/HBox>\\s*` +
+                        `<\\/uxap:ObjectPageSubSection>\\s*` +
+                        `<\\/uxap:ObjectPageSection>\\s*` +
+                        `<\\/core:FragmentDefinition>`
+                )
             },
             changes: [
                 {

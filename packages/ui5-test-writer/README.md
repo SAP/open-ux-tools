@@ -1,4 +1,6 @@
-# @sap-ux/ui5-test-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-test-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-test-writer)
+
+# [`@sap-ux/ui5-test-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-test-writer)
 
 OPA files writer for use within Yeoman generator and other prompting libraries. 
 

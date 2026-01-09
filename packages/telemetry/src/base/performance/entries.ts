@@ -22,7 +22,11 @@ class Mark implements IMark {
      * @param type Mark type
      * @param startTime start time in millieseconds
      */
-    constructor(name: string, type: EntryType, readonly startTime: number) {
+    constructor(
+        name: string,
+        type: EntryType,
+        readonly startTime: number
+    ) {
         this.name = name;
         this.startTime = startTime;
         this.type = type;
@@ -39,7 +43,11 @@ class Measurement extends Mark implements IMeasurement {
      * @param startTime start time in millieseconds
      * @param duration time in millieseconds
      */
-    constructor(name: string, readonly startTime: number, readonly duration: number) {
+    constructor(
+        name: string,
+        readonly startTime: number,
+        readonly duration: number
+    ) {
         super(name, EntryType.MEASUREMENT, startTime);
         this.duration = duration;
     }

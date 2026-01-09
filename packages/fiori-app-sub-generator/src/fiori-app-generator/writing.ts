@@ -48,7 +48,7 @@ export async function writeAppGenInfoFiles(
             template: templateLabel,
             serviceType: datasourceLabel,
             serviceUrl:
-                `${service.capService ? DEFAULT_CAP_HOST : service.host ?? ''}${service.servicePath ?? ''}` ||
+                `${service.capService ? DEFAULT_CAP_HOST : (service.host ?? '')}${service.servicePath ?? ''}` ||
                 t('texts.notApplicable')
         } as Partial<AppGenInfo>,
         existingAppGenInfo,
@@ -96,7 +96,6 @@ export async function writeAppGenInfoFiles(
         appNamespace: project.namespace ?? '',
         ui5Theme: project.ui5Theme,
         ui5Version: appGenInfoCustom?.ui5Version || project.manifestMinUI5Version || project.ui5Version,
-        enableCodeAssist: project.enableCodeAssist,
         enableEslint: project.enableEslint,
         enableTypeScript: project.enableTypeScript,
         showMockDataInfo: !!service.edmx && !service.capService,
@@ -105,7 +104,8 @@ export async function writeAppGenInfoFiles(
         generatorName: appGenInfoCustom?.generatorName ?? '',
         entityRelatedConfig: appGenInfoCustom?.entityRelatedConfig ?? [],
         externalParameters: appGenInfoCustom?.externalParameters,
-        launchText
+        launchText,
+        valueHelpDownloaded: service.valueListMetadata && service.valueListMetadata.length > 0
     };
 
     generateAppGenInfo(targetPath, genInfo, fs);

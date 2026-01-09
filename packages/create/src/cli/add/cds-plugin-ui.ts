@@ -11,10 +11,14 @@ import { runNpmInstallCommand } from '../../common';
  */
 export function addAddCdsPluginUi5Command(cmd: Command): void {
     cmd.command('cds-plugin-ui5 [path]')
-        .description('Add the cds-plugin-ui5 and all prerequisites to a CAP project for UI5 integration.')
-        .option('-n, --skip-install', 'skip npm install step')
-        .option('-s, --simulate', 'simulate only, do not write or install; sets also --verbose')
-        .option('-v, --verbose', 'show verbose information')
+        .description(
+            `Add the \`cds-plugin-ui5\` module and all prerequisites to a CAP project for UI5 server integration.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add cds-plugin-ui5\``
+        )
+        .option('-n, --skip-install', 'Skip the `npm install` step.')
+        .option('-s, --simulate', 'Simulate only. Do not write or install. Also, sets `--verbose`')
+        .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();

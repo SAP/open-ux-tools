@@ -5,7 +5,7 @@ jest.mock('prettier');
 import * as Vocabularies from '../../tools/update';
 
 import { join } from 'node:path';
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 import axios from 'axios';
 import prettier from 'prettier';
 import type { CSDL, CSDLAnnotations } from '@sap-ux/vocabularies/CSDL';

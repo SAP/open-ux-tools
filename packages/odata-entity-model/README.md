@@ -1,4 +1,6 @@
-# OData Entity Model
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/odata-entity-model/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-entity-model)
+
+# [OData Entity Model](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-entity-model)
 
 Package containing metadata service, which allows to look up elements from entity data model of an OData service.
 

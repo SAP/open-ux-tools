@@ -3,7 +3,7 @@ import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe
 import FEV2QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v2/registry';
 
 describe('quick action dynamic loading', () => {
-       test('fe-v2', async () => {
+    test('fe-v2', async () => {
         const definitions = await loadDefinitions('fe-v2');
         expect(definitions[0]).toBeInstanceOf(FEV2QuickActionRegistry);
     });

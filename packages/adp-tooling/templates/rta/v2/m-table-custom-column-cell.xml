@@ -1,4 +1,7 @@
-<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'><% if (targetAggregation && controlType && viewName) { %>
+    <!-- viewName: <%= viewName %> -->
+    <!-- controlType: <%= controlType %> -->
+    <!-- targetAggregation: <%= targetAggregation %> --> <% } %>
+    <!-- add your xml here -->
     <Text id="<%- ids.text %>" text="Sample data" />
 </core:FragmentDefinition>

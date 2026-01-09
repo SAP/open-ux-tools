@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
-import { findProjectRoot, getProjectType } from '@sap-ux/project-access';
+import { FileName } from '@sap-ux/project-access';
 
 /**
  * Add the cards-editor command.
@@ -11,10 +11,14 @@ import { findProjectRoot, getProjectType } from '@sap-ux/project-access';
  */
 export function addCardsEditorConfigCommand(cmd: Command): void {
     cmd.command('cards-editor [path]')
-        .description('Add a cards editor configuration to a project, enabling card generation.')
-        .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
-        .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
-        .option('-v, --verbose', 'show verbose information')
+        .description(
+            `Add the necessary configuration to an existing YAML file and the script to the \`package.json\` file for cards generation. It uses the configuration from the YAML file passed by the CLI or default to \`ui5.yaml\`, as provided by the \`fiori-tools-preview\` or \`preview-middleware\`.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add cards-editor\``
+        )
+        .option('-c, --config <string>', 'Path to the project configuration file in YAML format.', FileName.Ui5Yaml)
+        .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
+        .option('-v, --verbose', 'Show verbose information.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
@@ -35,19 +39,12 @@ async function addCardsGeneratorConfig(basePath: string, simulate: boolean, yaml
     try {
         logger.debug(`Called add cards-generator-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
-        const projectRoot = await findProjectRoot(basePath, true, true);
-        const projectType = await getProjectType(projectRoot);
-        if (projectType === 'CAPJava' || projectType === 'CAPNodejs') {
-            await Promise.reject(
-                new Error(`Adding the card generator configuration is not supported for CAP projects.`)
-            );
+
+        const fs = await enableCardGeneratorConfig(basePath, yamlPath, logger);
+        if (!simulate) {
+            fs.commit(() => logger.info(`Card Generator configuration written.`));
         } else {
-            const fs = await enableCardGeneratorConfig(basePath, yamlPath, logger);
-            if (!simulate) {
-                fs.commit(() => logger.info(`Card Generator configuration written.`));
-            } else {
-                await traceChanges(fs);
-            }
+            await traceChanges(fs);
         }
     } catch (error) {
         logger.error(`Error while executing add cards generator configuration '${(error as Error).message}'`);

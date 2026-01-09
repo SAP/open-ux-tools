@@ -2,8 +2,7 @@ import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { AbapServiceProvider, UiServiceGenerator } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
-import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
+import { sendTelemetry, setYeomanEnvConflicterForce, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { type Logger } from '@sap-ux/logger';
 import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
 import { getConfigPrompts, getSystemSelectionPrompts, ObjectType } from '@sap-ux/ui-service-inquirer';
@@ -52,9 +51,7 @@ export default class extends Generator {
      */
     constructor(args: string | string[], opts: Generator.GeneratorOptions) {
         super(args, opts);
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
 
         this.appWizard = AppWizard.create(opts);
         this.vscode = opts.vscode;

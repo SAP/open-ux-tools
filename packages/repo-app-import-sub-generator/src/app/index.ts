@@ -11,10 +11,10 @@ import {
     getDefaultTargetFolder,
     generateAppGenInfo,
     type AppGenInfo,
-    type YeomanEnvironment,
     sendTelemetry,
     TelemetryHelper,
-    isCli
+    isCli,
+    setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import type { RepoAppDownloadOptions, RepoAppDownloadAnswers, RepoAppDownloadQuestions, QfaJsonConfig } from './types';
 import { getPrompts } from '../prompts/prompts';
@@ -31,7 +31,7 @@ import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { PromptState } from '../prompts/prompt-state';
 import { PromptNames } from './types';
-import { getAbapDeployConfig, getAppConfig } from './app-config';
+import { getAbapDeployConfig, getAppConfig, type AppDownloadContext } from './app-config';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { makeValidJson } from '../utils/file-helpers';
 import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../utils/updates';
@@ -94,9 +94,7 @@ export default class extends Generator {
      * Initialises necessary settings and telemetry for the generator.
      */
     public async initializing(): Promise<void> {
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
         // Initialise telemetry settings
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -147,19 +145,22 @@ export default class extends Generator {
         const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
         // Generate project files
         validateQfaJsonFile(qfaJson);
+        const context: AppDownloadContext = {
+            qfaJson
+        };
 
         // Generate app config
         const config = await getAppConfig(
             this.answers.selectedApp,
             this.extractedProjectPath,
-            qfaJson,
+            context,
             this.answers.systemSelection,
             this.fs
         );
         await generate(this.projectPath, config, this.fs);
 
         // Generate deploy config
-        const deployConfig: AbapDeployConfig = getAbapDeployConfig(qfaJson);
+        const deployConfig: AbapDeployConfig = await getAbapDeployConfig(context);
         await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
 
         if (this.vscode) {

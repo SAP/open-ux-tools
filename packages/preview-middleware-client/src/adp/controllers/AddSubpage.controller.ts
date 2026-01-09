@@ -1,5 +1,5 @@
 /** sap.m */
-import Button from 'sap/m/Button';
+import type Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
 
@@ -94,7 +94,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
 
         this.setEscapeHandler();
 
-        await this.buildDialogData();
+        this.buildDialogData();
         const resourceModel = await getResourceModel('open.ux.preview.client');
 
         this.dialog.setModel(resourceModel, 'i18n');
@@ -196,7 +196,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
     /**
      * Builds data that is used in the dialog
      */
-    async buildDialogData(): Promise<void> {
+    buildDialogData(): void {
         this.getControlMetadata(); // is called to fill this.runtimeControl
 
         const pageTypeOptions: { key: string; value: string }[] = [
@@ -215,7 +215,5 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         });
         this.model.setProperty('/navigationOptions', navigationOptions);
         this.model.setProperty('/selectedNavigation', navigationOptions[0]);
-
-        return Promise.resolve();
     }
 }

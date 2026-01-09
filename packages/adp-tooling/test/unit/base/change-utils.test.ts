@@ -1,5 +1,5 @@
 import path, { resolve } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import { create, type Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { renderFile } from 'ejs';
@@ -26,6 +26,7 @@ import {
     writeAnnotationChange,
     writeChangeToFolder
 } from '../../../src/base/change-utils';
+import { create as createStorage } from 'mem-fs';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -51,8 +52,8 @@ describe('Change Utils', () => {
         const writeJsonSpy = jest.fn();
         const mockFs = { writeJSON: writeJsonSpy };
 
-        it('should write change to the specified folder without subdirectory', () => {
-            writeChangeToFolder(
+        it('should write change to the specified folder without subdirectory', async () => {
+            await writeChangeToFolder(
                 projectPath,
                 change as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
@@ -61,9 +62,9 @@ describe('Change Utils', () => {
             expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(change.fileName), change);
         });
 
-        it('should write change to the specified folder with subdirectory', () => {
+        it('should write change to the specified folder with subdirectory', async () => {
             const dir = 'subdir';
-            writeChangeToFolder(
+            await writeChangeToFolder(
                 projectPath,
                 change as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor,
@@ -73,7 +74,7 @@ describe('Change Utils', () => {
             expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(path.join(dir, change.fileName)), change);
         });
 
-        it('should throw error when writing json fails', () => {
+        it('should throw error when writing json fails', async () => {
             const errMsg = 'Corrupted json.';
             mockFs.writeJSON.mockImplementation(() => {
                 throw new Error(errMsg);
@@ -81,13 +82,13 @@ describe('Change Utils', () => {
 
             const expectedPath = path.join('project', 'webapp', 'changes', `${change.fileName}.change`);
 
-            expect(() => {
+            await expect(() =>
                 writeChangeToFolder(
                     projectPath,
                     change as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
-                );
-            }).toThrow(
+                )
+            ).rejects.toThrow(
                 `Could not write change to folder. Reason: Could not write change to file: ${expectedPath}. Reason: Corrupted json.`
             );
         });
@@ -265,6 +266,7 @@ describe('Change Utils', () => {
     describe('findChangeWithInboundId', () => {
         const mockProjectPath = '/mock/project/path';
         const mockInboundId = 'mockInboundId';
+        const memFs = create(createStorage());
 
         beforeEach(() => {
             jest.resetAllMocks();
@@ -274,24 +276,24 @@ describe('Change Utils', () => {
         const readdirSyncMock = readdirSync as jest.Mock;
         const readFileSyncMock = readFileSync as jest.Mock;
 
-        it('should return empty results if the directory does not exist', () => {
+        it('should return empty results if the directory does not exist', async () => {
             existsSyncMock.mockReturnValue(false);
 
-            const result = findChangeWithInboundId(mockProjectPath, mockInboundId);
+            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId, memFs);
 
             expect(result).toEqual({ filePath: '', changeWithInboundId: undefined });
         });
 
-        it('should return empty results if no matching file is found', () => {
+        it('should return empty results if no matching file is found', async () => {
             existsSyncMock.mockReturnValue(true);
             readdirSyncMock.mockReturnValue([]);
 
-            const result = findChangeWithInboundId(mockProjectPath, mockInboundId);
+            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId, memFs);
 
             expect(result).toEqual({ filePath: '', changeWithInboundId: undefined });
         });
 
-        it('should return the change object and file path if a matching file is found', () => {
+        it('should return the change object and file path if a matching file is found', async () => {
             existsSyncMock.mockReturnValue(true);
             readdirSyncMock.mockReturnValue([
                 { name: 'id_addAnnotationsToOData.change', isFile: () => true },
@@ -299,7 +301,7 @@ describe('Change Utils', () => {
             ]);
             readFileSyncMock.mockReturnValue(JSON.stringify({ content: { inboundId: mockInboundId } }));
 
-            const result = findChangeWithInboundId(mockProjectPath, mockInboundId);
+            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId, memFs);
 
             expect(result).toEqual({
                 filePath: expect.stringContaining('id_changeInbound.change'),
@@ -307,14 +309,14 @@ describe('Change Utils', () => {
             });
         });
 
-        it('should throw an error if reading the file fails', () => {
+        it('should throw an error if reading the file fails', async () => {
             existsSyncMock.mockReturnValue(true);
             readdirSyncMock.mockReturnValue([{ name: 'id_changeInbound.change', isFile: () => true }]);
             readFileSyncMock.mockImplementation(() => {
                 throw new Error('Read file error');
             });
 
-            expect(() => findChangeWithInboundId(mockProjectPath, mockInboundId)).toThrow(
+            await expect(() => findChangeWithInboundId(mockProjectPath, mockInboundId, memFs)).rejects.toThrow(
                 'Could not find change with inbound id'
             );
         });
@@ -349,11 +351,11 @@ describe('Change Utils', () => {
             writeJSON: writeJsonSpy
         };
 
-        it('should write the change file and an annotation file from a template', () => {
+        it('should write the change file and an annotation file from a template', async () => {
             renderFileMock.mockImplementation((templatePath, data, options, callback) => {
                 callback(undefined, 'test');
             });
-            writeAnnotationChange(
+            await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
                 {
@@ -394,11 +396,11 @@ describe('Change Utils', () => {
             expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), 'test');
         });
 
-        it('should write the change file and an annotation file from a template using the provided templates path', () => {
+        it('should write the change file and an annotation file from a template using the provided templates path', async () => {
             renderFileMock.mockImplementation((templatePath, data, options, callback) => {
                 callback(undefined, 'test');
             });
-            writeAnnotationChange(
+            await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
                 {
@@ -440,10 +442,10 @@ describe('Change Utils', () => {
             expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), 'test');
         });
 
-        it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
+        it('should copy the annotation file to the correct directory if not creating a new empty file', async () => {
             mockData.annotation.filePath = `mock/path/to/annotation/file.xml`;
 
-            writeAnnotationChange(
+            await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
                 mockData.annotation as AnnotationsData['annotation'],
@@ -457,7 +459,7 @@ describe('Change Utils', () => {
             );
         });
 
-        it('should not copy the annotation file if the selected directory is the same as the target', () => {
+        it('should not copy the annotation file if the selected directory is the same as the target', async () => {
             mockData.annotation.filePath = path.join(
                 'mock',
                 'project',
@@ -468,7 +470,7 @@ describe('Change Utils', () => {
                 'mockAnnotation.xml'
             );
 
-            writeAnnotationChange(
+            await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
                 mockData.annotation as AnnotationsData['annotation'],
@@ -479,22 +481,22 @@ describe('Change Utils', () => {
             expect(copySpy).not.toHaveBeenCalled();
         });
 
-        it('should throw error when write operation fails', () => {
+        it('should throw error when write operation fails', async () => {
             mockData.annotation.filePath = '';
 
             mockFs.writeJSON.mockImplementationOnce(() => {
                 throw new Error('Failed to write JSON');
             });
 
-            expect(() => {
+            await expect(() =>
                 writeAnnotationChange(
                     mockProjectPath,
                     123456789,
                     mockData.annotation as AnnotationsData['annotation'],
                     mockChange as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
-                );
-            }).toThrow(
+                )
+            ).rejects.toThrow(
                 `Could not write annotation changes. Reason: Could not write change to file: ${path.join(
                     mockProjectPath,
                     'webapp',
@@ -504,20 +506,20 @@ describe('Change Utils', () => {
             );
         });
 
-        it('should throw an error if rendering the annotation file fails', () => {
+        it('should throw an error if rendering the annotation file fails', async () => {
             renderFileMock.mockImplementation((templatePath, data, options, callback) => {
                 callback(new Error('Failed to render annotation file'), '');
             });
 
-            expect(() => {
+            await expect(() =>
                 writeAnnotationChange(
                     mockProjectPath,
                     123456789,
                     mockData.annotation as AnnotationsData['annotation'],
                     mockChange as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
-                );
-            }).toThrow('Failed to render annotation file');
+                )
+            ).rejects.toThrow('Failed to render annotation file');
         });
     });
 });

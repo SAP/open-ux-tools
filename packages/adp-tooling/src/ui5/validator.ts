@@ -1,5 +1,5 @@
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-
+import axios from 'axios';
 import { t } from '../i18n';
 import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from './format';
 import { isOfflineError } from './network';
@@ -20,7 +20,7 @@ export async function validateUI5VersionExists(version: string): Promise<string 
     const resource = version.includes('snapshot') ? 'neo-app.json' : getFormattedVersion(version);
 
     try {
-        await fetch(`${selectedVersionURL}/${resource}`);
+        await axios.get(`${selectedVersionURL}/${resource}`);
         return true;
     } catch (e) {
         if (version.includes('snapshot')) {

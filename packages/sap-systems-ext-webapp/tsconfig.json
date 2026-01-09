@@ -1,0 +1,26 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "incremental": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "skipLibCheck": true,
+        "lib": ["ES2023", "dom"],
+        "strict": false,
+        "jsx": "react",
+        "sourceMap": true,
+        "module": "ES6"
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json", "test/**/*.ts", "test/**/*.tsx"],
+    "references": [
+        {
+            "path": "../sap-systems-ext-types"
+        },
+        {
+            "path": "../store"
+        },
+        {
+            "path": "../ui-components"
+        }
+    ]
+}

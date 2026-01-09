@@ -1,0 +1,11 @@
+config:
+    project: 'node-ai-created'
+vars:
+    appPath: '{{APP_PATH}}'
+    query: 'Enable initial load for list report table. Application in {{appPath}}'
+assert:
+    - type: javascript
+      value: file://../assertions/snapshots.ts:validate
+      config:
+          snapshot: initial-load
+          file: webapp/manifest.json

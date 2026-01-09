@@ -457,7 +457,7 @@ async function filterLibraries(pathMap: FileMapAndCache, memFs?: Editor): Promis
         try {
             pathMap.files[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
             const manifest = pathMap.files[manifestPath] as Manifest;
-            if (manifest['sap.app'] && manifest['sap.app'].type === 'library') {
+            if (manifest['sap.app']?.type === 'library') {
                 const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath), memFs);
                 const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
                 if (projectRoot && (await fileExists(join(projectRoot, FileName.Ui5Yaml), memFs))) {
@@ -485,7 +485,7 @@ async function filterComponents(pathMap: FileMapAndCache, memFs?: Editor): Promi
         try {
             pathMap.files[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
             const manifest = pathMap.files[manifestPath] as Manifest;
-            if (manifest['sap.app'] && manifest['sap.app'].type === 'component') {
+            if (manifest['sap.app']?.type === 'component') {
                 const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath), memFs);
                 const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
                 if (projectRoot) {

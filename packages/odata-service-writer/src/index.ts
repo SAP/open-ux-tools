@@ -3,22 +3,11 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { addServicesData, updateServicesData } from './update';
-import {
-    enhanceData,
-    getAnnotationNamespaces,
-    removeAnnotationsFromCDSFiles,
-    updateCdsFilesWithAnnotations
-} from './data';
+import { enhanceData, removeAnnotationsFromCDSFiles, updateCdsFilesWithAnnotations } from './data';
 import { t } from './i18n';
-import type { EdmxOdataService, ProjectPaths } from './types';
-import {
-    OdataService,
-    OdataVersion,
-    ServiceType,
-    CdsAnnotationsInfo,
-    EdmxAnnotationsInfo,
-    NamespaceAlias
-} from './types';
+import type { EdmxOdataService, ProjectPaths, OdataService, CdsAnnotationsInfo } from './types';
+import { ServiceType } from './types';
+
 import { deleteServiceData } from './delete';
 import { getWebappPath } from '@sap-ux/project-access';
 import { updateManifest } from './data/manifest';
@@ -78,7 +67,7 @@ async function findProjectFiles(basePath: string, fs: Editor): Promise<ProjectPa
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+export async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -111,7 +100,12 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function update(basePath: string, service: OdataService, fs?: Editor, updateMiddlewares = true): Promise<Editor> {
+export async function update(
+    basePath: string,
+    service: OdataService,
+    fs?: Editor,
+    updateMiddlewares = true
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -155,7 +149,7 @@ async function update(basePath: string, service: OdataService, fs?: Editor, upda
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function remove(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+export async function remove(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -171,5 +165,13 @@ async function remove(basePath: string, service: OdataService, fs?: Editor): Pro
     return fs;
 }
 
-export { generate, update, remove, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
-export { getAnnotationNamespaces, NamespaceAlias };
+export {
+    OdataVersion,
+    OdataService,
+    ServiceType,
+    EdmxAnnotationsInfo,
+    CdsAnnotationsInfo,
+    ExternalServiceCollectionOptions,
+    NamespaceAlias
+} from './types';
+export { getExternalServiceReferences, getAnnotationNamespaces, writeExternalServiceMetadata } from './data';

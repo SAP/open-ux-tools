@@ -1,4 +1,6 @@
-# @sap-ux/xml-odata-annotation-converter 
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/xml-odata-annotation-converter/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/xml-odata-annotation-converter)
+
+# [`@sap-ux/xml-odata-annotation-converter`](https://github.com/SAP/open-ux-tools/tree/main/packages/xml-odata-annotation-converter)
 
 ## Installation
 Npm

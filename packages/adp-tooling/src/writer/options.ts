@@ -16,7 +16,8 @@ import type {
     InternalInboundNavigation,
     CloudCustomTaskConfig,
     CloudCustomTaskConfigTarget,
-    CfAdpWriterConfig
+    CfAdpWriterConfig,
+    CustomConfig
 } from '../types';
 import { UI5_CDN_URL } from '../base/constants';
 
@@ -72,10 +73,10 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
  * Generate custom configuration required for the ui5.yaml.
  *
  * @param ui5Config configuration representing the ui5.yaml
- * @param config full project configuration
+ * @param customConfig custom configuration
  */
-export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config: AdpWriterConfig) {
-    const adp = config.customConfig?.adp;
+export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, customConfig?: CustomConfig): void {
+    const adp = customConfig?.adp;
     if (adp) {
         const { support } = adp;
         ui5Config.addCustomConfiguration('adp', { support });
@@ -296,9 +297,8 @@ function getInboundChangeContentWithNewInboundID(
     };
 
     if (flpConfiguration.subTitle) {
-        content.inbound[
-            flpConfiguration.inboundId
-        ].subTitle = `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
+        content.inbound[flpConfiguration.inboundId].subTitle =
+            `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
     }
 
     return content;
@@ -307,17 +307,18 @@ function getInboundChangeContentWithNewInboundID(
 /**
  * Generate Inbound change content required for manifest.appdescriptor.
  *
- * @param flpConfiguration FLP cloud project configuration
+ * @param flpConfigurations FLP cloud project configuration
  * @param appId Application variant id
  * @param manifestChangeContent Application variant change content
  */
 export function enhanceManifestChangeContentWithFlpConfig(
-    flpConfiguration: InternalInboundNavigation,
+    flpConfigurations: InternalInboundNavigation[],
     appId: string,
     manifestChangeContent: Content[] = []
 ): void {
-    const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfiguration, appId);
-    if (inboundChangeContent) {
+    for (const [index, flpConfig] of flpConfigurations.entries()) {
+        const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
+
         const addInboundChange = {
             changeType: 'appdescr_app_addNewInbound',
             content: inboundChangeContent,
@@ -325,16 +326,21 @@ export function enhanceManifestChangeContentWithFlpConfig(
                 'i18n': 'i18n/i18n.properties'
             }
         };
-        const removeOtherInboundsChange = {
-            changeType: 'appdescr_app_removeAllInboundsExceptOne',
-            content: {
-                'inboundId': flpConfiguration.inboundId
-            },
-            texts: {}
-        };
-
         manifestChangeContent.push(addInboundChange);
-        manifestChangeContent.push(removeOtherInboundsChange);
+
+        // Remove all inbounds except one should be only after the first inbound is added
+        // This is implemented this way to avoid issues with the merged on ABAP side
+        if (index === 0) {
+            const removeOtherInboundsChange = {
+                changeType: 'appdescr_app_removeAllInboundsExceptOne',
+                content: {
+                    'inboundId': flpConfig.inboundId
+                },
+                texts: {}
+            };
+
+            manifestChangeContent.push(removeOtherInboundsChange);
+        }
     }
 }
 
@@ -359,7 +365,8 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
                 org: cf.org.GUID,
                 space: cf.space.GUID,
                 sapCloudService: cf.businessSolutionName ?? '',
-                serviceInstanceName: cf.businessService
+                serviceInstanceName: cf.businessService,
+                serviceInstanceGuid: cf.serviceInstanceGuid
             }
         }
     ]);
@@ -369,19 +376,42 @@ export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfA
  * Generate custom configuration required for the ui5.yaml.
  *
  * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ * @param {CfAdpWriterConfig} config - Full project configuration.
  */
-export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config): void {
+export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config, config: CfAdpWriterConfig): void {
     const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
         url: UI5_CDN_URL
     };
 
-    ui5Config.addFioriToolsProxyMiddleware(
-        {
-            ui5: ui5ConfigOptions,
-            backend: []
-        },
-        'compression'
-    );
+    const oauthPaths = config.cf?.oauthPaths;
+    const backendUrl = config.cf?.backendUrl;
+    if (oauthPaths && oauthPaths.length > 0 && backendUrl) {
+        ui5Config.addCustomMiddleware([
+            {
+                name: 'backend-proxy-middleware-cf',
+                afterMiddleware: 'compression',
+                configuration: {
+                    url: backendUrl,
+                    paths: oauthPaths
+                }
+            }
+        ]);
+        ui5Config.addFioriToolsProxyMiddleware(
+            {
+                ui5: ui5ConfigOptions,
+                backend: []
+            },
+            'backend-proxy-middleware-cf'
+        );
+    } else {
+        ui5Config.addFioriToolsProxyMiddleware(
+            {
+                ui5: ui5ConfigOptions,
+                backend: []
+            },
+            'compression'
+        );
+    }
     ui5Config.addCustomMiddleware([
         {
             name: 'fiori-tools-preview',
@@ -389,6 +419,9 @@ export function enhanceUI5YamlWithCfCustomMiddleware(ui5Config: UI5Config): void
             configuration: {
                 flp: {
                     theme: 'sap_horizon'
+                },
+                adp: {
+                    cfBuildPath: 'dist'
                 }
             }
         }

@@ -5,7 +5,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { initI18n, t } from '../../../../src/i18n';
-import type { CfAppParams, ServiceKeys, Uaa } from '../../../../src/types';
+import type { CfAppParams, ServiceInfo, Uaa } from '../../../../src/types';
 import { getServiceNameByTags, createServiceInstance, getServiceInstanceKeys } from '../../../../src/cf/services/api';
 import { downloadAppContent, downloadZip, getHtml5RepoCredentials, getToken } from '../../../../src/cf/app/html5-repo';
 
@@ -39,12 +39,14 @@ describe('HTML5 Repository', () => {
         url: '/test-uaa'
     };
 
-    const mockServiceKeys: ServiceKeys = {
-        credentials: [
+    const mockServiceKeys: ServiceInfo = {
+        serviceKeys: [
             {
-                uaa: mockUaa,
-                uri: '/test-html5-repo',
-                endpoints: {}
+                credentials: {
+                    uaa: mockUaa,
+                    uri: '/test-html5-repo',
+                    endpoints: {}
+                }
             }
         ],
         serviceInstance: {
@@ -85,7 +87,6 @@ describe('HTML5 Repository', () => {
         test('should successfully get OAuth token', async () => {
             const mockResponse = {
                 data: {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     access_token: 'test-access-token'
                 }
             };
@@ -173,7 +174,7 @@ describe('HTML5 Repository', () => {
 
         test('should create service when no credentials found', async () => {
             mockGetServiceInstanceKeys
-                .mockResolvedValueOnce({ credentials: [], serviceInstance: { guid: '', name: '' } })
+                .mockResolvedValueOnce({ serviceKeys: [], serviceInstance: { guid: '', name: '' } })
                 .mockResolvedValueOnce(mockServiceKeys);
             mockGetServiceNameByTags.mockResolvedValue('html5-apps-repo-rt');
             mockCreateServiceInstance.mockResolvedValue(undefined);
@@ -195,8 +196,8 @@ describe('HTML5 Repository', () => {
 
         test('should throw error when service creation fails', async () => {
             mockGetServiceInstanceKeys
-                .mockResolvedValueOnce({ credentials: [], serviceInstance: { guid: '', name: '' } })
-                .mockResolvedValueOnce({ credentials: [], serviceInstance: { guid: '', name: '' } });
+                .mockResolvedValueOnce({ serviceKeys: [], serviceInstance: { guid: '', name: '' } })
+                .mockResolvedValueOnce({ serviceKeys: [], serviceInstance: { guid: '', name: '' } });
             mockGetServiceNameByTags.mockResolvedValue('html5-apps-repo-rt');
             mockCreateServiceInstance.mockResolvedValue(undefined);
 
@@ -227,7 +228,6 @@ describe('HTML5 Repository', () => {
             mockAxios.get
                 .mockResolvedValueOnce({
                     data: {
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         access_token: 'test-token'
                     }
                 })
@@ -254,7 +254,7 @@ describe('HTML5 Repository', () => {
         test('should throw error when no credentials found', async () => {
             jest.clearAllMocks();
             mockGetServiceInstanceKeys.mockResolvedValue({
-                credentials: [],
+                serviceKeys: [],
                 serviceInstance: { guid: '', name: '' }
             });
 

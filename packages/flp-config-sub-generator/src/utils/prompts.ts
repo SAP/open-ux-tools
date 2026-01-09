@@ -27,6 +27,7 @@ export function getPromptOptions(promptOptions?: FLPConfigPromptOptions): FLPCon
         [promptNames.inboundId]: { hide: true, ...promptOptions?.inboundId },
         [promptNames.existingFlpConfigInfo]: { hide: true, ...promptOptions?.existingFlpConfigInfo },
         [promptNames.icon]: { hide: true, ...promptOptions?.icon },
-        [promptNames.additionalParameters]: { hide: true, ...promptOptions?.additionalParameters }
+        [promptNames.additionalParameters]: { hide: true, ...promptOptions?.additionalParameters },
+        [promptNames.confirmReplace]: { hide: true, ...promptOptions?.confirmReplace }
     };
 }

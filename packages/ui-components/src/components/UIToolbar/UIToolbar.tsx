@@ -44,7 +44,7 @@ declare class ResizeObserver {
  * @extends {React.Component<UIToolbarProps, UIToolbarState>}
  */
 export class UIToolbar extends React.Component<UIToolbarProps, UIToolbarState> {
-    private toolbarRef: React.RefObject<HTMLDivElement>;
+    private readonly toolbarRef: React.RefObject<HTMLDivElement>;
     resizeObserver: any;
 
     /**

@@ -1,4 +1,6 @@
-# @sap-ux/abap-deploy-config-inquirer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/abap-deploy-config-inquirer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/abap-deploy-config-inquirer)
+
+# [`@sap-ux/abap-deploy-config-inquirer`](https://github.com/SAP/open-ux-tools/tree/main/packages/abap-deploy-config-inquirer)
 
 Provides Inquirer based end-user prompting to retrieve the ABAP deployment configuration for an application. This involves acquiring a connection to the chosen backend system and retrieving the associated packages and transport requests for the system.
 

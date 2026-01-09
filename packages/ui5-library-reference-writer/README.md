@@ -1,4 +1,6 @@
-# @sap-ux/ui5-library-reference-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/ui5-library-reference-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-library-reference-writer)
+
+# [`@sap-ux/ui5-library-reference-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/ui5-library-reference-writer)
 
 Easy to use Reuse Library reference writer for use within Yeoman generator and other prompting libraries. 
 
