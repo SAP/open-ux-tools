@@ -80,6 +80,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -90,9 +91,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"prestart\\": \\"npm run build\\",
-		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
+		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -103,8 +106,9 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
+		\\"@sap-ux/create\\": \\"^0.14.22\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -141,8 +145,21 @@ builder:
         serviceInstanceName: test-service
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+        adp:
+          cfBuildPath: dist
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
@@ -150,13 +167,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-proxy
-      configuration:
-        flp:
-          theme: sap_horizon
-        adp:
-          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -309,6 +319,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -319,9 +330,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"prestart\\": \\"npm run build\\",
-		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
+		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -332,8 +345,9 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
+		\\"@sap-ux/create\\": \\"^0.14.22\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -370,8 +384,21 @@ builder:
         serviceInstanceName: test-service
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+        adp:
+          cfBuildPath: dist
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
@@ -379,13 +406,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-proxy
-      configuration:
-        flp:
-          theme: sap_horizon
-        adp:
-          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -543,6 +563,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -553,9 +574,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"prestart\\": \\"npm run build\\",
-		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
+		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -566,8 +589,9 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
+		\\"@sap-ux/create\\": \\"^0.14.22\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -604,8 +628,21 @@ builder:
         serviceInstanceName: test-service
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+        adp:
+          cfBuildPath: dist
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
@@ -613,13 +650,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-proxy
-      configuration:
-        flp:
-          theme: sap_horizon
-        adp:
-          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -746,6 +776,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -756,9 +787,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"prestart\\": \\"npm run build\\",
-		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
+		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -769,8 +802,9 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
+		\\"@sap-ux/create\\": \\"^0.14.22\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -807,8 +841,21 @@ builder:
         serviceInstanceName: test-service
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+        adp:
+          cfBuildPath: dist
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
@@ -816,13 +863,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-proxy
-      configuration:
-        flp:
-          theme: sap_horizon
-        adp:
-          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -1011,6 +1051,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -1021,9 +1062,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"prestart\\": \\"npm run build\\",
-		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
+		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -1034,8 +1077,9 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
+		\\"@sap-ux/create\\": \\"^0.14.22\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -1072,8 +1116,21 @@ builder:
         serviceInstanceName: test-service
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+        adp:
+          cfBuildPath: dist
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
@@ -1081,13 +1138,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-proxy
-      configuration:
-        flp:
-          theme: sap_horizon
-        adp:
-          cfBuildPath: dist
 ",
     "state": "modified",
   },
@@ -1219,6 +1269,7 @@ description: Test MTA Project for CF Writer Tests
 dist/
 .tmp
 .env
+.reuse
 *.zip",
     "state": "modified",
   },
@@ -1229,9 +1280,11 @@ dist/
 	\\"description\\": \\"\\",
 	\\"main\\": \\"index.js\\",
 	\\"scripts\\": {
-		\\"prestart\\": \\"npm run build\\",
-		\\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
+		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
+		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
+		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
@@ -1242,8 +1295,9 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
+		\\"@sap-ux/create\\": \\"^0.14.22\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -1280,8 +1334,21 @@ builder:
         serviceInstanceName: test-service
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+        adp:
+          cfBuildPath: dist
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
@@ -1289,13 +1356,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-proxy
-      configuration:
-        flp:
-          theme: sap_horizon
-        adp:
-          cfBuildPath: dist
 ",
     "state": "modified",
   },

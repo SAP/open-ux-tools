@@ -18,7 +18,7 @@
         "node": ">=20.x"
     },
     "scripts": {
-        "build": "tsc --build && node ./scripts/generate-readme.js",
+        "build": "tsc --build",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
@@ -46,6 +46,8 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/flp-config-inquirer": "workspace:*",
+        "@sap-ux/nodejs-utils": "workspace:*",
+        "@sap/cf-tools": "3.2.2",
         "chalk": "4.1.2",
         "commander": "9.4.0",
         "diff": "5.1.0",

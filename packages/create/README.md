@@ -323,3 +323,26 @@ Example:
 Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
 
+--------------------------------
+
+## [`setup`](#setup)
+
+Command group for setting up SAP Fiori projects. A subcommand is required.
+
+Usage: `npx --yes @sap-ux/create@latest setup [subcommand] [options]`
+
+The available subcommands are: `adaptation-project-cf`
+
+--------------------------------
+
+## [`setup adaptation-project-cf`](#setup-adaptation-project-cf)
+
+Setup a Cloud Foundry adaptation project by fetching reusable libraries, building the project, and configuring ui5.yaml.
+
+Example:
+
+`npx --yes @sap-ux/create@latest setup adaptation-project-cf`
+
+Options:
+- `-v, --verbose` - Show verbose information.
+

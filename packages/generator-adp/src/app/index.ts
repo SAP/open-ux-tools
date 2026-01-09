@@ -229,7 +229,6 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         // Force the generator to overwrite existing files without additional prompting
         setYeomanEnvConflicterForce(this.env, this.options.force);
-
         await initI18n();
         this.isCli = isCli();
         this.layer = getFlexLayer();
@@ -593,7 +592,7 @@ export default class extends Generator {
 
         const html5RepoRuntimeGuid = this.cfPrompter.html5RepoRuntimeGuid;
         const serviceInstanceGuid = this.cfPrompter.serviceInstanceGuid;
-        const backendUrl = this.cfPrompter.backendUrl;
+        const backendUrls = this.cfPrompter.backendUrls;
         const oauthPaths = this.cfPrompter.oauthPaths;
         const config = getCfConfig({
             attributeAnswers: this.attributeAnswers,
@@ -603,7 +602,7 @@ export default class extends Generator {
             manifest,
             html5RepoRuntimeGuid,
             serviceInstanceGuid,
-            backendUrl,
+            backendUrls,
             oauthPaths,
             projectPath,
             publicVersions,

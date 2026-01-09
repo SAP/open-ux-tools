@@ -1476,6 +1476,9 @@ importers:
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
@@ -1491,6 +1494,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@sap/cf-tools':
+        specifier: 3.2.2
+        version: 3.2.2
       chalk:
         specifier: 4.1.2
         version: 4.1.2
