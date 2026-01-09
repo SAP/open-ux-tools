@@ -7,7 +7,7 @@ import { ContextualMenu } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton';
 import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
-import { compareStylesBySelector } from '../../utils/styles';
+import { compareStylesBySelector, findStyleFromStyleSheets } from '../../utils/styles';
 
 describe('<UIDialog />', () => {
     const windowHeight = 300;
@@ -16,6 +16,14 @@ describe('<UIDialog />', () => {
     let windowEventMock: DOMEventListenerMock;
     const changeSize = (property: 'innerHeight', value: number): void => {
         Object.defineProperty(window, property, { writable: true, configurable: true, value: value });
+    };
+    const commonDialogProps = {
+        acceptButtonText: 'Yes',
+        cancelButtonText: 'No',
+        onAccept: onAcceptSpy,
+        onCancel: onRejectSpy,
+        isOpen: true,
+        children: <div className="dummy"></div>
     };
 
     beforeAll(() => {
@@ -33,46 +41,19 @@ describe('<UIDialog />', () => {
     });
 
     it('Should render dialog content', () => {
-        render(
-            <UIDialog
-                acceptButtonText="Yes"
-                cancelButtonText="No"
-                onAccept={onAcceptSpy}
-                onCancel={onRejectSpy}
-                isOpen={true}>
-                <div className="dummy"></div>
-            </UIDialog>
-        );
+        render(<UIDialog {...commonDialogProps} />);
         expect(document.querySelector('.dummy')).toBeInTheDocument();
     });
 
     it('On Accept', () => {
-        render(
-            <UIDialog
-                acceptButtonText="Yes"
-                cancelButtonText="No"
-                onAccept={onAcceptSpy}
-                onCancel={onRejectSpy}
-                isOpen={true}>
-                <div className="dummy"></div>
-            </UIDialog>
-        );
+        render(<UIDialog {...commonDialogProps} />);
         const acceptButton = screen.getByText('Yes');
         fireEvent.click(acceptButton);
         expect(onAcceptSpy).toHaveBeenCalledTimes(1);
     });
 
     it('On Cancel', () => {
-        render(
-            <UIDialog
-                acceptButtonText="Yes"
-                cancelButtonText="No"
-                onAccept={onAcceptSpy}
-                onCancel={onRejectSpy}
-                isOpen={true}>
-                <div className="dummy"></div>
-            </UIDialog>
-        );
+        render(<UIDialog {...commonDialogProps} />);
         const cancelButton = screen.getByText('No');
         fireEvent.click(cancelButton);
         expect(onRejectSpy).toHaveBeenCalledTimes(1);
@@ -80,80 +61,44 @@ describe('<UIDialog />', () => {
 
     describe('Footer', () => {
         it('Accept and reject buttons', () => {
-            render(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
-                    isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            render(<UIDialog {...commonDialogProps} />);
             expect(screen.getByText('Yes')).toBeInTheDocument();
             expect(screen.getByText('No')).toBeInTheDocument();
         });
 
         it('Accept button', () => {
-            render(
-                <UIDialog acceptButtonText="Yes" cancelButtonText="No" onAccept={onAcceptSpy} isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            render(<UIDialog {...commonDialogProps} onCancel={undefined} />);
             expect(screen.getByText('Yes')).toBeInTheDocument();
             expect(screen.queryByText('No')).not.toBeInTheDocument();
         });
 
         it('Reject button', () => {
-            render(
-                <UIDialog acceptButtonText="Yes" cancelButtonText="No" onCancel={onRejectSpy} isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            render(<UIDialog {...commonDialogProps} onAccept={undefined} />);
             expect(screen.queryByText('Yes')).not.toBeInTheDocument();
             expect(screen.getByText('No')).toBeInTheDocument();
         });
 
         it('Empty footer', () => {
-            render(
-                <UIDialog acceptButtonText="Yes" cancelButtonText="No" isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            render(<UIDialog acceptButtonText="Yes" cancelButtonText="No" isOpen={true} />);
             expect(screen.queryByText('Yes')).not.toBeInTheDocument();
             expect(screen.queryByText('No')).not.toBeInTheDocument();
         });
 
         it('Custom footer', () => {
-            render(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
-                    footer={<div className="dummyFooter"></div>}
-                    isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            render(<UIDialog {...commonDialogProps} footer={<div className="dummyFooter"></div>} />);
             expect(document.querySelector('.dummyFooter')).toBeInTheDocument();
         });
 
         it('Custom footer with multiple elements', () => {
             render(
                 <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
+                    {...commonDialogProps}
                     footer={[
                         <UIDefaultButton key="accept" className="dummyButton" />,
                         <UIDefaultButton key="decline" className="dummyButton" />,
                         <UIDefaultButton key="cancel" className="dummyButton" />
                     ]}
-                    isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
+                />
             );
             const buttons = document.querySelectorAll('.dummyButton');
             expect(buttons.length).toEqual(3);
@@ -162,141 +107,60 @@ describe('<UIDialog />', () => {
 
     describe('onResize', () => {
         it('Resize attachment and detachment', async () => {
-            const initialListeners = windowEventMock.domEventListeners['resize'];
-            const initialCount = Array.isArray(initialListeners) ? initialListeners.length : 0;
+            const initialCount = windowEventMock.domEventListeners['resize']?.length ?? 0;
 
-            const { rerender } = render(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
-                    isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            const { rerender } = render(<UIDialog {...commonDialogProps} />);
 
-            const openListeners = windowEventMock.domEventListeners['resize'];
-            const openCount = Array.isArray(openListeners) ? openListeners.length : 0;
+            const openCount = windowEventMock.domEventListeners['resize']?.length ?? 0;
             expect(openCount).toBeGreaterThan(initialCount);
 
-            rerender(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
-                    isOpen={false}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
-
+            // Close dialog
+            rerender(<UIDialog {...commonDialogProps} isOpen={false} />);
+            // Resize detached - test with close timeout
             await new Promise((resolve) => setTimeout(resolve, 500));
-            const finalListeners = windowEventMock.domEventListeners['resize'];
-            const finalCount = Array.isArray(finalListeners) ? finalListeners.length : 0;
+            const finalCount = windowEventMock.domEventListeners['resize']?.length ?? 0;
             expect(finalCount).toBeLessThan(openCount);
         });
 
         it('No resize handling when scrollArea is Dialog', () => {
-            const initialListeners = windowEventMock.domEventListeners['resize'];
-            const initialCount = Array.isArray(initialListeners) ? initialListeners.length : 0;
+            // Resize attached
+            const { rerender } = render(<UIDialog {...commonDialogProps} />);
+            expect(windowEventMock.domEventListeners['resize'].length).toEqual(4);
             // Set scrollArea to Dialog
-            const { rerender } = render(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
-                    isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
-            rerender(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
-                    isOpen={true}
-                    scrollArea={UIDialogScrollArea.Dialog}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
-            const listenersDialog = windowEventMock.domEventListeners['resize'];
-            const dialogCount = Array.isArray(listenersDialog) ? listenersDialog.length : 0;
-            expect(dialogCount).toBeGreaterThan(initialCount);
+            rerender(<UIDialog {...commonDialogProps} scrollArea={UIDialogScrollArea.Dialog} />);
+            expect(windowEventMock.domEventListeners['resize'].length).toEqual(3);
             // Set scrollArea to Content
-            rerender(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
-                    isOpen={true}
-                    scrollArea={UIDialogScrollArea.Content}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
-            const listenersContent = windowEventMock.domEventListeners['resize'];
-            const contentCount = Array.isArray(listenersContent) ? listenersContent.length : 0;
-            expect(contentCount).toBeGreaterThan(initialCount);
+            rerender(<UIDialog {...commonDialogProps} scrollArea={UIDialogScrollArea.Content} />);
+            expect(windowEventMock.domEventListeners['resize'].length).toEqual(4);
         });
 
         it('Handle resize - check state', () => {
             const offset = DIALOG_MAX_HEIGHT_OFFSET;
             const expectSize = 1000;
-            render(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
-                    isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            render(<UIDialog {...commonDialogProps} />);
+
             // Simulate resize with new value
             changeSize('innerHeight', expectSize);
             windowEventMock.simulateEvent('resize', {});
-            const dialogContent = document.querySelector('.ms-Dialog-content');
-            if (dialogContent) {
-                const maxHeight = window.getComputedStyle(dialogContent as HTMLElement).maxHeight;
-                const match = maxHeight.match(/(\d+)px/);
-                if (match) {
-                    expect(parseInt(match[1], 10)).toEqual(expectSize - offset);
-                } else {
-                    // If not set, just check it's a string
-                    expect(typeof maxHeight).toBe('string');
-                }
-            }
+
+            // Check applied style
+            const scrollableContent = document.querySelector('.ms-Modal-scrollableContent');
+            const maxWidth = findStyleFromStyleSheets('max-height', scrollableContent.firstChild as HTMLElement);
+            expect(maxWidth).toEqual(`${expectSize - offset}px`);
             changeSize('innerHeight', windowHeight);
         });
 
         it('Handle resize when scrollArea is Dialog', () => {
-            const offset = DIALOG_MAX_HEIGHT_OFFSET;
-            render(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    onCancel={onRejectSpy}
-                    isOpen={true}
-                    scrollArea={UIDialogScrollArea.Dialog}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            render(<UIDialog {...commonDialogProps} scrollArea={UIDialogScrollArea.Dialog} />);
+
+            // Simulate resize with new value
             changeSize('innerHeight', 1000);
             windowEventMock.simulateEvent('resize', {});
-            const dialogContent = document.querySelector('.ms-Dialog-content');
-            if (dialogContent) {
-                const maxHeight = window.getComputedStyle(dialogContent as HTMLElement).maxHeight;
-                const match = maxHeight.match(/(\d+)px/);
-                if (match) {
-                    expect(parseInt(match[1], 10)).toEqual(windowHeight - offset);
-                } else {
-                    expect(typeof maxHeight).toBe('string');
-                }
-            }
+
+            // Check applied style
+            const scrollableContent = document.querySelector('.ms-Modal-scrollableContent');
+            const maxWidth = findStyleFromStyleSheets('max-height', scrollableContent.firstChild as HTMLElement);
+            expect(maxWidth).toEqual(undefined);
             changeSize('innerHeight', windowHeight);
         });
     });
@@ -341,10 +205,10 @@ describe('<UIDialog />', () => {
                     <div className="dummy"></div>
                 </UIDialog>
             );
-            
+
             const overlay = document.querySelector('.ms-Overlay');
             expect(overlay).toBeInTheDocument();
-            
+
             // Comprehensive overlay style validation
             compareStylesBySelector('.ms-Overlay', {
                 position: 'absolute',
@@ -353,31 +217,31 @@ describe('<UIDialog />', () => {
                 right: '0px',
                 bottom: '0px'
             });
-            
+
             // Check opacity separately as it may be animated
             if (overlay) {
                 const styles = window.getComputedStyle(overlay);
                 expect(parseFloat(styles.opacity)).toBeGreaterThan(0);
             }
         });
-        
+
         it('Basic style - dialog main', () => {
             render(
                 <UIDialog isOpen={true}>
                     <div className="dummy"></div>
                 </UIDialog>
             );
-            
+
             const dialog = document.querySelector('.ms-Dialog-main');
             expect(dialog).toBeInTheDocument();
-            
+
             // Comprehensive dialog main style validation
             compareStylesBySelector('.ms-Dialog-main', {
                 borderRadius: '4px',
                 boxShadow: expect.any(String),
                 position: 'relative'
             } as any);
-            
+
             // Validate additional inline styles
             if (dialog) {
                 const styles = window.getComputedStyle(dialog);
@@ -386,30 +250,30 @@ describe('<UIDialog />', () => {
                 expect(styles.borderWidth).toBeDefined();
             }
         });
-        
+
         it('Basic style - dialog inner', () => {
             render(
                 <UIDialog isOpen={true}>
                     <div className="dummy"></div>
                 </UIDialog>
             );
-            
+
             const inner = document.querySelector('.ms-Dialog-inner');
             expect(inner).toBeInTheDocument();
-            
+
             // Comprehensive inner container style validation
             compareStylesBySelector('.ms-Dialog-inner', {
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden'
             } as any);
-            
+
             if (inner) {
                 const computedStyles = window.getComputedStyle(inner as HTMLElement);
                 expect(computedStyles.padding).toMatch(/^0px/);
             }
         });
-        
+
         it('Title - single line', () => {
             render(
                 <UIDialog isOpen={true}>
@@ -418,7 +282,7 @@ describe('<UIDialog />', () => {
             );
             const title = document.querySelector('.ms-Dialog-title');
             expect(title).toBeInTheDocument();
-            
+
             // Comprehensive title style validation
             if (title) {
                 const inlineStyles = (title as HTMLElement).style;
@@ -431,7 +295,7 @@ describe('<UIDialog />', () => {
                 expect(inlineStyles.fontWeight).toBeDefined();
             }
         });
-        
+
         it('Title - multi line', () => {
             render(
                 <UIDialog isOpen={true} multiLineTitle={true}>
@@ -440,7 +304,7 @@ describe('<UIDialog />', () => {
             );
             const title = document.querySelector('.ms-Dialog-title');
             expect(title).toBeInTheDocument();
-            
+
             // Comprehensive multi-line title style validation
             if (title) {
                 const inlineStyles = (title as HTMLElement).style;
@@ -454,7 +318,7 @@ describe('<UIDialog />', () => {
                 expect(inlineStyles.whiteSpace).not.toBe('nowrap');
             }
         });
-        
+
         it('Footer - with buttons', () => {
             render(
                 <UIDialog
@@ -466,13 +330,13 @@ describe('<UIDialog />', () => {
                     <div className="dummy"></div>
                 </UIDialog>
             );
-            
+
             // Verify footer elements exist
             const actionsRight = document.querySelector('.ms-Dialog-actionsRight');
             expect(actionsRight).toBeInTheDocument();
             const actions = document.querySelector('.ms-Dialog-actions');
             expect(actions).toBeInTheDocument();
-            
+
             // Comprehensive footer style validation
             compareStylesBySelector('.ms-Dialog-actionsRight', {
                 textAlign: 'center',
@@ -483,12 +347,12 @@ describe('<UIDialog />', () => {
                 lineHeight: 'auto',
                 position: 'relative'
             } as any);
-            
+
             // Verify buttons are rendered
             expect(screen.getByText('Yes')).toBeInTheDocument();
             expect(screen.getByText('No')).toBeInTheDocument();
         });
-        
+
         it('Footer - empty', () => {
             render(
                 <UIDialog isOpen={true}>
@@ -499,7 +363,7 @@ describe('<UIDialog />', () => {
                 document.querySelector('.ms-Dialog-actions') || document.querySelector('[data-testid="dialog-footer"]');
             expect(footer).toBeNull();
         });
-        
+
         it('ScrollArea - content', () => {
             render(
                 <UIDialog isOpen={true}>
@@ -508,10 +372,10 @@ describe('<UIDialog />', () => {
             );
             const dialog = document.querySelector('.ms-Dialog-main');
             expect(dialog).toBeInTheDocument();
-            
+
             const content = document.querySelector('.ms-Dialog-content');
             expect(content).toBeInTheDocument();
-            
+
             // Verify content area exists and has correct structure
             if (content) {
                 const styles = window.getComputedStyle(content);
@@ -519,7 +383,7 @@ describe('<UIDialog />', () => {
                 expect(styles.display).toBeDefined();
             }
         });
-        
+
         it('Whole dialog scrollable', () => {
             render(
                 <UIDialog isOpen={true} scrollArea={UIDialogScrollArea.Dialog}>
@@ -528,10 +392,10 @@ describe('<UIDialog />', () => {
             );
             const dialog = document.querySelector('.ms-Dialog-main');
             expect(dialog).toBeInTheDocument();
-            
+
             const content = document.querySelector('.ms-Dialog-content');
             expect(content).toBeInTheDocument();
-            
+
             // Comprehensive style validation for dialog scroll mode
             if (dialog) {
                 const styles = window.getComputedStyle(dialog);
@@ -548,21 +412,21 @@ describe('<UIDialog />', () => {
                     <div className="dummy">Test Content</div>
                 </UIDialog>
             );
-            
+
             // Verify CSS variables are applied correctly
             const dialog = document.querySelector('.ms-Dialog-main');
             expect(dialog).toBeInTheDocument();
-            
+
             if (dialog) {
                 const styles = window.getComputedStyle(dialog);
                 // Verify theme-related properties are defined
                 expect(styles.backgroundColor).toBeDefined();
                 expect(styles.color).toBeDefined();
-                
+
                 // Test that the component renders correctly with CSS variables
                 const inner = document.querySelector('.ms-Dialog-inner');
                 expect(inner).toBeInTheDocument();
-                
+
                 // Verify content is rendered
                 expect(screen.getByText('Test Content')).toBeInTheDocument();
             }
@@ -624,7 +488,7 @@ describe('<UIDialog />', () => {
                     </div>
                 </UIDialog>
             );
-            
+
             // Verify all dialog elements are rendered
             expect(document.querySelector('.ms-Dialog-main')).toBeInTheDocument();
             expect(screen.getByText('This is a complex dialog with multiple features')).toBeInTheDocument();
