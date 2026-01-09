@@ -24,9 +24,12 @@ export interface AnnotationBasedNode<T extends string, Children = never> {
     children: Children[];
 }
 
-export type TableSectionNode = AnnotationBasedNode<'table-section', AnnotationBasedNode<'table'>>;
+export type TableSectionNode = AnnotationBasedNode<'table-section', TableNode>;
 
-export type AnnotationNode = TableSectionNode | AnnotationBasedNode<'table'>;
+// NOSONAR - TableNode provides semantic meaning for code readability
+export type TableNode = AnnotationBasedNode<'table'>;
+
+export type AnnotationNode = TableSectionNode | TableNode;
 export type NodeLookup = {
     [K in AnnotationNode['type']]?: Extract<AnnotationNode, { type: K }>[];
 };
@@ -41,13 +44,13 @@ export function collectTables(
     feVersion: 'v2' | 'v4',
     entityType: string,
     service: ParsedService
-): AnnotationBasedNode<'table'>[] {
-    const tables: AnnotationBasedNode<'table'>[] = [];
+): TableNode[] {
+    const tables: TableNode[] = [];
     const lineItemKey = buildAnnotationIndexKey(entityType, UI_LINE_ITEM);
     const lineItems = service.index.annotations[lineItemKey]?.['undefined'];
 
     if (lineItems) {
-        const table: AnnotationBasedNode<'table'> = {
+        const table: TableNode = {
             type: 'table',
             annotation: lineItems,
             annotationPath: `@com.sap.vocabularies.UI.v1.LineItem`,
@@ -198,7 +201,7 @@ function createTableSection(
         return undefined;
     }
 
-    const table: AnnotationBasedNode<'table'> = {
+    const table: TableNode = {
         type: 'table',
         annotationPath: toFullyQualifiedPath(
             aliasInfo.aliasMap,
