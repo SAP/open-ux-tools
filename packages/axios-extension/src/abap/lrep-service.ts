@@ -135,6 +135,19 @@ export interface KeyUserDataResponse {
     contents: KeyUserChangeContent[];
 }
 
+export interface FlexVersion {
+    versionId: string;
+    isPublished: boolean;
+    title: string;
+    activatedAt: string;
+    activatedBy: string;
+    appdescrChangesHash: string;
+}
+
+export interface FlexVersionsResponse {
+    versions: FlexVersion[];
+}
+
 interface Language {
     sap: string;
     description: string;
@@ -382,12 +395,13 @@ export class LayeredRepositoryService extends Axios implements Service {
      * Lists context-based adaptations for the given application.
      *
      * @param {string} appId - Technical application id.
+     * @param {string} [version] - Optional version id. If not provided, uses the hardcoded default version.
      * @returns {Promise<AdaptationsResponse>} Adaptations sorted by priority.
      */
-    public async listAdaptations(appId: string): Promise<AdaptationsResponse> {
+    public async listAdaptations(appId: string, version?: string): Promise<AdaptationsResponse> {
         try {
             const response = await this.get<AdaptationsResponse>(
-                `/flex/apps/${encodeURIComponent(appId)}/adaptations/`,
+                `/flex/apps/${encodeURIComponent(appId)}/adaptations/?version=${encodeURIComponent(version)}`,
                 {
                     transformResponse
                 }
@@ -422,6 +436,37 @@ export class LayeredRepositoryService extends Axios implements Service {
                 response,
                 `Successfully fetched key user data for component ${componentId} and ${adaptationId} adaptation.`
             );
+            return response.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves versions for the given component.
+     *
+     * @param {string} componentId - Technical component id.
+     * @param {number} [limit] - Optional limit for the number of versions to retrieve (default: 2).
+     * @param {string} [language] - Optional language code (default: EN).
+     * @returns {Promise<FlexVersionsResponse>} Flex versions response containing an array of versions.
+     */
+    public async getFlexVersions(
+        componentId: string,
+        limit: number = 2,
+        language: string = 'EN'
+    ): Promise<FlexVersionsResponse> {
+        try {
+            const params = new URLSearchParams(this.defaults?.params);
+            params.append('sap-language', language);
+            params.append('limit', limit.toString());
+            const response = await this.get<FlexVersionsResponse>(`/flex/versions/${encodeURIComponent(componentId)}`, {
+                params,
+                transformResponse
+            });
+            this.tryLogResponse(response, `Successfully fetched flex versions for component ${componentId}`);
             return response.data;
         } catch (error) {
             if (isAxiosError(error)) {

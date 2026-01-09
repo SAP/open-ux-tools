@@ -339,7 +339,7 @@ function getImportKeyUserConfigurationsPrompt(
     return {
         type: 'confirm',
         name: attributePromptNames.importKeyUserConfigurations,
-        message: t('prompts.importKeyUserConfigurationsLabel'),
+        message: t('prompts.importKeyUserChangesLabel'),
         default: options?.default ?? false,
         guiOptions: {
             breadcrumb: true

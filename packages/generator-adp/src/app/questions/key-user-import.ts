@@ -3,7 +3,12 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 import { type SystemLookup, getEndpointNames, getConfiguredProvider } from '@sap-ux/adp-tooling';
-import type { AbapServiceProvider, AdaptationDescriptor, KeyUserChangeContent } from '@sap-ux/axios-extension';
+import type {
+    AbapServiceProvider,
+    AdaptationDescriptor,
+    FlexVersion,
+    KeyUserChangeContent
+} from '@sap-ux/axios-extension';
 
 import { t } from '../../utils/i18n';
 import type {
@@ -39,6 +44,10 @@ export class KeyUserImportPrompter {
      * List of key-user changes.
      */
     private keyUserChanges: KeyUserChangeContent[] = [];
+    /**
+     * List of flex versions.
+     */
+    private flexVersions: FlexVersion[] = [];
     /**
      * Indicates if authentication is required.
      */
@@ -204,9 +213,9 @@ export class KeyUserImportPrompter {
     /**
      * Returns the choices for the adaptation prompt.
      *
-     * @returns {Promise<string[]>} The choices for the adaptation prompt.
+     * @returns {Promise<Array<{ name: string; value: string }>>} The choices for the adaptation prompt.
      */
-    private async getAdaptationChoices(): Promise<string[]> {
+    private async getAdaptationChoices(): Promise<Array<{ name: string; value: string }>> {
         if (!this.adaptations.length) {
             this.latestMessage = {
                 message: t('error.keyUserNoAdaptations'),
@@ -215,7 +224,20 @@ export class KeyUserImportPrompter {
             this.logger.error(`No adaptations found for component ${this.componentId}`);
             return [];
         }
-        return this.adaptations.map((adaptation) => adaptation.id);
+
+        return this.adaptations.map((adaptation) => {
+            if (adaptation.id === DEFAULT_ADAPTATION_ID) {
+                return {
+                    name: DEFAULT_ADAPTATION_ID,
+                    value: DEFAULT_ADAPTATION_ID
+                };
+            }
+            const name = adaptation.title ? `${adaptation.title} (${adaptation.id})` : adaptation.id;
+            return {
+                name,
+                value: adaptation.id
+            };
+        });
     }
 
     /**
@@ -231,17 +253,32 @@ export class KeyUserImportPrompter {
      * Loads adaptations for the current provider.
      */
     private async loadAdaptations(): Promise<void> {
-        const response = await this.provider.getLayeredRepository().listAdaptations(this.componentId);
+        const version = this.flexVersions?.[0]?.versionId;
+        const lrep = this.provider?.getLayeredRepository();
+        const response = await lrep?.listAdaptations(this.componentId, version);
         this.adaptations = response?.adaptations ?? [];
         this.logger.log(`Loaded adaptations: ${JSON.stringify(this.adaptations, null, 2)}`);
     }
 
     /**
-     * Validates key-user changes if only DEFAULT adaptation exists.
+     * Loads flex versions for the current provider.
+     */
+    private async loadFlexVersions(): Promise<void> {
+        const lrep = this.provider?.getLayeredRepository();
+        const response = await lrep?.getFlexVersions(this.componentId);
+        this.flexVersions = response?.versions ?? [];
+        this.logger.log(`Loaded flex versions: ${JSON.stringify(this.flexVersions, null, 2)}`);
+    }
+
+    /**
+     * Loads flex versions and adaptations, then validates key-user changes if only DEFAULT adaptation exists.
      *
      * @returns The result of key-user validation if only DEFAULT exists, or true.
      */
-    private async validateKeyUserChangesIfOnlyDefault(): Promise<string | boolean> {
+    private async loadDataAndValidateKeyUserChanges(): Promise<string | boolean> {
+        await this.loadFlexVersions();
+        await this.loadAdaptations();
+
         if (this.hasOnlyDefaultAdaptation()) {
             return await this.validateKeyUserChanges(DEFAULT_ADAPTATION_ID);
         }
@@ -265,8 +302,7 @@ export class KeyUserImportPrompter {
             this.provider = this.defaultProvider;
             this.isAuthRequired = false;
             try {
-                await this.loadAdaptations();
-                return await this.validateKeyUserChangesIfOnlyDefault();
+                return await this.loadDataAndValidateKeyUserChanges();
             } catch (e) {
                 return e.message;
             }
@@ -282,8 +318,7 @@ export class KeyUserImportPrompter {
                     password: answers.keyUserPassword
                 };
                 this.provider = await getConfiguredProvider(options, this.logger);
-                await this.loadAdaptations();
-                return await this.validateKeyUserChangesIfOnlyDefault();
+                return await this.loadDataAndValidateKeyUserChanges();
             } catch (e) {
                 return e.message;
             }
@@ -313,8 +348,7 @@ export class KeyUserImportPrompter {
                 password
             };
             this.provider = await getConfiguredProvider(options, this.logger);
-            await this.loadAdaptations();
-            return await this.validateKeyUserChangesIfOnlyDefault();
+            return await this.loadDataAndValidateKeyUserChanges();
         } catch (e) {
             return e.message;
         }
@@ -328,7 +362,8 @@ export class KeyUserImportPrompter {
      */
     private async validateKeyUserChanges(adaptationId: string): Promise<string | boolean> {
         try {
-            const data = await this.provider?.getLayeredRepository().getKeyUserData(this.componentId, adaptationId);
+            const lrep = this.provider?.getLayeredRepository();
+            const data = await lrep?.getKeyUserData(this.componentId, adaptationId);
 
             this.keyUserChanges = data?.contents ?? [];
             this.logger.debug(

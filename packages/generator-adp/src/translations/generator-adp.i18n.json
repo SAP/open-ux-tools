@@ -50,7 +50,7 @@
         "ui5VersionTooltip": "Select the SAPUI5 version you want to use to preview your app variant.",
         "addDeployConfig": "Add Deployment Configuration",
         "addFlpConfig": "Add SAP Fiori Launchpad Configuration",
-        "importKeyUserConfigurationsLabel": "Import Key User Configurations",
+        "importKeyUserChangesLabel": "Import Key User Changes",
         "keyUserSystemTooltip": "Select the system from which key user changes should be taken over",
         "keyUserAdaptationLabel": "Adaptation",
         "keyUserAdaptationLabelMulti": "There are multiple context-based adaptations. Select an adaptation to take over as an app variant.",
