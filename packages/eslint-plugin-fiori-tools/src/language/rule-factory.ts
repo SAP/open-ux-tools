@@ -110,25 +110,12 @@ export function createFioriRule<
             }
             const sourceCode = context.sourceCode;
             if (sourceCode instanceof JSONSourceCode && createJsonVisitorHandler) {
-                const applicableDiagnostics = cachedDiagnostics.filter(
-                    (diagnostic) => diagnostic.manifest.uri === sourceCode.uri
+                return createJsonVisitorWithMatchers(
+                    sourceCode,
+                    cachedDiagnostics,
+                    context as JSONRuleContext<MessageIds, RuleOptions>,
+                    createJsonVisitorHandler
                 );
-                if (applicableDiagnostics.length === 0) {
-                    return {};
-                }
-                const matchers: RuleVisitor = {};
-                for (const diagnostic of applicableDiagnostics) {
-                    const paths = findDeepestExistingPath(diagnostic.manifest.object, diagnostic.manifest.propertyPath);
-                    if (paths?.validatedPath && paths.validatedPath.length > 0) {
-                        matchers[sourceCode.createMatcherString(paths.validatedPath)] = createJsonVisitorHandler(
-                            // typescript can't infer context based on source code instance
-                            context as JSONRuleContext<MessageIds, RuleOptions>,
-                            diagnostic,
-                            paths
-                        );
-                    }
-                }
-                return matchers;
             }
             if (context.sourceCode instanceof JSONSourceCode && createJson) {
                 return createJson(context as JSONRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
@@ -142,4 +129,39 @@ export function createFioriRule<
             return {};
         }
     };
+}
+
+/**
+ * Creates a JSON visitor with matchers for applicable diagnostics.
+ */
+function createJsonVisitorWithMatchers<
+    MessageIds extends string,
+    RuleOptions extends unknown[],
+    T extends Diagnostic['type']
+>(
+    sourceCode: FioriJSONSourceCode,
+    cachedDiagnostics: Extract<Diagnostic, { type: T }>[],
+    context: JSONRuleContext<MessageIds, RuleOptions>,
+    createJsonVisitorHandler: (
+        context: JSONRuleContext<MessageIds, RuleOptions>,
+        diagnostic: Extract<Diagnostic, { type: T }>,
+        deepestPathResult: DeepestExistingPathResult
+    ) => (node: MemberNode) => void
+): RuleVisitor {
+    const applicableDiagnostics = cachedDiagnostics.filter((diagnostic) => diagnostic.manifest.uri === sourceCode.uri);
+    if (applicableDiagnostics.length === 0) {
+        return {};
+    }
+    const matchers: RuleVisitor = {};
+    for (const diagnostic of applicableDiagnostics) {
+        const paths = findDeepestExistingPath(diagnostic.manifest.object, diagnostic.manifest.propertyPath);
+        if (paths?.validatedPath && paths.validatedPath.length > 0) {
+            matchers[sourceCode.createMatcherString(paths.validatedPath)] = createJsonVisitorHandler(
+                context,
+                diagnostic,
+                paths
+            );
+        }
+    }
+    return matchers;
 }
