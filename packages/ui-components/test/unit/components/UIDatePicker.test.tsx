@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, fireEvent, cleanup } from '@testing-library/react';
 import { UIDatePicker } from '../../../src/components/UIDatePicker';
 
 describe('<UIDatePicker />', () => {
@@ -33,39 +33,31 @@ describe('<UIDatePicker />', () => {
     it('onInputChange', () => {
         const { container } = render(<UIDatePicker {...defaultProps} dateOnly />);
         const input = container.querySelector('input[type="text"]');
-        if (input) {
-            fireEvent.change(input, { target: { value: '2022-08-22' } });
-            expect(onChangeSpy).toHaveBeenCalledTimes(1);
-            expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
-        }
+        fireEvent.change(input, { target: { value: '2022-08-22' } });
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
+        expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
     });
 
     it('onInputChange, undefined', () => {
         const { container } = render(<UIDatePicker {...defaultProps} dateOnly />);
         const input = container.querySelector('input[type="text"]');
-        if (input) {
-            fireEvent.change(input, { target: { value: '' } });
-            expect(onChangeSpy).toHaveBeenCalledTimes(0);
-        }
+        fireEvent.change(input, { target: { value: '' } });
+        expect(onChangeSpy).toHaveBeenCalledTimes(0);
     });
 
     it('onPickerChange', () => {
         const { container } = render(<UIDatePicker {...defaultProps} dateOnly />);
         const input = container.querySelector('input[type="date"]');
-        if (input) {
-            fireEvent.change(input, { target: { value: '2022-08-22' } });
-            expect(onChangeSpy).toHaveBeenCalledTimes(1);
-            expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
-        }
+        fireEvent.change(input, { target: { value: '2022-08-22' } });
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
+        expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
     });
 
     it('onPickerChange, datetime without seconds', () => {
         const { container } = render(<UIDatePicker {...defaultProps} />);
         const input = container.querySelector('input[type="datetime-local"]');
-        if (input) {
-            fireEvent.change(input, { target: { value: '2022-08-22T22:00' } });
-            expect(onChangeSpy).toHaveBeenCalledTimes(1);
-            expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22T22:00:00');
-        }
+        fireEvent.change(input, { target: { value: '2022-08-22T22:00' } });
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
+        expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22T22:00:00');
     });
 });
