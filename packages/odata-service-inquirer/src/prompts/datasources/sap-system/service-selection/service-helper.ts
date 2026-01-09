@@ -82,9 +82,9 @@ function logServiceCatalogErrorsForHelp(
     requestErrors: Record<ODataVersion, Error | number | string> | {},
     numOfRequests: number
 ): void {
-    const catalogRequesErrors = Object.values(requestErrors);
-    catalogRequesErrors.forEach((error) => {
-        errorHandler.logErrorMsgs(error); // Log and process the error -> error type
+    const catalogRequesErrors = Object.entries(requestErrors);
+    catalogRequesErrors.forEach(([odataVer, error]) => {
+        errorHandler.logErrorMsgs(error, `The OData ${odataVer} catalog is not accessible: ${error}`); // Log and process the error -> error type
     });
     // If all requests failed, log a generic message, this will be stored in the error handler
     if (numOfRequests === catalogRequesErrors.length) {
@@ -149,7 +149,8 @@ export async function getServiceChoices(
     let flatServices = listServicesRequests?.flat() ?? [];
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
 
-    if (flatServices.length === 0) {
+    // If no services or any catalog errors log the message to the error handler for later processing
+    if (flatServices.length === 0 || Object.keys(requestErrors).length > 0) {
         logServiceCatalogErrorsForHelp(requestErrors, catalogs.length);
     }
 
@@ -436,5 +437,12 @@ export async function getSelectedServiceMessage(
                 severity: Severity.warning
             };
         }
+    }
+    // If any catalog request errors, show a warning. We know this is a catalog error since there is no service selected.
+    if (errorHandler.hasError()) {
+        return {
+            message: `There was an error accessing the service catalogs: ${errorHandler.getErrorMsg()}`,
+            severity: Severity.warning
+        };
     }
 }
