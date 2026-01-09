@@ -73,7 +73,8 @@ class MetadataConverter {
             associations: [],
             singletons: this.singletons,
             associationSets: [],
-            typeDefinitions: []
+            typeDefinitions: [],
+            enumTypes: []
         };
     }
     private convertAction(targetKinds: string[], element: MetadataElement): void {

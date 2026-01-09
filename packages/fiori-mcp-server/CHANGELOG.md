@@ -1,5 +1,19 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/fiori-docs-embeddings@0.4.8
+
+## 0.6.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+    - @sap-ux/fiori-docs-embeddings@0.4.7
+
 ## 0.6.2
 
 ### Patch Changes

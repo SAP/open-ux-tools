@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.9
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 0.18.8
 
 ### Patch Changes
