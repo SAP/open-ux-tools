@@ -10,7 +10,7 @@ The server helps AI models create or modify SAP Fiori applications based on prom
 - _Generate a new CAP project and SAP Fiori app based on my_picture.png_
 - _Generate a new SAP Fiori elements list report app for odata service `https://hostname:port/sap/opu/odata4/sap/my_v4_service?sap-client=000`_.
 
-  ℹ️This prompt requires a Stored System for credentials using extension [Connection Manager for SAP Systems](https://marketplace.visualstudio.com/items?itemName=SAPOSS.sap-ux-sap-systems-ext).
+  ℹ️This prompt requires a saved SAP system connection by using the [Connection Manager for SAP Systems](https://marketplace.visualstudio.com/items?itemName=SAPOSS.sap-ux-sap-systems-ext) extension.
 - _Add the FCL to the SAP Fiori elements app_
 - _Enable initial load for the fiori app_
 
@@ -95,10 +95,10 @@ Gets the list of supported functionalities to create a new or modify an existing
 The main functionalities are:
 
 - Generating an SAP Fiori elements app within an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
-- Generating an SAP Fiori elements app for an existing OData service, e.g. an [ABAP RESTful Application Programming Model (RAP)](https://pages.community.sap.com/topics/abap/rap) based OData service
+- Generating an SAP Fiori elements app for an existing OData service, for example, an [ABAP RESTful Application Programming Model](https://pages.community.sap.com/topics/abap/rap) based OData service
 - Adding and deleting pages from an app
 - Adding and modifying controller extensions
-- Modifying `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
+- Modifying `manifest.json` properties depending on the app, for example, adding a flexible column layout or enabling initial load
 
 #### `get_functionality_details` (Step 2 of 3)
 Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.
@@ -108,7 +108,7 @@ Executes a specific functionality to create a new or modify an existing SAP Fior
 
 ## [Logging](#logging)
 
-By default, logging is done for level `error`. To adjust the log level or disable logging completely you can use the `env` property in your configuration.
+By default, logging is enabled at the `error` level. To adjust the log level or disable logging completely, you can use the `env` property in your configuration.
 
 ```json
 {
@@ -125,9 +125,9 @@ By default, logging is done for level `error`. To adjust the log level or disabl
   }
 }
 ```
-The following log levels are supported: `off`, `error`, `warn`, `info`, `debug`, `verbose`.
+The following log levels are supported: `off`, `error`, `warn`, `info`, `debug`, and `verbose`.
 
-The logs will be stored in the file system at `~/.fioritools/fiori-mcp-server.log`
+The logs are stored in the file system at `~/.fioritools/fiori-mcp-server.log`
 
 ## [Telemetry](#telemetry)
 
