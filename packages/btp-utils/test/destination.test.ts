@@ -203,9 +203,7 @@ describe('destination', () => {
             ).toBe(false);
         });
         it('Authentication set to SamlAssertion and is Internet and using ABAP Cloud host', () => {
-            expect(
-                isS4HC(abapCloud)
-            ).toBe(false);
+            expect(isS4HC(abapCloud)).toBe(false);
         });
     });
 
