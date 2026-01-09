@@ -326,14 +326,12 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                     if (
                         !problems.some(
                             (p) =>
-                                p.messageId === 'suggestAppLevelV4' &&
-                                p.manifest.uri === parsedApp.manifest.manifestUri &&
-                                p.manifest.propertyPath.includes(page.targetName)
+                                p.messageId === 'suggestAppLevelV4' && p.manifest.uri === parsedApp.manifest.manifestUri
                         )
                     ) {
                         reportDiagnostic(
                             'suggestAppLevelV4',
-                            page.targetName,
+                            '',
                             parsedApp,
                             appCreateMode.configurationPath,
                             tableType
