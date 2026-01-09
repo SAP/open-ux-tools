@@ -63,8 +63,7 @@ describe('Readme file generation tests', () => {
                 }
             },
             enableEslint: false,
-            enableTypeScript: false,
-            enableCodeAssist: false
+            enableTypeScript: false
         };
         generateAppGenInfo(__dirname, appGenInfo, editor);
         expect(editor.read(readMePath)).toMatchSnapshot();

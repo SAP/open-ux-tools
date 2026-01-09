@@ -1,5 +1,15 @@
 # @sap-ux/project-access
 
+## 1.33.0
+
+### Minor Changes
+
+- c7f9a60: Export fioriToolsDirectory
+
+### Patch Changes
+
+- @sap-ux/ui5-config@0.29.12
+
 ## 1.32.17
 
 ### Patch Changes

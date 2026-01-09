@@ -1,5 +1,21 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.8.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+
+## 0.8.2
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/cds-odata-annotation-converter@0.6.17
+
 ## 0.8.1
 
 ### Patch Changes

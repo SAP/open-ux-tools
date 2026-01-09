@@ -1,5 +1,64 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.105
+
+### Patch Changes
+
+- 8275370: Handle the overwrite answer
+
+## 0.2.104
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/inquirer-common@0.10.7
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/cf-deploy-config-inquirer@0.5.62
+
+## 0.2.103
+
+### Patch Changes
+
+- Updated dependencies [6382440]
+    - @sap-ux/inquirer-common@0.10.6
+    - @sap-ux/cf-deploy-config-inquirer@0.5.61
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+
+## 0.2.102
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+    - @sap-ux/inquirer-common@0.10.5
+    - @sap-ux/cf-deploy-config-inquirer@0.5.60
+
+## 0.2.101
+
+### Patch Changes
+
+- 62bb798: set conflicter option
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/deploy-config-generator-shared@0.1.66
+    - @sap-ux/inquirer-common@0.10.4
+    - @sap-ux/cf-deploy-config-inquirer@0.5.59
+
+## 0.2.100
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/cf-deploy-config-inquirer@0.5.58
+    - @sap-ux/cf-deploy-config-writer@0.3.48
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/inquirer-common@0.10.3
+    - @sap-ux/deploy-config-generator-shared@0.1.65
+
 ## 0.2.99
 
 ### Patch Changes

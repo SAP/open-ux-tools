@@ -1,5 +1,73 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.120
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.71
+- @sap-ux/deploy-config-generator-shared@0.1.67
+- @sap-ux/fiori-generator-shared@0.13.48
+- @sap-ux/abap-deploy-config-writer@0.2.50
+
+## 0.1.119
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.70
+- @sap-ux/deploy-config-generator-shared@0.1.67
+- @sap-ux/fiori-generator-shared@0.13.48
+- @sap-ux/abap-deploy-config-writer@0.2.49
+
+## 0.1.118
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.69
+- @sap-ux/deploy-config-generator-shared@0.1.67
+
+## 0.1.117
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/abap-deploy-config-inquirer@1.6.68
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+
+## 0.1.116
+
+### Patch Changes
+
+- 62bb798: set conflicter option
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/abap-deploy-config-inquirer@1.6.67
+    - @sap-ux/deploy-config-generator-shared@0.1.66
+
+## 0.1.115
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.66
+- @sap-ux/deploy-config-generator-shared@0.1.65
+- @sap-ux/fiori-generator-shared@0.13.46
+- @sap-ux/abap-deploy-config-writer@0.2.48
+
+## 0.1.114
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/abap-deploy-config-inquirer@1.6.65
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/abap-deploy-config-writer@0.2.47
+    - @sap-ux/deploy-config-generator-shared@0.1.65
+    - @sap-ux/ui5-config@0.29.12
+
 ## 0.1.113
 
 ### Patch Changes
