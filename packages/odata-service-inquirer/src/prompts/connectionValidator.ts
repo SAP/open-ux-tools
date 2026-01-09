@@ -50,13 +50,13 @@ interface Validity {
 }
 
 // Cert errors that may be ignored by the ignore cert errors prompt and NODE_TLS_REJECT_UNAUTHORIZED=0 setting
-const ignorableCertErrors = [
+const ignorableCertErrors = new Set([
     ERROR_TYPE.CERT_SELF_SIGNED,
     ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN,
     ERROR_TYPE.CERT_EXPIRED,
     ERROR_TYPE.CERT_UKNOWN_OR_INVALID,
     ERROR_TYPE.INVALID_SSL_CERTIFICATE
-];
+]);
 
 // Makes AxiosRequestConfig url properties required
 interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
@@ -469,7 +469,7 @@ export class ConnectionValidator {
                 await abapProvider.catalog(odataVerCatalog).listServices();
             } catch (error) {
                 const errorType = ErrorHandler.getErrorType(error?.response?.status ?? error?.code);
-                if (error?.isAxiosError && ignorableCertErrors.includes(errorType)) {
+                if (error?.isAxiosError && ignorableCertErrors.has(errorType)) {
                     LoggerHelper.logger.warn(
                         t('warnings.certificateErrors', { url: axiosConfig?.baseURL, error: errorType })
                     );
@@ -883,7 +883,7 @@ export class ConnectionValidator {
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
         } else if (ErrorHandler.isCertError(status)) {
             this.validity.reachable = true;
-            this.validity.canSkipCertError = ignorableCertErrors.includes(ErrorHandler.getErrorType(status));
+            this.validity.canSkipCertError = ignorableCertErrors.has(ErrorHandler.getErrorType(status));
             this.validity.authenticated = false;
             return errorHandler.getValidationErrorHelp(status, false) ?? false;
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {

@@ -1,5 +1,11 @@
 # @sap-ux/serve-static-middleware
 
+## 0.4.6
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 0.4.5
 
 ### Patch Changes

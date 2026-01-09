@@ -1,5 +1,14 @@
 # @sap-ux/inquirer-common
 
+## 0.10.8
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+    - @sap-ux/fiori-generator-shared@0.13.49
+    - @sap-ux/odata-service-writer@0.29.4
+    - @sap-ux/telemetry@0.6.51
+
 ## 0.10.7
 
 ### Patch Changes

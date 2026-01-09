@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.1
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 1.7.0
 
 ### Minor Changes
