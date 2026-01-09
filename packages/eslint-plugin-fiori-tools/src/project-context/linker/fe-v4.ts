@@ -188,46 +188,44 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     const linkedApp = linkApplicationSettings(context.app.manifestObject['sap.fe'] ?? {});
     const manifest = context.app.manifestObject;
     const routingTargets = manifest['sap.ui5']?.routing?.targets;
-    if (routingTargets) {
-        for (const [name, target] of Object.entries(routingTargets)) {
-            const settings = target.options?.settings;
-            const contextPath =
-                target.options?.settings?.contextPath ??
-                (target.options?.settings?.entitySet ? `/${target.options.settings.entitySet}` : undefined);
-            if (!contextPath) {
-                continue;
-            }
+    if (!routingTargets) {
+        return linkedApp;
+    }
+    for (const [name, target] of Object.entries(routingTargets)) {
+        const settings = target.options?.settings;
+        const contextPath =
+            target.options?.settings?.contextPath ??
+            (target.options?.settings?.entitySet ? `/${target.options.settings.entitySet}` : undefined);
+        if (!contextPath) {
+            continue;
+        }
 
-            const mainService = getParsedServiceByName(context.app);
-            if (!mainService) {
-                continue;
-            }
-            const entity = getEntity(settings, mainService);
-            if (!entity) {
-                continue;
-            }
-            const path = ['sap.ui5', 'routing', 'targets'];
-            if (target.name === 'sap.fe.templates.ListReport') {
-                linkListReport(context, mainService, linkedApp, path, name, contextPath, entity, target);
-            } else if (target.name === 'sap.fe.templates.ObjectPage') {
-                if (!entity.structuredType) {
-                    continue;
-                }
-                const sections = collectSections('v4', entity.structuredType, mainService);
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            continue;
+        }
+        const entity = getEntity(settings, mainService);
+        if (!entity) {
+            continue;
+        }
+        const path = ['sap.ui5', 'routing', 'targets'];
+        if (target.name === 'sap.fe.templates.ListReport') {
+            linkListReport(context, linkedApp, path, name, contextPath, entity, target);
+        } else if (target.name === 'sap.fe.templates.ObjectPage' && entity.structuredType) {
+            const sections = collectSections('v4', entity.structuredType, mainService);
 
-                const page: FeV4ObjectPage = {
-                    type: 'object-page',
-                    targetName: name,
-                    componentName: target.name,
-                    contextPath,
-                    entity: entity,
-                    configuration: {},
-                    sections: [],
-                    lookup: {}
-                };
-                linkObjectPageSections(page, path, name, entity, mainService, sections, target);
-                linkedApp.pages.push(page);
-            }
+            const page: FeV4ObjectPage = {
+                type: 'object-page',
+                targetName: name,
+                componentName: target.name,
+                contextPath,
+                entity: entity,
+                configuration: {},
+                sections: [],
+                lookup: {}
+            };
+            linkObjectPageSections(page, path, name, sections, target);
+            linkedApp.pages.push(page);
         }
     }
     return linkedApp;
@@ -258,7 +256,6 @@ interface TableConfiguration {
 /**
  *
  * @param context
- * @param service
  * @param linkedApp
  * @param path
  * @param name
@@ -268,7 +265,6 @@ interface TableConfiguration {
  */
 function linkListReport(
     context: LinkerContext,
-    service: ParsedService,
     linkedApp: LinkedFeV4App,
     path: string[],
     name: string,
@@ -346,7 +342,40 @@ function linkListReportTable(
     }
     for (const control of Object.values(controls)) {
         page.lookup[control.type] ??= [];
-        (page.lookup[control.type]! as Extract<Table | OrphanTable, { type: typeof control.type }>[])!.push(control);
+        (page.lookup[control.type]! as Extract<Table | OrphanTable, { type: typeof control.type }>[]).push(control);
+    }
+}
+
+/**
+ *
+ * @param section
+ * @param controls
+ * @param pagePath
+ */
+function collectTableSections(
+    section: SectionNode,
+    controls: Record<string, Section | Table>,
+    pagePath: string[]
+): void {
+    if (section.type !== 'table-section') {
+        return;
+    }
+    const table = section.children[0];
+    if (table.type !== 'table') {
+        return;
+    }
+    const configurationKey = table.annotationPath;
+    const linkedSection: TableSection = {
+        type: section.type,
+        annotation: section,
+        configuration: {},
+        children: []
+    };
+    controls[`${section.type}|${configurationKey}`] = linkedSection;
+    const linkedTable = createTable(configurationKey, pagePath, table);
+    if (linkedTable.type === 'table') {
+        linkedSection.children.push(linkedTable);
+        controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
 }
 
@@ -355,8 +384,6 @@ function linkListReportTable(
  * @param page
  * @param pathToPage
  * @param pageName
- * @param entity
- * @param service
  * @param sections
  * @param configuration
  */
@@ -364,53 +391,35 @@ function linkObjectPageSections(
     page: FeV4ObjectPage,
     pathToPage: string[],
     pageName: string,
-    entity: MetadataElement,
-    service: ParsedService,
     sections: SectionNode[],
     configuration: Target
 ): void {
     const controls: Record<string, Section | Table> = {};
 
     for (const section of sections) {
-        if (section.type === 'table-section') {
-            const table = section.children[0];
-            if (table.type !== 'table') {
-                continue;
-            }
-            const configurationKey = table.annotationPath;
-            const linkedSection: TableSection = {
-                type: section.type,
-                annotation: section,
-                configuration: {},
-                children: []
-            };
-            controls[`${section.type}|${configurationKey}`] = linkedSection;
-            const linkedTable = createTable(configurationKey, [...pathToPage, pageName], table);
-            if (linkedTable.type === 'table') {
-                linkedSection.children.push(linkedTable);
-                controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
-            }
-        }
+        collectTableSections(section, controls, [...pathToPage, pageName]);
     }
 
     const configurations = configuration.options?.settings?.controlConfiguration ?? {};
     for (const [controlKey, controlConfiguration] of Object.entries(configurations)) {
         const sectionControl = controls[`table-section|${controlKey}`];
         if (sectionControl) {
-            if (sectionControl.type === 'table-section') {
-                const tableControl = sectionControl.children[0];
-                if (tableControl.type === 'table') {
-                    const tableType = controlConfiguration.tableSettings?.type;
-                    tableControl.configuration.tableType.valueInFile = tableType;
-                    const value = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
-                    tableControl.configuration.widthIncludingColumnHeader.valueInFile = value;
-                    const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
-                    tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
-                    const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
-                    tableControl.configuration.creationMode.valueInFile = creationModeValue;
-                    tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
-                }
+            if (sectionControl.type !== 'table-section') {
+                continue;
             }
+            const tableControl = sectionControl.children[0];
+            if (tableControl.type !== 'table') {
+                continue;
+            }
+            const tableType = controlConfiguration.tableSettings?.type;
+            tableControl.configuration.tableType.valueInFile = tableType;
+            const value = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
+            tableControl.configuration.widthIncludingColumnHeader.valueInFile = value;
+            const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
+            tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+            const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
+            tableControl.configuration.creationMode.valueInFile = creationModeValue;
+            tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
         } else {
             // no annotation definition found for this section, but configuration exists
             const orphanedSection: OrphanSection = {
