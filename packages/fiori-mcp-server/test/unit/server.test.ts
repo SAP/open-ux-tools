@@ -52,13 +52,13 @@ describe('FioriFunctionalityServer', () => {
             { name: 'fiori-mcp', version: expect.any(String) },
             { capabilities: { tools: {} } }
         );
-        expect(setRequestHandlerMock).toHaveBeenCalledTimes(2);
+        expect(setRequestHandlerMock).toHaveBeenCalledTimes(3);
     });
 
     test('setup tools', async () => {
         // eslint-disable-next-line no-new
         new FioriFunctionalityServer();
-        const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
+        const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
         const onRequestCB = setRequestHandlerCall[1];
         const result = await onRequestCB();
         expect(result.tools.map((tool: { name: string }) => tool.name)).toEqual([
@@ -68,6 +68,135 @@ describe('FioriFunctionalityServer', () => {
             'get_functionality_details',
             'execute_functionality'
         ]);
+    });
+
+    describe('InitializeRequestSchema handler', () => {
+        test('should set client info and return correct initialization response', async () => {
+            const server = new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    clientInfo: {
+                        name: 'test-client',
+                        version: '1.2.3'
+                    }
+                }
+            });
+
+            // Verify the response structure
+            expect(result).toEqual({
+                protocolVersion: expect.any(String),
+                capabilities: {
+                    tools: {}
+                },
+                serverInfo: {
+                    name: 'fiori-mcp',
+                    version: expect.any(String)
+                }
+            });
+            expect(result.protocolVersion).toBeTruthy();
+        });
+
+        test('should use default values when clientInfo is not provided', async () => {
+            const server = new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {}
+            });
+
+            // Verify the response structure
+            expect(result).toEqual({
+                protocolVersion: expect.any(String),
+                capabilities: {
+                    tools: {}
+                },
+                serverInfo: {
+                    name: 'fiori-mcp',
+                    version: expect.any(String)
+                }
+            });
+            expect(result.protocolVersion).toBeTruthy();
+        });
+
+        test('should use default values when clientInfo.name is missing', async () => {
+            const server = new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    clientInfo: {
+                        version: '1.2.3'
+                    }
+                }
+            });
+
+            expect(result.serverInfo.name).toBe('fiori-mcp');
+            expect(result.serverInfo.version).toBeDefined();
+        });
+
+        test('should use default values when clientInfo.version is missing', async () => {
+            const server = new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    clientInfo: {
+                        name: 'test-client'
+                    }
+                }
+            });
+
+            expect(result.serverInfo.name).toBe('fiori-mcp');
+            expect(result.serverInfo.version).toBeDefined();
+        });
+
+        test('should track client info for telemetry in subsequent tool calls', async () => {
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+            const listFioriAppsSpy = jest.spyOn(tools, 'listFioriApps').mockResolvedValue({
+                applications: []
+            });
+
+            const server = new FioriFunctionalityServer();
+
+            // First, call the initialize handler with client info
+            const initHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const initCallback = initHandlerCall[1];
+            await initCallback({
+                params: {
+                    clientInfo: {
+                        name: 'my-custom-client',
+                        version: '2.0.0'
+                    }
+                }
+            });
+
+            // Then call a tool to verify telemetry includes the client info
+            const toolHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const toolCallback = toolHandlerCall[1];
+            await toolCallback({
+                params: {
+                    name: 'list_fiori_apps',
+                    arguments: {
+                        projectPath: '/test/path'
+                    }
+                }
+            });
+
+            expect(sendTelemetryMock).toHaveBeenCalledWith(
+                'list_fiori_apps',
+                expect.objectContaining({
+                    tool: 'list_fiori_apps',
+                    mcpClientName: 'my-custom-client',
+                    mcpClientVersion: '2.0.0'
+                }),
+                undefined
+            );
+
+            listFioriAppsSpy.mockRestore();
+            sendTelemetryMock.mockRestore();
+        });
     });
 
     describe('FioriFunctionalityServer', () => {
@@ -94,7 +223,7 @@ describe('FioriFunctionalityServer', () => {
             });
             // eslint-disable-next-line no-new
             new FioriFunctionalityServer();
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
             const onRequestCB = setRequestHandlerCall[1];
             const result = await onRequestCB({
                 params: {
@@ -133,7 +262,11 @@ describe('FioriFunctionalityServer', () => {
 
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'list_fiori_apps',
-                { tool: 'list_fiori_apps', functionalityId: undefined },
+                {
+                    tool: 'list_fiori_apps',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 undefined
             );
         });
@@ -153,7 +286,7 @@ describe('FioriFunctionalityServer', () => {
                 ]
             });
             new FioriFunctionalityServer();
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
             const onRequestCB = setRequestHandlerCall[1];
             const result = await onRequestCB({
                 params: {
@@ -186,7 +319,11 @@ describe('FioriFunctionalityServer', () => {
             ]);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'list_functionality',
-                { tool: 'list_functionality', functionalityId: undefined },
+                {
+                    tool: 'list_functionality',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -200,7 +337,7 @@ describe('FioriFunctionalityServer', () => {
             });
             // eslint-disable-next-line no-new
             new FioriFunctionalityServer();
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
             const onRequestCB = setRequestHandlerCall[1];
             const result = await onRequestCB({
                 params: {
@@ -227,7 +364,12 @@ describe('FioriFunctionalityServer', () => {
             ]);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'get_functionality_details',
-                { tool: 'get_functionality_details', functionalityId: 'add-page' },
+                {
+                    tool: 'get_functionality_details',
+                    functionalityId: 'add-page',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -244,7 +386,7 @@ describe('FioriFunctionalityServer', () => {
             });
             // eslint-disable-next-line no-new
             new FioriFunctionalityServer();
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
             const onRequestCB = setRequestHandlerCall[1];
             const result = await onRequestCB({
                 params: {
@@ -277,7 +419,12 @@ describe('FioriFunctionalityServer', () => {
             ]);
             expect(sendTelemetryMock).toHaveBeenLastCalledWith(
                 'execute_functionality',
-                { tool: 'execute_functionality', functionalityId: 'add-page' },
+                {
+                    tool: 'execute_functionality',
+                    functionalityId: 'add-page',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
                 'app1'
             );
         });
@@ -285,7 +432,7 @@ describe('FioriFunctionalityServer', () => {
         test('Unknown tool', async () => {
             // eslint-disable-next-line no-new
             new FioriFunctionalityServer();
-            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
             const onRequestCB = setRequestHandlerCall[1];
             const result = await onRequestCB({
                 params: {
@@ -301,14 +448,50 @@ describe('FioriFunctionalityServer', () => {
                     type: 'text'
                 }
             ]);
-            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
-                unknownTool,
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(unknownTool, {}, undefined);
+        });
+        test('Unknown tool - valid characters in functionalityId', async () => {
+            // eslint-disable-next-line no-new
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'unknown-tool-id2',
+                    arguments: {
+                        functionalityId: 'f1'
+                    }
+                }
+            });
+            expect(result.content).toEqual([
                 {
-                    tool: 'unknown-tool-id',
-                    funtionalityId: undefined
-                },
-                undefined
-            );
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.',
+                    type: 'text'
+                }
+            ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(unknownTool, {}, undefined);
+        });
+
+        test('Unknown tool - invalid characters in functionalityId', async () => {
+            // eslint-disable-next-line no-new
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'unknown-tool-id2',
+                    arguments: {
+                        functionalityId: '<script>alert(1)</script>'
+                    }
+                }
+            });
+            expect(result.content).toEqual([
+                {
+                    text: 'Error: Unknown tool: unknown-tool-id2. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.',
+                    type: 'text'
+                }
+            ]);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(unknownTool, {}, undefined);
         });
     });
 
