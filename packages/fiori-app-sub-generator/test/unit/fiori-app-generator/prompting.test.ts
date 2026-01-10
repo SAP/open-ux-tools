@@ -576,7 +576,8 @@ describe('prompting.ts', () => {
                 expect.objectContaining({
                     [odataServiceInqPromptNames.capProject]: {
                         capSearchPaths: [],
-                        defaultChoice: undefined
+                        defaultChoice: undefined,
+                        useAutoComplete: false
                     },
                     [odataServiceInqPromptNames.capService]: { defaultChoice: undefined },
                     [odataServiceInqPromptNames.datasourceType]: {
@@ -676,7 +677,8 @@ describe('prompting.ts', () => {
                 expect.objectContaining({
                     [odataServiceInqPromptNames.capProject]: {
                         capSearchPaths: ['/some/workspace/folder'],
-                        defaultChoice: '/some/cap/project/path'
+                        defaultChoice: '/some/cap/project/path',
+                        useAutoComplete: true
                     },
                     [odataServiceInqPromptNames.capService]: {
                         defaultChoice: {

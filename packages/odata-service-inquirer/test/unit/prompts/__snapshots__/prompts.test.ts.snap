@@ -350,6 +350,7 @@ exports[`getQuestions getQuestions 1`] = `
     },
     "message": "Choose a CAP Project",
     "name": "capProject",
+    "source": [Function],
     "type": "list",
     "when": [Function],
   },

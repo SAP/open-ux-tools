@@ -250,6 +250,11 @@ export type CapProjectPromptOptions = {
      * The default selected CAP project choice, this is used to pre-select a CAP project based on the CAP project path.
      */
     defaultChoice?: string;
+    /**
+     * Use autocomplete for project selection instead of list (CLI only).
+     * Note: inquirer-autocomplete-prompt module is used for this feature and has to be registered with the inquirer instance.
+     */
+    useAutoComplete?: boolean;
 };
 
 export type CapServicePromptOptions = {
