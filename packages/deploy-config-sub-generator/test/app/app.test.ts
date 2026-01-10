@@ -208,7 +208,12 @@ describe('Deployment Generator', () => {
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getCFQuestionsSpy).toHaveBeenCalled();
+        expect(getCFQuestionsSpy).toHaveBeenCalledWith(
+            expect.not.objectContaining({
+                overwrite: expect.anything()
+            }),
+            expect.any(Object)
+        );
         expect(getABAPPromptsSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 appRootPath: expect.stringContaining(join('/output/mta-app/project1')),
