@@ -1,5 +1,6 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { searchChoices } from '@sap-ux/inquirer-common';
 import { findCapProjectRoot, getCapCustomPaths, isCapProject } from '@sap-ux/project-access';
 import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
 import type { PathLike } from 'node:fs';
@@ -89,6 +90,11 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
     getHostEnvironment: jest.fn()
+}));
+
+jest.mock('@sap-ux/inquirer-common', () => ({
+    ...jest.requireActual('@sap-ux/inquirer-common'),
+    searchChoices: jest.fn()
 }));
 
 describe('getLocalCapProjectPrompts', () => {
@@ -195,6 +201,20 @@ describe('getLocalCapProjectPrompts', () => {
         expect(capProjectPrompt).toBeDefined();
         expect(capProjectPrompt.type).toBe('autocomplete');
         expect(typeof capProjectPrompt.source).toBe('function');
+    });
+
+    test('prompt: capProject - source function calls searchChoices', async () => {
+        (searchChoices as jest.Mock).mockReturnValue([]);
+        mockCapProjectChoices = [{ name: 'test', value: 'test' }];
+
+        const prompts = getLocalCapProjectPrompts({
+            [promptNames.capProject]: { useAutoComplete: true, capSearchPaths: [] }
+        });
+        const prompt = prompts.find((p) => p.name === promptNames.capProject) as any;
+        await prompt.when();
+
+        prompt.source({}, 'input');
+        expect(searchChoices).toHaveBeenCalledWith('input', mockCapProjectChoices);
     });
 
     test('prompt: capProject - type is list without useAutoComplete option', async () => {

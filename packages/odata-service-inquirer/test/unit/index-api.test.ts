@@ -1,8 +1,9 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import { ErrorHandler } from '@sap-ux/inquirer-common';
+import { ErrorHandler, type InquirerAdapter } from '@sap-ux/inquirer-common';
 import { type BackendSystem } from '@sap-ux/store';
-import type { OdataServicePromptOptions } from '../../src/index';
-import { getPrompts, getSystemSelectionQuestions, OdataVersion, promptNames } from '../../src/index';
+import type { OdataServicePromptOptions, OdataServiceAnswers } from '../../src/index';
+import { DatasourceType } from '../../src/index';
+import { getPrompts, getSystemSelectionQuestions, OdataVersion, promptNames, prompt } from '../../src/index';
 import * as prompts from '../../src/prompts';
 import * as systemSelection from '../../src/prompts/datasources/sap-system/system-selection';
 import LoggerHelper from '../../src/prompts/logger-helper';
@@ -56,8 +57,23 @@ jest.mock('@sap-ux/store', () => ({
 }));
 
 describe('API tests', () => {
+    interface MockInquirerAdapter {
+        prompt: jest.MockedFunction<InquirerAdapter['prompt']>;
+        promptModule?: {
+            registerPrompt: jest.MockedFunction<any>;
+        };
+    }
+
+    let mockAdapter: MockInquirerAdapter;
     beforeEach(() => {
         jest.restoreAllMocks();
+        mockAdapter = {
+            prompt: jest.fn(),
+            promptModule: {
+                registerPrompt: jest.fn()
+            }
+        };
+        //jest.clearAllMocks();
     });
 
     afterEach(() => {
@@ -125,5 +141,54 @@ describe('API tests', () => {
     test('getPrompts, i18n is loaded', async () => {
         const { prompts: questions } = await getPrompts(undefined, undefined, true, undefined, true);
         expect(questions).toMatchSnapshot();
+    });
+
+    test('prompt - basic flow with autocomplete and answer merging', async () => {
+        const userAnswers: Partial<OdataServiceAnswers> = {
+            datasourceType: DatasourceType.sapSystem,
+            servicePath: '/user/service'
+        };
+        mockAdapter.prompt.mockResolvedValue(userAnswers);
+        jest.spyOn(prompts, 'getQuestions').mockResolvedValue([{ name: 'test', message: 'Test?' }]);
+
+        PromptState.odataService = { metadata: 'some metadata' };
+
+        const promptOptions: OdataServicePromptOptions = {
+            serviceSelection: { useAutoComplete: true }
+        };
+
+        const result = await prompt(mockAdapter as InquirerAdapter, promptOptions);
+
+        expect(mockAdapter.promptModule?.registerPrompt).toHaveBeenCalledWith('autocomplete', expect.any(Function));
+        expect(result).toEqual({ ...userAnswers, metadata: 'some metadata' });
+    });
+
+    test('prompt - capProject autocomplete registration', async () => {
+        mockAdapter.prompt.mockResolvedValue({});
+        jest.spyOn(prompts, 'getQuestions').mockResolvedValue([]);
+        PromptState.odataService = {};
+
+        await prompt(mockAdapter as InquirerAdapter, {
+            capProject: { capSearchPaths: ['/test'], useAutoComplete: true }
+        });
+
+        expect(mockAdapter.promptModule?.registerPrompt).toHaveBeenCalledWith('autocomplete', expect.any(Function));
+    });
+
+    test('prompt - no autocomplete when disabled or missing promptModule', async () => {
+        mockAdapter.prompt.mockResolvedValue({});
+        jest.spyOn(prompts, 'getQuestions').mockResolvedValue([]);
+        PromptState.odataService = {};
+
+        // Test with useAutoComplete false
+        await prompt(mockAdapter as InquirerAdapter, { serviceSelection: { useAutoComplete: false } });
+        expect(mockAdapter.promptModule?.registerPrompt).not.toHaveBeenCalled();
+
+        // Test with missing promptModule
+        const adapterNoModule = {
+            prompt: jest.fn().mockResolvedValue({})
+        };
+        await prompt(adapterNoModule as InquirerAdapter, { serviceSelection: { useAutoComplete: true } });
+        expect(adapterNoModule.prompt).toHaveBeenCalled();
     });
 });
