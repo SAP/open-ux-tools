@@ -2,8 +2,14 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import { ErrorHandler, type InquirerAdapter } from '@sap-ux/inquirer-common';
 import { type BackendSystem } from '@sap-ux/store';
 import type { OdataServicePromptOptions, OdataServiceAnswers } from '../../src/index';
-import { DatasourceType } from '../../src/index';
-import { getPrompts, getSystemSelectionQuestions, OdataVersion, promptNames, prompt } from '../../src/index';
+import {
+    DatasourceType,
+    getPrompts,
+    getSystemSelectionQuestions,
+    OdataVersion,
+    promptNames,
+    prompt
+} from '../../src/index';
 import * as prompts from '../../src/prompts';
 import * as systemSelection from '../../src/prompts/datasources/sap-system/system-selection';
 import LoggerHelper from '../../src/prompts/logger-helper';
