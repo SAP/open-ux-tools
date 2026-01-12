@@ -10,7 +10,7 @@ import { getFDCApps } from '../services/api';
 import type { CfConfig, CFApp, ServiceKeys, XsApp, XsAppRoute } from '../../types';
 
 /**
- * Get the app host ids.
+ * Get the app host ids from service keys.
  *
  * @param {ServiceKeys[]} serviceKeys - The service keys.
  * @returns {string[]} The app host ids.
@@ -169,11 +169,16 @@ export function getBackendUrlsWithPaths(
 ): Array<{ url: string; paths: string[] }> {
     const destinationToUrl = extractDestinationToUrlMap(serviceKeys);
 
-    let xsAppPath;
-    if (existsSync(join(basePath, '.reuse'))) {
-        xsAppPath = join(basePath, '.reuse', 'xs-app.json');
+    const reuseXsAppPath = join(basePath, '.reuse', 'xs-app.json');
+    const distXsAppPath = join(basePath, 'dist', 'xs-app.json');
+
+    let xsAppPath: string;
+    if (existsSync(reuseXsAppPath)) {
+        xsAppPath = reuseXsAppPath;
+    } else if (existsSync(distXsAppPath)) {
+        xsAppPath = distXsAppPath;
     } else {
-        xsAppPath = join(basePath, 'dist', 'xs-app.json');
+        throw new Error(t('error.xsAppJsonNotFound', { paths: `${reuseXsAppPath}, ${distXsAppPath}` }));
     }
 
     const destinationToPaths = extractDestinationToPathsMap(xsAppPath);

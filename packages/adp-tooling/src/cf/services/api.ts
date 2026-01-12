@@ -156,7 +156,7 @@ export async function getCfUi5AppInfo(
     appId: string,
     appHostIds: string[],
     cfConfig: CfConfig,
-    logger: ToolsLogger
+    logger?: ToolsLogger
 ): Promise<CfUi5AppInfo> {
     const requestArguments = getFDCRequestArguments(cfConfig);
 
@@ -304,7 +304,7 @@ export async function createServices(
  */
 export async function getServiceInstanceKeys(
     serviceInstanceQuery: GetServiceInstanceParams,
-    logger: ToolsLogger
+    logger?: ToolsLogger
 ): Promise<ServiceInfo | null> {
     try {
         const serviceInstances = await getServiceInstance(serviceInstanceQuery);
@@ -361,7 +361,7 @@ async function getServiceInstance(params: GetServiceInstanceParams): Promise<Ser
  */
 export async function getOrCreateServiceKeys(
     serviceInstance: ServiceInstance,
-    logger: ToolsLogger
+    logger?: ToolsLogger
 ): Promise<ServiceKeys[]> {
     const serviceInstanceName = serviceInstance.name;
     try {

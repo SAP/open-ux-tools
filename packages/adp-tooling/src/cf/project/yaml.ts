@@ -4,6 +4,7 @@ import yaml from 'js-yaml';
 import type { Editor } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { UI5Config } from '@sap-ux/ui5-config';
 
 import type {
     MtaModule,
@@ -12,11 +13,14 @@ import type {
     MtaResource,
     MtaRequire,
     CfUI5Yaml,
-    MtaYaml
+    MtaYaml,
+    CfUi5AppInfo,
+    ServiceKeys
 } from '../../types';
 import { AppRouterType } from '../../types';
 import { createServices } from '../services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader';
+import { getBackendUrlsWithPaths } from '../app/discovery';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
@@ -461,4 +465,106 @@ export async function adjustMtaYaml(
 
     memFs.write(mtaYamlPath, updatedYamlContent);
     logger?.debug(`Adjusted MTA YAML for project ${projectPath}`);
+}
+
+/**
+ * Add fiori-tools-servestatic configuration to ui5.yaml and removes previously added configuration.
+ *
+ * @param basePath - path to application root
+ * @param ui5Config - UI5 configuration object
+ * @param logger - logger instance
+ */
+export async function addServeStaticMiddleware(
+    basePath: string,
+    ui5Config: UI5Config,
+    logger?: ToolsLogger
+): Promise<void> {
+    try {
+        ui5Config.removeCustomMiddleware('fiori-tools-servestatic');
+
+        const ui5AppInfoPath = path.join(basePath, 'ui5AppInfo.json');
+        if (!fs.existsSync(ui5AppInfoPath)) {
+            logger?.warn('ui5AppInfo.json not found in project root, skipping fiori-tools-servestatic configuration');
+            return;
+        }
+
+        const ui5AppInfoData = JSON.parse(fs.readFileSync(ui5AppInfoPath, 'utf-8')) as Record<string, unknown>;
+        const ui5AppInfo = ui5AppInfoData[Object.keys(ui5AppInfoData)[0]] as CfUi5AppInfo;
+
+        const reusableLibs =
+            ui5AppInfo.asyncHints?.libs?.filter(
+                (lib) => lib.html5AppName && lib.url && typeof lib.url === 'object' && lib.url.url !== undefined
+            ) ?? [];
+
+        if (reusableLibs.length === 0) {
+            logger?.info(
+                'No reusable libraries found in ui5AppInfo.json, skipping fiori-tools-servestatic configuration'
+            );
+            return;
+        }
+
+        const paths = reusableLibs.map((lib) => {
+            const libName = String(lib.name);
+            const html5AppName = String(lib.html5AppName);
+            const resourcePath = '/resources/' + libName.replaceAll('.', '/');
+
+            return {
+                path: resourcePath,
+                src: `./.reuse/${html5AppName}`,
+                fallthrough: false
+            };
+        });
+
+        // Add the fiori-tools-servestatic configuration
+        ui5Config.addCustomMiddleware([
+            {
+                name: 'fiori-tools-servestatic',
+                beforeMiddleware: 'compression',
+                configuration: {
+                    paths
+                }
+            }
+        ]);
+    } catch (error) {
+        logger?.warn(`Could not add fiori-tools-servestatic configuration: ${(error as Error).message}`);
+        throw error;
+    }
+}
+
+/**
+ * Add backend-proxy-middleware-cf configuration to ui5.yaml.
+ *
+ * @param basePath - path to application root
+ * @param ui5Config - UI5 configuration object
+ * @param serviceKeys - service keys from Cloud Foundry
+ * @param logger - logger instance
+ */
+export async function addBackendProxyMiddleware(
+    basePath: string,
+    ui5Config: UI5Config,
+    serviceKeys: ServiceKeys[],
+    logger?: ToolsLogger
+): Promise<void> {
+    try {
+        ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
+
+        const urlsWithPaths = getBackendUrlsWithPaths(serviceKeys, basePath);
+
+        if (urlsWithPaths.length === 0) {
+            logger?.info('No backend URLs with paths found. Skipping backend-proxy-middleware-cf configuration.');
+            return;
+        }
+
+        ui5Config.addCustomMiddleware([
+            {
+                name: 'backend-proxy-middleware-cf',
+                afterMiddleware: 'compression',
+                configuration: {
+                    backends: urlsWithPaths
+                }
+            }
+        ]);
+    } catch (error) {
+        logger?.warn(`Could not add backend-proxy-middleware-cf configuration: ${(error as Error).message}`);
+    }
 }
