@@ -17,7 +17,7 @@ export async function getProjectArtifacts(filePath: string): Promise<WorkerResul
             artifacts: ['applications', 'adaptations']
         });
         return { artifacts, projectType };
-    } catch (error) {
+    } catch {
         return { artifacts: {}, projectType: 'EDMXBackend' };
     }
 }

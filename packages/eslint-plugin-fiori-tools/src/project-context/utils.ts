@@ -9,7 +9,7 @@ import type { ParsedApp, ParsedService } from './parser';
 export function uniformUrl(url: string): string {
     return url
         .replaceAll('\\', '/')
-        .replaceAll(/\/\//g, '/')
+        .replaceAll('//', '/')
         .replaceAll(/(?:^\/)/g, '');
 }
 

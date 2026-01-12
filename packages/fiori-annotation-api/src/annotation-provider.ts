@@ -92,9 +92,7 @@ export class CdsAnnotationProvider {
         // if (!serviceInfo) {
         //     return undefined;
         // }
-
         // const serviceName = serviceInfo.name;
-
         // const annotationFiles: Record<string, AnnotationFile> = {};
         // const metadataElementMap = facade.getMetadata(serviceName);
         // // We collect already full metadata from compile model, we don't need to build it based on paths.
@@ -113,13 +111,11 @@ export class CdsAnnotationProvider {
         //         propagationMap,
         //         true
         //     ).file;
-
         //     annotationFiles[uri] = annotationFile;
         // }
         // const metadataElements = getMetadataElementsFromMap(metadataElementMap);
         // const metadataService = new MetadataService({ uriMap: facade?.getUriMap() || new Map() });
         // metadataService.import(metadataElements, 'DummyMetadataFileUri');
-
         // const aliasInformation = getAliasInfo(metadataService, XML_VOCABULARY_SERVICE, annotationFiles);
         // const url = uniformUrl(serviceInfo.urlPath);
         // const artifacts = {
@@ -129,7 +125,6 @@ export class CdsAnnotationProvider {
         //     aliasInfo: aliasInformation,
         //     fileSequence: facade.getFileSequence().map((path) => pathToFileURL(path).toString())
         // };
-
         // cachedArtifactsByRoot = {};
         // cachedArtifactsByRoot[url] = artifacts;
         // this.serviceArtifactCache.set(rootPath, cachedArtifactsByRoot);
@@ -170,7 +165,6 @@ export class CdsAnnotationProvider {
         // if (cachedValue && ignoreCache === false) {
         //     return cachedValue;
         // }
-
         // console.log('compiling cds model for path:', rootPath);
         // performance.mark('cds-compile-start');
         // const cache = new Proxy(
@@ -190,11 +184,9 @@ export class CdsAnnotationProvider {
         // );
         // const facade = createCdsCompilerFacadeForRootSync(rootPath, [], cache);
         // const services = processServices(facade.getServiceInfo());
-
         // this.serviceInfoCache.set(rootPath, services);
         // this.cdsCache.set(rootPath, facade);
         // performance.mark('cds-compile-end');
-
         // performance.measure('cds-compile', 'cds-compile-start', 'cds-compile-end');
         // console.log('CDS compilation performance:', performance.getEntriesByName('cds-compile'));
         // return facade;

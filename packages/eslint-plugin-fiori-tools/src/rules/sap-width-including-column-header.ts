@@ -7,8 +7,7 @@ import type { FioriRuleDefinition } from '../types';
 import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
 import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
-import type { Table } from '../project-context/linker/fe-v4';
-import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4';
+import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4';
 import type { ParsedApp, ParsedService } from '../project-context/parser';
 
 export type RequireWidthIncludingColumnHeaderOptions = {

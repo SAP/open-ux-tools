@@ -133,7 +133,7 @@ export class FioriLanguage
                 };
             }
             if (path.endsWith('.cds')) {
-                // TODO: add warning for orphaned cds files
+                // TODO: add warning for orphaned cds files // NOSONAR
                 // we're not checking files that are not part of a fiori app, but we don't want to throw either?
                 // other option is to let user add such files to ignore list in eslint config
                 return {
