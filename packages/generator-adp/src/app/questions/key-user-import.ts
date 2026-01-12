@@ -319,6 +319,7 @@ export class KeyUserImportPrompter {
         }
 
         try {
+            this.keyUserChanges = [];
             if (system === this.defaultSystem && this.defaultProvider) {
                 this.provider = this.defaultProvider;
                 this.isAuthRequired = false;
@@ -357,6 +358,7 @@ export class KeyUserImportPrompter {
         }
 
         try {
+            this.keyUserChanges = [];
             const options = {
                 system: answers.keyUserSystem,
                 client: undefined,
