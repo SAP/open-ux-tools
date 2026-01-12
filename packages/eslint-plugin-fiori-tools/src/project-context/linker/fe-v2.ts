@@ -424,9 +424,7 @@ function linkListReportTable(
     }
 
     for (const control of Object.values(controls)) {
-        if (!page.lookup[control.type]) {
-            page.lookup[control.type] = [] as any;
-        }
+        page.lookup[control.type] ??= [] as any;
         (page.lookup[control.type] as any[]).push(control);
     }
 }
@@ -495,9 +493,7 @@ function linkObjectPageSections(
         if (control.type === 'table-section') {
             page.sections.push(control);
         }
-        if (!page.lookup[control.type]) {
-            page.lookup[control.type] = [] as any;
-        }
+        page.lookup[control.type] ??= [] as any;
         (page.lookup[control.type] as any[]).push(control);
     }
 }

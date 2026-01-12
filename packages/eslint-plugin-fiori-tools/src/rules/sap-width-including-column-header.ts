@@ -1,4 +1,4 @@
-import type { Element } from '@sap-ux/odata-annotation-core';
+import type { Element, AliasInformation } from '@sap-ux/odata-annotation-core';
 import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
 import type { MemberNode } from '@humanwhocodes/momoa';
 
@@ -7,10 +7,66 @@ import type { FioriRuleDefinition } from '../types';
 import type { WidthIncludingColumnHeaderDiagnostic } from '../language/diagnostics';
 import { WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
+import type { Table } from '../project-context/linker/fe-v4';
+import type { FeV4ObjectPage, FeV4ListReport } from '../project-context/linker/fe-v4';
+import type { ParsedApp, ParsedService } from '../project-context/parser';
 
 export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
 };
+
+function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: AliasInformation): boolean {
+    if (!table.annotation) {
+        return false;
+    }
+
+    const [collection] = elementsWithName(Edm.Collection, table.annotation.annotation.top.value);
+    if (!collection) {
+        return false;
+    }
+
+    const records = elements((element) => {
+        if (element.name !== Edm.Record) {
+            return false;
+        }
+        return getRecordType(aliasInfo, element) === 'com.sap.vocabularies.UI.v1.DataField';
+    }, collection);
+
+    return (
+        records.length < 6 && records.length > 0 && table.configuration.widthIncludingColumnHeader.valueInFile !== true
+    );
+}
+
+function checkTablesInPage(
+    page: FeV4ObjectPage | FeV4ListReport,
+    parsedApp: ParsedApp,
+    parsedService: ParsedService,
+    problems: WidthIncludingColumnHeaderDiagnostic[]
+): void {
+    for (const table of page.lookup['table'] ?? []) {
+        if (!table.annotation) {
+            continue;
+        }
+        const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
+
+        if (shouldTableHaveWidthIncludingColumnHeader(table, aliasInfo)) {
+            problems.push({
+                type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
+                pageName: page.targetName,
+                manifest: {
+                    uri: parsedApp.manifest.manifestUri,
+                    object: parsedApp.manifestObject,
+                    propertyPath: table.configuration.widthIncludingColumnHeader.configurationPath
+                },
+                annotation: {
+                    file: table.annotation.annotation.source,
+                    annotationPath: table.annotation.annotationPath,
+                    reference: table.annotation.annotation.top
+                }
+            });
+        }
+    }
+}
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
@@ -43,47 +99,7 @@ const rule: FioriRuleDefinition = createFioriRule({
                     continue;
                 }
 
-                for (const table of page.lookup['table'] ?? []) {
-                    if (!table.annotation) {
-                        // annotations are required for this rule
-                        continue;
-                    }
-                    const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
-
-                    const [collection] = elementsWithName(Edm.Collection, table.annotation.annotation.top.value);
-                    if (!collection) {
-                        continue;
-                    }
-
-                    const records = elements((element) => {
-                        if (element.name !== Edm.Record) {
-                            return false;
-                        }
-
-                        return getRecordType(aliasInfo, element) === 'com.sap.vocabularies.UI.v1.DataField';
-                    }, collection);
-
-                    if (
-                        records.length < 6 &&
-                        records.length > 0 &&
-                        table.configuration.widthIncludingColumnHeader.valueInFile !== true
-                    ) {
-                        problems.push({
-                            type: WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-                            pageName: page.targetName,
-                            manifest: {
-                                uri: parsedApp.manifest.manifestUri,
-                                object: parsedApp.manifestObject,
-                                propertyPath: table.configuration.widthIncludingColumnHeader.configurationPath
-                            },
-                            annotation: {
-                                file: table.annotation.annotation.source,
-                                annotationPath: table.annotation.annotationPath,
-                                reference: table.annotation.annotation.top
-                            }
-                        });
-                    }
-                }
+                checkTablesInPage(page, parsedApp, parsedService, problems);
             }
         }
 

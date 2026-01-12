@@ -15,7 +15,7 @@ const RECOMMENDED_MODE_V4_RESPONSIVE_GRID = 'InlineCreationRows';
 const RECOMMENDED_MODE_V4_TREE = 'Inline';
 
 interface CreateModeConfig {
-    valueInFile?: string | undefined;
+    valueInFile?: string;
     values: string[];
     configurationPath: string[];
 }

@@ -18,7 +18,6 @@ export async function getProjectArtifacts(filePath: string): Promise<WorkerResul
         });
         return { artifacts, projectType };
     } catch (error) {
-        // debugLog('Worker failed with error:', error.message);
         return { artifacts: {}, projectType: 'EDMXBackend' };
     }
 }

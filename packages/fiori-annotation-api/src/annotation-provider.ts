@@ -85,7 +85,8 @@ export class CdsAnnotationProvider {
             }
         }
 
-        const facade = this.getFacade(rootPath, fileCache, false);
+        this.getFacade(rootPath, fileCache, false);
+        // NOSONAR: Commented code kept for future CDS implementation reference
         // const services = this.serviceInfoCache.get(rootPath) ?? [];
         // const serviceInfo = services.find((s) => uniformUrl(s.urlPath) === uniformUrl(servicePath));
         // if (!serviceInfo) {
@@ -164,6 +165,7 @@ export class CdsAnnotationProvider {
     ): CdsCompilerFacade {
         throw new Error('Not implemented yet.');
 
+        // NOSONAR: Commented code kept for future CDS implementation reference
         // const cachedValue = this.cdsCache.get(rootPath);
         // if (cachedValue && ignoreCache === false) {
         //     return cachedValue;
@@ -228,6 +230,7 @@ function getAliasInfo(
  * @returns The normalized URL.
  */
 
+// NOSONAR: Commented code kept for future CDS implementation reference
 // function uniformUrl(url: string): string {
 //     return url
 //         .replaceAll(/\\/g, '/')

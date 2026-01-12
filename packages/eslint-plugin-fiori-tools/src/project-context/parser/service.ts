@@ -63,57 +63,60 @@ function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): Annotation
         const annotationFile = service.annotationFiles[file];
         if (!annotationFile) {
             continue;
-            // TODO: log warning?
         }
         const namespace = annotationFile.namespace ?? { name: 'DEFAULT_NAMESPACE', type: 'namespace' };
         const namespaces = getAllNamespacesAndReferences(namespace, annotationFile.references);
 
         const aliasInfo = getAliasInformation(namespaces, service.metadataService.getNamespaces());
         for (const target of annotationFile.targets) {
-            // TODO: handle cds common default namespace
             const targetName = toFullyQualifiedName(aliasInfo.aliasMap, namespace.name, parseIdentifier(target.name));
             if (!targetName) {
                 continue;
-                // TODO: log warning?
             }
-            for (const annotation of target.terms) {
-                const term = getElementAttributeValue(annotation, Edm.Term);
-                const qualifier = getElementAttribute(annotation, Edm.Qualifier);
-
-                const termName = toFullyQualifiedName(aliasInfo.aliasMap, namespace.name, parseIdentifier(term));
-                if (!termName) {
-                    continue;
-                    // TODO: log warning?
-                }
-                const termKey = buildAnnotationIndexKey(targetName, termName);
-                index[termKey] ??= {};
-                const qualifierKey = qualifier?.value ?? 'undefined';
-                const indexedValue = index[termKey][qualifierKey];
-                const reference: AnnotationReference = {
-                    uri: annotationFile.uri,
-                    value: annotation
-                };
-                if (indexedValue) {
-                    indexedValue.top = reference;
-                    indexedValue.layers.unshift(reference);
-                } else {
-                    const reference: AnnotationReference = {
-                        uri: annotationFile.uri,
-                        value: annotation
-                    };
-                    index[termKey][qualifierKey] = {
-                        source: annotationFile.uri,
-                        target: targetName,
-                        term: termName,
-                        qualifier: qualifier?.value,
-                        top: reference,
-                        layers: [reference]
-                    };
-                }
-            }
+            processTargetAnnotations(target, annotationFile, namespace, aliasInfo, targetName, index);
         }
     }
     return index;
+}
+
+function processTargetAnnotations(
+    target: any,
+    annotationFile: any,
+    namespace: any,
+    aliasInfo: any,
+    targetName: string,
+    index: AnnotationIndex
+): void {
+    for (const annotation of target.terms) {
+        const term = getElementAttributeValue(annotation, Edm.Term);
+        const qualifier = getElementAttribute(annotation, Edm.Qualifier);
+
+        const termName = toFullyQualifiedName(aliasInfo.aliasMap, namespace.name, parseIdentifier(term));
+        if (!termName) {
+            continue;
+        }
+        const termKey = buildAnnotationIndexKey(targetName, termName);
+        index[termKey] ??= {};
+        const qualifierKey = qualifier?.value ?? 'undefined';
+        const indexedValue = index[termKey][qualifierKey];
+        const reference: AnnotationReference = {
+            uri: annotationFile.uri,
+            value: annotation
+        };
+        if (indexedValue) {
+            indexedValue.top = reference;
+            indexedValue.layers.unshift(reference);
+        } else {
+            index[termKey][qualifierKey] = {
+                source: annotationFile.uri,
+                target: targetName,
+                term: termName,
+                qualifier: qualifier?.value,
+                top: reference,
+                layers: [reference]
+            };
+        }
+    }
 }
 
 /**
