@@ -1,5 +1,19 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.4.6
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+    - @sap-ux/odata-annotation-core@0.2.12
+
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/odata-annotation-core@0.2.12
+
 ## 0.4.4
 
 ### Patch Changes

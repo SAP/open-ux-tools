@@ -25,6 +25,15 @@ import { ODataHealthChecker } from './odata-health/odata-health-checker';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
 import { ODataUpStatus } from './odata-health/odata-health-status';
 
+/**
+ * Subscribes a handler to the CommunicationService
+ *
+ * @param handler action handler
+ */
+function subscribe(handler: ActionHandler): void {
+    CommunicationService.subscribe(handler);
+}
+
 export default function init(
     rta: RuntimeAuthoring,
     registries: QuickActionDefinitionRegistry<string>[] = []
@@ -35,14 +44,6 @@ export default function init(
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {
         enableTelemetry();
-    }
-
-    /**
-     *
-     * @param handler action handler
-     */
-    function subscribe(handler: ActionHandler): void {
-        CommunicationService.subscribe(handler);
     }
 
     const rtaService = new RtaService(rta);

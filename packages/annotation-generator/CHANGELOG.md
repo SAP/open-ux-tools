@@ -1,5 +1,30 @@
 # @sap-ux/annotation-generator
 
+## 0.4.6
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/fiori-annotation-api@0.8.6
+
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies [d667a5e]
+    - @sap-ux/odata-entity-model@0.3.4
+    - @sap-ux/fiori-annotation-api@0.8.5
+
+## 0.4.4
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/fiori-annotation-api@0.8.4
+    - @sap-ux/project-access@1.33.1
+
 ## 0.4.3
 
 ### Patch Changes
