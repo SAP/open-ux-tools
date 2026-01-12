@@ -137,7 +137,6 @@ export interface UI5 {
 
 // Additional configurable features
 export interface AppOptions {
-    codeAssist: boolean; // Enables code assist
     eslint: boolean; // Enables Fiori linting
     sapux: boolean; // Enables Fiori Tools Suite integration
 
@@ -148,7 +147,6 @@ export interface AppOptions {
 
     /**
      * Enable Typescript support and generate all files in Typescript instead of Javascript
-     * Enabling Typescript will disable JavaScript codeAssist if also enabled. Typescript code assist will be used instead
      */
     typescript: boolean;
 

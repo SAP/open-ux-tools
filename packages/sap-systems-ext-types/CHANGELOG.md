@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-types
 
+## 0.0.3
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
 ## 0.0.2
 
 ### Patch Changes

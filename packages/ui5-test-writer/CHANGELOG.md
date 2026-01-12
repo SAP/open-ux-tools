@@ -1,5 +1,53 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.51
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/ui5-application-writer@1.7.1
+
+## 0.7.50
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/ui5-application-writer@1.7.1
+    - @sap-ux/project-access@1.33.1
+
+## 0.7.49
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/ui5-application-writer@1.7.0
+
+## 0.7.48
+
+### Patch Changes
+
+- Updated dependencies [d24f36d]
+    - @sap-ux/ui5-application-writer@1.6.8
+
+## 0.7.47
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+- Updated dependencies [dad2bd7]
+    - @sap-ux/ui5-application-writer@1.6.7
+
+## 0.7.46
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/ui5-application-writer@1.6.6
+
 ## 0.7.45
 
 ### Patch Changes

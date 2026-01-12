@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.9
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 0.18.8
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+
 ## 0.18.7
 
 ### Patch Changes
