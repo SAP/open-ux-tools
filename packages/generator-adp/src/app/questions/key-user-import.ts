@@ -1,16 +1,14 @@
-import type { ToolsLogger } from '@sap-ux/logger';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
-import { type SystemLookup, getEndpointNames, getConfiguredProvider } from '@sap-ux/adp-tooling';
 import type {
     AbapServiceProvider,
     AdaptationDescriptor,
     FlexVersion,
     KeyUserChangeContent
 } from '@sap-ux/axios-extension';
+import type { ToolsLogger } from '@sap-ux/logger';
+import { validateEmptyString } from '@sap-ux/project-input-validator';
+import { type SystemLookup, getConfiguredProvider } from '@sap-ux/adp-tooling';
+import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 
-import { t } from '../../utils/i18n';
 import type {
     KeyUserImportPromptOptions,
     KeyUserImportAnswers,
@@ -20,7 +18,13 @@ import type {
     KeyUserPasswordPromptOptions,
     KeyUserAdaptationPromptOptions
 } from '../types';
+import { t } from '../../utils/i18n';
 import { keyUserPromptNames } from '../types';
+import { getAdaptationChoices, getKeyUserSystemChoices } from './helper/choices';
+import {
+    getKeyUserSystemAdditionalMessages,
+    getKeyUserAdaptationAdditionalMessages
+} from './helper/additional-messages';
 
 export const DEFAULT_ADAPTATION_ID = 'DEFAULT';
 
@@ -36,10 +40,6 @@ export class KeyUserImportPrompter {
      * List of adaptations.
      */
     private adaptations: AdaptationDescriptor[] = [];
-    /**
-     * Latest message to be displayed in additional messages.
-     */
-    private latestMessage?: IMessageSeverity;
     /**
      * List of key-user changes.
      */
@@ -115,33 +115,30 @@ export class KeyUserImportPrompter {
      * Returns the system prompt.
      *
      * @param {KeyUserSystemPromptOptions} [options] - The options for the system prompt.
-     * @returns {ListQuestion<KeyUserImportAnswers>} The system prompt.
+     * @returns {KeyUserImportQuestion} The system prompt.
      */
     private getSystemPrompt(options?: KeyUserSystemPromptOptions): KeyUserImportQuestion {
         return {
             type: 'list',
             name: keyUserPromptNames.keyUserSystem,
             message: t('prompts.systemLabel'),
-            choices: async (): Promise<string[]> => {
+            choices: async () => {
                 const systems = await this.systemLookup.getSystems();
-                return getEndpointNames(systems);
+                return getKeyUserSystemChoices(systems, this.defaultSystem);
             },
             guiOptions: {
                 mandatory: true,
-                breadcrumb: true,
-                hint: t('prompts.keyUserSystemTooltip')
+                breadcrumb: true
             },
             default: options?.default ?? '',
             validate: async (value: string, answers: KeyUserImportAnswers) => await this.validateSystem(value, answers),
-            additionalMessages: () => {
-                if (this.hasOnlyDefaultAdaptation() && !this.isAuthRequired && this.keyUserChanges.length) {
-                    return {
-                        message: t('prompts.keyUserChangesFoundDefault'),
-                        severity: Severity.information
-                    };
-                }
-                return undefined;
-            }
+            additionalMessages: () =>
+                getKeyUserSystemAdditionalMessages({
+                    adaptations: this.adaptations,
+                    isAuthRequired: this.isAuthRequired,
+                    keyUserChangesCount: this.keyUserChanges.length,
+                    isSystemPrompt: true
+                })
         } as ListQuestion<KeyUserImportAnswers>;
     }
 
@@ -149,7 +146,7 @@ export class KeyUserImportPrompter {
      * Returns the username prompt.
      *
      * @param {KeyUserUsernamePromptOptions} [options] - The options for the username prompt.
-     * @returns {InputQuestion<KeyUserImportAnswers>} The username prompt.
+     * @returns {KeyUserImportQuestion} The username prompt.
      */
     private getUsernamePrompt(options?: KeyUserUsernamePromptOptions): KeyUserImportQuestion {
         return {
@@ -162,7 +159,7 @@ export class KeyUserImportPrompter {
                 mandatory: true,
                 breadcrumb: true
             },
-            when: () => !!this.isAuthRequired,
+            when: (answers: KeyUserImportAnswers) => !!answers.keyUserSystem && this.isAuthRequired,
             validate: (value: string) => validateEmptyString(value)
         } as InputQuestion<KeyUserImportAnswers>;
     }
@@ -171,7 +168,7 @@ export class KeyUserImportPrompter {
      * Returns the password prompt.
      *
      * @param {KeyUserPasswordPromptOptions} [options] - The options for the password prompt.
-     * @returns {PasswordQuestion<KeyUserImportAnswers>} The password prompt.
+     * @returns {KeyUserImportQuestion} The password prompt.
      */
     private getPasswordPrompt(options?: KeyUserPasswordPromptOptions): KeyUserImportQuestion {
         return {
@@ -185,85 +182,41 @@ export class KeyUserImportPrompter {
                 breadcrumb: true,
                 type: 'login'
             },
-            when: () => !!this.isAuthRequired,
+            when: (answers: KeyUserImportAnswers) => !!answers.keyUserSystem && this.isAuthRequired,
             validate: async (value: string, answers: KeyUserImportAnswers) =>
                 await this.validatePassword(value, answers),
-            additionalMessages: () => {
-                if (this.hasOnlyDefaultAdaptation() && this.isAuthRequired && this.keyUserChanges.length) {
-                    return {
-                        message: t('prompts.keyUserChangesFoundDefault'),
-                        severity: Severity.information
-                    };
-                }
-                return undefined;
-            }
+            additionalMessages: () =>
+                getKeyUserSystemAdditionalMessages({
+                    adaptations: this.adaptations,
+                    isAuthRequired: this.isAuthRequired,
+                    keyUserChangesCount: this.keyUserChanges.length,
+                    isSystemPrompt: false
+                })
         } as PasswordQuestion<KeyUserImportAnswers>;
     }
 
     /**
      * Returns the adaptation prompt.
      *
-     * @param {KeyUserAdaptationPromptOptions} [options] - The options for the adaptation prompt.
-     * @returns {ListQuestion<KeyUserImportAnswers>} The adaptation prompt.
+     * @param {KeyUserAdaptationPromptOptions} [_] - The options for the adaptation prompt.
+     * @returns {KeyUserImportQuestion} The adaptation prompt.
      */
-    private getAdaptationPrompt(options?: KeyUserAdaptationPromptOptions): KeyUserImportQuestion {
+    private getAdaptationPrompt(_?: KeyUserAdaptationPromptOptions): KeyUserImportQuestion {
         return {
             type: 'list',
             name: keyUserPromptNames.keyUserAdaptation,
             message: t('prompts.keyUserAdaptationLabel'),
             guiOptions: {
                 mandatory: true,
-                breadcrumb: true,
-                hint: t('prompts.keyUserAdaptationLabelMulti')
+                breadcrumb: true
             },
-            default: options?.default ?? DEFAULT_ADAPTATION_ID,
-            choices: () => this.getAdaptationChoices(),
-            additionalMessages: (adaptationId: string) => {
-                if (this.keyUserChanges.length) {
-                    const message =
-                        adaptationId === DEFAULT_ADAPTATION_ID
-                            ? t('prompts.keyUserChangesFoundDefault')
-                            : t('prompts.keyUserChangesFoundAdaptation', { adaptationId });
-                    return {
-                        message,
-                        severity: Severity.information
-                    };
-                }
-                return undefined;
-            },
-            validate: async (adaptationId: string) => await this.validateKeyUserChanges(adaptationId),
+            choices: () => getAdaptationChoices(this.adaptations),
+            default: () => getAdaptationChoices(this.adaptations)[0]?.name,
+            additionalMessages: (adaptation: AdaptationDescriptor | null) =>
+                getKeyUserAdaptationAdditionalMessages(adaptation, this.keyUserChanges.length),
+            validate: async (adaptation: AdaptationDescriptor) => await this.validateKeyUserChanges(adaptation?.id),
             when: () => this.adaptations.length > 1
         } as ListQuestion<KeyUserImportAnswers>;
-    }
-
-    /**
-     * Returns the choices for the adaptation prompt.
-     *
-     * @returns {Promise<Array<{ name: string; value: string }>>} The choices for the adaptation prompt.
-     */
-    private async getAdaptationChoices(): Promise<Array<{ name: string; value: string }>> {
-        return this.adaptations?.map((adaptation) => {
-            if (adaptation.id === DEFAULT_ADAPTATION_ID) {
-                return {
-                    name: DEFAULT_ADAPTATION_ID,
-                    value: DEFAULT_ADAPTATION_ID
-                };
-            }
-            const name = adaptation.title ? `${adaptation.title} (${adaptation.id})` : adaptation.id;
-            return {
-                name,
-                value: adaptation.id
-            };
-        });
-    }
-
-    /**
-     * Checks if there are only DEFAULT adaptations (no context-based adaptations).
-     *
-     * @returns {boolean} True if there are only DEFAULT adaptations.
-     */
-    private hasOnlyDefaultAdaptation(): boolean {
-        return this.adaptations.length === 1 && this.adaptations[0]?.id === DEFAULT_ADAPTATION_ID;
     }
 
     /**
@@ -299,7 +252,7 @@ export class KeyUserImportPrompter {
         await this.loadFlexVersions();
         await this.loadAdaptations();
 
-        if (this.hasOnlyDefaultAdaptation()) {
+        if (this.adaptations.length === 1 && this.adaptations[0]?.id === DEFAULT_ADAPTATION_ID) {
             return await this.validateKeyUserChanges(DEFAULT_ADAPTATION_ID);
         }
         return true;
@@ -378,23 +331,25 @@ export class KeyUserImportPrompter {
      * @param {string} adaptationId - The selected adaptation.
      * @returns An error message if validation fails, or true if the key-user changes are valid.
      */
-    private async validateKeyUserChanges(adaptationId: string): Promise<string | boolean> {
+    private async validateKeyUserChanges(adaptationId: string | undefined): Promise<string | boolean> {
         try {
+            if (!adaptationId) {
+                return false;
+            }
+
             const lrep = this.provider?.getLayeredRepository();
             const data = await lrep?.getKeyUserData(this.componentId, adaptationId);
-
             this.keyUserChanges = data?.contents ?? [];
             this.logger.debug(
                 `Retrieved ${this.keyUserChanges.length} key-user change(s) for adaptation ${adaptationId}`
             );
 
             if (!this.keyUserChanges.length) {
-                const errorMessage =
-                    adaptationId === DEFAULT_ADAPTATION_ID
-                        ? t('error.keyUserNoChangesDefault')
-                        : t('error.keyUserNoChangesAdaptation', { adaptationId });
+                if (adaptationId === DEFAULT_ADAPTATION_ID && this.adaptations.length === 1) {
+                    return t('error.keyUserNoChangesDefault');
+                }
                 this.logger.warn(`No key-user changes found for adaptation: ${adaptationId}`);
-                return errorMessage;
+                return t('error.keyUserNoChangesAdaptation', { adaptationId });
             }
 
             return true;
