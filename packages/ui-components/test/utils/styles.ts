@@ -36,7 +36,7 @@ export const compareStyles = (
 ): void => {
     const resolvedStyles: Partial<CSSStyleDeclaration> = {};
     for (const name in expectedStyles) {
-        if (typeof expectedStyles[name] === 'string' && expectedStyles[name].startsWith('var(')) {
+        if (typeof expectedStyles[name] === 'string' && expectedStyles[name].includes('var(')) {
             resolvedStyles[name] = findStyleFromStyleSheets(name, element);
         } else {
             resolvedStyles[name] = styles[name];
