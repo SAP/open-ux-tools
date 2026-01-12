@@ -407,7 +407,7 @@ async function getFeatureData(basePath: string, fs?: Editor, log?: Logger): Prom
     }
 
     if (!listReportPage) {
-        log?.warn('No List Report page found in application model. No dynamic tests will be generated.');
+        log?.warn('List Report page found not in application model. Dynamic tests will not be generated.');
         return featureData;
     }
 
