@@ -14,6 +14,7 @@ import type { Destination } from '@sap-ux/btp-utils';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { getTelemPropertyDestinationType, sendTelemetryEvent } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import { PromptState } from '../../../../utils';
@@ -21,9 +22,8 @@ import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import { validateODataVersion } from '../../../validators';
-import type { ServiceAnswer } from './types';
 import { showCollabDraftWarning } from '../../service-helpers/service-helpers';
-import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import type { ServiceAnswer } from './types';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON'];
@@ -83,8 +83,8 @@ function logServiceCatalogErrorsForHelp(
     numOfRequests: number
 ): void {
     const catalogRequesErrors = Object.entries(requestErrors);
-    catalogRequesErrors.forEach(([odataVer, error]) => {
-        errorHandler.logErrorMsgs(error, `The OData ${odataVer} catalog is not accessible: ${error}`); // Log and process the error -> error type
+    catalogRequesErrors.forEach(([odataVersion, error]) => {
+        errorHandler.logErrorMsgs(error, t('errors.serviceCatalogRequestFailed', { odataVersion })); // Error state is set for later processing
     });
     // If all requests failed, log a generic message, this will be stored in the error handler
     if (numOfRequests === catalogRequesErrors.length) {
@@ -439,9 +439,9 @@ export async function getSelectedServiceMessage(
         }
     }
     // If any catalog request errors, show a warning. We know this is a catalog error since there is no service selected.
-    if (errorHandler.hasError()) { // todo: Should we check the error type here before reporting?
+    if (errorHandler.hasError()) {
         return {
-            message: `There was an error accessing the service catalogs: ${errorHandler.getErrorMsg()}`,
+            message: t('warnings.missingServices', { error: errorHandler.getErrorMsg() }),
             severity: Severity.warning
         };
     }
