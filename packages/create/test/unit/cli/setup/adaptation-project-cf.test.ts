@@ -36,6 +36,7 @@ const mockExistsSync = fs.existsSync as jest.Mock;
 const mockReadFileSync = fs.readFileSync as jest.Mock;
 const mockWriteFileSync = fs.writeFileSync as jest.Mock;
 const mockReadUi5Yaml = projectAccess.readUi5Yaml as jest.Mock;
+const mockGetWebappPath = projectAccess.getWebappPath as jest.Mock;
 const mockLoadCfConfig = adpTooling.loadCfConfig as jest.Mock;
 const mockGetServiceInstanceKeys = adpTooling.getServiceInstanceKeys as jest.Mock;
 const mockGetAppHostIds = adpTooling.getAppHostIds as jest.Mock;
@@ -134,6 +135,7 @@ describe('setup/adaptation-project-cf', () => {
         mockUi5Config.toString.mockReturnValue('mocked ui5.yaml content');
 
         mockReadUi5Yaml.mockResolvedValue(mockUi5Config);
+        mockGetWebappPath.mockResolvedValue('webapp');
         mockLoadCfConfig.mockReturnValue(mockCfConfig);
         mockGetServiceInstanceKeys.mockResolvedValue({ serviceKeys: mockServiceKeys });
         mockGetAppHostIds.mockReturnValue(['host-123']);
