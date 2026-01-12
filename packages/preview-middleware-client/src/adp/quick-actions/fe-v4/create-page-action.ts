@@ -64,12 +64,12 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                     validateActionId: (actionId) => {
                         const headerActions =  [...this.context.changeService.getAllPendingConfigPropertyPath()]
                             .filter((path) => path.includes('content/header/actions/'));
-                        const idInPendingChanges = headerActions.length && headerActions.includes(`content/header/actions/${actionId}`) ? true : false;
+                        const idInPendingChanges = headerActions.length && headerActions.includes(`content/header/actions/${actionId}`);
                         if (
                             isA('sap.f.DynamicPageTitle', this.control) &&
                             ((this.control as DynamicPageTitle)
                                 .getActions()
-                                .every((action) => !action.getId().endsWith(`fe::CustomAction::${actionId}`)) && !idInPendingChanges)
+                                .every((action) => !action.getId().endsWith(`CustomAction::${actionId}`)) && !idInPendingChanges)
                         ) {
                             return true;
                         }
@@ -77,7 +77,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                             isA('sap.uxap.ObjectPageLayout', this.control) &&
                             ((this.control as ObjectPageLayout)
                                 .getHeaderTitle() as ObjectPageDynamicHeaderTitle)?.getActions()
-                                .every((action) => !action.getId().endsWith(`fe::CustomAction::${actionId}`) && !idInPendingChanges)
+                                .every((action) => !action.getId().endsWith(`CustomAction::${actionId}`) && !idInPendingChanges)
                         ) {
                             return true;
                         }

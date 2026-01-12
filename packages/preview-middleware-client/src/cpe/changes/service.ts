@@ -80,7 +80,7 @@ export class ChangeService extends EventTarget {
     private readonly eventStack: object[] = [];
     private pendingConfigChangeMap: Map<string, PendingGenericChange[]> = new Map();
     private configPropertyControlIdMap: Map<string, string[]> = new Map();
-    private configPropertyPath: Set<string> = new Set();
+    private readonly configPropertyPath: Set<string> = new Set();
     /**
      *
      * @param options ui5 adaptation options.

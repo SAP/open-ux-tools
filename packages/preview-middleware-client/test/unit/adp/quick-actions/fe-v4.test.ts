@@ -33,7 +33,7 @@ import ComponentMock from 'mock/sap/ui/core/Component';
 import type UIComponent from 'sap/ui/core/UIComponent';
 import AppComponentMock from 'mock/sap/fe/core/AppComponent';
 import FlexRuntimeInfoAPI from 'mock/sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
-import { DialogFactory, DialogNames } from 'open/ux/preview/client/adp/dialog-factory';
+import { DialogFactory, DialogNames } from '../../../../src/adp/dialog-factory';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
@@ -45,12 +45,12 @@ import {
 import { TableQuickActionDefinitionBase } from '../../../../src/adp/quick-actions/table-quick-action-base';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import * as versionUtils from 'open/ux/preview/client/utils/version';
-import * as utils from 'open/ux/preview/client/utils/fe-v4';
-import * as adpUtils from 'open/ux/preview/client/adp/utils';
+import * as versionUtils from '../../../../src/utils/version';
+import * as utils from '../../../../src/utils/fe-v4';
+import * as adpUtils from '../../../../src/adp/utils';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
 import * as appUtils from '../../../../src/utils/application';
-import * as apiHandler from 'open/ux/preview/client/adp/api-handler';
+import * as apiHandler from '../../../../src/adp/api-handler';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -178,12 +178,15 @@ describe('FE V4 quick actions', () => {
                 component.getRootControl.mockImplementation(() => {
                     return pageView;
                 });
+                const mockAction1 = { getId: () => 'somePrefix::fe::CustomAction::existingAction' };
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'DynamicPageTitle') {
                         return {
                             getId: () => id,
+                             getActions: jest.fn().mockReturnValue([mockAction1]),
                             getDomRef: () => ({}),
-                            getParent: () => pageView
+                            getParent: () => pageView,
+                            isA: (sClassName: string) => sClassName === 'sap.f.DynamicPageTitle'
                         };
                     }
                     if (id == 'NavContainer') {
@@ -211,7 +214,7 @@ describe('FE V4 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn(), getAllPendingConfigPropertyPath: jest.fn().mockReturnValue(new Set()) } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -256,6 +259,7 @@ describe('FE V4 quick actions', () => {
                     name: 'SAPUI5 Distribution',
                     libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
                 });
+                const mockValidateFn = jest.fn();
                 await setupContext();
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
@@ -289,14 +293,33 @@ describe('FE V4 quick actions', () => {
                         }),
                         controllerReference: '.extension.adp.v4.test.<REPLACE_WITH_YOUR_HANDLER_NAME>',
                         propertyPath: 'content/header/actions/',
-                        title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                     }),
                     expect.objectContaining({ actionName: 'add-page-action' })
                 );
             });
 
-            
+            test('available since UI5 version 1.120 - validate function works correctly', async () => {
+                    VersionInfo.load.mockResolvedValue({
+                        name: 'SAPUI5 Distribution',
+                        libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
+                    });
+                    await setupContext();
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({ id: 'listReport0-add-page-action', kind: 'simple' })
+                    );
+
+                    // Get the actual validateActionId function from the call
+                    const callArgs = (DialogFactory.createDialog as jest.Mock).mock.calls[0][4];
+                    const validateActionId = callArgs.validateActionId;
+
+                    // Test validation
+                    expect(typeof validateActionId).toBe('function');
+                    expect(validateActionId('newUniqueId')).toBe(true);
+                    expect(validateActionId('existingAction')).toBe(false);
+            });
         });
+            
 
         describe('clear filter bar button', () => {
             let service: QuickActionService;
@@ -2836,6 +2859,312 @@ describe('FE V4 quick actions', () => {
                     );
                 });
             });
+             describe('Add Page Action', () => {
+            let appComponent: AppComponentMock;
+            let rtaMock: RuntimeAuthoring;
+            mockTelemetryEventIdentifier();
+
+            beforeAll(() => {
+                appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
+                rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                jest.spyOn(rtaMock, 'getFlexSettings').mockImplementation(() => {
+                    return {
+                        projectId: 'dummyProjectId'
+                    } as FlexSettings;
+                });
+            });
+            afterEach(() => {
+                jest.restoreAllMocks();
+            });
+
+            async function setupContext() {
+                const pageView = new XMLView();
+                pageView.getViewData.mockImplementation(() => ({
+                    stableId: 'appId::ProductsList'
+                }));
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
+
+                const appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
+                const container = new NavContainer();
+                pageView.getDomRef.mockImplementation(() => {
+                    return {
+                        contains: () => true
+                    };
+                });
+                pageView.getId.mockReturnValue('test.app::ProductsList');
+                pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
+                const componentContainer = new ComponentContainer();
+                jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                    return 'component-id';
+                });
+                jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                    if (id === 'component-id') {
+                        return component as unknown as ComponentMock;
+                    }
+                });
+                container.getCurrentPage.mockImplementation(() => {
+                    return componentContainer;
+                });
+                component.getRootControl.mockImplementation(() => {
+                    return pageView;
+                });
+                const mockAction1 = { getId: () => 'somePrefix::fe::CustomAction::existingAction' };
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'ObjectPageLayout') {
+                        pageView.getViewData.mockImplementation(() => ({
+                            stableId: 'appId::BookingObjectPage'
+                        }));
+                        pageView.getLocalId.mockImplementation(() => 'appId::BookingObjectPage');
+                        return {
+                            getId: () => 'ObjectPageLayout',
+                            getDomRef: () => ({}),
+                            getParent: () => pageView,
+                            getShowHeaderContent: () => false,
+                            getSections: jest.fn().mockReturnValue([
+                                {
+                                    getId: () => 'section1::entity1'
+                                }
+                            ]),
+                            getActions: jest.fn().mockReturnValue([mockAction1]),
+                            getHeaderContent: () => {
+                                return [new FlexBox()];
+                            },
+                            isA: (type: string) => 
+                                 type === 'sap.uxap.ObjectPageLayout',
+                            getHeaderTitle: () => {
+                                return {
+                                    getActions: () => [mockAction1] 
+                                }
+                            } 
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new TemplateComponentMock();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getId.mockReturnValue('test.app::ProductDetails');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ObjectPage.ObjectPage');
+                        const componentContainer = new ComponentContainer();
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component as unknown as ComponentMock;
+                            }
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return componentContainer;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
+
+                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                    'sap.ui5': {
+                        routing: {
+                            targets: [
+                                {
+                                    name: 'sap.fe.templates.'
+                                }
+                            ]
+                        }
+                    }
+                });
+                const registry = new FEV4QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn(), getAllPendingConfigPropertyPath: jest.fn().mockReturnValue(new Set()) } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.uxap.ObjectPageLayout': [
+                        {
+                            controlId: 'ObjectPageLayout'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                    controllerPathFromRoot: 'adp.v4/test.js',
+                    controllerExists: true,
+                    isRunningInBAS: false,
+                    controllerPath: 'webapp/adp/v4/test.js',
+                    isTsSupported: false
+                });
+            }
+            test('not available on UI5 version prior 1.120', async () => {
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.119.0' }]
+                });
+                await setupContext();
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'objectPage0-add-controller-to-page',
+                                    title: 'Add Controller to Page',
+                                    enabled: true,
+                                    tooltip: undefined
+                                },
+                                {
+                                    enabled: false,
+                                    id: 'objectPage0-op-add-header-field',
+                                    kind: 'simple',
+                                    title: 'Add Header Field',
+                                    tooltip: 'This option has been disabled because the \"Show Header Content\" page property is set to false.'
+                                },
+                                {
+                                    enabled: true,
+                                    id: 'objectPage0-op-add-custom-section',
+                                    kind: 'simple',
+                                    title: 'Add Custom Section',
+                                    tooltip: undefined
+                                }
+                            ]
+                        }
+                    ])
+                );
+            });
+
+            test('available since UI5 version 1.120', async () => {
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
+                });
+                await setupContext();
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'objectPage0-add-page-action',
+                                    title: 'Add Custom Page Action',
+                                    enabled: true,
+                                    tooltip: undefined
+                                },
+                                {
+                                    enabled: false,
+                                    id: 'objectPage0-op-add-header-field',
+                                    kind: 'simple',
+                                    title: 'Add Header Field',
+                                    tooltip: 'This option has been disabled because the \"Show Header Content\" page property is set to false.'
+                                },
+                                {
+                                    enabled: true,
+                                    id: 'objectPage0-op-add-custom-section',
+                                    kind: 'simple',
+                                    title: 'Add Custom Section',
+                                    tooltip: undefined
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'objectPage0-add-page-action', kind: 'simple' })
+                );
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddAction',
+                    undefined,
+                    expect.objectContaining({
+                        appDescriptor: expect.objectContaining({
+                            appType: 'fe-v4',
+                            pageId: 'BookingObjectPage',
+                            projectId: 'dummyProjectId'
+                        }),
+                        controllerReference: '.extension.adp.v4.test.<REPLACE_WITH_YOUR_HANDLER_NAME>',
+                        propertyPath: 'content/header/actions/',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
+                    }),
+                    expect.objectContaining({ actionName: 'add-page-action' })
+                );
+            });
+
+            test('available since UI5 version 1.120 - validate function works correctly', async () => {
+                    VersionInfo.load.mockResolvedValue({
+                        name: 'SAPUI5 Distribution',
+                        libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
+                    });
+                    await setupContext();
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({ id: 'objectPage0-add-page-action', kind: 'simple' })
+                    );
+
+                    // Get the actual validateActionId function from the call
+                    const callArgs = (DialogFactory.createDialog as jest.Mock).mock.calls[0][4];
+                    const validateActionId = callArgs.validateActionId;
+
+                    // Test validation
+                    expect(typeof validateActionId).toBe('function');
+                    expect(validateActionId('newUniqueId')).toBe(true);
+                    expect(validateActionId('existingAction')).toBe(false);
+            });
+        });
         });
     });
 
