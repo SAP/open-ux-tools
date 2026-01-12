@@ -45,7 +45,7 @@ const mockInputEvent = (value: String | Object): Event =>
             getValue: jest.fn().mockReturnValue(value),
             setValueState: mocks.setValueStateMock
         })
-    } as unknown as Event);
+    }) as unknown as Event;
 /**
  * Simulates various values returns in sequential calls
  * the last value stays persistent and is returned in further calls
@@ -228,9 +228,9 @@ describe('AddActionFragment', () => {
                 ]),
                 setModel: jest.fn(),
                 open: jest.fn(),
-                setEscapeHandler: jest.fn().mockResolvedValue("")
+                setEscapeHandler: jest.fn().mockResolvedValue('')
             } as unknown as Dialog;
-           
+
             return addFragment;
         };
 
@@ -270,7 +270,7 @@ describe('AddActionFragment', () => {
                 mockFormInput(true, '', ValueState.Success),
                 mockFormInput(false),
                 mockFormInput(true, '', ValueState.Success)
-            ] as unknown as Control[])
+            ] as unknown as Control[]);
             await addFragment.setup(addFragment.dialog);
             addFragment.onActionIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
@@ -286,7 +286,7 @@ describe('AddActionFragment', () => {
                 mockFormInput(false),
                 mockFormInput(true, '', ValueState.Success)
             ] as unknown as Control[]);
-             await addFragment.setup(addFragment.dialog);
+            await addFragment.setup(addFragment.dialog);
 
             addFragment.onActionIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);

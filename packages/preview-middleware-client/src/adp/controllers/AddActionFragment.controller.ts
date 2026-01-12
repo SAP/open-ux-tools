@@ -12,7 +12,6 @@ import { sendInfoCenterMessage } from '../../utils/info-center-message';
 import Input from 'sap/m/Input';
 import CommandExecutor from '../command-executor';
 import Event from 'sap/ui/base/Event';
-import { getFragments } from '../api-handler';
 import { getError } from '../../utils/error';
 import { ValueState } from 'sap/ui/core/library';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
@@ -84,7 +83,7 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
         this.overlays = overlays;
         this.model = new JSONModel({
             title: options.title
-        }) as AddActionFragmentsModel;
+        });
         this.commandExecutor = new CommandExecutor(this.rta);
     }
 
@@ -174,10 +173,10 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
         }
         this.model.setProperty('/actionId', modelValue);
         const result = validateActionId(input, this.bundle, this.options.validateActionId);
-        if (!result.isValid) {
-            input.setValueState(ValueState.Error).setValueStateText(result.errorMessage);
-        } else {
+        if (result.isValid) {
             input.setValueState(ValueState.Success).setValueStateText('');
+        } else {
+            input.setValueState(ValueState.Error).setValueStateText(result.errorMessage);
         }
         this.updateFormState();
     }

@@ -490,6 +490,7 @@ export class ChangeService extends EventTarget {
                 if (genericChange.isActive) {
                         this.configPropertyPath.add(configChangePath);
                 } else {
+                    // remove value from set if change is undone
                     this.configPropertyPath.delete(configChangePath);
                 }
                 this.trackPendingConfigChanges(genericChange);

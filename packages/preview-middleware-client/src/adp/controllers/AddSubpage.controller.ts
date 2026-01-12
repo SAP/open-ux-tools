@@ -114,7 +114,6 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         source.setEnabled(false);
         await super.onCreateBtnPressHandler();
 
-
         const flexSettings = this.rta.getFlexSettings();
         const navProperty = this.model.getProperty('/selectedNavigation/key');
         const navigation = this.model.getProperty('/navigationData').find((item) => (item.navProperty = navProperty));
@@ -142,34 +141,32 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
                     }
                 }
             };
-        } else {
-            if (pageDescriptor.routePattern) {
-                const routePattern = generateRoutePattern(pageDescriptor.routePattern, navProperty, targetEntitySet);
-                modifiedValue = {
-                    appComponent: pageDescriptor.appComponent,
-                    changeType: 'appdescr_fe_addNewPage',
-                    reference: this.options.appReference,
-                    parameters: {
-                        sourcePage: {
-                            id: pageDescriptor.pageId,
-                            navigationSource: navProperty
-                        },
-                        targetPage: {
-                            type: 'Component',
-                            id: `${targetEntitySet}ObjectPage`,
-                            name: 'sap.fe.templates.ObjectPage',
-                            routePattern,
-                            settings: {
-                                contextPath: `/${targetEntitySet}`,
-                                editableHeaderContent: false,
-                                entitySet: targetEntitySet,
-                                pageLayout: '',
-                                controlConfiguration: {}
-                            }
+        } else if (pageDescriptor.routePattern) {
+            const routePattern = generateRoutePattern(pageDescriptor.routePattern, navProperty, targetEntitySet);
+            modifiedValue = {
+                appComponent: pageDescriptor.appComponent,
+                changeType: 'appdescr_fe_addNewPage',
+                reference: this.options.appReference,
+                parameters: {
+                    sourcePage: {
+                        id: pageDescriptor.pageId,
+                        navigationSource: navProperty
+                    },
+                    targetPage: {
+                        type: 'Component',
+                        id: `${targetEntitySet}ObjectPage`,
+                        name: 'sap.fe.templates.ObjectPage',
+                        routePattern,
+                        settings: {
+                            contextPath: `/${targetEntitySet}`,
+                            editableHeaderContent: false,
+                            entitySet: targetEntitySet,
+                            pageLayout: '',
+                            controlConfiguration: {}
                         }
                     }
-                };
-            }
+                }
+            };
         }
 
         const command = await CommandFactory.getCommandFor(

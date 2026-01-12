@@ -44,7 +44,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
             const controlInfo = getControllerInfoForControl(this.control);
             const data = await getExistingController(controlInfo.controllerName);
-            const controllerPath = data.controllerPathFromRoot.replace(/\//g, '.').replace(/\.[^.]+$/, '');
+            const controllerPath = data.controllerPathFromRoot.replaceAll(/\//g, '.').replace(/\.[^.]+$/, '');
             await DialogFactory.createDialog(
                 overlay,
                 this.context.rta,
@@ -62,22 +62,28 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                         projectId: this.context.flexSettings.projectId
                     },
                     validateActionId: (actionId) => {
-                        const headerActions =  [...this.context.changeService.getAllPendingConfigPropertyPath()]
-                            .filter((path) => path.includes('content/header/actions/'));
-                        const idInPendingChanges = headerActions.length && headerActions.includes(`content/header/actions/${actionId}`);
+                        const headerActions = [...this.context.changeService.getAllPendingConfigPropertyPath()].filter(
+                            (path) => path.includes('content/header/actions/')
+                        );
+                        const idInPendingChanges =
+                            headerActions.length && headerActions.includes(`content/header/actions/${actionId}`);
                         if (
                             isA('sap.f.DynamicPageTitle', this.control) &&
-                            ((this.control as DynamicPageTitle)
+                            (this.control as DynamicPageTitle)
                                 .getActions()
-                                .every((action) => !action.getId().endsWith(`CustomAction::${actionId}`)) && !idInPendingChanges)
+                                .every((action) => !action.getId().endsWith(`CustomAction::${actionId}`)) &&
+                            !idInPendingChanges
                         ) {
                             return true;
                         }
                         if (
                             isA('sap.uxap.ObjectPageLayout', this.control) &&
-                            ((this.control as ObjectPageLayout)
-                                .getHeaderTitle() as ObjectPageDynamicHeaderTitle)?.getActions()
-                                .every((action) => !action.getId().endsWith(`CustomAction::${actionId}`) && !idInPendingChanges)
+                            ((this.control as ObjectPageLayout).getHeaderTitle() as ObjectPageDynamicHeaderTitle)
+                                ?.getActions()
+                                .every(
+                                    (action) =>
+                                        !action.getId().endsWith(`CustomAction::${actionId}`) && !idInPendingChanges
+                                )
                         ) {
                             return true;
                         }
