@@ -1,5 +1,13 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.35
+
+### Patch Changes
+
+- d6562c8: Overwrite is only passed if the prompt is shown
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.122
+    - @sap-ux/odata-service-inquirer@2.13.10
+
 ## 0.5.34
 
 ### Patch Changes
