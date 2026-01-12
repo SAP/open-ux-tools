@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import type { DialogProps, DialogState } from '../../../src/components/UIDialog';
 import { UIDialog, UIDialogScrollArea, DIALOG_MAX_HEIGHT_OFFSET } from '../../../src/components/UIDialog';
-import type { IDialogStyles, IDialogContentStyles, IDialogFooterStyles } from '@fluentui/react';
 import { ContextualMenu } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton';
 import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
 import { compareStylesBySelector, findStyleFromStyleSheets } from '../../utils/styles';
+import * as DeepMerge from '../../../src/utilities/DeepMerge';
 
 describe('<UIDialog />', () => {
     const windowHeight = 300;
@@ -169,7 +168,7 @@ describe('<UIDialog />', () => {
         const testCases = [
             {
                 value: true,
-                expect: undefined
+                expect: 'inline-block'
             },
             {
                 value: false,
@@ -182,18 +181,10 @@ describe('<UIDialog />', () => {
         ];
         for (const testCase of testCases) {
             it(`Value - ${testCase.value}`, () => {
-                const { rerender } = render(
-                    <UIDialog isBlocking={true} closeButtonVisible={true} isOpen={true}>
-                        <div className="dummy"></div>
-                    </UIDialog>
-                );
-                rerender(
-                    <UIDialog isBlocking={true} closeButtonVisible={testCase.value} isOpen={true}>
-                        <div className="dummy"></div>
-                    </UIDialog>
-                );
-                const closeButton = document.querySelector('button[aria-label="Close"]');
-                expect(closeButton).toBeInTheDocument();
+                render(<UIDialog {...commonDialogProps} isBlocking={true} closeButtonVisible={testCase.value} />);
+                compareStylesBySelector('button[aria-label="Close"]', {
+                    display: testCase.expect
+                });
             });
         }
     });
@@ -206,72 +197,37 @@ describe('<UIDialog />', () => {
                 </UIDialog>
             );
 
-            const overlay = document.querySelector('.ms-Overlay');
-            expect(overlay).toBeInTheDocument();
-
             // Comprehensive overlay style validation
             compareStylesBySelector('.ms-Overlay', {
                 position: 'absolute',
                 top: '0px',
                 left: '0px',
                 right: '0px',
-                bottom: '0px'
+                bottom: '0px',
+                opacity: '0.8',
+                background: 'var(--vscode-editor-background)'
             });
-
-            // Check opacity separately as it may be animated
-            if (overlay) {
-                const styles = window.getComputedStyle(overlay);
-                expect(parseFloat(styles.opacity)).toBeGreaterThan(0);
-            }
-        });
-
-        it('Basic style - dialog main', () => {
-            render(
-                <UIDialog isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
-
-            const dialog = document.querySelector('.ms-Dialog-main');
-            expect(dialog).toBeInTheDocument();
-
             // Comprehensive dialog main style validation
             compareStylesBySelector('.ms-Dialog-main', {
                 borderRadius: '4px',
-                boxShadow: expect.any(String),
-                position: 'relative'
-            } as any);
-
-            // Validate additional inline styles
-            if (dialog) {
-                const styles = window.getComputedStyle(dialog);
-                expect(styles.backgroundColor).toBeDefined();
-                expect(styles.borderStyle).toBeDefined();
-                expect(styles.borderWidth).toBeDefined();
-            }
-        });
-
-        it('Basic style - dialog inner', () => {
-            render(
-                <UIDialog isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
-
-            const inner = document.querySelector('.ms-Dialog-inner');
-            expect(inner).toBeInTheDocument();
-
+                boxShadow: 'var(--ui-box-shadow-medium)',
+                position: 'relative',
+                backgroundColor: 'var(--vscode-editorWidget-background)',
+                border: '1px solid var(--vscode-editorWidget-border)',
+                minHeight: '100px',
+                overflow: 'hidden'
+            });
             // Comprehensive inner container style validation
             compareStylesBySelector('.ms-Dialog-inner', {
                 display: 'flex',
                 flexDirection: 'column',
+                overflow: 'hidden',
+                padding: '0px 0px 0px 0px'
+            });
+            compareStylesBySelector('.ms-Modal-scrollableContent', {
+                height: '100%',
                 overflow: 'hidden'
-            } as any);
-
-            if (inner) {
-                const computedStyles = window.getComputedStyle(inner as HTMLElement);
-                expect(computedStyles.padding).toMatch(/^0px/);
-            }
+            });
         });
 
         it('Title - single line', () => {
@@ -280,20 +236,14 @@ describe('<UIDialog />', () => {
                     <div className="dummy"></div>
                 </UIDialog>
             );
-            const title = document.querySelector('.ms-Dialog-title');
-            expect(title).toBeInTheDocument();
-
             // Comprehensive title style validation
-            if (title) {
-                const inlineStyles = (title as HTMLElement).style;
-                expect(inlineStyles.textAlign).toBe('center');
-                expect(inlineStyles.overflow).toBe('hidden');
-                expect(inlineStyles.textOverflow).toBe('ellipsis');
-                expect(inlineStyles.whiteSpace).toBe('nowrap');
-                expect(inlineStyles.padding).toContain('20px');
-                expect(inlineStyles.fontSize).toBeDefined();
-                expect(inlineStyles.fontWeight).toBeDefined();
-            }
+            compareStylesBySelector('.ms-Dialog-title', {
+                textAlign: 'center',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                padding: '20px 45px 5px'
+            });
         });
 
         it('Title - multi line', () => {
@@ -302,21 +252,14 @@ describe('<UIDialog />', () => {
                     <div className="dummy"></div>
                 </UIDialog>
             );
-            const title = document.querySelector('.ms-Dialog-title');
-            expect(title).toBeInTheDocument();
-
-            // Comprehensive multi-line title style validation
-            if (title) {
-                const inlineStyles = (title as HTMLElement).style;
-                expect(inlineStyles.textAlign).toBe('center');
-                expect(inlineStyles.padding).toContain('20px');
-                expect(inlineStyles.fontSize).toBeDefined();
-                expect(inlineStyles.fontWeight).toBeDefined();
-                // Multi-line should not have overflow hidden
-                expect(inlineStyles.overflow).not.toBe('hidden');
-                expect(inlineStyles.textOverflow).not.toBe('ellipsis');
-                expect(inlineStyles.whiteSpace).not.toBe('nowrap');
-            }
+            // Comprehensive title style validation
+            compareStylesBySelector('.ms-Dialog-title', {
+                textAlign: 'center',
+                overflow: '',
+                textOverflow: '',
+                whiteSpace: '',
+                padding: '20px 0px 5px'
+            });
         });
 
         it('Footer - with buttons', () => {
@@ -331,22 +274,16 @@ describe('<UIDialog />', () => {
                 </UIDialog>
             );
 
-            // Verify footer elements exist
-            const actionsRight = document.querySelector('.ms-Dialog-actionsRight');
-            expect(actionsRight).toBeInTheDocument();
-            const actions = document.querySelector('.ms-Dialog-actions');
-            expect(actions).toBeInTheDocument();
-
             // Comprehensive footer style validation
             compareStylesBySelector('.ms-Dialog-actionsRight', {
                 textAlign: 'center',
                 display: 'flex',
                 justifyContent: 'center'
-            } as any);
+            });
             compareStylesBySelector('.ms-Dialog-actions', {
                 lineHeight: 'auto',
                 position: 'relative'
-            } as any);
+            });
 
             // Verify buttons are rendered
             expect(screen.getByText('Yes')).toBeInTheDocument();
@@ -362,26 +299,6 @@ describe('<UIDialog />', () => {
             const footer =
                 document.querySelector('.ms-Dialog-actions') || document.querySelector('[data-testid="dialog-footer"]');
             expect(footer).toBeNull();
-        });
-
-        it('ScrollArea - content', () => {
-            render(
-                <UIDialog isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
-            const dialog = document.querySelector('.ms-Dialog-main');
-            expect(dialog).toBeInTheDocument();
-
-            const content = document.querySelector('.ms-Dialog-content');
-            expect(content).toBeInTheDocument();
-
-            // Verify content area exists and has correct structure
-            if (content) {
-                const styles = window.getComputedStyle(content);
-                // Content area should be present with proper styling
-                expect(styles.display).toBeDefined();
-            }
         });
 
         it('Whole dialog scrollable', () => {
@@ -402,34 +319,27 @@ describe('<UIDialog />', () => {
                 expect(styles.maxHeight).toBeDefined();
                 expect(styles.overflow).toBeDefined();
             }
-        });
-    });
-
-    describe('CSS Variable Handling', () => {
-        it('Should properly handle CSS variables in theme colors', () => {
-            render(
-                <UIDialog isOpen={true}>
-                    <div className="dummy">Test Content</div>
-                </UIDialog>
-            );
-
-            // Verify CSS variables are applied correctly
-            const dialog = document.querySelector('.ms-Dialog-main');
-            expect(dialog).toBeInTheDocument();
-
-            if (dialog) {
-                const styles = window.getComputedStyle(dialog);
-                // Verify theme-related properties are defined
-                expect(styles.backgroundColor).toBeDefined();
-                expect(styles.color).toBeDefined();
-
-                // Test that the component renders correctly with CSS variables
-                const inner = document.querySelector('.ms-Dialog-inner');
-                expect(inner).toBeInTheDocument();
-
-                // Verify content is rendered
-                expect(screen.getByText('Test Content')).toBeInTheDocument();
-            }
+            // Comprehensive dialog main style validation
+            compareStylesBySelector('.ms-Dialog-main', {
+                borderRadius: '4px',
+                boxShadow: 'var(--ui-box-shadow-medium)',
+                position: 'relative',
+                backgroundColor: 'var(--vscode-editorWidget-background)',
+                border: '1px solid var(--vscode-editorWidget-border)',
+                minHeight: '100px',
+                overflow: ''
+            });
+            // Comprehensive inner container style validation
+            compareStylesBySelector('.ms-Dialog-inner', {
+                display: 'block',
+                flexDirection: '',
+                overflow: '',
+                padding: '0px 0px 0px 0px'
+            });
+            compareStylesBySelector('.ms-Modal-scrollableContent', {
+                height: '',
+                overflow: ''
+            });
         });
     });
 
@@ -443,27 +353,18 @@ describe('<UIDialog />', () => {
             }
         };
         it('Draggable - focus focuszone placeholder', async () => {
-            render(
-                <UIDialog isOpen={true} modalProps={modalProps}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
+            render(<UIDialog {...commonDialogProps} isOpen={true} modalProps={modalProps} />);
             const title = document.querySelector('.ms-Dialog-title');
-            expect(title).toBeInTheDocument();
+            fireEvent.mouseDown(title);
+            expect(focusSpy).toHaveBeenCalledTimes(1);
         });
         it('Undraggable', async () => {
-            render(
-                <UIDialog isOpen={true}>
-                    <div className="dummy"></div>
-                </UIDialog>
-            );
+            const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
+            render(<UIDialog {...commonDialogProps} isOpen={true} />);
             const title = document.querySelector('.ms-Dialog-title');
-            expect(title).toBeInTheDocument();
-            if (title) {
-                const focusSpy = jest.spyOn(title as HTMLElement, 'focus');
-                fireEvent.mouseDown(title);
-                expect(focusSpy).not.toHaveBeenCalled();
-            }
+            fireEvent.mouseDown(title);
+            expect(focusSpy).toHaveBeenCalledTimes(0);
         });
     });
 
@@ -501,21 +402,22 @@ describe('<UIDialog />', () => {
     });
 
     describe('Property "isOpenAnimated"', () => {
-        const getRootElement = (): HTMLElement | null => {
-            return document.querySelector('.ms-Dialog-main');
-        };
+        const deepMergeSpy = jest.spyOn(DeepMerge, 'deepMerge');
+        beforeEach(() => {
+            deepMergeSpy.mockClear();
+        });
         const testCases = [
             {
                 value: true,
-                expectOpacity: '0'
+                expectOpacity: 0
             },
             {
                 value: undefined,
-                expectOpacity: '0'
+                expectOpacity: 0
             },
             {
                 value: false,
-                expectOpacity: ''
+                expectOpacity: undefined
             }
         ];
         for (const testCase of testCases) {
@@ -532,14 +434,13 @@ describe('<UIDialog />', () => {
                     </UIDialog>
                 );
 
-                // Verify dialog is rendered and accessible
-                const element = getRootElement();
-                expect(element).not.toBeNull();
-                expect(document.querySelector('.dummy')).toBeInTheDocument();
+                // Simulation of initial call before dialog rendered
+                expect(deepMergeSpy.mock.calls[0][0].styles.root.opacity).toEqual(testCase.expectOpacity);
 
-                // Verify dialog functionality works regardless of animation setting
-                const acceptButton = screen.getByText('Yes');
-                expect(acceptButton).toBeInTheDocument();
+                // Verify dialog is accessible
+                compareStylesBySelector('.ms-Dialog', {
+                    opacity: '1'
+                });
             });
         }
     });
