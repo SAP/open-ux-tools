@@ -84,9 +84,8 @@ export class CdsAnnotationProvider {
                 return cachedService;
             }
         }
-        return undefined;
 
-        // const facade = this.getFacade(rootPath, fileCache, false);
+        const facade = this.getFacade(rootPath, fileCache, false);
         // const services = this.serviceInfoCache.get(rootPath) ?? [];
         // const serviceInfo = services.find((s) => uniformUrl(s.urlPath) === uniformUrl(servicePath));
         // if (!serviceInfo) {
