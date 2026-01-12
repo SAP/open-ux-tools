@@ -2,27 +2,13 @@ import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { Manifest, AggregationItem } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
-import {
-    FileName,
-    DirName,
-    getListReportPage,
-    getFilterFields,
-    createApplicationAccess,
-    getTableColumns
-} from '@sap-ux/project-access';
-import type { Logger } from '@sap-ux/logger/src/types';
-import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
-import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
-import type { TreeAggregation, TreeAggregations, TreeModel } from '@sap/ux-specification/dist/types/src/parser';
-
-type FeatureData = {
-    filterBarItems?: string[];
-    tableColumns?: Record<string, Record<string, string | number | boolean>>;
-};
+import { FileName, DirName } from '@sap-ux/project-access';
+import type { Logger } from '@sap-ux/logger';
+import { getFeatureData } from './utils/modelUtils';
 
 /**
  * Reads the manifest for an app.
@@ -265,157 +251,6 @@ function writePageObject(
             globOptions: { dot: true }
         }
     );
-}
-
-/**
- * Gets identifier of a column for OPA5 tests.
- * If the column is custom, the identifier is taken from the 'Key' entry in the schema keys.
- * If the column is not custom, the identifier is taken from the 'Value' entry in the schema keys.
- * If no such entry is found, undefined is returned.
- *
- * @param column - column module from ux specification
- * @param column.custom boolean indicating whether the column is custom
- * @param column.schema schema of the column
- * @param column.schema.keys keys of the column; expected to have an entry with the name 'Key' or 'Value'
- * @returns identifier of the column for OPA5 tests; can be the name or index
- */
-function getColumnIdentifier(column: {
-    custom: boolean;
-    schema: { keys: { name: string; value: string }[] };
-}): string | undefined {
-    const key = column.custom ? 'Key' : 'Value';
-    const keyEntry = column.schema.keys.find((entry: { name: string; value: string }) => entry.name === key);
-    return keyEntry?.value;
-}
-
-/**
- * Transforms column aggregations from the ux specification model into a map of columns for OPA5 tests.
- *
- * @param columnAggregations column aggregations from the ux specification model
- * @returns a map of columns for OPA5 tests
- */
-function transformTableColumns(columnAggregations: Record<string, any>): Record<string, any> {
-    const columns: Record<string, any> = {};
-    Object.values(columnAggregations).forEach((columnAggregation, index) => {
-        columns[getColumnIdentifier(columnAggregation) ?? index] = {
-            header: columnAggregation.description
-            // TODO possibly more reliable properties could be used?
-        };
-    });
-    return columns;
-}
-
-/**
- * Retrieves selection field items from the given selection fields aggregation.
- *
- * @param selectionFieldsAgg - The selection fields aggregation containing field definitions.
- * @returns An array of selection field descriptions.
- */
-export function getSelectionFieldItems(selectionFieldsAgg: TreeAggregations): string[] {
-    if (selectionFieldsAgg && typeof selectionFieldsAgg === 'object') {
-        const items: string[] = [];
-        for (const itemKey in selectionFieldsAgg) {
-            items.push(
-                (selectionFieldsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem).description
-            );
-        }
-        return items;
-    }
-    return [];
-}
-
-/**
- * Retrieves filter field names from the page model using ux-specification.
- *
- * @param pageModel - the tree model containing filter bar definitions
- * @param log - optional logger instance
- * @returns - an array of filter field names
- */
-function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[] {
-    let filterBarItems: string[] = [];
-
-    try {
-        const filterBarAggregations = getFilterFields(pageModel);
-        filterBarItems = getSelectionFieldItems(filterBarAggregations);
-    } catch (error) {
-        log?.debug(error);
-    }
-
-    if (!filterBarItems?.length) {
-        log?.warn(
-            'Unable to extract filter fields from project model using specification. No filter field tests will be generated.'
-        );
-    }
-
-    return filterBarItems;
-}
-
-/**
- * Retrieves table column data from the page model using ux-specification.
- *
- * @param pageModel - the tree model containing table column definitions
- * @param log - optional logger instance
- * @returns - a map of table columns
- */
-function getTableColumnData(
-    pageModel: TreeModel,
-    log?: Logger
-): Record<string, Record<string, string | number | boolean>> {
-    let tableColumns: Record<string, Record<string, string | number | boolean>> = {};
-
-    try {
-        const columnAggregations = getTableColumns(pageModel);
-        tableColumns = transformTableColumns(columnAggregations);
-    } catch (error) {
-        log?.debug(error);
-    }
-
-    if (!tableColumns || !Object.keys(tableColumns).length) {
-        log?.warn(
-            'Unable to extract table columns from project model using specification. No table column tests will be generated.'
-        );
-    }
-
-    return tableColumns;
-}
-
-/**
- * Gets feature data from the application model using ux-specification.
- *
- * @param basePath - the absolute target path where the application will be generated
- * @param fs - optional mem-fs editor instance
- * @param log - optional logger instance
- * @returns feature data extracted from the application model
- */
-async function getFeatureData(basePath: string, fs?: Editor, log?: Logger): Promise<FeatureData> {
-    const featureData: FeatureData = {};
-    let listReportPage: PageWithModelV4 | null = null;
-    // Read application model to extract control information needed for test generation
-    // specification and readApp might not be available due to specification version, fail gracefully
-    try {
-        // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
-        const appAccess = await createApplicationAccess(basePath, { fs: fs });
-        const specification = await appAccess.getSpecification<Specification>();
-        const appResult: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
-        listReportPage = appResult.applicationModel ? getListReportPage(appResult.applicationModel) : listReportPage;
-    } catch (error) {
-        log?.warn(
-            'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
-                (error as Error).message
-        );
-        return featureData;
-    }
-
-    if (!listReportPage) {
-        log?.warn('List Report page found not in application model. Dynamic tests will not be generated.');
-        return featureData;
-    }
-
-    // attempt to get individual feature data
-    featureData.filterBarItems = getFilterFieldNames(listReportPage.model, log);
-    featureData.tableColumns = getTableColumnData(listReportPage.model, log);
-
-    return featureData;
 }
 
 /**
