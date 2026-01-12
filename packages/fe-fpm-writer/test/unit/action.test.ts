@@ -7,9 +7,8 @@ import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import { detectTabSpacing } from '../../src/common/file';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
-import { CopyTemplateOptions } from '../../src/common/constants';
 
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
@@ -131,7 +130,7 @@ describe('CustomAction', () => {
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(testDir, 'webapp/ext/MyCustomAction.js'))).toMatchSnapshot();
-            expect(copyTplSpy.mock.calls[0][4]).toEqual(CopyTemplateOptions);
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
         });
 
         test('specific control as target', async () => {

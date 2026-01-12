@@ -9,9 +9,8 @@ import { Availability, HorizontalAlign } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import { detectTabSpacing } from '../../src/common/file';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
-import { CopyTemplateOptions } from '../../src/common/constants';
 
 const testDir = join(__dirname, 'sample/column');
 
@@ -69,7 +68,7 @@ describe('CustomAction', () => {
             expect(settings.controlConfiguration).toMatchSnapshot();
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
-            expect(copyTplSpy.mock.calls[0][4]).toEqual(CopyTemplateOptions);
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
         });
         test('version 1.86, with fragmentFile', async () => {
             const testCustomColumn: CustomTableColumn = {

@@ -8,10 +8,9 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest, Ui5RoutingTarget, Ui5TargetSettings } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { extendJSON } from '../common/file';
+import { copyTpl, extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { getManifest } from '../common/utils';
-import { CopyTemplateOptions } from '../common/constants';
 
 /**
  * Merge the new view into the list of existing views (if any).
@@ -111,15 +110,9 @@ export async function generateCustomView(basePath: string, customView: CustomVie
     if (customView.viewUpdate !== false) {
         const viewPath = join(completeView.path, `${completeView.name}.fragment.xml`);
         if (completeView.control === true) {
-            fs.copyTpl(
-                getTemplatePath('view/ext/CustomViewWithTable.xml'),
-                viewPath,
-                completeView,
-                undefined,
-                CopyTemplateOptions
-            );
+            copyTpl(fs, getTemplatePath('view/ext/CustomViewWithTable.xml'), viewPath, completeView);
         } else if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeView, undefined, CopyTemplateOptions);
+            copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeView);
         }
     }
 

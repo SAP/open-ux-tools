@@ -18,13 +18,12 @@ import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { coerce, gte, lt } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils';
-import { extendJSON } from '../common/file';
+import { copyTpl, extendJSON } from '../common/file';
 import { generateBuildingBlock } from '../building-block';
 import { BuildingBlockType } from '../building-block/types';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/xml';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../i18n';
-import { CopyTemplateOptions } from '../common/constants';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -150,7 +149,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     // add extension content
     const viewPath = join(config.path, `${config.name}.view.xml`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(join(root, 'ext/View.xml'), viewPath, config, undefined, CopyTemplateOptions);
+        copyTpl(fs, join(root, 'ext/View.xml'), viewPath, config);
         // i18n.properties
         const manifest = fs.readJSON(manifestPath) as Manifest;
         const defaultI18nPath = 'i18n/i18n.properties';
@@ -160,7 +159,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
         if (fs.exists(i18nPath)) {
             fs.append(i18nPath, render(fs.read(i18TemplatePath), config, {}));
         } else {
-            fs.copyTpl(i18TemplatePath, i18nPath, config, undefined, CopyTemplateOptions);
+            copyTpl(fs, i18TemplatePath, i18nPath, config);
         }
     }
 
@@ -177,7 +176,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     const ext = data.typescript ? 'ts' : 'js';
     const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
     if (!fs.exists(controllerPath)) {
-        fs.copyTpl(join(root, `ext/Controller.${ext}`), controllerPath, config, undefined, CopyTemplateOptions);
+        copyTpl(fs, join(root, `ext/Controller.${ext}`), controllerPath, config);
     }
 
     if (data.typescript) {

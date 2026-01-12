@@ -12,7 +12,7 @@ import {
 import type { Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifestSections from './sample/section/webapp/manifest.json';
-import { CopyTemplateOptions } from '../../src/common/constants';
+import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 
 const testDir = join(__dirname, 'sample/headers-ection');
 
@@ -91,7 +91,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             } catch (error) {
                 expect(error).toBeDefined();
             }
-            expect(copyTplSpy.mock.calls[0][4]).toEqual(CopyTemplateOptions);
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
         });
 
         test(`for version 1.86 (edit mode disabled)`, async () => {

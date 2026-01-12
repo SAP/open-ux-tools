@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { getTemplatePath } from '../templates';
 import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomElement } from '../common/types';
 import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/utils';
-import { CopyTemplateOptions } from './constants';
+import { copyTpl } from './file';
 
 /**
  * Interface to describe event handler configuration options used during creation.
@@ -133,17 +133,11 @@ export function applyEventHandlerConfiguration(
     const ext = typescript ? 'ts' : 'js';
     const controllerPath = join(config.path || '', `${fileName}${controllerSuffix ? '.controller' : ''}.${ext}`);
     if (!fs.exists(controllerPath)) {
-        fs.copyTpl(
-            getTemplatePath(`${templatePath}.${ext}`),
-            controllerPath,
-            {
-                eventHandlerFnName,
-                parameters,
-                ...config
-            },
-            undefined,
-            CopyTemplateOptions
-        );
+        copyTpl(fs, getTemplatePath(`${templatePath}.${ext}`), controllerPath, {
+            eventHandlerFnName,
+            parameters,
+            ...config
+        });
     } else if (insertScript) {
         // Read current file content
         let content = fs.read(controllerPath);

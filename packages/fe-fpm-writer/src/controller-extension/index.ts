@@ -15,8 +15,7 @@ import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
 import { addExtensionTypes, getManifest } from '../common/utils';
-import { extendJSON } from '../common/file';
-import { CopyTemplateOptions } from '../common/constants';
+import { copyTpl, extendJSON } from '../common/file';
 
 export const UI5_CONTROLLER_EXTENSION_LIST_REPORT = 'sap.fe.templates.ListReport.ListReportController';
 export const UI5_CONTROLLER_EXTENSION_OBJECT_PAGE = 'sap.fe.templates.ObjectPage.ObjectPageController';
@@ -238,13 +237,7 @@ export async function generateControllerExtension(
     const ext = controllerConfig.typescript ? 'ts' : 'js';
     const viewPath = join(internalConfig.path, `${internalConfig.name}.controller.${ext}`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(
-            getTemplatePath(`controller-extension/Controller.${ext}`),
-            viewPath,
-            internalConfig,
-            undefined,
-            CopyTemplateOptions
-        );
+        copyTpl(fs, getTemplatePath(`controller-extension/Controller.${ext}`), viewPath, internalConfig);
     }
 
     if (controllerConfig.typescript) {

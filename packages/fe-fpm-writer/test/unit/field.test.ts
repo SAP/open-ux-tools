@@ -7,9 +7,8 @@ import type { CustomField } from '../../src/field/types';
 import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifest from './sample/field/webapp/manifest.json';
-import { detectTabSpacing } from '../../src/common/file';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
-import { CopyTemplateOptions } from '../../src/common/constants';
 
 const testDir = join(__dirname, 'sample/field');
 
@@ -45,7 +44,7 @@ describe('CustomField', () => {
         expect(settings.controlConfiguration).toMatchSnapshot();
 
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
-        expect(copyTplSpy.mock.calls[0][4]).toEqual(CopyTemplateOptions);
+        expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
     });
 
     test('no handler - default folder', async () => {

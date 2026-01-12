@@ -7,7 +7,7 @@ import { getMinUI5VersionAsArray, getMinimumUI5Version, type Manifest } from '@s
 import { FCL_ROUTER } from '../common/defaults';
 import { getTemplatePath } from '../templates';
 import { addExtensionTypes, getManifest } from '../common/utils';
-import { CopyTemplateOptions } from '../common/constants';
+import { copyTpl } from '../common/file';
 
 /**
  * Configurable options when enabling the Flexible Programming Model in a UI5 application.
@@ -131,13 +131,7 @@ export async function enableFPM(basePath: string, config: FPMConfig = {}, fs?: E
     if (config.replaceAppComponent) {
         const ext = config.typescript ? 'ts' : 'js';
         const componentTemplate = getTemplatePath(`/app/Component.${ext}`);
-        fs.copyTpl(
-            componentTemplate,
-            join(basePath, `webapp/Component.${ext}`),
-            manifest['sap.app'],
-            undefined,
-            CopyTemplateOptions
-        );
+        copyTpl(fs, componentTemplate, join(basePath, `webapp/Component.${ext}`), manifest['sap.app']);
     }
 
     return fs;
