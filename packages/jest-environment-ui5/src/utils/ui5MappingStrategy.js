@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 let pathMappingFn = null;
 let ui5VersionCache = null;
 

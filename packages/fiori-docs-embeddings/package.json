@@ -1,7 +1,12 @@
 {
     "name": "@sap-ux/fiori-docs-embeddings",
-    "version": "0.4.7",
+    "version": "0.4.8",
     "description": "SAP Fiori documentation indexing",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/fiori-docs-embeddings"
+    },
     "private": false,
     "scripts": {
         "build-compile": "tsc --noEmit",

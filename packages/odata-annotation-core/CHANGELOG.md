@@ -1,5 +1,11 @@
 # @sap-ux/odata-annotation-core
 
+## 0.2.12
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 0.2.11
 
 ### Patch Changes
