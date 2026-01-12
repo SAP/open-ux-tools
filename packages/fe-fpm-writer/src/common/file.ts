@@ -114,6 +114,6 @@ export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
  * @param to - Destination path where the rendered files will be written.
  * @param context - Optional template context used for interpolation.
  */
-export function copyTpl(fs: Editor, from: string, to: string, context?: Object): void {
+export function copyTpl(fs: Editor, from: string, to: string, context?: object): void {
     fs.copyTpl(from, to, context, undefined, COPY_TEMPLATE_OPTIONS);
 }
