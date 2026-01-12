@@ -14,6 +14,11 @@ export type RequireWidthIncludingColumnHeaderOptions = {
     form: string;
 };
 
+/**
+ *
+ * @param table
+ * @param aliasInfo
+ */
 function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: AliasInformation): boolean {
     if (!table.annotation) {
         return false;
@@ -36,6 +41,13 @@ function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: Alia
     );
 }
 
+/**
+ *
+ * @param page
+ * @param parsedApp
+ * @param parsedService
+ * @param problems
+ */
 function checkTablesInPage(
     page: FeV4ObjectPage | FeV4ListReport,
     parsedApp: ParsedApp,

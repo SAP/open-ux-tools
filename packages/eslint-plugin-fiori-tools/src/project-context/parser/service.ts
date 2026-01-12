@@ -79,6 +79,15 @@ function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): Annotation
     return index;
 }
 
+/**
+ *
+ * @param target
+ * @param annotationFile
+ * @param namespace
+ * @param aliasInfo
+ * @param targetName
+ * @param index
+ */
 function processTargetAnnotations(
     target: any,
     annotationFile: any,
