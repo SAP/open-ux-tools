@@ -55,13 +55,13 @@ import './UITable.scss';
  * @extends {React.Component<UITableProps, UITableState>}
  */
 export class UITable extends React.Component<UITableProps, UITableState> {
-    private tableRef: React.RefObject<IDetailsList>;
+    private readonly tableRef: React.RefObject<IDetailsList>;
     private inputRefs?: {
         [key: string]: {
             [key: string]: React.RefObject<ITextField | IDropdown | HTMLDivElement> | undefined;
         };
     } = {};
-    private selection: Selection;
+    private readonly selection: Selection;
     private onDocMousedown: any;
     private activeElement: EditedCell = {} as EditedCell;
     private caretPosition: number = -1;
@@ -157,7 +157,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             const { items: prevItems } = prevState;
             const itemsDelta = items.length - prevItems.length;
             const shouldScrollToNewRow = !dataSetChanged && itemsDelta === 1;
-            if (shouldScrollToNewRow && this.tableRef && this.tableRef.current) {
+            if (shouldScrollToNewRow && this.tableRef?.current) {
                 const newRowIndex = items.length - 1;
                 this.tableRef.current.scrollToIndex(newRowIndex);
             }
@@ -339,7 +339,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         }
     }
 
-    private _onRenderRow: IDetailsListProps['onRenderRow'] = (props) => {
+    private readonly _onRenderRow: IDetailsListProps['onRenderRow'] = (props) => {
         if (!props) {
             return null;
         }
@@ -383,7 +383,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     private _onColumnClick(ev: React.MouseEvent<HTMLElement>, column: UIColumn): void {
         const { columns, items } = this.state;
         const newColumns: UIColumn[] = columns.slice();
-        const currColumn: UIColumn = newColumns.filter((currCol) => column.key === currCol.key)[0];
+        const currColumn: UIColumn = newColumns.find((currCol) => column.key === currCol.key);
         newColumns.forEach((newCol: UIColumn) => {
             if (newCol === currColumn) {
                 currColumn.isSortedDescending = !currColumn.isSortedDescending;
@@ -637,11 +637,11 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             // check the checkbox & focus the clicked cell
             if (el) {
                 const fz = el.closest('.ms-FocusZone') as HTMLElement;
-                if (fz && fz.click) {
+                if (fz?.click) {
                     fz.click();
                 }
                 const cell = el.closest('.ms-DetailsRow-cell') as HTMLElement;
-                if (cell && cell.focus) {
+                if (cell?.focus) {
                     cell.focus();
                 }
             }
@@ -650,7 +650,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             }
         });
 
-        if (rowIndex !== undefined && item && column && column.editable === true) {
+        if (rowIndex !== undefined && item && column?.editable === true) {
             e?.stopPropagation();
             requestAnimationFrame(() => this.startEdit(rowIndex, item, column));
         }
@@ -710,7 +710,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         });
     }
 
-    private onComboBoxChange = (option?: IComboBoxOption): void => {
+    private readonly onComboBoxChange = (option?: IComboBoxOption): void => {
         this.setState((prevState) => {
             const editedCell = prevState.editedCell ?? this.activeElement;
             if (editedCell && option) {
@@ -925,7 +925,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
         // inputs visible only in "edit mode" (after cell click)
         const editedCell = this.state.editedCell;
-        const itsThisRow = editedCell && editedCell.rowIndex === rowIndex;
+        const itsThisRow = editedCell?.rowIndex === rowIndex;
         const itsThisCol = editedCell && editedCell.column?.key === column?.key;
         const isCellInEditMode = itsThisRow && itsThisCol;
 

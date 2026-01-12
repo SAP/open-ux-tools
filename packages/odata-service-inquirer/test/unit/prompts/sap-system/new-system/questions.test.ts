@@ -89,7 +89,9 @@ describe('Test new system prompt', () => {
             userDisplayName: 'user01',
             username: 'user01',
             newOrUpdated: true,
-            systemType: 'OnPrem'
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog',
+            hasSensitiveData: true
         });
     });
 
@@ -123,7 +125,9 @@ describe('Test new system prompt', () => {
                 sapClient: '000',
                 abapSystemUsername: 'testUser',
                 abapSystemPassword: 'testPassword',
-                storeSystemCredentials: true
+                storeSystemCredentials: true,
+                connectionType: 'abap_catalog',
+                hasSensitiveData: true
             })
         ).toBe(true);
 
@@ -138,7 +142,9 @@ describe('Test new system prompt', () => {
             userDisplayName: 'testUser',
             username: 'testUser',
             newOrUpdated: true,
-            systemType: 'OnPrem'
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog',
+            hasSensitiveData: true
         });
     });
 
@@ -181,7 +187,9 @@ describe('Test new system prompt', () => {
             userDisplayName: 'testUser',
             username: undefined,
             newOrUpdated: true,
-            systemType: 'OnPrem'
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog',
+            hasSensitiveData: false
         });
     });
 });

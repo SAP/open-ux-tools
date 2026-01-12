@@ -1,5 +1,6 @@
 import { serveStaticMiddleware } from '../base';
 import type { ServeStaticConfig } from '../base';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler } from 'express';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';

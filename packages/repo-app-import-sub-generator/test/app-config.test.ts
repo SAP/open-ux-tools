@@ -7,11 +7,10 @@ import { PromptState } from '../src/prompts/prompt-state';
 import type { AppInfo, QfaJsonConfig } from '../src/app/types';
 import { readManifest } from '../src/utils/file-helpers';
 import { t } from '../src/utils/i18n';
-import { fioriAppSourcetemplateId } from '../src/utils/constants';
+import { fioriAppSourcetemplateId, qfaJsonFileName } from '../src/utils/constants';
 import RepoAppDownloadLogger from '../src/utils/logger';
 import { TestFixture } from './fixtures';
 import { join } from 'node:path';
-import { qfaJsonFileName } from '../src/utils/constants';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
 jest.mock('../src/utils/logger', () => ({

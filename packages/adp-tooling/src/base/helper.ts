@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import type { ReaderCollection } from '@ui5/fs';
+import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
@@ -198,18 +198,21 @@ export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNam
     if (!inbounds || inbounds.length === 0) {
         return undefined;
     }
-    const filteredInbounds = inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
-        // Skip if hideLauncher is true
-        if (!inbound?.content || inbound.content.hideLauncher === true) {
+    const filteredInbounds = inbounds.reduce(
+        (acc: { [key: string]: InboundContent }, inbound) => {
+            // Skip if hideLauncher is true
+            if (!inbound?.content || inbound.content.hideLauncher === true) {
+                return acc;
+            }
+            const { semanticObject, action } = inbound.content;
+            if (semanticObject && action) {
+                const key = `${semanticObject}-${action}`;
+                acc[key] = inbound.content;
+            }
             return acc;
-        }
-        const { semanticObject, action } = inbound.content;
-        if (semanticObject && action) {
-            const key = `${semanticObject}-${action}`;
-            acc[key] = inbound.content;
-        }
-        return acc;
-    }, {} as { [key: string]: InboundContent });
+        },
+        {} as { [key: string]: InboundContent }
+    );
 
     return Object.keys(filteredInbounds).length === 0 ? undefined : filteredInbounds;
 }

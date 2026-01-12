@@ -7,7 +7,7 @@ import type {
     ProviderResponse
 } from 'promptfoo';
 import { z } from 'zod';
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 import type {
     AzureOpenAiCreateChatCompletionRequest,
     AzureOpenAiResponseFormatJsonSchemaSchema
@@ -20,7 +20,7 @@ import { getServiceKeyFromEnv } from './util/service-key';
 import { PromptConfig, type PromptConfigResponseFormat } from './util/prompt';
 import { validate } from './util/validate';
 import { callTool, getTools } from './mcp-server';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import { join } from 'path';
 
 const MESSAGES_LOG_FOLDER = join(__dirname, '../logs');

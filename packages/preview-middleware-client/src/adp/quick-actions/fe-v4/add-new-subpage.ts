@@ -128,7 +128,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
             throw new Error('Unexpected type of page owner component');
         }
         let entitySet: string | undefined = component.getEntitySet();
-        let contextPath = component.getContextPath();
+        const contextPath = component.getContextPath();
         if (contextPath) {
             entitySet = await this.resolveContextPathTargetName(contextPath, metaModel);
         }

@@ -1,5 +1,5 @@
-import type { SystemCommandContext, SystemCommandHandler } from '../../types/system';
-import { commands, type ExtensionContext } from 'vscode';
+import type { SapSystemsExtContext, SystemCommandContext, SystemCommandHandler } from '../../types/system';
+import { commands } from 'vscode';
 import { PanelManager, type SystemPanel } from '../../panel';
 import { SystemCommands } from '../../utils/constants';
 import { createSystemCommandHandler } from './create';
@@ -23,7 +23,7 @@ export const commandHandlers: Record<string, SystemCommandHandler> = {
  *
  * @param context - the extension context
  */
-export const registerSystemViewCommands = (context: ExtensionContext): void => {
+export const registerSystemViewCommands = (context: SapSystemsExtContext): void => {
     const panelManager = new PanelManager<SystemPanel>();
 
     const systemCommandContext: SystemCommandContext = {
@@ -40,5 +40,5 @@ export const registerSystemViewCommands = (context: ExtensionContext): void => {
         commands.registerCommand(SystemCommands.LaunchAppGen, commandHandlers.launchAppGen(systemCommandContext))
     ];
 
-    context.subscriptions.push(...disposables);
+    context.vscodeExtContext.subscriptions.push(...disposables);
 };

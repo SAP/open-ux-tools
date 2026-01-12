@@ -13860,7 +13860,7 @@ CODE:
   "name": "my-fiori-app",
   "version": "0.0.1",
   "scripts": {
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx"
   },
   "devDependencies": {
     "eslint": "^8.0.0",
