@@ -47,6 +47,134 @@ export interface AnnotationBasedNode<T extends AnnotationNode, Configuration ext
 const createModeValues = ['creationRows', 'creationRowsHiddenInEditMode', 'newPage'];
 const tableTypeValues = ['Table', 'ResponsiveTable', 'AnalyticalTable', 'GridTable'];
 
+/**
+ * Creates a configuration key from an annotation path
+ */
+function getConfigurationKey(annotationPath: string): string {
+    return annotationPath
+        .split('/')
+        .map((segment) => segment.replace('@', ''))
+        .join('::');
+}
+
+/**
+ * Creates table configuration object
+ */
+function createTableConfiguration(pathToPage: string[], createMode: string | undefined, tableType: string | undefined) {
+    return {
+        createMode: {
+            values: createModeValues,
+            configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'createMode'],
+            valueInFile: createMode
+        },
+        tableType: {
+            values: tableTypeValues,
+            configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'type'],
+            valueInFile: tableType
+        }
+    };
+}
+
+/**
+ * Creates section table configuration object
+ */
+function createSectionTableConfiguration(
+    pathToPage: string[],
+    sectionKey: string,
+    createMode: string | undefined,
+    tableType: string | undefined
+) {
+    return {
+        createMode: {
+            values: createModeValues,
+            configurationPath: [...pathToPage, 'component', 'settings', 'sections', sectionKey, 'createMode'],
+            valueInFile: createMode
+        },
+        tableType: {
+            values: tableTypeValues,
+            configurationPath: [
+                ...pathToPage,
+                'component',
+                'settings',
+                'sections',
+                sectionKey,
+                'tableSettings',
+                'type'
+            ],
+            valueInFile: tableType
+        }
+    };
+}
+
+/**
+ * Finds section settings from configuration
+ */
+function findSectionSettings(configuration: ManifestPageSettings): {
+    sectionKey: string;
+    createMode?: string;
+    tableType?: string;
+} {
+    let sectionEntityKey = '';
+    let createMode: string | undefined;
+    let tableType: string | undefined;
+
+    for (const [key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
+        if (value.createMode !== undefined) {
+            sectionEntityKey = key;
+            createMode = value.createMode;
+        }
+        if (value.tableSettings?.type !== undefined) {
+            sectionEntityKey = key;
+            tableType = value.tableSettings.type;
+        }
+    }
+
+    return { sectionKey: sectionEntityKey, createMode, tableType };
+}
+
+/**
+ * Creates linked table for a section
+ */
+function createLinkedTableForSection(
+    table: TableNode,
+    pathToPage: string[],
+    sectionSettings: { sectionKey: string; createMode?: string; tableType?: string }
+): Table {
+    return {
+        type: table.type,
+        annotation: table,
+        configuration: createSectionTableConfiguration(
+            pathToPage,
+            sectionSettings.sectionKey,
+            sectionSettings.createMode,
+            sectionSettings.tableType
+        ),
+        children: []
+    };
+}
+
+/**
+ * Gets entity set and entity type from service
+ */
+function getEntityData(service: ParsedService, entitySetName: string) {
+    const entity = service.index.entitySets[entitySetName];
+    const entityType = entity?.structuredType;
+    return { entity, entityType };
+}
+
+/**
+ * Creates page configuration
+ */
+function createPageConfiguration(path: string[], name: string, createMode: string | undefined) {
+    return {
+        createMode: {
+            values: createModeValues,
+            configurationPath: [...path, name, 'component', 'settings', 'createMode'],
+            valueInFile: createMode
+        }
+    };
+}
+
 export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
     type: T;
     annotation?: unknown;
@@ -136,13 +264,94 @@ interface ManifestApplicationSettings {
 }
 
 /**
- *
- * @param context
- * @param service
- * @param linkedApp
- * @param path
- * @param name
- * @param target
+ * Links a list report page
+ */
+function linkListReportPage(
+    context: LinkerContext,
+    service: ParsedService,
+    linkedApp: LinkedFeV2App,
+    path: string[],
+    name: string,
+    target: ManifestPageSettings,
+    componentName: 'sap.suite.ui.generic.template.ListReport' | 'sap.suite.ui.generic.template.AnalyticalListPage'
+): void {
+    const entitySetName = target.entitySet;
+    if (!entitySetName) {
+        return;
+    }
+
+    const { entity, entityType } = getEntityData(service, entitySetName);
+    if (!entity || !entityType) {
+        return;
+    }
+
+    const mainService = getParsedServiceByName(context.app);
+    if (!mainService) {
+        return;
+    }
+
+    const table = collectTables('v2', entityType, mainService);
+    const createMode = target.component?.settings?.createMode;
+    const page: FeV2ListReport = {
+        type: 'list-report-page',
+        targetName: name,
+        componentName,
+        configuration: createPageConfiguration(path, name, createMode),
+        entitySetName,
+        entity,
+        tables: [],
+        lookup: {}
+    };
+
+    linkListReportTable(page, [...path, name], table, target);
+    linkedApp.pages.push(page);
+}
+
+/**
+ * Links an object page
+ */
+function linkObjectPagePage(
+    context: LinkerContext,
+    service: ParsedService,
+    linkedApp: LinkedFeV2App,
+    path: string[],
+    name: string,
+    target: ManifestPageSettings
+): void {
+    const entitySetName = target.entitySet;
+    if (!entitySetName) {
+        return;
+    }
+
+    const { entity, entityType } = getEntityData(service, entitySetName);
+    if (!entity || !entityType) {
+        return;
+    }
+
+    const mainService = getParsedServiceByName(context.app);
+    if (!mainService) {
+        return;
+    }
+
+    const sections = collectSections('v2', entityType, mainService);
+    const createMode = target.component?.settings?.createMode;
+    const page: FeV2ObjectPage = {
+        type: 'object-page',
+        targetName: name,
+        componentName: 'sap.suite.ui.generic.template.ObjectPage',
+        configuration: createPageConfiguration(path, name, createMode),
+        entitySetName,
+        entity,
+        sections: [],
+        lookup: {}
+    };
+
+    linkObjectPageSections(page, [...path, name], entity, mainService, sections, target);
+    linkedApp.pages.push(page);
+}
+
+/**
+ * Links a page based on component type
  */
 function linkPage(
     context: LinkerContext,
@@ -153,84 +362,16 @@ function linkPage(
     target: ManifestPageSettings
 ): void {
     const componentName = target?.component?.name;
+
     if (
         componentName === 'sap.suite.ui.generic.template.ListReport' ||
         componentName === 'sap.suite.ui.generic.template.AnalyticalListPage'
     ) {
-        const entitySetName = target.entitySet;
-        if (!entitySetName) {
-            return;
-        }
-        const entity = service.index.entitySets[entitySetName];
-        const entityType = entity?.structuredType;
-
-        if (!entity || !entityType) {
-            return;
-        }
-
-        const mainService = getParsedServiceByName(context.app);
-        if (!mainService) {
-            return;
-        }
-        const table = collectTables('v2', entityType, mainService);
-        const createMode = target.component?.settings?.createMode;
-        const page: FeV2ListReport = {
-            type: 'list-report-page',
-            targetName: name,
-            componentName,
-            configuration: {
-                createMode: {
-                    values: createModeValues,
-                    configurationPath: [...path, name, 'component', 'settings', 'createMode']
-                }
-            },
-            entitySetName: entitySetName,
-            entity: entity,
-            tables: [],
-            lookup: {}
-        };
-        page.configuration.createMode.valueInFile = createMode;
-        linkListReportTable(page, [...path, name], table, target);
-        linkedApp.pages.push(page);
+        linkListReportPage(context, service, linkedApp, path, name, target, componentName);
     } else if (componentName === 'sap.suite.ui.generic.template.ObjectPage') {
-        const entitySetName = target.entitySet;
-        if (!entitySetName) {
-            return;
-        }
-        const entity = service.index.entitySets[entitySetName];
-        const entityType = entity?.structuredType;
-
-        if (!entity || !entityType) {
-            return;
-        }
-
-        const mainService = getParsedServiceByName(context.app);
-        if (!mainService) {
-            return;
-        }
-
-        const sections = collectSections('v2', entityType, mainService);
-        const createMode = target.component?.settings?.createMode;
-        const page: FeV2ObjectPage = {
-            type: 'object-page',
-            targetName: name,
-            componentName,
-            configuration: {
-                createMode: {
-                    values: createModeValues,
-                    configurationPath: [...path, name, 'component', 'settings', 'createMode']
-                }
-            },
-            entitySetName: entitySetName,
-            entity: entity,
-            sections: [],
-            lookup: {}
-        };
-        page.configuration.createMode.valueInFile = createMode;
-
-        linkObjectPageSections(page, [...path, name], entity, mainService, sections, target);
-        linkedApp.pages.push(page);
+        linkObjectPagePage(context, service, linkedApp, path, name, target);
     }
+
     const pages = target.pages ?? {};
     for (const [key, child] of Object.entries(pages)) {
         linkPage(context, service, linkedApp, [...path, name, 'pages'], key, child);
@@ -253,31 +394,17 @@ function linkListReportTable(
     const controls: Record<string, Table | OrphanTable> = {};
 
     for (const table of tables) {
-        const configurationKey = table.annotationPath
-            .split('/')
-            .map((segment) => segment.replace('@', ''))
-            .join('::');
-
+        const configurationKey = getConfigurationKey(table.annotationPath);
         const tableSettingsConfig = configuration.component?.settings?.tableSettings ?? {};
         const createMode = tableSettingsConfig.createMode;
         const tableType = tableSettingsConfig.type;
+
         const linkedTable: Table = {
             type: table.type,
             annotation: table,
-            configuration: {
-                createMode: {
-                    values: createModeValues,
-                    configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'createMode']
-                },
-                tableType: {
-                    values: tableTypeValues,
-                    configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'type']
-                }
-            },
+            configuration: createTableConfiguration(pathToPage, createMode, tableType),
             children: []
         };
-        linkedTable.configuration.createMode.valueInFile = createMode;
-        linkedTable.configuration.tableType.valueInFile = tableType;
 
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
@@ -288,45 +415,19 @@ function linkListReportTable(
         const createMode = sectionConfig.createMode;
         const tableType = sectionConfig.tableSettings?.type;
         if (!tableControl) {
-            // no annotation definition found for this table, but configuration exists
             const orphanedSection: OrphanTable = {
                 type: 'orphan-table',
-                // configurationPath: [...pathToPage, 'component', 'settings'],
-                configuration: {
-                    createMode: {
-                        values: createModeValues,
-                        configurationPath: [
-                            ...pathToPage,
-                            'component',
-                            'settings',
-                            'sections',
-                            sectionKey,
-                            'tableSettings',
-                            'createMode'
-                        ]
-                    },
-                    tableType: {
-                        values: tableTypeValues,
-                        configurationPath: [
-                            ...pathToPage,
-                            'component',
-                            'settings',
-                            'sections',
-                            sectionKey,
-                            'tableSettings',
-                            'type'
-                        ]
-                    }
-                }
+                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType)
             };
             controls[`${orphanedSection.type}|${sectionKey}`] = orphanedSection;
-            orphanedSection.configuration.createMode.valueInFile = createMode;
-            orphanedSection.configuration.tableType.valueInFile = tableType;
         }
     }
+
     for (const control of Object.values(controls)) {
-        page.lookup[control.type] ??= [];
-        (page.lookup[control.type] as (Table | OrphanTable)[]).push(control);
+        if (!page.lookup[control.type]) {
+            page.lookup[control.type] = [] as any;
+        }
+        (page.lookup[control.type] as any[]).push(control);
     }
 }
 
@@ -350,126 +451,54 @@ function linkObjectPageSections(
     const controls: Record<string, Section | Table> = {};
 
     for (const section of sections) {
-        if (section.type === 'table-section') {
-            const table = section.children[0];
-            if (table.type !== 'table') {
-                continue;
-            }
-            const configurationKey = table.annotationPath
-                .split('/')
-                .map((segment) => segment.replace('@', ''))
-                .join('::');
-            const linkedSection: TableSection = {
-                type: section.type,
-                annotation: section,
-                configuration: {},
-                children: []
-            };
-            controls[`${section.type}|${configurationKey}`] = linkedSection;
-            let createMode: string | undefined;
-            let tableType: string | undefined;
-            let sectionEntityKey = '';
-            for (const [key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
-                if (value.createMode !== undefined) {
-                    sectionEntityKey = key;
-                    createMode = value.createMode;
-                }
-                if (value.tableSettings?.type !== undefined) {
-                    sectionEntityKey = key;
-                    tableType = value.tableSettings.type;
-                }
-            }
-            const linkedTable: Table = {
-                type: table.type,
-                annotation: table,
-                configuration: {
-                    createMode: {
-                        values: createModeValues,
-                        configurationPath: [
-                            ...pathToPage,
-                            'component',
-                            'settings',
-                            'sections',
-                            sectionEntityKey,
-                            'createMode'
-                        ]
-                    },
-                    tableType: {
-                        values: tableTypeValues,
-                        configurationPath: [
-                            ...pathToPage,
-                            'component',
-                            'settings',
-                            'sections',
-                            sectionEntityKey,
-                            'tableSettings',
-                            'type'
-                        ]
-                    }
-                },
-                children: []
-            };
-            linkedTable.configuration.createMode.valueInFile = createMode;
-            linkedTable.configuration.tableType.valueInFile = tableType;
-            linkedSection.children.push(linkedTable);
-            controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
+        if (section.type !== 'table-section') {
+            continue;
         }
+
+        const table = section.children[0];
+        if (table.type !== 'table') {
+            continue;
+        }
+
+        const configurationKey = getConfigurationKey(table.annotationPath);
+        const linkedSection: TableSection = {
+            type: section.type,
+            annotation: section,
+            configuration: {},
+            children: []
+        };
+        controls[`${section.type}|${configurationKey}`] = linkedSection;
+
+        const sectionSettings = findSectionSettings(configuration);
+        const linkedTable = createLinkedTableForSection(table, pathToPage, sectionSettings);
+
+        linkedSection.children.push(linkedTable);
+        controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
 
     const configurations = configuration.component?.settings?.sections ?? {};
     for (const [sectionKey, sectionConfig] of Object.entries(configurations)) {
         const sectionControl = controls[`table-section|${sectionKey}`];
         if (!sectionControl) {
-            // no annotation definition found for this section, but configuration exists
-
-            let createMode: string | undefined;
-            let tableType: string | undefined;
-            if (sectionConfig.createMode !== undefined) {
-                createMode = sectionConfig.createMode;
-            }
-            if (sectionConfig.tableSettings?.type !== undefined) {
-                tableType = sectionConfig.tableSettings.type;
-            }
+            const createMode = sectionConfig.createMode;
+            const tableType = sectionConfig.tableSettings?.type;
 
             const orphanedSection: OrphanSection = {
                 type: 'orphan-section',
-                configuration: {
-                    createMode: {
-                        values: createModeValues,
-                        configurationPath: [
-                            ...pathToPage,
-                            'component',
-                            'settings',
-                            'sections',
-                            sectionKey,
-                            'createMode'
-                        ]
-                    },
-                    tableType: {
-                        values: tableTypeValues,
-                        configurationPath: [
-                            ...pathToPage,
-                            'component',
-                            'settings',
-                            'sections',
-                            sectionKey,
-                            'tableSettings',
-                            'type'
-                        ]
-                    }
-                }
+                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType)
             };
-            orphanedSection.configuration.createMode.valueInFile = createMode;
-            orphanedSection.configuration.tableType.valueInFile = tableType;
             controls[`${orphanedSection.type}|${sectionKey}|`] = orphanedSection;
         }
     }
+
     for (const control of Object.values(controls)) {
         if (control.type === 'table-section') {
             page.sections.push(control);
         }
-        page.lookup[control.type] ??= [];
-        (page.lookup[control.type]! as Extract<Section | Table, { type: typeof control.type }>[]).push(control);
+        if (!page.lookup[control.type]) {
+            page.lookup[control.type] = [] as any;
+        }
+        (page.lookup[control.type] as any[]).push(control);
     }
 }
 
