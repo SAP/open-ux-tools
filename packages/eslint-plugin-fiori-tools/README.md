@@ -170,3 +170,4 @@ module.exports = [
 |------|-------------|:-----------:|
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the manifest file for applications using UI5 versions 1.56 or higher. | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than 6 columns) include the `widthIncludingColumnHeader` property set to `true` for better column width calculation. | ✅ |
+| [sap-creation-mode-for-table](docs/rules/sap-creation-mode-for-table.md) | Validates that table creation mode (`createMode` in V2, `creationMode` in V4) is properly configured to ensure optimal user experience when creating new table entries. | ✅ |
