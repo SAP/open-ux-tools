@@ -1,9 +1,12 @@
 import type { RequestHandler } from 'express';
+import type { MiddlewareParameters } from '@ui5/server'; // eslint-disable-line sonarjs/no-implicit-dependencies
+
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+
 import { setupProxyRoutes } from './proxy';
 import { validateConfig } from './validation';
 import { createTokenProvider } from './token';
-import type { MiddlewareParameters, CfOAuthMiddlewareConfig } from './types';
+import type { CfOAuthMiddlewareConfig } from './types';
 
 /**
  * UI5 middleware for proxying requests to Cloud Foundry destinations with OAuth2 authentication.
@@ -36,5 +39,5 @@ module.exports = async ({ options }: MiddlewareParameters<CfOAuthMiddlewareConfi
         logger.info(`Backend proxy middleware (CF) initialized: url=${backend.url}, paths=${backend.paths.join(', ')}`);
     });
 
-    return router as unknown as RequestHandler;
+    return router;
 };

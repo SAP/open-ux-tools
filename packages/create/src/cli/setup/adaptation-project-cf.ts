@@ -21,6 +21,7 @@ import {
     type ServiceKeys,
     type CfUi5AppInfo
 } from '@sap-ux/adp-tooling';
+import { getWebappPath } from '@sap-ux/project-access';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
 
@@ -57,8 +58,9 @@ async function setupAdaptationProjectCF(basePath: string): Promise<void> {
     await verifyCfLogin(logger);
 
     try {
+        const webappPath = await getWebappPath(basePath);
         //Verify this is an adaptation project
-        const manifestVariantPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
+        const manifestVariantPath = join(basePath, webappPath, 'manifest.appdescr_variant');
         if (!existsSync(manifestVariantPath)) {
             throw new Error('Not an adaptation project. manifest.appdescr_variant not found.');
         }

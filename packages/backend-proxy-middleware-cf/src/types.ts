@@ -47,10 +47,3 @@ export interface CfOAuthMiddlewareConfig {
      */
     debug?: boolean;
 }
-
-export interface MiddlewareParameters<T> {
-    resources: object;
-    options: {
-        configuration: T;
-    };
-}

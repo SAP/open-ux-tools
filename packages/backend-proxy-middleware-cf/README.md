@@ -1,10 +1,14 @@
-# `@sap-ux/backend-proxy-middleware-cf`
+[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/backend-proxy-middleware-cf/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware-cf)
+
+# [`@sap-ux/backend-proxy-middleware-cf`](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware-cf)
 
 The `@sap-ux/backend-proxy-middleware-cf` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for proxying requests to Cloud Foundry destinations with OAuth2 authentication. It supports proxying multiple OData source paths to a single destination URL with automatic OAuth token management.
 
 > **⚠️ Experimental**: This middleware is currently experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions if needed.
 
-## Configuration Options
+It can be used either with the `ui5 serve` or the `fiori run` commands.
+
+## [Configuration Options](#configuration-options)
 
 | Option              | Value Type | Requirement Type | Default Value | Description                                                                                                      |
 | ------------------- | ---------- | ---------------- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -16,9 +20,9 @@ The `@sap-ux/backend-proxy-middleware-cf` is a [Custom UI5 Server Middleware](ht
 | `credentials.url`    | `string`   | mandatory (if credentials provided) | `undefined` | Base URL for the OAuth service. The token endpoint will be constructed as `{url}/oauth/token`.                   |
 | `debug`             | `boolean`  | optional         | `false`        | Enable debug logging for troubleshooting.                                                                        |
 
-## Usage
+## [Usage](#usage)
 
-### Basic Configuration
+### [Basic Configuration](#basic-configuration)
 
 ```yaml
 server:
@@ -26,13 +30,14 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
-        paths:
-          - /odata/v4/visitorservice
-          - /odata
+        backends:
+          - url: https://your-backend-service
+            paths:
+              - /odata/v4/visitorservice
+              - /odata
 ```
 
-### Automatic Detection (Recommended)
+### [Automatic Detection (Recommended)](#automatic-detection-recommended)
 
 For Cloud Foundry adaptation projects, the middleware automatically detects the project configuration from `ui5.yaml` and extracts OAuth credentials from service keys. You only need to provide the `url` and `paths`:
 
@@ -42,10 +47,11 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
-        paths:
-          - /odata/v4/visitorservice
-          - /odata
+        backends:
+          - url: https://your-backend-service
+            paths:
+              - /odata/v4/visitorservice
+              - /odata
 ```
 
 The middleware will:
@@ -56,7 +62,7 @@ The middleware will:
 4. Extract UAA credentials and construct the token endpoint
 5. Automatically add Bearer tokens to proxied requests
 
-### Manual Credentials
+### [Manual Credentials](#manual-credentials)
 
 For custom setups or when auto-detection is not available, you can provide OAuth credentials manually:
 
@@ -66,15 +72,16 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
-        paths:
-          - /odata/v4/visitorservice
-          - /odata
-        credentials:
-          clientId: "sb-your-service-instance!b123|your-app!b456"
-          clientSecret: "your-client-secret"
-          url: "https://example.authentication.eu12.hana.ondemand.com"
-        debug: true
+        backends: 
+          - url: https://your-backend-service
+            paths:
+              - /odata/v4/visitorservice
+              - /odata
+            credentials:
+              clientId: "sb-your-service-instance!b123|your-app!b456"
+              clientSecret: "your-client-secret"
+              url: "https://example.authentication"
+            debug: true
 ```
 
 The `credentials.url` should be the base URL of the UAA service (without `/oauth/token`). The middleware will automatically construct the full token endpoint.
@@ -89,11 +96,34 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
-        paths:
-          - /odata/v4/service1
-          - /odata/v4/service2
-          - /odata/v2/legacy
+        backends:
+          - url: https://your-backend-service
+            paths:
+              - /odata/v4/service1
+              - /odata/v4/service2
+              - /odata/v2/legacy
+```
+### Miltiple Backend Services
+
+You can proxy multiple backend services:
+
+```yaml
+server:
+  customMiddleware:
+    - name: backend-proxy-middleware-cf
+      afterMiddleware: compression
+      configuration:
+        backends:
+          - url: https://your-backend-service1
+            paths:
+              - /odata/v4/service1
+              - /odata/v4/service2
+              - /odata/v2/legacy
+          - url: https://your-backend-service2
+            paths:
+              - /odata/v4/service1
+              - /odata/v4/service2
+              - /odata/v2/legacy
 ```
 
 ### With Debug Logging
@@ -106,10 +136,11 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
-        paths:
-          - /odata
-        debug: true
+        backends:
+        - url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
+          paths:
+            - /odata
+          debug: true
 ```
 
 ## How It Works
