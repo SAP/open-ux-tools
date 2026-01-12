@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { readUi5Yaml, FileName } from '@sap-ux/project-access';
+import { readUi5Yaml, FileName, getWebappPath } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -21,7 +21,6 @@ import {
     type ServiceKeys,
     type CfUi5AppInfo
 } from '@sap-ux/adp-tooling';
-import { getWebappPath } from '@sap-ux/project-access';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
 
