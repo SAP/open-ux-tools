@@ -1,5 +1,12 @@
 # @sap-ux/project-integrity
 
+## 0.2.38
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+
 ## 0.2.37
 
 ### Patch Changes

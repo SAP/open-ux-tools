@@ -1,5 +1,21 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.0
+
+### Minor Changes
+
+- f13d1c2: CAP project selection now searches parent directories and supports autocomplete in CLI
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.50
+    - @sap-ux/project-input-validator@0.6.42
+    - @sap-ux/telemetry@0.6.52
+    - @sap-ux/inquirer-common@0.10.9
+
 ## 2.13.10
 
 ### Patch Changes
