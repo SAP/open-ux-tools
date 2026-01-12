@@ -320,11 +320,7 @@ export default class extends Generator {
                     this.configAnswers.system,
                     this.logger
                 );
-                const keyUserQuestions = this.keyUserPrompter.getPrompts({
-                    keyUserSystem: { default: this.configAnswers.system },
-                    keyUserUsername: { default: this.configAnswers.username },
-                    keyUserPassword: { default: this.configAnswers.password }
-                });
+                const keyUserQuestions = this.keyUserPrompter.getPrompts();
                 await this.prompt(keyUserQuestions);
             }
 

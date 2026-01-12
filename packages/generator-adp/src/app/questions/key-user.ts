@@ -153,11 +153,10 @@ export class KeyUserImportPrompter {
             type: 'input',
             name: keyUserPromptNames.keyUserUsername,
             message: t('prompts.usernameLabel'),
-            default: options?.default,
+            default: options?.default ?? '',
             filter: (val: string): string => val.trim(),
             guiOptions: {
-                mandatory: true,
-                breadcrumb: true
+                mandatory: true
             },
             when: (answers: KeyUserImportAnswers) => !!answers.keyUserSystem && this.isAuthRequired,
             validate: (value: string) => validateEmptyString(value)
@@ -176,10 +175,9 @@ export class KeyUserImportPrompter {
             name: keyUserPromptNames.keyUserPassword,
             message: t('prompts.passwordLabel'),
             mask: '*',
-            default: options?.default,
+            default: options?.default ?? '',
             guiOptions: {
                 mandatory: true,
-                breadcrumb: true,
                 type: 'login'
             },
             when: (answers: KeyUserImportAnswers) => !!answers.keyUserSystem && this.isAuthRequired,
