@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.9
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
 ## 0.4.8
 
 ### Patch Changes

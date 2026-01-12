@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.73
+
+### Patch Changes
+
+- 234dc8b: add precheck for package validation based on answers
+
 ## 1.6.72
 
 ### Patch Changes
