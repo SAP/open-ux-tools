@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.33.2
+
+### Patch Changes
+
+- f13d1c2: CAP project selection now searches parent directories and supports autocomplete in CLI
+
 ## 1.33.1
 
 ### Patch Changes
