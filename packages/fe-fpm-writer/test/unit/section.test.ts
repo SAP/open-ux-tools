@@ -9,6 +9,7 @@ import { Placement } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
 import { detectTabSpacing } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
+import { CopyTemplateOptions } from '../../src/common/constants';
 
 const testDir = join(__dirname, 'sample/section');
 
@@ -54,6 +55,7 @@ describe('CustomSection', () => {
             fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
         });
         test('with fragmentFile', async () => {
+            const copyTplSpy = jest.spyOn(fs, 'copyTpl');
             const testCustomSection: CustomSection = {
                 ...customSection,
                 fragmentFile: 'NewCustomSectionFragment'
@@ -69,6 +71,7 @@ describe('CustomSection', () => {
             )['settings'];
             expect(settings.content).toMatchSnapshot();
             expect(fs.read(expectedSectionFragmentPath)).toMatchSnapshot();
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(CopyTemplateOptions);
         });
         test('with handler, all properties', async () => {
             const testCustomSection: CustomSection = {

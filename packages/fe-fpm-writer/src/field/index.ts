@@ -11,6 +11,7 @@ import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { getManifest } from '../common/utils';
+import { CopyTemplateOptions } from '../common/constants';
 
 /**
  * Enhances the provided custom field configuration with default data.
@@ -67,7 +68,7 @@ export async function generateCustomField(basePath: string, customField: CustomF
     // add fragment
     const viewPath = join(completeField.path, `${completeField.fragmentFile ?? completeField.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeField);
+        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeField, undefined, CopyTemplateOptions);
     }
 
     // enhance manifest with field definition

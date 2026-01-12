@@ -12,6 +12,7 @@ import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils';
+import { CopyTemplateOptions } from '../common/constants';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -94,7 +95,7 @@ export async function generateCustomColumn(
     // add fragment
     const viewPath = join(completeColumn.path, `${completeColumn.fragmentFile ?? completeColumn.name}.fragment.xml`);
     if (completeColumn.control || !fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
+        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeColumn, undefined, CopyTemplateOptions);
     }
 
     // enhance manifest with column definition

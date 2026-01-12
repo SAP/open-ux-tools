@@ -9,6 +9,7 @@ import { Placement } from '../../src/common/types';
 import * as manifest from './sample/field/webapp/manifest.json';
 import { detectTabSpacing } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
+import { CopyTemplateOptions } from '../../src/common/constants';
 
 const testDir = join(__dirname, 'sample/field');
 
@@ -34,6 +35,7 @@ describe('CustomField', () => {
     });
 
     test('no handler, all properties', async () => {
+        const copyTplSpy = jest.spyOn(fs, 'copyTpl');
         await generateCustomField(testDir, { ...customField }, fs);
 
         const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
@@ -43,6 +45,7 @@ describe('CustomField', () => {
         expect(settings.controlConfiguration).toMatchSnapshot();
 
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+        expect(copyTplSpy.mock.calls[0][4]).toEqual(CopyTemplateOptions);
     });
 
     test('no handler - default folder', async () => {

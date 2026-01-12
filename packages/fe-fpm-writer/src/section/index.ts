@@ -12,6 +12,7 @@ import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils';
+import { CopyTemplateOptions } from '../common/constants';
 
 type CustomSectionUnion = CustomHeaderSection | CustomSection | CustomSubSection;
 
@@ -120,7 +121,13 @@ async function generate(
     // add fragment
     const viewPath = join(completeSection.path, `${completeSection.fragmentFile ?? completeSection.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, completeSection);
+        fs.copyTpl(
+            getTemplatePath('common/FragmentWithVBox.xml'),
+            viewPath,
+            completeSection,
+            undefined,
+            CopyTemplateOptions
+        );
     }
 
     return { editor: fs, section: completeSection };
@@ -176,7 +183,13 @@ export async function generateCustomHeaderSection(
         if (editSection.path) {
             const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
             if (!editor.exists(viewPath)) {
-                editor.copyTpl(getTemplatePath('common/FragmentWithForm.xml'), viewPath, editSection);
+                editor.copyTpl(
+                    getTemplatePath('common/FragmentWithForm.xml'),
+                    viewPath,
+                    editSection,
+                    undefined,
+                    CopyTemplateOptions
+                );
             }
         }
     }

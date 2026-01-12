@@ -9,6 +9,7 @@ import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '.
 import { Placement } from '../../src/common/types';
 import { detectTabSpacing } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
+import { CopyTemplateOptions } from '../../src/common/constants';
 
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
@@ -114,6 +115,7 @@ describe('CustomAction', () => {
         });
 
         test('specific target folder, event handler as boolean', async () => {
+            const copyTplSpy = jest.spyOn(fs, 'copyTpl');
             await generateCustomAction(
                 testDir,
                 {
@@ -129,6 +131,7 @@ describe('CustomAction', () => {
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(testDir, 'webapp/ext/MyCustomAction.js'))).toMatchSnapshot();
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(CopyTemplateOptions);
         });
 
         test('specific control as target', async () => {

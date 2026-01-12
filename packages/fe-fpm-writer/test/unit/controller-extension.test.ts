@@ -11,6 +11,7 @@ import {
 } from '../../src/controller-extension';
 import { detectTabSpacing } from '../../src/common/file';
 import { tabSizingTestCases } from '../common';
+import { CopyTemplateOptions } from '../../src/common/constants';
 
 describe('ControllerExtension', () => {
     describe('generateControllerExtension', () => {
@@ -67,6 +68,7 @@ describe('ControllerExtension', () => {
         ];
 
         test.each(pageTypeTests)('New controller extension - %s', async (pageType) => {
+            const copyTplSpy = jest.spyOn(fs, 'copyTpl');
             await generateControllerExtension(
                 testDir,
                 {
@@ -80,6 +82,7 @@ describe('ControllerExtension', () => {
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(expectedControllerPath)).toBeTruthy();
             expect(fs.read(expectedControllerPath)).toMatchSnapshot();
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(CopyTemplateOptions);
         });
 
         test('New controller extension with page id', async () => {

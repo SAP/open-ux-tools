@@ -24,6 +24,7 @@ import { BuildingBlockType } from '../building-block/types';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/xml';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../i18n';
+import { CopyTemplateOptions } from '../common/constants';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -149,7 +150,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     // add extension content
     const viewPath = join(config.path, `${config.name}.view.xml`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(join(root, 'ext/View.xml'), viewPath, config);
+        fs.copyTpl(join(root, 'ext/View.xml'), viewPath, config, undefined, CopyTemplateOptions);
         // i18n.properties
         const manifest = fs.readJSON(manifestPath) as Manifest;
         const defaultI18nPath = 'i18n/i18n.properties';
@@ -159,7 +160,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
         if (fs.exists(i18nPath)) {
             fs.append(i18nPath, render(fs.read(i18TemplatePath), config, {}));
         } else {
-            fs.copyTpl(i18TemplatePath, i18nPath, config);
+            fs.copyTpl(i18TemplatePath, i18nPath, config, undefined, CopyTemplateOptions);
         }
     }
 
@@ -176,7 +177,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     const ext = data.typescript ? 'ts' : 'js';
     const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
     if (!fs.exists(controllerPath)) {
-        fs.copyTpl(join(root, `ext/Controller.${ext}`), controllerPath, config);
+        fs.copyTpl(join(root, `ext/Controller.${ext}`), controllerPath, config, undefined, CopyTemplateOptions);
     }
 
     if (data.typescript) {

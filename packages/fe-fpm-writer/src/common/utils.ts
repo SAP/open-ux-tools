@@ -5,6 +5,7 @@ import { coerce, minor } from 'semver';
 import { getWebappPath } from '@sap-ux/project-access';
 import { getTemplatePath } from '../templates';
 import type { FileContentPosition, Manifest, ManifestData } from './types';
+import { CopyTemplateOptions } from './constants';
 
 /**
  * Method inserts passed text into content by char index position.
@@ -66,7 +67,7 @@ export function addExtensionTypes(basePath: string, minUI5Version: string | unde
     const version = minor(coerce(minUI5Version) ?? '1.108.0');
     const path = join(basePath, '/webapp/ext/sap.fe.d.ts');
     if (version < 108 && version !== 102 && !fs.exists(path)) {
-        fs.copyTpl(getTemplatePath('common/sap.fe.d.ts'), path, { version });
+        fs.copyTpl(getTemplatePath('common/sap.fe.d.ts'), path, { version }, undefined, CopyTemplateOptions);
     }
 }
 

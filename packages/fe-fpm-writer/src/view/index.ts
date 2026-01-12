@@ -11,6 +11,7 @@ import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { getManifest } from '../common/utils';
+import { CopyTemplateOptions } from '../common/constants';
 
 /**
  * Merge the new view into the list of existing views (if any).
@@ -110,9 +111,15 @@ export async function generateCustomView(basePath: string, customView: CustomVie
     if (customView.viewUpdate !== false) {
         const viewPath = join(completeView.path, `${completeView.name}.fragment.xml`);
         if (completeView.control === true) {
-            fs.copyTpl(getTemplatePath('view/ext/CustomViewWithTable.xml'), viewPath, completeView);
+            fs.copyTpl(
+                getTemplatePath('view/ext/CustomViewWithTable.xml'),
+                viewPath,
+                completeView,
+                undefined,
+                CopyTemplateOptions
+            );
         } else if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeView);
+            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeView, undefined, CopyTemplateOptions);
         }
     }
 

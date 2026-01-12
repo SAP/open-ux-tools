@@ -13,6 +13,7 @@ import { applyEventHandlerConfiguration, contextParameter } from '../common/even
 import type { FilterField } from '../building-block/types';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getManifest } from '../common/utils';
+import { CopyTemplateOptions } from '../common/constants';
 
 /**
  * Enhances the provided custom filter configuration with default data.
@@ -82,7 +83,7 @@ export async function generateCustomFilter(basePath: string, filterConfig: Custo
     // create a fragment file
     const fragmentPath = join(config.path, `${config.fragmentFile}.fragment.xml`);
     if (!fs.exists(fragmentPath)) {
-        fs.copyTpl(getTemplatePath(`filter/fragment.xml`), fragmentPath, config);
+        fs.copyTpl(getTemplatePath(`filter/fragment.xml`), fragmentPath, config, undefined, CopyTemplateOptions);
     }
 
     return fs;

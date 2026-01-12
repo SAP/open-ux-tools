@@ -33,6 +33,7 @@ import { getManifest, getManifestPath } from '../common/utils';
 import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
+import { CopyTemplateOptions } from '../common/constants';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -327,7 +328,7 @@ function processCustomColumn(
 
     columnConfig.content = getDefaultFragmentContent('Sample Text', processedEventHandler);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath(config.templateFile), viewPath, columnConfig);
+        fs.copyTpl(getTemplatePath(config.templateFile), viewPath, columnConfig, undefined, CopyTemplateOptions);
     }
 }
 
@@ -376,7 +377,7 @@ function processCustomFilterField(
     }
 
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath(config.templateFile), viewPath, filterConfig);
+        fs.copyTpl(getTemplatePath(config.templateFile), viewPath, filterConfig, undefined, CopyTemplateOptions);
     }
 }
 
