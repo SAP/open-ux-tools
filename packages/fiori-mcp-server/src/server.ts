@@ -125,10 +125,10 @@ export class FioriFunctionalityServer {
                 };
                 if ('functionalityId' in args) {
                     const { functionalityId } = args;
-                    const isFunctionalityIdArray = 
+                    const shouldPrefixWithPropertyChange = 
                         Array.isArray(functionalityId) && functionalityId.length >= 1;
                     
-                    if (isFunctionalityIdArray) {
+                    if (shouldPrefixWithPropertyChange) {
                         telemetryProperties.functionalityId = `property-change:${functionalityId.at(-1)}`;
                     } else {
                         telemetryProperties.functionalityId = functionalityId as string;
