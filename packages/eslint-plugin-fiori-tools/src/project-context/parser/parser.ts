@@ -126,45 +126,46 @@ export class ApplicationParser {
      */
     private reparseJSON(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
         for (const [key, previousApp] of Object.entries(index.apps)) {
-            if (previousApp.manifest.manifestUri === uri) {
-                const manifestContent = fileCache.get(uri) ?? '';
-                const manifestAst = parseJson(manifestContent, {
-                    mode: 'json',
-                    ranges: true,
-                    tokens: true,
-                    allowTrailingCommas: false
-                });
-                index.documents[uri] = manifestAst;
-                const manifest = JSON.parse(manifestContent) as Manifest;
-                const webappPath = dirname(fileURLToPath(uri));
-                const [parsedManifest, services] = this.parseManifest(webappPath, uri, manifest);
-                index.documents[uri] = manifestAst;
+            if (previousApp.manifest.manifestUri !== uri) {
+                continue;
+            }
+            const manifestContent = fileCache.get(uri) ?? '';
+            const manifestAst = parseJson(manifestContent, {
+                mode: 'json',
+                ranges: true,
+                tokens: true,
+                allowTrailingCommas: false
+            });
+            index.documents[uri] = manifestAst;
+            const manifest = JSON.parse(manifestContent) as Manifest;
+            const webappPath = dirname(fileURLToPath(uri));
+            const [parsedManifest, services] = this.parseManifest(webappPath, uri, manifest);
+            index.documents[uri] = manifestAst;
 
-                const parsedApp: ParsedApp = {
-                    manifest: parsedManifest,
-                    manifestObject: manifest,
-                    projectRootPath: previousApp.projectRootPath,
-                    services: {}
-                };
+            const parsedApp: ParsedApp = {
+                manifest: parsedManifest,
+                manifestObject: manifest,
+                projectRootPath: previousApp.projectRootPath,
+                services: {}
+            };
 
-                const previouslyFoundServices = Object.values(previousApp.services).map((service) => service.config);
-                if (JSON.stringify(previouslyFoundServices) === JSON.stringify(services)) {
-                    // keep existing services
-                    parsedApp.services = previousApp.services;
-                } else {
-                    // services have changed, reset existing services
-                    parsedApp.services = {};
-                    for (const service of services) {
-                        const artifacts = this.parseService(parsedApp.projectRootPath, service);
-                        if (artifacts) {
-                            const serviceIndex = buildServiceIndex(artifacts, index.documents);
-                            parsedApp.services[service.name] = { config: service, artifacts, index: serviceIndex };
-                        }
+            const previouslyFoundServices = Object.values(previousApp.services).map((service) => service.config);
+            if (JSON.stringify(previouslyFoundServices) === JSON.stringify(services)) {
+                // keep existing services
+                parsedApp.services = previousApp.services;
+            } else {
+                // services have changed, reset existing services
+                parsedApp.services = {};
+                for (const service of services) {
+                    const artifacts = this.parseService(parsedApp.projectRootPath, service);
+                    if (artifacts) {
+                        const serviceIndex = buildServiceIndex(artifacts, index.documents);
+                        parsedApp.services[service.name] = { config: service, artifacts, index: serviceIndex };
                     }
                 }
-                index.apps[key] = parsedApp;
-                break;
             }
+            index.apps[key] = parsedApp;
+            break;
         }
     }
 

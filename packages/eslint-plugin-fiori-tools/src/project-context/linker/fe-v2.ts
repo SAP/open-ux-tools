@@ -49,6 +49,8 @@ const tableTypeValues = ['Table', 'ResponsiveTable', 'AnalyticalTable', 'GridTab
 
 /**
  * Creates a configuration key from an annotation path
+ *
+ * @param annotationPath
  */
 function getConfigurationKey(annotationPath: string): string {
     return annotationPath
@@ -59,6 +61,10 @@ function getConfigurationKey(annotationPath: string): string {
 
 /**
  * Creates table configuration object
+ *
+ * @param pathToPage
+ * @param createMode
+ * @param tableType
  */
 function createTableConfiguration(pathToPage: string[], createMode: string | undefined, tableType: string | undefined) {
     return {
@@ -77,6 +83,11 @@ function createTableConfiguration(pathToPage: string[], createMode: string | und
 
 /**
  * Creates section table configuration object
+ *
+ * @param pathToPage
+ * @param sectionKey
+ * @param createMode
+ * @param tableType
  */
 function createSectionTableConfiguration(
     pathToPage: string[],
@@ -108,6 +119,8 @@ function createSectionTableConfiguration(
 
 /**
  * Finds section settings from configuration
+ *
+ * @param configuration
  */
 function findSectionSettings(configuration: ManifestPageSettings): {
     sectionKey: string;
@@ -134,6 +147,13 @@ function findSectionSettings(configuration: ManifestPageSettings): {
 
 /**
  * Creates linked table for a section
+ *
+ * @param table
+ * @param pathToPage
+ * @param sectionSettings
+ * @param sectionSettings.sectionKey
+ * @param sectionSettings.createMode
+ * @param sectionSettings.tableType
  */
 function createLinkedTableForSection(
     table: TableNode,
@@ -155,6 +175,9 @@ function createLinkedTableForSection(
 
 /**
  * Gets entity set and entity type from service
+ *
+ * @param service
+ * @param entitySetName
  */
 function getEntityData(service: ParsedService, entitySetName: string) {
     const entity = service.index.entitySets[entitySetName];
@@ -164,6 +187,10 @@ function getEntityData(service: ParsedService, entitySetName: string) {
 
 /**
  * Creates page configuration
+ *
+ * @param path
+ * @param name
+ * @param createMode
  */
 function createPageConfiguration(path: string[], name: string, createMode: string | undefined) {
     return {
@@ -265,6 +292,14 @@ interface ManifestApplicationSettings {
 
 /**
  * Links a list report page
+ *
+ * @param context
+ * @param service
+ * @param linkedApp
+ * @param path
+ * @param name
+ * @param target
+ * @param componentName
  */
 function linkListReportPage(
     context: LinkerContext,
@@ -309,6 +344,13 @@ function linkListReportPage(
 
 /**
  * Links an object page
+ *
+ * @param context
+ * @param service
+ * @param linkedApp
+ * @param path
+ * @param name
+ * @param target
  */
 function linkObjectPagePage(
     context: LinkerContext,
@@ -352,6 +394,13 @@ function linkObjectPagePage(
 
 /**
  * Links a page based on component type
+ *
+ * @param context
+ * @param service
+ * @param linkedApp
+ * @param path
+ * @param name
+ * @param target
  */
 function linkPage(
     context: LinkerContext,
