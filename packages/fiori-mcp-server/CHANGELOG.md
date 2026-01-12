@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.6
+
+### Patch Changes
+
+- 5c34d46: feat(telemetry): enhance telemetry data with MCP client info and do not pass telemetry data when unknownTool
+
 ## 0.6.5
 
 ### Patch Changes
