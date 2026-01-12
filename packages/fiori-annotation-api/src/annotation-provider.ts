@@ -100,7 +100,6 @@ export class CdsAnnotationProvider {
         // for (const path of facade.getAllSourceUris()) {
         //     const uri = pathToFileURL(path).toString();
         //     const cdsAnnotationFile = toTargetMap(facade.blitzIndex.forUri(uri), uri, this.vocabularyService, facade);
-
         //     const annotationFile = toAnnotationFile(
         //         uri,
         //         this.vocabularyService,

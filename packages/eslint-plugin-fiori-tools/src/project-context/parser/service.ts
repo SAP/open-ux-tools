@@ -144,7 +144,7 @@ export function buildServiceIndex(
     const annotationIndex = indexAnnotationsByAnnotationPath(artifacts);
     let entityContainer: MetadataElement | undefined;
     artifacts.metadataService.visitMetadataElements((element) => {
-        // TODO: check if we can handle CDS differences better // NOSONAR
+        // NOSONAR - TODO: check if we can handle CDS differences better
         if (element.kind === 'EntityContainer' || element.kind === 'service') {
             entityContainer = element;
         } else if (element.kind === 'EntitySet' || element.kind === 'entitySet') {
