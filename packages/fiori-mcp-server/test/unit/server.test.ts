@@ -614,7 +614,7 @@ describe('FioriFunctionalityServer', () => {
             executeFunctionalitySpy.mockRestore();
         });
 
-        test('functionalityId as empty array - should not set functionalityId', async () => {
+        test('functionalityId as empty array - preserve empty array as-is', async () => {
             const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
                 functionalityId: [],
                 status: 'ok',
