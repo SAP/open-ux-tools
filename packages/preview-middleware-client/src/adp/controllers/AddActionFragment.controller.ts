@@ -128,8 +128,6 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
      */
     async buildDialogData(): Promise<void> {
         try {
-            const { fragments } = await getFragments();
-            this.model.setProperty('/fragmentList', fragments);
             let hasController = false;
             if (this.options.controllerReference) {
                 this.model.setProperty('/handlerReference', this.options.controllerReference);
