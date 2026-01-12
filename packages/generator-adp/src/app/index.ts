@@ -71,7 +71,7 @@ import {
 } from './types';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
 import type { AdpTelemetryData } from '../types';
-import { KeyUserImportPrompter } from './questions/key-user-import';
+import { KeyUserImportPrompter } from './questions/key-user';
 
 const generatorTitle = 'Adaptation Project';
 

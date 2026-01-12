@@ -6,7 +6,7 @@ import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
 import type { FlexUISupportedSystem, SourceApplication } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../utils/i18n';
-import { DEFAULT_ADAPTATION_ID } from '../key-user-import';
+import { DEFAULT_ADAPTATION_ID } from '../key-user';
 
 interface SupportFlags {
     hasSyncViews: boolean;
