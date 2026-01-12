@@ -5,7 +5,7 @@ import BaseDialog from './BaseDialog.controller';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import Dialog from 'sap/m/Dialog';
-import { getResourceModel } from '../../i18n';
+import { getResourceModel, getTextBundle, TextBundle } from '../../i18n';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import Button from 'sap/m/Button';
 import { sendInfoCenterMessage } from '../../utils/info-center-message';
@@ -45,31 +45,33 @@ export interface AddActionOptions {
  */
 function validateActionId(
     input: Input,
+    resource: TextBundle,
     validateForDuplicateId?: (actionId: string) => boolean
 ): { isValid: boolean; errorMessage: string } {
     const actionId = input.getValue();
     // Check if empty
     if (!actionId || actionId.trim().length === 0) {
-        return { isValid: false, errorMessage: 'Action ID is required' };
+        return { isValid: false, errorMessage: resource.getText('ACTION_ID_REQUIRED') };
     }
 
     if (!validateForDuplicateId?.(actionId)) {
-        return { isValid: false, errorMessage: `Action with ID '${actionId}' is already defined` };
+        return { isValid: false, errorMessage: resource.getText('ACTION_WITH_GIVEN_ID_ALREADY_EXISTS', [actionId]) };
     }
 
     // Check for spaces
     if (actionId.includes(' ')) {
-        return { isValid: false, errorMessage: 'Action ID cannot contain spaces' };
+        return { isValid: false, errorMessage: resource.getText('ACTION_ID_CANNOT_CONTAIN_SPACES') };
     }
 
     // Check if starts with number
     if (/^\d/.test(actionId)) {
-        return { isValid: false, errorMessage: 'Action ID cannot start with a number' };
+        return { isValid: false, errorMessage: resource.getText('ACTION_ID_CANNOT_START_WITH_NUMBER') };
     }
     return { isValid: true, errorMessage: '' };
 }
 
 export default class AddActionFragment extends BaseDialog<AddActionFragmentsModel> {
+    private bundle: TextBundle;
     constructor(
         name: string,
         overlays: UI5Element,
@@ -95,7 +97,7 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
         this.dialog = dialog;
 
         this.setEscapeHandler();
-
+        this.bundle = await getTextBundle();
         await this.buildDialogData();
         const resourceModel = await getResourceModel('open.ux.preview.client');
 
@@ -173,7 +175,7 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
             modelValue = null;
         }
         this.model.setProperty('/actionId', modelValue);
-        const result = validateActionId(input, this.options.validateActionId);
+        const result = validateActionId(input, this.bundle, this.options.validateActionId);
         if (!result.isValid) {
             input.setValueState(ValueState.Error).setValueStateText(result.errorMessage);
         } else {
@@ -193,7 +195,7 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
         if (modelValue && modelValue.length > 0) {
             input.setValueState(ValueState.Success).setValueStateText('');
         } else {
-           input.setValueState(ValueState.Error).setValueStateText('Button Text is required');
+            input.setValueState(ValueState.Error).setValueStateText(this.bundle.getText('BUTTON_TEXT_REQUIRED'));
         }
         this.updateFormState();
     }

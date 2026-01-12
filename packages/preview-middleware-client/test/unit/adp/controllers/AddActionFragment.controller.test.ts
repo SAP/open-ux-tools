@@ -225,8 +225,12 @@ describe('AddActionFragment', () => {
                     {
                         getContent: jest.fn().mockReturnValue(content)
                     } as unknown as SimpleForm<Control[]>
-                ])
+                ]),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                setEscapeHandler: jest.fn().mockResolvedValue("")
             } as unknown as Dialog;
+           
             return addFragment;
         };
 
@@ -241,7 +245,7 @@ describe('AddActionFragment', () => {
             jest.restoreAllMocks();
         });
 
-        test('sets error when action id and button text input field empty', () => {
+        test('sets error when action id and button text input field empty', async () => {
             const event = mockInputEvent('');
 
             createDialog([
@@ -250,7 +254,7 @@ describe('AddActionFragment', () => {
                 mockFormInput(false),
                 mockFormInput(true, '', ValueState.Success)
             ] as unknown as Control[]);
-
+            await addFragment.setup(addFragment.dialog);
             addFragment.onActionIdInputChange(event as unknown as Event);
             addFragment.onButtonTextInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(2);
@@ -258,7 +262,7 @@ describe('AddActionFragment', () => {
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(2, 'Button Text is required');
         });
 
-        test('sets error when action id has space', () => {
+        test('sets error when action id has space', async () => {
             const event = mockInputEvent('test id');
 
             createDialog([
@@ -266,14 +270,14 @@ describe('AddActionFragment', () => {
                 mockFormInput(true, '', ValueState.Success),
                 mockFormInput(false),
                 mockFormInput(true, '', ValueState.Success)
-            ] as unknown as Control[]);
-
+            ] as unknown as Control[])
+            await addFragment.setup(addFragment.dialog);
             addFragment.onActionIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Action ID cannot contain spaces');
         });
 
-        test('sets error when action id starts with numerals', () => {
+        test('sets error when action id starts with numerals', async () => {
             const event = mockInputEvent('1testid');
 
             createDialog([
@@ -282,13 +286,14 @@ describe('AddActionFragment', () => {
                 mockFormInput(false),
                 mockFormInput(true, '', ValueState.Success)
             ] as unknown as Control[]);
+             await addFragment.setup(addFragment.dialog);
 
             addFragment.onActionIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Action ID cannot start with a number');
         });
 
-        test('sets error when action id already being used', () => {
+        test('sets error when action id already being used', async () => {
             const event = mockInputEvent('testId');
 
             createDialog(
@@ -300,16 +305,17 @@ describe('AddActionFragment', () => {
                 ] as unknown as Control[],
                 false
             );
+            await addFragment.setup(addFragment.dialog);
 
             addFragment.onActionIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
                 1,
-                `Action with ID 'testId' is already defined`
+                "Action with ID ''testId'' is already defined"
             );
         });
 
-        test('form with no error', () => {
+        test('form with no error', async () => {
             const event = mockInputEvent('AddItem');
 
             createDialog([
@@ -318,6 +324,7 @@ describe('AddActionFragment', () => {
                 mockFormInput(false),
                 mockFormInput(true, '', ValueState.Success)
             ] as unknown as Control[]);
+            await addFragment.setup(addFragment.dialog);
 
             addFragment.onActionIdInputChange(event as unknown as Event);
             addFragment.onButtonTextInputChange(event as unknown as Event);
