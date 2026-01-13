@@ -53,7 +53,7 @@ function validateActionId(
         return { isValid: false, errorMessage: resource.getText('ACTION_ID_REQUIRED') };
     }
 
-    if (!validateForDuplicateId?.(actionId)) {
+    if (typeof validateForDuplicateId === 'function' && !validateForDuplicateId(actionId)) {
         return { isValid: false, errorMessage: resource.getText('ACTION_WITH_GIVEN_ID_ALREADY_EXISTS', [actionId]) };
     }
 
