@@ -1,5 +1,21 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.19
+
+### Patch Changes
+
+- @sap-ux/cds-annotation-parser@0.2.26
+- @sap-ux/odata-annotation-core@0.2.12
+
+## 0.6.18
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/cds-annotation-parser@0.2.25
+    - @sap-ux/odata-annotation-core@0.2.12
+
 ## 0.6.17
 
 ### Patch Changes

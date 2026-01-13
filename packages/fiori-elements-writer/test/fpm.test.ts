@@ -82,7 +82,7 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
     });
 
     test('Should generate view XML containing custom page building block title for FPM template', async () => {
-        const testPath = join(curTestOutPath, 'with-js');
+        const testPath = join(curTestOutPath, 'with-js2');
         const config = {
             ...Object.assign(feBaseConfig('fefpmjs'), {
                 template: {
@@ -107,7 +107,7 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
     });
 
     test('Should not generate view XML containing custom page building block title for FPM template when UI5 version is below 1.136.0', async () => {
-        const testPath = join(curTestOutPath, 'with-js');
+        const testPath = join(curTestOutPath, 'with-js3');
         const config = {
             ...Object.assign(feBaseConfig('fefpmjs'), {
                 template: {

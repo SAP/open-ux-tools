@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.0.7
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
 ## 0.0.6
 
 ### Patch Changes

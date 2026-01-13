@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.33.1
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 1.33.0
 
 ### Minor Changes

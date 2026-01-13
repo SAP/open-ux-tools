@@ -1,5 +1,19 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.4
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/project-access@1.33.1
+    - @sap-ux/mockserver-config-writer@0.9.36
+
+## 0.29.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+
 ## 0.29.2
 
 ### Patch Changes

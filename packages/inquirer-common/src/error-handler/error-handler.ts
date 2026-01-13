@@ -87,7 +87,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: [/SELF_SIGNED_CERT_IN_CHAIN/],
     [ERROR_TYPE.INVALID_SSL_CERTIFICATE]: [/526/, /Invalid SSL Certificate/], // Cloud Foundry and Cloudflare specific
     [ERROR_TYPE.UNKNOWN]: [],
-    [ERROR_TYPE.CONNECTION]: [/ENOTFOUND/, /ECONNRESET/, /ECONNREFUSED/, /ConnectionError/],
+    [ERROR_TYPE.CONNECTION]: [/ENOTFOUND/, /ECONNRESET/, /ECONNREFUSED/, /EPROTO/, /ConnectionError/],
     [ERROR_TYPE.SERVICES_UNAVAILABLE]: [],
     [ERROR_TYPE.SERVICE_UNAVAILABLE]: [/503/],
     [ERROR_TYPE.INVALID_URL]: [/Invalid URL/, /ERR_INVALID_URL/],
@@ -406,7 +406,7 @@ export class ErrorHandler {
         }
         return Object.keys(ERROR_TYPE).find((errorCodeType) => {
             return ERROR_MAP[errorCodeType as ERROR_TYPE].find((exp: RegExp) => exp.test(errorValueToFind.toString()));
-        }, {}) as ERROR_TYPE;
+        }) as ERROR_TYPE;
     }
 
     /**
