@@ -2,79 +2,6 @@
 
 exports[`CF Writer generateCf config with managed approuter 1`] = `
 Object {
-  "../minimal-cf/mta.yaml": Object {
-    "contents": "ID: mta-project
-version: 1.0.0
-modules:
-  - name: mta-project-approuter
-    type: approuter.nodejs
-    path: mta-project-approuter
-    requires:
-      - name: mta-project_html_repo_runtime
-      - name: mta-project_uaa
-      - name: portal_resources_mta-project
-      - name: test-service
-    parameters:
-      disk-quota: 256M
-      memory: 256M
-  - name: mta-project_ui_deployer
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: mta-project_html_repo_host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
-          target-path: resources/
-  - name: my.test.cf.app
-    type: html5
-    path: my.test.cf.app
-    build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build
-      supported-platforms: []
-resources:
-  - name: test-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
-      service-name: test-destination-service
-  - name: mta-project_html_repo_host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
-      service-name: mta-project-html5_app_host
-  - name: mta-project_uaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      path: ./xs-security.json
-      service-plan: application
-      service-name: mta-project_1234567890-xsuaa
-  - name: portal_resources_mta-project
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: portal
-      service-plan: standard
-  - name: mta-project_html_repo_runtime
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-runtime
-_schema-version: '3.3'
-description: Test MTA Project for CF Writer Tests
-",
-    "state": "modified",
-  },
   "../minimal-cf/test-cf-project/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -93,7 +20,7 @@ dist/
 	\\"scripts\\": {
 		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
 		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"setup-cf\\": \\"sap-ux add adp-cf-config\\",
 		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
 		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
@@ -215,105 +142,6 @@ test.namespace_sap.app.title=Test CF App",
 ",
     "state": "modified",
   },
-  "mta.yaml": Object {
-    "contents": "ID: mta-project
-version: 1.0.0
-modules:
-  - name: mta-project-destination-content
-    type: com.sap.application.content
-    requires:
-      - name: mta-project_uaa
-        parameters:
-          service-key:
-            name: mta-project-uaa-key
-      - name: mta-project_html_repo_host
-        parameters:
-          service-key:
-            name: mta-project-html_repo_host-key
-      - name: mta-project-destination
-        parameters:
-          content-target: true
-      - name: test-service
-        parameters:
-          service-key:
-            name: test-service-key
-    build-parameters:
-      no-source: true
-    parameters:
-      content:
-        instance:
-          destinations:
-            - Name: test-solution-mta-project-html_repo_host
-              ServiceInstanceName: mta-project-html5_app_host
-              ServiceKeyName: mta-project-html_repo_host-key
-              sap.cloud.service: test-solution
-            - Name: test-solution-uaa-mta-project
-              ServiceInstanceName: mta-project_1234567890-xsuaa
-              ServiceKeyName: mta-project_uaa-key
-              Authentication: OAuth2UserTokenExchange
-              sap.cloud.service: test-solution
-            - Name: test-service-service_instance_name
-              Authentication: OAuth2UserTokenExchange
-              ServiceInstanceName: test-service
-              ServiceKeyName: test-service-key
-          existing_destinations_policy: update
-  - name: mta-project_ui_deployer
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: mta-project_html_repo_host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
-          target-path: resources/
-  - name: my.test.cf.app
-    type: html5
-    path: my.test.cf.app
-    build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build
-      supported-platforms: []
-resources:
-  - name: test-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
-      service-name: test-destination-service
-  - name: mta-project_html_repo_host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
-      service-name: mta-project-html5_app_host
-  - name: mta-project_uaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      path: ./xs-security.json
-      service-plan: application
-      service-name: mta-project_1234567890-xsuaa
-  - name: mta-project-destination
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-name: mta-project-destination
-      service-plan: lite
-      config:
-        HTML5Runtime_enabled: true
-        version: 1.0.0
-_schema-version: '3.3'
-description: Test MTA Project for CF Writer Tests
-",
-    "state": "modified",
-  },
   "test-cf-project/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -332,7 +160,7 @@ dist/
 	\\"scripts\\": {
 		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
 		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"setup-cf\\": \\"sap-ux add adp-cf-config\\",
 		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
 		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
@@ -459,105 +287,6 @@ test.namespace_sap.app.title=Test CF App",
 
 exports[`CF Writer generateCf config with options 1`] = `
 Object {
-  "../managed-approuter/mta.yaml": Object {
-    "contents": "ID: mta-project
-version: 1.0.0
-modules:
-  - name: mta-project-destination-content
-    type: com.sap.application.content
-    requires:
-      - name: mta-project_uaa
-        parameters:
-          service-key:
-            name: mta-project-uaa-key
-      - name: mta-project_html_repo_host
-        parameters:
-          service-key:
-            name: mta-project-html_repo_host-key
-      - name: mta-project-destination
-        parameters:
-          content-target: true
-      - name: test-service
-        parameters:
-          service-key:
-            name: test-service-key
-    build-parameters:
-      no-source: true
-    parameters:
-      content:
-        instance:
-          destinations:
-            - Name: test-solution-mta-project-html_repo_host
-              ServiceInstanceName: mta-project-html5_app_host
-              ServiceKeyName: mta-project-html_repo_host-key
-              sap.cloud.service: test-solution
-            - Name: test-solution-uaa-mta-project
-              ServiceInstanceName: mta-project_1234567890-xsuaa
-              ServiceKeyName: mta-project_uaa-key
-              Authentication: OAuth2UserTokenExchange
-              sap.cloud.service: test-solution
-            - Name: test-service-service_instance_name
-              Authentication: OAuth2UserTokenExchange
-              ServiceInstanceName: test-service
-              ServiceKeyName: test-service-key
-          existing_destinations_policy: update
-  - name: mta-project_ui_deployer
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: mta-project_html_repo_host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
-          target-path: resources/
-  - name: my.test.cf.app
-    type: html5
-    path: my.test.cf.app
-    build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build
-      supported-platforms: []
-resources:
-  - name: test-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
-      service-name: test-destination-service
-  - name: mta-project_html_repo_host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
-      service-name: mta-project-html5_app_host
-  - name: mta-project_uaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      path: ./xs-security.json
-      service-plan: application
-      service-name: mta-project_1234567890-xsuaa
-  - name: mta-project-destination
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-name: mta-project-destination
-      service-plan: lite
-      config:
-        HTML5Runtime_enabled: true
-        version: 1.0.0
-_schema-version: '3.3'
-description: Test MTA Project for CF Writer Tests
-",
-    "state": "modified",
-  },
   "../managed-approuter/test-cf-project/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -576,7 +305,7 @@ dist/
 	\\"scripts\\": {
 		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
 		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"setup-cf\\": \\"sap-ux add adp-cf-config\\",
 		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
 		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
@@ -698,79 +427,6 @@ test.namespace_sap.app.title=Test CF App",
 ",
     "state": "modified",
   },
-  "../minimal-cf/mta.yaml": Object {
-    "contents": "ID: mta-project
-version: 1.0.0
-modules:
-  - name: mta-project-approuter
-    type: approuter.nodejs
-    path: mta-project-approuter
-    requires:
-      - name: mta-project_html_repo_runtime
-      - name: mta-project_uaa
-      - name: portal_resources_mta-project
-      - name: test-service
-    parameters:
-      disk-quota: 256M
-      memory: 256M
-  - name: mta-project_ui_deployer
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: mta-project_html_repo_host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
-          target-path: resources/
-  - name: my.test.cf.app
-    type: html5
-    path: my.test.cf.app
-    build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build
-      supported-platforms: []
-resources:
-  - name: test-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
-      service-name: test-destination-service
-  - name: mta-project_html_repo_host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
-      service-name: mta-project-html5_app_host
-  - name: mta-project_uaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      path: ./xs-security.json
-      service-plan: application
-      service-name: mta-project_1234567890-xsuaa
-  - name: portal_resources_mta-project
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: portal
-      service-plan: standard
-  - name: mta-project_html_repo_runtime
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-runtime
-_schema-version: '3.3'
-description: Test MTA Project for CF Writer Tests
-",
-    "state": "modified",
-  },
   "../minimal-cf/test-cf-project/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -789,7 +445,7 @@ dist/
 	\\"scripts\\": {
 		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
 		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"setup-cf\\": \\"sap-ux add adp-cf-config\\",
 		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
 		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
@@ -911,105 +567,6 @@ test.namespace_sap.app.title=Test CF App",
 ",
     "state": "modified",
   },
-  "mta.yaml": Object {
-    "contents": "ID: mta-project
-version: 1.0.0
-modules:
-  - name: mta-project-destination-content
-    type: com.sap.application.content
-    requires:
-      - name: mta-project_uaa
-        parameters:
-          service-key:
-            name: mta-project-uaa-key
-      - name: mta-project_html_repo_host
-        parameters:
-          service-key:
-            name: mta-project-html_repo_host-key
-      - name: mta-project-destination
-        parameters:
-          content-target: true
-      - name: test-service
-        parameters:
-          service-key:
-            name: test-service-key
-    build-parameters:
-      no-source: true
-    parameters:
-      content:
-        instance:
-          destinations:
-            - Name: test-solution-mta-project-html_repo_host
-              ServiceInstanceName: mta-project-html5_app_host
-              ServiceKeyName: mta-project-html_repo_host-key
-              sap.cloud.service: test-solution
-            - Name: test-solution-uaa-mta-project
-              ServiceInstanceName: mta-project_1234567890-xsuaa
-              ServiceKeyName: mta-project_uaa-key
-              Authentication: OAuth2UserTokenExchange
-              sap.cloud.service: test-solution
-            - Name: test-service-service_instance_name
-              Authentication: OAuth2UserTokenExchange
-              ServiceInstanceName: test-service
-              ServiceKeyName: test-service-key
-          existing_destinations_policy: update
-  - name: mta-project_ui_deployer
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: mta-project_html_repo_host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
-          target-path: resources/
-  - name: my.test.cf.app
-    type: html5
-    path: my.test.cf.app
-    build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build
-      supported-platforms: []
-resources:
-  - name: test-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
-      service-name: test-destination-service
-  - name: mta-project_html_repo_host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
-      service-name: mta-project-html5_app_host
-  - name: mta-project_uaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      path: ./xs-security.json
-      service-plan: application
-      service-name: mta-project_1234567890-xsuaa
-  - name: mta-project-destination
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-name: mta-project-destination
-      service-plan: lite
-      config:
-        HTML5Runtime_enabled: true
-        version: 1.0.0
-_schema-version: '3.3'
-description: Test MTA Project for CF Writer Tests
-",
-    "state": "modified",
-  },
   "test-cf-project-approuter/package.json": Object {
     "contents": "{
 	\\"name\\": \\"test-cf-project-approuter\\",
@@ -1064,7 +621,7 @@ dist/
 	\\"scripts\\": {
 		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
 		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"setup-cf\\": \\"sap-ux add adp-cf-config\\",
 		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
 		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
@@ -1191,79 +748,6 @@ test.namespace_sap.app.title=Test CF App",
 
 exports[`CF Writer generateCf minimal config 1`] = `
 Object {
-  "mta.yaml": Object {
-    "contents": "ID: mta-project
-version: 1.0.0
-modules:
-  - name: mta-project-approuter
-    type: approuter.nodejs
-    path: mta-project-approuter
-    requires:
-      - name: mta-project_html_repo_runtime
-      - name: mta-project_uaa
-      - name: portal_resources_mta-project
-      - name: test-service
-    parameters:
-      disk-quota: 256M
-      memory: 256M
-  - name: mta-project_ui_deployer
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: mta-project_html_repo_host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
-          target-path: resources/
-  - name: my.test.cf.app
-    type: html5
-    path: my.test.cf.app
-    build-parameters:
-      builder: custom
-      commands:
-        - npm install
-        - npm run build
-      supported-platforms: []
-resources:
-  - name: test-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
-      service-name: test-destination-service
-  - name: mta-project_html_repo_host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
-      service-name: mta-project-html5_app_host
-  - name: mta-project_uaa
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      path: ./xs-security.json
-      service-plan: application
-      service-name: mta-project_1234567890-xsuaa
-  - name: portal_resources_mta-project
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: portal
-      service-plan: standard
-  - name: mta-project_html_repo_runtime
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-runtime
-_schema-version: '3.3'
-description: Test MTA Project for CF Writer Tests
-",
-    "state": "modified",
-  },
   "test-cf-project/.gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -1282,7 +766,7 @@ dist/
 	\\"scripts\\": {
 		\\"start\\": \\"npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview\\",
 		\\"start-nobuild\\": \\"fiori run --open /test/flp.html#app-preview\\",
-		\\"setup-cf\\": \\"sap-ux setup adaptation-project-cf\\",
+		\\"setup-cf\\": \\"sap-ux add adp-cf-config\\",
 		\\"start-editor-nobuild\\": \\"fiori run --open /test/adaptation-editor.html\\",
 		\\"start-editor\\": \\"npm run setup-cf && fiori run --open /test/adaptation-editor.html\\",
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",

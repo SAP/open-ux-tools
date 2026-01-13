@@ -39,12 +39,21 @@ export function hasFileDeletes(fs: Editor): boolean {
  * @param basePath - path to the adaptation project
  */
 export async function validateAdpProject(basePath: string): Promise<void> {
-    if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
-        throw new Error('This command can only be used for an adaptation project');
-    }
+    await validateAdpAppType(basePath);
 
     if (isCFEnvironment(basePath)) {
         throw new Error('This command is not supported for CF projects.');
+    }
+}
+
+/**
+ * Validate if adaptation project is of type 'Fiori Adaptation', throws an error if not.
+ *
+ * @param basePath - path to the adaptation project
+ */
+export async function validateAdpAppType(basePath: string): Promise<void> {
+    if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
+        throw new Error('This command can only be used for an adaptation project');
     }
 }
 

@@ -23,10 +23,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
-jest.mock('../../../../src/cf/services/api', () => ({
-    ...jest.requireActual('../../../../src/cf/services/api'),
-    getFDCApps: jest.fn()
-}));
+jest.mock('../../../../src/cf/services/api');
 
 jest.mock('../../../../src/cf/utils/validation', () => ({
     ...jest.requireActual('../../../../src/cf/utils/validation'),
@@ -584,7 +581,7 @@ describe('CF App Discovery', () => {
             expect(result).toEqual([{ url: 'https://backend.example.com', paths: ['/sap/opu/odata'] }]);
         });
 
-        test('should handle missing xs-app.json file', () => {
+        test('should throw error when xs-app.json file is missing', () => {
             const serviceKeys: ServiceKeys[] = [
                 {
                     credentials: {
@@ -600,9 +597,9 @@ describe('CF App Discovery', () => {
 
             mockExistsSync.mockReturnValue(false);
 
-            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
-
-            expect(result).toEqual([]);
+            expect(() => getBackendUrlsWithPaths(serviceKeys, '/test/base')).toThrow(
+                t('error.xsAppJsonNotFound', { paths: '/test/base/.reuse/xs-app.json, /test/base/dist/xs-app.json' })
+            );
         });
 
         test('should handle invalid JSON in xs-app.json', () => {

@@ -233,11 +233,7 @@ describe('CF Services CLI', () => {
             mockCFToolsCliExecute.mockResolvedValue(mockResponse);
 
             await expect(requestCfApi(url)).rejects.toThrow(
-                t('error.failedToRequestCFAPI', {
-                    error:
-                        'Empty response from CF API. This typically indicates an authentication issue. ' +
-                        "Please verify your CF login status with 'cf target' and re-authenticate if needed with 'cf login'."
-                })
+                t('error.failedToRequestCFAPI', { error: t('error.emptyCFAPIResponse') })
             );
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
         });

@@ -362,7 +362,7 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 	"scripts": {
 		"start": "npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview",
 		"start-nobuild": "fiori run --open /test/flp.html#app-preview",
-		"setup-cf": "sap-ux setup adaptation-project-cf",
+		"setup-cf": "sap-ux add adp-cf-config",
 		"start-editor-nobuild": "fiori run --open /test/adaptation-editor.html",
 		"start-editor": "npm run setup-cf && fiori run --open /test/adaptation-editor.html",
 		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",

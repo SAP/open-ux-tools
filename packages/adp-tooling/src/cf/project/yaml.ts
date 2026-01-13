@@ -480,7 +480,9 @@ export async function addServeStaticMiddleware(
     logger?: ToolsLogger
 ): Promise<void> {
     try {
-        ui5Config.removeCustomMiddleware('fiori-tools-servestatic');
+        if (ui5Config.findCustomMiddleware('fiori-tools-servestatic')) {
+            ui5Config.removeCustomMiddleware('fiori-tools-servestatic');
+        }
 
         const ui5AppInfoPath = path.join(basePath, 'ui5AppInfo.json');
         if (!fs.existsSync(ui5AppInfoPath)) {
@@ -546,7 +548,9 @@ export async function addBackendProxyMiddleware(
     logger?: ToolsLogger
 ): Promise<void> {
     try {
-        ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
+        if (ui5Config.findCustomMiddleware('backend-proxy-middleware-cf')) {
+            ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
+        }
 
         const urlsWithPaths = getBackendUrlsWithPaths(serviceKeys, basePath);
 

@@ -14,7 +14,12 @@ export async function runBuild(projectPath: string, env?: NodeJS.ProcessEnv): Pr
     const commandRunner = new CommandRunner();
 
     try {
-        await commandRunner.run('npm', ['run', 'build'], { cwd: projectPath, env: { ...process.env, ...env } });
+        const opts = {
+            cwd: projectPath,
+            ...(env && { env: { ...process.env, ...env } })
+        };
+
+        await commandRunner.run('npm', ['run', 'build'], opts);
     } catch (e) {
         console.error(`Error during build and clean: ${e.message}`);
         throw e;

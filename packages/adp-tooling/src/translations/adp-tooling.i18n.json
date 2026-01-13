@@ -100,6 +100,7 @@
         "failedToGetCredentialsFromHtml5Repo": "Failed to retrieve the credentials from the HTML5 repository for space: {{spaceGuid}}. Error: {{error}}",
         "failedToParseCFAPIResponse": "Failed to parse the CF API response: {{error}}",
         "failedToRequestCFAPI": "Request to the CF API failed. Error: {{error}}",
+        "emptyCFAPIResponse": "Empty response from CF API. Please verify your CF login status with 'cf target' and re-authenticate if needed with 'cf login'.",
         "xsSecurityJsonCouldNotBeParsed": "The xs-security.json file could not be parsed. Ensure the xs-security.json file exists and try again.",
         "failedToCreateServiceInstance": "Failed to create the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
         "failedToGetFDCApps": "Retrieving FDC apps failed: {{error}}",

@@ -68,7 +68,7 @@ Command group for adding features to existing SAP Fiori applications. A subcomma
 
 Usage: `npx --yes @sap-ux/create@latest add [subcommand] [options]`
 
-The available subcommands are: `mockserver-config`, `smartlinks-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config` and `variants-config`
+The available subcommands are: `mockserver-config`, `smartlinks-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config` and `adp-cf-config`
 
 
 --------------------------------
@@ -235,6 +235,20 @@ Options:
 
 --------------------------------
 
+## [`add adp-cf-config`](#add-adp-cf-config)
+
+Configure a Cloud Foundry adaptation project by fetching reusable libraries, building the project, and configuring ui5.yaml.
+
+Example:
+
+`npx --yes @sap-ux/create@latest add adp-cf-config`
+
+Options:
+- `-v, --verbose` - Show verbose information.
+- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+
+--------------------------------
+
 ## [`convert`](#convert)
 
 Command group for converting existing SAP Fiori applications. A subcommand is required.
@@ -322,27 +336,4 @@ Example:
 
 Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
-
---------------------------------
-
-## [`setup`](#setup)
-
-Command group for setting up SAP Fiori projects. A subcommand is required.
-
-Usage: `npx --yes @sap-ux/create@latest setup [subcommand] [options]`
-
-The available subcommands are: `adaptation-project-cf`
-
---------------------------------
-
-## [`setup adaptation-project-cf`](#setup-adaptation-project-cf)
-
-Setup a Cloud Foundry adaptation project by fetching reusable libraries, building the project, and configuring ui5.yaml.
-
-Example:
-
-`npx --yes @sap-ux/create@latest setup adaptation-project-cf`
-
-Options:
-- `-v, --verbose` - Show verbose information.
 
