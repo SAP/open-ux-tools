@@ -2,16 +2,24 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import type { SourceApplication } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
 
 import {
     getAppAdditionalMessages,
     getSystemAdditionalMessages,
     getVersionAdditionalMessages,
-    getTargetEnvAdditionalMessages
+    getTargetEnvAdditionalMessages,
+    getKeyUserSystemAdditionalMessages,
+    getKeyUserAdaptationAdditionalMessages
 } from '../../../../src/app/questions/helper/additional-messages';
-import { t } from '../../../../src/utils/i18n';
+import { initI18n, t } from '../../../../src/utils/i18n';
+import { DEFAULT_ADAPTATION_ID } from '../../../../src/app/questions/key-user';
 
 describe('additional-messages', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
+
     describe('getSystemAdditionalMessages', () => {
         it('should return undefined if flexUISystem is undefined', () => {
             const result = getSystemAdditionalMessages(undefined, false);
@@ -163,6 +171,128 @@ describe('additional-messages', () => {
 
         it('should return undefined when not CF environment', () => {
             const result = getTargetEnvAdditionalMessages('ABAP', true, mockCfConfig);
+            expect(result).toBeUndefined();
+        });
+    });
+
+    describe('getKeyUserSystemAdditionalMessages', () => {
+        const mockDefaultAdaptation: AdaptationDescriptor = {
+            id: DEFAULT_ADAPTATION_ID,
+            title: '',
+            type: 'DEFAULT'
+        };
+
+        const mockMultipleAdaptations: AdaptationDescriptor[] = [
+            mockDefaultAdaptation,
+            { id: 'CTX1', title: 'Context 1', type: 'CONTEXT', contexts: { role: ['/UI2/ADMIN'] } }
+        ];
+
+        it('should return message for multiple adaptations when auth matches', () => {
+            const result = getKeyUserSystemAdditionalMessages({
+                adaptations: mockMultipleAdaptations,
+                isAuthRequired: false,
+                keyUserChangesCount: 0,
+                isSystemPrompt: true
+            });
+
+            expect(result).toEqual({
+                message: t('prompts.keyUserAdaptationLabelMulti'),
+                severity: Severity.information
+            });
+        });
+
+        it('should return message for DEFAULT adaptation with changes when auth matches', () => {
+            const result = getKeyUserSystemAdditionalMessages({
+                adaptations: [mockDefaultAdaptation],
+                isAuthRequired: false,
+                keyUserChangesCount: 5,
+                isSystemPrompt: true
+            });
+
+            expect(result).toEqual({
+                message: t('prompts.keyUserChangesFoundAdaptation', { adaptationId: DEFAULT_ADAPTATION_ID }),
+                severity: Severity.information
+            });
+        });
+
+        it('should return undefined when auth does not match', () => {
+            const result = getKeyUserSystemAdditionalMessages({
+                adaptations: mockMultipleAdaptations,
+                isAuthRequired: true,
+                keyUserChangesCount: 0,
+                isSystemPrompt: true
+            });
+
+            expect(result).toBeUndefined();
+        });
+
+        it('should return undefined when auth does not match (password prompt, no auth)', () => {
+            const result = getKeyUserSystemAdditionalMessages({
+                adaptations: mockMultipleAdaptations,
+                isAuthRequired: false,
+                keyUserChangesCount: 0,
+                isSystemPrompt: false
+            });
+
+            expect(result).toBeUndefined();
+        });
+
+        it('should return undefined when no changes found for DEFAULT adaptation', () => {
+            const result = getKeyUserSystemAdditionalMessages({
+                adaptations: [mockDefaultAdaptation],
+                isAuthRequired: false,
+                keyUserChangesCount: 0,
+                isSystemPrompt: true
+            });
+
+            expect(result).toBeUndefined();
+        });
+
+        it('should return undefined when empty adaptations array', () => {
+            const result = getKeyUserSystemAdditionalMessages({
+                adaptations: [],
+                isAuthRequired: false,
+                keyUserChangesCount: 0,
+                isSystemPrompt: true
+            });
+
+            expect(result).toBeUndefined();
+        });
+    });
+
+    describe('getKeyUserAdaptationAdditionalMessages', () => {
+        const mockAdaptation: AdaptationDescriptor = {
+            id: 'CTX1',
+            title: 'Context 1',
+            type: 'CONTEXT',
+            contexts: { role: ['/UI2/ADMIN'] }
+        };
+
+        const mockAdaptationWithoutTitle: AdaptationDescriptor = {
+            id: 'CTX2',
+            type: 'CONTEXT'
+        };
+
+        it('should return message when adaptation is provided and changes exist', () => {
+            const result = getKeyUserAdaptationAdditionalMessages(mockAdaptation, 5);
+
+            expect(result).toEqual({
+                message: t('prompts.keyUserChangesFoundAdaptation', { adaptationId: 'Context 1' }),
+                severity: Severity.information
+            });
+        });
+
+        it('should use adaptation id when title is not available', () => {
+            const result = getKeyUserAdaptationAdditionalMessages(mockAdaptationWithoutTitle, 3);
+
+            expect(result).toEqual({
+                message: t('prompts.keyUserChangesFoundAdaptation', { adaptationId: 'CTX2' }),
+                severity: Severity.information
+            });
+        });
+
+        it('should return undefined when adaptation is null', () => {
+            const result = getKeyUserAdaptationAdditionalMessages(null, 5);
             expect(result).toBeUndefined();
         });
     });
