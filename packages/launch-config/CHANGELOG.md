@@ -1,5 +1,20 @@
 # @sap-ux/launch-config
 
+## 0.10.48
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+
+## 0.10.47
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/project-access@1.33.1
+
 ## 0.10.46
 
 ### Patch Changes
