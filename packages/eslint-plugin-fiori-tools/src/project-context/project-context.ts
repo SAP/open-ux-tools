@@ -20,9 +20,10 @@ import { linkProject } from './linker';
 let artifactWorker: (file: string) => WorkerResult;
 
 /**
- *
- * @param name
- * @returns
+ * Gets the file system path to the worker script.
+ * 
+ * @param name - The name of the worker file
+ * @returns The absolute path to the worker file
  */
 function getWorkerPath(name: string): string {
     // Create sync function to call the working draft-toggle-worker
@@ -50,8 +51,9 @@ function getWorkerPath(name: string): string {
 }
 
 /**
- *
- * @returns
+ * Gets or creates the artifact worker instance for finding Fiori artifacts.
+ * 
+ * @returns A synchronous function that takes a file path and returns worker results
  */
 function getArtifactWorker(): (file: string) => WorkerResult {
     if (artifactWorker) {
@@ -67,21 +69,22 @@ function getArtifactWorker(): (file: string) => WorkerResult {
 export type DocumentType = AnnotationFile | XMLDocument | DocumentNode;
 
 /**
- *
+ * Manages the project context including parsed artifacts, indexes, and linked models.
+ * Provides access to project structure, manifests, and services.
  */
 export class ProjectContext {
     private readonly artifacts: FoundFioriArtifacts;
     private readonly _index: ParsedProject;
 
     /**
-     *
+     * Gets the parsed project index containing all project information.
      */
     public get index(): ParsedProject {
         return this._index;
     }
     private _linkedModel: LinkedModel;
     /**
-     *
+     * Gets the linked model containing resolved references between project entities.
      */
     public get linkedModel(): LinkedModel {
         return this._linkedModel;
@@ -90,10 +93,11 @@ export class ProjectContext {
     public readonly documents: Record<string, DocumentType> = {};
 
     /**
-     *
-     * @param artifacts
-     * @param index
-     * @param linkedModel
+     * Creates a new ProjectContext instance.
+     * 
+     * @param artifacts - The found Fiori artifacts in the project
+     * @param index - The parsed project index
+     * @param linkedModel - The linked model with resolved references
      */
     private constructor(artifacts: FoundFioriArtifacts, index: ParsedProject, linkedModel: LinkedModel) {
         this._index = index;
@@ -102,9 +106,11 @@ export class ProjectContext {
     }
 
     /**
-     *
-     * @param appIndex
-     * @param serviceName
+     * Gets the indexed service for the main service of an application.
+     * 
+     * @param appIndex - The parsed application index
+     * @param serviceName - Optional service name, defaults to the main service name from manifest
+     * @returns The parsed service or undefined if not found
      */
     public getIndexedServiceForMainService(appIndex: ParsedApp, serviceName?: string): ParsedService | undefined {
         const name = serviceName ?? appIndex.manifest.mainServiceName;
@@ -112,8 +118,10 @@ export class ProjectContext {
     }
 
     /**
-     *
-     * @param app
+     * Gets the manifest for a specific application.
+     * 
+     * @param app - Optional application key, defaults to the first application in the index
+     * @returns The manifest object or undefined if not found
      */
     public getManifest(app?: string): Manifest | undefined {
         const key = app ?? Object.keys(this.index.apps)[0];
@@ -125,9 +133,10 @@ export class ProjectContext {
     }
 
     /**
-     *
-     * @param uri
-     * @param content
+     * Re-indexes the project after a file has been updated.
+     * 
+     * @param uri - The URI of the file to reindex
+     * @param content - The updated content of the file
      */
     public reindex(uri: string, content: string): void {
         ProjectContext.fileCache.set(uri, content);
@@ -154,8 +163,10 @@ export class ProjectContext {
     private static readonly projectArtifactCache = new Map<string, WorkerResult>();
 
     /**
-     *
-     * @param _uri
+     * Finds Fiori artifacts in the project using a worker process.
+     * 
+     * @param _uri - The URI to start searching from (currently unused, uses process.cwd())
+     * @returns The worker result containing found artifacts and project type
      */
     private static findFioriArtifacts(_uri: string): WorkerResult {
         // potential issue when called from application modeler or via ESLint API
@@ -186,8 +197,8 @@ export class ProjectContext {
     /**
      * Creates a ProjectContext for the given file path.
      *
-     * @param uri
-     * @returns A ProjectContext instance.
+     * @param uri - The URI of the file to get the context for
+     * @returns A ProjectContext instance
      */
     public static getInstanceForFile(uri: string): ProjectContext {
         const cachedValue = this.instanceCache.get(uri);
@@ -198,9 +209,11 @@ export class ProjectContext {
     }
 
     /**
-     *
-     * @param uri
-     * @param content
+     * Updates a file in the cache and triggers re-indexing if necessary.
+     * 
+     * @param uri - The URI of the file to update
+     * @param content - The new content of the file
+     * @returns The ProjectContext instance for the file
      */
     public static updateFile(uri: string, content: string): ProjectContext {
         this.fileCache.set(uri, content);
@@ -238,10 +251,10 @@ export class ProjectContext {
     });
 
     /**
-     * Creates a ProjectContext for the given file path.
+     * Creates a ProjectContext for the given file path by parsing artifacts and building indexes.
      *
-     * @param uri
-     * @returns A ProjectContext instance.
+     * @param uri - The URI of the file to create the context for
+     * @returns A new ProjectContext instance
      */
     private static createForFile(uri: string): ProjectContext {
         // not all project files might be indexed, but eslint still will pick it up

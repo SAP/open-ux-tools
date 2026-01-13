@@ -8,6 +8,7 @@ import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import { rules } from './rules';
 import { FioriLanguage } from './language/fiori-language';
+import { PACKAGE_NAME } from './constants';
 
 // Use CommonJS require for modules with resolution issues
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -23,7 +24,7 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
 
 // Plugin meta information (required for ESLint 9)
 export const meta = {
-    name: '@sap-ux/eslint-plugin-fiori-tools',
+    name: PACKAGE_NAME,
     version: packageJson.version
 };
 
@@ -35,7 +36,7 @@ export const languages = {
 // This is the recommended way to export plugins in ESLint 9
 const plugin: Plugin = {
     meta: {
-        name: '@sap-ux/eslint-plugin-fiori-tools',
+        name: PACKAGE_NAME,
         version: '0.0.1',
         namespace: '@sap-ux/fiori-tools'
     },

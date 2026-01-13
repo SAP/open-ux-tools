@@ -64,11 +64,6 @@
     "files": [
         "LICENSE",
         "lib",
-        "docs",
-        "config",
-        "eslintrc-common.js",
-        "eslintrc-prod.js",
-        "eslintrc-test.js",
-        "eslintrc-typescript.js"
+        "docs"
     ]
 }
