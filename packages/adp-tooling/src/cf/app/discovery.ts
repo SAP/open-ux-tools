@@ -135,10 +135,6 @@ function processRouteForDestination(route: XsAppRoute, destinationToPaths: Map<s
 function extractDestinationToPathsMap(xsAppPath: string): Map<string, Set<string>> {
     const destinationToPaths = new Map<string, Set<string>>();
 
-    if (!existsSync(xsAppPath)) {
-        return destinationToPaths;
-    }
-
     try {
         const xsAppContent = readFileSync(xsAppPath, 'utf8');
         const xsApp = JSON.parse(xsAppContent) as XsApp;
