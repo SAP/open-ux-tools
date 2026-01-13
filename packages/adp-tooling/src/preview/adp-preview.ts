@@ -36,7 +36,7 @@ import {
     isV4DescriptorChange
 } from './change-handler';
 import { addCustomSectionFragment } from './descriptor-change-handler';
-import { getExistingProjectType } from '../base/helper';
+import { getExistingAdpProjectType } from '../base/helper';
 import path, { join } from 'node:path';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
@@ -166,7 +166,7 @@ export class AdpPreview {
     private async initProjectType(): Promise<void> {
         const projectRootPath = path.resolve();
         const ui5YamlPath = join(projectRootPath, FileName.Ui5Yaml);
-        this.projectTypeValue = await getExistingProjectType(projectRootPath, ui5YamlPath);
+        this.projectTypeValue = await getExistingAdpProjectType(projectRootPath, ui5YamlPath);
     }
 
     /**

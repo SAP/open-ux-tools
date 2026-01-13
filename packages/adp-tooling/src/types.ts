@@ -43,10 +43,6 @@ export interface AdpPreviewConfig {
      * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
      */
     cfBuildPath?: string;
-
-    builder: {
-        customTasks: { name: string }[];
-    };
 }
 
 export interface OnpremApp {

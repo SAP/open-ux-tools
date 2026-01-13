@@ -1,5 +1,5 @@
 import type { AbapTarget } from '@sap-ux/system-access';
-import type { ServiceProvider, SystemInfo } from '@sap-ux/axios-extension';
+import type { AdaptationProjectType, ServiceProvider, SystemInfo } from '@sap-ux/axios-extension';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 
 export const enum TargetSystemType {
@@ -83,11 +83,15 @@ export enum promptNames {
     overwriteAbapConfig = 'overwriteAbapConfig'
 }
 
+interface AdpSharedOptions {
+    adpProjectType?: AdaptationProjectType;
+}
+
 /**
  * Options for the UI5 ABAP repository prompt.
  * If `hide` is set to `true`, the prompt will not be shown, it is required to add a default value in this case.
  */
-export type UI5AbapRepoPromptOptions =
+export type UI5AbapRepoPromptOptions = (
     | {
           hide?: false;
           default?: string;
@@ -99,7 +103,9 @@ export type UI5AbapRepoPromptOptions =
     | {
           hide: true;
           default: string;
-      };
+      }
+) &
+    AdpSharedOptions;
 
 export type DescriptionPromptOptions = {
     /**
@@ -183,13 +189,13 @@ export type TransportInputChoicePromptOptions = {
      * This options determines if createDuringDeploy option should be shown in the list of transport choices.
      */
     showCreateDuringDeploy?: boolean;
-};
+} & AdpSharedOptions;
 
 export type TargetSystemPromptOptions = {
     additionalValidation?: {
         shouldRestrictDifferentSystemType: boolean;
     };
-};
+} & AdpSharedOptions;
 
 type AbapPromptsCommonOptions =
     | promptNames.destination
