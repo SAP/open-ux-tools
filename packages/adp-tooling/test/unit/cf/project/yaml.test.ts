@@ -680,7 +680,7 @@ describe('YAML Project Functions', () => {
 
         beforeEach(() => {
             mockUi5Config = {
-                findCustomMiddleware: jest.fn(),
+                findCustomMiddleware: jest.fn().mockReturnValue(true),
                 removeCustomMiddleware: jest.fn(),
                 addCustomMiddleware: jest.fn()
             } as unknown as UI5Config;
@@ -706,7 +706,6 @@ describe('YAML Project Functions', () => {
 
             mockExistsSync.mockReturnValue(true);
             mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': ui5AppInfo }));
-            mockUi5Config.findCustomMiddleware.mockReturnValue(true);
 
             await addServeStaticMiddleware(basePath, mockUi5Config, mockLogger);
 
@@ -798,7 +797,7 @@ describe('YAML Project Functions', () => {
 
         beforeEach(() => {
             mockUi5Config = {
-                findCustomMiddleware: jest.fn(),
+                findCustomMiddleware: jest.fn().mockReturnValue(true),
                 removeCustomMiddleware: jest.fn(),
                 addCustomMiddleware: jest.fn()
             } as unknown as UI5Config;
@@ -811,7 +810,6 @@ describe('YAML Project Functions', () => {
             ];
 
             mockGetBackendUrlsWithPaths.mockReturnValue(urlsWithPaths);
-            mockUi5Config.findCustomMiddleware.mockReturnValue(true);
 
             await addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
 
