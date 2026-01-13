@@ -3,6 +3,7 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
+import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
 import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
@@ -217,7 +218,7 @@ export interface KeyUserImportAnswers {
     keyUserSystem: string;
     keyUserUsername?: string;
     keyUserPassword?: string;
-    keyUserAdaptation: string;
+    keyUserAdaptation: AdaptationDescriptor;
 }
 
 export enum targetEnvPromptNames {
