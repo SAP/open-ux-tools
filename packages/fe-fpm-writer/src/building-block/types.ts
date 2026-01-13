@@ -458,6 +458,10 @@ export interface RichTextEditor extends BuildingBlock {
      * Property used to construct the metaPath for Rich Text Editor, e.g. "/EntitySet/targetProperty".
      */
     targetProperty?: string;
+    /**
+     * Button groups to include in the editor toolbar.
+     */
+    buttonGroups?: ButtonGroupConfig[];
 }
 /**
  * Configuration for a button group in the rich text editor.

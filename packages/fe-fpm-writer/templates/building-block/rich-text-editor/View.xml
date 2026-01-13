@@ -1,3 +1,26 @@
 <<%- macrosNamespace %>:RichTextEditorWithMetadata
     metaPath="<%- data.metaPath %>"
-    id="<%- data.id %>"/>
+    id="<%- data.id %>">
+
+    <<%- config.aggregationNamespace %>:buttonGroups>
+    <% (data.buttonGroups || []).forEach(function(buttonGroup) { %>
+        <richtexteditor:ButtonGroup 
+            name="<%- buttonGroup.name %>" 
+            visible="<%- buttonGroup.visible !== undefined ? buttonGroup.visible : true %>" 
+            buttons="<%- buttonGroup.buttons %>"<% 
+            if (buttonGroup.priority !== undefined) { %>
+            priority="<%- buttonGroup.priority %>"<% 
+            } %><% 
+            if (buttonGroup.customToolbarPriority !== undefined) { %>
+            customToolbarPriority="<%- buttonGroup.customToolbarPriority %>"<% 
+            } %><% 
+            if (buttonGroup.row !== undefined) { %>
+            row="<%- buttonGroup.row %>"<% 
+            } %><% 
+            if (buttonGroup.id !== undefined) { %>
+            id="<%- buttonGroup.id %>"<% 
+            } %>/>
+    <% }); %>
+    </<%- config.aggregationNamespace %>:buttonGroups>
+
+</<%- macrosNamespace %>:RichTextEditorWithMetadata>

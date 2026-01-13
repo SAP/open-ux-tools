@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import type { BuildingBlockConfig, Chart, Field, FilterBar, Table, CustomColumn, CustomFilterField } from '../../src';
 
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
-import { BUILDING_BLOCK_CONFIG } from '../../src/building-block';
+import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
 import {
@@ -1227,34 +1227,34 @@ describe('Building Blocks', () => {
         await writeFilesForDebugging(fs);
     });
 
-    test('throws error for Rich Text Editor building block if UI5 version is below 1.117.0', async () => {
-        const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
-        const basePath = join(testAppPath, 'generate-rich-text-editor-block');
-        const richTextEditorData = {
-            id: 'testRichTextEditor',
-            buildingBlockType: BuildingBlockType.RichTextEditor,
-            metaPath: {
-                bindingContextType: bindingContextRelative,
-                entitySet: '_testNavigation'
-            },
-            targetProperty: 'testProperty'
-        };
+    // test('throws error for Rich Text Editor building block if UI5 version is below 1.117.0', async () => {
+    //     const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
+    //     const basePath = join(testAppPath, 'generate-rich-text-editor-block');
+    //     const richTextEditorData = {
+    //         id: 'testRichTextEditor',
+    //         buildingBlockType: BuildingBlockType.RichTextEditor,
+    //         metaPath: {
+    //             bindingContextType: bindingContextRelative,
+    //             entitySet: '_testNavigation'
+    //         },
+    //         targetProperty: 'testProperty'
+    //     };
 
-        fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+    //     fs.write(join(basePath, xmlFragmentFilePath), testXmlFragmentContent);
+    //     fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
 
-        await generateBuildingBlock(
-            basePath,
-            {
-                viewOrFragmentPath: xmlFragmentFilePath,
-                aggregationPath,
-                buildingBlockData: richTextEditorData
-            },
-            fs
-        );
-        expect(fs.read(join(basePath, xmlFragmentFilePath))).toMatchSnapshot('generate-rich-text-editor-block');
-        await writeFilesForDebugging(fs);
-    });
+    //     await generateBuildingBlock(
+    //         basePath,
+    //         {
+    //             viewOrFragmentPath: xmlFragmentFilePath,
+    //             aggregationPath,
+    //             buildingBlockData: richTextEditorData
+    //         },
+    //         fs
+    //     );
+    //     expect(fs.read(join(basePath, xmlFragmentFilePath))).toMatchSnapshot('generate-rich-text-editor-block');
+    //     await writeFilesForDebugging(fs);
+    // });
 
     describe('RichTextEditorButtonGroups building block', () => {
         const testXmlFragmentWithoutButtonGroups = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" 
@@ -1269,9 +1269,9 @@ describe('Building Blocks', () => {
         xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
         <VBox>
             <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor">
-                <richtexteditor:buttonGroups>
+                <macros:buttonGroups>
                     <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
-                </richtexteditor:buttonGroups>
+                </macros:buttonGroups>
             </macros:RichTextEditorWithMetadata>
         </VBox>
     </core:FragmentDefinition>`;
@@ -1289,7 +1289,7 @@ describe('Building Blocks', () => {
             const { DOMParser } = await import('@xmldom/xmldom');
             const xmlDocument = new DOMParser().parseFromString(xmlFragmentWithButtonGroups);
 
-            const hasButtonGroups = xmlDocument.getElementsByTagName('richtexteditor:buttonGroups').length > 0;
+            const hasButtonGroups = xmlDocument.getElementsByTagName('macros:buttonGroups').length > 0;
             expect(hasButtonGroups).toBe(true);
 
             await generateBuildingBlock(
@@ -1343,10 +1343,10 @@ describe('Building Blocks', () => {
         xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
         <VBox>
             <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor">
-                <richtexteditor:buttonGroups>
+                <macros:buttonGroups>
                     <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
                     <richtexteditor:ButtonGroup name="link" visible="true" priority="4" buttons="link,unlink"/>
-                </richtexteditor:buttonGroups>
+                </macros:buttonGroups>
             </macros:RichTextEditorWithMetadata>
         </VBox>
     </core:FragmentDefinition>`;
@@ -1375,24 +1375,24 @@ describe('Building Blocks', () => {
             expect(fragmentContent).toMatchSnapshot('generate-rte-button-groups-replace-existing');
         });
 
-        test('generate RichTextEditorButtonGroups - preserve existing element\'s attributes when no new attributes provided', async () => {
+        test("generate RichTextEditorButtonGroups - preserve existing element's attributes when no new attributes provided", async () => {
             const xmlFragmentWithExistingAttributes = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"
                 xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
                 <VBox>
                     <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor">
-                        <richtexteditor:buttonGroups>
+                        <macros:buttonGroups>
                             <richtexteditor:ButtonGroup name="clipboard" visible="false" priority="15" buttons="cut,copy,paste" id="existingClipboard"/>
                             <richtexteditor:ButtonGroup name="undo" visible="true" priority="12" buttons="undo,redo" customToolbarPriority="50" row="3"/>
                             <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
                             <richtexteditor:ButtonGroup name="link" visible="false" priority="8" buttons="link,unlink" customToolbarPriority="25"/>
-                        </richtexteditor:buttonGroups>
+                        </macros:buttonGroups>
                     </macros:RichTextEditorWithMetadata>
                 </VBox>
             </core:FragmentDefinition>`;
 
             const basePath = join(testAppPath, 'test-rte-button-groups-preserve-attributes');
             const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']/macros:RichTextEditorWithMetadata`;
-            
+
             const buttonGroupsData = {
                 id: 'RichTextButtonGroupsPreserve',
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
@@ -1400,13 +1400,13 @@ describe('Building Blocks', () => {
                     // User keeps 'clipboard' - no new attributes provided
                     // Should preserve: visible="false", priority="15", buttons="cut,copy,paste", id="existingClipboard"
                     { name: 'clipboard' },
-                    
+
                     // User keeps 'undo' - no new attributes provided
                     // Should preserve: visible="true", priority="12", buttons="undo,redo", customToolbarPriority="50", row="3"
                     { name: 'undo' },
-                    
+
                     // User unselected 'font-style' and 'link' - they should be removed
-                    
+
                     // User adds new 'structure' - no existing attributes to preserve, use defaults
                     { name: 'structure' }
                 ]
@@ -1429,18 +1429,18 @@ describe('Building Blocks', () => {
             expect(fragmentContent).toMatchSnapshot('generate-rte-button-groups-preserve-existing-attributes');
         });
 
-        test('generate RichTextEditorButtonGroups - override existing element\'s attributes when new attributes provided', async () => {
+        test("generate RichTextEditorButtonGroups - override existing element's attributes when new attributes provided", async () => {
             const xmlFragmentWithComplexExisting = `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"
                 xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
                 <VBox>
                     <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor">
-                        <richtexteditor:buttonGroups>
+                        <macros:buttonGroups>
                             <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
                             <richtexteditor:ButtonGroup name="link" visible="true" priority="4" buttons="link,unlink" customToolbarPriority="33" row="3"/>
                             <richtexteditor:ButtonGroup name="clipboard" visible="false" priority="15" buttons="cut,copy,paste" id="existingClipboard"/>
                             <richtexteditor:ButtonGroup name="undo" visible="true" priority="10" buttons="undo,redo"/>
                             <richtexteditor:ButtonGroup name="table" visible="true" priority="8" buttons="table" customToolbarPriority="20"/>
-                        </richtexteditor:buttonGroups>
+                        </macros:buttonGroups>
                     </macros:RichTextEditorWithMetadata>
                 </VBox>
             </core:FragmentDefinition>`;
@@ -1564,17 +1564,17 @@ describe('Building Blocks', () => {
             xmlns:macros="sap.fe.macros" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
             <VBox>
                 <macros:RichTextEditorWithMetadata metaPath="/Travel/AgencyID" id="RichTextEditor1">
-                    <richtexteditor:buttonGroups>
+                    <macros:buttonGroups>
                         <richtexteditor:ButtonGroup name="font-style" visible="true" priority="10" buttons="bold,italic"/>
                         <richtexteditor:ButtonGroup name="clipboard" visible="true" priority="5" buttons="cut,copy,paste"/>
-                    </richtexteditor:buttonGroups>
+                    </macros:buttonGroups>
                 </macros:RichTextEditorWithMetadata>
                 
                 <macros:RichTextEditorWithMetadata metaPath="/Travel/Description" id="RichTextEditor2">
-                    <richtexteditor:buttonGroups>
+                    <macros:buttonGroups>
                         <richtexteditor:ButtonGroup name="link" visible="false" priority="3" buttons="link,unlink"/>
                         <richtexteditor:ButtonGroup name="undo" visible="true" priority="10" buttons="undo,redo"/>
-                    </richtexteditor:buttonGroups>
+                    </macros:buttonGroups>
                 </macros:RichTextEditorWithMetadata>
                 
                 <macros:RichTextEditorWithMetadata metaPath="/Travel/Notes" id="RichTextEditor3"/>
@@ -1694,7 +1694,7 @@ describe('Building Blocks', () => {
         });
     });
 
-    test('generate Rich Text Editor building block with error', async () => {
+    test('generate Rich Text Editor building block with error if UI5 version is below 1.117.0', async () => {
         const aggregationPath = `/core:FragmentDefinition/*[local-name()='VBox']`;
         const basePath = join(testAppPath, 'generate-rich-text-editor-block');
         const richTextEditorData = {

@@ -1275,10 +1275,10 @@ exports[`Building Blocks RichTextEditorButtonGroups building block RichTextEdito
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
-                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"2\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>
 </core:FragmentDefinition>"
@@ -1288,18 +1288,18 @@ exports[`Building Blocks RichTextEditorButtonGroups building block RichTextEdito
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"bold,italic,underline,strikethrough\\"/>
-                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"fontfamily,fontsize,forecolor,backcolor\\"/>
-                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
-                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"bullist,numlist,outdent,indent\\"/>
-                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
-                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"image,emoticons\\"/>
-                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"link,unlink\\"/>
-                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\"/>
-                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"table\\"/>
-                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"styleselect\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline,strikethrough\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" buttons=\\"fontfamily,fontsize,forecolor,backcolor\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"3\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" buttons=\\"bullist,numlist,outdent,indent\\" customToolbarPriority=\\"4\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"5\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"6\\"/>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" buttons=\\"link,unlink\\" customToolbarPriority=\\"7\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"8\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" customToolbarPriority=\\"9\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" buttons=\\"styleselect\\" customToolbarPriority=\\"10\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>
 </core:FragmentDefinition>"
@@ -1309,8 +1309,18 @@ exports[`Building Blocks RichTextEditorButtonGroups building block generate Rich
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"EdgeCaseRTE\\">
-            <richtexteditor:buttonGroups>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline,strikethrough\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" buttons=\\"fontfamily,fontsize,forecolor,backcolor\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"3\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" buttons=\\"bullist,numlist,outdent,indent\\" customToolbarPriority=\\"4\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"5\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"6\\"/>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" buttons=\\"link,unlink\\" customToolbarPriority=\\"7\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"8\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" customToolbarPriority=\\"9\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" buttons=\\"styleselect\\" customToolbarPriority=\\"10\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>
 </core:FragmentDefinition>"
@@ -1320,14 +1330,14 @@ exports[`Building Blocks RichTextEditorButtonGroups building block generate Rich
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
-                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"12\\" buttons=\\"undo\\"/>
-                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"false\\" priority=\\"20\\" buttons=\\"bold,italic,underline,strikethrough\\" id=\\"newFontStyle\\"/>
-                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" priority=\\"5\\" buttons=\\"formatselect\\"/>
-                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" priority=\\"18\\" buttons=\\"image\\" customToolbarPriority=\\"40\\" row=\\"2\\" id=\\"customInsert\\"/>
-                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" priority=\\"10\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo\\" priority=\\"12\\"/>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"false\\" buttons=\\"bold,italic,underline,strikethrough\\" priority=\\"20\\" id=\\"newFontStyle\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" buttons=\\"formatselect\\" priority=\\"5\\" customToolbarPriority=\\"34\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" buttons=\\"image\\" priority=\\"18\\" customToolbarPriority=\\"40\\" row=\\"2\\" id=\\"customInsert\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"35\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>
 </core:FragmentDefinition>"
@@ -1337,11 +1347,11 @@ exports[`Building Blocks RichTextEditorButtonGroups building block generate Rich
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"false\\" priority=\\"15\\" buttons=\\"cut,copy,paste\\" id=\\"existingClipboard\\"/>
-                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"12\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"50\\" row=\\"3\\"/>
-                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"bullist,numlist,outdent,indent\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"false\\" buttons=\\"cut,copy,paste\\" priority=\\"15\\" id=\\"existingClipboard\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" priority=\\"12\\" customToolbarPriority=\\"50\\" row=\\"3\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" buttons=\\"bullist,numlist,outdent,indent\\" customToolbarPriority=\\"51\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>
 </core:FragmentDefinition>"
@@ -1351,10 +1361,10 @@ exports[`Building Blocks RichTextEditorButtonGroups building block generate Rich
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
-                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" priority=\\"10\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"2\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>
 </core:FragmentDefinition>"
@@ -1364,11 +1374,11 @@ exports[`Building Blocks RichTextEditorButtonGroups building block generate Rich
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"bold,italic,underline\\"/>
-                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
-                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"3\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>
 </core:FragmentDefinition>"
@@ -1378,17 +1388,17 @@ exports[`Building Blocks RichTextEditorButtonGroups building block multiple Rich
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor1\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"15\\" buttons=\\"bold,italic,underline\\"/>
-                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" priority=\\"8\\" buttons=\\"table\\"/>
-                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" priority=\\"7\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline\\" priority=\\"15\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" priority=\\"8\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" buttons=\\"image,emoticons\\" priority=\\"7\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Description\\" id=\\"RichTextEditor2\\">
-            <richtexteditor:buttonGroups>
+            <macros:buttonGroups>
                 <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"false\\" priority=\\"3\\" buttons=\\"link,unlink\\"/>
                 <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
-            </richtexteditor:buttonGroups>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\"/>
     </VBox>
@@ -1399,18 +1409,18 @@ exports[`Building Blocks RichTextEditorButtonGroups building block multiple Rich
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor1\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"15\\" buttons=\\"bold,italic,underline\\"/>
-                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" priority=\\"8\\" buttons=\\"table\\"/>
-                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" priority=\\"7\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline\\" priority=\\"15\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" priority=\\"8\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" buttons=\\"image,emoticons\\" priority=\\"7\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Description\\" id=\\"RichTextEditor2\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
-                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\"/>
-                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"false\\" priority=\\"12\\" buttons=\\"bullist,numlist,outdent,indent\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"false\\" buttons=\\"bullist,numlist,outdent,indent\\" priority=\\"12\\" customToolbarPriority=\\"3\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\"/>
     </VBox>
@@ -1421,26 +1431,26 @@ exports[`Building Blocks RichTextEditorButtonGroups building block multiple Rich
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor1\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" priority=\\"15\\" buttons=\\"bold,italic,underline\\"/>
-                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" priority=\\"8\\" buttons=\\"table\\"/>
-                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" priority=\\"7\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline\\" priority=\\"15\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" priority=\\"8\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" buttons=\\"image,emoticons\\" priority=\\"7\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Description\\" id=\\"RichTextEditor2\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"cut,copy,paste\\"/>
-                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\"/>
-                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"false\\" priority=\\"12\\" buttons=\\"bullist,numlist,outdent,indent\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"false\\" buttons=\\"bullist,numlist,outdent,indent\\" priority=\\"12\\" customToolbarPriority=\\"3\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\">
-            <richtexteditor:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"fontselect,fontsizeselect\\"/>
-                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" priority=\\"20\\" buttons=\\"styleselect\\"/>
-                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
-                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"link\\" customToolbarPriority=\\"40\\" id=\\"customLinkButton\\"/>
-            </richtexteditor:buttonGroups>
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" buttons=\\"fontselect,fontsizeselect\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" buttons=\\"styleselect\\" priority=\\"20\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"3\\"/>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" buttons=\\"link\\" customToolbarPriority=\\"40\\" id=\\"customLinkButton\\"/>
+            </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>
 </core:FragmentDefinition>"
@@ -1555,16 +1565,20 @@ exports[`Building Blocks generates Rich Text Editor building block with absolute
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <Text text=\\"Custom section\\"/>
-        <macros:RichTextEditorWithMetadata metaPath=\\"/testEntitySet/testProperty\\" id=\\"testRichTextEditor\\"/>
-    </VBox>
-</core:FragmentDefinition>"
-`;
-
-exports[`Building Blocks throws error for Rich Text Editor building block if UI5 version is below 1.117.0: generate-rich-text-editor-block 1`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
-    <VBox>
-        <Text text=\\"Custom section\\"/>
-        <macros:RichTextEditorWithMetadata metaPath=\\"_testNavigation/testProperty\\" id=\\"testRichTextEditor\\"/>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/testEntitySet/testProperty\\" id=\\"testRichTextEditor\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline,strikethrough\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" buttons=\\"fontfamily,fontsize,forecolor,backcolor\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"3\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" buttons=\\"bullist,numlist,outdent,indent\\" customToolbarPriority=\\"4\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"5\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"6\\"/>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" buttons=\\"link,unlink\\" customToolbarPriority=\\"7\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"8\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" customToolbarPriority=\\"9\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" buttons=\\"styleselect\\" customToolbarPriority=\\"10\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
     </VBox>
 </core:FragmentDefinition>"
 `;
