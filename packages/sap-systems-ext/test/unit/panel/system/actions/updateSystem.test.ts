@@ -5,6 +5,7 @@ import { initI18n } from '../../../../../src/utils';
 import { SystemPanelViewType } from '../../../../../src/utils/constants';
 import * as extUtils from '../../../../../src/utils';
 import * as panelUtils from '../../../../../src/panel/system/utils';
+import { getSystemInfo } from '../../../../../../abap-deploy-config-inquirer/src/service-provider-utils';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
@@ -14,7 +15,8 @@ jest.mock('../../../../../src/utils', () => ({
 
 jest.mock('../../../../../src/panel/system/utils', () => ({
     ...jest.requireActual('../../../../../src/panel/system/utils'),
-    validateSystemName: jest.fn()
+    validateSystemName: jest.fn(),
+    getSystemInfo: jest.fn()
 }));
 
 const systemServiceWriteMock = jest.fn();
@@ -51,7 +53,7 @@ describe('Test Update System Action', () => {
     const updateBackendSystemMock = jest.fn();
     const basePanelContext = {
         postMessage: postMessageMock,
-        panelViewType: SystemPanelViewType.Update,
+        panelViewType: SystemPanelViewType.View,
         backendSystem: backendSystem,
         disposePanel: disposePanelMock,
         updateBackendSystem: updateBackendSystemMock,

@@ -59,7 +59,13 @@
         "noFileSelected": "No file selected for import.",
         "panelActionDispatch": "Error dispatching panel action: {{- error}}",
         "noneSelected": "No SAP system selected.",
-        "testConnection": "An error occurred when testing the connection: {{- error}}"
+        "testConnection": "An error occurred when testing the connection: {{- error}}",
+        "systemInfoAdt": "Failed to fetch system information from ADT: {{- error}}",
+        "systemIdUpdate": "Failed to add system ID to the backend system: {{- error}}"
+    },
+    "debug": {
+        "systemInfoRetrieved": "Successfully retrieved the system ID '{{- systemId}}' and client '{{client}}' from '/sap/bc/adt/core/http/systeminformation'.",
+        "systemInfoRetrievalFailure": "Failed to retrieve system information from '/sap/bc/adt/core/http/systeminformation': {{- error}}"
     },
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection.",

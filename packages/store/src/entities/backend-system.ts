@@ -12,6 +12,7 @@ export class BackendSystem {
     @serializable public readonly connectionType: ConnectionType;
     @serializable public readonly authenticationType?: AuthenticationType;
     @serializable public readonly hasSensitiveData?: boolean;
+    @serializable public readonly adtSystemInfo?: { systemId: string; client: string };
     @sensitiveData public readonly serviceKeys?: unknown;
     @sensitiveData public readonly refreshToken?: string;
     @sensitiveData public readonly username?: string;
@@ -28,7 +29,8 @@ export class BackendSystem {
         password,
         userDisplayName,
         authenticationType,
-        connectionType
+        connectionType,
+        adtSystemInfo
     }: {
         name: string;
         url: string;
@@ -41,6 +43,7 @@ export class BackendSystem {
         password?: string;
         userDisplayName?: string;
         authenticationType?: AuthenticationType;
+        adtSystemInfo?: { systemId: string; client: string };
     }) {
         this.name = name;
         this.url = url;
@@ -55,6 +58,7 @@ export class BackendSystem {
         this.connectionType = connectionType;
         const sensitiveProps = getSensitiveDataProperties<BackendSystem>(this);
         this.hasSensitiveData = hasAnyValue(this, sensitiveProps);
+        this.adtSystemInfo = adtSystemInfo;
     }
 }
 

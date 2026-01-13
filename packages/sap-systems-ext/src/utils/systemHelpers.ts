@@ -72,3 +72,17 @@ function getSystemTypeLabel(systemType?: string): string {
     }
     return systemTypeName;
 }
+
+/**
+ * Utility to compare the key fields of two systems (url+client).
+ *
+ * @param currentSystem - the initial system loaded in the panel
+ * @param newSystem - the new system details trying to be saved
+ * @returns true if the systems are the same, false otherwise
+ */
+export function compareSystems(currentSystem: BackendSystem, newSystem: BackendSystem): boolean {
+    return (
+        currentSystem.url.replace(/\/$/, '') === newSystem?.url.replace(/\/$/, '') &&
+        currentSystem.client === newSystem?.client
+    );
+}

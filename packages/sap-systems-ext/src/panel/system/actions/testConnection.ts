@@ -2,6 +2,7 @@ import type { AxiosError } from '@sap-ux/axios-extension';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
 import type { TestConnection, CatalogServicesCounts } from '@sap-ux/sap-systems-ext-types';
 import type { PanelContext } from '../../../types';
+import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import {
     createGALink,
@@ -10,10 +11,17 @@ import {
     getErrorType,
     getErrorMessage,
     loadingTestConnectionInfo,
-    validateSystemInfo
+    validateSystemInfo,
+    getSystemInfo
 } from '../utils';
-import { TelemetryHelper, t } from '../../../utils';
-import { GuidedAnswersLinkAction, SystemAction, SYSTEMS_EVENT, TestConnectionStatus } from '../../../utils/constants';
+import { TelemetryHelper, compareSystems, getBackendSystemService, t } from '../../../utils';
+import {
+    GuidedAnswersLinkAction,
+    SystemAction,
+    SystemPanelViewType,
+    SYSTEMS_EVENT,
+    TestConnectionStatus
+} from '../../../utils/constants';
 import SystemsLogger from '../../../utils/logger';
 
 /**
@@ -51,6 +59,13 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
     } catch (e) {
         handleCatalogError(postMessage, serviceCount, isGuidedAnswersEnabled, e as Error);
         logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
+    }
+
+    // attempt to store the system ID if retrievable
+    try {
+        await storeSystemId(context, system);
+    } catch (e) {
+        SystemsLogger.logger.error(t('error.systemIdUpdate', { error: (e as Error).message }));
     }
 }
 
@@ -190,4 +205,48 @@ function logGATelemetry(status: GuidedAnswersLinkAction, errorType = '', isGuide
         errorType,
         isGuidedAnswersEnabled: isGuidedAnswersEnabled ? 'true' : 'false'
     });
+}
+
+/**
+ * Attempts a partial update to store the system ID for existing (unchanged) saved systems.
+ *
+ * @param context - panel context
+ * @param backendSystemPayload - backend system passed in the payload
+ */
+async function storeSystemId(context: PanelContext, backendSystemPayload: BackendSystem): Promise<void> {
+    // determines if this is a simple view (viewing an existing system without any backend key changes)
+    const isSimpleView =
+        context.panelViewType === SystemPanelViewType.View &&
+        context.backendSystem &&
+        compareSystems(context.backendSystem, backendSystemPayload);
+
+    if (!isSimpleView) {
+        // for adding new or editing existing systems, the system ID is checked and stored upon saving the system
+        return;
+    }
+
+    // no action needed if system id is already present
+    if (isSimpleView && context.backendSystem?.adtSystemInfo?.systemId) {
+        return;
+    }
+
+    const systemInfo = await getSystemInfo(backendSystemPayload);
+    if (systemInfo) {
+        SystemsLogger.logger.debug(
+            t('debug.systemInfoRetrieved', {
+                systemId: systemInfo.systemId,
+                client: systemInfo.client
+            })
+        );
+        const systemService = await getBackendSystemService();
+        await systemService.partialUpdate(
+            new BackendSystemKey({
+                url: backendSystemPayload.url,
+                client: backendSystemPayload.client
+            }),
+            {
+                adtSystemInfo: { systemId: systemInfo.systemId, client: systemInfo.client }
+            }
+        );
+    }
 }
