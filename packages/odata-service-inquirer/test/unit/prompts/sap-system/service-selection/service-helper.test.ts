@@ -18,6 +18,7 @@ import {
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/types';
 import * as sharedServiceHelpers from '../../../../../src/prompts/datasources/service-helpers/service-helpers';
 import { PromptState } from '../../../../../src/utils';
+import { errorHandler } from '../../../../../src/prompts/prompt-helpers';
 
 const serviceV2a = {
     id: 'ZTRAVEL_DESK_SRV_0002',
@@ -165,6 +166,24 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
         expect(serviceMsgResult).toEqual({
             message: t('warnings.collaborativeDraftMessage'),
             severity: Severity.warning
+        });
+    });
+
+    test('should return info if some catalog requets failed', async () => {
+        jest.spyOn(errorHandler, 'getErrorMsg').mockReturnValue('A catalog error occurred.');
+        const serviceMsgResult = await getSelectedServiceMessage(
+            [
+                {
+                    name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V2'
+                }
+            ],
+            undefined,
+            connectionValidatorMock as ConnectionValidator,
+            {}
+        );
+        expect(serviceMsgResult).toEqual({
+            message: `A catalog error occurred. ${t('texts.seeLogForDetails')}`,
+            severity: Severity.information
         });
     });
 });
