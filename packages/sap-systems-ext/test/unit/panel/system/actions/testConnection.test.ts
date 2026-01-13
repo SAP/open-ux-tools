@@ -1,5 +1,5 @@
 import type { PanelContext } from '../../../../../src/types';
-import type { BackendSystem } from '@sap-ux/store';
+import { BackendSystem } from '@sap-ux/store';
 import { testSystemConnection } from '../../../../../src/panel/system/actions/testConnection';
 import * as utils from '../../../../../src/panel/system/utils';
 import { initI18n } from '../../../../../src/utils';
@@ -32,7 +32,7 @@ describe('Test Connection Action', () => {
         jest.clearAllMocks();
     });
 
-    const backendSystem: BackendSystem = {
+    const backendSystem = new BackendSystem({
         name: 'Test System',
         systemType: 'OnPrem',
         url: 'https://test-system.example.com',
@@ -40,7 +40,7 @@ describe('Test Connection Action', () => {
         username: 'testuser',
         password: 'password',
         connectionType: 'abap_catalog'
-    };
+    });
 
     it('should post message to webview with service summary', async () => {
         jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);

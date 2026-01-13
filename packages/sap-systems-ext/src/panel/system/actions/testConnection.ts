@@ -14,7 +14,7 @@ import {
     validateSystemInfo,
     getSystemInfo
 } from '../utils';
-import { TelemetryHelper, compareSystems, getBackendSystemService, t } from '../../../utils';
+import { TelemetryHelper, compareSystems, getBackendSystemService, shouldStoreSystemInfo, t } from '../../../utils';
 import {
     GuidedAnswersLinkAction,
     SystemAction,
@@ -61,9 +61,10 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
         logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
     }
 
-    // attempt to store the system ID if retrievable
     try {
-        await storeSystemId(context, system);
+        if (shouldStoreSystemInfo(system)) {
+            await storeSystemInfo(context, system);
+        }
     } catch (e) {
         SystemsLogger.logger.error(t('error.systemIdUpdate', { error: (e as Error).message }));
     }
@@ -213,7 +214,7 @@ function logGATelemetry(status: GuidedAnswersLinkAction, errorType = '', isGuide
  * @param context - panel context
  * @param backendSystemPayload - backend system passed in the payload
  */
-async function storeSystemId(context: PanelContext, backendSystemPayload: BackendSystem): Promise<void> {
+async function storeSystemInfo(context: PanelContext, backendSystemPayload: BackendSystem): Promise<void> {
     // determines if this is a simple view (viewing an existing system without any backend key changes)
     const isSimpleView =
         context.panelViewType === SystemPanelViewType.View &&

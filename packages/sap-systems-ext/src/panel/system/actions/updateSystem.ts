@@ -8,7 +8,8 @@ import {
     TelemetryHelper,
     t,
     getBackendSystemService,
-    compareSystems
+    compareSystems,
+    shouldStoreSystemInfo
 } from '../../../utils';
 import { getSystemInfo, updateSystemStatus, validateSystemName } from '../utils';
 import {
@@ -33,7 +34,17 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
         client: backendSystemPayload.client
     }));
 
-    const backendSystem = await buildBackendSystem(context, backendSystemPayload);
+    let systemInfo: { systemId: string; client: string } | undefined;
+
+    if (shouldStoreSystemInfo(backendSystemPayload)) {
+        systemInfo = await fetchSystemInfo(context, backendSystemPayload);
+    }
+
+    const backendSystem: BackendSystem = {
+        ...backendSystemPayload,
+        ...(systemInfo && { adtSystemInfo: systemInfo })
+    };
+
     try {
         await validateSystemName(backendSystem.name, context.backendSystem?.name);
         const newPanelMsg = await updateHandler(context, backendSystem, systemExistsInStore);
@@ -48,17 +59,19 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
 }
 
 /**
- * Checks for the existence of the system ID and attaches it to the backend system if found.
+ * Retrieves the system info (systemId and client) from the ADT API for the given backend system.
  *
  * @param context - the panel context
  * @param backendSystemPayload - the backend system info passed as a payload from webview
  * @returns the backend system with the `systemId` attached if applicable
  */
-async function buildBackendSystem(context: PanelContext, backendSystemPayload: BackendSystem): Promise<BackendSystem> {
-    let backendSystem = backendSystemPayload;
-    // if the system that was initially loaded matches the one in the payload,and the system id is already present, return early
+async function fetchSystemInfo(
+    context: PanelContext,
+    backendSystemPayload: BackendSystem
+): Promise<{ systemId: string; client: string } | undefined> {
+    // if the system that was initially loaded matches the one in the payload, and the system id is already present
     if (context.backendSystem?.adtSystemInfo?.systemId && compareSystems(context.backendSystem, backendSystemPayload)) {
-        return backendSystem;
+        return context.backendSystem.adtSystemInfo;
     }
 
     const systemInfo = await getSystemInfo(backendSystemPayload);
@@ -69,16 +82,8 @@ async function buildBackendSystem(context: PanelContext, backendSystemPayload: B
                 client: systemInfo.client
             })
         );
-        backendSystem = {
-            ...backendSystemPayload,
-            adtSystemInfo: {
-                systemId: systemInfo.systemId,
-                client: systemInfo.client
-            }
-        };
     }
-
-    return backendSystem;
+    return systemInfo;
 }
 
 /**

@@ -86,3 +86,14 @@ export function compareSystems(currentSystem: BackendSystem, newSystem: BackendS
         currentSystem.client === newSystem?.client
     );
 }
+
+/**
+ * Determines whether the system information should be stored for the given system.
+ * Only on-premise systems with credentials (sensitive data) can make the call to retrieve system info.
+ *
+ * @param system - the backend system
+ * @returns - true if the system information should be stored, false otherwise
+ */
+export function shouldStoreSystemInfo(system: BackendSystem): boolean {
+    return system.systemType === 'OnPrem' && !!system.hasSensitiveData;
+}
