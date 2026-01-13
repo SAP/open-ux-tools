@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.25.6
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 1.25.5
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+
 ## 1.25.4
 
 ### Patch Changes
