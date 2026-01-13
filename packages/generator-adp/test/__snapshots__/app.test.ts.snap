@@ -79,6 +79,33 @@ server:
 "
 `;
 
+exports[`Adaptation Project Generator Integration Test ABAP Environment should generate adaptation project with key user changes 1`] = `
+{
+  "changeType": "renameLabel",
+  "content": {
+    "annotationPath": "/category_ID@com.vocabularies.Common.v1.Label",
+  },
+  "fileName": "id_1767885281745_1726_renameLabel",
+  "fileType": "annotation_change",
+  "layer": "CUSTOMER_BASE",
+  "namespace": "apps/customer.app.variant/changes/",
+  "projectId": "customer.app.variant",
+  "reference": "customer.app.variant",
+  "selector": {
+    "serviceUrl": "/odata/test/service",
+  },
+  "support": {
+    "generator": "@sap-ux/generator-adp (converted from key user changes)",
+  },
+  "texts": {
+    "annotationText": {
+      "type": "XFLD",
+      "value": "Category ID",
+    },
+  },
+}
+`;
+
 exports[`Adaptation Project Generator Integration Test ABAP Environment should generate an onPremise adaptation project successfully 1`] = `
 "{
   "fileName": "manifest",
