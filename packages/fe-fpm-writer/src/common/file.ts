@@ -1,8 +1,14 @@
-import type { Editor } from 'mem-fs-editor';
+import type { CopyOptions, Editor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types';
 
 const CHAR_SPACE = ' ';
 const CHAR_TAB = '\t';
+
+// `noGlob` is supported in `mem-fs-editor` v9,
+// but is missing from `@types/mem-fs-editor` (no v9 typings), so we extend the type here.
+export const COPY_TEMPLATE_OPTIONS: CopyOptions & { noGlob: boolean } = {
+    noGlob: true
+};
 
 type WriteJsonReplacer = ((key: string, value: any) => any) | Array<string | number>;
 
@@ -96,4 +102,18 @@ export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
     const space: WriteJsonSpace | undefined = getJsonSpace(fs, filepath, params.tabInfo);
     // Write json
     fs.extendJSON(filepath, JSON.parse(content), replacer, space);
+}
+
+/**
+ * Copies a template file or directory to a target location and applies template interpolation.
+ * This method wraps `mem-fs-editor`'s `copyTpl` and passes predefined copy options
+ * (e.g. `noGlob: true`) to prevent glob pattern expansion in source paths.
+ *
+ * @param fs - The mem-fs editor instance used to perform the file operations.
+ * @param from - Source path of the template file or directory.
+ * @param to - Destination path where the rendered files will be written.
+ * @param context - Optional template context used for interpolation.
+ */
+export function copyTpl(fs: Editor, from: string, to: string, context?: object): void {
+    fs.copyTpl(from, to, context, undefined, COPY_TEMPLATE_OPTIONS);
 }
