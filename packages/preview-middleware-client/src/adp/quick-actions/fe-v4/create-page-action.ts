@@ -54,7 +54,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
                     controllerReference: controllerPath
                         ? `.extension.${controllerPath}.<REPLACE_WITH_YOUR_HANDLER_NAME>`
-                        : '', //this.context.controllerReference,
+                        : '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
                     appDescriptor: {
                         appComponent: getV4AppComponent(this.context.view)!,
                         appType: 'fe-v4',
@@ -67,12 +67,14 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                         );
                         const idInPendingChanges =
                             headerActions.length && headerActions.includes(`content/header/actions/${actionId}`);
+                        if (idInPendingChanges) {
+                            return false;
+                        }
                         if (
                             isA('sap.f.DynamicPageTitle', this.control) &&
                             (this.control as DynamicPageTitle)
                                 .getActions()
-                                .every((action) => !action.getId().endsWith(`CustomAction::${actionId}`)) &&
-                            !idInPendingChanges
+                                .every((action) => !action.getId().endsWith(`CustomAction::${actionId}`))
                         ) {
                             return true;
                         }
@@ -80,10 +82,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                             isA('sap.uxap.ObjectPageLayout', this.control) &&
                             ((this.control as ObjectPageLayout).getHeaderTitle() as ObjectPageDynamicHeaderTitle)
                                 ?.getActions()
-                                .every(
-                                    (action) =>
-                                        !action.getId().endsWith(`CustomAction::${actionId}`) && !idInPendingChanges
-                                )
+                                .every((action) => !action.getId().endsWith(`CustomAction::${actionId}`))
                         ) {
                             return true;
                         }

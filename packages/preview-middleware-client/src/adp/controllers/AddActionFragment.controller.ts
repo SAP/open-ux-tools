@@ -39,6 +39,7 @@ export interface AddActionOptions {
  * Validates Action ID input.
  *
  * @param input control of action ID to validate
+ * @param resource text bundle for messages
  * @param validateForDuplicateId custom validation function
  * @return validation result
  */
@@ -62,9 +63,9 @@ function validateActionId(
         return { isValid: false, errorMessage: resource.getText('ACTION_ID_CANNOT_CONTAIN_SPACES') };
     }
 
-    // Check if starts with number
-    if (/^\d/.test(actionId)) {
-        return { isValid: false, errorMessage: resource.getText('ACTION_ID_CANNOT_START_WITH_NUMBER') };
+    // Check starts and only allowed characters
+    if (!/^[a-zA-Z_][a-zA-Z0-9]*$/.test(actionId)) {
+        return { isValid: false, errorMessage: resource.getText('ACTION_ID_INVALID_FORMAT') };
     }
     return { isValid: true, errorMessage: '' };
 }

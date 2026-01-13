@@ -290,7 +290,7 @@ describe('AddActionFragment', () => {
 
             addFragment.onActionIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
-            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Action ID cannot start with a number');
+            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Action ID must start with a letter or _ and can contain only letters or numbers');
         });
 
         test('sets error when action id already being used', async () => {
@@ -311,7 +311,7 @@ describe('AddActionFragment', () => {
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
                 1,
-                "Action with ID ''testId'' is already defined"
+                "An action with the ''testId''  ID is already defined. Please choose a different ID"
             );
         });
 
