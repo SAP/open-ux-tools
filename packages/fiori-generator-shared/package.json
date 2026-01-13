@@ -34,14 +34,14 @@
         "@vscode-logging/logger": "2.0.0",
         "i18next": "25.3.0",
         "logform": "2.4.0",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs": "2.3.0",
+        "mem-fs-editor": "9.7.0",
         "os-name": "4.0.1",
         "semver": "7.5.4"
     },
     "devDependencies": {
-        "@types/mem-fs-editor": "7.0.1",
-        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.7",
+        "@types/mem-fs": "1.1.5",
         "@types/semver": "7.5.2",
         "@types/vscode": "1.73.1",
         "@types/yeoman-environment": "2.10.11",
