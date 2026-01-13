@@ -1,5 +1,20 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.74
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.6
+- @sap-ux/fiori-generator-shared@0.13.50
+- @sap-ux/system-access@0.6.40
+- @sap-ux/inquirer-common@0.10.9
+
+## 1.6.73
+
+### Patch Changes
+
+- 234dc8b: add precheck for package validation based on answers
+
 ## 1.6.72
 
 ### Patch Changes

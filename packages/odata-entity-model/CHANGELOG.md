@@ -1,5 +1,11 @@
 # @sap-ux/odata-entity-model
 
+## 0.3.4
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
 ## 0.3.3
 
 ### Patch Changes
