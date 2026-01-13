@@ -407,7 +407,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                         projectName: 'app.variant',
                         title: 'App Title',
                         ui5Version: '1.134.1',
-                        importKeyUserConfigurations: false
+                        importKeyUserChanges: false
                     },
                     configAnswers: {
                         application: apps[0],

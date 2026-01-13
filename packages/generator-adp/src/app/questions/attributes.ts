@@ -19,7 +19,7 @@ import type {
     EnableTypeScriptPromptOptions,
     AddDeployConfigPromptOptions,
     AddFlpConfigPromptOptions,
-    ImportKeyUserConfigurationsPromptOptions
+    ImportKeyUserChangesPromptOptions
 } from '../types';
 import { t } from '../../utils/i18n';
 import { attributePromptNames } from '../types';
@@ -76,9 +76,9 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
             isCloudProject,
             promptOptions?.[attributePromptNames.addFlpConfig]
         ),
-        [attributePromptNames.importKeyUserConfigurations]: getImportKeyUserConfigurationsPrompt(
+        [attributePromptNames.importKeyUserChanges]: getImportKeyUserChangesPrompt(
             prompts,
-            promptOptions?.[attributePromptNames.importKeyUserConfigurations]
+            promptOptions?.[attributePromptNames.importKeyUserChanges]
         )
     };
 
@@ -326,19 +326,19 @@ export function getFlpConfigPrompt(
 }
 
 /**
- * Creates the Import Key User Configurations confirm prompt.
+ * Creates the Import Key User Changes confirm prompt.
  *
  * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
- * @param {ImportKeyUserConfigurationsPromptOptions} options - Optional prompt options.
+ * @param {ImportKeyUserChangesPromptOptions} options - Optional prompt options.
  * @returns {AttributesQuestion} The prompt configuration for copying key user changes.
  */
-function getImportKeyUserConfigurationsPrompt(
+function getImportKeyUserChangesPrompt(
     prompts: YeomanUiSteps,
-    options?: ImportKeyUserConfigurationsPromptOptions
+    options?: ImportKeyUserChangesPromptOptions
 ): AttributesQuestion {
     return {
         type: 'confirm',
-        name: attributePromptNames.importKeyUserConfigurations,
+        name: attributePromptNames.importKeyUserChanges,
         message: t('prompts.importKeyUserChangesLabel'),
         default: options?.default ?? false,
         guiOptions: {

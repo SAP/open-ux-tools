@@ -312,7 +312,7 @@ export default class extends Generator {
             // Steps need to be updated here to be available after back navigation in Yeoman UI.
             this._updateWizardStepsAfterNavigation();
 
-            if (this.attributeAnswers.importKeyUserConfigurations) {
+            if (this.attributeAnswers.importKeyUserChanges) {
                 this.keyUserPrompter = new KeyUserImportPrompter(
                     this.systemLookup,
                     this.configAnswers.application.id,
@@ -754,7 +754,7 @@ export default class extends Generator {
             this.prompts,
             getKeyUserImportPage(),
             t('yuiNavSteps.projectAttributesName'),
-            !!this.attributeAnswers.importKeyUserConfigurations
+            !!this.attributeAnswers.importKeyUserChanges
         );
 
         if (!flpPagesExist) {

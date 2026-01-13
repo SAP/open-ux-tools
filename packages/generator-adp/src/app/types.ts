@@ -112,7 +112,7 @@ export enum attributePromptNames {
     enableTypeScript = 'enableTypeScript',
     addDeployConfig = 'addDeployConfig',
     addFlpConfig = 'addFlpConfig',
-    importKeyUserConfigurations = 'importKeyUserConfigurations'
+    importKeyUserChanges = 'importKeyUserChanges'
 }
 
 export type AttributesQuestion = YUIQuestion<AttributesAnswers>;
@@ -154,7 +154,7 @@ export interface AddFlpConfigPromptOptions {
     hasBaseAppInbounds?: boolean;
 }
 
-export interface ImportKeyUserConfigurationsPromptOptions {
+export interface ImportKeyUserChangesPromptOptions {
     hide?: boolean;
     default?: boolean;
 }
@@ -169,7 +169,7 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
     [attributePromptNames.addDeployConfig]: AddDeployConfigPromptOptions;
     [attributePromptNames.addFlpConfig]: AddFlpConfigPromptOptions;
-    [attributePromptNames.importKeyUserConfigurations]: ImportKeyUserConfigurationsPromptOptions;
+    [attributePromptNames.importKeyUserChanges]: ImportKeyUserChangesPromptOptions;
 }>;
 
 export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
