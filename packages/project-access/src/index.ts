@@ -62,12 +62,7 @@ export {
     getWorkspaceInfo,
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled,
-    readFlexChanges,
-    getFilterFields,
-    getTableColumns,
-    getListReportPage,
-    getObjectPages,
-    AggregationItem
+    readFlexChanges
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';

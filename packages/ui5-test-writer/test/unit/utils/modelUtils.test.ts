@@ -11,7 +11,7 @@ import {
     getSelectionFieldItems,
     getFilterFields,
     getTableColumns
-} from '../../src/project/model';
+} from '../../../src/utils/modelUtils';
 
 describe('Test getListReportPage()', () => {
     test('should return null when no pages exist', () => {
