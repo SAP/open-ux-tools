@@ -1,6 +1,6 @@
 import { AddonPanel, Form, SyntaxHighlighter } from '@storybook/components';
 import React, { useEffect, useState } from 'react';
-import { addons } from '@storybook/addons';
+import { addons } from '@storybook/manager-api';
 import { UPDATE_CODE_SNIPPET, getWebSocket, onMessageAttach } from '../../utils';
 import type { Actions } from '../../utils';
 
@@ -50,14 +50,16 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
 
     return (
         <AddonPanel key="panel" active={active}>
-            {preview.codeSnippets.map((snippet) => (
-                <Form.Field label={snippet.fileName} key={snippet.fileName}>
-                    <SyntaxHighlighter language={snippet.language ?? 'html'}>{snippet.content}</SyntaxHighlighter>
+            <>
+                {preview.codeSnippets.map((snippet) => (
+                    <Form.Field label={snippet.fileName} key={snippet.fileName}>
+                        <SyntaxHighlighter language={snippet.language ?? 'html'}>{snippet.content}</SyntaxHighlighter>
+                    </Form.Field>
+                ))}
+                <Form.Field label="Answers">
+                    <SyntaxHighlighter language="json">{preview.answers}</SyntaxHighlighter>
                 </Form.Field>
-            ))}
-            <Form.Field label="Answers">
-                <SyntaxHighlighter language="json">{preview.answers}</SyntaxHighlighter>
-            </Form.Field>
+            </>
         </AddonPanel>
     );
 };

@@ -1,4 +1,4 @@
-import { addons, types } from '@storybook/addons';
+import { addons, types } from '@storybook/manager-api';
 import { CodePreview } from './preview/component';
 import { ProjectSelector } from './project/component';
 
@@ -21,7 +21,7 @@ for (const addon of ADDONS) {
         addons.add(id, {
             title: title,
             type: types.PANEL,
-            match: ({ viewMode }) => !!viewMode?.match(/^(story|docs)$/),
+            match: ({ viewMode }: { viewMode?: string }) => !!viewMode?.match(/^(story|docs)$/),
             render: component
         });
     });
