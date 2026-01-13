@@ -21,7 +21,7 @@ let artifactWorker: (file: string) => WorkerResult;
 
 /**
  * Gets the file system path to the worker script.
- * 
+ *
  * @param name - The name of the worker file
  * @returns The absolute path to the worker file
  */
@@ -52,7 +52,7 @@ function getWorkerPath(name: string): string {
 
 /**
  * Gets or creates the artifact worker instance for finding Fiori artifacts.
- * 
+ *
  * @returns A synchronous function that takes a file path and returns worker results
  */
 function getArtifactWorker(): (file: string) => WorkerResult {
@@ -94,7 +94,7 @@ export class ProjectContext {
 
     /**
      * Creates a new ProjectContext instance.
-     * 
+     *
      * @param artifacts - The found Fiori artifacts in the project
      * @param index - The parsed project index
      * @param linkedModel - The linked model with resolved references
@@ -107,7 +107,7 @@ export class ProjectContext {
 
     /**
      * Gets the indexed service for the main service of an application.
-     * 
+     *
      * @param appIndex - The parsed application index
      * @param serviceName - Optional service name, defaults to the main service name from manifest
      * @returns The parsed service or undefined if not found
@@ -119,7 +119,7 @@ export class ProjectContext {
 
     /**
      * Gets the manifest for a specific application.
-     * 
+     *
      * @param app - Optional application key, defaults to the first application in the index
      * @returns The manifest object or undefined if not found
      */
@@ -134,7 +134,7 @@ export class ProjectContext {
 
     /**
      * Re-indexes the project after a file has been updated.
-     * 
+     *
      * @param uri - The URI of the file to reindex
      * @param content - The updated content of the file
      */
@@ -164,7 +164,7 @@ export class ProjectContext {
 
     /**
      * Finds Fiori artifacts in the project using a worker process.
-     * 
+     *
      * @param _uri - The URI to start searching from (currently unused, uses process.cwd())
      * @returns The worker result containing found artifacts and project type
      */
@@ -210,7 +210,7 @@ export class ProjectContext {
 
     /**
      * Updates a file in the cache and triggers re-indexing if necessary.
-     * 
+     *
      * @param uri - The URI of the file to update
      * @param content - The new content of the file
      * @returns The ProjectContext instance for the file
