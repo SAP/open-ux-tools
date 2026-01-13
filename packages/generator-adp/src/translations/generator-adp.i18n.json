@@ -53,7 +53,7 @@
         "importKeyUserChangesLabel": "Import Key User Changes",
         "keyUserAdaptationLabel": "Adaptation",
         "keyUserAdaptationLabelMulti": "There are multiple context-based adaptations. Select an adaptation to take over as an app variant.",
-        "keyUserChangesFoundAdaptation": "Key-user changes found for adaptation '{{adaptationId}}' and will be added after the generation of the project.",
+        "keyUserChangesFoundAdaptation": "Key-user changes have been found for the '{{adaptationId}}' adaptation and will be added after the project has been generated.",
         "targetEnvLabel": "Environment",
         "targetEnvTooltip": "Select the target environment for your Adaptation Project.",
         "targetEnvBreadcrumb": "Target Environment",

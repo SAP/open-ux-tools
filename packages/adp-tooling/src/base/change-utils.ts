@@ -5,6 +5,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 import { DirName, getWebappPath } from '@sap-ux/project-access';
 import {
+    FlexLayer,
     TemplateFileName,
     type AnnotationsData,
     type ChangeType,
@@ -108,7 +109,8 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         const transformedChange = transformKeyUserChangeForAdp(
             change,
             config.app.id,
-            config.customConfig?.adp?.support
+            config.customConfig?.adp?.support,
+            config.app.layer
         );
 
         await writeChangeToFolder(projectPath, transformedChange as unknown as ManifestChangeProperties, fs);
@@ -121,37 +123,33 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
  * @param change - The key-user change from the backend.
  * @param appId - The ID of the newly created Adaptation Project.
  * @param support - The support information for the change.
+ * @param layer - The layer of the change.
  * @returns {Record<string, unknown>} The transformed change object.
  */
 export function transformKeyUserChangeForAdp(
     change: Record<string, unknown>,
     appId: string,
-    support: ToolsSupport | undefined
+    support: ToolsSupport | undefined,
+    layer: FlexLayer | undefined
 ): Record<string, unknown> {
     const transformed = { ...change };
 
-    if (transformed.layer === 'CUSTOMER') {
-        transformed.layer = 'CUSTOMER_BASE';
-    }
-
+    transformed.layer = layer ?? FlexLayer.CUSTOMER_BASE;
     transformed.reference = appId;
-
     transformed.namespace = path.posix.join('apps', appId, DirName.Changes, '/');
-
     if (transformed.projectId) {
         transformed.projectId = appId;
+    }
+    transformed.support ??= {};
+    const supportObject = transformed.support as Record<string, unknown>;
+    if (support?.id) {
+        supportObject.generator = `${support.id} (converted from key user changes)`;
     }
 
     delete transformed.adaptationId;
     delete transformed.version;
     delete transformed.context;
     delete transformed.versionId;
-
-    transformed.support ??= {};
-    const supportObject = transformed.support as Record<string, unknown>;
-    if (support?.id) {
-        supportObject.generator = `${support.id} (converted from key user changes)`;
-    }
 
     return transformed;
 }

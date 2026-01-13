@@ -18,7 +18,8 @@ import {
     type DescriptorVariant,
     type AdpWriterConfig,
     type App,
-    type ToolsSupport
+    type ToolsSupport,
+    FlexLayer
 } from '../../../src';
 import {
     findChangeWithInboundId,
@@ -729,7 +730,7 @@ describe('Change Utils', () => {
                 }
             };
 
-            const result = transformKeyUserChangeForAdp(change, appId, support);
+            const result = transformKeyUserChangeForAdp(change, appId, support, FlexLayer.CUSTOMER_BASE);
 
             expect(result.support).toBeDefined();
             expect((result.support as Record<string, unknown>)?.generator).toBe(
@@ -744,7 +745,7 @@ describe('Change Utils', () => {
                 support: {}
             };
 
-            const result = transformKeyUserChangeForAdp(change, appId, support);
+            const result = transformKeyUserChangeForAdp(change, appId, support, FlexLayer.CUSTOMER_BASE);
 
             expect(result.support).toBeDefined();
             expect((result.support as Record<string, unknown>)?.generator).toBe(
@@ -758,7 +759,7 @@ describe('Change Utils', () => {
                 changeType: 'rename'
             };
 
-            const result = transformKeyUserChangeForAdp(change, appId, support);
+            const result = transformKeyUserChangeForAdp(change, appId, support, FlexLayer.CUSTOMER_BASE);
 
             expect(result.support).toBeDefined();
             expect((result.support as Record<string, unknown>)?.generator).toBe(
