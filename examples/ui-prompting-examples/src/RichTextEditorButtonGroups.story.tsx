@@ -15,7 +15,7 @@ export const ExternalValues = (): JSX.Element => {
             externalAnswers={{
                 buildingBlockData: {
                     buildingBlockType: 'rich-text-editor-button-groups',
-                    id: 'RichTextEditorButtonGroups',
+                    id: 'RichTextEditorButtonGroups'
                 }
             }}
         />
