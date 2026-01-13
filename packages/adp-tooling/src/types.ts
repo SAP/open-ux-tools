@@ -52,9 +52,6 @@ export interface AdpPreviewConfigWithBuildPath {
      */
     cfBuildPath: string;
 
-    builder: {
-        customTasks: { name: string }[];
-    };
     /**
      * If set to true then certification validation errors are ignored.
      */

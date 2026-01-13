@@ -77,6 +77,15 @@ export async function validateDestinationQuestion(
 ): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
     await updateDestinationPromptState(destination, destinations, options, backendTarget);
+
+    const adpProjectType = options?.adpProjectType;
+    const adpProjectTypeValidation = adpProjectType
+        ? await validateAdpProjectType(adpProjectType, backendTarget)
+        : undefined;
+    if (typeof adpProjectTypeValidation === 'string') {
+        return adpProjectTypeValidation;
+    }
+
     const systemTypeValidation = await validateSystemType(options);
     if (typeof systemTypeValidation === 'string') {
         return systemTypeValidation;
@@ -277,14 +286,14 @@ export function validateClient(client: string): boolean | string {
  * @param input - password entered
  * @param previousAnswers - previous answers
  * @param backendTarget - backend target from abap deploy config prompt options
- * @param shouldCheckSystemType - if the system type should be checked
+ * @param targetSystemOptions - The target system options.
  * @returns boolean or error message as a string
  */
 export async function validateCredentials(
     input: string,
     previousAnswers: AbapDeployConfigAnswersInternal,
     backendTarget?: BackendTarget,
-    shouldCheckSystemType = false
+    targetSystemOptions?: TargetSystemPromptOptions
 ): Promise<boolean | string> {
     if (!input || !previousAnswers.username) {
         return t('errors.requireCredentials');
@@ -303,11 +312,21 @@ export async function validateCredentials(
         }
     });
 
+    const shouldCheckSystemType = targetSystemOptions?.additionalValidation?.shouldRestrictDifferentSystemType;
     if (isAppStudio() && shouldCheckSystemType) {
         PromptState.abapDeployConfig.isAbapCloud = (await isAbapCloud(backendTarget)) ?? false;
     }
 
     PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
+
+    const adpProjectType = targetSystemOptions?.adpProjectType;
+    const adpProjectTypeValidation = adpProjectType
+        ? await validateAdpProjectType(adpProjectType, backendTarget)
+        : undefined;
+    if (typeof adpProjectTypeValidation === 'string') {
+        return adpProjectTypeValidation;
+    }
+
     return transportConfigNeedsCreds ? t('errors.incorrectCredentials') : true;
 }
 
@@ -641,12 +660,16 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
  *
  * @param {string} input - The name of the package to validate.
  * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
+ * @param {AdaptationProjectType | undefined} adpProjectType - The project type.
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
-async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
-    const isAbapCloud = PromptState?.abapDeployConfig?.isAbapCloud;
-    if (!isAbapCloud) {
-        LoggerHelper.logger.debug(`System is OnPremise, skipping package "${input}" type validation`);
+async function validatePackageType(
+    input: string,
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
+): Promise<boolean | string> {
+    if (adpProjectType === AdaptationProjectType.ON_PREMISE) {
+        LoggerHelper.logger.debug(`Project is OnPremise, skipping package "${input}" type validation`);
         return true;
     }
     const systemInfoResult = await getSystemInfo(input, backendTarget);
@@ -728,7 +751,7 @@ export async function validatePackage(
     }
 
     if (promptOption?.additionalValidation?.shouldValidatePackageType) {
-        return await validatePackageType(input, backendTarget);
+        return await validatePackageType(input, backendTarget, ui5AbapPromptOptions?.adpProjectType);
     }
 
     return true;
@@ -817,9 +840,36 @@ function shouldValidatePackageForStartingPrefix(
         !ui5AbapPromptOptions?.hide &&
         !(
             ui5AbapPromptOptions?.hideIfOnPremise === true &&
-            PromptState.abapDeployConfig?.isAbapCloud === false &&
+            ui5AbapPromptOptions?.adpProjectType === AdaptationProjectType.ON_PREMISE &&
             PromptState.abapDeployConfig?.scp === false
         )
     );
     return shouldValidatePackageForStartingPrefix;
+}
+
+/**
+ * Validates whether a provided type of an adaptation project can be deployed on the target system.
+ *
+ * @param {AdaptationProjectType} adpProjectType - The adaptation project type.
+ * @param {BackendTarget | undefined} backendTarget - The backend target representing the target system.
+ * @returns {Promise<boolean | string>} Promise resolved with true in case the validation succeed otherwise with a string
+ * containing an error message.
+ */
+async function validateAdpProjectType(
+    adpProjectType: AdaptationProjectType,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
+    try {
+        const { systemInfo } = await getSystemInfo(undefined, backendTarget);
+        const adaptationProjectTypes = systemInfo?.adaptationProjectTypes;
+        const supportedAdpProjectTypes = (adaptationProjectTypes ?? []).join(',');
+        return adaptationProjectTypes?.includes(adpProjectType)
+            ? true
+            : t('errors.validators.unsupportedAdpProjectType', {
+                  adpProjectType,
+                  supportedAdpProjectTypes
+              });
+    } catch (error) {
+        return error.message;
+    }
 }

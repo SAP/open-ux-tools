@@ -169,13 +169,13 @@ export async function getAdpConfig<T = AdpPreviewConfig>(basePath: string, yamlP
  * @param {string} yamlPath - The path to the ui5.yaml file.
  * @returns {Promise<AdaptationProjectType | undefined>} The project type or undefined.
  */
-export async function getExistingProjectType(
+export async function getExistingAdpProjectType(
     basePath: string,
     yamlPath: string
 ): Promise<AdaptationProjectType | undefined> {
     try {
-        const ui5Yaml = await getAdpConfig(basePath, yamlPath);
-        return ui5Yaml.builder ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
+        const ui5Config = await readUi5Config(basePath, yamlPath);
+        return ui5Config.hasBuilderKey() ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
     } catch (error) {
         return undefined;
     }

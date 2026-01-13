@@ -41,6 +41,9 @@ import type {
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { getVariantNamespace } from '../utils/project';
+import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
+import { join } from 'path';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * ABAP deploy config generator.
@@ -56,6 +59,7 @@ export default class extends DeploymentGenerator {
     private configExists: boolean;
     private answers: AbapDeployConfigAnswersInternal;
     private projectType: DeployProjectType;
+    private adpProjectType?: AdaptationProjectType;
     private isAdp: boolean;
 
     /**
@@ -90,8 +94,10 @@ export default class extends DeploymentGenerator {
 
         setYeomanEnvConflicterForce(this.env, this.options.force);
 
-        if (!this.launchDeployConfigAsSubGenerator) {
-            await this._initializing();
+        if (this.launchDeployConfigAsSubGenerator) {
+            this.adpProjectType = this.options?.adpProjectType;
+        } else {
+            await this._initAsStandaloneGenerator();
         }
     }
 
@@ -148,12 +154,18 @@ export default class extends DeploymentGenerator {
         this.backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
     }
 
-    private async _initializing(): Promise<void> {
+    private async _initAdpProjectType(): Promise<void> {
+        const ui5YamlPath = join(this.destinationRoot(), FileName.Ui5Yaml);
+        this.adpProjectType = await getExistingAdpProjectType(this.destinationRoot(), ui5YamlPath);
+    }
+
+    private async _initAsStandaloneGenerator(): Promise<void> {
         this._initDestinationRoot();
         try {
             this._processProjectConfig();
             await this._initBackendConfig();
             await this._processIndexHtmlConfig();
+            await this._initAdpProjectType();
         } catch (e) {
             if (e === ERROR_TYPE.ABORT_SIGNAL) {
                 DeploymentGenerator.logger?.debug(
@@ -179,15 +191,18 @@ export default class extends DeploymentGenerator {
                 shouldValidateFormatAndSpecialCharacters: this.isAdp
             };
             const promptOptions: AbapDeployConfigPromptOptions = {
-                ui5AbapRepo: { hideIfOnPremise: this.isAdp },
-                transportInputChoice: { hideIfOnPremise: this.isAdp },
+                ui5AbapRepo: { hideIfOnPremise: this.isAdp, adpProjectType: this.adpProjectType },
+                transportInputChoice: { hideIfOnPremise: this.isAdp, adpProjectType: this.adpProjectType },
                 packageAutocomplete: {
                     additionalValidation: packageAdditionalValidation
                 },
                 packageManual: {
                     additionalValidation: packageAdditionalValidation
                 },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: this.isAdp } }
+                targetSystem: {
+                    additionalValidation: { shouldRestrictDifferentSystemType: this.isAdp },
+                    adpProjectType: this.adpProjectType
+                }
             };
             const indexGenerationAllowed = this.indexGenerationAllowed && !this.isAdp;
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
@@ -278,7 +293,7 @@ export default class extends DeploymentGenerator {
             await this._writing();
         } else {
             // Needed to delay `init` as the yaml configurations won't be ready!
-            await this._initializing();
+            await this._initAsStandaloneGenerator();
             await this._writing();
         }
     }
@@ -287,7 +302,8 @@ export default class extends DeploymentGenerator {
         if (this.abort || this.answers.overwrite === false) {
             return;
         }
-        const namespace = await getVariantNamespace(this.destinationPath(), !!this.answers.isAbapCloud, this.fs);
+        const isCloudAdpProject = this.adpProjectType === AdaptationProjectType.CLOUD_READY;
+        const namespace = await getVariantNamespace(this.destinationPath(), isCloudAdpProject, this.fs);
         await generateAbapDeployConfig(
             this.destinationPath(),
             {

@@ -341,6 +341,7 @@ export default class extends Generator {
                         projectName: this.attributeAnswers.projectName,
                         projectPath: this.attributeAnswers.targetFolder,
                         connectedSystem: this.configAnswers.system,
+                        projectType: this.prompter.projectType,
                         system
                     },
                     this.composeWith.bind(this),

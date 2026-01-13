@@ -149,7 +149,8 @@
             "invalidCloudPackage": "The provided package is not intended for cloud deployment.",
             "invalidOnPremPackage": "The provided package is not intended for on-premise deployments.",
             "invalidOnPremSystem": "You have selected a cloud system but you previously created a project residing on an on-premise system. Please select an on-premise system to proceed with the deployment.",
-            "invalidCloudSystem": "You have selected an on-premise system but you previously created a project residing on a cloud system. Please select a cloud system to proceed with the deployment."
+            "invalidCloudSystem": "You have selected an on-premise system but you previously created a project residing on a cloud system. Please select a cloud system to proceed with the deployment.",
+            "unsupportedAdpProjectType": "You cannot deploy {{adpProjectType}} project because the system supports only {{supportedAdpProjectTypes}}."
         }
     }
 }

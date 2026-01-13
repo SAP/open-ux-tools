@@ -19,7 +19,7 @@ import {
     type InternalInboundNavigation,
     type AdpPreviewConfigWithTarget,
     type DescriptorVariant,
-    getExistingProjectType
+    getExistingAdpProjectType
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
@@ -472,7 +472,7 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private _getProjectType(): Promise<AdaptationProjectType | undefined> {
         const ui5YamlPath = join(this.projectRootPath, FileName.Ui5Yaml);
-        return getExistingProjectType(this.projectRootPath, ui5YamlPath);
+        return getExistingAdpProjectType(this.projectRootPath, ui5YamlPath);
     }
 
     /**

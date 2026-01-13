@@ -7,12 +7,12 @@ import { t } from '../i18n';
 /**
  * Fetches system information for a specified package from an ABAP system.
  *
- * @param {string} packageName - The name of the package for which to retrieve system information.
+ * @param {string | undefined} packageName - The name of the package for which to retrieve system information.
  * @param {BackendTarget} [backendTarget] - Optional backend target information.
  * @returns {Promise<SystemInfoResult>} A promise resolving to the system information if successful,
  * or `undefined` if an error occurs.
  */
-export async function getSystemInfo(packageName: string, backendTarget?: BackendTarget): Promise<SystemInfoResult> {
+export async function getSystemInfo(packageName?: string, backendTarget?: BackendTarget): Promise<SystemInfoResult> {
     const result: SystemInfoResult = {
         apiExist: true
     };

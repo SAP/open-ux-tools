@@ -16,6 +16,7 @@ import {
     type TransportListItem,
     type TransportInputChoicePromptOptions
 } from '../types';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Determines if URL question should be shown.
@@ -142,7 +143,7 @@ export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRep
         !ui5AbapPromptOptions?.hide &&
         ui5AbapPromptOptions?.hideIfOnPremise &&
         !PromptState.abapDeployConfig?.scp &&
-        !PromptState.abapDeployConfig?.isAbapCloud
+        ui5AbapPromptOptions?.adpProjectType === AdaptationProjectType.ON_PREMISE
     ) {
         return false;
     }
@@ -238,7 +239,7 @@ function defaultOrShowTransportQuestion(): boolean {
 export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
     if (
         options?.hideIfOnPremise === true &&
-        !PromptState.abapDeployConfig?.isAbapCloud &&
+        options?.adpProjectType === AdaptationProjectType.ON_PREMISE &&
         !PromptState.abapDeployConfig?.scp
     ) {
         return false;
@@ -276,7 +277,10 @@ export function defaultOrShowTransportListQuestion(
     return (
         transportInputChoice === TransportChoices.ListExistingChoice &&
         !isTransportListEmpty(PromptState.transportAnswers.transportList) &&
-        !(transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isAbapCloud === false)
+        !(
+            transportInputChoiceOptions?.hideIfOnPremise === true &&
+            transportInputChoiceOptions?.adpProjectType === AdaptationProjectType.ON_PREMISE
+        )
     );
 }
 
@@ -312,7 +316,7 @@ export function defaultOrShowManualTransportQuestion(
         defaultOrShowTransportQuestion() &&
         (transportInputChoice === TransportChoices.EnterManualChoice ||
             (transportInputChoiceOptions?.hideIfOnPremise === true &&
-                PromptState?.abapDeployConfig?.isAbapCloud === false))
+                transportInputChoiceOptions?.adpProjectType === AdaptationProjectType.ON_PREMISE))
     );
 }
 
