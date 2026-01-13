@@ -113,7 +113,7 @@
         "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}.",
         "keyUserNoChangesDefault": "Only one adaptation ('DEFAULT') was found and no key-user changes were found for it.",
         "keyUserNoChangesAdaptation": "No key-user changes were found for '{{adaptationId}}' adaptation.",
-        "keyUserNoAdaptations": "No context-based adaptations found for the selected application."
+        "keyUserNoAdaptations": "No context-based adaptations have been found for the selected application."
     },
     "validators": {
         "ui5VersionNotDetectedError": "The SAPUI5 version of the selected system cannot be determined. You are able to create and edit adaptation projects that use the latest SAPUI5 version, but they are not usable on this system until the system's SAPUI5 version is upgraded to version 1.71 or higher."
