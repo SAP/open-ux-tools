@@ -84,7 +84,7 @@ function logServiceCatalogErrorsForHelp(
 ): void {
     const catalogRequesErrors = Object.entries(requestErrors);
     catalogRequesErrors.forEach(([odataVersion, error]) => {
-        errorHandler.logErrorMsgs(error, t('errors.serviceCatalogRequestFailed', { odataVersion })); // Error state is set for later processing
+        errorHandler.logErrorMsgs(error, t('warnings.missingServices', { odataVersion })); // Error state is set for later processing
     });
     // If all requests failed, log a generic message, this will be stored in the error handler
     if (numOfRequests === catalogRequesErrors.length) {
@@ -377,7 +377,7 @@ type ShowCollabDraftWarnOptions = {
  */
 export async function getSelectedServiceMessage(
     serviceChoices: ListChoiceOptions<ServiceAnswer>[],
-    selectedService: ServiceAnswer,
+    selectedService: ServiceAnswer | undefined,
     connectValidator: ConnectionValidator,
     {
         requiredOdataVersion,
@@ -438,11 +438,11 @@ export async function getSelectedServiceMessage(
             };
         }
     }
-    // If any catalog request errors, show a warning. We know this is a catalog error since there is no service selected.
-    if (errorHandler.hasError()) {
+    // If any catalog request errors, show an info message. We know this is a catalog error since there is no service selected.
+    if (errorHandler.getErrorMsg()) {
         return {
-            message: t('warnings.missingServices', { error: errorHandler.getErrorMsg() }),
-            severity: Severity.warning
+            message: `${errorHandler.getErrorMsg()} ${t('texts.seeLogForDetails')}`,
+            severity: Severity.information
         };
     }
 }
