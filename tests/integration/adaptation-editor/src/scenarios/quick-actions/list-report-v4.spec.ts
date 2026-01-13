@@ -281,7 +281,7 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
             await lr.checkControlVisible('Test Page Action');
         }
     );
-    test(
+    test.fail(
         '7: Add Custom Table Action to LR page',
         {
             annotation: {

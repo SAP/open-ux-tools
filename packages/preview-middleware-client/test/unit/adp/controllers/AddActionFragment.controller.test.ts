@@ -128,8 +128,9 @@ describe('AddActionFragment', () => {
                         projectId: 'test',
                         pageId: 'listPage',
                         appComponent: {} as any,
-                        appType: 'fe-v4'
+                        appType: 'fe-v4',
                     },
+                    actionType: 'pageAction',
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                 }
             );
@@ -174,6 +175,7 @@ describe('AddActionFragment', () => {
                         appComponent: {} as any,
                         appType: 'fe-v4'
                     },
+                    actionType: 'pageAction',
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                 }
             );
@@ -214,6 +216,7 @@ describe('AddActionFragment', () => {
                         appComponent: {} as any,
                         appType: 'fe-v4'
                     },
+                    actionType: 'pageAction',
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                 }
             );
@@ -361,6 +364,7 @@ describe('AddActionFragment', () => {
                         appComponent: {} as any,
                         appType: 'fe-v4'
                     },
+                    actionType: 'pageAction',
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                 }
             );
