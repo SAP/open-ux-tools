@@ -28,7 +28,7 @@ import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { detectTabSpacing, extendJSON } from '../common/file';
+import { copyTpl, detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { getOrAddNamespace } from './prompts/utils/xml';
@@ -327,7 +327,7 @@ function processCustomColumn(
 
     columnConfig.content = getDefaultFragmentContent('Sample Text', processedEventHandler);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath(config.templateFile), viewPath, columnConfig);
+        copyTpl(fs, getTemplatePath(config.templateFile), viewPath, columnConfig);
     }
 }
 
@@ -376,7 +376,7 @@ function processCustomFilterField(
     }
 
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath(config.templateFile), viewPath, filterConfig);
+        copyTpl(fs, getTemplatePath(config.templateFile), viewPath, filterConfig);
     }
 }
 
