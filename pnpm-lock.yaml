@@ -348,6 +348,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -406,6 +409,12 @@ importers:
       '@sap-ux/abap-deploy-config-writer':
         specifier: workspace:*
         version: link:../abap-deploy-config-writer
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -6180,6 +6189,7 @@ packages:
   /@azure/msal-node@3.8.3:
     resolution: {integrity: sha512-Ul7A4gwmaHzYWj2Z5xBDly/W8JSC1vnKgJ898zPMZr0oSf1ah0tiL15sytjycU/PMhDZAlkWtEL1+MzNMU6uww==}
     engines: {node: '>=16'}
+    requiresBuild: true
     dependencies:
       '@azure/msal-common': 15.13.2
       jsonwebtoken: 9.0.2
