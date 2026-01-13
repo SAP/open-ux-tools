@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.1
+
+### Patch Changes
+
+- 5d2a018: Adds services unavailable info message if with catalog request fails
+
 ## 2.14.0
 
 ### Minor Changes

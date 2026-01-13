@@ -1,5 +1,12 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.197
+
+### Patch Changes
+
+- Updated dependencies [5d2a018]
+    - @sap-ux/odata-service-inquirer@2.14.1
+
 ## 0.3.196
 
 ### Patch Changes
