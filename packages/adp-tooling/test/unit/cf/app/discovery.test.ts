@@ -598,7 +598,7 @@ describe('CF App Discovery', () => {
             mockExistsSync.mockReturnValue(false);
 
             expect(() => getBackendUrlsWithPaths(serviceKeys, '/test/base')).toThrow(
-                t('error.xsAppJsonNotFound', { paths: '/test/base/.reuse/xs-app.json, /test/base/dist/xs-app.json' })
+                'The xs-app.json file was not found in any of the expected locations'
             );
         });
 
