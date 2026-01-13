@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.0.5
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
 ## 9.0.4
 
 ### Patch Changes

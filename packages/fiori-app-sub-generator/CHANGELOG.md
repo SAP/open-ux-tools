@@ -1,5 +1,83 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.14
+
+### Patch Changes
+
+- f13d1c2: CAP project selection now searches parent directories and supports autocomplete in CLI
+- Updated dependencies [f13d1c2]
+    - @sap-ux/odata-service-inquirer@2.14.0
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/annotation-generator@0.4.6
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/cap-config-writer@0.12.41
+    - @sap-ux/fiori-generator-shared@0.13.50
+    - @sap-ux/launch-config@0.10.48
+    - @sap-ux/odata-service-writer@0.29.5
+    - @sap-ux/telemetry@0.6.52
+    - @sap-ux/ui5-application-inquirer@0.16.4
+    - @sap-ux/fiori-elements-writer@2.8.34
+    - @sap-ux/fiori-freestyle-writer@2.5.25
+
+## 0.11.13
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.33
+- @sap-ux/fiori-freestyle-writer@2.5.24
+- @sap-ux/annotation-generator@0.4.5
+- @sap-ux/odata-service-inquirer@2.13.10
+
+## 0.11.12
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/odata-service-inquirer@2.13.10
+    - @sap-ux/fiori-elements-writer@2.8.32
+    - @sap-ux/annotation-generator@0.4.4
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/project-access@1.33.1
+    - @sap-ux/launch-config@0.10.47
+    - @sap-ux/fiori-freestyle-writer@2.5.24
+    - @sap-ux/fiori-generator-shared@0.13.49
+    - @sap-ux/odata-service-writer@0.29.4
+    - @sap-ux/ui5-application-inquirer@0.16.3
+    - @sap-ux/cap-config-writer@0.12.40
+    - @sap-ux/telemetry@0.6.51
+
+## 0.11.11
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+- Updated dependencies [2204ad3]
+    - @sap-ux/odata-service-inquirer@2.13.9
+    - @sap-ux/annotation-generator@0.4.3
+    - @sap-ux/odata-service-writer@0.29.3
+    - @sap-ux/axios-extension@1.25.5
+    - @sap-ux/fiori-elements-writer@2.8.31
+    - @sap-ux/fiori-freestyle-writer@2.5.23
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/ui5-application-inquirer@0.16.2
+
+## 0.11.10
+
+### Patch Changes
+
+- Updated dependencies [4e0f204]
+    - @sap-ux/axios-extension@1.25.4
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/odata-service-inquirer@2.13.8
+    - @sap-ux/odata-service-writer@0.29.2
+
+## 0.11.9
+
+### Patch Changes
+
+- @sap-ux/odata-service-inquirer@2.13.7
+- @sap-ux/ui5-application-inquirer@0.16.1
+
 ## 0.11.8
 
 ### Patch Changes
