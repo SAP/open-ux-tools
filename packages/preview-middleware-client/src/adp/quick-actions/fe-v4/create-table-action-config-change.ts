@@ -86,7 +86,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                                     !(action as ActionToolbarAction)
                                         .getAction()
                                         .getId()
-                                        .endsWith(`CustomAction::${actionId}`) //::ActionToolbarAction
+                                        .endsWith(`CustomAction::${actionId}`)
                             )
                         ) {
                             return true;
