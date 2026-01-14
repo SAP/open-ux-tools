@@ -26,6 +26,13 @@ import { type AdtService, AtoService, GeneratorService, RapGeneratorService } fr
 import { SystemInfoService } from './adt-catalog/services/systeminfo-service';
 import { UI5VersionService } from './ui5-version-service';
 
+const CATALOG_SERVICE_BY_VERSION: Record<ODataVersion, { path: string; ServiceCtor: new (...args: any[]) => unknown }> =
+    {
+        [ODataVersion.v2]: { path: V2CatalogService.PATH, ServiceCtor: V2CatalogService },
+        [ODataVersion.v4]: { path: V4CatalogService.PATH, ServiceCtor: V4CatalogService },
+        [ODataVersion.v401]: { path: V4CatalogService.PATH, ServiceCtor: V4CatalogService }
+    };
+
 /**
  * Extension of the service provider for ABAP services.
  */
@@ -156,21 +163,19 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns an instance of the catalog service.
      */
     public catalog(version: ODataVersion): CatalogService {
-        let service: CatalogService;
-        if (version === ODataVersion.v2) {
-            service =
-                (this.services[V2CatalogService.PATH] as CatalogService) ??
-                this.createService<CatalogService>(V2CatalogService.PATH, V2CatalogService);
-        } else if (version === ODataVersion.v4) {
-            service =
-                (this.services[V4CatalogService.PATH] as CatalogService) ??
-                this.createService<CatalogService>(V4CatalogService.PATH, V4CatalogService);
-        } else {
-            throw new Error('not implemented yet');
+        const config = CATALOG_SERVICE_BY_VERSION[version];
+        if (!config) {
+            throw new Error(`Unsupported OData version: ${version}`);
         }
+
+        const { path, ServiceCtor } = config;
+        const service =
+            (this.services[path] as CatalogService) ?? this.createService<CatalogService>(path, ServiceCtor);
+
         Object.defineProperty(service, 'isAbapCloud', {
             get: this.isAbapCloud.bind(this)
         });
+
         return service;
     }
 

@@ -26,11 +26,12 @@ import {
     isDataSourceURI,
     validateJSON
 } from '@sap-ux/project-input-validator';
+import { ODataVersionMap } from '@sap-ux/axios-extension'
 
-const oDataVersions = [
-    { name: '2.0', value: '2.0' },
-    { name: '4.0', value: '4.0' }
-];
+export const oDataVersions = Object.keys(ODataVersionMap).map((version) => ({
+    name: version,
+    value: version
+}));
 
 /**
  * Exucute generic validation for input.

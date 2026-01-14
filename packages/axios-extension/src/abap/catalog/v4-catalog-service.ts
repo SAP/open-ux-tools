@@ -1,6 +1,6 @@
 import type { Annotations, ODataServiceInfo, ServiceType } from './base';
 import { CatalogService } from './base';
-import { ODataVersion } from '../../base/odata-service';
+import { ODataVersion, ODataVersionMap } from '../../base/odata-service';
 import { ODataRequestError } from '../../base/odata-request-error';
 import { type Logger, ToolsLogger } from '@sap-ux/logger';
 
@@ -70,7 +70,7 @@ export class V4CatalogService extends CatalogService {
                             path: service.ServiceUrl.split('?').shift(),
                             name: `${group.GroupId} > ${service.ServiceAlias || service.ServiceId}`,
                             serviceVersion: service.ServiceVersion,
-                            odataVersion: ODataVersion.v4,
+                            odataVersion: ODataVersionMap[service.ServiceVersion] ?? ODataVersion.v4,
                             serviceType: service.ServiceType
                         };
                     })

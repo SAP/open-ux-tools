@@ -5,6 +5,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { DirName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
 import type { DataSources, EdmxAnnotationsInfo, OdataService } from '../types';
 import semVer from 'semver';
+import { toODataVersionKey } from '@sap-ux/axios-extension';
 
 interface DataSourceUpdateSettings {
     serviceName: string;
@@ -60,11 +61,8 @@ function enhanceManifestDatasources(
     if (serviceMetadata) {
         settings['localUri'] = `localService/${serviceName}/metadata.xml`;
     }
-    if (serviceVersion === '4') {
-        settings['odataVersion'] = '4.0';
-    } else if (serviceVersion === '2') {
-        settings['odataVersion'] = '2.0';
-    }
+    settings['odataVersion'] = toODataVersionKey(serviceVersion);
+
     // Create or update service dataSource in manifest.json for service
     dataSources[serviceName] = {
         uri: servicePath,

@@ -7,8 +7,20 @@ import type { Logger } from '@sap-ux/logger';
  */
 export enum ODataVersion {
     v2 = '2',
-    v4 = '4'
+    v4 = '4',
+    v401 = '4.01'
 }
+
+export const ODataVersionMap = {
+    '2.0': ODataVersion.v2,
+    '4.0': ODataVersion.v4,
+    '4.01': ODataVersion.v401
+} as const;
+
+export type ODataVersionKey = keyof typeof ODataVersionMap;
+
+export const toODataVersionKey = (version: string): keyof typeof ODataVersionMap | undefined =>
+    Object.entries(ODataVersionMap).find(([, v]) => v === version)?.[0] as keyof typeof ODataVersionMap | undefined;
 
 export interface ServiceDocument {
     EntitySets: string[];
