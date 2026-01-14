@@ -64,7 +64,7 @@ function validateActionId(
     }
 
     // Check starts and only allowed characters
-    if (!/^[a-zA-Z_][a-zA-Z0-9]*$/.test(actionId)) {
+    if (!/(^([A-Za-z_][-A-Za-z0-9_.:]*)$)/.test(actionId)) {
         return { isValid: false, errorMessage: resource.getText('ACTION_ID_INVALID_FORMAT') };
     }
     return { isValid: true, errorMessage: '' };

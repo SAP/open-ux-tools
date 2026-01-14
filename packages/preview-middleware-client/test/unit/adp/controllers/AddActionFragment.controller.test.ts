@@ -290,7 +290,7 @@ describe('AddActionFragment', () => {
 
             addFragment.onActionIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
-            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Action ID must start with a letter or _ and can contain only letters or numbers.');
+            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Action ID must start with a letter or _ and may contain letters, digits, _, ., :, and -.');
         });
 
         test('sets error when action id already being used', async () => {
