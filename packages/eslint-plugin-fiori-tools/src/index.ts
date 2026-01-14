@@ -1,6 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-export { DiagnosticCache } from './language/diagnostic-cache';
+import { join, relative, sep, posix } from 'node:path';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import js from '@eslint/js';
@@ -9,6 +8,8 @@ import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import { rules } from './rules';
 import { FioriLanguage } from './language/fiori-language';
 import { PACKAGE_NAME } from './constants';
+import { createSyncFn } from 'synckit';
+export { DiagnosticCache } from './language/diagnostic-cache';
 
 // Use CommonJS require for modules with resolution issues
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -58,17 +59,32 @@ const commonConfig: Linter.Config[] = [
     }
 ];
 
+// Use synckit to create sync function for project-access getWebappPath
+const workerPath = join(__dirname, 'project-access.js');
+const getWebappPathSync = createSyncFn(workerPath);
+
+let webappPathRelative = 'webapp';
+let testPathRelative = 'webapp/test';
+
+try {
+    const webappPathAbsolute = getWebappPathSync(process.cwd());
+    webappPathRelative = relative(process.cwd(), webappPathAbsolute).split(sep).join('/');
+    testPathRelative = posix.join(webappPathRelative, 'test');
+} catch (error) {
+    // Ignore errors and use default paths
+}
+
 const prodConfig: Linter.Config[] = [
     {
-        files: ['./webapp/**/*.js', './webapp/**/*.ts'],
+        files: [`./${webappPathRelative}/**/*.js`, `./${webappPathRelative}/**/*.ts`],
 
         ignores: [
             'target/**',
-            'webapp/test/**',
-            'webapp/localservice/**', // Ignore everything in the 'localservice' folder
-            '!webapp/localservice/**/*.{ts,js}', // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
-            'webapp/localService/**', // Ignore everything in the 'localService' folder
-            '!webapp/localService/**/*.{ts,js}', // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${testPathRelative}/**`,
+            `${posix.join(webappPathRelative, 'localservice')}/**`, // Ignore everything in the 'localservice' folder
+            `!${posix.join(webappPathRelative, 'localservice')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(webappPathRelative, 'localService')}/**`, // Ignore everything in the 'localService' folder
+            `!${posix.join(webappPathRelative, 'localService')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
             'backup/**',
             '**/Gruntfile.js',
             '**/changes_preview.js',
@@ -140,7 +156,7 @@ const prodConfig: Linter.Config[] = [
 
 const testConfig: Linter.Config[] = [
     {
-        files: ['webapp/test/**/*.js', 'webapp/test/**/*.ts'],
+        files: [`./${testPathRelative}/**/*.js`, `./${testPathRelative}/**/*.ts`],
         ignores: ['**/*.d.ts'],
 
         languageOptions: {
@@ -158,16 +174,16 @@ const testConfig: Linter.Config[] = [
 
 const typescriptConfig: Linter.Config[] = [
     {
-        files: ['./webapp/*.ts', './webapp/**/*.ts'],
+        files: [`./${webappPathRelative}/*.ts`, `./${webappPathRelative}/**/*.ts`],
 
         ignores: [
             'target/**',
-            'webapp/test/changes_loader.ts',
-            'webapp/test/changes_preview.ts',
-            'webapp/localservice/**', // Ignore everything in the 'localservice' folder
-            '!webapp/localservice/**/*.{ts,js}', // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
-            'webapp/localService/**', // Ignore everything in the 'localService' folder
-            '!webapp/localService/**/*.{ts,js}', // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${testPathRelative}/changes_loader.ts`,
+            `${testPathRelative}/changes_preview.ts`,
+            `${posix.join(webappPathRelative, 'localservice')}/**`, // Ignore everything in the 'localservice' folder
+            `!${posix.join(webappPathRelative, 'localservice')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(webappPathRelative, 'localService')}/**`, // Ignore everything in the 'localService' folder
+            `!${posix.join(webappPathRelative, 'localService')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
             'undefined/**/Example.qunit.ts',
             'backup/**',
             '**/*.d.ts'

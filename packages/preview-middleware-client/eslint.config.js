@@ -13,7 +13,6 @@ module.exports = [
             'coverage/**'
         ]
     },
-    // TODO: this is already not working, fix it separately
     ...fioriTools.configs['recommended'],
     {
         languageOptions: {
