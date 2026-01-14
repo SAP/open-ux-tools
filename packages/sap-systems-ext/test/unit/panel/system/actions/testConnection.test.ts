@@ -57,7 +57,7 @@ describe('Test Connection Action', () => {
             disposePanel: jest.fn(),
             backendSystem: {
                 ...backendSystem,
-                adtSystemInfo: {
+                systemInfo: {
                     systemId: 'SYS_ID_001',
                     client: '100'
                 }
@@ -245,7 +245,7 @@ describe('Test Connection Action', () => {
         expect(systemServicePartialUpdateMock).toHaveBeenCalledWith(
             { url: backendSystem.url, client: backendSystem.client },
             {
-                adtSystemInfo: { systemId: 'SYS_ID_123', client: '100' }
+                systemInfo: { systemId: 'SYS_ID_123', client: '100' }
             }
         );
     });

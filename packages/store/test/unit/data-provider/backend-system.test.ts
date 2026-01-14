@@ -57,7 +57,7 @@ describe('Backend system data provider', () => {
             password: 'pass',
             systemType: SystemType.AbapOnPrem,
             connectionType: 'abap_catalog',
-            adtSystemInfo: { systemId: 'ID123', client: '999' }
+            systemInfo: { systemId: 'ID123', client: '999' }
         });
         mockHybridStore.write.mockResolvedValueOnce(expectedSystem);
         await expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(
@@ -79,7 +79,7 @@ describe('Backend system data provider', () => {
             password: 'pass',
             systemType: SystemType.AbapOnPrem,
             connectionType: 'abap_catalog',
-            adtSystemInfo: { systemId: 'ID123', client: '999' }
+            systemInfo: { systemId: 'ID123', client: '999' }
         });
         mockHybridStore.write.mockResolvedValueOnce(expectedSystem);
         await expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(

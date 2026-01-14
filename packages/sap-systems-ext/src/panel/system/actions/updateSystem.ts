@@ -42,7 +42,7 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
 
     const backendSystem: BackendSystem = {
         ...backendSystemPayload,
-        ...(systemInfo && { adtSystemInfo: systemInfo })
+        ...(systemInfo && { systemInfo })
     };
 
     try {
@@ -70,8 +70,8 @@ async function fetchSystemInfo(
     backendSystemPayload: BackendSystem
 ): Promise<{ systemId: string; client: string } | undefined> {
     // if the system that was initially loaded matches the one in the payload, and the system id is already present
-    if (context.backendSystem?.adtSystemInfo?.systemId && compareSystems(context.backendSystem, backendSystemPayload)) {
-        return context.backendSystem.adtSystemInfo;
+    if (context.backendSystem?.systemInfo?.systemId && compareSystems(context.backendSystem, backendSystemPayload)) {
+        return context.backendSystem.systemInfo;
     }
 
     const systemInfo = await getSystemInfo(backendSystemPayload);

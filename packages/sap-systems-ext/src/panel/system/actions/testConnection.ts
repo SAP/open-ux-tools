@@ -227,7 +227,7 @@ async function storeSystemInfo(context: PanelContext, backendSystemPayload: Back
     }
 
     // no action needed if system id is already present
-    if (isSimpleView && context.backendSystem?.adtSystemInfo?.systemId) {
+    if (isSimpleView && context.backendSystem?.systemInfo?.systemId) {
         return;
     }
 
@@ -246,7 +246,7 @@ async function storeSystemInfo(context: PanelContext, backendSystemPayload: Back
                 client: backendSystemPayload.client
             }),
             {
-                adtSystemInfo: { systemId: systemInfo.systemId, client: systemInfo.client }
+                systemInfo: { systemId: systemInfo.systemId, client: systemInfo.client }
             }
         );
     }

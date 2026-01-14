@@ -95,11 +95,11 @@ export async function getSystemInfo(system: BackendSystem): Promise<{ systemId: 
     let systemInfo: { systemId: string; client: string } | undefined;
     try {
         const abapServiceProvider = getAbapServiceProvider(system);
-        const adtSystemInfo = await abapServiceProvider.getSystemInfo();
-        if (adtSystemInfo) {
+        const info = await abapServiceProvider.getSystemInfo();
+        if (info) {
             systemInfo = {
-                systemId: adtSystemInfo.systemID,
-                client: adtSystemInfo.client
+                systemId: info.systemID,
+                client: info.client
             };
         }
     } catch (e) {
