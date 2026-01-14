@@ -80,9 +80,7 @@ describe('metadata parsing', () => {
                 metadata: metadatav401,
                 annotations: { technicalName: 'TEST_ANNOTATIONS', xml: metadatav401 }
             })
-        ).toEqual([
-            { namespace: 'com.sap.gateway.srvd.dmo.test_dte_root_o401.v0001', alias: 'SAP__self' }
-        ]);
+        ).toEqual([{ namespace: 'com.sap.gateway.srvd.dmo.test_dte_root_o401.v0001', alias: 'SAP__self' }]);
     });
 });
 

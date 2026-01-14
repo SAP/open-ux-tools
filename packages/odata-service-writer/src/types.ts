@@ -1,14 +1,23 @@
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
-import { type ExternalService, ODataVersion as OdataVersion } from '@sap-ux/axios-extension';
+import type { ExternalService } from '@sap-ux/axios-extension';
 
 export interface ExternalServiceCollectionOptions {
     valueListReferences: boolean;
     codeLists: boolean;
 }
 
-export { OdataVersion };
+export enum OdataVersion {
+    v2 = '2',
+    v4 = '4',
+    v401 = '401'
+}
 
+export const ODataVersionMap = {
+    '2.0': OdataVersion.v2,
+    '4.0': OdataVersion.v4,
+    '4.01': OdataVersion.v401
+} as const;
 
 export interface NamespaceAlias {
     namespace: string;

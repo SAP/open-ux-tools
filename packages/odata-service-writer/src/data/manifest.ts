@@ -5,7 +5,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { DirName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
 import type { DataSources, EdmxAnnotationsInfo, OdataService } from '../types';
 import semVer from 'semver';
-import { toODataVersionKey } from '@sap-ux/axios-extension';
+import { toODataVersionKey } from './constants';
 
 interface DataSourceUpdateSettings {
     serviceName: string;
