@@ -28,7 +28,7 @@ import {
 } from '@sap-ux/project-input-validator';
 import { ODataVersionMap } from '@sap-ux/axios-extension'
 
-export const oDataVersions = Object.keys(ODataVersionMap).map((version) => ({
+const oDataVersions = Object.keys(ODataVersionMap).map((version) => ({
     name: version,
     value: version
 }));
