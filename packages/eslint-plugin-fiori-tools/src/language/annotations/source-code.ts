@@ -15,6 +15,10 @@ import {
 import { AnnotationVisitNodeStep, STEP_PHASE } from './traversal-step';
 import type { ProjectContext } from '../../project-context/project-context';
 
+/**
+ * Visitor keys mapping annotation node types to their traversable child properties.
+ * Used to navigate the annotation AST during traversal.
+ */
 export const visitorKeys: {
     [K in AnyNode['type']]: (keyof Extract<AnyNode, { type: K }>)[];
 } = {
@@ -38,7 +42,7 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
     ast: AnnotationFile;
 
     /**
-     * Creates an instance of FioriAnnotationSourceCode.
+     *
      *
      * @param root0 - Object containing text, ast, and projectContext.
      * @param root0.text - The text content of the file.
