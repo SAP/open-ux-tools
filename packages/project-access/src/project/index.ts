@@ -16,9 +16,10 @@ export {
     toReferenceUri,
     getWorkspaceInfo,
     hasMinCdsVersion,
-    checkCdsUi5PluginEnabled
+    checkCdsUi5PluginEnabled,
+    processServices
 } from './cap';
-export { filterDataSourcesByType } from './service';
+export { filterDataSourcesByType, getMainService } from './service';
 export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n';
 export {

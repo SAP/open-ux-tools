@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.26
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+- Updated dependencies [ce4b29c]
+    - @sap-ux/adp-tooling@0.18.36
+
 ## 0.0.25
 
 ### Patch Changes

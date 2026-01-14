@@ -13,7 +13,8 @@ module.exports = [
             'coverage/**'
         ]
     },
-    ...fioriTools.configs['recommended-for-s4hana'],
+    // TODO: this is already not working, fix it separately
+    ...fioriTools.configs['recommended'],
     {
         languageOptions: {
             parser: tsParser,
