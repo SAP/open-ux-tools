@@ -285,6 +285,21 @@ export class ConfigPrompter {
     }
 
     /**
+     * Sets the stored systemType for the selected system to undefined.
+     */
+    resetSystemType(): void {
+        this.selectedSystemType = undefined;
+    }
+
+    /**
+     * Sets the selected projectType and supported project types enumerator to undefined.
+     */
+    resetProjectType(): void {
+        this.selectedProjectType = undefined;
+        this.supportedProject = undefined;
+    }
+
+    /**
      * Creates the system list prompt configuration.
      *
      * @param {SystemPromptOptions} _ - Optional configuration for the system prompt.

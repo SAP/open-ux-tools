@@ -252,7 +252,7 @@ export default class extends Generator {
         this.logger.info(`isCfInstalled: ${this.cfInstalled}`);
 
         const isInternalUsage = isInternalFeaturesSettingEnabled();
-        await initTelemetrySettings({
+        await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
                 name: '@sap/generator-fiori:generator-adp',
                 version: this.rootGeneratorVersion()
@@ -265,6 +265,11 @@ export default class extends Generator {
             const shouldShowTargetEnv = this.cfInstalled && this.isCfFeatureEnabled;
             this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
             this.prompter = this._getOrCreatePrompter();
+            // In case we start the generator again after pressing start over for an already runnming
+            // generator from the template wizard we need to reset the systemType and projectType related data,
+            // otherwise the prompt for cloud/onPrem project type will be displayed with an empty input for a system above it.
+            this.prompter.resetSystemType();
+            this.prompter.resetProjectType();
             this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
         }
     }
