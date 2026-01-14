@@ -55,7 +55,10 @@ Object {
     "name",
   ],
   "valueInFile": "abc",
-  "values": Array [],
+  "values": Array [
+    "InlineCreationRows",
+    "NewPage",
+  ],
 }
 `;
 
@@ -75,7 +78,10 @@ Object {
     "name",
   ],
   "valueInFile": "InlineCreationRows",
-  "values": Array [],
+  "values": Array [
+    "InlineCreationRows",
+    "NewPage",
+  ],
 }
 `;
 
@@ -94,7 +100,10 @@ Object {
     "creationMode",
     "name",
   ],
-  "values": Array [],
+  "values": Array [
+    "InlineCreationRows",
+    "NewPage",
+  ],
 }
 `;
 
@@ -116,7 +125,10 @@ Object {
       "creationMode",
       "name",
     ],
-    "values": Array [],
+    "values": Array [
+      "InlineCreationRows",
+      "NewPage",
+    ],
   },
   "disableCopyToClipboard": Object {
     "configurationPath": Array [
