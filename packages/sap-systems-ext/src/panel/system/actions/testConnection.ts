@@ -66,7 +66,7 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
             await storeSystemInfo(context, system);
         }
     } catch (e) {
-        SystemsLogger.logger.error(t('error.systemIdUpdate', { error: (e as Error).message }));
+        SystemsLogger.logger.error(t('error.systemInfoUpdate', { error: (e as Error).message }));
     }
 }
 
@@ -221,8 +221,8 @@ async function storeSystemInfo(context: PanelContext, backendSystemPayload: Back
         context.backendSystem &&
         compareSystems(context.backendSystem, backendSystemPayload);
 
+    // not suitable for a partial update if the system has been modified or it is a new system
     if (!isSimpleView) {
-        // for adding new or editing existing systems, the system ID is checked and stored upon saving the system
         return;
     }
 
