@@ -3,7 +3,7 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getV4AppComponent, getPageName, getReference } from '../../../utils/fe-v4';
-import Table from 'sap/fe/macros/table/TableAPI';
+import TableAPI from 'sap/fe/macros/table/TableAPI';
 
 export async function executeToggleAction(
     context: QuickActionContext,
@@ -63,11 +63,7 @@ const PATTERN_SUFFIX = ':?query:';
  * @param targetEntitySet navigation target entity set
  * @returns the generated pattern as string
  */
-export function generateRoutePattern(
-    sourceRoutePattern: string,
-    navProperty: string,
-    targetEntitySet: string
-): string {
+export function generateRoutePattern(sourceRoutePattern: string, navProperty: string, targetEntitySet: string): string {
     const parts: string[] = [];
     const basePattern = sourceRoutePattern.replace(PATTERN_SUFFIX, '');
     if (basePattern) {
@@ -82,25 +78,61 @@ export function generateRoutePattern(
     return parts.join('');
 }
 
-export type TableAPI = Table & {
+export type MacroTable = TableAPI & {
     metaPath: string;
     contextPath: string;
 };
 
-export function getPropertyPath(table: TableAPI): string {
+/**
+ * Get LineItem annotation - tries to use design-time helper if available, falls back to local implementation.
+ *
+ * @param table - table control
+ * @returns LineItem annotation string
+ */
+export function getLineItemAnnotation(table: MacroTable): string | undefined {
+    try {
+        const helper = sap.ui.require('sap/fe/macros/table/designtime/Table.designtime.helper');
+        if (helper && typeof helper.getLineItemAnnotation === 'function') {
+            return helper.getLineItemAnnotation(table);
+        }
+    } catch {
+        // Module not available or error occurred
+    }
+    return getLineItemAnnotationForTable(table);
+}
+
+/**
+ * Get property path for table action.
+ *
+ * @param table - table control
+ * @returns string
+ */
+export function getActionsPropertyPath(table: MacroTable): string {
     const configPath = '';
     const lineItemAnnotation = getLineItemAnnotation(table);
 
-    const navigationPath = (table).metaPath.split(table.getProperty('contextPath'))[1];
+    const navigationPath = table.metaPath.split(table.getProperty('contextPath'))[1];
     if (!lineItemAnnotation) {
         throw new Error('Line item annotation could not be determined for the table.');
     }
     if (navigationPath) {
-        return configPath.concat('controlConfiguration/', navigationPath.split('@')[0], lineItemAnnotation);
+        return configPath.concat(
+            'controlConfiguration/',
+            navigationPath.split('@')[0],
+            lineItemAnnotation,
+            '/actions/'
+        );
     } else {
-        // Multi Entity ListReport. Doesn't contain contextPath in metaPath for additional entities
-        const multiEntity = getMultiEntityName(table.metaPath);
-        return configPath.concat('controlConfiguration/', '/', multiEntity, '/', lineItemAnnotation);
+        let contextString = table.metaPath;
+        const firstSlash = contextString.indexOf('/');
+        if (firstSlash >= 0) {
+            contextString = contextString.substring(firstSlash + 1);
+        }
+        const secondSlash = contextString.indexOf('/');
+        if (secondSlash >= 0) {
+            contextString = contextString.substring(0, secondSlash);
+        }
+        return configPath.concat('controlConfiguration/', '/', contextString, '/', lineItemAnnotation, '/actions');
     }
 }
 
@@ -110,7 +142,7 @@ export function getPropertyPath(table: TableAPI): string {
  * @param table - The table control
  * @returns The line item annotation used to define the table
  */
-export function getLineItemAnnotation(table: TableAPI): string | undefined {
+function getLineItemAnnotationForTable(table: MacroTable): string | undefined {
     const presentation = table.getModel()?.getMetaModel()?.getObject(table.metaPath);
 
     let lineItemAnnotation: string | undefined = '';
@@ -130,21 +162,4 @@ export function getLineItemAnnotation(table: TableAPI): string | undefined {
         }
     }
     return lineItemAnnotation;
-}
-
-/**
- * Return the name of the additional entity set.
- * @param contextString The table metapath where the name of the entity is enclosed by "/".
- * @returns The name of the entity
- */
-function getMultiEntityName(contextString: string): string {
-    const firstSlash = contextString.indexOf('/');
-    if (firstSlash >= 0) {
-        contextString = contextString.substring(firstSlash + 1);
-    }
-    const secondSlash = contextString.indexOf('/');
-    if (secondSlash >= 0) {
-        contextString = contextString.substring(0, secondSlash);
-    }
-    return contextString;
 }

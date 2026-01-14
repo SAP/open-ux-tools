@@ -13,13 +13,16 @@ import { CREATE_TABLE_ACTION } from './create-table-action';
 import { MDC_TABLE_TYPE } from '../control-types';
 import { isA } from '../../../utils/core';
 import Table from 'sap/ui/mdc/Table';
-import { getPropertyPath, TableAPI } from './utils';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import ActionToolbarAction from 'sap/ui/mdc/actiontoolbar/ActionToolbarAction';
+import { getActionsPropertyPath, MacroTable } from './utils';
 
 interface ViewDataType {
     stableId: string;
 }
+const regexForAnnotationPath =
+    /controlConfiguration\/(?:entity\/)?@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/actions\//;
+
 /**
  * Quick Action for adding a custom page action.
  */
@@ -50,7 +53,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
             const controlInfo = getControllerInfoForControl(table);
             const data = await getExistingController(controlInfo.controllerName);
             const controllerPath = data.controllerPathFromRoot.replace(/\//g, '.').replace(/\.[^.]+$/, '');
-            const propertyPath = `${getPropertyPath(table.getParent() as TableAPI)}/actions/`;
+            const propertyPath = `${getActionsPropertyPath(table.getParent() as MacroTable)}`;
             await DialogFactory.createDialog(
                 overlay,
                 this.context.rta,
@@ -69,18 +72,22 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                         projectId: this.context.flexSettings.projectId
                     },
                     validateActionId: (actionId) => {
-                        const actionPaths = [...this.context.changeService
-                            .getAllPendingConfigPropertyPath()]
-                            .filter((path) => /controlConfiguration\/(?:entity\/)?@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/actions\//.test(path));
-                        const idInPendingChanges = actionPaths.includes(`${propertyPath}/${actionId}`)
+                        const actionPaths = [...this.context.changeService.getAllPendingConfigPropertyPath()].filter(
+                            (path) => regexForAnnotationPath.test(path)
+                        );
+                        const idInPendingChanges = actionPaths.includes(`${propertyPath}${actionId}`);
+                        if (idInPendingChanges) {
+                            return false;
+                        }
                         if (
                             isA(MDC_TABLE_TYPE, table) &&
-                            (table as Table)
-                                .getActions()
-                                .every(
-                                    (action) =>
-                                        !action.getId().endsWith(`CustomAction::${actionId}::ActionToolbarAction`)
-                                ) && !idInPendingChanges
+                            (table as Table).getActions().every(
+                                (action) =>
+                                    !(action as ActionToolbarAction)
+                                        .getAction()
+                                        .getId()
+                                        .endsWith(`CustomAction::${actionId}`) //::ActionToolbarAction
+                            )
                         ) {
                             return true;
                         }
