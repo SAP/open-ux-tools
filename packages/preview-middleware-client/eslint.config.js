@@ -10,7 +10,9 @@ module.exports = [
             'dist/**',
             'node_modules/**',
             'eslint.config.js',
-            'coverage/**'
+            'coverage/**',
+            '**/*.d.ts',
+            '**/*.config.js'
         ]
     },
     ...fioriTools.configs['recommended'],
@@ -19,6 +21,9 @@ module.exports = [
             parser: tsParser,
             ecmaVersion: 5,
             sourceType: 'script',
+            parserOptions: {
+                allowDefaultProject: ['**/*.js']
+            }
         },
         plugins: {
             '@typescript-eslint': typescriptEslint,
@@ -34,9 +39,12 @@ module.exports = [
                     argsIgnorePattern: '^_'
                 }
             ],
+            'no-unused-vars': 'off',
+            'no-redeclare': 'off',
             '@typescript-eslint/no-unsafe-argument': 'warn',
             '@typescript-eslint/no-unsafe-member-access': 'warn',
-            '@typescript-eslint/no-unsafe-assignment': 'warn'
+            '@typescript-eslint/no-unsafe-assignment': 'warn',
+            '@sap-ux/fiori-tools/sap-no-global-variable': 'warn'
         }
     },
     {
