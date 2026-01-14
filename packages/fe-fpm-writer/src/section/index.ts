@@ -8,7 +8,7 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { CustomElement, Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContentData } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { extendJSON } from '../common/file';
+import { copyTpl, extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils';
@@ -120,7 +120,7 @@ async function generate(
     // add fragment
     const viewPath = join(completeSection.path, `${completeSection.fragmentFile ?? completeSection.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, completeSection);
+        copyTpl(fs, getTemplatePath('common/FragmentWithVBox.xml'), viewPath, completeSection);
     }
 
     return { editor: fs, section: completeSection };
@@ -176,7 +176,7 @@ export async function generateCustomHeaderSection(
         if (editSection.path) {
             const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
             if (!editor.exists(viewPath)) {
-                editor.copyTpl(getTemplatePath('common/FragmentWithForm.xml'), viewPath, editSection);
+                copyTpl(editor, getTemplatePath('common/FragmentWithForm.xml'), viewPath, editSection);
             }
         }
     }
