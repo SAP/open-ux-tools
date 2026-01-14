@@ -21,9 +21,6 @@ module.exports = [
             parser: tsParser,
             ecmaVersion: 5,
             sourceType: 'script',
-            parserOptions: {
-                allowDefaultProject: ['**/*.js']
-            }
         },
         plugins: {
             '@typescript-eslint': typescriptEslint,
