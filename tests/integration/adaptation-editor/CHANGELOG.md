@@ -1,5 +1,11 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.35
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
 ## 0.0.34
 
 ### Patch Changes
