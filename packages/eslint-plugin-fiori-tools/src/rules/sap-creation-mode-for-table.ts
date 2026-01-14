@@ -334,7 +334,7 @@ function validateCreationModeV4(
             parsedApp,
             configurationPath: creationMode.configurationPath,
             tableType,
-            validValues: [],
+            validValues,
             recommendedValue
         });
     }
@@ -396,7 +396,7 @@ function processTableV4(
                 parsedApp,
                 configurationPath: tableCreationMode.configurationPath,
                 tableType,
-                validValues: [],
+                validValues,
                 recommendedValue
             });
         }
@@ -501,13 +501,13 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
         },
         messages: {
             invalidCreateMode:
-                'Invalid createMode value "{{value}}" for {{tableType}}. Recommended value is "creationRows". Valid values are: {{validValues}}.',
+                'Invalid createMode value "{{value}}"{{tableType}}. Recommended value is "creationRows".{{validValues}}',
             recommendCreationRows: 'Consider using "creationRows" for better user experience instead of "{{value}}".',
             suggestAppLevel: 'Consider adding createMode at application level for better user experience.',
             analyticalTableNotSupported:
                 'Creation mode is not supported for Analytical tables. Remove the createMode/creationMode property.',
             invalidCreateModeV4:
-                'Invalid creationMode value "{{value}}" for {{tableType}}. Recommended value is "{{recommendedValue}}". Valid values are: {{validValues}}.',
+                'Invalid creationMode value "{{value}}"{{tableType}}. Recommended value is "{{recommendedValue}}".{{validValues}}',
             recommendInlineCreationRowsV4:
                 'Consider using "{{recommendedValue}}" for better user experience instead of "{{value}}".',
             suggestAppLevelV4: 'Consider adding creationMode at application level for better user experience.'
@@ -523,12 +523,15 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
     },
     createJsonVisitorHandler: (context, diagnostic) =>
         function report(node: MemberNode): void {
-            let tableType: string;
-            if (diagnostic.tableType === 'TreeTable') {
-                tableType = 'Tree Table';
-            } else {
-                // ResponsiveTable, GridTable, or default
-                tableType = diagnostic.tableType === 'GridTable' ? 'Grid Table' : 'Responsive Table';
+            let tableType = '';
+            if (diagnostic.tableType) {
+                if (diagnostic.tableType === 'TreeTable') {
+                    tableType = ' for Tree Table';
+                } else if (diagnostic.tableType === 'GridTable') {
+                    tableType = ' for Grid Table';
+                } else {
+                    tableType = ` for ${diagnostic.tableType}`;
+                }
             }
             let value = String(node.value);
             if (node.value.type === 'String') {
@@ -542,7 +545,10 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                 data: {
                     value,
                     tableType,
-                    validValues: diagnostic.validValues?.join(', ') ?? '',
+                    validValues:
+                        diagnostic.validValues.length > 0
+                            ? ` Valid values are: ${diagnostic.validValues.join(', ')}.`
+                            : '',
                     recommendedValue: diagnostic.recommendedValue ?? ''
                 }
             });
