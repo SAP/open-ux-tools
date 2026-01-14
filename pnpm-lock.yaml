@@ -264,13 +264,13 @@ importers:
         version: 7.6.20(react-dom@16.14.0)(react@16.14.0)
       '@storybook/components':
         specifier: 8.4.2
-        version: 8.4.2(storybook@8.4.2)
+        version: 8.4.2(storybook@8.6.15)
       '@storybook/react':
         specifier: 8.4.2
-        version: 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3)
+        version: 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 8.4.2
-        version: 8.4.2(esbuild@0.19.2)(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3)
+        version: 8.4.2(esbuild@0.25.11)(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -332,8 +332,8 @@ importers:
         specifier: 13.3.2
         version: 13.3.2(sass-embedded@1.93.2)(sass@1.66.1)(webpack@5.102.1)
       storybook:
-        specifier: 8.4.2
-        version: 8.4.2(prettier@3.6.2)
+        specifier: 8.6.15
+        version: 8.6.15(prettier@3.6.2)
       storybook-addon-turbo-build:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.102.1)
@@ -2387,14 +2387,14 @@ importers:
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@langchain/core':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.1.8
+        version: 1.1.8
       '@langchain/mcp-adapters':
         specifier: 1.0.2
-        version: 1.0.2(@langchain/core@1.1.1)(@langchain/langgraph@1.0.2)
+        version: 1.0.2(@langchain/core@1.1.8)(@langchain/langgraph@1.0.2)(hono@4.11.4)
       '@modelcontextprotocol/sdk':
-        specifier: 1.24.1
-        version: 1.24.1(zod@4.1.13)
+        specifier: 1.25.2
+        version: 1.25.2(hono@4.11.4)(zod@4.1.13)
       '@sap-ai-sdk/foundation-models':
         specifier: 2.3.0
         version: 2.3.0
@@ -2472,7 +2472,7 @@ importers:
         version: 4.0.1
       promptfoo:
         specifier: 0.119.14
-        version: 0.119.14(@langchain/core@1.1.1)(@types/node@18.19.130)(pg@8.16.3)
+        version: 0.119.14(@langchain/core@1.1.8)(@types/node@18.19.130)(hono@4.11.4)(pg@8.16.3)
       zod:
         specifier: 4.1.13
         version: 4.1.13
@@ -3988,10 +3988,10 @@ importers:
         version: 7.27.1(@babel/core@7.28.0)
       '@storybook/react':
         specifier: 8.4.2
-        version: 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3)
+        version: 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 8.4.2
-        version: 8.4.2(esbuild@0.19.2)(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3)
+        version: 8.4.2(esbuild@0.25.11)(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3)
       '@testing-library/jest-dom':
         specifier: 5.17.0
         version: 5.17.0
@@ -4071,8 +4071,8 @@ importers:
         specifier: 13.3.2
         version: 13.3.2(sass-embedded@1.93.2)(sass@1.66.1)(webpack@5.102.1)
       storybook:
-        specifier: 8.4.2
-        version: 8.4.2(prettier@3.6.2)
+        specifier: 8.6.15
+        version: 8.6.15(prettier@3.6.2)
       storybook-addon-turbo-build:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.102.1)
@@ -4118,13 +4118,13 @@ importers:
         version: 7.6.20(react-dom@16.14.0)(react@16.14.0)
       '@storybook/components':
         specifier: 8.4.2
-        version: 8.4.2(storybook@8.4.2)
+        version: 8.4.2(storybook@8.6.15)
       '@storybook/react':
         specifier: 8.4.2
-        version: 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3)
+        version: 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3)
       '@storybook/react-webpack5':
         specifier: 8.4.2
-        version: 8.4.2(esbuild@0.19.2)(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3)
+        version: 8.4.2(esbuild@0.25.11)(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3)
       '@testing-library/jest-dom':
         specifier: 5.17.0
         version: 5.17.0
@@ -4183,8 +4183,8 @@ importers:
         specifier: 13.3.2
         version: 13.3.2(sass-embedded@1.93.2)(sass@1.66.1)(webpack@5.102.1)
       storybook:
-        specifier: 8.4.2
-        version: 8.4.2(prettier@3.6.2)
+        specifier: 8.6.15
+        version: 8.6.15(prettier@3.6.2)
       storybook-addon-turbo-build:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.102.1)
@@ -10590,6 +10590,15 @@ packages:
       '@hapi/hoek': 9.3.0
     dev: false
 
+  /@hono/node-server@1.19.9(hono@4.11.4):
+    resolution: {integrity: sha512-vHL6w3ecZsky+8P5MD+eFfaGTyCeOHUIFYMGpQGbrBTSmNNoxv0if69rEZ5giu36weC5saFuznL411gRX7bJDw==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
+    dependencies:
+      hono: 4.11.4
+    dev: true
+
   /@huggingface/jinja@0.2.2:
     resolution: {integrity: sha512-/KPde26khDUIPkTGU82jdtTW9UAuvUTumCAbFs/7giR0SxsvZC4hru51PBvpijH6BVkHcROcvZM/lpy5h1jRRA==}
     engines: {node: '>=18'}
@@ -10627,7 +10636,7 @@ packages:
     dev: true
     optional: true
 
-  /@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@1.1.1):
+  /@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@1.1.8):
     resolution: {integrity: sha512-HvJSYql3lOPYZcGb23mBw0kcWLlCX+n7EDRgJQxz7gIzx9WafUuDyl1IlTCXGfxolm0EhNIub79u9v7owtks0w==}
     requiresBuild: true
     peerDependencies:
@@ -10637,7 +10646,7 @@ packages:
         optional: true
     dependencies:
       '@ai-zen/node-fetch-event-source': 2.1.4
-      '@langchain/core': 1.1.1
+      '@langchain/core': 1.1.8
       fetch-retry: 5.0.6
       http-status-codes: 2.3.0
       openapi-fetch: 0.8.2
@@ -11743,8 +11752,8 @@ packages:
       '@lancedb/lancedb-win32-arm64-msvc': 0.22.0
       '@lancedb/lancedb-win32-x64-msvc': 0.22.0
 
-  /@langchain/core@1.1.1:
-    resolution: {integrity: sha512-vdUoj2CVbb+0Qszi8llP34vdUCfP7bfA9VoFr4Se1pFGu7VAPnk8lBnRat9IvqSxMfTvOHJSd7Rn6TUPjzKsnA==}
+  /@langchain/core@1.1.8:
+    resolution: {integrity: sha512-kIUidOgc0ZdyXo4Ahn9Zas+OayqOfk4ZoKPi7XaDipNSWSApc2+QK5BVcjvwtzxstsNOrmXJiJWEN6WPF/MvAw==}
     engines: {node: '>=20'}
     dependencies:
       '@cfworker/json-schema': 4.1.1
@@ -11752,10 +11761,9 @@ packages:
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.21
-      langsmith: 0.3.78
+      langsmith: 0.4.5
       mustache: 4.2.0
       p-queue: 6.6.2
-      p-retry: 7.1.0
       uuid: 10.0.0
       zod: 4.1.13
     transitivePeerDependencies:
@@ -11765,17 +11773,17 @@ packages:
       - openai
     dev: true
 
-  /@langchain/langgraph-checkpoint@1.0.0(@langchain/core@1.1.1):
+  /@langchain/langgraph-checkpoint@1.0.0(@langchain/core@1.1.8):
     resolution: {integrity: sha512-xrclBGvNCXDmi0Nz28t3vjpxSH6UYx6w5XAXSiiB1WEdc2xD2iY/a913I3x3a31XpInUW/GGfXXfePfaghV54A==}
     engines: {node: '>=18'}
     peerDependencies:
       '@langchain/core': ^1.0.1
     dependencies:
-      '@langchain/core': 1.1.1
+      '@langchain/core': 1.1.8
       uuid: 10.0.0
     dev: true
 
-  /@langchain/langgraph-sdk@1.0.3(@langchain/core@1.1.1)(react-dom@16.14.0)(react@16.14.0):
+  /@langchain/langgraph-sdk@1.0.3(@langchain/core@1.1.8)(react-dom@16.14.0)(react@16.14.0):
     resolution: {integrity: sha512-6M4i0XsVO5Eb2vv/3OtIPHW3UqO4zYyXl6AOfS0Jf6d7JiWiSXqzLN8UoS0hpu1ItkcW1j575CRiP/6jn6XXFg==}
     peerDependencies:
       '@langchain/core': ^1.0.1
@@ -11789,7 +11797,7 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      '@langchain/core': 1.1.1
+      '@langchain/core': 1.1.8
       p-queue: 6.6.2
       p-retry: 4.6.2
       react: 16.14.0
@@ -11797,7 +11805,7 @@ packages:
       uuid: 9.0.1
     dev: true
 
-  /@langchain/langgraph@1.0.2(@langchain/core@1.1.1)(react-dom@16.14.0)(react@16.14.0)(zod@4.1.13):
+  /@langchain/langgraph@1.0.2(@langchain/core@1.1.8)(react-dom@16.14.0)(react@16.14.0)(zod@4.1.13):
     resolution: {integrity: sha512-syxzzWTnmpCL+RhUEvalUeOXFoZy/KkzHa2Da2gKf18zsf9Dkbh3rfnRDrTyUGS1XSTejq07s4rg1qntdEDs2A==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -11808,9 +11816,9 @@ packages:
       zod-to-json-schema:
         optional: true
     dependencies:
-      '@langchain/core': 1.1.1
-      '@langchain/langgraph-checkpoint': 1.0.0(@langchain/core@1.1.1)
-      '@langchain/langgraph-sdk': 1.0.3(@langchain/core@1.1.1)(react-dom@16.14.0)(react@16.14.0)
+      '@langchain/core': 1.1.8
+      '@langchain/langgraph-checkpoint': 1.0.0(@langchain/core@1.1.8)
+      '@langchain/langgraph-sdk': 1.0.3(@langchain/core@1.1.8)(react-dom@16.14.0)(react@16.14.0)
       uuid: 10.0.0
       zod: 4.1.13
     transitivePeerDependencies:
@@ -11818,22 +11826,23 @@ packages:
       - react-dom
     dev: true
 
-  /@langchain/mcp-adapters@1.0.2(@langchain/core@1.1.1)(@langchain/langgraph@1.0.2):
+  /@langchain/mcp-adapters@1.0.2(@langchain/core@1.1.8)(@langchain/langgraph@1.0.2)(hono@4.11.4):
     resolution: {integrity: sha512-UPbutXCt57qmC8gvr9z8Du+wMap4V6OYOnxRlWHcKxuF3YmZdqF2Z/N2V7tC3QfwG8waYsnkRNJlKBtby2Qzag==}
     engines: {node: '>=20.10.0'}
     peerDependencies:
       '@langchain/core': ^1.0.0
       '@langchain/langgraph': ^1.0.0
     dependencies:
-      '@langchain/core': 1.1.1
-      '@langchain/langgraph': 1.0.2(@langchain/core@1.1.1)(react-dom@16.14.0)(react@16.14.0)(zod@4.1.13)
-      '@modelcontextprotocol/sdk': 1.24.1(zod@4.1.13)
+      '@langchain/core': 1.1.8
+      '@langchain/langgraph': 1.0.2(@langchain/core@1.1.8)(react-dom@16.14.0)(react@16.14.0)(zod@4.1.13)
+      '@modelcontextprotocol/sdk': 1.25.2(hono@4.11.4)(zod@4.1.13)
       debug: 4.4.3
       zod: 4.1.13
     optionalDependencies:
       extended-eventsource: 1.7.0
     transitivePeerDependencies:
       - '@cfworker/json-schema'
+      - hono
       - supports-color
     dev: true
 
@@ -11890,8 +11899,8 @@ packages:
       - supports-color
     dev: true
 
-  /@modelcontextprotocol/sdk@1.24.1(zod@3.25.76):
-    resolution: {integrity: sha512-YTg4v6bKSst8EJM8NXHC3nGm8kgHD08IbIBbognUeLAgGLVgLpYrgQswzLQd4OyTL4l614ejhqsDrV1//t02Qw==}
+  /@modelcontextprotocol/sdk@1.25.2(hono@4.11.4)(zod@3.25.76):
+    resolution: {integrity: sha512-LZFeo4F9M5qOhC/Uc1aQSrBHxMrvxett+9KLHt7OhcExtoiRN9DKgbZffMP/nxjutWDQpfMDfP3nkHI4X9ijww==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
@@ -11900,6 +11909,7 @@ packages:
       '@cfworker/json-schema':
         optional: true
     dependencies:
+      '@hono/node-server': 1.19.9(hono@4.11.4)
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
       content-type: 1.0.5
@@ -11910,17 +11920,19 @@ packages:
       express: 5.1.0
       express-rate-limit: 7.5.1(express@5.1.0)
       jose: 6.1.3
+      json-schema-typed: 8.0.2
       pkce-challenge: 5.0.0
       raw-body: 3.0.0
       zod: 3.25.76
       zod-to-json-schema: 3.25.0(zod@3.25.76)
     transitivePeerDependencies:
+      - hono
       - supports-color
     dev: true
     optional: true
 
-  /@modelcontextprotocol/sdk@1.24.1(zod@4.1.13):
-    resolution: {integrity: sha512-YTg4v6bKSst8EJM8NXHC3nGm8kgHD08IbIBbognUeLAgGLVgLpYrgQswzLQd4OyTL4l614ejhqsDrV1//t02Qw==}
+  /@modelcontextprotocol/sdk@1.25.2(hono@4.11.4)(zod@4.1.13):
+    resolution: {integrity: sha512-LZFeo4F9M5qOhC/Uc1aQSrBHxMrvxett+9KLHt7OhcExtoiRN9DKgbZffMP/nxjutWDQpfMDfP3nkHI4X9ijww==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
@@ -11929,6 +11941,7 @@ packages:
       '@cfworker/json-schema':
         optional: true
     dependencies:
+      '@hono/node-server': 1.19.9(hono@4.11.4)
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
       content-type: 1.0.5
@@ -11939,11 +11952,13 @@ packages:
       express: 5.1.0
       express-rate-limit: 7.5.1(express@5.1.0)
       jose: 6.1.3
+      json-schema-typed: 8.0.2
       pkce-challenge: 5.0.0
       raw-body: 3.0.0
       zod: 4.1.13
       zod-to-json-schema: 3.25.0(zod@4.1.13)
     transitivePeerDependencies:
+      - hono
       - supports-color
     dev: true
 
@@ -12496,7 +12511,7 @@ packages:
     dependencies:
       '@octokit/openapi-types': 11.2.0
 
-  /@openai/agents-core@0.3.4(ws@8.18.3)(zod@3.25.76):
+  /@openai/agents-core@0.3.4(hono@4.11.4)(ws@8.18.3)(zod@3.25.76):
     resolution: {integrity: sha512-PytKxI6JBkz+i2wgFwyT0C7jhMULwMamvRkXb+vdnpDxkf9hnFwkyeQB+u4FjdnOb1S+P2ohkXHcGZlVCQ11WA==}
     peerDependencies:
       zod: ^3.25.40 || ^4.0
@@ -12508,34 +12523,36 @@ packages:
       openai: 6.9.1(ws@8.18.3)(zod@3.25.76)
       zod: 3.25.76
     optionalDependencies:
-      '@modelcontextprotocol/sdk': 1.24.1(zod@3.25.76)
+      '@modelcontextprotocol/sdk': 1.25.2(hono@4.11.4)(zod@3.25.76)
     transitivePeerDependencies:
       - '@cfworker/json-schema'
+      - hono
       - supports-color
       - ws
     dev: true
 
-  /@openai/agents-openai@0.3.4(ws@8.18.3)(zod@3.25.76):
+  /@openai/agents-openai@0.3.4(hono@4.11.4)(ws@8.18.3)(zod@3.25.76):
     resolution: {integrity: sha512-Bl7IrJw9uhuFQ/YYWhRaM9wN/+RBQTMNuXr+WGfBqvkD2RxndM7dh5oH0oRN0VAN4qqn9OA351x65g9oHHfrIA==}
     peerDependencies:
       zod: ^3.25.40 || ^4.0
     dependencies:
-      '@openai/agents-core': 0.3.4(ws@8.18.3)(zod@3.25.76)
+      '@openai/agents-core': 0.3.4(hono@4.11.4)(ws@8.18.3)(zod@3.25.76)
       debug: 4.4.3
       openai: 6.9.1(ws@8.18.3)(zod@3.25.76)
       zod: 3.25.76
     transitivePeerDependencies:
       - '@cfworker/json-schema'
+      - hono
       - supports-color
       - ws
     dev: true
 
-  /@openai/agents-realtime@0.3.4(zod@3.25.76):
+  /@openai/agents-realtime@0.3.4(hono@4.11.4)(zod@3.25.76):
     resolution: {integrity: sha512-qGjctIE7B3S9zbehwvJPF3WhEnki7pcdPfELSoB2WrluJf7Er4KUjUnrmCDUiSM2702OnNLV/5JPo1UcTNO2dQ==}
     peerDependencies:
       zod: ^3.25.40 || ^4.0
     dependencies:
-      '@openai/agents-core': 0.3.4(ws@8.18.3)(zod@3.25.76)
+      '@openai/agents-core': 0.3.4(hono@4.11.4)(ws@8.18.3)(zod@3.25.76)
       '@types/ws': 8.18.1
       debug: 4.4.3
       ws: 8.18.3
@@ -12543,24 +12560,26 @@ packages:
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - bufferutil
+      - hono
       - supports-color
       - utf-8-validate
     dev: true
 
-  /@openai/agents@0.3.4(ws@8.18.3)(zod@3.25.76):
+  /@openai/agents@0.3.4(hono@4.11.4)(ws@8.18.3)(zod@3.25.76):
     resolution: {integrity: sha512-QnYrvBgppJ2djlr5ia+eUwfGeE0hvo70OONdOtPHmYNzqKCprRNdnEVb41X5232LPQOFbvwENmACEkrnWbCvdA==}
     peerDependencies:
       zod: ^3.25.40 || ^4.0
     dependencies:
-      '@openai/agents-core': 0.3.4(ws@8.18.3)(zod@3.25.76)
-      '@openai/agents-openai': 0.3.4(ws@8.18.3)(zod@3.25.76)
-      '@openai/agents-realtime': 0.3.4(zod@3.25.76)
+      '@openai/agents-core': 0.3.4(hono@4.11.4)(ws@8.18.3)(zod@3.25.76)
+      '@openai/agents-openai': 0.3.4(hono@4.11.4)(ws@8.18.3)(zod@3.25.76)
+      '@openai/agents-realtime': 0.3.4(hono@4.11.4)(zod@3.25.76)
       debug: 4.4.3
       openai: 6.9.1(ws@8.18.3)(zod@3.25.76)
       zod: 3.25.76
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - bufferutil
+      - hono
       - supports-color
       - utf-8-validate
       - ws
@@ -13307,7 +13326,7 @@ packages:
   /@sap-ai-sdk/langchain@2.3.0:
     resolution: {integrity: sha512-5aniGM14dYkemO0LZJ4pWnm6Ra0+S5N1e1tQ08fbTy3DQyfrBbtd9V8yKLqK/8bEB777kmcj0D5tPnwKjelpOw==}
     dependencies:
-      '@langchain/core': 1.1.1
+      '@langchain/core': 1.1.8
       '@sap-ai-sdk/ai-api': 2.3.0
       '@sap-ai-sdk/core': 2.3.0
       '@sap-ai-sdk/foundation-models': 2.3.0
@@ -14806,7 +14825,7 @@ packages:
       - react-dom
     dev: true
 
-  /@storybook/builder-webpack5@8.4.2(esbuild@0.19.2)(storybook@8.4.2)(typescript@5.9.3):
+  /@storybook/builder-webpack5@8.4.2(esbuild@0.25.11)(storybook@8.6.15)(typescript@5.9.3):
     resolution: {integrity: sha512-Pqa0/sqqEujzcvs+/Cwf/5qRLC+atmceROCFokMOgpIaorTXlbmiQdJ2dBhMFNugLvXfL7dVQBjBfiuzhsQ57g==}
     peerDependencies:
       storybook: ^8.4.2
@@ -14815,7 +14834,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@storybook/core-webpack': 8.4.2(storybook@8.4.2)
+      '@storybook/core-webpack': 8.4.2(storybook@8.6.15)
       '@types/node': 22.9.0
       '@types/semver': 7.7.0
       browser-assert: 1.2.1
@@ -14830,15 +14849,15 @@ packages:
       path-browserify: 1.0.1
       process: 0.11.10
       semver: 7.7.1
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
       style-loader: 3.3.3(webpack@5.96.1)
-      terser-webpack-plugin: 5.3.10(esbuild@0.19.2)(webpack@5.96.1)
+      terser-webpack-plugin: 5.3.10(esbuild@0.25.11)(webpack@5.96.1)
       ts-dedent: 2.2.0
       typescript: 5.9.3
       url: 0.11.4
       util: 0.12.5
       util-deprecate: 1.0.2
-      webpack: 5.96.1(esbuild@0.19.2)
+      webpack: 5.96.1(esbuild@0.25.11)
       webpack-dev-middleware: 6.1.3(webpack@5.96.1)
       webpack-hot-middleware: 2.25.2
       webpack-virtual-modules: 0.6.2
@@ -14866,12 +14885,12 @@ packages:
       '@storybook/global': 5.0.0
     dev: true
 
-  /@storybook/components@8.4.2(storybook@8.4.2):
+  /@storybook/components@8.4.2(storybook@8.6.15):
     resolution: {integrity: sha512-+W59oF7D73LAxLNmCfFrfs98cH9pyNHK9HlJoO5/lKbK4IdWhhOoqUR/AJ3ueksoLuetFat4DxyE8SN1H4Bvrg==}
     peerDependencies:
       storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
     dependencies:
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
     dev: true
 
   /@storybook/core-events@7.6.20:
@@ -14880,29 +14899,29 @@ packages:
       ts-dedent: 2.2.0
     dev: true
 
-  /@storybook/core-webpack@8.4.2(storybook@8.4.2):
+  /@storybook/core-webpack@8.4.2(storybook@8.6.15):
     resolution: {integrity: sha512-bzGvzrLK/oDE9YlKayDEplcECURSa1oRkvV7rxI2sOTNfwuoxHJapvxFxazEKAHMVeSwfWDf4uKK0XeG2R/arA==}
     peerDependencies:
       storybook: ^8.4.2
     dependencies:
       '@types/node': 22.9.0
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
       ts-dedent: 2.2.0
     dev: true
 
-  /@storybook/core@8.4.2(prettier@3.6.2):
-    resolution: {integrity: sha512-hF8GWoUZTjwwuV5j4OLhMHZtZQL/NYcVUBReC2Ba06c8PkFIKqKZwATr1zKd301gQ5Qwcn9WgmZxJTMgdKQtOg==}
+  /@storybook/core@8.6.15(prettier@3.6.2)(storybook@8.6.15):
+    resolution: {integrity: sha512-VFpKcphNurJpSC4fpUfKL3GTXVoL53oytghGR30QIw5jKWwaT50HVbTyb41BLOUuZjmMhUQA8weiQEew6RX0gw==}
     peerDependencies:
       prettier: ^2 || ^3
     peerDependenciesMeta:
       prettier:
         optional: true
     dependencies:
-      '@storybook/csf': 0.1.11
+      '@storybook/theming': 8.6.15(storybook@8.6.15)
       better-opn: 3.0.2
       browser-assert: 1.2.1
-      esbuild: 0.19.2
-      esbuild-register: 3.6.0(esbuild@0.19.2)
+      esbuild: 0.25.11
+      esbuild-register: 3.6.0(esbuild@0.25.11)
       jsdoc-type-pratt-parser: 4.1.0
       prettier: 3.6.2
       process: 0.11.10
@@ -14912,6 +14931,7 @@ packages:
       ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
+      - storybook
       - supports-color
       - utf-8-validate
     dev: true
@@ -14954,15 +14974,15 @@ packages:
       - react-dom
     dev: true
 
-  /@storybook/manager-api@8.4.2(storybook@8.4.2):
+  /@storybook/manager-api@8.4.2(storybook@8.6.15):
     resolution: {integrity: sha512-rhPc4cgQDKDH8NUyRh/ZaJW7QIhR/PO5MNX4xc+vz71sM2nO7ONA/FrgLtCuu4SULdwilEPvGefYvLK0dE+Caw==}
     peerDependencies:
       storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
     dependencies:
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
     dev: true
 
-  /@storybook/preset-react-webpack@8.4.2(esbuild@0.19.2)(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3):
+  /@storybook/preset-react-webpack@8.4.2(esbuild@0.25.11)(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3):
     resolution: {integrity: sha512-Gt9hQRo1ythGFzATNV4WgQDlMDzBgiq7ks+YkW2/Xu5ZkrRrM/gK75fhmbICrknZl2pPPfNFXlECPWKAeTmwFA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
@@ -14974,8 +14994,8 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@storybook/core-webpack': 8.4.2(storybook@8.4.2)
-      '@storybook/react': 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3)
+      '@storybook/core-webpack': 8.4.2(storybook@8.6.15)
+      '@storybook/react': 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3)
       '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.9.3)(webpack@5.96.1)
       '@types/node': 22.9.0
       '@types/semver': 7.7.0
@@ -14986,10 +15006,10 @@ packages:
       react-dom: 16.14.0(react@16.14.0)
       resolve: 1.22.11
       semver: 7.7.1
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
       tsconfig-paths: 4.2.0
       typescript: 5.9.3
-      webpack: 5.96.1(esbuild@0.19.2)
+      webpack: 5.96.1(esbuild@0.25.11)
     transitivePeerDependencies:
       - '@storybook/test'
       - '@swc/core'
@@ -15018,12 +15038,12 @@ packages:
       util-deprecate: 1.0.2
     dev: true
 
-  /@storybook/preview-api@8.4.2(storybook@8.4.2):
+  /@storybook/preview-api@8.4.2(storybook@8.6.15):
     resolution: {integrity: sha512-5X/xvIvDPaWJKUBCo5zVeBbbjkhnwcI2KPkuOgrHVRRhuQ5WqD0RYxVtOOFNyQXme7g0nNl5RFNgvT7qv9qGeg==}
     peerDependencies:
       storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
     dependencies:
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
     dev: true
 
   /@storybook/react-docgen-typescript-plugin@1.0.6--canary.9.0c3f3b7.0(typescript@5.9.3)(webpack@5.96.1):
@@ -15040,12 +15060,12 @@ packages:
       react-docgen-typescript: 2.2.2(typescript@5.9.3)
       tslib: 2.8.1
       typescript: 5.9.3
-      webpack: 5.96.1(esbuild@0.19.2)
+      webpack: 5.96.1(esbuild@0.25.11)
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@storybook/react-dom-shim@8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2):
+  /@storybook/react-dom-shim@8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15):
     resolution: {integrity: sha512-FZVTM1f34FpGnf6e3MDIKkz05gmn8H9wEccvQAgr8pEFe8VWfrpVWeUrmatSAfgrCMNXYC1avDend8UX6IM8Fg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
@@ -15054,10 +15074,10 @@ packages:
     dependencies:
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
     dev: true
 
-  /@storybook/react-webpack5@8.4.2(esbuild@0.19.2)(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3):
+  /@storybook/react-webpack5@8.4.2(esbuild@0.25.11)(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3):
     resolution: {integrity: sha512-d2/kA7X7bFYnf3WI/aVKfg6ICMHiBIheSmgeY43R1E4K3KUjsJIVJDIliT+UKVZkEo0ie+rglZu0la1DO5Kl+Q==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
@@ -15069,13 +15089,13 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@storybook/builder-webpack5': 8.4.2(esbuild@0.19.2)(storybook@8.4.2)(typescript@5.9.3)
-      '@storybook/preset-react-webpack': 8.4.2(esbuild@0.19.2)(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3)
-      '@storybook/react': 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3)
+      '@storybook/builder-webpack5': 8.4.2(esbuild@0.25.11)(storybook@8.6.15)(typescript@5.9.3)
+      '@storybook/preset-react-webpack': 8.4.2(esbuild@0.25.11)(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3)
+      '@storybook/react': 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3)
       '@types/node': 22.9.0
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
       typescript: 5.9.3
     transitivePeerDependencies:
       - '@storybook/test'
@@ -15086,7 +15106,7 @@ packages:
       - webpack-cli
     dev: true
 
-  /@storybook/react@8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.9.3):
+  /@storybook/react@8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)(typescript@5.9.3):
     resolution: {integrity: sha512-rO5/aVKBVhIKENcL7G8ud4QKC5OyWBPCkJIvY6XUHIuhErJy9/4pP+sZ85jypVwx5kq+EqCPF8AEOWjIxB/4/Q==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
@@ -15101,15 +15121,15 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@storybook/components': 8.4.2(storybook@8.4.2)
+      '@storybook/components': 8.4.2(storybook@8.6.15)
       '@storybook/global': 5.0.0
-      '@storybook/manager-api': 8.4.2(storybook@8.4.2)
-      '@storybook/preview-api': 8.4.2(storybook@8.4.2)
-      '@storybook/react-dom-shim': 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)
-      '@storybook/theming': 8.4.2(storybook@8.4.2)
+      '@storybook/manager-api': 8.4.2(storybook@8.6.15)
+      '@storybook/preview-api': 8.4.2(storybook@8.6.15)
+      '@storybook/react-dom-shim': 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.6.15)
+      '@storybook/theming': 8.4.2(storybook@8.6.15)
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
       typescript: 5.9.3
     dev: true
 
@@ -15135,12 +15155,20 @@ packages:
       react-dom: 16.14.0(react@16.14.0)
     dev: true
 
-  /@storybook/theming@8.4.2(storybook@8.4.2):
+  /@storybook/theming@8.4.2(storybook@8.6.15):
     resolution: {integrity: sha512-9j4fnu5LcV+qSs1rdwf61Bt14lms0T1LOZkHxGNcS1c1oH+cPS+sxECh2lxtni+mvOAHUlBs9pKhVZzRPdWpvg==}
     peerDependencies:
       storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
     dependencies:
-      storybook: 8.4.2(prettier@3.6.2)
+      storybook: 8.6.15(prettier@3.6.2)
+    dev: true
+
+  /@storybook/theming@8.6.15(storybook@8.6.15):
+    resolution: {integrity: sha512-dAbL0XOekyT6XsF49R6Etj3WxQ/LpdJDIswUUeHgVJ6/yd2opZOGbPxnwA3zlmAh1c0tvpPyhSDXxSG79u8e4Q==}
+    peerDependencies:
+      storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
+    dependencies:
+      storybook: 8.6.15(prettier@3.6.2)
     dev: true
 
   /@storybook/types@7.6.20:
@@ -18035,7 +18063,7 @@ packages:
       '@babel/core': 7.28.0
       find-cache-dir: 4.0.0
       schema-utils: 4.0.0
-      webpack: 5.102.1(esbuild@0.19.2)
+      webpack: 5.102.1(esbuild@0.25.11)
     dev: true
 
   /babel-plugin-istanbul@7.0.1:
@@ -19631,7 +19659,7 @@ packages:
       postcss-modules-values: 4.0.0(postcss@8.4.31)
       postcss-value-parser: 4.2.0
       semver: 7.5.4
-      webpack: 5.102.1(esbuild@0.19.2)
+      webpack: 5.102.1(esbuild@0.25.11)
     dev: true
 
   /css-loader@6.8.1(webpack@5.96.1):
@@ -19648,7 +19676,7 @@ packages:
       postcss-modules-values: 4.0.0(postcss@8.4.31)
       postcss-value-parser: 4.2.0
       semver: 7.5.4
-      webpack: 5.96.1(esbuild@0.19.2)
+      webpack: 5.96.1(esbuild@0.25.11)
     dev: true
 
   /css-select@4.3.0:
@@ -20844,7 +20872,7 @@ packages:
       esbuild: 0.19.2
       get-tsconfig: 4.7.6
       loader-utils: 2.0.4
-      webpack: 5.102.1(esbuild@0.19.2)
+      webpack: 5.102.1(esbuild@0.25.11)
       webpack-sources: 1.4.3
     dev: true
 
@@ -20864,13 +20892,13 @@ packages:
       globby: 11.1.0
     dev: true
 
-  /esbuild-register@3.6.0(esbuild@0.19.2):
+  /esbuild-register@3.6.0(esbuild@0.25.11):
     resolution: {integrity: sha512-H2/S7Pm8a9CL1uhp9OvjwrBh5Pvx0H8qVOxNu8Wed9Y7qv56MPtq+GGM8RJpq6glYJn9Wspr8uw7l55uyinNeg==}
     peerDependencies:
       esbuild: '>=0.12 <1'
     dependencies:
       debug: 4.4.3
-      esbuild: 0.19.2
+      esbuild: 0.25.11
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -22220,7 +22248,7 @@ packages:
       semver: 7.7.1
       tapable: 2.2.1
       typescript: 5.9.3
-      webpack: 5.96.1(esbuild@0.19.2)
+      webpack: 5.96.1(esbuild@0.25.11)
     dev: true
 
   /form-data@4.0.4:
@@ -22927,6 +22955,11 @@ packages:
       parse-passwd: 1.0.0
     dev: false
 
+  /hono@4.11.4:
+    resolution: {integrity: sha512-U7tt8JsyrxSRKspfhtLET79pU8K+tInj5QZXs1jSugO1Vq5dFj3kmZsRldo29mTBfcjDRVRXrEZ6LS63Cog9ZA==}
+    engines: {node: '>=16.9.0'}
+    dev: true
+
   /hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
 
@@ -23038,7 +23071,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-      webpack: 5.96.1(esbuild@0.19.2)
+      webpack: 5.96.1(esbuild@0.25.11)
     dev: true
 
   /htmlparser2@6.1.0:
@@ -23718,11 +23751,6 @@ packages:
   /is-negative-zero@2.0.3:
     resolution: {integrity: sha512-5KoIu2Ngpyek75jXodFvnafB6DJgr3u8uuK0LEZJjrU19DrMD3EVERaR8sjz8CCGgpZvxPl9SuE1GMVPFHx1mw==}
     engines: {node: '>= 0.4'}
-    dev: true
-
-  /is-network-error@1.3.0:
-    resolution: {integrity: sha512-6oIwpsgRfnDiyEDLMay/GqCl3HoAtH5+RUKW29gYkL0QA+ipzpDLA16yQs7/RHCSu+BwgbJaOUqa4A99qNVQVw==}
-    engines: {node: '>=16'}
     dev: true
 
   /is-npm@6.0.0:
@@ -24985,6 +25013,10 @@ packages:
   /json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
 
+  /json-schema-typed@8.0.2:
+    resolution: {integrity: sha512-fQhoXdcvc3V28x7C7BMs4P5+kNlgUURe2jmUT1T//oBRMDrqy1QPelJimwZGo7Hg9VPV3EQV5Bnq4hbFy2vetA==}
+    dev: true
+
   /json-schema@0.4.0:
     resolution: {integrity: sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==}
     requiresBuild: true
@@ -25191,8 +25223,8 @@ packages:
     dev: true
     optional: true
 
-  /langsmith@0.3.78:
-    resolution: {integrity: sha512-PVrog/DiTsiyOQ38GeZEIVadgk55/dfE3axagQksT3dt6KhFuRxhNaZrC0rp3dNW9RQJCm/c3tn+PiybwQNY0Q==}
+  /langsmith@0.4.5:
+    resolution: {integrity: sha512-9N4JSQLz6fWiZwVXaiy0erlvNHlC68EtGJZG2OX+1y9mqj7KvKSL+xJnbCFc+ky3JN8s1d6sCfyyDdi4uDdLnQ==}
     peerDependencies:
       '@opentelemetry/api': '*'
       '@opentelemetry/exporter-trace-otlp-proto': '*'
@@ -25212,7 +25244,6 @@ packages:
       chalk: 4.1.2
       console-table-printer: 2.15.0
       p-queue: 6.6.2
-      p-retry: 4.6.2
       semver: 7.7.1
       uuid: 10.0.0
     dev: true
@@ -27424,13 +27455,6 @@ packages:
       retry: 0.13.1
     dev: true
 
-  /p-retry@7.1.0:
-    resolution: {integrity: sha512-xL4PiFRQa/f9L9ZvR4/gUCRNus4N8YX80ku8kv9Jqz+ZokkiZLM0bcvX0gm1F3PDi9SPRsww1BDsTWgE6Y1GLQ==}
-    engines: {node: '>=20'}
-    dependencies:
-      is-network-error: 1.3.0
-    dev: true
-
   /p-timeout-compat@1.0.8:
     resolution: {integrity: sha512-+7LpKr1ilnWU0LbV2r+Wz4srwMcFTUysmgL824ZxJcZP3u4Hyi/D/39pbyEs4j0XXCHvbv069+LDPxlCijfVRQ==}
     engines: {node: '>=12'}
@@ -28391,7 +28415,7 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /promptfoo@0.119.14(@langchain/core@1.1.1)(@types/node@18.19.130)(pg@8.16.3):
+  /promptfoo@0.119.14(@langchain/core@1.1.8)(@types/node@18.19.130)(hono@4.11.4)(pg@8.16.3):
     resolution: {integrity: sha512-xqHbnixhY7Z+wpCp23IWzKvTrwEn2AuY8O/smQbxI8A20ybhozHn06S5vf0OSW+GZiJLMeWJN7rWSan1SJ4vpA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
@@ -28406,7 +28430,7 @@ packages:
       '@inquirer/input': 4.3.1(@types/node@18.19.130)
       '@inquirer/select': 4.4.2(@types/node@18.19.130)
       '@modelcontextprotocol/sdk': 1.22.0
-      '@openai/agents': 0.3.4(ws@8.18.3)(zod@3.25.76)
+      '@openai/agents': 0.3.4(hono@4.11.4)(ws@8.18.3)(zod@3.25.76)
       '@types/ws': 8.18.1
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
@@ -28497,7 +28521,7 @@ packages:
       '@biomejs/cli-win32-x64': 2.3.7
       '@fal-ai/client': 1.7.2
       '@ibm-cloud/watsonx-ai': 1.7.4
-      '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@1.1.1)
+      '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@1.1.8)
       '@openai/codex-sdk': 0.63.0
       '@playwright/browser-chromium': 1.57.0
       '@rollup/rollup-linux-x64-gnu': 4.53.3
@@ -28552,6 +28576,7 @@ packages:
       - encoding
       - expo-sqlite
       - gel
+      - hono
       - kerberos
       - knex
       - kysely
@@ -30201,7 +30226,7 @@ packages:
       neo-async: 2.6.2
       sass: 1.66.1
       sass-embedded: 1.93.2
-      webpack: 5.102.1(esbuild@0.19.2)
+      webpack: 5.102.1(esbuild@0.25.11)
     dev: true
 
   /sass@1.66.1:
@@ -31064,8 +31089,8 @@ packages:
       - webpack
     dev: true
 
-  /storybook@8.4.2(prettier@3.6.2):
-    resolution: {integrity: sha512-GMCgyAulmLNrkUtDkCpFO4SB77YrpiIxq6e5tzaQdXEuaDu1mdNwOuP3VG7nE2FzxmqDvagSgriM68YW9iFaZA==}
+  /storybook@8.6.15(prettier@3.6.2):
+    resolution: {integrity: sha512-Ob7DMlwWx8s7dMvcQ3xPc02TvUeralb+xX3oaPRk9wY9Hc6M1IBC/7cEoITkSmRS2v38DHubC+mtEKNc1u2gQg==}
     hasBin: true
     peerDependencies:
       prettier: ^2 || ^3
@@ -31073,7 +31098,7 @@ packages:
       prettier:
         optional: true
     dependencies:
-      '@storybook/core': 8.4.2(prettier@3.6.2)
+      '@storybook/core': 8.6.15(prettier@3.6.2)(storybook@8.6.15)
       prettier: 3.6.2
     transitivePeerDependencies:
       - bufferutil
@@ -31376,7 +31401,7 @@ packages:
     peerDependencies:
       webpack: ^5.0.0
     dependencies:
-      webpack: 5.102.1(esbuild@0.19.2)
+      webpack: 5.102.1(esbuild@0.25.11)
     dev: true
 
   /style-loader@3.3.3(webpack@5.96.1):
@@ -31385,7 +31410,7 @@ packages:
     peerDependencies:
       webpack: ^5.0.0
     dependencies:
-      webpack: 5.96.1(esbuild@0.19.2)
+      webpack: 5.96.1(esbuild@0.25.11)
     dev: true
 
   /stylis@4.2.0:
@@ -31601,7 +31626,7 @@ packages:
       supports-hyperlinks: 3.2.0
     dev: true
 
-  /terser-webpack-plugin@5.3.10(esbuild@0.19.2)(webpack@5.96.1):
+  /terser-webpack-plugin@5.3.10(esbuild@0.25.11)(webpack@5.96.1):
     resolution: {integrity: sha512-BKFPWlPDndPs+NGGCr1U59t0XScL5317Y0UReNrHaw9/FwhPENlq6bfgs+4yPfyP51vqC1bQ4rp1EfXW5ZSH9w==}
     engines: {node: '>= 10.13.0'}
     peerDependencies:
@@ -31618,15 +31643,15 @@ packages:
         optional: true
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
-      esbuild: 0.19.2
+      esbuild: 0.25.11
       jest-worker: 27.5.1
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
       terser: 5.44.0
-      webpack: 5.96.1(esbuild@0.19.2)
+      webpack: 5.96.1(esbuild@0.25.11)
     dev: true
 
-  /terser-webpack-plugin@5.3.14(esbuild@0.19.2)(webpack@5.102.1):
+  /terser-webpack-plugin@5.3.14(esbuild@0.25.11)(webpack@5.102.1):
     resolution: {integrity: sha512-vkZjpUjb6OMS7dhV+tILUW6BhpDR7P2L/aQSAv+Uwk+m8KATX9EccViHTJR2qDtACKPIYndLGCyl3FMo+r2LMw==}
     engines: {node: '>= 10.13.0'}
     peerDependencies:
@@ -31643,12 +31668,12 @@ packages:
         optional: true
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
-      esbuild: 0.19.2
+      esbuild: 0.25.11
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       terser: 5.44.0
-      webpack: 5.102.1(esbuild@0.19.2)
+      webpack: 5.102.1(esbuild@0.25.11)
     dev: true
 
   /terser@5.44.0:
@@ -31801,6 +31826,7 @@ packages:
 
   /tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
+    requiresBuild: true
 
   /tr46@3.0.0:
     resolution: {integrity: sha512-l7FvfAHlcmulp8kr+flpQZmVwtu7nfRV7NZujtN0OqES8EL4O4e0qqzL0DC5gAvx/ZC/9lk6rhcUwYvkBnBnYA==}
@@ -31926,7 +31952,7 @@ packages:
       micromatch: 4.0.8
       semver: 7.5.4
       typescript: 5.9.3
-      webpack: 5.102.1(esbuild@0.19.2)
+      webpack: 5.102.1(esbuild@0.25.11)
     dev: true
 
   /ts-node@10.9.2(@types/node@20.0.0)(typescript@5.9.3):
@@ -32916,6 +32942,7 @@ packages:
 
   /webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
+    requiresBuild: true
 
   /webidl-conversions@7.0.0:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
@@ -32935,7 +32962,7 @@ packages:
       mime-types: 2.1.35
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.96.1(esbuild@0.19.2)
+      webpack: 5.96.1(esbuild@0.25.11)
     dev: true
 
   /webpack-hot-middleware@2.25.2:
@@ -32967,7 +32994,7 @@ packages:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
     dev: true
 
-  /webpack@5.102.1(esbuild@0.19.2):
+  /webpack@5.102.1(esbuild@0.25.11):
     resolution: {integrity: sha512-7h/weGm9d/ywQ6qzJ+Xy+r9n/3qgp/thalBbpOi5i223dPXKi04IBtqPN9nTd+jBc7QKfvDbaBnFipYp4sJAUQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
@@ -32999,7 +33026,7 @@ packages:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.14(esbuild@0.19.2)(webpack@5.102.1)
+      terser-webpack-plugin: 5.3.14(esbuild@0.25.11)(webpack@5.102.1)
       watchpack: 2.4.4
       webpack-sources: 3.3.3
     transitivePeerDependencies:
@@ -33008,7 +33035,7 @@ packages:
       - uglify-js
     dev: true
 
-  /webpack@5.96.1(esbuild@0.19.2):
+  /webpack@5.96.1(esbuild@0.25.11):
     resolution: {integrity: sha512-l2LlBSvVZGhL4ZrPwyr8+37AunkcYj5qh8o6u2/2rzoPc8gxFJkLj1WxNgooi9pnoc06jh0BjuXnamM4qlujZA==}
     engines: {node: '>=10.13.0'}
     hasBin: true
@@ -33038,7 +33065,7 @@ packages:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(esbuild@0.19.2)(webpack@5.96.1)
+      terser-webpack-plugin: 5.3.10(esbuild@0.25.11)(webpack@5.96.1)
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     transitivePeerDependencies:
