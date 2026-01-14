@@ -50,7 +50,7 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
 
     return (
         <AddonPanel key="panel" active={active}>
-            <>
+            <div>
                 {preview.codeSnippets.map((snippet) => (
                     <Form.Field label={snippet.fileName} key={snippet.fileName}>
                         <SyntaxHighlighter language={snippet.language ?? 'html'}>{snippet.content}</SyntaxHighlighter>
@@ -59,7 +59,7 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
                 <Form.Field label="Answers">
                     <SyntaxHighlighter language="json">{preview.answers}</SyntaxHighlighter>
                 </Form.Field>
-            </>
+            </div>
         </AddonPanel>
     );
 };
