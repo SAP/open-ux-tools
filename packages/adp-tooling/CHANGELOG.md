@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.36
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
 ## 0.18.35
 
 ### Patch Changes
