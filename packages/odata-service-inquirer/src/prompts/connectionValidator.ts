@@ -131,7 +131,8 @@ export class ConnectionValidator {
     public get catalogs(): Record<ODataVersion, CatalogService | undefined> {
         return {
             [ODataVersion.v2]: this._catalogV2,
-            [ODataVersion.v4]: this._catalogV4
+            [ODataVersion.v4]: this._catalogV4,
+            [ODataVersion.v401]: this._catalogV4
         };
     }
 
