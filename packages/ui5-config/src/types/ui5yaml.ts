@@ -30,7 +30,7 @@ export interface Resources {
 
 export interface Ui5Document {
     specVersion?: string;
-    type: 'application' | 'library' | 'theme-library' | 'module';
+    type: 'component' | 'application' | 'library' | 'theme-library' | 'module';
     metadata: {
         name: string;
         copyright?: string;
