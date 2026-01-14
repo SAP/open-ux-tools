@@ -63,15 +63,17 @@ const commonConfig: Linter.Config[] = [
 const workerPath = join(__dirname, 'project-access.js');
 const getWebappPathSync = createSyncFn(workerPath);
 
-let webappPathRelative = 'webapp';
-let testPathRelative = 'webapp/test';
+let webappPathRelative: string;
+let testPathRelative: string;
 
 try {
     const webappPathAbsolute = getWebappPathSync(process.cwd());
     webappPathRelative = relative(process.cwd(), webappPathAbsolute).split(sep).join('/');
     testPathRelative = posix.join(webappPathRelative, 'test');
-} catch (error) {
+} catch {
     // Ignore errors and use default paths
+    webappPathRelative = 'webapp';
+    testPathRelative = 'webapp/test';
 }
 
 const prodConfig: Linter.Config[] = [
