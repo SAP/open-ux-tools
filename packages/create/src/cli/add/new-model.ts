@@ -1,11 +1,11 @@
 import type { Command } from 'commander';
 
 import type { DescriptorVariant, NewModelAnswers, NewModelData } from '@sap-ux/adp-tooling';
-import { generateChange, ChangeType, getPromptsForNewModel, getVariant } from '@sap-ux/adp-tooling';
+import { generateChange, ChangeType, getPromptsForNewModel, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpProject } from '../../validation/validation';
+import { validateAdpAppType } from '../../validation/validation';
 
 /**
  * Add a new sub-command to add new odata service and new sapui5 model of an adaptation project to the given command.
@@ -38,11 +38,14 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
             basePath = process.cwd();
         }
 
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for CF projects.');
+        }
 
         const variant = await getVariant(basePath);
 
-        const answers = await promptYUIQuestions(getPromptsForNewModel(basePath, variant.layer), false);
+        const answers = await promptYUIQuestions(await getPromptsForNewModel(basePath, variant.layer), false);
 
         const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(
             basePath,

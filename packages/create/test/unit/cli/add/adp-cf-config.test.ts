@@ -18,6 +18,7 @@ describe('add/adp-cf-config', () => {
     let logLevelSpy: jest.SpyInstance;
     let validateBasePathSpy: jest.SpyInstance;
     let validateAdpAppTypeSpy: jest.SpyInstance;
+    let isCFEnvironmentSpy: jest.SpyInstance;
     let traceChangesSpy: jest.SpyInstance;
     let loadCfConfigMock: jest.SpyInstance;
     let isLoggedInCfMock: jest.SpyInstance;
@@ -49,6 +50,7 @@ describe('add/adp-cf-config', () => {
         logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
         validateBasePathSpy = jest.spyOn(validations, 'validateBasePath').mockResolvedValue(undefined);
         validateAdpAppTypeSpy = jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
+        isCFEnvironmentSpy = jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValue(true);
         traceChangesSpy = jest.spyOn(tracer, 'traceChanges').mockResolvedValue(undefined);
 
         loadCfConfigMock = jest.spyOn(adpTooling, 'loadCfConfig').mockReturnValue(mockCfConfig);
@@ -140,6 +142,17 @@ describe('add/adp-cf-config', () => {
         addAdaptationProjectCFConfigCommand(command);
 
         await expect(command.parseAsync(getArgv(appRoot))).rejects.toThrow('Not an adaptation project');
+    });
+
+    test('should throw error when not a CF environment', async () => {
+        isCFEnvironmentSpy.mockResolvedValue(false);
+
+        const command = new Command('add');
+        addAdaptationProjectCFConfigCommand(command);
+
+        await expect(command.parseAsync(getArgv(appRoot))).rejects.toThrow(
+            'This command can only be used for Cloud Foundry adaptation projects.'
+        );
     });
 
     test('should throw error when generateCfConfig fails', async () => {

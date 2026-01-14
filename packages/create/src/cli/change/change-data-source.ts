@@ -5,11 +5,12 @@ import {
     getPromptsForChangeDataSource,
     getAdpConfig,
     ManifestService,
-    getVariant
+    getVariant,
+    isCFEnvironment
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
-import { validateAdpProject } from '../../validation';
+import { validateAdpAppType } from '../../validation';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { FileName } from '@sap-ux/project-access';
 
@@ -47,7 +48,11 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         if (!basePath) {
             basePath = process.cwd();
         }
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for CF projects.');
+        }
+
         const variant = await getVariant(basePath);
         const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
         const provider = await createAbapServiceProvider(

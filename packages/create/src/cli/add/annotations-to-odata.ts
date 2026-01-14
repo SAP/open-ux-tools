@@ -5,14 +5,15 @@ import {
     getPromptsForAddAnnotationsToOData,
     getAdpConfig,
     ManifestService,
-    getVariant
+    getVariant,
+    isCFEnvironment
 } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-service-writer';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpProject } from '../../validation/validation';
+import { validateAdpAppType } from '../../validation/validation';
 import { FileName } from '@sap-ux/project-access';
 
 let loginAttempts = 3;
@@ -49,7 +50,11 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         if (!basePath) {
             basePath = process.cwd();
         }
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for CF projects.');
+        }
+
         const variant = await getVariant(basePath);
         const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
         const provider = await createAbapServiceProvider(

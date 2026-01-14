@@ -1,9 +1,15 @@
 import type { Command } from 'commander';
 import { getLogger, traceChanges } from '../../tracing';
-import { ChangeType, generateChange, getPromptsForChangeInbound, getVariant } from '@sap-ux/adp-tooling';
+import {
+    ChangeType,
+    generateChange,
+    getPromptsForChangeInbound,
+    getVariant,
+    isCFEnvironment
+} from '@sap-ux/adp-tooling';
 import type { DescriptorVariantContent } from '@sap-ux/adp-tooling';
 import { promptYUIQuestions } from '../../common';
-import { validateAdpProject, validateCloudAdpProject } from '../../validation';
+import { validateAdpAppType, validateCloudAdpProject } from '../../validation';
 
 /**
  * Add a new sub-command to change the inbound of an adaptation project to the given command.
@@ -36,7 +42,11 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
             basePath = process.cwd();
         }
 
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for CF projects.');
+        }
+
         await validateCloudAdpProject(basePath);
         const variant = await getVariant(basePath);
         const change = variant.content.find(

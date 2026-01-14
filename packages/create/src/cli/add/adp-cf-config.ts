@@ -1,18 +1,19 @@
 import type { Command } from 'commander';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath, validateAdpAppType } from '../../validation';
-import { isLoggedInCf, loadCfConfig, generateCfConfig } from '@sap-ux/adp-tooling';
+import { isLoggedInCf, loadCfConfig, generateCfConfig, isCFEnvironment } from '@sap-ux/adp-tooling';
 import { FileName } from '@sap-ux/project-access';
 
 /**
- * Add the "setup adaptation-project-cf" command to a passed command.
+ * Add the "adp-cf-config" sub-command.
  *
  * @param cmd - commander command for setting up CF adaptation project
  */
 export function addAdaptationProjectCFConfigCommand(cmd: Command): void {
     cmd.command('adp-cf-config [path]')
         .description(
-            `Configure a Cloud Foundry adaptation project by fetching reusable libraries, building the project, and configuring ui5.yaml.\n
+            `Configure an existing Cloud Foundry adaptation project for local preview by fetching reusable libraries, building the project, and configuring ui5.yaml middlewares.\n
+            **⚠️ Experimental**: This command is currently experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions if needed.\n
 Example:
     \`npx --yes @sap-ux/create@latest add adp-cf-config\``
         )
@@ -36,6 +37,10 @@ async function setupAdaptationProjectCF(basePath: string, yamlPath: string): Pro
     const logger = getLogger();
     await validateBasePath(basePath);
     await validateAdpAppType(basePath);
+
+    if (!(await isCFEnvironment(basePath))) {
+        throw new Error('This command can only be used for Cloud Foundry adaptation projects.');
+    }
 
     const cfConfig = loadCfConfig(logger);
 

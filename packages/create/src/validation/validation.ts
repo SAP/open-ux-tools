@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { existsSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 import { getAppType, getWebappPath } from '@sap-ux/project-access';
-import { type DescriptorVariantContent, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
+import { type DescriptorVariantContent, getVariant } from '@sap-ux/adp-tooling';
 
 /**
  * Validate base path of app, throw error if file is missing.
@@ -31,19 +31,6 @@ export async function validateBasePath(basePath: string, ui5YamlPath?: string): 
 export function hasFileDeletes(fs: Editor): boolean {
     const changedFiles = fs.dump() || {};
     return !!Object.keys(changedFiles).find((fileName) => changedFiles[fileName].state === 'deleted');
-}
-
-/**
- * Validate if adaptation project is supported for command, throws an error if not supported.
- *
- * @param basePath - path to the adaptation project
- */
-export async function validateAdpProject(basePath: string): Promise<void> {
-    await validateAdpAppType(basePath);
-
-    if (isCFEnvironment(basePath)) {
-        throw new Error('This command is not supported for CF projects.');
-    }
 }
 
 /**
