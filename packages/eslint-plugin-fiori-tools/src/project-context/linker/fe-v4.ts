@@ -141,7 +141,7 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                     'creationMode',
                     'name'
                 ],
-                values: [] // filled later on based on table type
+                values: getCreationModeValues()
             }
         }
     };
@@ -164,15 +164,11 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
  * @param tableType
  */
 function getCreationModeValues(tableType?: string): string[] {
-    switch (tableType) {
-        case 'ResponsiveTable':
-        case 'GridTable':
-            return ['InlineCreationRows', 'NewPage'];
-        case 'TreeTable':
-            return ['Inline', 'NewPage', 'CreationDialog'];
-        default:
-            return [];
+    if (tableType === 'TreeTable') {
+        return ['Inline', 'NewPage', 'CreationDialog'];
     }
+
+    return ['InlineCreationRows', 'NewPage'];
 }
 
 export type Node = Section | Table | OrphanTable;
