@@ -1,5 +1,38 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.16
+
+### Patch Changes
+
+- Updated dependencies [5d2a018]
+    - @sap-ux/odata-service-inquirer@2.14.1
+
+## 0.11.15
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.35
+- @sap-ux/odata-service-inquirer@2.14.0
+
+## 0.11.14
+
+### Patch Changes
+
+- f13d1c2: CAP project selection now searches parent directories and supports autocomplete in CLI
+- Updated dependencies [f13d1c2]
+    - @sap-ux/odata-service-inquirer@2.14.0
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/annotation-generator@0.4.6
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/cap-config-writer@0.12.41
+    - @sap-ux/fiori-generator-shared@0.13.50
+    - @sap-ux/launch-config@0.10.48
+    - @sap-ux/odata-service-writer@0.29.5
+    - @sap-ux/telemetry@0.6.52
+    - @sap-ux/ui5-application-inquirer@0.16.4
+    - @sap-ux/fiori-elements-writer@2.8.34
+    - @sap-ux/fiori-freestyle-writer@2.5.25
+
 ## 0.11.13
 
 ### Patch Changes

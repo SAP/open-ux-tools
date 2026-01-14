@@ -1,5 +1,18 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.7
+
+### Patch Changes
+
+- b116439: chore(deps): update dependency @modelcontextprotocol/sdk to v1.25.2
+- d17fb22: chore(deps): update dependency @langchain/core to v1.1.8 [security]
+
+## 0.6.6
+
+### Patch Changes
+
+- 5c34d46: feat(telemetry): enhance telemetry data with MCP client info and do not pass telemetry data when unknownTool
+
 ## 0.6.5
 
 ### Patch Changes
