@@ -15,7 +15,7 @@ import type { EntitySetsFlat } from './odata-query';
 import type { SelectedEntityAnswerAsJSONString } from './prompts';
 import { getODataDownloaderPrompts, promptNames, type SelectedEntityAnswer } from './prompts';
 import { type ReferencedEntities } from './types';
-import { convertODataResultToEntityFileData } from './utils';
+import { createEntitySetData } from './utils';
 import { getValueHelpSelectionPrompt } from './value-help-prompts';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
@@ -61,7 +61,7 @@ export class ODataDownloadGenerator extends Generator {
         /**
          * The downloaded entity odata as JSON
          */
-        entityOData?: { odata: []; entitySetsQueried: EntitySetsFlat };
+        entityOData?: { odata: []; entitySetsFlat: EntitySetsFlat };
         /**
          * The downloaded value help odata as JSON
          */
@@ -191,13 +191,17 @@ export class ODataDownloadGenerator extends Generator {
     }
 
     async writing(): Promise<void> {
-        if (this.state.entityOData?.odata) {
+        if (this.state.entityOData?.odata && this.state.appEntities) {
             try {
                 this.generationTime0 = performance.now();
                 // Set target dir to mock data path
                 this.destinationRoot(join(this.state.appRootPath!));
 
-                const entityFileData = convertODataResultToEntityFileData(this.state.appEntities!, this.state.entityOData, this.state.selectedEntities);
+                const entityFileData = createEntitySetData(
+                    this.state.entityOData.odata, 
+                    this.state.entityOData.entitySetsFlat,
+                    this.state.appEntities.listEntity.entitySetName
+                );
 
                 // const mainEntityPath = join(`${this.state.appEntities.listEntity}.json`);
                 // Write main entity data file (todo: do we need to treat this differently? )

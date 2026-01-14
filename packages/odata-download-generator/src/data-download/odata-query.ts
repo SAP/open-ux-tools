@@ -1,5 +1,5 @@
 import type { ODataService } from '@sap-ux/axios-extension';
-import { merge } from 'lodash';
+import { forEach, merge } from 'lodash';
 import buildQuery, { type Filter } from 'odata-query';
 import { t } from '../utils/i18n';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
@@ -33,6 +33,34 @@ export function getNestedExpands(entities: Entity[]): { expands: {}; entitySetsF
     };
 }
 
+function pathsToExpand(entityPaths: { entityPath: string, entitySetName: string }[]): { expands: {}; entitySetsFlat: EntitySetsFlat } {
+    let entitySetsFlat = {};
+    const expand = entityPaths.reduce(
+        (tree, { entityPath: path, entitySetName }) => {
+            const parts = path.split('/');
+            entitySetsFlat[parts[parts.length - 1]] = entitySetName;  // Can overwrite since we will only need to know each unique entity set name later
+
+            let current = tree;
+
+            parts.forEach((part, index) => {
+
+                if (!current.expand) {
+                    current.expand = {};
+                }
+                if (!current.expand[part]) {
+                    current.expand[part] = index === parts.length - 1 ? {} : { expand: {} };
+                }
+                current = current.expand[part];
+            });
+
+            return tree;
+        },
+        { expand: {} }
+    );
+
+    return { expands: expand, entitySetsFlat };
+}
+
 /**
  * Create the odata query by expanding and filtering the list entity.
  *
@@ -43,26 +71,17 @@ export function getNestedExpands(entities: Entity[]): { expands: {}; entitySetsF
  */
 export function createQueryFromEntities(
     listEntity: ReferencedEntities['listEntity'],
-    selectedEntities?: SelectedEntityAnswer[],
+    selectedEntities: SelectedEntityAnswer[],
     top = 1
 ): { query: string; entitySetsFlat: EntitySetsFlat } {
-    const { expands: entitiesToExpand, entitySetsFlat = {} } = listEntity.navPropEntities ? getNestedExpands(listEntity.navPropEntities) : {};
+    //const { entitySetsFlat = {} } = listEntity.navPropEntities ? getNestedExpands(listEntity.navPropEntities) : {};
 
-    if (selectedEntities) {
-        for (const entity of selectedEntities) {
-            //entitiesToExpand.push(entityPath.fullPath);
-            const parentPath = entity.fullPath.match(/^.*?(?=\/)/)?.[0];
-            if (parentPath && entitiesToExpand?.[parentPath]) {
-                entitiesToExpand[parentPath].expand
-                    ? entitiesToExpand[parentPath].expand.push(entity.entity.entityPath)
-                    : (entitiesToExpand[parentPath].expand = [entity.entity.entityPath]);
-            }
+    const selectedPaths = selectedEntities?.map((entity) => {
+        return { entityPath: entity.fullPath, entitySetName: entity.entity.entitySetName };
+    });
 
-            /* entitiesToExpand.forEach((entity) => {
-                nestedExpand = nestedExpands?.[entity.entityPath] ? Object.assign(nestedExpands[entity.entityPath], {  })
-            }) */
-        }
-    }
+    const { entitySetsFlat, expands: entitiesToExpand } = pathsToExpand(selectedPaths);
+
     const mainEntity = listEntity;
     const mainEntityFilters: Filter<string>[] = [];
     mainEntity.semanticKeys.forEach((key) => {
@@ -104,7 +123,7 @@ export function createQueryFromEntities(
     const queryInput = {};
 
     if (entitiesToExpand) {
-        Object.assign(queryInput, { expand: entitiesToExpand });
+        Object.assign(queryInput, entitiesToExpand); // todo : { entitiesToExpand } // add expands to root of expand object
     }
     if (mainEntityFilters.length > 0) {
         Object.assign(queryInput, {
@@ -135,7 +154,7 @@ export function createQueryFromEntities(
 export async function fetchData(
     entities: ReferencedEntities,
     odataService: ODataService,
-    selectedEntities?: SelectedEntityAnswer[],
+    selectedEntities: SelectedEntityAnswer[],
     top?: number
 ): Promise<{ odataResult: { entityData?: []; error?: string }; entitySetsQueried: EntitySetsFlat }> {
     const query = createQueryFromEntities(entities.listEntity, selectedEntities, top);
