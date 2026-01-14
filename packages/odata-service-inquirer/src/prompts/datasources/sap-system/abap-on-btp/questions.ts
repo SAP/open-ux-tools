@@ -39,7 +39,7 @@ const abapOnBtpPromptNames = {
 
 export type AbapOnBTPType = 'cloudFoundry' | 'reentranceTicket';
 
-interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
+export interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
     [abapOnBtpPromptNames.abapOnBtpAuthType]?: AbapOnBTPType;
     [systemUrlPromptName]?: string;
     [abapOnBtpPromptNames.cloudFoundryAbapSystem]?: ServiceInstanceInfo;
@@ -105,17 +105,48 @@ export function getAbapOnBTPSystemQuestions(
         questions.push(
             withCondition(
                 [getUserSystemNameQuestion(connectValidator, abapOnBtpPromptNamespace)],
-                () =>
-                    !!connectValidator.validatedUrl &&
-                    connectValidator.validity.reachable === true &&
-                    (connectValidator.validity.authenticated ?? connectValidator.validity.authRequired !== true)
+                (answers: AbapOnBtpAnswers) => {
+                    const authType = answers?.abapOnBtpAuthType;
+
+                    if (authType === 'cloudFoundry') {
+                        // For CF: only show after CF system is selected AND connection is ready
+                        return (
+                            !!answers?.cloudFoundryAbapSystem &&
+                            !!connectValidator.validatedUrl &&
+                            connectValidator.validity.reachable === true &&
+                            (connectValidator.validity.authenticated ?? connectValidator.validity.authRequired !== true)
+                        );
+                    }
+
+                    // For reentrance conditions don't change
+                    return (
+                        !!connectValidator.validatedUrl &&
+                        connectValidator.validity.reachable === true &&
+                        (connectValidator.validity.authenticated ?? connectValidator.validity.authRequired !== true)
+                    );
+                }
             )[0]
         );
     }
 
     // Service selection prompt
     questions.push(
-        ...getSystemServiceQuestion(connectValidator, abapOnBtpPromptNamespace, promptOptions?.serviceSelection)
+        ...withCondition(
+            getSystemServiceQuestion(
+                connectValidator,
+                abapOnBtpPromptNamespace,
+                promptOptions?.serviceSelection
+            ) as Question[],
+            (answers: AbapOnBtpAnswers) => {
+                const authType = answers?.abapOnBtpAuthType;
+                if (authType === 'cloudFoundry') {
+                    // For CF: only show after CF system is selected
+                    return !!answers?.cloudFoundryAbapSystem;
+                }
+                // For others: show normally (existing conditions inside the service selection prompt handle the rest)
+                return true;
+            }
+        )
     );
     return questions;
 }
