@@ -1,9 +1,19 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
+import {
+    extendWithOptions,
+    YUIQuestion,
+    type CheckBoxQuestion,
+    type ConfirmQuestion,
+    type InputQuestion
+} from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
-import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
+import {
+    getSystemSelectionQuestions,
+    OdataVersion,
+    promptNames as odataServiceInquirerPromptNames
+} from '@sap-ux/odata-service-inquirer';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
 import type { EntitySetsFlat } from './odata-query';
@@ -32,7 +42,6 @@ export type SelectedEntityAnswer = {
     };
 };
 
-
 /**
  * Reset the values of the passed app config reference otherwise create a new object reference
  *
@@ -44,7 +53,6 @@ function resetAppConfig(appConfig?: AppConfig): AppConfig {
         appConfig.appAccess = undefined;
         appConfig.referencedEntities = undefined;
         appConfig.servicePath = undefined;
-        appConfig.backendConfig = undefined;
         if (appConfig.systemName) {
             appConfig.systemName.value = undefined;
         }
@@ -54,7 +62,6 @@ function resetAppConfig(appConfig?: AppConfig): AppConfig {
         appAccess: undefined,
         referencedEntities: undefined,
         servicePath: undefined,
-        backendConfig: undefined,
         systemName: { value: undefined }
     };
 }
@@ -102,13 +109,16 @@ export async function getODataDownloaderPrompts(): Promise<{
             const appAccess = await createApplicationAccess(appPath);
             appConfig.appAccess = appAccess;
 
-            const { servicePath, systemName } = await getServiceDetails(appAccess.app.appRoot, appAccess.app.services[appAccess.app.mainService ?? 'mainService']);
-        
+            const { servicePath, systemName } = await getServiceDetails(
+                appAccess.app.appRoot,
+                appAccess.app.services[appAccess.app.mainService ?? 'mainService']
+            );
+
             if (servicePath) {
                 appConfig.servicePath = servicePath;
                 servicePaths.push(servicePath);
             }
-            
+
             if (appConfig.systemName) {
                 appConfig.systemName.value = systemName;
             }
@@ -132,6 +142,7 @@ export async function getODataDownloaderPrompts(): Promise<{
         getHostEnvironment() !== hostEnvironment.cli,
         ODataDownloadGenerator.logger as Logger
     );
+
     // Additional manually selected nav prop entittes
     let relatedEntityChoices: { choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } = {
         choices: []
@@ -146,23 +157,22 @@ export async function getODataDownloaderPrompts(): Promise<{
     const relatedEntitySelectionQuestion: CheckBoxQuestion = {
         when: async () => {
             // No selected service connection
-            if (!systemSelectionQuestions.answers.metadata || !appConfig.appAccess) {
+            if (!systemSelectionQuestions.answers.metadata || !appConfig.referencedEntities?.listEntity) {
                 return false;
             }
 
-            // Update the app config with entity data from the manifest and main service metadata
-            Object.assign(appConfig, await getEntityModel(appConfig.appAccess, systemSelectionQuestions.answers.metadata));
-
-            if (systemSelectionQuestions.answers.servicePath !== previousServicePath && appConfig.referencedEntities?.listEntity) {
-                const entityChoices = createEntityChoices(appConfig.referencedEntities.listEntity, appConfig.referencedEntities.pageObjectEntities);
+            if (
+                systemSelectionQuestions.answers.servicePath !== previousServicePath &&
+                appConfig.referencedEntities?.listEntity
+            ) {
+                const entityChoices = createEntityChoices(
+                    appConfig.referencedEntities.listEntity,
+                    appConfig.referencedEntities.pageObjectEntities
+                );
                 if (entityChoices) {
                     relatedEntityChoices = entityChoices;
                     odataQueryResult.entitySetsFlat = entityChoices.entitySetsFlat;
                     previousServicePath = systemSelectionQuestions.answers.servicePath;
-                    /* if (relatedEntityChoices.choices.length === 0) {
-                        relatedEntityChoices.choices = [];
-                        relatedEntityChoices.choices.push(...entityChoices.choices);
-                    } */
                 }
             }
             return relatedEntityChoices.choices.length > 0;
@@ -177,7 +187,10 @@ export async function getODataDownloaderPrompts(): Promise<{
         default: (previousAnswers: Answers) => {
             let defaults: SelectedEntityAnswer[] = [];
             const previousEntitySelections = previousAnswers?.[promptNames.relatedEntitySelection];
-            if (!previousEntitySelections || (Array.isArray(previousEntitySelections) && previousEntitySelections.length === 0)) {
+            if (
+                !previousEntitySelections ||
+                (Array.isArray(previousEntitySelections) && previousEntitySelections.length === 0)
+            ) {
                 // Pre-select entities with default selection property
                 relatedEntityChoices.choices.forEach((entityChoice) => {
                     // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
@@ -186,7 +199,9 @@ export async function getODataDownloaderPrompts(): Promise<{
                     }
                 });
             } else {
-                defaults = (previousAnswers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswer[])?.map((entityAnswer) => entityAnswer);
+                defaults = (previousAnswers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswer[])?.map(
+                    (entityAnswer) => entityAnswer
+                );
             }
             return defaults;
         },
@@ -203,7 +218,7 @@ export async function getODataDownloaderPrompts(): Promise<{
     selectSourceQuestions.push(
         appSelectionQuestion,
         ...(systemSelectionQuestions.prompts as Question[]),
-        getUpdateMainServiceMetadataPrompt(systemSelectionQuestions.answers),
+        getUpdateMainServiceMetadataPrompt(systemSelectionQuestions.answers, appConfig),
         ...keyPrompts,
         relatedEntitySelectionQuestion,
         getConfirmDownloadPrompt(systemSelectionQuestions.answers, appConfig, odataQueryResult)
@@ -220,17 +235,22 @@ export async function getODataDownloaderPrompts(): Promise<{
  * @param appInfo
  * @param odataServiceAnswers
  */
-function getKeyPrompts(size: number, appInfo: AppConfig, odataServiceAnswers: Partial<OdataServiceAnswers>): InputQuestion[] {
+function getKeyPrompts(
+    size: number,
+    appConfig: AppConfig,
+    odataServiceAnswers: Partial<OdataServiceAnswers>
+): InputQuestion[] {
     const questions: InputQuestion[] = [];
 
     const getEntityKeyInputPrompt = (keypart: number) =>
         ({
-            when: () => {
-                return !!odataServiceAnswers.connectedSystem?.serviceProvider && !!appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name;
-            },
+            when: async () => !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name,
             name: `entityKeyIdx:${keypart}`,
-            message: () => `Enter values for: ${appInfo.referencedEntities?.listEntity.semanticKeys[keypart]?.name}`,
-            type: appInfo.referencedEntities?.listEntity.semanticKeys?.[keypart]?.type === 'Edm.Boolean' ? 'confirm' : 'input',
+            message: () => `Enter values for: ${appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name}`,
+            type:
+                appConfig.referencedEntities?.listEntity.semanticKeys?.[keypart]?.type === 'Edm.Boolean'
+                    ? 'confirm'
+                    : 'input',
             guiOptions: {
                 hint: "For range selection use '-' between values. Use commas to select non-contigous values."
             },
@@ -240,8 +260,8 @@ function getKeyPrompts(size: number, appInfo: AppConfig, odataServiceAnswers: Pa
                     return `Invalid key value contain not allowed characters: ${invalidEntityKeyFilterChars.join()}`;
                 }
                 // Clear key values
-                if (!keyValue && appInfo.referencedEntities?.listEntity.semanticKeys[keypart]) {
-                    delete appInfo.referencedEntities.listEntity.semanticKeys[keypart].value;
+                if (!keyValue && appConfig.referencedEntities?.listEntity.semanticKeys[keypart]) {
+                    delete appConfig.referencedEntities.listEntity.semanticKeys[keypart].value;
                 }
 
                 const filterAndParts = keyValue.split(',');
@@ -253,21 +273,17 @@ function getKeyPrompts(size: number, appInfo: AppConfig, odataServiceAnswers: Pa
                 });
 
                 // todo: validate the input based on the key type
-                if (appInfo.referencedEntities?.listEntity.semanticKeys[keypart]) {
-                    appInfo.referencedEntities.listEntity.semanticKeys[keypart].value = keyValue;
+                if (appConfig.referencedEntities?.listEntity.semanticKeys[keypart]) {
+                    appConfig.referencedEntities.listEntity.semanticKeys[keypart].value = keyValue;
                 }
                 return true;
             }
-        } as InputQuestion);
+        }) as InputQuestion;
     // Generate a prompt for each key we need input for
     for (let i = 0; i < size; i++) {
         questions.push(getEntityKeyInputPrompt(i));
     }
 
-    /*  Object.entries(entityKey).forEach(([entityKeyName, entityKeyValue]) => {
-        questions.push(getEntityKeyInputPrompt(entityKeyName, entityKeyValue));
-    });
-    */
     return questions;
 }
 
@@ -330,11 +346,18 @@ function getConfirmDownloadPrompt(
  * @param odataServiceAnswers
  * @returns
  */
-function getUpdateMainServiceMetadataPrompt(odataServiceAnswers: Partial<OdataServiceAnswers>): ConfirmQuestion {
+function getUpdateMainServiceMetadataPrompt(
+    odataServiceAnswers: Partial<OdataServiceAnswers>,
+    appConfig: AppConfig
+): ConfirmQuestion {
     const question: ConfirmQuestion = {
-        when: () => {
-            // Do we have an active connection
-            return !!odataServiceAnswers.connectedSystem?.serviceProvider;
+        when: async () => {
+            // Use this when condition to load the entity data
+            if (appConfig.appAccess && odataServiceAnswers.metadata) {
+                Object.assign(appConfig, await getEntityModel(appConfig.appAccess, odataServiceAnswers.metadata));
+                return true;
+            }
+            return false;
         },
         name: promptNames.updateMainServiceMetadata,
         type: 'confirm',

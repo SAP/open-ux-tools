@@ -34,7 +34,7 @@
     "dependencies": {
         "odata-query": "8.0.5",
         "@sap/ux-specification": "1.139.2",
-        "@sap-ux/annotation-converter": "0.10.9",
+        "@sap-ux/annotation-converter": "0.10.19",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/edmx-parser": "0.9.1",

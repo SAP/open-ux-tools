@@ -3051,8 +3051,8 @@ importers:
         specifier: 1.16.9
         version: 1.16.9
       '@sap-ux/annotation-converter':
-        specifier: 0.10.9
-        version: 0.10.9
+        specifier: 0.10.19
+        version: 0.10.19
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -3087,8 +3087,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.2
-        version: 0.13.2
+        specifier: 0.14.5
+        version: 0.14.5
       '@sap/ux-specification':
         specifier: 1.139.2
         version: 1.139.2(typescript@5.9.3)
@@ -3112,7 +3112,7 @@ importers:
         version: 1.2.0
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.8.0)
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@types/inquirer':
         specifier: 8.2.6
@@ -13758,7 +13758,6 @@ packages:
   /@sap-ux/vocabularies-types@0.13.2:
     resolution: {integrity: sha512-lPFiWVXyA4yUBeQBJePxnqXZ/bMKk6vR3GoLtW/5ayBcQAJxWTpeyK8QX91sR+AajDmzkCF/8ND2ewi8SewySg==}
     engines: {node: '>=18.x'}
-    dev: true
 
   /@sap-ux/vocabularies-types@0.14.5:
     resolution: {integrity: sha512-66Q7Q4zVVSirPopU7oRw0ZDtUiOhAF2DuKy70uJl2wRfQ2WXLbrezEkHRxVdiVpQYm5n5qTkr6sX/I+/WXQjXQ==}
@@ -21747,7 +21746,7 @@ packages:
       body-parser: 2.2.0
       content-disposition: 1.0.0
       content-type: 1.0.5
-      cookie: 0.7.1
+      cookie: 0.7.2
       cookie-signature: 1.2.2
       debug: 4.4.3
       encodeurl: 2.0.0
