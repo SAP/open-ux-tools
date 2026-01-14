@@ -1,5 +1,98 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.37
+
+### Patch Changes
+
+- Updated dependencies [5d2a018]
+    - @sap-ux/odata-service-inquirer@2.14.1
+
+## 0.5.36
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/odata-service-inquirer@2.14.0
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.123
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.107
+    - @sap-ux/fiori-generator-shared@0.13.50
+    - @sap-ux/deploy-config-generator-shared@0.1.69
+    - @sap-ux/inquirer-common@0.10.9
+
+## 0.5.35
+
+### Patch Changes
+
+- d6562c8: Overwrite is only passed if the prompt is shown
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.122
+    - @sap-ux/odata-service-inquirer@2.13.10
+
+## 0.5.34
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/odata-service-inquirer@2.13.10
+    - @sap-ux/inquirer-common@0.10.8
+    - @sap-ux/project-access@1.33.1
+    - @sap-ux/deploy-config-generator-shared@0.1.68
+    - @sap-ux/fiori-generator-shared@0.13.49
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.106
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.121
+
+## 0.5.33
+
+### Patch Changes
+
+- 8275370: Handle the overwrite answer
+- Updated dependencies [8275370]
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.105
+
+## 0.5.32
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/odata-service-inquirer@2.13.9
+    - @sap-ux/inquirer-common@0.10.7
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.104
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.120
+
+## 0.5.31
+
+### Patch Changes
+
+- @sap-ux/deploy-config-generator-shared@0.1.67
+- @sap-ux/fiori-generator-shared@0.13.48
+- @sap-ux/odata-service-inquirer@2.13.8
+- @sap-ux/abap-deploy-config-sub-generator@0.1.119
+
+## 0.5.30
+
+### Patch Changes
+
+- Updated dependencies [6382440]
+    - @sap-ux/inquirer-common@0.10.6
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.103
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+    - @sap-ux/odata-service-inquirer@2.13.7
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.118
+
+## 0.5.29
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/odata-service-inquirer@2.13.6
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.117
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.102
+    - @sap-ux/deploy-config-generator-shared@0.1.67
+    - @sap-ux/inquirer-common@0.10.5
+
 ## 0.5.28
 
 ### Patch Changes
