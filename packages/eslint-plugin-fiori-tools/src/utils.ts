@@ -14,7 +14,7 @@ export const getResourcePaths = (): { sourceCodePath: string; testCodePath?: str
     const projectRoot = process.cwd();
     const ui5YamlPath = join(projectRoot, 'ui5.yaml');
     if (existsSync(ui5YamlPath)) {
-        const ui5Yaml = parseDocument(readFileSync(ui5YamlPath, { encoding: 'utf8' })).toJSON();
+        const ui5Yaml = parseDocument(readFileSync(ui5YamlPath, { encoding: 'utf8' })).toJSON() as Record<string, any>;
 
         if (ui5Yaml.type === 'library') {
             sourceCodePath = 'src';

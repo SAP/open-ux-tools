@@ -13,6 +13,7 @@ import type {
 } from '@sap-ux/vocabularies-types';
 import type { Range } from 'vscode-languageserver-textdocument';
 
+import type { AnyNode, Position } from '@sap-ux/odata-annotation-core-types';
 import { GHOST_FILENAME_PREFIX } from '@sap-ux/odata-annotation-core-types';
 
 import type {
@@ -25,7 +26,7 @@ import type {
 import { toUnifiedUri } from '../../src/cds/utils';
 import { isAnnotation, isAnnotationList, isCollection, isRecord } from '../../src/avt';
 
-function adaptedUrl(url: string, root: string): string {
+export function adaptedUrl(url: string, root: string): string {
     let result = url;
     const isGhost = url.startsWith(GHOST_FILENAME_PREFIX);
     result = isGhost ? url.slice(1) : url;
@@ -34,6 +35,44 @@ function adaptedUrl(url: string, root: string): string {
     result = normalizeCdsVersionInPath(result);
     result = (isGhost ? GHOST_FILENAME_PREFIX : '') + result;
     return result;
+}
+
+export function normalizeUriInKey<T>(data: Record<string, T>, root: string): Record<string, T> {
+    const result: typeof data = {};
+    for (const key of Object.keys(data)) {
+        const normalizedValue = adaptedUrl(key, root);
+        result[normalizedValue] = data[key];
+    }
+    return result;
+}
+
+const compactPosition = (position: Position): string => `(${position.line},${position.character})`;
+const compactRange = (range: Range): string => `[${compactPosition(range.start)}..${compactPosition(range.end)}]`;
+const rangePropertyPattern = /[a-z]*ranges?/i;
+
+function normalizeRangeProperty(key: string, value: Range | Range[]): string | undefined {
+    if (rangePropertyPattern.test(key) && value) {
+        if (Array.isArray(value)) {
+            return value.map(compactRange).join(' ');
+        }
+        return compactRange(value);
+    }
+    return undefined;
+}
+
+export function normalizeAnnotationNode(node: AnyNode): void {
+    for (const [key, value] of Object.entries(node)) {
+        const normalizedValue = normalizeRangeProperty(key, value);
+        if (normalizedValue) {
+            (node as any)[key] = normalizedValue;
+        } else if (typeof value === 'object') {
+            if (Array.isArray(value)) {
+                value.map(normalizeAnnotationNode);
+            } else {
+                normalizeAnnotationNode(value);
+            }
+        }
+    }
 }
 
 export function normalizeCdsVersionInPath(path: string): string {

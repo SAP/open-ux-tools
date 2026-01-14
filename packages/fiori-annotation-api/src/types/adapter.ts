@@ -1,4 +1,10 @@
-import type { CompilerMessage, Target, WorkspaceEdit } from '@sap-ux/odata-annotation-core-types';
+import type {
+    AliasInformation,
+    AnnotationFile,
+    CompilerMessage,
+    Target,
+    WorkspaceEdit
+} from '@sap-ux/odata-annotation-core-types';
 import type { MetadataService } from '@sap-ux/odata-entity-model';
 
 import type { AnnotationFileChange } from './internal-change';
@@ -30,6 +36,10 @@ export interface AnnotationServiceAdapter {
     /**
      *
      */
+    getDocuments(): Record<string, AnnotationFile>;
+    /**
+     *
+     */
     getWorkspaceEdit(changes: AnnotationFileChange[]): Promise<WorkspaceEdit>;
     /**
      *
@@ -49,4 +59,12 @@ export interface AnnotationServiceAdapter {
 
 export interface AnnotationServiceConstructor<T extends Service> {
     new (service: T): AnnotationServiceAdapter;
+}
+
+export interface ServiceArtifacts {
+    path: string;
+    metadataService: MetadataService;
+    aliasInfo: Record<string, AliasInformation>;
+    annotationFiles: Record<string, AnnotationFile>;
+    fileSequence: string[];
 }
