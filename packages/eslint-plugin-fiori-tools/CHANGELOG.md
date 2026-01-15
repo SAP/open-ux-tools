@@ -1,5 +1,13 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.1.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+- Updated dependencies [4d6695f]
+    - @sap-ux/fiori-annotation-api@0.9.1
+
 ## 9.1.0
 
 ### Minor Changes
