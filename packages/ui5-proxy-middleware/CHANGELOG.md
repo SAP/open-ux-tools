@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.11
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
 ## 1.6.10
 
 ### Patch Changes

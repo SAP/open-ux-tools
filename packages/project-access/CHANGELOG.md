@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.34.0
+
+### Minor Changes
+
+- b132944: feat: add consistency rules `sap-flex-enabled`, `sap-disable-copy-to-clipboard` and `sap-width-including-column-header`.
+
 ## 1.33.2
 
 ### Patch Changes

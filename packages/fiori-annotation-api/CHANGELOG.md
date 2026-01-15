@@ -1,5 +1,25 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+- Updated dependencies [4d6695f]
+    - @sap-ux/cds-odata-annotation-converter@0.7.1
+
+## 0.9.0
+
+### Minor Changes
+
+- b132944: feat: provide synchronous API for reading annotations
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/cds-odata-annotation-converter@0.7.0
+    - @sap-ux/project-access@1.34.0
+
 ## 0.8.6
 
 ### Patch Changes
