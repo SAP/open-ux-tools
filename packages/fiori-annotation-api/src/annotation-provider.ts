@@ -156,7 +156,7 @@ export class CdsAnnotationProvider {
         fileCache: Map<string, string>,
         _ignoreCache = false
     ): CdsCompilerFacade {
-        throw new Error('Not implemented yet.');
+        return {} as CdsCompilerFacade;
 
         // NOSONAR: Commented code kept for future CDS implementation reference
         // const cachedValue = this.cdsCache.get(rootPath);
