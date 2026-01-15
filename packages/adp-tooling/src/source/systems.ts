@@ -4,7 +4,7 @@ import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 
 import type { Endpoint } from '../types';
-import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
+import { type AbapServiceProvider, AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
 
 export enum SupportedProject {
@@ -20,19 +20,27 @@ export enum SupportedProject {
  * @returns {Promise<SupportedProject>} The supported project types.
  */
 export async function getSupportedProject(provider: AbapServiceProvider): Promise<SupportedProject> {
-    const layerdRepositoryService = provider.getLayeredRepository();
-    const systemInfo = await layerdRepositoryService.getSystemInfo();
-    const { adaptationProjectTypes } = systemInfo;
+    try {
+        const layerdRepositoryService = provider.getLayeredRepository();
+        const systemInfo = await layerdRepositoryService.getSystemInfo();
+        const { adaptationProjectTypes } = systemInfo;
 
-    const hasCloudReady = adaptationProjectTypes?.includes(AdaptationProjectType.CLOUD_READY);
-    const hasOnPrem = adaptationProjectTypes?.includes(AdaptationProjectType.ON_PREMISE);
+        const hasCloudReady = adaptationProjectTypes?.includes(AdaptationProjectType.CLOUD_READY);
+        const hasOnPrem = adaptationProjectTypes?.includes(AdaptationProjectType.ON_PREMISE);
 
-    if (hasCloudReady && hasOnPrem) {
-        return SupportedProject.CLOUD_READY_AND_ON_PREM;
-    } else if (hasCloudReady) {
-        return SupportedProject.CLOUD_READY;
-    } else if (hasOnPrem) {
-        return SupportedProject.ON_PREM;
+        if (hasCloudReady && hasOnPrem) {
+            return SupportedProject.CLOUD_READY_AND_ON_PREM;
+        } else if (hasCloudReady) {
+            return SupportedProject.CLOUD_READY;
+        } else if (hasOnPrem) {
+            return SupportedProject.ON_PREM;
+        }
+    } catch (error) {
+        // Handle the case where the API is not available and continue to standard onPremise flow.
+        if (isAxiosError(error) && (error.response?.status === 405 || error.response?.status === 404)) {
+            return SupportedProject.ON_PREM;
+        }
+        throw error;
     }
 
     throw new Error(t('error.projectTypeNotProvided'));
