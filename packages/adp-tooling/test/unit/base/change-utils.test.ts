@@ -660,7 +660,7 @@ describe('Change Utils', () => {
                     namespace: `apps/${appId}/changes/`,
                     projectId: appId,
                     support: expect.objectContaining({
-                        generator: `${supportId} (converted from key user changes)`
+                        generator: 'adp-key-user-converter'
                     })
                 })
             );
@@ -701,25 +701,21 @@ describe('Change Utils', () => {
                 expect.stringContaining('id_123_with_generator.change'),
                 expect.objectContaining({
                     support: expect.objectContaining({
-                        generator: `${supportId} (converted from key user changes)`
+                        generator: 'adp-key-user-converter'
                     })
                 })
             );
 
             const secondCallChange = writeJsonSpy.mock.calls[1][1];
             expect(secondCallChange.support).toBeDefined();
-            expect(secondCallChange.support.generator).toBe(`${supportId} (converted from key user changes)`);
+            expect(secondCallChange.support.generator).toBe('adp-key-user-converter');
         });
     });
 
     describe('transformKeyUserChangeForAdp', () => {
         const appId = 'sap.ui.demoapps.rta.freestyle';
-        const support = {
-            id: '@sap-ux/adp-tooling',
-            version: '1.0.0'
-        } as ToolsSupport;
 
-        it('should update support.generator when generator exists and support.id is provided', () => {
+        it('should update support.generator when generator exists', () => {
             const change = {
                 fileName: 'test.change',
                 changeType: 'rename',
@@ -728,41 +724,35 @@ describe('Change Utils', () => {
                 }
             };
 
-            const result = transformKeyUserChangeForAdp(change, appId, support, FlexLayer.CUSTOMER_BASE);
+            const result = transformKeyUserChangeForAdp(change, appId, FlexLayer.CUSTOMER_BASE);
 
             expect(result.support).toBeDefined();
-            expect((result.support as Record<string, unknown>)?.generator).toBe(
-                `${support.id} (converted from key user changes)`
-            );
+            expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
         });
 
-        it('should add support.generator when generator does not exist but support.id is provided', () => {
+        it('should add support.generator when generator does not exist', () => {
             const change = {
                 fileName: 'test.change',
                 changeType: 'rename',
                 support: {}
             };
 
-            const result = transformKeyUserChangeForAdp(change, appId, support, FlexLayer.CUSTOMER_BASE);
+            const result = transformKeyUserChangeForAdp(change, appId, FlexLayer.CUSTOMER_BASE);
 
             expect(result.support).toBeDefined();
-            expect((result.support as Record<string, unknown>)?.generator).toBe(
-                `${support.id} (converted from key user changes)`
-            );
+            expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
         });
 
-        it('should create support object and add generator if support.id is provided', () => {
+        it('should create support object and add generator support property', () => {
             const change = {
                 fileName: 'test.change',
                 changeType: 'rename'
             };
 
-            const result = transformKeyUserChangeForAdp(change, appId, support, FlexLayer.CUSTOMER_BASE);
+            const result = transformKeyUserChangeForAdp(change, appId, FlexLayer.CUSTOMER_BASE);
 
             expect(result.support).toBeDefined();
-            expect((result.support as Record<string, unknown>)?.generator).toBe(
-                `${support.id} (converted from key user changes)`
-            );
+            expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
         });
     });
 });

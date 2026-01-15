@@ -14,8 +14,7 @@ import {
     type ManifestChangeProperties,
     type PropertyValueType,
     ChangeTypeMap,
-    type AdpWriterConfig,
-    type ToolsSupport
+    type AdpWriterConfig
 } from '../types';
 import { renderFile } from 'ejs';
 
@@ -102,12 +101,7 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
             continue;
         }
 
-        const transformedChange = transformKeyUserChangeForAdp(
-            change,
-            config.app.id,
-            config.customConfig?.adp?.support,
-            config.app.layer
-        );
+        const transformedChange = transformKeyUserChangeForAdp(change, config.app.id, config.app.layer);
 
         await writeChangeToFolder(projectPath, transformedChange as unknown as ManifestChangeProperties, fs);
     }
@@ -118,14 +112,12 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
  *
  * @param change - The key-user change from the backend.
  * @param appId - The ID of the newly created Adaptation Project.
- * @param support - The support information for the change.
  * @param layer - The layer of the change.
  * @returns {Record<string, unknown>} The transformed change object.
  */
 export function transformKeyUserChangeForAdp(
     change: Record<string, unknown>,
     appId: string,
-    support: ToolsSupport | undefined,
     layer: FlexLayer | undefined
 ): Record<string, unknown> {
     const transformed = { ...change };
@@ -138,9 +130,7 @@ export function transformKeyUserChangeForAdp(
     }
     transformed.support ??= {};
     const supportObject = transformed.support as Record<string, unknown>;
-    if (support?.id) {
-        supportObject.generator = `${support.id} (converted from key user changes)`;
-    }
+    supportObject.generator = 'adp-key-user-converter';
 
     delete transformed.adaptationId;
     delete transformed.version;

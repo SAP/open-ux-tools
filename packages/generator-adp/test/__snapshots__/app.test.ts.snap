@@ -95,7 +95,7 @@ exports[`Adaptation Project Generator Integration Test ABAP Environment should g
     "serviceUrl": "/odata/test/service",
   },
   "support": {
-    "generator": "@sap-ux/generator-adp (converted from key user changes)",
+    "generator": "adp-key-user-converter",
   },
 }
 `;
