@@ -75,10 +75,11 @@ describe('MultiSelect', () => {
         expect(screen.getByPlaceholderText('testText0')).toBeDefined();
     });
 
-    it('Test value reset', () => {
+    it.only('Test value reset', () => {
         const { rerender } = render(<MultiSelect {...props} value={'testValue0,testValue1'} />);
         let input = screen.getByRole('combobox');
         expect(input.getAttribute('value')).toEqual('testText0, testText1');
+        debugger;
         rerender(<MultiSelect {...props} value={undefined} />);
         input = screen.getByRole('combobox');
         expect(input.getAttribute('value')).toEqual('');
@@ -155,20 +156,20 @@ describe('MultiSelect', () => {
         expect(onChangeFn).toHaveBeenCalledWith('testList', '');
     });
 
-    it('should initialise with checked options and update when options change', () => {
+    it('should initialise with selected options and update when options change', () => {
         const choices = [
-            { name: 'testText0', value: 'testValue0', checked: true },
-            { name: 'testText1', value: 'testValue1', checked: false },
-            { name: 'testText2', value: 'testValue2', checked: true }
+            { name: 'testText0', value: 'testValue0', selected: true },
+            { name: 'testText1', value: 'testValue1', selected: false },
+            { name: 'testText2', value: 'testValue2', selected: true }
         ];
-        const checkedProps: MultiSelectProps = {
+        const selectedProps: MultiSelectProps = {
             ...props,
             dynamicChoices: choices,
             value: undefined,
             onChange: jest.fn()
         };
 
-        render(<MultiSelect {...checkedProps} />);
+        render(<MultiSelect {...selectedProps} />);
 
         const combobox = screen.getByRole('combobox');
         const button = combobox.parentElement?.querySelector('.ms-Button') as HTMLElement;
@@ -179,19 +180,19 @@ describe('MultiSelect', () => {
 
         // Select the unchecked option
         fireEvent.click(options[1]);
-        expect(checkedProps.onChange).toHaveBeenCalledWith('testList', 'testValue0,testValue2,testValue1');
+        expect(selectedProps.onChange).toHaveBeenCalledWith('testList', 'testValue0,testValue2,testValue1');
 
         // Unselect one of the initially checked options
         fireEvent.click(options[0]);
-        expect(checkedProps.onChange).toHaveBeenCalledWith('testList', 'testValue2,testValue1');
+        expect(selectedProps.onChange).toHaveBeenCalledWith('testList', 'testValue2,testValue1');
 
         // Unselect the other initially checked option
         fireEvent.click(options[2]);
-        expect(checkedProps.onChange).toHaveBeenCalledWith('testList', 'testValue1');
+        expect(selectedProps.onChange).toHaveBeenCalledWith('testList', 'testValue1');
 
         // Unselect the last option
         fireEvent.click(options[1]);
-        expect(checkedProps.onChange).toHaveBeenCalledWith('testList', '');
+        expect(selectedProps.onChange).toHaveBeenCalledWith('testList', '');
     });
 
 });

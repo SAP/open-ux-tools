@@ -117,10 +117,6 @@ export function useVisibleOptionsAndKeys(
     const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>();
 
     useEffect(() => {
-        setVisibleOptions(options.filter((opt) => !(opt.data as any)?.hidden));
-    }, [options]);
-
-    useEffect(() => {
         if (!value) {
             setSelectedKeys(undefined);
             return;
@@ -138,6 +134,7 @@ export function useVisibleOptionsAndKeys(
         });
 
         setSelectedKeys(visibleKeys.length > 0 ? visibleKeys : undefined);
+        setVisibleOptions(options.filter((opt) => !(opt.data as any)?.hidden));
     }, [value, options]);
 
     return { visibleOptions, selectedKeys };
