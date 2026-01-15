@@ -176,7 +176,7 @@ describe('getPrompts', () => {
         const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
 
         expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: '/odata/v4/example' })).toBe('4.0');
+        expect(dafaultFn({ uri: '/odata/v4/example' })).toBe('4.1');
     });
 
     it('should return default value for odata version when uri answer is not present', () => {
@@ -198,7 +198,7 @@ describe('getPrompts', () => {
         const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
 
         expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: '/odata/v4/' })).toBe('4.0');
+        expect(dafaultFn({ uri: '/odata/v4/' })).toBe('4.1');
     });
 
     it('should return default value for odata version based on uri answer not in CF environment', () => {
@@ -209,7 +209,7 @@ describe('getPrompts', () => {
         const dafaultFn = result.find((prompt) => prompt.name === 'version')?.default;
 
         expect(typeof dafaultFn).toBe('function');
-        expect(dafaultFn({ uri: '/sap/opu/odata4/' })).toBe('4.0');
+        expect(dafaultFn({ uri: '/sap/opu/odata4/' })).toBe('4.1');
     });
 
     it('should return true when validating model name prompt', () => {

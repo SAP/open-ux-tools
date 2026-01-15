@@ -944,7 +944,7 @@ describe('update', () => {
                 settings: {
                     annotations: ['SEPMRA_PROD_MAN', 'annotation'],
                     localUri: 'localService/mainService/metadata.xml',
-                    odataVersion: '4.0'
+                    odataVersion: '4.1'
                 }
             },
             SEPMRA_PROD_MAN: {
@@ -1090,7 +1090,7 @@ describe('update', () => {
                 settings: {
                     annotations: ['SEPMRA_PROD_MAN', 'annotation'],
                     localUri: 'localService/mainService/metadata.xml',
-                    odataVersion: '4.0'
+                    odataVersion: '4.1'
                 }
             },
             SEPMRA_PROD_MAN: {
@@ -1317,7 +1317,7 @@ describe('update', () => {
                 settings: {
                     annotations: ['SEPMRA_PROD_MAN', 'annotation'],
                     localUri: 'localService/mainService/metadata.xml',
-                    odataVersion: '4.0'
+                    odataVersion: '4.1'
                 }
             },
             SEPMRA_PROD_MAN: {
@@ -1523,7 +1523,7 @@ describe('update', () => {
                 settings: {
                     annotations: ['DIFFERENT_ANNOTATION', 'annotation'],
                     localUri: 'localService/mainService/metadata.xml',
-                    odataVersion: '4.0'
+                    odataVersion: '4.1'
                 }
             },
             DIFFERENT_ANNOTATION: {
@@ -1675,7 +1675,7 @@ describe('update', () => {
                 settings: {
                     annotations: ['SEPMRA_PROD_MAN', 'annotation'],
                     localUri: 'localService/mainService/metadata.xml',
-                    odataVersion: '4.0'
+                    odataVersion: '4.1'
                 }
             },
             SEPMRA_PROD_MAN: {
