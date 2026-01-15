@@ -26,6 +26,7 @@ import SystemsLogger from '../../../utils/logger';
 
 /**
  * Tests the connection to a specified backend system and retrieves the count of available OData services.
+ * Also makes an API call for other system information e.g. system ID and client.
  *
  * @param context - panel context
  * @param action - test connection action containing the system to test
