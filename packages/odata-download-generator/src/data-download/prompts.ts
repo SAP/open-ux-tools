@@ -1,19 +1,9 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import {
-    extendWithOptions,
-    YUIQuestion,
-    type CheckBoxQuestion,
-    type ConfirmQuestion,
-    type InputQuestion
-} from '@sap-ux/inquirer-common';
+import { type CheckBoxQuestion, type ConfirmQuestion, type InputQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
-import {
-    getSystemSelectionQuestions,
-    OdataVersion,
-    promptNames as odataServiceInquirerPromptNames
-} from '@sap-ux/odata-service-inquirer';
+import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
 import type { EntitySetsFlat } from './odata-query';
@@ -68,8 +58,6 @@ function resetAppConfig(appConfig?: AppConfig): AppConfig {
 
 /**
  *
- *
- * @param mainEntity
  */
 export async function getODataDownloaderPrompts(): Promise<{
     questions: Question[];
@@ -90,9 +78,9 @@ export async function getODataDownloaderPrompts(): Promise<{
         guiType: 'folder-browser',
         name: 'appSelection',
         message: 'Select an application as data download target',
-        default: (answers: Answers) => answers.appSelection || appConfig.appAccess?.app.appRoot,
+        default: (answers: Answers) => answers.appSelection ?? appConfig.appAccess?.app.appRoot,
         guiOptions: { mandatory: true, breadcrumb: `Selected App` },
-        validate: async (appPath: string, answers: Answers): Promise<string | boolean> => {
+        validate: async (appPath: string): Promise<string | boolean> => {
             // todo: validate required files presence...deleting the metadata file crashes the gen.
             if (!appPath) {
                 return false;
@@ -149,11 +137,6 @@ export async function getODataDownloaderPrompts(): Promise<{
     };
     let previousServicePath: string | undefined;
 
-    const odataQueryResult: { odata: []; entitySetsFlat: EntitySetsFlat } = {
-        odata: [],
-        entitySetsFlat: {}
-    };
-
     const relatedEntitySelectionQuestion: CheckBoxQuestion = {
         when: async () => {
             // No selected service connection
@@ -171,7 +154,6 @@ export async function getODataDownloaderPrompts(): Promise<{
                 );
                 if (entityChoices) {
                     relatedEntityChoices = entityChoices;
-                    odataQueryResult.entitySetsFlat = entityChoices.entitySetsFlat;
                     previousServicePath = systemSelectionQuestions.answers.servicePath;
                 }
             }
@@ -204,16 +186,15 @@ export async function getODataDownloaderPrompts(): Promise<{
                 );
             }
             return defaults;
-        },
-        validate: (input: string[], answers: Answers) => {
-            // Mark the selected entites as selected in the expand model
-            //updateSelectedExpands(input, relatedEntityChoices.expands);
-            return true;
         }
     };
 
     // Generate the max size of key parts allowed
-    keyPrompts = getKeyPrompts(3, appConfig, systemSelectionQuestions.answers);
+    keyPrompts = getKeyPrompts(3, appConfig);
+    const odataQueryResult: { odata: []; entitySetsFlat: EntitySetsFlat } = {
+        odata: [],
+        entitySetsFlat: {}
+    };
 
     selectSourceQuestions.push(
         appSelectionQuestion,
@@ -232,14 +213,9 @@ export async function getODataDownloaderPrompts(): Promise<{
 /**
  *
  * @param size
- * @param appInfo
- * @param odataServiceAnswers
+ * @param appConfig
  */
-function getKeyPrompts(
-    size: number,
-    appConfig: AppConfig,
-    odataServiceAnswers: Partial<OdataServiceAnswers>
-): InputQuestion[] {
+function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
     const questions: InputQuestion[] = [];
 
     const getEntityKeyInputPrompt = (keypart: number) =>
@@ -293,12 +269,12 @@ function getKeyPrompts(
  * @param appConfig
  * @param odataQueryResult
  * @param odataQueryResult.odata
- * @param odataQueryResult.entitySetsQueried
+ * @param odataQueryResult.entitySetsFlat
  */
 function getConfirmDownloadPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig,
-    odataQueryResult: { odata: undefined | [] }
+    odataQueryResult: { odata: undefined | []; entitySetsFlat: EntitySetsFlat }
 ): Question {
     return {
         when: () => {
@@ -320,6 +296,7 @@ function getConfirmDownloadPrompt(
                     return result;
                 }
                 odataQueryResult.odata = result.odataQueryResult;
+                odataQueryResult.entitySetsFlat = result.entitySetsFlat;
             }
             return true;
         },
@@ -344,6 +321,7 @@ function getConfirmDownloadPrompt(
 /**
  *
  * @param odataServiceAnswers
+ * @param appConfig
  * @returns
  */
 function getUpdateMainServiceMetadataPrompt(

@@ -1,8 +1,9 @@
 import type { ODataService } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
-import { FileName, ServiceSpecification } from '@sap-ux/project-access';
-import { FioriToolsProxyConfigBackend, UI5Config } from '@sap-ux/ui5-config';
+import type { ServiceSpecification } from '@sap-ux/project-access';
+import { FileName } from '@sap-ux/project-access';
+import { UI5Config } from '@sap-ux/ui5-config';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { CollectionFacet } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
@@ -29,22 +30,31 @@ export async function getData(
     odataService: Partial<OdataServiceAnswers>,
     appConfig: AppConfig,
     answers: Answers // todo: narrower type
-): Promise<{ odataQueryResult: []; entitySetsQueried: EntitySetsFlat } | string> {
+): Promise<{ odataQueryResult: []; entitySetsFlat: EntitySetsFlat } | string> {
     if (odataService.metadata && appConfig.appAccess && odataService.connectedSystem) {
         if (odataService.servicePath && appConfig.appAccess && appConfig.referencedEntities) {
             odataService.connectedSystem.serviceProvider.log = ODataDownloadGenerator.logger;
-            const odataServiceProvider = odataService.connectedSystem?.serviceProvider.service<ODataService>(odataService.servicePath);
+            const odataServiceProvider = odataService.connectedSystem?.serviceProvider.service<ODataService>(
+                odataService.servicePath
+            );
 
             if (answers[promptNames.confirmDownload] === true) {
                 // this.state.appEntities = appConfig.referencedEntities;
-                const selectedEntitiesAsJsonStrings = answers[promptNames.relatedEntitySelection] as SelectedEntityAnswerAsJSONString[];
+                const selectedEntitiesAsJsonStrings = answers[
+                    promptNames.relatedEntitySelection
+                ] as SelectedEntityAnswerAsJSONString[];
                 const selectedEntities = selectedEntitiesAsJsonStrings.map((entityAsJSONString) => {
                     return JSON.parse(entityAsJSONString) as SelectedEntityAnswer;
                 });
-                const { odataResult, entitySetsQueried } = await fetchData(appConfig.referencedEntities, odataServiceProvider!, selectedEntities, 1);
+                const { odataResult, entitySetsFlat } = await fetchData(
+                    appConfig.referencedEntities,
+                    odataServiceProvider!,
+                    selectedEntities,
+                    1
+                );
                 if (odataResult.entityData) {
                     ODataDownloadGenerator.logger.info('Got result rows:' + `${odataResult.entityData.length}`);
-                    return { odataQueryResult: odataResult.entityData, entitySetsQueried };
+                    return { odataQueryResult: odataResult.entityData, entitySetsFlat };
                 } else if (odataResult.error) {
                     return `${odataResult.error}`;
                 }
@@ -106,8 +116,10 @@ export type Expands = {
 /**
  * Creates a query expand config that can be used to build the query and display entities with their full paths
  *
- * @param entities
- *
+ * @param rootEntity
+ * @param parentPath
+ * @param choices
+ * @param poEntityPaths
  * @returns
  */
 export function getEntitySelectionChoices(
@@ -116,7 +128,6 @@ export function getEntitySelectionChoices(
     choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] = [],
     poEntityPaths?: string[]
 ): { entitySetsFlat: EntitySetsFlat; choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } {
-    const entitiesToExpand: Expands = {};
     const entitySetsFlat = {};
     const navEntities = rootEntity.navPropEntities;
     if (navEntities) {
@@ -161,6 +172,7 @@ export function getEntitySelectionChoices(
  * Create an expand/entity selection list from the specified entities nav properties
  *
  * @param rootEntity
+ * @param pageObjectEntities
  * @returns
  */
 export function createEntityChoices(
@@ -171,7 +183,9 @@ export function createEntityChoices(
     const poEntityPaths = pageObjectEntities
         ?.map((poEntity) => {
             // Create the relative paths from the list entity
-            const fullPath = poEntity.page?.contextPath ?? poEntity.page?.routePattern?.replace(':?query:', '').replace(/\({[^}]*}\)/g, '');
+            const fullPath =
+                poEntity.page?.contextPath ??
+                poEntity.page?.routePattern?.replace(':?query:', '').replace(/\({[^}]*}\)/g, '');
             if (fullPath?.startsWith(`/${rootEntity.entityPath}/`)) {
                 return fullPath.replace(`/${rootEntity.entityPath}/`, '');
             }
@@ -190,8 +204,8 @@ export function createEntityChoices(
 /**
  * Get the service path and service name from the service
  *
- * @param appAccess
- *
+ * @param appRoot
+ * @param service
  * @returns
  */
 export async function getServiceDetails(
@@ -201,16 +215,16 @@ export async function getServiceDetails(
     servicePath: string | undefined;
     systemName: string | undefined;
 }> {
-    let backendConfig: FioriToolsProxyConfigBackend | undefined;
-
     // Read backend middleware config
     const ui5Config = await UI5Config.newInstance(await readFile(join(appRoot, FileName.Ui5Yaml), 'utf-8'));
-    backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
+    const backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
 
     //servicePaths.push(appConfig?.servicePath ?? '');
     let systemName;
     if (backendConfig) {
-        systemName = isAppStudio() ? backendConfig?.destination : await getSystemNameFromStore(backendConfig.url, backendConfig?.client);
+        systemName = isAppStudio()
+            ? backendConfig?.destination
+            : await getSystemNameFromStore(backendConfig.url, backendConfig?.client);
     }
 
     return {

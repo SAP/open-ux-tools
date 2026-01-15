@@ -1,26 +1,18 @@
 import { convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
 import type { ApplicationAccess } from '@sap-ux/project-access';
-import { FileName /** getSpecificationModuleFromCache */ } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey, getService } from '@sap-ux/store';
-import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import { UI5Config } from '@sap-ux/ui5-config';
 import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
-import type { SelectedEntityAnswer } from './prompts';
 import type { AppConfig, Entity, ReferencedEntities, SemanticKeyFilter } from './types';
 import { navPropNameExclusions } from './types';
-// import { ODataDownloadGenerator } from './odataDownloadGenerator';
-// import { Logger } from '@sap-ux/logger';
 import { FioriElementsVersion, PageTypeV4, type Specification } from '@sap/ux-specification/dist/types/src';
-import type { PagesV4, PageV4 } from '@sap/ux-specification/dist/types/src/v4';
+import type { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
 import { isEqual, mergeWith, uniqWith } from 'lodash';
 import type { EntitySetsFlat } from './odata-query';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
 
-// Merge array properties by removing dups and concating
 /**
+ * Merge array properties by removing dups and concating
  *
  * @param objValue
  * @param srcValue
@@ -34,16 +26,19 @@ function mergeCustomizer(objValue, srcValue) {
  * Creates an object keyed on entity set name containing expanded results
  *
  * @param odataResult
- * @param entitySets mapping of entity paths (nav property names) to entity set names required for file names
+ * @param entitySetsFlat
  * @param entitySetName
  */
-export function createEntitySetData(odataResult: {} | [], entitySetsFlat: EntitySetsFlat, entitySetName: string): { [key: string]: {}[] } {
+export function createEntitySetData(
+    odataResult: {} | [],
+    entitySetsFlat: EntitySetsFlat,
+    entitySetName: string
+): { [key: string]: {}[] } {
     const resultDataByEntitySet: { [key: string]: {}[] } = {};
     const odataRestulAsArray = Array.isArray(odataResult) ? odataResult : [odataResult];
 
     // Each entry is of the same entity set data
     odataRestulAsArray.forEach((resultEntry) => {
-        // todo: opt. entitySetsFlat contains all possible entities not just those queried
         Object.entries(entitySetsFlat).forEach(([entityPath, entitySetName]) => {
             // There are nested expanded entities
             if (resultEntry[entityPath]) {
@@ -150,7 +145,12 @@ function findEntitySet(entitySets: EntitySet[], entityTypeFullName: string): Ent
  * @param maxDepth
  * @returns
  */
-function getNavPropsForExpansion(entityType: EntityType, convertedMetadata: ConvertedMetadata, ancestorTypes?: string[], maxDepth = 4): Entity[] {
+function getNavPropsForExpansion(
+    entityType: EntityType,
+    convertedMetadata: ConvertedMetadata,
+    ancestorTypes?: string[],
+    maxDepth = 4
+): Entity[] {
     const navPropEntities: Entity[] = [];
     if (--maxDepth > 0) {
         if (ancestorTypes) {
@@ -160,15 +160,25 @@ function getNavPropsForExpansion(entityType: EntityType, convertedMetadata: Conv
         }
         entityType.navigationProperties.forEach((entityTypeNavProp) => {
             // Exclude entities that are using specific property names and prevent re-inclusion of the entity type again along the same branch
-            if (!navPropNameExclusions.includes(entityTypeNavProp.name) && !ancestorTypes?.includes(entityTypeNavProp.targetType.name)) {
+            if (
+                !navPropNameExclusions.includes(entityTypeNavProp.name) &&
+                !ancestorTypes?.includes(entityTypeNavProp.targetType.name)
+            ) {
                 let nestedNavPropEntities: Entity[] = [];
                 if (entityTypeNavProp.targetType.navigationProperties.length > 0 && maxDepth > 0) {
-                    nestedNavPropEntities = getNavPropsForExpansion(entityTypeNavProp.targetType, convertedMetadata, [...ancestorTypes!], maxDepth);
+                    nestedNavPropEntities = getNavPropsForExpansion(
+                        entityTypeNavProp.targetType,
+                        convertedMetadata,
+                        [...ancestorTypes!],
+                        maxDepth
+                    );
                 }
                 navPropEntities.push({
                     entityType: entityTypeNavProp.targetType,
                     entityPath: entityTypeNavProp.name,
-                    entitySetName: findEntitySet(convertedMetadata.entitySets, entityTypeNavProp.targetTypeName)?.name ?? 'Check parent entity file',
+                    entitySetName:
+                        findEntitySet(convertedMetadata.entitySets, entityTypeNavProp.targetTypeName)?.name ??
+                        'Check parent entity file',
                     navPropEntities: [...nestedNavPropEntities]
                 });
             }
@@ -183,7 +193,10 @@ function getNavPropsForExpansion(entityType: EntityType, convertedMetadata: Conv
  * @param remoteMetadata the service metadata used to build the query model
  * @returns
  */
-export async function getEntityModel(appAccess: ApplicationAccess, remoteMetadata: string): Promise<AppConfig | undefined> {
+export async function getEntityModel(
+    appAccess: ApplicationAccess,
+    remoteMetadata: string
+): Promise<AppConfig | undefined> {
     let entities: ReferencedEntities | undefined;
     const mainService = appAccess.app.services['mainService'];
 
@@ -192,7 +205,10 @@ export async function getEntityModel(appAccess: ApplicationAccess, remoteMetadat
         const appSpec = await appAccess.getSpecification<Specification>();
         const appConfig = await appSpec.readApp({ app: appAccess });
 
-        if (appConfig.applicationModel && appConfig.applicationModel?.target?.fioriElements == FioriElementsVersion.v4) {
+        if (
+            appConfig.applicationModel &&
+            appConfig.applicationModel?.target?.fioriElements == FioriElementsVersion.v4
+        ) {
             const appModel = appConfig.applicationModel;
             const pages = appModel.pages as unknown as PagesV4;
             let mainListEntityType: EntityType | undefined;
@@ -202,7 +218,9 @@ export async function getEntityModel(appAccess: ApplicationAccess, remoteMetadat
             Object.values(pages).forEach((page) => {
                 // Get the main list entity
                 if (page.pageType === PageTypeV4.ListReport && page.entityType && page.entitySet) {
-                    mainListEntityType = convertedMetadata.entityTypes.find((et) => et.fullyQualifiedName === page.entityType);
+                    mainListEntityType = convertedMetadata.entityTypes.find(
+                        (et) => et.fullyQualifiedName === page.entityType
+                    );
                     if (mainListEntityType) {
                         const entityKeys = getSemanticKeyProperties(mainListEntityType);
                         entities = {
@@ -215,11 +233,18 @@ export async function getEntityModel(appAccess: ApplicationAccess, remoteMetadat
                         };
 
                         // Add nav props of the list entity
-                        entities.listEntity.navPropEntities = getNavPropsForExpansion(mainListEntityType, convertedMetadata);
+                        entities.listEntity.navPropEntities = getNavPropsForExpansion(
+                            mainListEntityType,
+                            convertedMetadata
+                        );
                     }
                 } else if (page.pageType === PageTypeV4.ObjectPage && page.entityType && page.entitySet) {
                     // Dont add the page object for the main entity since it will be the query root entity set
-                    if (page.entitySet && page.entityType && page.entityType !== mainListEntityType?.fullyQualifiedName) {
+                    if (
+                        page.entitySet &&
+                        page.entityType &&
+                        page.entityType !== mainListEntityType?.fullyQualifiedName
+                    ) {
                         const objectPageEntitySet = findEntitySet(convertedMetadata.entitySets, page.entityType);
                         const pageEntity: Entity = {
                             entityPath: page.navigationProperty!,
@@ -233,13 +258,15 @@ export async function getEntityModel(appAccess: ApplicationAccess, remoteMetadat
             });
 
             if (!entities?.listEntity) {
-                ODataDownloadGenerator.logger.info('No list entity defined. A main list entity is required for data downloading.');
+                ODataDownloadGenerator.logger.info(
+                    'No list entity defined. A main list entity is required for data downloading.'
+                );
                 return undefined;
             }
             entities.pageObjectEntities = pageObjectEntities;
         }
     }
     return {
-        referencedEntities: entities,
+        referencedEntities: entities
     };
 }

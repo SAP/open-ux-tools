@@ -1,6 +1,11 @@
 import { convert } from '@sap-ux/annotation-converter';
-import type { AbapServiceProvider, AxiosRequestConfig, ExternalService, ValueListReference } from '@sap-ux/axios-extension';
-import { type ExternalServiceReference } from '@sap-ux/axios-extension';
+import type {
+    AbapServiceProvider,
+    AxiosRequestConfig,
+    ExternalService,
+    ValueListReference,
+    ExternalServiceReference
+} from '@sap-ux/axios-extension';
 import { parse } from '@sap-ux/edmx-parser';
 import type { CheckBoxQuestion } from '@sap-ux/inquirer-common';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
@@ -53,7 +58,10 @@ export function getValueHelpSelectionPrompt(
  * @param abapServiceProvider
  * @returns
  */
-async function getExternalServiceEntityData(selectedValueHelpRefs: ExternalService[], abapServiceProvider: AbapServiceProvider): Promise<ExternalService[]> {
+async function getExternalServiceEntityData(
+    selectedValueHelpRefs: ExternalService[],
+    abapServiceProvider: AbapServiceProvider
+): Promise<ExternalService[]> {
     const externalServiceEntityData: ExternalService[] = [];
 
     const reqConfig: AxiosRequestConfig = {
@@ -76,7 +84,9 @@ async function getExternalServiceEntityData(selectedValueHelpRefs: ExternalServi
         const valueHelpEntityData: ExternalService = externalServiceRef;
         const [servicePath] = valueHelpEntityData.path.split(';');
         // Create a request cache entry
-        PromptState.externalServiceRequestCache[servicePath] = PromptState.externalServiceRequestCache[servicePath] ? PromptState.externalServiceRequestCache[servicePath] : [];
+        PromptState.externalServiceRequestCache[servicePath] = PromptState.externalServiceRequestCache[servicePath]
+            ? PromptState.externalServiceRequestCache[servicePath]
+            : [];
 
         const serviceMetadata = convert(parse(externalServiceRef.metadata));
         const entitySets = serviceMetadata.entitySets;
@@ -111,7 +121,10 @@ async function getExternalServiceEntityData(selectedValueHelpRefs: ExternalServi
  * @param abapServiceProvider
  * @returns
  */
-async function getExternalServiceMetadata(selectedValueHelps: ExternalServiceReference[][], abapServiceProvider: AbapServiceProvider): Promise<ExternalService[]> {
+async function getExternalServiceMetadata(
+    selectedValueHelps: ExternalServiceReference[][],
+    abapServiceProvider: AbapServiceProvider
+): Promise<ExternalService[]> {
     const flatExtSerRefs = selectedValueHelps.flat();
     const extServiceData = await abapServiceProvider.fetchExternalServices(flatExtSerRefs);
     return extServiceData;
@@ -123,7 +136,10 @@ async function getExternalServiceMetadata(selectedValueHelps: ExternalServiceRef
  * @param metadata
  * @returns
  */
-function getValueHelpChoices(servicePath: string, metadata: string): CheckboxChoiceOptions<{ name: string; value: ExternalServiceReference }>[] {
+function getValueHelpChoices(
+    servicePath: string,
+    metadata: string
+): CheckboxChoiceOptions<{ name: string; value: ExternalServiceReference }>[] {
     const choices: { name: string; value: ExternalServiceReference[] }[] = [];
     const externalServiceRefs = getExternalServiceReferences(servicePath, metadata, []) as ValueListReference[];
     const uniqueByServicePaths: {

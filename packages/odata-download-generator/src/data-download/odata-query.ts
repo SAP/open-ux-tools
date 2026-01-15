@@ -1,49 +1,29 @@
 import type { ODataService } from '@sap-ux/axios-extension';
-import { forEach, merge } from 'lodash';
 import buildQuery, { type Filter } from 'odata-query';
 import { t } from '../utils/i18n';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
 import { type SelectedEntityAnswer } from './prompts';
-import type { Entity } from './types';
-import { type ReferencedEntities } from './types';
+import type { ReferencedEntities } from './types';
 
 export type EntitySetsFlat = { [entityPath: string]: string };
-/**
- * Creates a single expand config for the specified entities using slash operator.
- *
- * @param entities
- */
-export function getNestedExpands(entities: Entity[]): { expands: {}; entitySetsFlat: EntitySetsFlat } {
-    const entitiesToExpand = {};
-    const entitySetsFlat = {};
-    for (const navEntity of entities) {
-        const expandPath = navEntity.entityPath;
-        if (navEntity.navPropEntities && navEntity.navPropEntities.length > 0) {
-            const { expands: nestedEntities, entitySetsFlat: nestedEntitySets } = getNestedExpands(navEntity.navPropEntities);
-            entitiesToExpand[expandPath] = { expand: nestedEntities };
-            merge(entitySetsFlat, nestedEntitySets);
-        } else {
-            entitiesToExpand[expandPath] = {}; // Leaf entity, empty object or could be array entry
-        }
-        entitySetsFlat[expandPath] = navEntity.entitySetName; // Can overwrite since we will only need to know each unique entity set name later
-    }
-    return {
-        expands: entitiesToExpand,
-        entitySetsFlat
-    };
-}
 
-function pathsToExpand(entityPaths: { entityPath: string, entitySetName: string }[]): { expands: {}; entitySetsFlat: EntitySetsFlat } {
-    let entitySetsFlat = {};
+/**
+ *
+ * @param entityPaths
+ */
+export function getExpands(entityPaths: { entityPath: string; entitySetName: string }[]): {
+    expands: {};
+    entitySetsFlat: EntitySetsFlat;
+} {
+    const entitySetsFlat = {};
     const expand = entityPaths.reduce(
         (tree, { entityPath: path, entitySetName }) => {
             const parts = path.split('/');
-            entitySetsFlat[parts[parts.length - 1]] = entitySetName;  // Can overwrite since we will only need to know each unique entity set name later
+            entitySetsFlat[parts[parts.length - 1]] = entitySetName; // Can overwrite since we will only need to know each unique entity set name later
 
             let current = tree;
 
             parts.forEach((part, index) => {
-
                 if (!current.expand) {
                     current.expand = {};
                 }
@@ -74,19 +54,16 @@ export function createQueryFromEntities(
     selectedEntities: SelectedEntityAnswer[],
     top = 1
 ): { query: string; entitySetsFlat: EntitySetsFlat } {
-    //const { entitySetsFlat = {} } = listEntity.navPropEntities ? getNestedExpands(listEntity.navPropEntities) : {};
-
     const selectedPaths = selectedEntities?.map((entity) => {
         return { entityPath: entity.fullPath, entitySetName: entity.entity.entitySetName };
     });
 
-    const { entitySetsFlat, expands: entitiesToExpand } = pathsToExpand(selectedPaths);
+    const { entitySetsFlat, expands: entitiesToExpand } = getExpands(selectedPaths);
 
     const mainEntity = listEntity;
     const mainEntityFilters: Filter<string>[] = [];
     mainEntity.semanticKeys.forEach((key) => {
         if (key.value) {
-            const filter: string | object = key.value;
             // Create the range and set values
             const filterParts = key.value.split(',');
             const filters: Filter<string>[] = [];
@@ -123,7 +100,7 @@ export function createQueryFromEntities(
     const queryInput = {};
 
     if (entitiesToExpand) {
-        Object.assign(queryInput, entitiesToExpand); // todo : { entitiesToExpand } // add expands to root of expand object
+        Object.assign(queryInput, entitiesToExpand);
     }
     if (mainEntityFilters.length > 0) {
         Object.assign(queryInput, {
@@ -146,7 +123,6 @@ export function createQueryFromEntities(
  *
  * @param entities
  * @param odataService
- * @param additionalEntityPaths
  * @param selectedEntities
  * @param top
  * @returns
@@ -156,12 +132,12 @@ export async function fetchData(
     odataService: ODataService,
     selectedEntities: SelectedEntityAnswer[],
     top?: number
-): Promise<{ odataResult: { entityData?: []; error?: string }; entitySetsQueried: EntitySetsFlat }> {
+): Promise<{ odataResult: { entityData?: []; error?: string }; entitySetsFlat: EntitySetsFlat }> {
     const query = createQueryFromEntities(entities.listEntity, selectedEntities, top);
     const odataResult = await executeQuery(odataService, query.query);
     return {
         odataResult,
-        entitySetsQueried: query.entitySetsFlat
+        entitySetsFlat: query.entitySetsFlat
     };
 }
 

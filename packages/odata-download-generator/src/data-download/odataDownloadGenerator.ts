@@ -12,8 +12,12 @@ import type { GeneratorOptions } from 'yeoman-generator';
 import Generator from 'yeoman-generator';
 import { t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
-import type { SelectedEntityAnswerAsJSONString } from './prompts';
-import { getODataDownloaderPrompts, promptNames, type SelectedEntityAnswer } from './prompts';
+import {
+    getODataDownloaderPrompts,
+    promptNames,
+    type SelectedEntityAnswer,
+    type SelectedEntityAnswerAsJSONString
+} from './prompts';
 import { type ReferencedEntities } from './types';
 import { createEntitySetData } from './utils';
 import { getValueHelpSelectionPrompt } from './value-help-prompts';
@@ -97,9 +101,9 @@ export class ODataDownloadGenerator extends Generator {
         super(args, opts, {
             unique: 'namespace'
         });
-        // @ts-ignore - available types are not up-to-date
+        // @ts-expect-error no types available
         if (this.env.conflicter) {
-            // @ts-ignore
+            // @ts-expect-error no types available
             this.env.conflicter.force = true;
         }
         this.options.force = true;
@@ -143,7 +147,11 @@ export class ODataDownloadGenerator extends Generator {
         TelemetryHelper.createTelemetryData({
             ...this.options.telemetryData
         }); */
-        ODataDownloadGenerator._logger = this._configureLogging(this.options.logLevel, this.options.logger, this.options.vscode) as ILogWrapper & Logger;
+        ODataDownloadGenerator._logger = this._configureLogging(
+            this.options.logLevel,
+            this.options.logger,
+            this.options.vscode
+        ) as ILogWrapper & Logger;
     }
 
     async prompting(): Promise<void> {
@@ -167,7 +175,9 @@ export class ODataDownloadGenerator extends Generator {
                 const mockConfig = await getMockServerConfig(this.state.appRootPath);
                 ODataDownloadGenerator.logger.info(`Mock config: ${JSON.stringify(mockConfig)}`);
                 // todo: Find the matching service, for now use the first one
-                this.state.mockDataRootPath = mockConfig.services?.[0]?.mockdataPath ?? join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
+                this.state.mockDataRootPath =
+                    mockConfig.services?.[0]?.mockdataPath ??
+                    join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
                 // metadata path
                 const metadataPath = mockConfig.services?.[0]?.metadataPath?.match(/^(.*\/)([^\/]*)$/)?.[0];
                 this.state.mockMetaDataPath = metadataPath ?? join(DirName.Webapp, DirName.LocalService);
@@ -181,7 +191,7 @@ export class ODataDownloadGenerator extends Generator {
                 odataServiceAnswers.metadata!,
                 odataServiceAnswers.connectedSystem?.serviceProvider as AbapServiceProvider
             );
-            const vhPromptAnswers = await this.prompt(valueHelpQuestions);
+            await this.prompt(valueHelpQuestions);
             this.state.valueHelpData = valueHelpData;
         } catch (error) {
             // Fatal prompting error
@@ -198,7 +208,7 @@ export class ODataDownloadGenerator extends Generator {
                 this.destinationRoot(join(this.state.appRootPath!));
 
                 const entityFileData = createEntitySetData(
-                    this.state.entityOData.odata, 
+                    this.state.entityOData.odata,
                     this.state.entityOData.entitySetsFlat,
                     this.state.appEntities.listEntity.entitySetName
                 );
@@ -235,7 +245,13 @@ export class ODataDownloadGenerator extends Generator {
         }
 
         if (this.state.updateMainServiceMetadata && this.state.mainServiceMetadata && this.state.mainServiceName) {
-            const mainServiceMetadataPath = join(this.state.appRootPath!, DirName.Webapp, DirName.LocalService, this.state.mainServiceName, 'metadata.xml');
+            const mainServiceMetadataPath = join(
+                this.state.appRootPath!,
+                DirName.Webapp,
+                DirName.LocalService,
+                this.state.mainServiceName,
+                'metadata.xml'
+            );
             this.writeDestination(mainServiceMetadataPath, prettifyXml(this.state.mainServiceMetadata, { indent: 4 }));
         }
     }

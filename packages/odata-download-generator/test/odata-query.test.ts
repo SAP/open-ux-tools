@@ -1,9 +1,10 @@
 import type { EntityType } from '@sap-ux/vocabularies-types';
-import { createQueryFromEntities, getNestedExpands } from '../src/data-download/odata-query';
-import type { Entity, ReferencedEntities } from '../src/data-download/types';
+import { createQueryFromEntities, getExpands } from '../src/data-download/odata-query';
+import type { ReferencedEntities } from '../src/data-download/types';
 import { createEntitySetData } from '../src/data-download/utils';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import type { SelectedEntityAnswer } from '../src/data-download/prompts';
 
 describe('Test odata query builder', () => {
     const testEntities1 = [
@@ -67,36 +68,62 @@ describe('Test odata query builder', () => {
         }
     ];
 
-    test('`getNestedExpands` Should build an expand config based on nested navigation properties', () => {
-        const entities: Entity[] = testEntities1;
-        const expands = getNestedExpands(entities);
+    test('`getExpands` should build an expand config based on specified entity list', () => {
+        const entities = [
+            {
+                entityPath: 'a',
+                entitySetName: 'aSetName'
+            }
+        ];
+        let expands = getExpands(entities);
 
         expect(expands.expands).toEqual({
-            a: {
-                expand: {
-                    'a.1': {
-                        expand: {
-                            'a.1.1': {}
-                        }
-                    },
-                    'a.2': {
-                        expand: {
-                            'a.2.1': {},
-                            'a.2.2': {}
-                        }
+            expand: {
+                a: {}
+            }
+        });
+
+        entities.push({
+            entityPath: 'a/a.1',
+            entitySetName: 'a1SetName'
+        });
+        expands = getExpands(entities);
+        expect(expands.expands).toEqual({
+            expand: {
+                a: {
+                    expand: {
+                        'a.1': {}
                     }
                 }
-            },
-            b: {},
-            c: {
-                expand: {
-                    'c.1': {}
+            }
+        });
+
+        entities.push({
+            entityPath: 'b/b.1/b.1.1',
+            entitySetName: 'b1SetName'
+        });
+        expands = getExpands(entities);
+        expect(expands.expands).toEqual({
+            expand: {
+                a: {
+                    expand: {
+                        'a.1': {}
+                    }
+                },
+                b: {
+                    expand: {
+                        'b.1': {
+                            expand: {
+                                'b.1.1': {}
+                            }
+                        }
+                    }
                 }
             }
         });
     });
 
-    test('`createQueryFromEntities` should create an odata query based on the provided entities', () => {
+    test('`createQueryFromEntities` should create an odata query for list entity', () => {
         const listEntity: ReferencedEntities['listEntity'] = {
             entitySetName: 'ListEntity1',
             semanticKeys: [],
@@ -105,8 +132,115 @@ describe('Test odata query builder', () => {
             entityType: {} as EntityType
         };
 
-        const query = createQueryFromEntities(listEntity);
-        expect(query.query).toEqual('ListEntity1?$expand=a($expand=a.1($expand=a.1.1),a.2($expand=a.2.1,a.2.2)),b,c($expand=c.1)&$top=1');
+        // No selected entities, basic root entity query
+        let query = createQueryFromEntities(listEntity, []);
+        expect(query.query).toEqual('ListEntity1?$top=1');
+
+        query = createQueryFromEntities(
+            { ...listEntity, semanticKeys: [{ name: 'Prop1', value: 'abc123', type: 'Edm.String' }] },
+            []
+        );
+        expect(query.query).toEqual("ListEntity1?$filter=Prop1 eq 'abc123'&$count=true");
+    });
+
+    test('`getExpands` should create an odata query for the selected entities', () => {
+        const listEntity: ReferencedEntities['listEntity'] = {
+            entitySetName: 'ListEntity1',
+            semanticKeys: [],
+            navPropEntities: testEntities1,
+            entityPath: 'root',
+            entityType: {} as EntityType
+        };
+        const selectedEntities: SelectedEntityAnswer[] = [
+            {
+                fullPath: 'a',
+                entity: {
+                    entitySetName: 'aSetName',
+                    entityPath: 'a'
+                }
+            },
+            {
+                fullPath: 'a/a.1',
+                entity: {
+                    entitySetName: 'a1SetName',
+                    entityPath: 'a.1'
+                }
+            },
+            {
+                fullPath: 'a/a.1/a.1.1',
+                entity: {
+                    entitySetName: 'a11SetName',
+                    entityPath: 'a.1.1'
+                }
+            },
+            {
+                fullPath: 'a/a.2',
+                entity: {
+                    entitySetName: 'a2SetName',
+                    entityPath: 'a.2'
+                }
+            },
+            {
+                fullPath: 'a/a.2/a.2.1',
+                entity: {
+                    entitySetName: 'a21SetName',
+                    entityPath: 'a.2.1'
+                }
+            },
+            {
+                fullPath: 'a/a.2/a.2.2',
+                entity: {
+                    entitySetName: 'a22SetName',
+                    entityPath: 'a.2.2'
+                }
+            },
+            {
+                fullPath: 'b',
+                entity: {
+                    entitySetName: 'bSetName',
+                    entityPath: 'b'
+                }
+            },
+            {
+                fullPath: 'c',
+                entity: {
+                    entitySetName: 'cSetName',
+                    entityPath: 'c'
+                }
+            },
+            {
+                fullPath: 'c/c.1',
+                entity: {
+                    entitySetName: 'c1SetName',
+                    entityPath: 'c.1'
+                }
+            }
+        ];
+
+        let query = createQueryFromEntities(listEntity, selectedEntities);
+        expect(query.query).toEqual(
+            'ListEntity1?$expand=a($expand=a.1($expand=a.1.1),a.2($expand=a.2.1,a.2.2)),b,c($expand=c.1)&$top=1'
+        );
+        expect(query.entitySetsFlat).toEqual({
+            'a': 'aSetName',
+            'a.1': 'a1SetName',
+            'a.1.1': 'a11SetName',
+            'a.2': 'a2SetName',
+            'a.2.1': 'a21SetName',
+            'a.2.2': 'a22SetName',
+            'b': 'bSetName',
+            'c': 'cSetName',
+            'c.1': 'c1SetName'
+        });
+
+        // Full query with filter and expands
+        query = createQueryFromEntities(
+            { ...listEntity, semanticKeys: [{ name: 'Prop1', value: 'abc123', type: 'Edm.String' }] },
+            selectedEntities
+        );
+        expect(query.query).toEqual(
+            "ListEntity1?$filter=Prop1 eq 'abc123'&$expand=a($expand=a.1($expand=a.1.1),a.2($expand=a.2.1,a.2.2)),b,c($expand=c.1)&$count=true"
+        );
         expect(query.entitySetsFlat).toEqual({
             'a': 'aSetName',
             'a.1': 'a1SetName',
@@ -121,10 +255,30 @@ describe('Test odata query builder', () => {
     });
 
     test('`createEntitySetData` should create an entity set data map for writing to files', async () => {
-        const rootEntity: ReferencedEntities['listEntity'] = JSON.parse(await readFile(join(__dirname, './test-data/TravelEntity.json'), 'utf8'));
-        const { entitySetsFlat } = createQueryFromEntities(rootEntity);
-        const odataResult = JSON.parse(await readFile(join(__dirname, './test-data/odataResult1.json'), 'utf8')).value;
-        const entitySetData = createEntitySetData(odataResult, entitySetsFlat, rootEntity.entitySetName);
-        expect(entitySetData).toMatchSnapshot();
-    }, 999999999);
+        const rootEntity: ReferencedEntities['listEntity'] = JSON.parse(
+            await readFile(join(__dirname, './test-data/TravelEntityModel.json'), 'utf8')
+        );
+        // No selected entities, only the unexpanded main/list entity is written
+        const { entitySetsFlat } = createQueryFromEntities(rootEntity, []);
+        let odataResult = JSON.parse(await readFile(join(__dirname, './test-data/odataResult1.json'), 'utf8')).value;
+        let entitySetData = createEntitySetData(odataResult, entitySetsFlat, rootEntity.entitySetName);
+        let expectedEntitySetData = await readFile(
+            join(__dirname, './test-data/expected-output/test1/entityFileData.json'),
+            'utf8'
+        );
+        expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
+
+        // More complex query, multiple entity set files created.
+        odataResult = JSON.parse(await readFile(join(__dirname, './test-data/odataResult2.json'), 'utf8')).value;
+        entitySetData = createEntitySetData(
+            odataResult,
+            { _Booking: 'Booking', _BookSupplement: 'BookingSupplement' },
+            rootEntity.entitySetName
+        );
+        expectedEntitySetData = await readFile(
+            join(__dirname, './test-data/expected-output/test2/entityFileData.json'),
+            'utf8'
+        );
+        expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
+    });
 });
