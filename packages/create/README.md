@@ -237,10 +237,10 @@ Options:
 
 ## [`add adp-cf-config`](#add-adp-cf-config)
 
-Configure an existing Cloud Foundry adaptation project for local preview by fetching reusable libraries, building the project, and configuring ui5.yaml middlewares.
+Configure an existing Cloud Foundry adaptation project for local preview by fetching reusable libraries, building the project, and configuring ui5.yaml file middlewares.
 
 
-**⚠️ Experimental**: This command is currently experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions if needed.
+**⚠️ Experimental**: This command is experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions, if needed.
 
 Example:
 
