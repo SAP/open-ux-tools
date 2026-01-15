@@ -1,12 +1,8 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
-import type { ICheckboxStyles, IRawStyle, IStyleFunction } from '@fluentui/react';
-import { Checkbox } from '@fluentui/react';
-import type { UICheckboxProps } from '../../../src/components/UICheckbox';
+import { render } from '@testing-library/react';
 import { UICheckbox } from '../../../src/components/UICheckbox';
+import { compareStylesBySelector, findStyleFromStyleSheets } from '../../utils/styles';
 
-describe('<UIToggle />', () => {
-    let wrapper: Enzyme.ReactWrapper<UICheckboxProps>;
+describe('<UICheckbox />', () => {
     const globalClassNames = {
         root: 'ms-Checkbox',
         checkmark: 'ms-Checkbox-checkmark',
@@ -15,76 +11,62 @@ describe('<UIToggle />', () => {
         error: 'ts-message-wrapper--error'
     };
 
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UICheckbox />);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
-    it('Should render a UIToggle component', () => {
-        expect(wrapper.find(`.${globalClassNames.root}`).length).toEqual(1);
+    it('Should render a UICheckbox component', () => {
+        render(<UICheckbox />);
+        expect(document.querySelector(`.${globalClassNames.root}`)).toBeTruthy();
     });
 
     describe('Styles - validation message', () => {
         it('No message', () => {
-            const styles = (wrapper.find(Checkbox).props().styles as IStyleFunction<{}, {}>)({}) as ICheckboxStyles;
-            const rootStyles = styles.root as IRawStyle;
-            expect(rootStyles[2]).toEqual(undefined);
-            expect(wrapper.find(`.${globalClassNames.error}`).length).toEqual(0);
+            const { container } = render(<UICheckbox />);
+            expect(container.querySelector(`.${globalClassNames.error}`)).toBeFalsy();
         });
 
         it('Error', () => {
-            wrapper.setProps({
-                errorMessage: 'dummy'
+            const { container } = render(<UICheckbox errorMessage="dummy" />);
+            compareStylesBySelector(`.${globalClassNames.root}`, {
+                marginBottom: '2px'
             });
-            const styles = (wrapper.find(Checkbox).props().styles as IStyleFunction<{}, {}>)({}) as ICheckboxStyles;
-            const rootStyles = styles.root as IRawStyle;
-            expect(rootStyles[2].marginBottom).toEqual(2);
-            expect(wrapper.find(`.${globalClassNames.error}`).length).toEqual(1);
+            expect(container.querySelector(`.${globalClassNames.error}`)).toBeTruthy();
         });
     });
 
     describe('Styles', () => {
-        it('Unchecked', () => {
-            const styles = (wrapper.find(Checkbox).props().styles as IStyleFunction<{}, {}>)({}) as ICheckboxStyles;
-            const rootStyles = styles.root as IRawStyle;
-            // Check hover opacity
-            expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`].opacity).toEqual(0);
+        it('Unchecked checkbox shows checkmark on hover', () => {
+            const { container } = render(<UICheckbox />);
+            const checkbox = container.querySelector(`.${globalClassNames.root}`);
+            expect(findStyleFromStyleSheets('opacity', checkbox, `:hover .${globalClassNames.checkmark}`)).toEqual('0');
         });
 
-        it('Checked', () => {
-            const styles = (wrapper.find(Checkbox).props().styles as IStyleFunction<{}, {}>)({
-                checked: true
-            }) as ICheckboxStyles;
-            const rootStyles = styles.root as IRawStyle;
-            // Check hover opacity
-            expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`]).toEqual(undefined);
+        it('Checked checkbox removes hover style', () => {
+            const { container } = render(<UICheckbox checked />);
+            const checkbox = container.querySelector(`.${globalClassNames.root}`);
+            expect(findStyleFromStyleSheets('opacity', checkbox, `:hover .${globalClassNames.checkmark}`)).toEqual(
+                undefined
+            );
         });
 
         it('Disabled', () => {
-            const styles = (wrapper.find(Checkbox).props().styles as IStyleFunction<{}, {}>)({
-                disabled: true
-            }) as ICheckboxStyles;
-            const textStyles = styles.text as IRawStyle;
-            // Check text opacity
-            expect(textStyles.opacity).toEqual(0.4);
-            const checkBoxStyles = styles.checkbox as IRawStyle;
-            // Check checkbox opacity
-            expect(checkBoxStyles.opacity).toEqual(0.4);
+            render(<UICheckbox disabled label="Test disabled label" />);
+            compareStylesBySelector(`.${globalClassNames.text}`, {
+                opacity: '0.4'
+            });
+            compareStylesBySelector(`.${globalClassNames.checkbox}`, {
+                opacity: '0.4'
+            });
         });
 
-        it('Disabled and Checked', () => {
-            const styles = (wrapper.find(Checkbox).props().styles as IStyleFunction<{}, {}>)({
-                disabled: true,
-                checked: true
-            }) as ICheckboxStyles;
-            const rootStyles = styles.root as IRawStyle;
-            // Check checkbox background
-            expect(rootStyles[1][`:hover .${globalClassNames.checkbox}`].background).toEqual('');
-            // Check checkbox borderColor
-            expect(rootStyles[1][`:hover .${globalClassNames.checkbox}`].borderColor).toEqual('');
+        it('Disabled and checked checkbox clears hover styles', () => {
+            const { container } = render(<UICheckbox disabled checked />);
+            const checkbox = container.querySelector(`.${globalClassNames.root}`);
+            expect(checkbox).toBeInTheDocument();
+            // Empty values ar concatinated during resolution
+            const resolvedStyle = findStyleFromStyleSheets(
+                'background',
+                checkbox,
+                `:hover .${globalClassNames.checkbox}`
+            );
+            expect(resolvedStyle).toEqual(';border-color:');
         });
     });
 });

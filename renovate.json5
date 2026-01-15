@@ -68,11 +68,6 @@
             groupName: 'dependencies [mem-fs]'
         },
         {
-            matchPackagePrefixes: ['enzyme', '@types/enzyme'],
-            groupName: 'dev dependencies [enzyme]',
-            matchDepTypes: ['devDependencies']
-        },
-        {
             matchPackagePrefixes: ['lodash', '@types/lodash'],
             groupName: 'dependencies [lodash]'
         },
