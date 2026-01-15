@@ -230,6 +230,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return !!prevLoader !== !!newLoader;
     }
 
+    /**
+     *
+     * @param options
+     */
     private storeHiddenOptions(options: IComboBoxOption[]): void {
         this.hiddenOptions = [];
         for (const option of options) {
