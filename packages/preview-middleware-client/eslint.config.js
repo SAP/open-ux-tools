@@ -9,10 +9,9 @@ module.exports = [
             'test/fixtures/**',
             'dist/**',
             'node_modules/**',
-            'eslint.config.js',
+            '**/*.config.js',
             'coverage/**',
-            '**/*.d.ts',
-            '**/*.config.js'
+            '**/*.d.ts'
         ]
     },
     ...fioriTools.configs['recommended'],
