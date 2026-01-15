@@ -1,5 +1,14 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.29
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.6
+- @sap-ux/project-input-validator@0.6.44
+- @sap-ux/system-access@0.6.40
+- @sap-ux/inquirer-common@0.10.11
+
 ## 0.17.28
 
 ### Patch Changes
