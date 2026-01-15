@@ -18,6 +18,7 @@ export interface InsertTarget {
 }
 
 /**
+ * Creates a change to insert a new annotation target into a document.
  *
  * @param pointer - Pointer to an element.
  * @param target - Internal representation of the target.
@@ -154,6 +155,7 @@ export interface InsertQualifier {
     value: string;
 }
 /**
+ * Creates a change to insert a qualifier to an annotation.
  *
  * @param pointer - Pointer to an annotation.
  * @param value - Qualifier.
@@ -177,6 +179,7 @@ export interface InsertReference {
     references: string[];
 }
 /**
+ * Creates a change to insert file references into a document.
  *
  * @param pointer - Pointer to a document.
  * @param references - File references that needs to be added.
@@ -261,6 +264,7 @@ export interface DeleteAnnotationGroupItems {
 }
 
 /**
+ * Creates a change to delete an annotation group.
  *
  * @param pointer - pointer to an annotation group
  * @returns Delete annotation group change.
@@ -273,6 +277,7 @@ export function createDeleteAnnotationGroupChange(pointer: JsonPointer): DeleteA
 }
 
 /**
+ * Creates a change to delete all items within an annotation group.
  *
  * @param pointer - pointer to an annotation group
  * @returns Delete annotation group change.
@@ -294,6 +299,7 @@ export interface DeleteAnnotation {
 }
 
 /**
+ * Creates a change to delete an annotation.
  *
  * @param pointer - Pointer to an annotation.
  * @param target - Target name.
@@ -347,6 +353,7 @@ export interface ReplaceNode {
     newElement: Element;
 }
 /**
+ * Creates a change to replace a node with a new element.
  *
  * @param pointer - Pointer to a node.
  * @param element - Replacement node in internal representation.
@@ -371,6 +378,7 @@ export interface ReplaceRecordProperty {
 }
 
 /**
+ * Creates a change to replace a record property with a new element.
  *
  * @param pointer - Pointer to a record property.
  * @param element - New Record property in internal representation.
@@ -395,6 +403,7 @@ export interface ReplaceTextValue {
 }
 
 /**
+ * Creates a change to replace a text value with a new text value.
  *
  * @param pointer - Pointer to a primitive value.
  * @param newValue - New text value.
@@ -419,6 +428,7 @@ export interface UpdatePrimitiveValue {
 }
 
 /**
+ * Creates a change to update a primitive value.
  *
  * @param pointer - Pointer to a primitive value.
  * @param newValue - New value.
@@ -449,6 +459,7 @@ export interface SetFlags {
 }
 
 /**
+ * Creates a change to set enum flags on a collection.
  *
  * @param pointer - Pointer to a enum flags node (collection).
  * @param value - A list of enum member names separated by spaces. Can also contain type information in OData format e.g Communication.PhoneType/work.
@@ -479,6 +490,7 @@ export interface MoveCollectionValue {
     pointer: JsonPointer;
 }
 /**
+ * Creates a change to move nodes within a collection to a new position.
  *
  * @param pointer - Pointer to a container where the nodes will be moved.
  * @param fromPointers - Pointers to nodes which needs to be moved.
@@ -512,6 +524,7 @@ export interface ConvertToCompoundAnnotation {
 }
 
 /**
+ * Creates a change to convert an annotation to compound format.
  *
  * @param pointer - Pointer to an assignment.
  * @param applyContentIndentation - Flag indicating if content should be also indented.

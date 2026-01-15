@@ -1,5 +1,14 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.53
+
+### Patch Changes
+
+- 55ac9f0: enable generation of OPA5 tests based on project spec
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/ui5-application-writer@1.7.1
+
 ## 0.7.52
 
 ### Patch Changes

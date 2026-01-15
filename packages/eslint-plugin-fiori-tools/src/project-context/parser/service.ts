@@ -43,19 +43,21 @@ export interface AnnotationReference {
 }
 
 /**
+ * Builds an annotation index key from target and term.
  *
- * @param target
- * @param term
- * @returns
+ * @param target - The annotation target
+ * @param term - The annotation term
+ * @returns The index key in format "target/@term"
  */
 export function buildAnnotationIndexKey(target: string, term: string): string {
     return `${target}/@${term}`;
 }
 
 /**
+ * Indexes annotations by their annotation path (target and term).
  *
- * @param service
- * @returns
+ * @param service - Service artifacts containing annotation files
+ * @returns Annotation index organized by path and qualifier
  */
 function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): AnnotationIndex {
     const index: AnnotationIndex = {};
@@ -80,13 +82,14 @@ function indexAnnotationsByAnnotationPath(service: ServiceArtifacts): Annotation
 }
 
 /**
+ * Processes annotations for a specific target and adds them to the index.
  *
- * @param target
- * @param annotationFile
- * @param namespace
- * @param aliasInfo
- * @param targetName
- * @param index
+ * @param target - The annotation target to process
+ * @param annotationFile - The annotation file containing the target
+ * @param namespace - Namespace information
+ * @param aliasInfo - Alias information for resolving qualified names
+ * @param targetName - Fully qualified target name
+ * @param index - Annotation index to update
  */
 function processTargetAnnotations(
     target: any,
@@ -129,8 +132,12 @@ function processTargetAnnotations(
 }
 
 /**
+ * Builds a service index from service artifacts.
+ * Creates indexes for entity sets, entity containers, and annotations.
  *
- * @param artifacts
+ * @param artifacts - Service artifacts to index
+ * @param documents - Document map to populate with annotation files
+ * @returns Complete service index with entity sets and annotations
  */
 export function buildServiceIndex(
     artifacts: ServiceArtifacts,
