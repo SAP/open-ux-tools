@@ -7,9 +7,9 @@ import {
     type RichTextEditorPromptsAnswer,
     type SupportedGeneratorAnswers,
     type Answers,
-    type CodeSnippet,
-    PromptsType
+    type CodeSnippet
 } from '@sap-ux/fe-fpm-writer';
+import { PromptsType } from '@sap-ux/fe-fpm-writer/dist/prompts/types';
 import type { AddonActions } from '../addons/types';
 import type { DynamicChoices, TranslationProperties } from '@sap-ux/ui-prompting';
 import type { I18nBundle } from '@sap-ux/i18n';

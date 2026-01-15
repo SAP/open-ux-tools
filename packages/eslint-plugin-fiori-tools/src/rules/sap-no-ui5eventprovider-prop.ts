@@ -20,7 +20,7 @@ import type { Rule } from 'eslint';
  * @param obj The object to search for
  * @returns True if the array contains the object
  */
-function contains(a, obj) {
+function contains(a: unknown[], obj: unknown) {
     return a.includes(obj);
 }
 
