@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { join, relative, sep, posix } from 'node:path';
+import { join, relative, posix } from 'node:path';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import js from '@eslint/js';
