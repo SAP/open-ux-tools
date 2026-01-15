@@ -12,7 +12,7 @@ import { getPathMappings } from '@sap-ux/project-access';
 runAsWorker(async (projectRoot: string, _memFs?: unknown, _fileName?: string) => {
     try {
         return await getPathMappings(projectRoot);
-    } catch (error) {
+    } catch {
         // Return an empty object so the main thread applies its defaults
         return {};
     }
