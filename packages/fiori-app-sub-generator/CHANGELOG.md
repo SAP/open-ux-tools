@@ -1,5 +1,51 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.19
+
+### Patch Changes
+
+- 55ac9f0: enable generation of OPA5 tests based on project spec
+- Updated dependencies [55ac9f0]
+    - @sap-ux/fiori-elements-writer@2.8.38
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/odata-service-inquirer@2.14.3
+    - @sap-ux/fiori-freestyle-writer@2.5.27
+    - @sap-ux/annotation-generator@0.4.9
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/cap-config-writer@0.12.43
+    - @sap-ux/fiori-generator-shared@0.13.52
+    - @sap-ux/launch-config@0.10.50
+    - @sap-ux/odata-service-writer@0.29.7
+    - @sap-ux/telemetry@0.6.54
+    - @sap-ux/ui5-application-inquirer@0.16.6
+
+## 0.11.18
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.8
+- @sap-ux/fiori-elements-writer@2.8.37
+- @sap-ux/fiori-freestyle-writer@2.5.26
+- @sap-ux/odata-service-inquirer@2.14.2
+
+## 0.11.17
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/fiori-elements-writer@2.8.36
+    - @sap-ux/fiori-freestyle-writer@2.5.26
+    - @sap-ux/annotation-generator@0.4.7
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/cap-config-writer@0.12.42
+    - @sap-ux/fiori-generator-shared@0.13.51
+    - @sap-ux/launch-config@0.10.49
+    - @sap-ux/odata-service-inquirer@2.14.2
+    - @sap-ux/odata-service-writer@0.29.6
+    - @sap-ux/telemetry@0.6.53
+    - @sap-ux/ui5-application-inquirer@0.16.5
+
 ## 0.11.16
 
 ### Patch Changes

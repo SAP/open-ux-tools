@@ -1,5 +1,34 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.1.2
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/fiori-annotation-api@0.9.2
+
+## 9.1.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+- Updated dependencies [4d6695f]
+    - @sap-ux/fiori-annotation-api@0.9.1
+
+## 9.1.0
+
+### Minor Changes
+
+- b132944: feat: add consistency rules `sap-flex-enabled`, `sap-disable-copy-to-clipboard` and `sap-width-including-column-header`.
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/fiori-annotation-api@0.9.0
+
 ## 9.0.5
 
 ### Patch Changes

@@ -65,7 +65,8 @@ import { collectComments } from './comments';
 import { getNodeFromPointer } from './pointer';
 
 /**
- *
+ * XML Annotation Service Adapter.
+ * Provides annotation editing capabilities for XML-based OData annotation files.
  */
 export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     public metadataService = new MetadataService();
@@ -81,6 +82,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
 
     private _compiledService: CompiledService | undefined;
     /**
+     * Gets the compiled XML service.
      *
      * @returns Compiled XML service.
      */
@@ -95,10 +97,11 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }
 
     /**
+     * Creates an instance of XMLAnnotationServiceAdapter.
      *
      * @param service - Service structure.
      * @param vocabularyService - Vocabulary API.
-     * @param project - Project structure.
+     * @param project - Project information.
      * @param appName - Name of the application.
      */
     constructor(
