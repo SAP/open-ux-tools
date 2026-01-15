@@ -9,6 +9,7 @@ import { rules } from './rules';
 import { FioriLanguage } from './language/fiori-language';
 import { createSyncFn } from 'synckit';
 import type { getPathMappings } from '@sap-ux/project-access';
+import { uniformUrl } from './project-context/utils';
 export { DiagnosticCache } from './language/diagnostic-cache';
 
 // Use CommonJS require for modules with resolution issues
@@ -80,13 +81,11 @@ const webappPathAbsolute =
     'webapp' in pathMappingsAbsolute
         ? pathMappingsAbsolute.webapp
         : (pathMappingsAbsolute.src ?? join(process.cwd(), 'webapp'));
-const webappPathRelative = relative(process.cwd(), webappPathAbsolute).split(sep).join('/');
+const webappPathRelative = uniformUrl(relative(process.cwd(), webappPathAbsolute));
 const testPathRelative =
     'webapp' in pathMappingsAbsolute
         ? posix.join(webappPathRelative, 'test')
-        : relative(process.cwd(), pathMappingsAbsolute.test ?? join(process.cwd(), 'webapp/test'))
-              .split(sep)
-              .join('/');
+        : uniformUrl(relative(process.cwd(), pathMappingsAbsolute.test ?? join(process.cwd(), 'webapp/test')));
 
 const prodConfig: Linter.Config[] = [
     {
