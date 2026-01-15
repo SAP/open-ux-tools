@@ -1,5 +1,62 @@
 # @sap-ux/annotation-generator
 
+## 0.4.9
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/fiori-annotation-api@0.9.2
+
+## 0.4.8
+
+### Patch Changes
+
+- Updated dependencies [4d6695f]
+    - @sap-ux/fiori-annotation-api@0.9.1
+
+## 0.4.7
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/fiori-annotation-api@0.9.0
+
+## 0.4.6
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/fiori-annotation-api@0.8.6
+
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies [d667a5e]
+    - @sap-ux/odata-entity-model@0.3.4
+    - @sap-ux/fiori-annotation-api@0.8.5
+
+## 0.4.4
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/fiori-annotation-api@0.8.4
+    - @sap-ux/project-access@1.33.1
+
+## 0.4.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+- Updated dependencies [2204ad3]
+    - @sap-ux/fiori-annotation-api@0.8.3
+
 ## 0.4.2
 
 ### Patch Changes

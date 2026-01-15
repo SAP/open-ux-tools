@@ -9,7 +9,7 @@ import {
     UI5_CONTROLLER_EXTENSION_LIST_REPORT,
     UI5_CONTROLLER_EXTENSION_OBJECT_PAGE
 } from '../../src/controller-extension';
-import { detectTabSpacing } from '../../src/common/file';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { tabSizingTestCases } from '../common';
 
 describe('ControllerExtension', () => {
@@ -67,6 +67,7 @@ describe('ControllerExtension', () => {
         ];
 
         test.each(pageTypeTests)('New controller extension - %s', async (pageType) => {
+            const copyTplSpy = jest.spyOn(fs, 'copyTpl');
             await generateControllerExtension(
                 testDir,
                 {
@@ -80,6 +81,7 @@ describe('ControllerExtension', () => {
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(expectedControllerPath)).toBeTruthy();
             expect(fs.read(expectedControllerPath)).toMatchSnapshot();
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
         });
 
         test('New controller extension with page id', async () => {

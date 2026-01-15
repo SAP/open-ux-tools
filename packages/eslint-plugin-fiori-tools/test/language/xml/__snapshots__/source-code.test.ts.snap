@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`FioriXMLSourceCode should provide location for nodes 1`] = `
+Object {
+  "end": Object {
+    "column": 45,
+    "line": 1,
+  },
+  "start": Object {
+    "column": 1,
+    "line": 1,
+  },
+}
+`;
+
+exports[`FioriXMLSourceCode should provide location for tokens 1`] = `
+Object {
+  "end": Object {
+    "column": 5,
+    "line": 1,
+  },
+  "start": Object {
+    "column": 2,
+    "line": 1,
+  },
+}
+`;

@@ -1,5 +1,17 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.9
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
+## 0.4.8
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 0.4.7
 
 ### Patch Changes

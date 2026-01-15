@@ -405,6 +405,7 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
         [odataServiceInquirerPromptNames.capProject]: {
             capSearchPaths: options.workspaceFolders ?? [],
             defaultChoice: options.capService?.projectPath,
+            useAutoComplete: getHostEnvironment() === hostEnvironment.cli,
             ...options.promptOptions?.capProject
         },
         [odataServiceInquirerPromptNames.capService]: {
