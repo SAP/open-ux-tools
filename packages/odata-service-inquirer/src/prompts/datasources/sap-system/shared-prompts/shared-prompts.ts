@@ -22,7 +22,6 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { SystemSelectionAnswers } from '../system-selection/questions';
 import type { AbapOnPremAnswers } from '../abap-on-prem/questions';
 import { BasicCredentialsPromptNames } from '../credentials/questions';
-import type { AbapOnBtpAnswers } from '../abap-on-btp/questions';
 
 /**
  * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
@@ -133,8 +132,8 @@ export function getSystemUrlQuestion<T extends Answers>(
 export function getUserSystemNameQuestion(
     connectValidator: ConnectionValidator,
     promptNamespace?: string
-): InputQuestion<Partial<NewSystemAnswers & AbapOnPremAnswers & SystemSelectionAnswers & AbapOnBtpAnswers>> {
-    let defaultSystemName: string | undefined;
+): InputQuestion<Partial<NewSystemAnswers & AbapOnPremAnswers & SystemSelectionAnswers>> {
+    let defaultSystemName: string;
     let userModifiedSystemName: boolean = false;
     const promptNamespacePart = `${promptNamespace ? promptNamespace + ':' : ''}`;
     const promptName = `${promptNamespacePart}${promptNames.userSystemName}`;
@@ -149,15 +148,7 @@ export function getUserSystemNameQuestion(
         },
         name: promptName,
         message: t('prompts.systemName.message'),
-        default: async (previousAnswers: Partial<AbapOnBtpAnswers>) => {
-            // Detect RT <-> CF authentication transition that requires reset
-            const currentAuthType = previousAnswers?.abapOnBtpAuthType;
-            if (currentAuthType === 'cloudFoundry' && connectValidator.systemAuthType === 'reentranceTicket') {
-                // RT -> CF transition detected, reset stale connection state before getting system name
-                connectValidator.resetConnectionState(true);
-                defaultSystemName = undefined;
-            }
-
+        default: async () => {
             const systemName = connectValidator.connectedSystemName;
             if (systemName && !userModifiedSystemName) {
                 defaultSystemName = await suggestSystemName(systemName, connectValidator.validatedClient);
