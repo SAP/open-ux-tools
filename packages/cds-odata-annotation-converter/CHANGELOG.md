@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.0
+
+### Minor Changes
+
+- b132944: feat: add consistency rules `sap-flex-enabled`, `sap-disable-copy-to-clipboard` and `sap-width-including-column-header`.
+
 ## 0.6.19
 
 ### Patch Changes
