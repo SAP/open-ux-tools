@@ -47,7 +47,8 @@ export {
     getAllUi5YamlFileNames,
     getMockServerConfig,
     getMockDataPath,
-    getPathMappings
+    getPathMappings,
+    type PathMappings
 } from './ui5-config';
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';

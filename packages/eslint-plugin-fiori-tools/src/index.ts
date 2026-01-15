@@ -9,6 +9,7 @@ import { rules } from './rules';
 import { FioriLanguage } from './language/fiori-language';
 import { PACKAGE_NAME } from './constants';
 import { createSyncFn } from 'synckit';
+import { getPathMappings } from '@sap-ux/project-access';
 export { DiagnosticCache } from './language/diagnostic-cache';
 
 // Use CommonJS require for modules with resolution issues
@@ -59,22 +60,27 @@ const commonConfig: Linter.Config[] = [
     }
 ];
 
-// Use synckit to create sync function for project-access getWebappPath
-const workerPath = join(__dirname, 'project-access.js');
-const getWebappPathSync = createSyncFn(workerPath);
+// Use synckit to create sync function for project-access getPathMappingsSync
+const workerPath = join(__dirname, 'worker-getPathMappingsSync.js');
+const getPathMappingsSync = createSyncFn(workerPath) as (
+    ...args: Parameters<typeof getPathMappings>
+) => Awaited<ReturnType<typeof getPathMappings>>;
 
-let webappPathRelative: string;
-let testPathRelative: string;
-
-try {
-    const webappPathAbsolute = getWebappPathSync(process.cwd());
-    webappPathRelative = relative(process.cwd(), webappPathAbsolute).split(sep).join('/');
-    testPathRelative = posix.join(webappPathRelative, 'test');
-} catch {
-    // Ignore errors and use default paths
-    webappPathRelative = 'webapp';
-    testPathRelative = 'webapp/test';
-}
+const pathMappingsAbsolute = getPathMappingsSync(process.cwd());
+const webappPathAbsolute =
+    'webapp' in pathMappingsAbsolute
+        ? pathMappingsAbsolute.webapp
+        : pathMappingsAbsolute.src ?? join(process.cwd(), 'webapp');
+const webappPathRelative = relative(process.cwd(), webappPathAbsolute).split(sep).join('/');
+const testPathRelative =
+    'webapp' in pathMappingsAbsolute
+        ? posix.join(webappPathRelative, 'test')
+        : relative(
+              process.cwd(),
+              pathMappingsAbsolute.test ?? join(process.cwd(), 'webapp/test')
+          )
+          .split(sep)
+          .join('/');
 
 const prodConfig: Linter.Config[] = [
     {
