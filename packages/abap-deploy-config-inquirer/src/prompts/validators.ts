@@ -38,6 +38,7 @@ import {
     isValidUrl
 } from '../validator-utils';
 import { PromptState } from './prompt-state';
+import { showUsernameQuestion } from './conditions';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 
@@ -79,9 +80,11 @@ export async function validateDestinationQuestion(
     await updateDestinationPromptState(destination, destinations, options, backendTarget);
 
     const adpProjectType = options?.adpProjectType;
-    const adpProjectTypeValidation = adpProjectType
-        ? await validateAdpProjectType(adpProjectType, backendTarget)
-        : undefined;
+    const needAuth = await showUsernameQuestion(backendTarget);
+    // We do the project type validation only if the system does not require authentication, otherwise
+    // the system info api call will throw unathorized when called for the target system.
+    const adpProjectTypeValidation =
+        adpProjectType && !needAuth ? await validateAdpProjectType(adpProjectType, backendTarget) : undefined;
     if (typeof adpProjectTypeValidation === 'string') {
         return adpProjectTypeValidation;
     }
@@ -862,8 +865,11 @@ async function validateAdpProjectType(
     try {
         const { systemInfo } = await getSystemInfo(undefined, backendTarget);
         const adaptationProjectTypes = systemInfo?.adaptationProjectTypes;
-        const supportedAdpProjectTypes = (adaptationProjectTypes ?? []).join(',');
-        return adaptationProjectTypes?.includes(adpProjectType)
+        if (!adaptationProjectTypes?.length) {
+            return t('errors.validators.invalidAdpProjectTypes');
+        }
+        const supportedAdpProjectTypes = adaptationProjectTypes.join(',');
+        return adaptationProjectTypes.includes(adpProjectType)
             ? true
             : t('errors.validators.unsupportedAdpProjectType', {
                   adpProjectType,
