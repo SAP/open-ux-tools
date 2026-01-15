@@ -1,0 +1,4 @@
+<<%- macrosNamespace %>:Form
+    metaPath="<%- data.metaPath %>"
+    id="<%- data.id %>"
+    title="<%- data.title %>"/>
