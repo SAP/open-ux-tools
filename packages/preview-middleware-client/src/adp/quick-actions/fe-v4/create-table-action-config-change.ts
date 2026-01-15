@@ -21,7 +21,7 @@ interface ViewDataType {
     stableId: string;
 }
 const regexForAnnotationPath =
-    /controlConfiguration\/(?:entity\/)?@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/actions\//;
+    /controlConfiguration\/(?:[^@]+\/)@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/actions\//;
 
 /**
  * Quick Action for adding a custom page action.
@@ -81,13 +81,15 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                         }
                         if (
                             isA(MDC_TABLE_TYPE, table) &&
-                            (table as Table).getActions().every(
-                                (action) =>
-                                    !(action as ActionToolbarAction)
-                                        .getAction()
-                                        .getId()
-                                        .endsWith(`CustomAction::${actionId}`)
-                            )
+                            (table as Table)
+                                .getActions()
+                                .every(
+                                    (action) =>
+                                        !(action as ActionToolbarAction)
+                                            .getAction()
+                                            .getId()
+                                            .endsWith(`CustomAction::${actionId}`)
+                                )
                         ) {
                             return true;
                         }

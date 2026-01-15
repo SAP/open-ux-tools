@@ -128,10 +128,10 @@ describe('getActionsPropertyPath', () => {
         });
     });
 
-    describe('with navigationPath', () => {
+    describe('with MultiEntity scenario', () => {
         test('returns actions path with navigation path', () => {
-            mockTable.metaPath = '/EntitySet/_Navigation/@com.sap.vocabularies.UI.v1.LineItem';
-            mockTable.contextPath = '/EntitySet/';
+            mockTable.metaPath = '/NewEntity/@com.sap.vocabularies.UI.v1.LineItem';
+            mockTable.contextPath = '{fullContextPath>}';
             (mockTable.getProperty as jest.Mock).mockReturnValue('/EntitySet/');
 
             mockMetaModel.getObject.mockReturnValue({
@@ -140,7 +140,7 @@ describe('getActionsPropertyPath', () => {
 
             const result = getActionsPropertyPath(mockTable);
 
-            expect(result).toBe('controlConfiguration/_Navigation/@com.sap.vocabularies.UI.v1.LineItem/actions/');
+            expect(result).toBe('controlConfiguration//NewEntity/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
     });
 });

@@ -132,7 +132,7 @@ export function getActionsPropertyPath(table: MacroTable): string {
         if (secondSlash >= 0) {
             contextString = contextString.substring(0, secondSlash);
         }
-        return configPath.concat('controlConfiguration/', '/', contextString, '/', lineItemAnnotation, '/actions');
+        return configPath.concat('controlConfiguration/', '/', contextString, '/', lineItemAnnotation, '/actions/');
     }
 }
 
