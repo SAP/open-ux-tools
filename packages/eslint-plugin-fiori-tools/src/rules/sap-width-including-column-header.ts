@@ -15,9 +15,12 @@ export type RequireWidthIncludingColumnHeaderOptions = {
 };
 
 /**
+ * Determines if a table should have the widthIncludingColumnHeader property set.
+ * Checks if the table's LineItem annotation contains DataFieldForAction or DataFieldForIntentBasedNavigation.
  *
- * @param table
- * @param aliasInfo
+ * @param table - Table to check
+ * @param aliasInfo - Alias information for resolving qualified names
+ * @returns True if the table should have widthIncludingColumnHeader set
  */
 function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: AliasInformation): boolean {
     if (!table.annotation) {
@@ -42,11 +45,13 @@ function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: Alia
 }
 
 /**
+ * Checks tables in a page for widthIncludingColumnHeader configuration issues.
+ * Adds diagnostic problems for tables that should have this property set.
  *
- * @param page
- * @param parsedApp
- * @param parsedService
- * @param problems
+ * @param page - FE v4 page to check (Object Page or List Report)
+ * @param parsedApp - Parsed application containing manifest data
+ * @param parsedService - Parsed service containing metadata and annotations
+ * @param problems - Array to collect diagnostic problems
  */
 function checkTablesInPage(
     page: FeV4ObjectPage | FeV4ListReport,

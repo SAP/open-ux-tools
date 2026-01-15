@@ -85,11 +85,12 @@ interface ManifestApplicationSettings {
 const tableTypeValues = ['ResponsiveTable', 'GridTable', 'AnalyticalTable', 'TreeTable'];
 
 /**
+ * Creates a table or orphan table object with configuration paths.
  *
- * @param configurationKey
- * @param pathToPage
- * @param table
- * @returns
+ * @param configurationKey - The key identifying this table in the configuration
+ * @param pathToPage - Configuration path segments to the page
+ * @param table - The table node from annotations, if available
+ * @returns A linked table or orphan table object
  */
 function createTable(configurationKey: string, pathToPage: string[], table?: TableNode): Table | OrphanTable {
     const base: Omit<Table, 'type' | 'children'> = {
@@ -160,8 +161,9 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
 }
 
 /**
+ * Returns valid creation mode values based on the table type.
  *
- * @param tableType
+ * @param tableType - The type of table (e.g., TreeTable, ResponsiveTable)
  */
 function getCreationModeValues(tableType?: string): string[] {
     if (tableType === 'TreeTable') {
@@ -177,8 +179,9 @@ export type NodeLookup<T extends Node> = {
 };
 
 /**
+ * Runs the Fiori Elements V4 linker to build linked app structure.
  *
- * @param context
+ * @param context - The linker context containing app and service information
  */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     const linkedApp = linkApplicationSettings(context.app.manifestObject['sap.fe'] ?? {});
@@ -250,14 +253,15 @@ interface TableConfiguration {
 }
 
 /**
+ * Links a list report page with its tables and configurations for Fiori Elements V4.
  *
- * @param context
- * @param linkedApp
- * @param path
- * @param name
- * @param contextPath
- * @param entity
- * @param target
+ * @param context - The linker context containing app and service information
+ * @param linkedApp - The linked app to add the page to
+ * @param path - Configuration path segments
+ * @param name - The target name
+ * @param contextPath - The entity context path
+ * @param entity - The metadata element for the entity
+ * @param target - The routing target configuration
  */
 function linkListReport(
     context: LinkerContext,
@@ -295,11 +299,12 @@ function linkListReport(
 }
 
 /**
+ * Links tables in a list report page with their configurations.
  *
- * @param page
- * @param pathToPage
- * @param tables
- * @param configuration
+ * @param page - The list report page being linked
+ * @param pathToPage - Configuration path segments to the page
+ * @param tables - Array of table nodes to link
+ * @param configuration - The routing target configuration
  */
 function linkListReportTable(
     page: FeV4ListReport,
@@ -343,10 +348,11 @@ function linkListReportTable(
 }
 
 /**
+ * Collects table sections from annotation nodes and builds section structure.
  *
- * @param section
- * @param controls
- * @param pagePath
+ * @param section - The table section node to process
+ * @param controls - Record of controls indexed by type and key
+ * @param pagePath - Configuration path segments to the page
  */
 function collectTableSections(
     section: TableSectionNode,
@@ -376,12 +382,13 @@ function collectTableSections(
 }
 
 /**
+ * Links object page sections with their tables and configurations for Fiori Elements V4.
  *
- * @param page
- * @param pathToPage
- * @param pageName
- * @param sections
- * @param configuration
+ * @param page - The object page being linked
+ * @param pathToPage - Configuration path segments to the page
+ * @param pageName - The name of the page
+ * @param sections - Array of table section nodes to link
+ * @param configuration - The routing target configuration
  */
 function linkObjectPageSections(
     page: FeV4ObjectPage,
@@ -440,9 +447,10 @@ interface PageSettings {
 }
 
 /**
+ * Retrieves the metadata element for an entity based on page settings.
  *
- * @param settings
- * @param service
+ * @param settings - The page settings containing contextPath or entitySet
+ * @param service - The parsed OData service
  */
 function getEntity(settings: PageSettings, service: ParsedService): MetadataElement | undefined {
     if (settings.contextPath) {
@@ -455,9 +463,10 @@ function getEntity(settings: PageSettings, service: ParsedService): MetadataElem
 }
 
 /**
+ * Resolves a metadata element from a context path string.
  *
- * @param contextPath
- * @param service
+ * @param contextPath - The context path (e.g., '/EntitySet/NavigationProperty')
+ * @param service - The parsed OData service
  */
 function getEntityForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
     if (!contextPath.startsWith('/')) {
@@ -490,9 +499,10 @@ function getEntityForContextPath(contextPath: string, service: ParsedService): M
 }
 
 /**
+ * Resolves navigation properties along a path to find the target entity.
  *
- * @param root
- * @param segments
+ * @param root - The starting metadata element
+ * @param segments - Array of navigation property names to traverse
  */
 function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
     if (segments.length === 0) {
@@ -516,8 +526,9 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
 }
 
 /**
+ * Links application-level settings from manifest configuration for Fiori Elements V4.
  *
- * @param config
+ * @param config - The manifest application settings
  */
 function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV4App {
     const createMode = config.macros?.table?.defaultCreationMode;
