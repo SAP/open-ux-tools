@@ -12,7 +12,7 @@ import { FileName } from '@sap-ux/project-access';
 export function addAdaptationProjectCFConfigCommand(cmd: Command): void {
     cmd.command('adp-cf-config [path]')
         .description(
-            `Configure an existing Cloud Foundry adaptation project for local preview by fetching reusable libraries, building the project, and configuring ui5.yaml middlewares.\n
+            `Configure an existing Cloud Foundry adaptation project for local preview by fetching reusable libraries, building the project, and configuring ui5.yaml file middlewares.\n
             **⚠️ Experimental**: This command is experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions, if needed.\n
 Example:
     \`npx --yes @sap-ux/create@latest add adp-cf-config\``
