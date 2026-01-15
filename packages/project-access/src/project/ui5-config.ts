@@ -5,15 +5,28 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
 
+/**
+ * Type representing the possible path mappings defined in the UI5 configuration for the different project types.
+ *
+ */
 export type PathMappings = {
     [K in keyof typeof PATH_MAPPING_DEFAULTS]: {
         [P in keyof (typeof PATH_MAPPING_DEFAULTS)[K]]: string;
     };
 }[keyof typeof PATH_MAPPING_DEFAULTS];
 
+/**
+ * Extracts the paths configuration type for a given UI5 project type.
+ *
+ * @template T - The UI5 project type.
+ */
 type PathsFor<T extends Ui5Document['type']> =
     Extract<Ui5Document, { type: T }> extends { configuration?: { paths?: infer P } } ? P : never;
 
+/**
+ * Default path mappings for each UI5 project type.
+ *
+ */
 const PATH_MAPPING_DEFAULTS: { [K in Ui5Document['type']]: Required<PathsFor<K>> } = {
     application: { webapp: DirName.Webapp },
     library: { src: 'src', test: 'test' },
