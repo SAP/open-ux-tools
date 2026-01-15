@@ -73,24 +73,22 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
  * Hook to manage the value state for a multi-select input component.
  *
  * @param props - The MultiSelectProps for the component, including value and onChange handler.
- * @param options - The selectable options for the multi-select including checked states.
+ * @param options - The selectable options for the multi-select including selected states.
  * @returns current value and a set value function.
  */
 export function useMultiSelectValue(props: MultiSelectProps, options: UISelectableOption<ChoiceOptions>[]) {
     const [value, setValue] = useValue('', props.value?.toString() ?? '');
     /**
      * Determines the default value for the multi-select. If a value is provided in props, it is used.
-     * Otherwise, collects all option values that are checked by default.
-     * Returns a comma-separated string of checked option values.
+     * Otherwise, collects all option values that are selected by default.
+     * Returns a comma-separated string of selected option values.
      */
     const getDefaultValue = (): string => {
         if (props.value !== undefined) {
             return props.value.toString();
         }
-        const checkedValues = (options ?? [])
-            .filter((opt) => opt.data && 'checked' in opt.data && opt.data.checked === true)
-            .map((opt) => opt.data?.value ?? opt.key);
-        return checkedValues.join(',');
+        const selectedValues = (options ?? []).filter((opt) => opt.selected).map((opt) => opt.data?.value ?? opt.key);
+        return selectedValues.join(',');
     };
 
     useEffect(() => {
@@ -102,6 +100,47 @@ export function useMultiSelectValue(props: MultiSelectProps, options: UISelectab
     }, [options]);
 
     return [value, setValue] as const;
+}
+
+/**
+ * Hook to calculate visible options and selected keys by filtering out hidden options.
+ *
+ * @param options - All options including hidden ones
+ * @param value - Comma-separated string of selected values
+ * @returns An object containing visibleOptions and selectedKeys
+ */
+export function useVisibleOptionsAndKeys(
+    options: UISelectableOption<ChoiceOptions>[],
+    value?: string
+): { visibleOptions: UISelectableOption<ChoiceOptions>[]; selectedKeys: string[] | undefined } {
+    const [visibleOptions, setVisibleOptions] = useState<UISelectableOption<ChoiceOptions>[]>([]);
+    const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>();
+
+    useEffect(() => {
+        setVisibleOptions(options.filter((opt) => !(opt.data as any)?.hidden));
+    }, [options]);
+
+    useEffect(() => {
+        if (!value) {
+            setSelectedKeys(undefined);
+            return;
+        }
+
+        const valueArray = value
+            .split(',')
+            .map((v) => v.trim())
+            .filter(Boolean);
+        const keyToOption = new Map(options.map((opt) => [opt.key.toString(), opt]));
+
+        const visibleKeys = valueArray.filter((val) => {
+            const option = keyToOption.get(val);
+            return option && !(option.data as any)?.hidden;
+        });
+
+        setSelectedKeys(visibleKeys.length > 0 ? visibleKeys : undefined);
+    }, [value, options]);
+
+    return { visibleOptions, selectedKeys };
 }
 
 /**

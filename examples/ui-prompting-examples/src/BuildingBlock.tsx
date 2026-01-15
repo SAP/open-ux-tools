@@ -52,6 +52,7 @@ export const BuildingBlockQuestions = (props: {
      */
     async function updateAnswers(newAnswers: Answers, name?: string) {
         setAnswers(newAnswers);
+        console.log('--updated answers--', newAnswers);
         if (name) {
             if (liveValidation) {
                 await validateAnswers(type, [{ name }], newAnswers).then((validationResults) =>

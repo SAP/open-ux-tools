@@ -54,6 +54,9 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 ): Promise<Editor> {
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
+    console.log('--buildingBlockData--', buildingBlockData);
+    console.log('--aggregationPath--', aggregationPath);
+    console.log('--viewOrFragmentPath--', viewOrFragmentPath);
     if (!fs) {
         fs = create(createStorage());
     }
@@ -81,7 +84,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditorButtonGroups
     ) {
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
-        console.log('---minUI5Version', minUI5Version);
         if (minUI5Version && lt(minUI5Version, '1.117.0')) {
             const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
             throw new Error(`${t('minUi5VersionRequirement', { minUI5Version: minUI5Version })}`);

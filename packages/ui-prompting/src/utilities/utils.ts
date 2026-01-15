@@ -140,6 +140,8 @@ export function convertChoicesToOptions(choices: PromptListChoices): UISelectabl
                 text: choice.name ?? '',
                 disabled: 'disabled' in choice ? Boolean(choice.disabled) : undefined,
                 title: 'title' in choice ? String(choice.title) : '',
+                selected: 'selected' in choice ? Boolean(choice.selected) : undefined,
+                hidden: 'hidden' in choice ? Boolean(choice.hidden) : undefined,
                 data: choice
             });
         } else {

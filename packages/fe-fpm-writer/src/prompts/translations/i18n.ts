@@ -228,16 +228,20 @@ const ns1 = {
         'richTextEditorButtonGroups': {
             'message': 'Buttons',
             'choices': {
-                'fontStyle': 'Font Style (Bold, Italic, Underline, Strikethrough)',
+                'font-style': 'Font Style (Bold, Italic, Underline, Strikethrough)',
                 'font': 'Font Settings (Family, Size, Colors)',
                 'clipboard': 'Clipboard (Cut, Copy, Paste)',
                 'structure': 'List Structure (Bullets, Numbers, Indentation)',
                 'undo': 'Undo/Redo Actions',
                 'insert': 'Insert Elements (Image, Emoticons)',
                 'link': 'Link Management (Add, Remove Links)',
-                'textAlign': 'Text Alignment (Left, Center, Right, Justify)',
+                'text-align': 'Text Alignment (Left, Center, Right, Justify)',
                 'table': 'Table Operations',
-                'styleSelect': 'Style Selection'
+                'style-select': 'Style Selection'
+            },
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validation': 'A View or Fragment is required to generate the page building block.'
             },
             'aggregation': 'Aggregation Path',
             'replaceDefaultButtonGroupsHint':

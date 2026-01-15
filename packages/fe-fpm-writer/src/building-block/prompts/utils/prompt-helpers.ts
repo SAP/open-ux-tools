@@ -3,6 +3,10 @@ import { bindingContextRelative, bindingContextAbsolute } from '../../types';
 import type { PromptContext } from '../../../prompts/types';
 import { getEntitySets } from './service';
 import { i18nNamespaces, translate } from '../../../i18n';
+import { join } from 'node:path';
+import { getExistingButtonGroups } from '../utils/xml';
+import type { Answers } from 'inquirer';
+import { BUTTON_GROUP_CONFIGS } from '../../processor';
 
 /**
  * Loads entity sets from cache or fetches them for the given context.
@@ -143,4 +147,51 @@ export function resolveBindingContextTypeChoices(context: PromptContext) {
         };
     }
     return getBindingContextTypeChoices();
+}
+
+/**
+ * Gets selectable button group choices for the RichTextEditor building block.
+ *
+ * @returns An array of choice objects.
+ */
+function getSelectableButtonGroupChoices() {
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.richTextEditorButtonGroups.');
+
+    return BUTTON_GROUP_CONFIGS.map((config) => ({
+        name: t(`choices.${config.name}`) as string,
+        value: config.name
+    }));
+}
+
+/**
+ * Get button groups choices based on existing XML content.
+ * If no existing button groups, only defaults are checked.
+ *
+ * @param context - Prompt context
+ * @param answers - Current answers
+ * @returns Array of button group choices with checked state based on XML
+ */
+export async function getButtonGroupsChoices(context: PromptContext, answers: Answers) {
+    const { project, appPath, fs } = context;
+    if (!project) {
+        return [];
+    }
+
+    // Get existing button groups from XML if viewOrFragmentPath is available
+    let existingButtonGroups = new Set<string>();
+    if (answers.viewOrFragmentPath) {
+        const xmlFilePath = join(appPath, answers.viewOrFragmentPath);
+        existingButtonGroups = await getExistingButtonGroups(xmlFilePath, answers.aggregationPath, fs);
+    }
+
+    // If no existing button groups, use defaults
+    const isInitial = !existingButtonGroups || existingButtonGroups.size === 0;
+
+    const choices = getSelectableButtonGroupChoices().map((choice) => ({
+        ...choice,
+        hidden: !isInitial && existingButtonGroups.has(choice.value),
+        selected: existingButtonGroups.has(choice.value)
+    }));
+
+    return choices;
 }

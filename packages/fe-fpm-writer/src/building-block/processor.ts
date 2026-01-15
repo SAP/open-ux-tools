@@ -56,20 +56,20 @@ interface BuildingBlockTemplateConfig {
 }
 
 /**
- * Default button group configurations.
+ * Button group configurations used for validation and providing available button groups.
  */
-export const BUTTON_GROUP_CONFIGS: Record<string, { name: string; buttons: string }> = {
-    'font-style': { name: 'font-style', buttons: 'bold,italic,underline,strikethrough' },
-    'font': { name: 'font', buttons: 'fontfamily,fontsize,forecolor,backcolor' },
-    'clipboard': { name: 'clipboard', buttons: 'cut,copy,paste' },
-    'structure': { name: 'structure', buttons: 'bullist,numlist,outdent,indent' },
-    'undo': { name: 'undo', buttons: 'undo,redo' },
-    'insert': { name: 'insert', buttons: 'image,emoticons' },
-    'link': { name: 'link', buttons: 'link,unlink' },
-    'text-align': { name: 'text-align', buttons: 'alignleft,aligncenter,alignright,alignjustify' },
-    'table': { name: 'table', buttons: 'table' },
-    'styleselect': { name: 'styleselect', buttons: 'styleselect' }
-};
+export const BUTTON_GROUP_CONFIGS: { name: string; buttons: string }[] = [
+    { name: 'font-style', buttons: 'bold,italic,underline,strikethrough' },
+    { name: 'clipboard', buttons: 'cut,copy,paste' },
+    { name: 'structure', buttons: 'bullist,numlist,outdent,indent' },
+    { name: 'font', buttons: 'fontfamily,fontsize,forecolor,backcolor' },
+    { name: 'undo', buttons: 'undo,redo' },
+    { name: 'insert', buttons: 'image,emoticons' },
+    { name: 'link', buttons: 'link,unlink' },
+    { name: 'text-align', buttons: 'alignleft,aligncenter,alignright,alignjustify' },
+    { name: 'table', buttons: 'table' },
+    { name: 'style-select', buttons: 'styleselect' }
+];
 
 /**
  * Configuration map for building block types.
@@ -86,11 +86,6 @@ export const BUILDING_BLOCK_CONFIG: Partial<Record<BuildingBlockType, BuildingBl
         templateFile: 'filter/fragment.xml',
         namespace: { uri: 'sap.fe.macros.filterBar', prefix: 'macros' },
         processor: processCustomFilterField
-    },
-    [BuildingBlockType.RichTextEditor]: {
-        aggregationConfig: { aggregationName: 'buttonGroups', elementName: 'ButtonGroup' },
-        namespace: { uri: 'sap.fe.macros', prefix: 'macros' },
-        processor: processRichTextEditorButtonGroups
     },
     [BuildingBlockType.RichTextEditorButtonGroups]: {
         aggregationConfig: { aggregationName: 'buttonGroups', elementName: 'ButtonGroup' },
@@ -237,17 +232,17 @@ function extractButtonGroupConfig(element: Element): ButtonGroupConfig | undefin
 
     const priority = element.getAttribute('priority');
     if (priority) {
-        buttonGroupConfig.priority = parseInt(priority, 10);
+        buttonGroupConfig.priority = Number.parseInt(priority, 10);
     }
 
     const customToolbarPriority = element.getAttribute('customToolbarPriority');
     if (customToolbarPriority) {
-        buttonGroupConfig.customToolbarPriority = parseInt(customToolbarPriority, 10);
+        buttonGroupConfig.customToolbarPriority = Number.parseInt(customToolbarPriority, 10);
     }
 
     const row = element.getAttribute('row');
     if (row) {
-        buttonGroupConfig.row = parseInt(row, 10);
+        buttonGroupConfig.row = Number.parseInt(row, 10);
     }
 
     const id = element.getAttribute('id');
@@ -289,7 +284,7 @@ function mergeButtonGroups(
 
     // Merge new selection with existing selections
     return rteButtonGroups.buttonGroups?.map((selectedButtonGroup: ButtonGroupConfig) => {
-        const defaultConfig = BUTTON_GROUP_CONFIGS[selectedButtonGroup.name];
+        const defaultConfig = BUTTON_GROUP_CONFIGS.find((config) => config.name === selectedButtonGroup.name);
         if (!defaultConfig) {
             throw new Error(`Unknown button group: ${selectedButtonGroup.name}`);
         }
@@ -346,18 +341,6 @@ function isRichTextEditor(data: BuildingBlock): data is RichTextEditorButtonGrou
 }
 
 /**
- * Initialises default button groups if none are present.
- * Used for first creation of Rich Text Editor.
- */
-function initialiseDefaultButtonGroups(): ButtonGroupConfig[] {
-    return Object.values(BUTTON_GROUP_CONFIGS).map((config, idx) => ({
-        name: config.name,
-        buttons: config.buttons,
-        customToolbarPriority: idx + 1
-    }));
-}
-
-/**
  * Processes rich text editor button groups building block.
  *
  * @param {BuildingBlock} buildingBlockData - The building block data
@@ -367,28 +350,6 @@ function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, con
     const { xmlDocument, updatedAggregationPath, hasAggregation } = context;
     if (!isRichTextEditorButtonGroups(buildingBlockData) && !isRichTextEditor(buildingBlockData)) {
         throw new Error('Expected RichTextEditorButtonGroups or RichTextEditor building block data');
-    }
-
-    if (buildingBlockData.buttonGroups === undefined) {
-        buildingBlockData.buttonGroups = initialiseDefaultButtonGroups();
-        return;
-    }
-
-    if (Array.isArray(buildingBlockData.buttonGroups) && buildingBlockData.buttonGroups.length === 0) {
-        if (hasAggregation && xmlDocument && updatedAggregationPath) {
-            // Remove existing <buttonGroups> wrapper if present
-            const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
-            const buttonGroupsElements = xpathSelect(updatedAggregationPath, xmlDocument) as Element[];
-            if (buttonGroupsElements.length > 0) {
-                const buttonGroupsElement = buttonGroupsElements[0] as Element;
-                buttonGroupsElement.parentNode?.removeChild(buttonGroupsElement);
-            }
-            return;
-        } else if (!hasAggregation && xmlDocument && updatedAggregationPath) {
-            // Only initialize defaults if this is the initial creation (no aggregation exists)
-            buildingBlockData.buttonGroups = initialiseDefaultButtonGroups();
-            return;
-        }
     }
 
     const existingButtonGroupsMap = new Map<string, ButtonGroupConfig>();
@@ -414,9 +375,8 @@ function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, con
                 }
             });
             // Remove existing <buttonGroups> wrapper - will be recreated with merged data
-            const buttonGroupsElement = buttonGroupsElements[0] as Element;
+            const buttonGroupsElement = buttonGroupsElements[0];
             // @xmldom/xmldom doesn't support Element.remove(), must use removeChild()
-
             buttonGroupsElement.parentNode?.removeChild(buttonGroupsElement);
         }
     }
