@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.3.10
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
 ## 0.3.9
 
 ### Patch Changes

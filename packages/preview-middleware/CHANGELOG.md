@@ -1,5 +1,31 @@
 # @sap-ux/preview-middleware
 
+## 0.23.91
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/adp-tooling@0.18.38
+    - @sap-ux/system-access@0.6.40
+
+## 0.23.90
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/adp-tooling@0.18.37
+    - @sap-ux/system-access@0.6.40
+
+## 0.23.89
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+- Updated dependencies [ce4b29c]
+    - @sap-ux/adp-tooling@0.18.36
+
 ## 0.23.88
 
 ### Patch Changes

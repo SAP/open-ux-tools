@@ -1,3 +1,5 @@
+jest.mock('@sap-ux/project-access');
+
 import type { FioriElementsApp } from '../src';
 import { generate, TableType, TemplateType } from '../src';
 import { join } from 'node:path';
@@ -16,7 +18,6 @@ import {
     sampleCapService
 } from './common';
 import type { WorklistSettings } from '../src/types';
-import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
