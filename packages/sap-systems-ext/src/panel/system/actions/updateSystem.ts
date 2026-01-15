@@ -59,7 +59,7 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
 }
 
 /**
- * Retrieves the system info (systemId and client) from the ADT API for the given backend system.
+ * Retrieves the system info (systemId and client) from the system info API for the given backend system.
  *
  * @param context - the panel context
  * @param backendSystemPayload - the backend system info passed as a payload from webview

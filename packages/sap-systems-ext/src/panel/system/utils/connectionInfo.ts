@@ -86,7 +86,7 @@ export async function getCatalogServiceCount(system: BackendSystem): Promise<Cat
 }
 
 /**
- * Returns a selection (systemId + client) from the system info retrieved from the `/sap/bc/adt/core/http/systeminformation` endpoint.
+ * Returns a selection (systemId + client) from the system info retrieved from the system info api.
  *
  * @param system - the backend system instance
  * @returns - the system ID if available, otherwise undefined

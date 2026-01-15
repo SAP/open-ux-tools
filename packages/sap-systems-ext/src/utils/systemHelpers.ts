@@ -95,5 +95,5 @@ export function compareSystems(currentSystem: BackendSystem, newSystem: BackendS
  * @returns - true if the system information should be stored, false otherwise
  */
 export function shouldStoreSystemInfo(system: BackendSystem): boolean {
-    return system.systemType === 'OnPrem' && !!system.hasSensitiveData;
+    return system.systemType === 'OnPrem' && !!system.username && !!system.password;
 }
