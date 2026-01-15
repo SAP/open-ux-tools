@@ -1,5 +1,6 @@
 ---
 '@sap-ux/eslint-plugin-fiori-tools': patch
+'@sap-ux-private/preview-middleware-client': patch
 ---
 
-fix: also lint custom mockserver extensions
+fix: fix path mappings
