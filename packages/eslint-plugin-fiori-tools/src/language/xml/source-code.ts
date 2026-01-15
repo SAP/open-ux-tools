@@ -6,6 +6,10 @@ import type { XMLAstNode, XMLDocument, XMLToken } from '@xml-tools/ast';
 import { XMLVisitNodeStep, STEP_PHASE } from './traversal-step';
 import type { ProjectContext } from '../../project-context/project-context';
 
+/**
+ * Visitor keys mapping XML node types to their traversable child properties.
+ * Used to navigate the XML AST during traversal.
+ */
 export const visitorKeys: {
     [K in XMLAstNode['type']]: (keyof Extract<XMLAstNode, { type: K }>)[];
 } = {
@@ -18,7 +22,8 @@ export const visitorKeys: {
 };
 
 /**
- *
+ * XML Source Code representation for Fiori annotation files.
+ * Extends TextSourceCodeBase to provide XML-specific traversal and analysis.
  */
 export class FioriXMLSourceCode extends TextSourceCodeBase {
     public readonly projectContext: ProjectContext;

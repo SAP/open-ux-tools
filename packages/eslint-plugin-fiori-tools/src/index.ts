@@ -8,7 +8,6 @@ import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import { rules } from './rules';
 import { FioriLanguage } from './language/fiori-language';
-import { PACKAGE_NAME } from './constants';
 
 // Use CommonJS require for modules with resolution issues
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -22,21 +21,31 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
     version: string;
 };
 
-// Plugin meta information (required for ESLint 9)
+/**
+ * Plugin meta information (required for ESLint 9).
+ * Contains the plugin name and version.
+ */
 export const meta = {
-    name: PACKAGE_NAME,
+    name: packageJson.name,
     version: packageJson.version
 };
 
+/**
+ * Language definitions supported by the plugin.
+ * Currently includes the Fiori language for annotation and manifest files.
+ */
 export const languages = {
     fiori: new FioriLanguage()
 };
 
-// Default export following ESLint 9 plugin structure
-// This is the recommended way to export plugins in ESLint 9
+/**
+ * Default export following ESLint 9 plugin structure.
+ * This is the recommended way to export plugins in ESLint 9.
+ * Contains plugin metadata, supported languages, rules, and processors.
+ */
 const plugin: Plugin = {
     meta: {
-        name: PACKAGE_NAME,
+        name: packageJson.name,
         version: '0.0.1',
         namespace: '@sap-ux/fiori-tools'
     },
@@ -45,7 +54,9 @@ const plugin: Plugin = {
     processors: {}
 };
 
-// Config definitions as constants
+/**
+ * Common configuration shared across all config presets.
+ */
 const commonConfig: Linter.Config[] = [
     {
         languageOptions: {

@@ -1835,6 +1835,9 @@ importers:
       '@sap-ux/vocabularies-types':
         specifier: 0.13.1
         version: 0.13.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
       '@typescript-eslint/eslint-plugin':
         specifier: '>=8.49.0'
         version: 8.49.0(@typescript-eslint/parser@8.49.0)(eslint@9.39.1)(typescript@5.9.3)
@@ -1856,6 +1859,9 @@ importers:
       requireindex:
         specifier: ^1.2.0
         version: 1.2.0
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
       synckit:
         specifier: 0.11.11
         version: 0.11.11
@@ -16077,7 +16083,6 @@ packages:
 
   /@types/semver@7.5.2:
     resolution: {integrity: sha512-7aqorHYgdNO4DM36stTiGO3DvKoex9TQRwsJU6vMaFGyqpBA1MNZkz+PG3gaNUPpTAOYhT1WR7M1JyA3fbS9Cw==}
-    dev: true
 
   /@types/semver@7.5.4:
     resolution: {integrity: sha512-MMzuxN3GdFwskAnb6fz0orFvhfqi752yjaXylr0Rp4oDg5H0Zn1IuyRhDVvYOwAXoJirx2xuS16I3WjxnAIHiQ==}
