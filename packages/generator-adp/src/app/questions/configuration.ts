@@ -285,21 +285,6 @@ export class ConfigPrompter {
     }
 
     /**
-     * Sets the stored systemType for the selected system to undefined.
-     */
-    resetSystemType(): void {
-        this.selectedSystemType = undefined;
-    }
-
-    /**
-     * Sets the selected projectType and supported project types enumerator to undefined.
-     */
-    resetProjectType(): void {
-        this.selectedProjectType = undefined;
-        this.supportedProject = undefined;
-    }
-
-    /**
      * Creates the system list prompt configuration.
      *
      * @param {SystemPromptOptions} _ - Optional configuration for the system prompt.
@@ -455,7 +440,12 @@ export class ConfigPrompter {
             },
             choices: getProjectTypeChoices,
             default: options?.default,
-            when: () => this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM,
+            // We include the system in the validation to avoid prompt appearance
+            // after pressing start over from the template wizard. This is needed
+            // because the prompter is cached adn we do not want to reset cached data, because
+            // back/forward navigation will be affected if we do so.
+            when: ({ system }: ConfigAnswers) =>
+                !!system && this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM,
             validate: async (projectType: AdaptationProjectType) => {
                 this.selectedProjectType = projectType;
 
