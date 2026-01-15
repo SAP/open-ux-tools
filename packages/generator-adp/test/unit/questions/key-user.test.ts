@@ -15,7 +15,11 @@ import {
 } from '../../../src/app/questions/helper/additional-messages';
 import { initI18n, t } from '../../../src/utils/i18n';
 import { keyUserPromptNames } from '../../../src/app/types';
-import { KeyUserImportPrompter, DEFAULT_ADAPTATION_ID } from '../../../src/app/questions/key-user';
+import {
+    KeyUserImportPrompter,
+    DEFAULT_ADAPTATION_ID,
+    determineFlexVersion
+} from '../../../src/app/questions/key-user';
 import { getAdaptationChoices, getKeyUserSystemChoices } from '../../../src/app/questions/helper/choices';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
@@ -565,5 +569,34 @@ describe('KeyUserImportPrompter', () => {
                 await expect(prompter['loadDataAndValidateKeyUserChanges']()).rejects.toThrow();
             });
         });
+    });
+});
+
+describe('determineFlexVersion', () => {
+    it('should return second version when first version is draft (versionId "0")', () => {
+        const flexVersions: FlexVersion[] = [
+            { versionId: '0' } as FlexVersion,
+            { versionId: '00025E29EA041FD0BB9495569AC3D2AD' } as FlexVersion
+        ];
+        expect(determineFlexVersion(flexVersions)).toBe('00025E29EA041FD0BB9495569AC3D2AD');
+    });
+
+    it('should return first version when it is not draft (versionId is not "0")', () => {
+        const flexVersions: FlexVersion[] = [
+            { versionId: '1.0.0' } as FlexVersion,
+            { versionId: '00025E29EA041FD0BB9495569AC3D2AD' } as FlexVersion
+        ];
+        expect(determineFlexVersion(flexVersions)).toBe('1.0.0');
+    });
+
+    it('should return empty string when array is empty or null/undefined', () => {
+        expect(determineFlexVersion([])).toBe('');
+        expect(determineFlexVersion(null as any)).toBe('');
+        expect(determineFlexVersion(undefined as any)).toBe('');
+    });
+
+    it('should return empty string when only one version exists and it is "0"', () => {
+        const flexVersions: FlexVersion[] = [{ versionId: '0' } as FlexVersion];
+        expect(determineFlexVersion(flexVersions)).toBe('');
     });
 });

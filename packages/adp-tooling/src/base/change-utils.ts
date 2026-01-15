@@ -80,7 +80,7 @@ export async function writeAnnotationChange(
 }
 
 /**
- * Writes key-user change payloads to the generated adaptation project. Transforms key-user changes from the backend format to the ADP format.
+ * Writes key-user change payloads to the generated adaptation project. Transforms key-user changes to a developer adaptation format.
  *
  * @param projectPath - Project root path.
  * @param config - The writer configuration.
@@ -98,10 +98,6 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         }
 
         const change = { ...(entry.content as Record<string, unknown>) };
-        if (!('texts' in change) && entry.texts) {
-            (change as Record<string, unknown>)['texts'] = entry.texts;
-        }
-
         if (!change['fileName']) {
             continue;
         }
@@ -118,7 +114,7 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
 }
 
 /**
- * Transforms a key-user change from backend format to ADP format.
+ * Transforms a key-user change to a developer adaptation format.
  *
  * @param change - The key-user change from the backend.
  * @param appId - The ID of the newly created Adaptation Project.

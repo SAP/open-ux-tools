@@ -181,19 +181,22 @@ export const getKeyUserSystemAdditionalMessages = ({
     const hasOnlyDefaultAdaptation = adaptations.length === 1 && adaptations[0]?.id === DEFAULT_ADAPTATION_ID;
     const authMatches = isSystemPrompt ? !isAuthRequired : isAuthRequired;
 
-    if (authMatches) {
-        if (adaptations.length > 1) {
-            return {
-                message: t('prompts.keyUserAdaptationLabelMulti'),
-                severity: Severity.information
-            };
-        }
-        if (hasOnlyDefaultAdaptation && keyUserChangesCount > 0) {
-            return {
-                message: t('prompts.keyUserChangesFoundAdaptation', { adaptationId: DEFAULT_ADAPTATION_ID }),
-                severity: Severity.information
-            };
-        }
+    if (!authMatches) {
+        return undefined;
+    }
+
+    if (adaptations.length > 1) {
+        return {
+            message: t('prompts.keyUserAdaptationLabelMulti'),
+            severity: Severity.information
+        };
+    }
+
+    if (hasOnlyDefaultAdaptation && keyUserChangesCount > 0) {
+        return {
+            message: t('prompts.keyUserChangesFoundAdaptation', { adaptationId: DEFAULT_ADAPTATION_ID }),
+            severity: Severity.information
+        };
     }
 
     return undefined;
@@ -210,13 +213,14 @@ export const getKeyUserAdaptationAdditionalMessages = (
     adaptation: AdaptationDescriptor | null,
     keyUserChangesCount: number
 ): IMessageSeverity | undefined => {
-    if (adaptation && keyUserChangesCount > 0) {
-        return {
-            message: t('prompts.keyUserChangesFoundAdaptation', {
-                adaptationId: adaptation.title ?? adaptation.id
-            }),
-            severity: Severity.information
-        };
+    if (!adaptation || keyUserChangesCount === 0) {
+        return undefined;
     }
-    return undefined;
+
+    return {
+        message: t('prompts.keyUserChangesFoundAdaptation', {
+            adaptationId: adaptation.title ?? adaptation.id
+        }),
+        severity: Severity.information
+    };
 };

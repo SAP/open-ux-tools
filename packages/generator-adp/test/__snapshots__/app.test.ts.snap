@@ -97,12 +97,6 @@ exports[`Adaptation Project Generator Integration Test ABAP Environment should g
   "support": {
     "generator": "@sap-ux/generator-adp (converted from key user changes)",
   },
-  "texts": {
-    "annotationText": {
-      "type": "XFLD",
-      "value": "Category ID",
-    },
-  },
 }
 `;
 

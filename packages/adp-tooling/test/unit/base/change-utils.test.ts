@@ -586,14 +586,13 @@ describe('Change Utils', () => {
         });
 
         it('should add texts to change if not already present', async () => {
-            const texts = { variantName: { value: 'Test Variant', type: 'XFLD' } };
             const changes: KeyUserChangeContent[] = [
                 {
                     content: {
                         fileName: 'id_123_page.change',
                         changeType: 'page'
                     },
-                    texts
+                    texts: { variantName: { value: 'Test Variant', type: 'XFLD' } }
                 }
             ];
 
@@ -603,8 +602,7 @@ describe('Change Utils', () => {
                 expect.stringContaining('id_123_page.change'),
                 expect.objectContaining({
                     fileName: 'id_123_page.change',
-                    changeType: 'page',
-                    texts
+                    changeType: 'page'
                 })
             );
         });

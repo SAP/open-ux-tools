@@ -29,6 +29,22 @@ import {
 export const DEFAULT_ADAPTATION_ID = 'DEFAULT';
 
 /**
+ * Determines the flex version to be used. If the first version is the draft (versionId "0"), use the second version (active version).
+ *
+ * @param {FlexVersion[]} flexVersions - The list of flex versions.
+ * @returns {string} The flex version to be used.
+ */
+export function determineFlexVersion(flexVersions: FlexVersion[]): string {
+    if (!flexVersions?.length) {
+        return '';
+    }
+    if (flexVersions[0]?.versionId === '0') {
+        return flexVersions[1]?.versionId ?? '';
+    }
+    return flexVersions[0]?.versionId ?? '';
+}
+
+/**
  * Prompter class that guides the user through importing key-user changes.
  */
 export class KeyUserImportPrompter {
@@ -221,7 +237,7 @@ export class KeyUserImportPrompter {
      * Loads adaptations for the current provider.
      */
     private async loadAdaptations(): Promise<void> {
-        const version = this.flexVersions?.[0]?.versionId;
+        const version = determineFlexVersion(this.flexVersions);
         const lrep = this.provider?.getLayeredRepository();
         const response = await lrep?.listAdaptations(this.componentId, version);
         this.adaptations = response?.adaptations ?? [];
