@@ -161,6 +161,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private isListHidden = false;
     private readonly calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
     private readonly onExternalSearchDebounce: (query: string) => void;
+    private hiddenOptions: Array<string | number> = [];
 
     /**
      * Initializes component properties.
@@ -193,6 +194,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         initializeComponentRef(this);
 
         this.state = {};
+        this.storeHiddenOptions(props.options);
     }
 
     /**
@@ -207,6 +209,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 this.isLoaderChanged(this.props.isLoading, nextProps.isLoading)) &&
             this.query
         ) {
+            this.storeHiddenOptions(nextProps.options);
             // Filter options
             this.updateHiddenOptions(nextProps.options, nextProps.isLoading);
         }
@@ -227,6 +230,15 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return !!prevLoader !== !!newLoader;
     }
 
+    private storeHiddenOptions(options: IComboBoxOption[]): void {
+        this.hiddenOptions = [];
+        for (const option of options) {
+            if (option.hidden) {
+                this.hiddenOptions.push(option.key);
+            }
+        }
+    }
+
     /**
      * Updates hidden options.
      *
@@ -243,6 +255,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             }
         };
         for (const option of opts) {
+            if (this.hiddenOptions.includes(option.key)) {
+                continue;
+            }
             if (option.itemType === SelectableOptionMenuItemType.Header) {
                 // Update visibility of previously processed group
                 updateGroupVisibility();
@@ -373,7 +388,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private reserQuery(): void {
         this.query = '';
         for (const option of this.props.options) {
-            delete option.hidden;
+            if (!this.hiddenOptions.includes(option.key)) {
+                delete option.hidden;
+            }
         }
         this.isListHidden = false;
         this.setState({
