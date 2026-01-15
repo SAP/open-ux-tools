@@ -42,7 +42,7 @@ export class FioriAnnotationSourceCode extends TextSourceCodeBase {
     ast: AnnotationFile;
 
     /**
-     *
+     * Creates an instance of FioriAnnotationSourceCode.
      *
      * @param root0 - Object containing text, ast, and projectContext.
      * @param root0.text - The text content of the file.
