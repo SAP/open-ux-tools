@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-freestyle-writer:basic",
-      "version": "2.2.5",
-      "toolsId": "747daa92-d5e9-4f45-8f73-110f1f242645"
+      "version": "2.5.27",
+      "toolsId": "10beb6af-1739-4c4c-b77b-6c39bfdc963d"
     },
     "dataSources": {
       "mainService": {
@@ -21,7 +21,7 @@
         "type": "OData",
         "settings": {
           "annotations": [],
-          "odataVersion": "4.0"
+          "odataVersion": "4.1"
         }
       }
     }

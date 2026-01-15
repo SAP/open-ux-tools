@@ -6089,7 +6089,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"settings\\": {
           \\"annotations\\": [],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"4.0\\"
+          \\"odataVersion\\": \\"4.1\\"
         }
       }
     }
@@ -12418,7 +12418,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"settings\\": {
           \\"annotations\\": [],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"4.0\\"
+          \\"odataVersion\\": \\"4.1\\"
         }
       }
     }
