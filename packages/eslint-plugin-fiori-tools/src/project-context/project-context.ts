@@ -270,9 +270,11 @@ export class ProjectContext {
         }
 
         if (this.appRoots.size > 0) {
-            // uri not is part of the known apps
-            // no point trying to reindex
-            return new ProjectContext({}, { projectType: 'EDMXBackend', apps: {}, documents: {} }, { apps: {} });
+            // Uri is not a part of known apps
+            // Assume a new app is opened
+            // Clear DiagnosticCache and continue to create new ProjectContext
+            DiagnosticCache.forceReindexOnFirstUpdate = true;
+            DiagnosticCache.clear(uri);
         }
 
         const { artifacts, projectType } = this.findFioriArtifacts(uri);
