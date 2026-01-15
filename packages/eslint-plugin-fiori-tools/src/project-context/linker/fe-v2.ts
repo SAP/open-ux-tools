@@ -241,8 +241,11 @@ export type NodeLookup<T extends Node> = {
 };
 
 /**
+ * Links Fiori Elements v2 application structure.
+ * Processes application settings and pages to create a linked model.
  *
- * @param context
+ * @param context - Linker context containing parsed application data
+ * @returns Linked FE v2 application structure
  */
 export function runFeV2Linker(context: LinkerContext): LinkedFeV2App {
     const manifest = context.app.manifestObject;
@@ -428,11 +431,13 @@ function linkPage(
 }
 
 /**
+ * Links tables in a List Report page with their configuration.
+ * Creates linked table structures from annotation nodes and manifest settings.
  *
- * @param page
- * @param pathToPage
- * @param tables
- * @param configuration
+ * @param page - FE v2 List Report page
+ * @param pathToPage - Path to page in manifest structure
+ * @param tables - Array of table annotation nodes
+ * @param configuration - Manifest page settings containing table configuration
  */
 function linkListReportTable(
     page: FeV2ListReport,
@@ -479,13 +484,14 @@ function linkListReportTable(
 }
 
 /**
+ * Links object page sections with their tables and configurations for Fiori Elements V2.
  *
- * @param page
- * @param pathToPage
- * @param entity
- * @param service
- * @param sections
- * @param configuration
+ * @param page - The object page being linked
+ * @param pathToPage - Configuration path segments to the page
+ * @param entity - The metadata element representing the entity
+ * @param service - The parsed OData service
+ * @param sections - Array of table section nodes to link
+ * @param configuration - Manifest page settings
  */
 function linkObjectPageSections(
     page: FeV2ObjectPage,
@@ -548,8 +554,9 @@ function linkObjectPageSections(
 }
 
 /**
+ * Links application-level settings from manifest configuration for Fiori Elements V2.
  *
- * @param config
+ * @param config - The manifest application settings
  */
 function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV2App {
     const createMode = config.settings?.tableSettings?.createMode;

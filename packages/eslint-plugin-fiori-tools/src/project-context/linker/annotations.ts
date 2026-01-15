@@ -35,10 +35,11 @@ export type NodeLookup = {
 };
 
 /**
+ * Collects table nodes from UI.LineItem annotations for an entity type.
  *
- * @param feVersion
- * @param entityType
- * @param service
+ * @param feVersion - The Fiori Elements version ('v2' or 'v4')
+ * @param entityType - The entity type name
+ * @param service - The parsed OData service
  */
 export function collectTables(feVersion: 'v2' | 'v4', entityType: string, service: ParsedService): TableNode[] {
     const tables: TableNode[] = [];
@@ -57,10 +58,11 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
     return tables;
 }
 /**
+ * Collects section nodes from UI.Facets annotations for an entity type.
  *
- * @param feVersion
- * @param entityType
- * @param service
+ * @param feVersion - The Fiori Elements version ('v2' or 'v4')
+ * @param entityType - The entity type name
+ * @param service - The parsed OData service
  */
 export function collectSections(
     feVersion: 'v2' | 'v4',
@@ -232,9 +234,10 @@ function createTableSection(
 }
 
 /**
+ * Extracts the record type from an element with alias resolution.
  *
- * @param aliasInfo
- * @param element
+ * @param aliasInfo - Alias information for resolving namespaces
+ * @param element - The XML element to extract the type from
  */
 export function getRecordType(aliasInfo: AliasInformation, element: Element): string | undefined {
     const recordType = getElementAttributeValue(element, Edm.Type);
@@ -256,8 +259,9 @@ interface RecordProperty {
 }
 
 /**
+ * Extracts property values from a record element.
  *
- * @param record
+ * @param record - The record element to extract properties from
  */
 function getRecordPropertyValue(record: Element): Record<string, RecordProperty> {
     const properties: Record<string, RecordProperty> = {};
@@ -290,9 +294,10 @@ function getRecordPropertyValue(record: Element): Record<string, RecordProperty>
 }
 
 /**
+ * Resolves a metadata element from a context path string.
  *
- * @param contextPath
- * @param service
+ * @param contextPath - The context path (e.g., '/EntitySet/NavigationProperty')
+ * @param service - The parsed OData service
  */
 export function getEntityForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
     if (!contextPath.startsWith('/')) {
@@ -312,9 +317,10 @@ export function getEntityForContextPath(contextPath: string, service: ParsedServ
 }
 
 /**
+ * Resolves navigation properties along a path to find the target entity.
  *
- * @param root
- * @param segments
+ * @param root - The starting metadata element
+ * @param segments - Array of navigation property names to traverse
  */
 function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
     if (segments.length === 0) {

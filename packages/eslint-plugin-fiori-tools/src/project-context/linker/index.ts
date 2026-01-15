@@ -13,8 +13,11 @@ export interface LinkedModel {
 }
 
 /**
+ * Links the parsed project structure to create a resolved model.
+ * Determines FE version (v2 or v4) and creates appropriate linked structure.
  *
- * @param parsedProject
+ * @param parsedProject - Parsed project containing applications and services
+ * @returns Tuple of [LinkedModel, Diagnostic[]] with linked model and any diagnostics
  */
 export function linkProject(parsedProject: ParsedProject): [LinkedModel, Diagnostic[]] {
     const model: LinkedModel = {
