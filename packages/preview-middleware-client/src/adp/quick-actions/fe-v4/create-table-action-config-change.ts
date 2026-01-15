@@ -130,7 +130,7 @@ function calculatePosition(table: Table, view: XMLView): { placement: 'Before' |
 
     if (action) {
         const localId = view.getLocalId(action.getId()) ?? '';
-        if (localId.lastIndexOf('CustomAction::') > -1) {
+        if (localId.includes('CustomAction::')) {
             const str = localId.substring(Math.max(0, localId.lastIndexOf('CustomAction::')));
             anchor = str.split('::').pop();
         } else {

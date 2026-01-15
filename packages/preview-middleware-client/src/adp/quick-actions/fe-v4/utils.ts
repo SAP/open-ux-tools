@@ -89,7 +89,7 @@ export type MacroTable = TableAPI & {
  * @param table - table control
  * @returns LineItem annotation string
  */
-export function getLineItemAnnotation(table: MacroTable): string | undefined {
+function getLineItemAnnotation(table: MacroTable): string | undefined {
     try {
         const helper = sap.ui.require('sap/fe/macros/table/designtime/Table.designtime.helper');
         if (helper && typeof helper.getLineItemAnnotation === 'function') {

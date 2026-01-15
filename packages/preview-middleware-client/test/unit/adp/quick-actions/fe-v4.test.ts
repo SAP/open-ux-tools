@@ -348,11 +348,11 @@ describe('FE V4 quick actions', () => {
                 jest.restoreAllMocks();
             });
 
-            async function setupContext() {
+            async function setupContext(actionFilter: 'CustomAction' | 'DataFieldForAction' | 'both' = 'both') {
                 const pageView = new XMLView();
-                pageView.getId.mockReturnValue('test.app::ProductsList');
+                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
                 pageView.getViewData.mockImplementation(() => ({
-                    stableId: 'appId::ProductsList'
+                    stableId: 'dummyProjectIdppId::ProductsList'
                 }));
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -378,13 +378,13 @@ describe('FE V4 quick actions', () => {
                 const mockAction1 = {
                     getId: () => 'ActionToolbarAction1',
                     getAction: jest.fn().mockReturnValue({
-                        getId: () => 'somePrefix::CustomAction::existingAction'
+                        getId: () => 'dummyProjectId--ProductsList::CustomAction::existingAction'
                     })
                 };
                 const mockAction2 = {
                     getId: () => 'ActionToolbarAction2',
                     getAction: jest.fn().mockReturnValue({
-                        getId: () => 'somePrefix::DataFieldForAction::newAction'
+                        getId: () => 'dummyProjectId--ProductsList::DataFieldForAction::newAction'
                     })
                 };
                 sapCoreMock.byId.mockImplementation((id) => {
@@ -394,7 +394,14 @@ describe('FE V4 quick actions', () => {
                             getHeader: () => 'MyTable',
                             getId: () => id,
                             getBusy: () => false,
-                            getActions: jest.fn().mockReturnValue([mockAction1, mockAction2]),
+                            getActions: jest.fn().mockReturnValue(
+                                [mockAction1, mockAction2].filter((action) => {
+                                    if (actionFilter === 'both') {
+                                        return true;
+                                    }
+                                    return action.getAction().getId().includes(actionFilter);
+                                })
+                            ),
                             getDomRef: () => ({}),
                             getParent: () => ({
                                 isA: (type: string) => type === 'sap.fe.macros.table.TableAPI',
@@ -417,7 +424,7 @@ describe('FE V4 quick actions', () => {
                                 contains: () => true
                             };
                         });
-                        pageView.getId.mockReturnValue('test.app::ProductsList');
+                        pageView.getId.mockReturnValue('dummyProjectId--ProductsList');
                         pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
                         const componentContainer = new ComponentContainer();
                         jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
@@ -484,7 +491,6 @@ describe('FE V4 quick actions', () => {
                     controllerPath: 'webapp/adp/v4/test.js',
                     isTsSupported: false
                 });
-                sapMock.ui.require.mockImplementation(() => MacroTableHelper);
                 jest.spyOn(fev4QAUtils, 'getActionsPropertyPath').mockReturnValue(
                     '@com.sap.vocabularies.UI.v1.LineItem/actions/'
                 );
@@ -553,6 +559,7 @@ describe('FE V4 quick actions', () => {
             });
 
             test('available since UI5 version 1.120', async () => {
+                sapMock.ui.require.mockImplementation(() => MacroTableHelper);
                 VersionInfo.load.mockResolvedValue({
                     name: 'SAPUI5 Distribution',
                     libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
@@ -645,6 +652,113 @@ describe('FE V4 quick actions', () => {
                         actionType: 'tableAction',
                         controllerReference: '.extension.adp.v4.test.<methodName>',
                         propertyPath: '@com.sap.vocabularies.UI.v1.LineItem/actions/',
+                        position: expect.objectContaining({
+                            placement: 'Before',
+                            anchor: 'existingAction'
+                        }),
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                    }),
+                    expect.objectContaining({ actionName: 'create-table-action' })
+                );
+            });
+
+            test('available since UI5 version 1.120 - calculate position for datafield action', async () => {
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
+                });
+                await setupContext('DataFieldForAction');
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-change-table-actions',
+                                    enabled: true,
+                                    title: 'Change Table Actions',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: false,
+                                            children: [],
+                                            tooltip:
+                                                'This option is disabled because the table toolbar is not available.'
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-change-table-columns',
+                                    enabled: true,
+                                    title: 'Change Table Columns',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: false,
+                                            tooltip:
+                                                'This action has been disabled because variant management is disabled. Enable variant management and try again.',
+                                            children: []
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    enabled: true,
+                                    title: 'Add Custom Table Action',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: true,
+                                            children: []
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-create-table-custom-column',
+                                    enabled: true,
+                                    title: 'Add Custom Table Column',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: true,
+                                            children: []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
+                );
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddAction',
+                    undefined,
+                    expect.objectContaining({
+                        appDescriptor: expect.objectContaining({
+                            appType: 'fe-v4',
+                            pageId: 'ProductsList',
+                            projectId: 'dummyProjectId'
+                        }),
+                        actionType: 'tableAction',
+                        controllerReference: '.extension.adp.v4.test.<methodName>',
+                        propertyPath: '@com.sap.vocabularies.UI.v1.LineItem/actions/',
+                        position: expect.objectContaining({
+                            placement: 'Before',
+                            anchor: 'DataFieldForAction::newAction'
+                        }),
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                     }),
                     expect.objectContaining({ actionName: 'create-table-action' })
