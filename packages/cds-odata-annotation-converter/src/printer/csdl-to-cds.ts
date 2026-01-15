@@ -91,6 +91,7 @@ export const resolveTarget = (
 };
 
 /**
+ * Checks path segments for parentheses and returns the index of the first segment containing them.
  *
  * @param segments - array of path string.
  * @returns check (,) and return if condition meet.
