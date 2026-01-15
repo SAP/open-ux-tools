@@ -50,6 +50,5 @@ describe('Project Access Tests', () => {
 
             expect(result).toEqual({});
         });
-
     });
 });

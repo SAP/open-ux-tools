@@ -59,34 +59,34 @@ interface Ui5DocumentBase {
 
 export type Ui5Document =
     | (Ui5DocumentBase & {
-        type: 'application';
-        configuration?: {
-            paths?: {
-                webapp: string
-            }
-        }
-    })
+          type: 'application';
+          configuration?: {
+              paths?: {
+                  webapp: string;
+              };
+          };
+      })
     | (Ui5DocumentBase & {
-        type: 'library';
-        configuration?: {
-            paths?: {
-                src: string;
-                test: string
-            }
-        }
-    })
+          type: 'library';
+          configuration?: {
+              paths?: {
+                  src: string;
+                  test: string;
+              };
+          };
+      })
     | (Ui5DocumentBase & {
-        type: 'theme-library';
-        configuration?: {
-            paths?: {
-                src: string;
-                test: string
-            }
-        }
-    })
+          type: 'theme-library';
+          configuration?: {
+              paths?: {
+                  src: string;
+                  test: string;
+              };
+          };
+      })
     | (Ui5DocumentBase & {
-        type: 'module';
-        configuration?: {
-            paths?: Record<string, never>
-        }
-    });
+          type: 'module';
+          configuration?: {
+              paths?: Record<string, never>;
+          };
+      });
