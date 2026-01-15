@@ -62,9 +62,7 @@ const commonConfig: Linter.Config[] = [
 
 // Use synckit to create sync function for project-access getPathMappingsSync
 const workerPath = join(__dirname, 'worker-getPathMappingsSync.js');
-const getPathMappingsSync = createSyncFn(workerPath) as (
-    ...args: Parameters<typeof getPathMappings>
-) => Awaited<ReturnType<typeof getPathMappings>>;
+const getPathMappingsSync = createSyncFn<typeof getPathMappings>(workerPath);
 
 const pathMappingsAbsolute = getPathMappingsSync(process.cwd());
 const webappPathAbsolute =
