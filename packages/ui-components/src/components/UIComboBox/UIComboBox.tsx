@@ -905,8 +905,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                                 }
                             })
                         },
-
-                        errorMessage: [messageInfo.style]
+                        container: messageInfo.style.container,
+                        errorMessage: [messageInfo.style.message]
                     }}
                     {...this.props}
                     calloutProps={{
