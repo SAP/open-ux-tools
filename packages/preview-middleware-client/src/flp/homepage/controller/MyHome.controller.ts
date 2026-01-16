@@ -28,6 +28,7 @@ export default class MyHomeController extends Controller {
             const newsContainer = new NewsContainerClass(`${view.getId()}-newsContainer`, {
                 content: [
                     new NewsPanel(`${view.getId()}-news`, {
+                        // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-hardcoded-url
                         url: 'https://sapui5untested.int.sap.eu2.hana.ondemand.com/databinding/proxy/https/news.sap.com/feed'
                     })
                 ]
