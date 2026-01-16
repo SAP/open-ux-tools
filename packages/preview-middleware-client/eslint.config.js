@@ -9,22 +9,17 @@ module.exports = [
             'test/fixtures/**',
             'dist/**',
             'node_modules/**',
-            'eslint.config.js',
-            'coverage/**'
+            '**/*.config.js',
+            'coverage/**',
+            '**/*.d.ts'
         ]
     },
-    // TODO: this is already not working, fix it separately
     ...fioriTools.configs['recommended'],
     {
         languageOptions: {
             parser: tsParser,
             ecmaVersion: 5,
             sourceType: 'script',
-
-            parserOptions: {
-                project: './tsconfig.eslint.json',
-                tsconfigRootDir: __dirname
-            }
         },
         plugins: {
             '@typescript-eslint': typescriptEslint,
@@ -40,9 +35,12 @@ module.exports = [
                     argsIgnorePattern: '^_'
                 }
             ],
+            'no-unused-vars': 'off',
+            'no-redeclare': 'off',
             '@typescript-eslint/no-unsafe-argument': 'warn',
             '@typescript-eslint/no-unsafe-member-access': 'warn',
-            '@typescript-eslint/no-unsafe-assignment': 'warn'
+            '@typescript-eslint/no-unsafe-assignment': 'warn',
+            '@sap-ux/fiori-tools/sap-no-global-variable': 'warn'
         }
     },
     {
