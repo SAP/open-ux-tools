@@ -3,7 +3,8 @@ import FakeLrepConnector from 'sap/ui/fl/FakeLrepConnector';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
 import type { FlexChange } from './common';
-import { CHANGES_API_PATH, getFlexSettings } from './common';
+import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common';
+import { Window } from '../../types/global';
 
 interface FetchedChanges {
     [key: string]: FlexChange;
@@ -22,6 +23,9 @@ interface LoadChangesResult {
     loadModules: boolean;
     messagebundle: string | undefined;
 }
+
+const baseUrl = (globalThis as unknown as Window)['data-open-ux-preview-base-url'] ?? '';
+const CHANGES_API_PATH = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
 
 /**
  * Processes an array of FlexChange objects.
