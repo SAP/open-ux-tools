@@ -2,8 +2,9 @@ module.exports = {
     transform: {
         '^.+\\.ts$': 'ts-jest'
     },
-    // Coverage is handled by c8 wrapper for worker thread support
-    collectCoverage: false,
+    collectCoverage: true,
+    collectCoverageFrom: ['src/**/*.ts'],
+    coverageReporters: ['text', ['lcov', { projectRoot: '../../' }]],
     reporters: [
         'default',
         [
