@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.4
+
+### Patch Changes
+
+- 4ec10e4: reset stale connection when switching system auth type
+
 ## 2.14.3
 
 ### Patch Changes
