@@ -30,8 +30,6 @@ export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
  */
 export class ODataDownloadGenerator extends Generator {
     private readonly vscode: unknown;
-    // Performance measurement
-    private generationTime0: number; // start of writing phase millisecond timestamp
     private appWizard: AppWizard | undefined;
 
     // The logger is static to allow convenient access from everywhere, cross-cutting concern
@@ -47,21 +45,13 @@ export class ODataDownloadGenerator extends Generator {
          */
         appRootPath?: string;
         /**
-         * Root disk path for mockdata
+         * Mock data path relative to app root, determined from mock yaml config or default
          */
         mockDataRootPath?: string;
-        /**
-         * The metadata for mock server
-         */
-        mockMetaDataPath?: string;
         /**
          * The application referenced entities used as the roots for data download
          */
         appEntities?: ReferencedEntities;
-        /**
-         * User selected entities
-         */
-        selectedEntities?: SelectedEntityAnswer[];
         /**
          * The downloaded entity odata as JSON
          */
@@ -108,6 +98,7 @@ export class ODataDownloadGenerator extends Generator {
         }
         this.options.force = true;
 
+        // Generator steps
         this.prompts = new Prompts([
             {
                 description: 'Download data from an OData service for use with the UX Tools Mockdata Server',
@@ -166,21 +157,23 @@ export class ODataDownloadGenerator extends Generator {
             this.state.mainServicePath = odataServiceAnswers.servicePath;
             this.state.mainServiceName = application.appAccess?.app.mainService;
             this.state.appEntities = application.referencedEntities;
-            this.state.selectedEntities =
-                (promptAnswers[promptNames.relatedEntitySelection] as SelectedEntityAnswerAsJSONString[])?.map(
-                    (selEntityAnswer) => JSON.parse(selEntityAnswer) as SelectedEntityAnswer // silly workaround for YUI checkbox issue
-                ) ?? [];
 
             if (this.state.appRootPath) {
                 const mockConfig = await getMockServerConfig(this.state.appRootPath);
-                ODataDownloadGenerator.logger.info(`Mock config: ${JSON.stringify(mockConfig)}`);
-                // todo: Find the matching service, for now use the first one
+                let serviceConfig;
+                if (mockConfig && mockConfig.services) {
+                    ODataDownloadGenerator.logger.info(`Mock config: ${JSON.stringify(mockConfig)}`);
+                    // Find the matching service from mock config ignoring leading and trailing '/'
+                    serviceConfig = mockConfig.services.find(
+                        (service) =>
+                            service.urlPath.replace(/^\/+|\/+$/g, '') ===
+                            this.state.mainServicePath?.replace(/^\/+|\/+$/g, '')
+                    );
+                }
+                // If no config found use the default location for mock data
                 this.state.mockDataRootPath =
-                    mockConfig.services?.[0]?.mockdataPath ??
+                    serviceConfig?.mockdataPath ??
                     join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
-                // metadata path
-                const metadataPath = mockConfig.services?.[0]?.metadataPath?.match(/^(.*\/)([^\/]*)$/)?.[0];
-                this.state.mockMetaDataPath = metadataPath ?? join(DirName.Webapp, DirName.LocalService);
             }
 
             this.state.updateMainServiceMetadata = promptAnswers[promptNames.updateMainServiceMetadata];
@@ -203,7 +196,6 @@ export class ODataDownloadGenerator extends Generator {
     async writing(): Promise<void> {
         if (this.state.entityOData?.odata && this.state.appEntities) {
             try {
-                this.generationTime0 = performance.now();
                 // Set target dir to mock data path
                 this.destinationRoot(join(this.state.appRootPath!));
 
@@ -213,17 +205,12 @@ export class ODataDownloadGenerator extends Generator {
                     this.state.appEntities.listEntity.entitySetName
                 );
 
-                // const mainEntityPath = join(`${this.state.appEntities.listEntity}.json`);
-                // Write main entity data file (todo: do we need to treat this differently? )
-                // this.writeDestinationJSON(mainEntityPath, this.state.entityData);
-
                 Object.entries(entityFileData).forEach(([entityName, entityData]) => {
                     // Writes relative to destination root path
                     this.writeDestinationJSON(join(this.state.mockDataRootPath!, `${entityName}.json`), entityData);
                 });
             } catch (error) {
                 ODataDownloadGenerator.logger.error(error);
-                //this._exitOnError(error);
             }
         } else {
             ODataDownloadGenerator.logger.info('No service entity data to write.');
@@ -243,7 +230,7 @@ export class ODataDownloadGenerator extends Generator {
         } else {
             ODataDownloadGenerator.logger.info('No Value Help service data to write.');
         }
-
+        // Update the metadata
         if (this.state.updateMainServiceMetadata && this.state.mainServiceMetadata && this.state.mainServiceName) {
             const mainServiceMetadataPath = join(
                 this.state.appRootPath!,
@@ -256,16 +243,11 @@ export class ODataDownloadGenerator extends Generator {
         }
     }
 
-    async end(): Promise<void> {
-        // await runPostGenerationTasks
-    }
-
     /**
      *
      * @param error
      */
     private _exitOnError(error: string): void {
-        /*   sendTelemetry('GENERATION_WRITING_FAIL', TelemetryHelper.telemetryData); */
         if (getHostEnvironment() !== hostEnvironment.cli) {
             this.appWizard?.showError(error, MessageType.notification);
         }

@@ -1,4 +1,3 @@
-import { convertEdmxToConvertedMetadata } from '@sap-ux/inquirer-common';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey, getService } from '@sap-ux/store';
@@ -10,6 +9,8 @@ import type { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
 import { isEqual, mergeWith, uniqWith } from 'lodash';
 import type { EntitySetsFlat } from './odata-query';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
 
 /**
  * Merge array properties by removing dups and concating
@@ -201,7 +202,7 @@ export async function getEntityModel(
     const mainService = appAccess.app.services['mainService'];
 
     if (mainService.local) {
-        const convertedMetadata = convertEdmxToConvertedMetadata(remoteMetadata);
+        const convertedMetadata = convert(parse(remoteMetadata));
         const appSpec = await appAccess.getSpecification<Specification>();
         const appConfig = await appSpec.readApp({ app: appAccess });
 

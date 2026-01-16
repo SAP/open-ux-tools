@@ -14,6 +14,7 @@ import merge from 'lodash/merge';
 import { join } from 'path';
 import { PromptState } from './prompt-state';
 import { entityTypeExclusions } from './types';
+import { readFile } from 'fs/promises';
 
 /**
  *
@@ -87,7 +88,7 @@ async function getExternalServiceEntityData(
         PromptState.externalServiceRequestCache[servicePath] = PromptState.externalServiceRequestCache[servicePath]
             ? PromptState.externalServiceRequestCache[servicePath]
             : [];
-
+        
         const serviceMetadata = convert(parse(externalServiceRef.metadata));
         const entitySets = serviceMetadata.entitySets;
         const requestPromises = entitySets.map(async (entitySet) => {
