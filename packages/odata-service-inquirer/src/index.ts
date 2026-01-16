@@ -34,6 +34,7 @@ import {
     promptNames
 } from './types';
 import { getPromptHostEnvironment, PromptState } from './utils';
+import { getDefaultTableType } from './prompts/edmx/entity-helper';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -167,6 +168,7 @@ export {
     ERROR_TYPE,
     // @deprecated - temp export to support to support open source migration
     ErrorHandler,
+    getDefaultTableType,
     getEntityRelatedPrompts,
     getPrompts,
     getSystemSelectionQuestions,
