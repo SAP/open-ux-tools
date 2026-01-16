@@ -1,4 +1,4 @@
-import * as childProcess from 'child_process';
+import * as childProcess from 'node:child_process';
 import type { Editor } from 'mem-fs-editor';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';

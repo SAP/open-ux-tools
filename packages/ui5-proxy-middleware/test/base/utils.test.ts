@@ -16,7 +16,7 @@ import type { Response } from 'express';
 import fs from 'node:fs';
 import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage } from 'node:http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies

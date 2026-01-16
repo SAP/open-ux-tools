@@ -186,7 +186,9 @@ describe('Test credentials prompts', () => {
             url: 'http://abap.on.prem:1234',
             username: 'user1',
             password: 'password1',
-            client: '001'
+            client: '001',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         };
 
         const answers = {
@@ -339,7 +341,9 @@ describe('Test credentials prompts', () => {
                 username: 'testuser',
                 password: 'testpass',
                 client: '001',
-                newOrUpdated: true
+                newOrUpdated: true,
+                systemType: 'OnPrem',
+                connectionType: 'abap_catalog'
             }
         };
 
@@ -411,7 +415,9 @@ describe('Test credentials prompts', () => {
             url: 'http://test.system:1234',
             username: 'testuser',
             password: 'testpass',
-            client: '001'
+            client: '001',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         };
 
         PromptState.odataService.connectedSystem = {

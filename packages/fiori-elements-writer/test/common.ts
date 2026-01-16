@@ -13,8 +13,8 @@ import {
     type WorklistSettings,
     TemplateType
 } from '../src/types';
-import { promisify } from 'util';
-import { exec as execCP } from 'child_process';
+import { promisify } from 'node:util';
+import { exec as execCP } from 'node:child_process';
 const exec = promisify(execCP);
 import { type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 

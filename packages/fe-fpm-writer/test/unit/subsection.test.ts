@@ -7,6 +7,7 @@ import type { CustomSubSection } from '../../src/section/types';
 import type { Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifestSections from './sample/section/webapp/manifest.json';
+import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 
 const testDir = join(__dirname, 'sample/subsection');
 
@@ -40,6 +41,7 @@ describe('SubCustomSection generateCustomSubSection', () => {
 
     const testVersions = ['1.85', '1.86', '1.98'];
     test.each(testVersions)('Versions %s', async (minUI5Version) => {
+        const copyTplSpy = jest.spyOn(fs, 'copyTpl');
         const testCustomSubSection: CustomSubSection = {
             ...customSubSection,
             eventHandler: true,
@@ -56,6 +58,7 @@ describe('SubCustomSection generateCustomSubSection', () => {
 
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+        expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
     });
 
     // Test inserting of custom sub sections into existing section defined in manifest.json

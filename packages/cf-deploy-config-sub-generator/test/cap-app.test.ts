@@ -159,7 +159,7 @@ describe('Cloud foundry generator tests', () => {
         expect(mockGenerateCAPConfig).not.toHaveBeenCalled();
         expect(mockGenerateAppConfig).not.toHaveBeenCalled();
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
-        expect(mockSendTelemetry).toHaveBeenCalled();
+        expect(mockSendTelemetry).not.toHaveBeenCalled();
     });
 
     it('Validate Approuter prompting is shown if HTML5 is being added to a CAP project with missing mta', async () => {

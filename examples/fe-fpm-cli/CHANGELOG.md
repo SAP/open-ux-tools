@@ -1,5 +1,77 @@
 # @sap-ux/fe-fpm-cli
 
+## 0.1.82
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.40.10
+
+## 0.1.81
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.40.9
+
+## 0.1.80
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.40.8
+
+## 0.1.79
+
+### Patch Changes
+
+- Updated dependencies [38e4633]
+    - @sap-ux/fe-fpm-writer@0.40.7
+
+## 0.1.78
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.40.6
+
+## 0.1.77
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.40.5
+
+## 0.1.76
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/fe-fpm-writer@0.40.4
+
+## 0.1.75
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/fe-fpm-writer@0.40.3
+
+## 0.1.74
+
+### Patch Changes
+
+- @sap-ux/fe-fpm-writer@0.40.2
+
+## 0.1.73
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/fe-fpm-writer@0.40.1
+
+## 0.1.72
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/fe-fpm-writer@0.40.0
+
 ## 0.1.71
 
 ### Patch Changes

@@ -126,7 +126,9 @@ describe('flp/FakeLrepConnector', () => {
             };
             fetchMock.mockResolvedValue({ text: jest.fn(), ok: true });
             documentMock.getElementById.mockReturnValue({
-                getAttribute: jest.fn().mockReturnValue('{"generator":"@sap-ux/control-property-editor"}')
+                dataset: {
+                    openUxPreviewFlexSettings: JSON.stringify({ generator: '@sap-ux/control-property-editor' })
+                }
             });
 
             await create([change]);
@@ -150,7 +152,9 @@ describe('flp/FakeLrepConnector', () => {
             };
             fetchMock.mockResolvedValue({ text: jest.fn(), ok: true });
             documentMock.getElementById.mockReturnValue({
-                getAttribute: jest.fn().mockReturnValue('{"generator":"@sap-ux/control-property-editor"}')
+                dataset: {
+                    openUxPreviewFlexSettings: JSON.stringify({ generator: '@sap-ux/control-property-editor' })
+                }
             });
 
             await create(change);

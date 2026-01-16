@@ -1,5 +1,99 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.2
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/cds-odata-annotation-converter@0.7.1
+
+## 0.9.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+- Updated dependencies [4d6695f]
+    - @sap-ux/cds-odata-annotation-converter@0.7.1
+
+## 0.9.0
+
+### Minor Changes
+
+- b132944: feat: provide synchronous API for reading annotations
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/cds-odata-annotation-converter@0.7.0
+    - @sap-ux/project-access@1.34.0
+
+## 0.8.6
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/cds-odata-annotation-converter@0.6.19
+
+## 0.8.5
+
+### Patch Changes
+
+- Updated dependencies [d667a5e]
+    - @sap-ux/odata-entity-model@0.3.4
+    - @sap-ux/xml-odata-annotation-converter@0.4.6
+    - @sap-ux/cds-annotation-parser@0.2.26
+    - @sap-ux/odata-annotation-core@0.2.12
+    - @sap-ux/cds-odata-annotation-converter@0.6.19
+
+## 0.8.4
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/cds-odata-annotation-converter@0.6.18
+    - @sap-ux/cds-annotation-parser@0.2.25
+    - @sap-ux/odata-annotation-core@0.2.12
+    - @sap-ux/project-access@1.33.1
+    - @sap-ux/xml-odata-annotation-converter@0.4.5
+
+## 0.8.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+
+## 0.8.2
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/cds-odata-annotation-converter@0.6.17
+
+## 0.8.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/cds-odata-annotation-converter@0.6.17
+    - @sap-ux/xml-odata-annotation-converter@0.4.4
+    - @sap-ux/odata-vocabularies@0.4.21
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/cds-annotation-parser@0.2.24
+
+## 0.8.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
 ## 0.7.23
 
 ### Patch Changes

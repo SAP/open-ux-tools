@@ -30,7 +30,7 @@ export async function validateSmartTemplateApplication(manifest: Manifest): Prom
         throw new Error(t('error.adpDoesNotSupportSelectedApplication'));
     }
 
-    if (manifest['sap.ui5'] && manifest['sap.ui5'].flexEnabled === false) {
+    if (manifest['sap.ui5']?.flexEnabled === false) {
         throw new Error(t('error.appDoesNotSupportFlexibility'));
     }
 }

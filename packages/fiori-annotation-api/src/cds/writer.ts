@@ -131,7 +131,7 @@ export class CDSWriter implements ChangeHandler {
     private edits: TextEdit[] = [];
     private referenceEdits: TextEdit[] = [];
     private indentLevelCache: { [pointer: string]: number } = {};
-    private vocabularyAliases = new Set<string>();
+    private readonly vocabularyAliases = new Set<string>();
     private deletionRangesMapForTarget: Map<string, DeletionRange[]> = new Map();
     private uniqueInserts = new Set<string>();
     private processedChanges: CDSDocumentChange[] = [];
@@ -148,19 +148,19 @@ export class CDSWriter implements ChangeHandler {
      * @param annotationFile - Internal representation of the annotation file.
      */
     constructor(
-        private facade: CdsCompilerFacade,
-        private vocabularyService: VocabularyService,
-        private document: CDSDocument,
-        private comments: Comment[],
-        private tokens: CompilerToken[],
-        private textDocument: TextDocument,
-        private projectRoot: string,
+        private readonly facade: CdsCompilerFacade,
+        private readonly vocabularyService: VocabularyService,
+        private readonly document: CDSDocument,
+        private readonly comments: Comment[],
+        private readonly tokens: CompilerToken[],
+        private readonly textDocument: TextDocument,
+        private readonly projectRoot: string,
         /**
          * This should be removed once it is no longer needed by deletion logic
          *
          * @deprecated
          */
-        private annotationFile: AnnotationFile
+        private readonly annotationFile: AnnotationFile
     ) {
         for (const [, vocabulary] of this.vocabularyService.getVocabularies()) {
             this.vocabularyAliases.add(vocabulary.defaultAlias);

@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.21
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 0.4.20
 
 ### Patch Changes

@@ -34,7 +34,7 @@ class MetadataConverter {
      *
      * @param metadataService - Metadata service instance.
      */
-    constructor(private metadataService: MetadataService) {}
+    constructor(private readonly metadataService: MetadataService) {}
 
     /**
      * @returns AVT schema.
@@ -73,7 +73,8 @@ class MetadataConverter {
             associations: [],
             singletons: this.singletons,
             associationSets: [],
-            typeDefinitions: []
+            typeDefinitions: [],
+            enumTypes: []
         };
     }
     private convertAction(targetKinds: string[], element: MetadataElement): void {

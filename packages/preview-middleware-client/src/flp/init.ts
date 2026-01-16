@@ -188,7 +188,7 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
         const sapClient = urlParams.get('sap-client');
-        if (sapClient && sapClient.length === 3) {
+        if (sapClient?.length === 3) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
@@ -412,11 +412,11 @@ export async function init({
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
-        appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
-        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
-        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage'),
-        enableCardGenerator: !!bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator')
+        appUrls: bootstrapConfig.dataset.openUxPreviewLibsManifests,
+        flex: bootstrapConfig.dataset.openUxPreviewFlexSettings,
+        customInit: bootstrapConfig.dataset.openUxPreviewCustomInit,
+        enhancedHomePage: !!bootstrapConfig.dataset.openUxPreviewEnhancedHomepage,
+        enableCardGenerator: !!bootstrapConfig.dataset.openUxPreviewEnableCardGenerator
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);

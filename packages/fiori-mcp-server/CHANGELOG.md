@@ -1,5 +1,75 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.7
+
+### Patch Changes
+
+- b116439: chore(deps): update dependency @modelcontextprotocol/sdk to v1.25.2
+- d17fb22: chore(deps): update dependency @langchain/core to v1.1.8 [security]
+
+## 0.6.6
+
+### Patch Changes
+
+- 5c34d46: feat(telemetry): enhance telemetry data with MCP client info and do not pass telemetry data when unknownTool
+
+## 0.6.5
+
+### Patch Changes
+
+- Updated dependencies [d667a5e]
+    - @sap-ux/fiori-docs-embeddings@0.4.9
+
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/fiori-docs-embeddings@0.4.8
+
+## 0.6.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+    - @sap-ux/fiori-docs-embeddings@0.4.7
+
+## 0.6.2
+
+### Patch Changes
+
+- c7f9a60: Log to file instead of STDIO
+    - @sap-ux/fiori-docs-embeddings@0.4.7
+    - @sap-ux/store@1.4.2
+
+## 0.6.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/fiori-docs-embeddings@0.4.7
+    - @sap-ux/store@1.4.1
+
+## 0.6.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
+### Patch Changes
+
+- @sap-ux/fiori-docs-embeddings@0.4.6
+
+## 0.5.2
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+    - @sap-ux/fiori-docs-embeddings@0.4.6
+
 ## 0.5.1
 
 ### Patch Changes

@@ -1,5 +1,150 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.27
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/ui5-test-writer@0.7.53
+    - @sap-ux/cap-config-writer@0.12.43
+    - @sap-ux/fiori-generator-shared@0.13.52
+    - @sap-ux/odata-service-writer@0.29.7
+    - @sap-ux/ui5-application-writer@1.7.1
+
+## 2.5.26
+
+### Patch Changes
+
+- @sap-ux/ui5-application-writer@1.7.1
+- @sap-ux/cap-config-writer@0.12.42
+- @sap-ux/fiori-generator-shared@0.13.51
+- @sap-ux/odata-service-writer@0.29.6
+- @sap-ux/ui5-test-writer@0.7.52
+
+## 2.5.25
+
+### Patch Changes
+
+- @sap-ux/cap-config-writer@0.12.41
+- @sap-ux/fiori-generator-shared@0.13.50
+- @sap-ux/odata-service-writer@0.29.5
+- @sap-ux/ui5-application-writer@1.7.1
+- @sap-ux/ui5-test-writer@0.7.51
+
+## 2.5.24
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/ui5-application-writer@1.7.1
+    - @sap-ux/ui5-test-writer@0.7.50
+    - @sap-ux/fiori-generator-shared@0.13.49
+    - @sap-ux/odata-service-writer@0.29.4
+    - @sap-ux/cap-config-writer@0.12.40
+
+## 2.5.23
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/odata-service-writer@0.29.3
+    - @sap-ux/fiori-generator-shared@0.13.48
+
+## 2.5.22
+
+### Patch Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+- Updated dependencies [03598eb]
+    - @sap-ux/fiori-generator-shared@0.13.48
+    - @sap-ux/ui5-application-writer@1.7.0
+    - @sap-ux/cap-config-writer@0.12.39
+    - @sap-ux/ui5-test-writer@0.7.49
+
+## 2.5.21
+
+### Patch Changes
+
+- Updated dependencies [62bb798]
+    - @sap-ux/fiori-generator-shared@0.13.47
+    - @sap-ux/cap-config-writer@0.12.38
+
+## 2.5.20
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+- Updated dependencies [d24f36d]
+    - @sap-ux/ui5-application-writer@1.6.8
+    - @sap-ux/ui5-test-writer@0.7.48
+
+## 2.5.19
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+- Updated dependencies [dad2bd7]
+    - @sap-ux/ui5-application-writer@1.6.7
+    - @sap-ux/ui5-test-writer@0.7.47
+
+## 2.5.18
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/cap-config-writer@0.12.37
+    - @sap-ux/fiori-generator-shared@0.13.46
+    - @sap-ux/ui5-test-writer@0.7.46
+    - @sap-ux/odata-service-writer@0.29.2
+    - @sap-ux/ui5-application-writer@1.6.6
+    - @sap-ux/ui5-config@0.29.12
+
+## 2.5.17
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-application-writer@1.6.6
+    - @sap-ux/odata-service-writer@0.29.1
+    - @sap-ux/ui5-test-writer@0.7.45
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/fiori-generator-shared@0.13.45
+    - @sap-ux/cap-config-writer@0.12.36
+
+## 2.5.16
+
+### Patch Changes
+
+- Updated dependencies [691ab27]
+    - @sap-ux/odata-service-writer@0.29.0
+
+## 2.5.15
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/odata-service-writer@0.28.0
+    - @sap-ux/fiori-generator-shared@0.13.44
+
+## 2.5.14
+
+### Patch Changes
+
+- Updated dependencies [63c0f52]
+    - @sap-ux/ui5-application-writer@1.6.5
+    - @sap-ux/ui5-test-writer@0.7.44
+
+## 2.5.13
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.44
+- @sap-ux/ui5-config@0.29.11
+- @sap-ux/cap-config-writer@0.12.35
+
 ## 2.5.12
 
 ### Patch Changes

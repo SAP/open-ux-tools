@@ -1,5 +1,29 @@
 # @sap-ux/control-property-editor
 
+## 0.7.8
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
+## 0.7.7
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 0.7.6
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
+## 0.7.5
+
+### Patch Changes
+
+- ffcf1b2: fix sonar issues: replace getAttribute() with .dataset
+
 ## 0.7.4
 
 ### Patch Changes
