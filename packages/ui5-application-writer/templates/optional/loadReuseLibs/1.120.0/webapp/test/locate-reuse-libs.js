@@ -170,7 +170,6 @@
         });
     };
     
-    /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
     var currentScript = document.getElementById("locate-reuse-libs");
     if (!currentScript) {
         currentScript = document.currentScript;

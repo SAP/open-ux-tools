@@ -8,6 +8,7 @@ const PATH_TYPES = new Set([
 ]);
 
 /**
+ * Converts a path-like type string to its simplified element name.
  *
  * @param type - The path-like type string.
  * @returns The simplified element name or undefined if the type is not recognized.
@@ -23,6 +24,7 @@ export function pathLikeTypeElementName(type: string | undefined): string | unde
 }
 
 /**
+ * Removes escape sequences from text.
  *
  * @param input escaped text.
  * @returns string without escaped characters.

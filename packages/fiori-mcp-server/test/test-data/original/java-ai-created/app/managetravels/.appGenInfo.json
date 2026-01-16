@@ -11,7 +11,6 @@
     "appNamespace": "com.company.managetravels",
     "ui5Theme": "sap_horizon",
     "ui5Version": "1.136.7",
-    "enableCodeAssist": false,
     "enableEslint": false,
     "enableTypeScript": false,
     "showMockDataInfo": false,

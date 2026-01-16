@@ -1,5 +1,24 @@
 # @sap-ux/serve-static-middleware
 
+## 0.4.7
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
+## 0.4.6
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+
 ## 0.4.4
 
 ### Patch Changes

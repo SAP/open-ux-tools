@@ -2,8 +2,16 @@ import type { UpdateSystem } from '@sap-ux/sap-systems-ext-types';
 import type { PanelContext } from '../../../types/system';
 import type { BackendSystem } from '@sap-ux/store';
 import { commands, window } from 'vscode';
-import { getBackendSystem, geti18nOpts, TelemetryHelper, t, getBackendSystemService } from '../../../utils';
-import { updateSystemStatus, validateSystemName } from '../utils';
+import {
+    getBackendSystem,
+    geti18nOpts,
+    TelemetryHelper,
+    t,
+    getBackendSystemService,
+    compareSystems,
+    shouldStoreSystemInfo
+} from '../../../utils';
+import { getSystemInfo, updateSystemStatus, validateSystemName } from '../utils';
 import {
     SystemAction,
     SystemActionStatus,
@@ -11,6 +19,7 @@ import {
     SystemPanelViewType,
     SYSTEMS_EVENT
 } from '../../../utils/constants';
+import SystemsLogger from '../../../utils/logger';
 
 /**
  * This action updates or creates a system based on the provided details.
@@ -19,23 +28,62 @@ import {
  * @param action - update system action containing the new system details
  */
 export async function updateSystem(context: PanelContext, action: UpdateSystem): Promise<void> {
-    const { system: newBackendSystem } = action.payload;
+    const { system: backendSystemPayload } = action.payload;
     const systemExistsInStore = !!(await getBackendSystem({
-        url: newBackendSystem.url,
-        client: newBackendSystem.client
+        url: backendSystemPayload.url,
+        client: backendSystemPayload.client
     }));
-    try {
-        await validateSystemName(newBackendSystem.name, context.backendSystem?.name);
-        const newPanelMsg = await updateHandler(context, newBackendSystem, systemExistsInStore);
-        await saveSystem(newBackendSystem, systemExistsInStore, context.panelViewType);
 
+    let systemInfo: { systemId: string; client: string } | undefined;
+
+    if (shouldStoreSystemInfo(backendSystemPayload)) {
+        systemInfo = await fetchSystemInfo(context, backendSystemPayload);
+    }
+
+    const backendSystem: BackendSystem = {
+        ...backendSystemPayload,
+        ...(systemInfo && { systemInfo })
+    };
+
+    try {
+        await validateSystemName(backendSystem.name, context.backendSystem?.name);
+        const newPanelMsg = await updateHandler(context, backendSystem, systemExistsInStore);
+        await saveSystem(backendSystem, systemExistsInStore, context.panelViewType);
         if (newPanelMsg) {
-            await commands.executeCommand(SystemCommands.Show, newBackendSystem, newPanelMsg);
+            await commands.executeCommand(SystemCommands.Show, backendSystem, newPanelMsg);
         }
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        await postSavingError(message, context.postMessage, systemExistsInStore, newBackendSystem.systemType);
+        await postSavingError(message, context.postMessage, systemExistsInStore, backendSystem.systemType);
     }
+}
+
+/**
+ * Retrieves the system info (systemId and client) from the system info API for the given backend system.
+ *
+ * @param context - the panel context
+ * @param backendSystemPayload - the backend system info passed as a payload from webview
+ * @returns the backend system with the `systemId` attached if applicable
+ */
+async function fetchSystemInfo(
+    context: PanelContext,
+    backendSystemPayload: BackendSystem
+): Promise<{ systemId: string; client: string } | undefined> {
+    // if the system that was initially loaded matches the one in the payload, and the system id is already present
+    if (context.backendSystem?.systemInfo?.systemId && compareSystems(context.backendSystem, backendSystemPayload)) {
+        return context.backendSystem.systemInfo;
+    }
+
+    const systemInfo = await getSystemInfo(backendSystemPayload);
+    if (systemInfo) {
+        SystemsLogger.logger.debug(
+            t('debug.systemInfoRetrieved', {
+                systemId: systemInfo.systemId,
+                client: systemInfo.client
+            })
+        );
+    }
+    return systemInfo;
 }
 
 /**
@@ -121,20 +169,6 @@ async function postSavingError(
         status: systemExistsInStore ? SystemActionStatus.UPDATED_FAIL : SystemActionStatus.CREATED_FAIL,
         systemType
     });
-}
-
-/**
- * Utility to compare the key fields of two systems (url+client).
- *
- * @param currentSystem - the initial system loaded in the panel
- * @param newSystem - the new system details trying to be saved
- * @returns true if the systems are the same, false otherwise
- */
-function compareSystems(currentSystem: BackendSystem, newSystem: BackendSystem): boolean {
-    return (
-        currentSystem.url.replace(/\/$/, '') === newSystem?.url.replace(/\/$/, '') &&
-        currentSystem.client === newSystem?.client
-    );
 }
 
 /**

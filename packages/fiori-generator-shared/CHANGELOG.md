@@ -1,5 +1,64 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.53
+
+### Patch Changes
+
+- @sap-ux/telemetry@0.6.55
+
+## 0.13.52
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/telemetry@0.6.54
+
+## 0.13.51
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/telemetry@0.6.53
+
+## 0.13.50
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/telemetry@0.6.52
+
+## 0.13.49
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/project-access@1.33.1
+    - @sap-ux/telemetry@0.6.51
+
+## 0.13.48
+
+### Patch Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+
+## 0.13.47
+
+### Patch Changes
+
+- 62bb798: set conflicter option
+
+## 0.13.46
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/telemetry@0.6.50
+
 ## 0.13.45
 
 ### Patch Changes

@@ -1,5 +1,56 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.29
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+
+## 0.10.28
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
+## 0.10.27
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/axios-extension@1.25.6
+
+## 0.10.26
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/axios-extension@1.25.5
+
+## 0.10.25
+
+### Patch Changes
+
+- Updated dependencies [4e0f204]
+    - @sap-ux/axios-extension@1.25.4
+
+## 0.10.24
+
+### Patch Changes
+
+- Updated dependencies [14a1bc2]
+    - @sap-ux/axios-extension@1.25.3
+
+## 0.10.23
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/axios-extension@1.25.2
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/store@1.4.2
+
 ## 0.10.22
 
 ### Patch Changes

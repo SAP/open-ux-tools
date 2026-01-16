@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.8.0
+
+### Minor Changes
+
+- c7f9a60: Add maxsize and maxFiles config option to FileTransportOptions
+
 ## 0.7.3
 
 ### Patch Changes

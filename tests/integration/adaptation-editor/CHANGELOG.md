@@ -1,5 +1,55 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.37
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+
+## 0.0.36
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+
+## 0.0.35
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
+## 0.0.34
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+
+## 0.0.33
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/project-access@1.33.1
+
+## 0.0.32
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/ui5-info@0.13.7
+
+## 0.0.31
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux-private/playwright@0.2.5
+    - @sap-ux/ui5-info@0.13.6
+
 ## 0.0.30
 
 ### Patch Changes

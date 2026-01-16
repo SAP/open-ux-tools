@@ -1,5 +1,29 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.1
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 1.7.0
+
+### Minor Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+
+## 1.6.8
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+
+## 1.6.7
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+
 ## 1.6.6
 
 ### Patch Changes
