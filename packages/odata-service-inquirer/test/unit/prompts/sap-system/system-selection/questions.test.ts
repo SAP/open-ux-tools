@@ -657,7 +657,7 @@ describe('Test system selection prompts', () => {
         const systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        const defaultIndex = (systemSelectionPrompt as Question).default;
+        const defaultIndex = (systemSelectionPrompt as Question).default();
         expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
             value: {
                 system: backendSystemReentrance,
@@ -675,7 +675,7 @@ describe('Test system selection prompts', () => {
         const systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        const defaultIndex = (systemSelectionPrompt as Question).default;
+        const defaultIndex = (systemSelectionPrompt as Question).default();
         expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(1);
         expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
             value: {
