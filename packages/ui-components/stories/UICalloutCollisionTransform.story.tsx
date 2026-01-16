@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ContextualMenu } from '@fluentui/react';
-import type { IDropdownOption } from '@fluentui/react';
+import type { IDropdownOption, ISelectableOption } from '@fluentui/react';
 
 import {
     UIComboBox,
@@ -12,7 +12,8 @@ import {
     UICheckbox,
     CalloutCollisionTransform,
     UIComboBoxProps,
-    UIDropdownProps
+    UIDropdownProps,
+    UIComboBoxLoaderType
 } from '../src/components';
 import { data } from '../test/__mock__/select-data';
 
@@ -113,8 +114,15 @@ const DropdownOverwritter = (props: UIDropdownProps) => {
     );
 };
 
-const getContent = (controlType: ControlTypes, enabled: boolean, overwrittenComponent = false) => {
+const getContent = (
+    controlType: ControlTypes,
+    options: ISelectableOption[],
+    enabled: boolean,
+    overwrittenComponent = false,
+    loading = false
+) => {
     const content: React.ReactElement[] = [];
+    const loadingIndication = loading ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined;
 
     for (let i = 0; i < 6; i++) {
         let element: React.ReactElement;
@@ -136,8 +144,9 @@ const getContent = (controlType: ControlTypes, enabled: boolean, overwrittenComp
                     key={i}
                     label="Dummy"
                     highlight={true}
-                    options={data}
+                    options={options}
                     multiSelect={true}
+                    isLoading={loadingIndication}
                     calloutCollisionTransformation={enabled}
                 />
             );
@@ -153,8 +162,20 @@ export const collisionTransformInDialog = () => {
     const [enabled, setEnabled] = useState(true);
     const [selectedType, setSelectedType] = useState<string>(ControlTypes.ComboBox);
     const [overwrittenComponents, setOverwrittenComponents] = useState<boolean>(false);
+    const [options, setOptions] = useState(data);
     const onToggle = () => {
         setIsOpen(!isOpen);
+    };
+    const onDataRequest = () => {
+        setOptions([
+            {
+                key: '',
+                text: ''
+            }
+        ]);
+        setTimeout(() => {
+            setOptions(data);
+        }, 5000);
     };
     return (
         <>
@@ -224,7 +245,18 @@ export const collisionTransformInDialog = () => {
                 }}
                 onCancel={onToggle}
                 onDismiss={onToggle}>
-                {getContent(ControlTypes[selectedType], enabled, overwrittenComponents)}
+                <>
+                    <UIDefaultButton onClick={onDataRequest} primary>
+                        Reload data
+                    </UIDefaultButton>
+                    {getContent(
+                        ControlTypes[selectedType],
+                        options,
+                        enabled,
+                        overwrittenComponents,
+                        options.length === 1
+                    )}
+                </>
             </UIDialog>
         </>
     );
