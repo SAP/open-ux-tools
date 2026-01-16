@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.10
+
+### Patch Changes
+
+- be67fc4: adjust eslint config
+
 ## 0.18.9
 
 ### Patch Changes

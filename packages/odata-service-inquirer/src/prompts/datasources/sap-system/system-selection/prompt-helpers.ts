@@ -193,11 +193,13 @@ function matchesFilters(destination: Destination, filters?: Partial<DestinationF
  *
  * @param destinationFilters the filters to apply to the destination choices
  * @param includeCloudFoundryAbapEnvChoice whether to include the Cloud Foundry ABAP environment choice in the list
+ * @param hideNewSystem - if true it will prevent adding the 'New System' option to the list
  * @returns a list of choices for the system selection prompt
  */
 export async function createSystemChoices(
     destinationFilters?: Partial<DestinationFilters>,
-    includeCloudFoundryAbapEnvChoice = false
+    includeCloudFoundryAbapEnvChoice = false,
+    hideNewSystem = false
 ): Promise<ListChoiceOptions<SystemSelectionAnswerType>[]> {
     let systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[] = [];
     let newSystemChoice: ListChoiceOptions<SystemSelectionAnswerType> | undefined;
@@ -251,10 +253,12 @@ export async function createSystemChoices(
                 } as SystemSelectionAnswerType
             };
         });
-        newSystemChoice = {
-            name: t('prompts.systemSelection.newSystemChoiceLabel'),
-            value: { type: 'newSystemChoice', system: NewSystemChoice } as SystemSelectionAnswerType
-        };
+        if (!hideNewSystem) {
+            newSystemChoice = {
+                name: t('prompts.systemSelection.newSystemChoiceLabel'),
+                value: { type: 'newSystemChoice', system: NewSystemChoice } as SystemSelectionAnswerType
+            };
+        }
     }
     systemChoices.sort(({ name: nameA }, { name: nameB }) =>
         nameA!.localeCompare(nameB!, undefined, { numeric: true, caseFirst: 'lower' })
