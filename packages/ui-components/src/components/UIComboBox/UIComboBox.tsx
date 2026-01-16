@@ -204,12 +204,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * @returns Always returns true to allow the component to re-render.
      */
     shouldComponentUpdate(nextProps: UIComboBoxProps): boolean {
-        if (
-            (nextProps.options !== this.props.options ||
-                this.isLoaderChanged(this.props.isLoading, nextProps.isLoading)) &&
-            this.query
-        ) {
+        const propsDiffers = nextProps.options !== this.props.options;
+        if (propsDiffers) {
             this.storeHiddenOptions(nextProps.options);
+        }
+        if ((propsDiffers || this.isLoaderChanged(this.props.isLoading, nextProps.isLoading)) && this.query) {
             // Filter options
             this.updateHiddenOptions(nextProps.options, nextProps.isLoading);
         }
@@ -255,9 +254,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             }
         };
         for (const option of opts) {
-            if (this.hiddenOptions.includes(option.key)) {
-                continue;
-            }
             if (option.itemType === SelectableOptionMenuItemType.Header) {
                 // Update visibility of previously processed group
                 updateGroupVisibility();
@@ -266,9 +262,12 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 isGroupVisible = false;
             } else {
                 // Handle selectable item
-                const isVisible =
+                let isVisible =
                     this.isLoaderApplied(UIComboBoxLoaderType.List, isLoading) ||
                     this.isOptionVisibleByQuery(option, this.query);
+                if (this.hiddenOptions.includes(option.key)) {
+                    isVisible = false;
+                }
                 option.hidden = !isVisible;
                 if (this.isListHidden && !option.hidden) {
                     this.isListHidden = false;
