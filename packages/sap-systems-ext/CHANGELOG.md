@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.2.0
+
+### Minor Changes
+
+- c9fd939: update backend systems with system info from adt api
+
 ## 0.1.4
 
 ### Patch Changes

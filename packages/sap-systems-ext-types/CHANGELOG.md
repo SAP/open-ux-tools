@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-types
 
+## 0.0.4
+
+### Patch Changes
+
+- c9fd939: update backend systems with system info from adt api
+
 ## 0.0.3
 
 ### Patch Changes
