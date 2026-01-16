@@ -131,7 +131,8 @@ export class ConnectionValidator {
     public get catalogs(): Record<ODataVersion, CatalogService | undefined> {
         return {
             [ODataVersion.v2]: this._catalogV2,
-            [ODataVersion.v4]: this._catalogV4
+            [ODataVersion.v4]: this._catalogV4,
+            [ODataVersion.v401]: this._catalogV4
         };
     }
 
@@ -275,7 +276,7 @@ export class ConnectionValidator {
         }
         this._serviceProvider = serviceProvider;
         this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
-        this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
+        this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4); // Will be used for v4 and v4.01 requests
         this._validatedUrl = (backendSystem?.serviceKeys as ServiceInfo)?.url ?? backendSystem?.url;
         this._connectedUserName = backendSystem?.userDisplayName;
         this._validatedClient = backendSystem?.client;

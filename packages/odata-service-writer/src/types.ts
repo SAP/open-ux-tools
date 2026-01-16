@@ -9,8 +9,15 @@ export interface ExternalServiceCollectionOptions {
 
 export enum OdataVersion {
     v2 = '2',
-    v4 = '4'
+    v4 = '4',
+    v401 = '401'
 }
+
+export const ODataVersionMap = {
+    '2.0': OdataVersion.v2,
+    '4.0': OdataVersion.v4,
+    '4.01': OdataVersion.v401
+} as const;
 
 export interface NamespaceAlias {
     namespace: string;
