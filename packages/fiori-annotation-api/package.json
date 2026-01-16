@@ -37,14 +37,14 @@
         "@sap/ux-cds-compiler-facade": "1.19.0",
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs": "2.3.0",
+        "mem-fs-editor": "9.7.0",
         "vscode-languageserver-textdocument": "1.0.11"
     },
     "devDependencies": {
         "@sap/cds-compiler": "4.8.0",
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.5",
+        "@types/mem-fs-editor": "7.0.7",
         "npm-run-all2": "5.0.0"
     },
     "files": [

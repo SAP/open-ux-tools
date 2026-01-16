@@ -36,15 +36,15 @@
         "@sap-ux/ui5-config": "workspace:*",
         "fast-glob": "3.3.1",
         "lodash": "4.17.21",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs": "2.3.0",
+        "mem-fs-editor": "9.7.0",
         "semver": "7.5.4"
     },
     "devDependencies": {
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.202",
-        "@types/mem-fs-editor": "7.0.1",
-        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.7",
+        "@types/mem-fs": "1.1.5",
         "@types/semver": "7.5.2",
         "fs-extra": "10.0.0"
     }

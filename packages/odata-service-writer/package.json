@@ -40,8 +40,8 @@
         "ejs": "3.1.10",
         "fast-xml-parser": "4.4.1",
         "i18next": "25.3.0",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs": "2.3.0",
+        "mem-fs-editor": "9.7.0",
         "prettify-xml": "1.2.0",
         "semver": "7.5.4"
     },
@@ -50,8 +50,8 @@
         "@sap-ux/vocabularies-types": "0.14.5",
         "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.5",
+        "@types/mem-fs-editor": "7.0.7",
         "@types/semver": "7.5.2",
         "fs-extra": "10.0.0",
         "lodash": "4.17.21"
