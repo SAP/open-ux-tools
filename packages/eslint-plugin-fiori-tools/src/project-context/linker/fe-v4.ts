@@ -5,8 +5,15 @@ import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectTables, collectSections } from './annotations';
 
+export interface FlexibleColumnLayoutSettings {
+    defaultTwoColumnLayoutType: string;
+    defaultThreeColumnLayoutType: string;
+}
+
 export interface ApplicationSetting {
     createMode: string;
+    statePreservationMode: string;
+    flexibleColumnLayout: FlexibleColumnLayoutSettings;
 }
 
 export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
@@ -41,24 +48,33 @@ export interface AnnotationBasedNode<T extends AnnotationNode, Configuration ext
     children: Children[];
 }
 
+/**
+ * Configuration property with values, actual value, and manifest path.
+ */
+export type ConfigurationProperty<T> = {
+    /**
+     * All possible supported configuration values. Empty means dynamic value resolved by framework at runtime.
+     */
+    values: T[];
+    /**
+     * Actual value as defined in the manifest file.
+     */
+    valueInFile?: T;
+    /**
+     * Absolute path in manifest where this configuration is defined.
+     */
+    configurationPath: string[];
+};
+
 export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
     type: T;
     annotation?: unknown;
     configuration: {
-        [K in keyof Configuration]: {
-            /**
-             * All possible supported configuration values. Empty means dynamic value resolved by framework at runtime.
-             */
-            values: Configuration[K][];
-            /**
-             * Actual value as defined in the manifest file.
-             */
-            valueInFile?: Configuration[K];
-            /**
-             * Absolute path in manifest where this configuration is defined.
-             */
-            configurationPath: string[];
-        };
+        [K in keyof Configuration]: Configuration[K] extends object
+            ? {
+                  [NK in keyof Configuration[K]]: ConfigurationProperty<Configuration[K][NK]>;
+              }
+            : ConfigurationProperty<Configuration[K]>;
     };
 }
 export type OrphanSection = ConfigurationBase<'orphan-section', {}>;
@@ -80,6 +96,13 @@ interface ManifestApplicationSettings {
             defaultCreationMode?: string;
         };
     };
+    settings?: {
+        statePreservationMode?: string;
+    };
+}
+
+interface ManifestFCL {
+    flexibleColumnLayout?: FlexibleColumnLayoutSettings;
 }
 
 const tableTypeValues = ['ResponsiveTable', 'GridTable', 'AnalyticalTable', 'TreeTable'];
@@ -184,7 +207,7 @@ export type NodeLookup<T extends Node> = {
  * @param context - The linker context containing app and service information
  */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
-    const linkedApp = linkApplicationSettings(context.app.manifestObject['sap.fe'] ?? {});
+    const linkedApp = linkApplicationSettings(context);
     const manifest = context.app.manifestObject;
     const routingTargets = manifest['sap.ui5']?.routing?.targets;
     if (!routingTargets) {
@@ -529,9 +552,15 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
  * Links application-level settings from manifest configuration for Fiori Elements V4.
  *
  * @param config - The manifest application settings
+ * @param context - Linker context containing parsed application data
  */
-function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV4App {
+function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
+    const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
+    const routingConfig = (context.app.manifestObject['sap.ui5']?.routing?.config as ManifestFCL) ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
+    const statePreservationMode = config.settings?.statePreservationMode;
+    const twoColumnLayoutValue = routingConfig?.flexibleColumnLayout?.defaultTwoColumnLayoutType;
+    const threeColumnLayoutValue = routingConfig?.flexibleColumnLayout?.defaultThreeColumnLayoutType;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
         pages: [],
@@ -540,6 +569,23 @@ function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV
                 values: ['InlineCreationRows', 'NewPage'],
                 configurationPath: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
                 valueInFile: createMode
+            },
+            statePreservationMode: {
+                values: ['persistence'], // Discovery mode isn't applicable to SAP Fiori elements for OData V4.
+                configurationPath: ['sap.fe', 'settings', 'statePreservationMode'],
+                valueInFile: statePreservationMode
+            },
+            flexibleColumnLayout: {
+                defaultTwoColumnLayoutType: {
+                    values: ['TwoColumnsBeginExpanded', 'TwoColumnsMidExpanded', 'MidColumnFullScreen'],
+                    configurationPath: ['sap.fe', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
+                    valueInFile: twoColumnLayoutValue
+                },
+                defaultThreeColumnLayoutType: {
+                    values: ['ThreeColumnsMidExpanded', 'ThreeColumnsEndExpanded', 'MidAndEndColumnsFullScreen'],
+                    configurationPath: ['sap.fe', 'flexibleColumnLayout', 'defaultThreeColumnLayoutType'],
+                    valueInFile: threeColumnLayoutValue
+                }
             }
         }
     };
