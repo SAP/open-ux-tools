@@ -194,7 +194,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         initializeComponentRef(this);
 
         this.state = {};
-        this.storeHiddenOptions(props.options);
+        this.collectHiddenOptionKeys(props.options);
     }
 
     /**
@@ -206,7 +206,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     shouldComponentUpdate(nextProps: UIComboBoxProps): boolean {
         const propsDiffers = nextProps.options !== this.props.options;
         if (propsDiffers) {
-            this.storeHiddenOptions(nextProps.options);
+            this.collectHiddenOptionKeys(nextProps.options);
         }
         if ((propsDiffers || this.isLoaderChanged(this.props.isLoading, nextProps.isLoading)) && this.query) {
             // Filter options
@@ -227,19 +227,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         newLoader?: boolean | UIComboBoxLoaderType[]
     ): boolean {
         return !!prevLoader !== !!newLoader;
-    }
-
-    /**
-     *
-     * @param options
-     */
-    private storeHiddenOptions(options: IComboBoxOption[]): void {
-        this.hiddenOptions = [];
-        for (const option of options) {
-            if (option.hidden) {
-                this.hiddenOptions.push(option.key);
-            }
-        }
     }
 
     /**
@@ -863,6 +850,20 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             onInputChange?.(text);
             if (onExternalSearch) {
                 this.onExternalSearchDebounce(text);
+            }
+        }
+    }
+
+    /**
+     * Collects and stores the keys of all hidden combo box options.
+     *
+     * @param options The list of combo box options to scan for hidden entries.
+     */
+    private collectHiddenOptionKeys(options: IComboBoxOption[]): void {
+        this.hiddenOptions = [];
+        for (const option of options) {
+            if (option.hidden) {
+                this.hiddenOptions.push(option.key);
             }
         }
     }

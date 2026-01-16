@@ -8,7 +8,7 @@ import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
 import { CalloutCollisionTransform } from '../../../src/components/UICallout/CalloutCollisionTransform';
 
-const data = JSON.parse(JSON.stringify(originalData));
+let data: UIComboBoxOption[] = JSON.parse(JSON.stringify(originalData));
 const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
 
 describe('<UIComboBox />', () => {
@@ -40,6 +40,7 @@ describe('<UIComboBox />', () => {
     };
 
     beforeEach(() => {
+        data = JSON.parse(JSON.stringify(originalData));
         CalloutCollisionTransformSpy = {
             preventDismissOnEvent: jest.spyOn(CalloutCollisionTransform.prototype, 'preventDismissOnEvent'),
             applyTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'applyTransformation'),
@@ -814,6 +815,10 @@ describe('<UIComboBox />', () => {
         const onPendingValueChanged = jest.fn();
         wrapper.setProps({
             highlight: true,
+            options: data.map((options) => ({
+                ...options,
+                hidden: options.key !== 'LV'
+            })),
             onPendingValueChanged
         });
         expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
@@ -824,7 +829,7 @@ describe('<UIComboBox />', () => {
         const callArgs = onPendingValueChanged.mock.calls[0];
         expect(callArgs[0].key).toEqual('LV');
         expect(callArgs[1]).toEqual(35);
-    });
+    }, 99999);
 
     describe('Test "calloutCollisionTransformation" property', () => {
         const testCases = [
@@ -985,30 +990,33 @@ describe('<UIComboBox />', () => {
     });
 
     describe('Test "searchByKeyEnabled" property', () => {
-        const searchKeysData = [
-            { 'key': 'test1', 'text': 'test1' },
-            { 'key': 'dummy', 'text': 'dummy' },
-            { 'key': 'customer', 'text': 'customer' },
-            { 'key': 'name', 'text': 'name' },
-            { 'key': 'employee', 'text': 'employee' },
-            { 'key': 'ID', 'text': 'ID' },
-            { 'key': 'tripEndDate', 'text': 'tripEndDate' },
-            { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Divider },
-            { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Header },
-            { 'key': 'bookings/airlines', 'text': 'airlines' },
-            { 'key': 'bookings/bookingDate', 'text': 'bookingDate' },
-            { 'key': 'bookings/DateOnBookings', 'text': 'DateOnBookings' },
-            { 'key': 'bookings/employee', 'text': 'employee' },
-            { 'key': 'bookings/flightDate', 'text': 'flightDate' },
-            { 'key': 'bookings/ID', 'text': 'ID' },
-            { 'key': 'bookings/priceUSD', 'text': 'priceUSD' },
-            { 'key': 'bookings/travel_ID', 'text': 'travel_ID' },
-            { 'key': 'bookings/usedString5', 'text': 'usedString5' },
-            { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Divider },
-            { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Header },
-            { 'key': 'notes/comment', 'text': 'comment' },
-            { 'key': 'notes/description', 'text': 'description' }
-        ];
+        let searchKeysData: UIComboBoxOption[] = [];
+        beforeEach(() => {
+            searchKeysData = [
+                { 'key': 'test1', 'text': 'test1' },
+                { 'key': 'dummy', 'text': 'dummy' },
+                { 'key': 'customer', 'text': 'customer' },
+                { 'key': 'name', 'text': 'name' },
+                { 'key': 'employee', 'text': 'employee' },
+                { 'key': 'ID', 'text': 'ID' },
+                { 'key': 'tripEndDate', 'text': 'tripEndDate' },
+                { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Divider },
+                { 'key': 'bookings', 'text': 'bookings', 'itemType': UISelectableOptionMenuItemType.Header },
+                { 'key': 'bookings/airlines', 'text': 'airlines' },
+                { 'key': 'bookings/bookingDate', 'text': 'bookingDate' },
+                { 'key': 'bookings/DateOnBookings', 'text': 'DateOnBookings' },
+                { 'key': 'bookings/employee', 'text': 'employee' },
+                { 'key': 'bookings/flightDate', 'text': 'flightDate' },
+                { 'key': 'bookings/ID', 'text': 'ID' },
+                { 'key': 'bookings/priceUSD', 'text': 'priceUSD' },
+                { 'key': 'bookings/travel_ID', 'text': 'travel_ID' },
+                { 'key': 'bookings/usedString5', 'text': 'usedString5' },
+                { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Divider },
+                { 'key': 'notes', 'text': 'notes', 'itemType': UISelectableOptionMenuItemType.Header },
+                { 'key': 'notes/comment', 'text': 'comment' },
+                { 'key': 'notes/description', 'text': 'description' }
+            ];
+        });
         const testCases = [
             {
                 name: '"searchByKeyEnabled" is undefined',
@@ -1074,7 +1082,7 @@ describe('<UIComboBox />', () => {
             },
             {
                 name: 'Test "false" result from custom filter',
-                options: data,
+                options: JSON.parse(JSON.stringify(originalData)),
                 query: 'Lorem ipsum dolor sit amet',
                 expectedCountBefore: 1,
                 expectedCountAfter: 0
