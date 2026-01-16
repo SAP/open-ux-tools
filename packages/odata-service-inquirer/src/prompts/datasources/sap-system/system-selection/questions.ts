@@ -167,7 +167,8 @@ export async function getSystemConnectionQuestions(
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
     const systemChoices = await createSystemChoices(
         destinationFilters,
-        promptOptions?.systemSelection?.includeCloudFoundryAbapEnvChoice
+        promptOptions?.systemSelection?.includeCloudFoundryAbapEnvChoice,
+        promptOptions?.systemSelection?.hideNewSystem
     );
     const defaultChoiceIndex = findDefaultSystemSelectionIndex(
         systemChoices,
