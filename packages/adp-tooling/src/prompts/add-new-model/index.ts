@@ -29,7 +29,7 @@ import {
 
 const oDataVersions = [
     { name: '2.0', value: '2.0' },
-    { name: '4.0', value: '4.0' }
+    { name: '4.1', value: '4.1' }
 ];
 
 /**

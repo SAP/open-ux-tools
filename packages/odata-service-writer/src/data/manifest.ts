@@ -61,7 +61,7 @@ function enhanceManifestDatasources(
         settings['localUri'] = `localService/${serviceName}/metadata.xml`;
     }
     if (serviceVersion === '4') {
-        settings['odataVersion'] = '4.0';
+        settings['odataVersion'] = '4.1';
     } else if (serviceVersion === '2') {
         settings['odataVersion'] = '2.0';
     }

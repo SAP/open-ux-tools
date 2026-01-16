@@ -10499,7 +10499,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             \\"annotation\\"
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"4.0\\"
+          \\"odataVersion\\": \\"4.1\\"
         }
       }
     }
@@ -14197,7 +14197,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             \\"annotation\\"
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"4.0\\"
+          \\"odataVersion\\": \\"4.1\\"
         }
       }
     }

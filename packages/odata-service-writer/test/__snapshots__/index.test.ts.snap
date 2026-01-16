@@ -2755,7 +2755,7 @@ Object {
             \\"annotations_test\\"
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"4.0\\"
+          \\"odataVersion\\": \\"4.1\\"
         }
       }
     }
