@@ -72,6 +72,7 @@ import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env
 import type { AdpTelemetryData } from '../types';
 
 const generatorTitle = 'Adaptation Project';
+const resourceId = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -248,7 +249,8 @@ export default class extends Generator {
                 version: this.rootGeneratorVersion()
             },
             internalFeature: isInternalUsage,
-            watchTelemetrySettingStore: false
+            watchTelemetrySettingStore: false,
+            resourceId
         });
         this.telemetryCollector = new TelemetryCollector();
         if (!this.jsonInput) {
