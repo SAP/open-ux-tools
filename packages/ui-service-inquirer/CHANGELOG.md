@@ -1,5 +1,15 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.87
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.78
+- @sap-ux/telemetry@0.6.56
+- @sap-ux/axios-extension@1.25.6
+- @sap-ux/odata-service-inquirer@2.14.6
+- @sap-ux/inquirer-common@0.10.13
+
 ## 0.2.86
 
 ### Patch Changes
