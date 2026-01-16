@@ -6,13 +6,9 @@ describe('Project Access Tests', () => {
     const testInputPath = join(__dirname, 'test-input');
 
     describe('Synchronized worker version', () => {
-        /**
-         * Enable v8 coverage collection in worker threads by passing execArgv.
-         * This propagates NODE_V8_COVERAGE and other Node.js flags to the worker.
-         */
-        const getPathMappingsWorker = createSyncFn(join(__dirname, '../src/worker-getPathMappingsSync.ts'), {
-            execArgv: process.execArgv
-        }) as (projectRoot: string) => PathMappings;
+        const getPathMappingsWorker = createSyncFn(join(__dirname, '../src/worker-getPathMappingsSync.ts')) as (
+            projectRoot: string
+        ) => PathMappings;
 
         test('synchronized worker returns webapp path for standard project', () => {
             const projectPath = join(testInputPath, 'standardProject');
