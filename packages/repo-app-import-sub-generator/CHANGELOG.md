@@ -1,5 +1,13 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.204
+
+### Patch Changes
+
+- 7597059: add new promp option to hide 'New System' from system selection list
+- Updated dependencies [7597059]
+    - @sap-ux/odata-service-inquirer@2.14.7
+
 ## 0.3.203
 
 ### Patch Changes

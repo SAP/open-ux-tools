@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.7
+
+### Patch Changes
+
+- 7597059: add new promp option to hide 'New System' from system selection list
+
 ## 2.14.6
 
 ### Patch Changes
