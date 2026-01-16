@@ -271,6 +271,19 @@ describe('<UIComboBox />', () => {
             triggerSearch('404');
             expect(wrapper.state().isListHidden).toBeTruthy();
         });
+
+        it('Search hidden option - option should not be found', () => {
+            const query = 'Est';
+            wrapper.setProps({
+                options: data.map((options) => ({
+                    ...options,
+                    hidden: options.key === 'EE'
+                }))
+            });
+            wrapper.find('input').simulate('keyDown', {});
+            triggerSearch(query);
+            expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(0);
+        });
     });
 
     it('Test "useComboBoxAsMenuMinWidth"', () => {
