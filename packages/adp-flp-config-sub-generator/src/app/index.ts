@@ -246,7 +246,13 @@ export default class AdpFlpConfigGenerator extends Generator {
                 `Base application inbounds fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
             );
 
-            const errorHelp = this._getErrorHandlerMessage(error);
+            let errorHelp: ValidationLink | string | undefined;
+            if (error.status === 404) {
+                errorHelp = t('error.projectNotCloudReady');
+            } else {
+                errorHelp = this._getErrorHandlerMessage(error);
+            }
+
             if (errorHelp) {
                 this._abortExecution(
                     typeof errorHelp === 'string'
