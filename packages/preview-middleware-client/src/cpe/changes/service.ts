@@ -80,6 +80,7 @@ export class ChangeService extends EventTarget {
     private readonly eventStack: object[] = [];
     private pendingConfigChangeMap: Map<string, PendingGenericChange[]> = new Map();
     private configPropertyControlIdMap: Map<string, string[]> = new Map();
+    private readonly configPropertyPath: Set<string> = new Set();
     /**
      *
      * @param options ui5 adaptation options.
@@ -381,6 +382,15 @@ export class ChangeService extends EventTarget {
     }
 
     /**
+     * Get all pending configuration changes.
+     *
+     * @returns array of pending generic changes
+     */
+    public getAllPendingConfigPropertyPath(): Set<string> {
+        return this.configPropertyPath ?? new Set();
+    }
+
+    /**
      * Update config changes with associated controls.
      *
      * @param {Map<string, string[]>} configPropertyControlIdMap - config property path control id map.
@@ -476,6 +486,13 @@ export class ChangeService extends EventTarget {
                 properties
             };
             if (changeType === 'appdescr_fe_changePageConfiguration') {
+                const configChangePath = (changeDefinition as ConfigChange).content.entityPropertyChange.propertyPath;
+                if (genericChange.isActive) {
+                        this.configPropertyPath.add(configChangePath);
+                } else {
+                    // remove value from set if change is undone
+                    this.configPropertyPath.delete(configChangePath);
+                }
                 this.trackPendingConfigChanges(genericChange);
             }
             return genericChange;

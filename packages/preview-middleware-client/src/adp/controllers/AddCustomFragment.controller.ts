@@ -22,21 +22,14 @@ import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-d
 import { MessageBarType, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { CommunicationService } from '../../cpe/communication-service';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import type AppComponentV4 from 'sap/fe/core/AppComponent';
 import { sendInfoCenterMessage } from '../../utils/info-center-message';
 import { getError } from '../../utils/error';
+import { PageDescriptorV4 } from './types';
 
 export type AddFragmentModel = JSONModel & {
     getProperty(sPath: '/title'): string;
     getProperty(sPath: '/newFragmentName'): string;
 };
-export interface PageDescriptorV4 {
-    appType: 'fe-v4';
-    appComponent: AppComponentV4;
-    pageId: string;
-    projectId: string;
-    anchor: string;
-}
 
 export interface AddCustomFragmentOptions {
     title: string;
