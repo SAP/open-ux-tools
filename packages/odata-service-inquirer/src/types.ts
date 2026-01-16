@@ -335,7 +335,7 @@ export type SystemSelectionPromptOptions = {
      */
     onlyShowDefaultChoice?: boolean;
     /**
-     * If true, the 'New System' option is not added to the system selection list.
+     * If true, the 'New System' option is not added to the system selection list. Default is false - the 'New System' option will be available.
      */
     hideNewSystem?: boolean;
 };

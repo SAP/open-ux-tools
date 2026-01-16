@@ -192,10 +192,13 @@ export async function getSystemConnectionQuestions(
             default: () => {
                 if (shouldOnlyShowDefaultChoice) {
                     return 0;
-                } 
-                defaultChoiceIndex = findDefaultSystemSelectionIndex(systemChoices, promptOptions?.systemSelection?.defaultChoice) // Recalc to allow default choice to be bound to ref from another prompt
+                }
+                defaultChoiceIndex = findDefaultSystemSelectionIndex(
+                    systemChoices,
+                    promptOptions?.systemSelection?.defaultChoice
+                ); // Recalc to allow default choice to be bound to ref from another prompt
                 return defaultChoiceIndex;
-            }, 
+            },
             validate: async (
                 selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
             ): Promise<ValidationResult> => {

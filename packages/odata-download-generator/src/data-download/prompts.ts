@@ -120,7 +120,8 @@ export async function getODataDownloaderPrompts(): Promise<{
             },
             systemSelection: {
                 includeCloudFoundryAbapEnvChoice: false,
-                defaultChoice: appConfig.systemName
+                defaultChoice: appConfig.systemName,
+                hideNewSystem: true
             },
             serviceSelection: {
                 serviceFilter: servicePaths,
@@ -278,7 +279,7 @@ function getConfirmDownloadPrompt(
 ): Question {
     return {
         when: () => {
-            return !!odataServiceAnswers.connectedSystem?.serviceProvider;
+            return !!odataServiceAnswers.metadata;
         },
         name: promptNames.confirmDownload,
         type: 'confirm',

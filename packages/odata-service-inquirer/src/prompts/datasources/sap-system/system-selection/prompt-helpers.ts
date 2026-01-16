@@ -293,10 +293,10 @@ export function findDefaultSystemSelectionIndex(
             return (system as BackendSystem).name === choice;
         }
         if (systemType === 'newSystemChoice') {
-            return choice as string === NewSystemChoice;
+            return (choice as string) === NewSystemChoice;
         }
         if (systemType === 'cfAbapEnvService') {
-            return choice as string === CfAbapEnvServiceChoice;
+            return (choice as string) === CfAbapEnvServiceChoice;
         }
     });
     return defaultChoiceIndex;
