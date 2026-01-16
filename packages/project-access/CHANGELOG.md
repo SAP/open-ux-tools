@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.34.1
+
+### Patch Changes
+
+- 55ac9f0: enable generation of OPA5 tests based on project spec
+
 ## 1.34.0
 
 ### Minor Changes
