@@ -333,6 +333,10 @@ export type SystemSelectionPromptOptions = {
      * this option will not be applied and the full list of choices will be presented to the user.
      */
     onlyShowDefaultChoice?: boolean;
+    /**
+     * If true, the 'New System' option is not added to the system selection list.
+     */
+    hideNewSystem?: boolean;
 };
 
 export type MetadataPromptOptions = {
