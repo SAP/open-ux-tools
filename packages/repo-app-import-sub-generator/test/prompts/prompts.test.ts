@@ -5,11 +5,13 @@ import { PromptNames, type QuickDeployedAppConfig } from '../../src/app/types';
 import { PromptState } from '../../src/prompts/prompt-state';
 import * as helpers from '../../src/prompts/prompt-helpers';
 import * as downloadUtils from '../../src/utils/download-utils';
+import * as odataServiceInq from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import { formatAppChoices } from '../../src/prompts/prompt-helpers';
 import { validateAppSelection } from '../../src/utils/validators';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { Question } from 'yeoman-generator';
 
 ErrorHandler.getHelpLink = jest.fn();
 
@@ -36,8 +38,7 @@ jest.mock('../../src/utils/validators', () => ({
     validateAppSelection: jest.fn()
 }));
 describe('getPrompts', () => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const mockGetSystemSelectionQuestions = require('@sap-ux/odata-service-inquirer').getSystemSelectionQuestions;
+    const mockGetSystemSelectionQuestions = jest.spyOn(odataServiceInq, 'getSystemSelectionQuestions');
     const mockFetchAppList = helpers.fetchAppListForSelectedSystem as jest.Mock;
     const mockDownloadApp = downloadUtils.downloadApp as jest.Mock;
     const mockHasQfaJson = downloadUtils.hasQfaJson as jest.Mock;
@@ -69,7 +70,7 @@ describe('getPrompts', () => {
                     choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }],
                     default: 0
                 }
-            ],
+            ] as Question[],
             answers: { connectedSystem: { serviceProvider: mockServiceProvider } }
         });
     });
@@ -85,6 +86,16 @@ describe('getPrompts', () => {
 
         const prompts = await getPrompts(appRootPath, undefined, undefined, true); // run as CLI
 
+        expect(mockGetSystemSelectionQuestions).toHaveBeenCalledWith(
+            {
+                serviceSelection: { hide: true, useAutoComplete: true },
+                systemSelection: {
+                    defaultChoice: undefined,
+                    hideNewSystem: true
+                }
+            },
+            false
+        );
         // system selection prompt
         const systemSelectionPrompt = prompts.find((p) => p.name === PromptNames.systemSelection);
 
