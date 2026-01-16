@@ -216,3 +216,23 @@ export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNam
 
     return Object.keys(filteredInbounds).length === 0 ? undefined : filteredInbounds;
 }
+
+/**
+ * Get base application ID from variant.
+ *
+ * @param basePath - path to application root
+ * @returns App ID (reference)
+ */
+export async function getBaseAppId(basePath: string): Promise<string> {
+    try {
+        const variant = await getVariant(basePath);
+
+        if (!variant.reference) {
+            throw new Error('No reference found in manifest.appdescr_variant');
+        }
+
+        return variant.reference;
+    } catch (error) {
+        throw new Error(`Failed to get app ID: ${(error as Error).message}`);
+    }
+}

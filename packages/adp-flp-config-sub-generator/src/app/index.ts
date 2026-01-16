@@ -438,7 +438,7 @@ export default class AdpFlpConfigGenerator extends Generator {
      */
     private async _validateProject(): Promise<void> {
         const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
-        if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
+        if (!isFioriAdaptation || (await isCFEnvironment(this.projectRootPath))) {
             this._abortExecution(t('error.projectNotSupported'));
             return;
         }
