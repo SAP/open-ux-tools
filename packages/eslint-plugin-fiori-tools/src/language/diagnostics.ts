@@ -4,6 +4,7 @@ export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-colu
 export const FLEX_ENABLED = 'sap-flex-enabled';
 export const DISABLE_COPY_TO_CLIPBOARD = 'sap-disable-copy-to-clipboard';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
+export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -50,8 +51,23 @@ export interface DisableCopyToClipboard {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export type StatePreservationModeMessageId =
+    | 'invalidMode'
+    | 'discoveryNotSupportedV4'
+    | 'recommendPersistenceForFCL'
+    | 'recommendDiscoveryForNonFCL';
+
+export interface StatePreservationMode {
+    type: typeof STATE_PRESERVATION_MODE;
+    manifest: ManifestPropertyDiagnosticData;
+    messageId: StatePreservationModeMessageId;
+    validValues: string[];
+    recommendedValue?: string;
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | FlexEnabled
     | DisableCopyToClipboard
-    | CreationModeForTable;
+    | CreationModeForTable
+    | StatePreservationMode;
