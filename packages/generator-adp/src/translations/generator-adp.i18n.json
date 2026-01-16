@@ -111,7 +111,7 @@
         "projectDoesNotExistMta": "Provide the path to the MTA project where you want to have your Adaptation Project created.",
         "noAdaptableBusinessServiceFoundInMta": "No adaptable business service found in the MTA.",
         "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}.",
-        "keyUserNoChangesDefault": "Only one adaptation ('DEFAULT') was found and no key-user changes were found for it.",
+        "keyUserNoChangesDefault": "Only a single adaptation ('DEFAULT') was found and no key-user changes were found for it.",
         "keyUserNoChangesAdaptation": "No key-user changes have been found for the '{{adaptationId}}' adaptation.",
         "keyUserNoAdaptations": "No context-based adaptations have been found for the selected application."
     },
