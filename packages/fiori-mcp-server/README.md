@@ -98,7 +98,7 @@ The main functionalities are:
 - Generating an SAP Fiori elements app for an existing OData service, for example, an [ABAP RESTful Application Programming Model](https://pages.community.sap.com/topics/abap/rap) based OData service
 - Adding and deleting pages from an app
 - Adding and modifying controller extensions
-- Modifying `manifest.json` properties depending on the app, for example, adding a flexible column layout or enabling initial load
+- Modifying `manifest.json` properties depending on the app, for example, adding a layout based on the flexibility of the programming model or enabling initial load
 
 #### `get_functionality_details` (Step 2 of 3)
 Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.
