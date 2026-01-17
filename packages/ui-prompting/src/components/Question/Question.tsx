@@ -56,6 +56,7 @@ export const Question = (props: QuestionProps) => {
                     {...question}
                     dynamicChoices={choices}
                     onChange={onChange}
+                    pending={pending}
                     errorMessage={errorMessage}
                     id={inputId}
                 />

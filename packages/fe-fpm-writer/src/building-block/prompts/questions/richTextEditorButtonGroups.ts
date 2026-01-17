@@ -25,7 +25,7 @@ export async function getRichTextEditorButtonGroupsBuildingBlockPrompts(
                 message: t('viewOrFragmentPath.message') as string,
                 guiOptions: {
                     mandatory: true,
-                    dependantPromptNames: ['aggregationPath']
+                    dependantPromptNames: ['aggregationPath', 'buildingBlockData.buttonGroups']
                 }
             }),
             getAggregationPathPrompt(context, {

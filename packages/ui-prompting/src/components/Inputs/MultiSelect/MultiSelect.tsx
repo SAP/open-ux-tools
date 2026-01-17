@@ -1,6 +1,6 @@
 import React from 'react';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
-import { getLabelRenderer, useOptions, useMultiSelectValue, useVisibleOptionsAndKeys } from '../../../utilities';
+import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
 import type { AnswerValue, CheckboxPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface MultiSelectProps extends CheckboxPromptQuestion {
@@ -15,34 +15,29 @@ export interface MultiSelectProps extends CheckboxPromptQuestion {
 export const MultiSelect = (props: MultiSelectProps) => {
     const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id } = props;
     const { mandatory, hint, placeholder } = guiOptions;
+    const [value, setValue] = useValue('', props.value?.toString() ?? '');
     const options = useOptions(props, dynamicChoices);
-    const [value, setValue] = useMultiSelectValue(props, options);
-    const { visibleOptions, selectedKeys } = useVisibleOptionsAndKeys(options, value);
 
     return (
         <UIComboBox
             label={typeof message === 'string' ? message : name}
-            options={visibleOptions}
+            options={options}
             highlight={true}
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             required={mandatory}
             isLoading={pending ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined}
-            selectedKey={selectedKeys}
+            selectedKey={value?.split(',').map((v) => v.trim())}
             multiSelect
             disabled={false}
             onChange={(_, changedOption) => {
-                if (!changedOption) {
-                    return;
-                }
-
                 let updatedValue: string | undefined = '';
-                if (changedOption.selected) {
+                if (changedOption?.selected) {
                     updatedValue = [...(value?.split(',').filter((option) => option) ?? []), changedOption.key].join();
                 } else {
                     updatedValue = (value?.split(',') ?? [])
-                        .filter((option) => option && option !== changedOption.key)
+                        .filter((option) => option && option !== changedOption?.key)
                         .join();
                 }
                 setValue(updatedValue);
@@ -52,7 +47,6 @@ export const MultiSelect = (props: MultiSelectProps) => {
             errorMessage={errorMessage}
             placeholder={placeholder}
             id={id}
-            calloutCollisionTransformation={true}
         />
     );
 };

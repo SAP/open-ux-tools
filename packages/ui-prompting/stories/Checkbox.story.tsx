@@ -3,6 +3,7 @@ import { Questions } from '../src/components';
 import type { PromptQuestion } from '../src';
 import { initIcons } from '@sap-ux/ui-components';
 import { useStorage } from './utils';
+import { hideFocus } from '@sap-ux/ui-components/src/components/UITable/UITable-helper';
 
 export default { title: 'Basic/Checkbox' };
 
@@ -27,14 +28,30 @@ const hiddenChoices = [
     {
         name: 'test2',
         value: 'test2',
-        selected: true,
+        selected: true
     },
     {
         name: 'test3',
         value: 'test3',
         selected: true,
         hidden: true
-    }
+    },
+    {
+        name: 'test4',
+        value: 'test4',
+        selected: true,
+        hidden: true
+    },
+    {
+        name: 'test5',
+        value: 'test5',
+        hidden: true
+    },
+    {
+        name: 'test5',
+        value: 'test5',
+        selected: true
+    },
 ];
 
 const questions: PromptQuestion[] = [
@@ -101,6 +118,7 @@ export const checkbox = (): JSX.Element => {
             }}
             choices={{}}
             onChoiceRequest={() => {}}
+            disableUnselect={true}
         />
     );
 };

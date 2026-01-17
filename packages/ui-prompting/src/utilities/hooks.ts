@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components';
 import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
@@ -78,21 +78,15 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
  */
 export function useMultiSelectValue(props: MultiSelectProps, options: UISelectableOption<ChoiceOptions>[]) {
     const [value, setValue] = useValue('', props.value?.toString() ?? '');
-    /**
-     * Determines the default value for the multi-select. If a value is provided in props, it is used.
-     * Otherwise, collects all option values that are selected by default.
-     * Returns a comma-separated string of selected option values.
-     */
-    const getDefaultValue = (): string => {
-        if (props.value !== undefined) {
-            return props.value.toString();
-        }
-        const selectedValues = (options ?? []).filter((opt) => opt.selected).map((opt) => opt.data?.value ?? opt.key);
-        return selectedValues.join(',');
-    };
 
     useEffect(() => {
-        const defaultValue = getDefaultValue();
+        // Use prop value if provided, otherwise get selected options
+        const defaultValue = props.value !== undefined
+            ? props.value.toString()
+            : options
+                .flatMap(opt => opt.selected ? [opt.data?.value ?? opt.key] : [])
+                .join(',');
+
         if (defaultValue && defaultValue !== value) {
             setValue(defaultValue);
             props.onChange(props.name, defaultValue);
@@ -103,42 +97,70 @@ export function useMultiSelectValue(props: MultiSelectProps, options: UISelectab
 }
 
 /**
- * Hook to calculate visible options and selected keys by filtering out hidden options.
- *
- * @param options - All options including hidden ones
+ * Calculates display text from comma-separated values by converting to option names
+ * and filtering out hidden options.
+ * 
+ * @param options - Array of selectable options
  * @param value - Comma-separated string of selected values
- * @returns An object containing visibleOptions and selectedKeys
+ * @returns Display text with option names joined by ", " or undefined
  */
-export function useVisibleOptionsAndKeys(
+function getDisplayText(
     options: UISelectableOption<ChoiceOptions>[],
     value?: string
-): { visibleOptions: UISelectableOption<ChoiceOptions>[]; selectedKeys: string[] | undefined } {
-    const [visibleOptions, setVisibleOptions] = useState<UISelectableOption<ChoiceOptions>[]>([]);
-    const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>();
+): string | undefined {
+    if (!value) return undefined;
 
-    useEffect(() => {
-        if (!value) {
-            setSelectedKeys(undefined);
-            return;
-        }
+    const values = value.split(',').map(v => v.trim()).filter(Boolean);
+    if (!values.length) return undefined;
+    
+    // If options haven't loaded yet, return empty to show placeholder
+    if (!options.length) return undefined;
 
-        const valueArray = value
-            .split(',')
-            .map((v) => v.trim())
-            .filter(Boolean);
-        const keyToOption = new Map(options.map((opt) => [opt.key.toString(), opt]));
+    const valueMap = new Map(
+        options.map(opt => [opt.data?.value ?? opt.key.toString(), opt])
+    );
 
-        const visibleKeys = valueArray.filter((val) => {
-            const option = keyToOption.get(val);
-            return option && !(option.data as any)?.hidden;
-        });
+    // Convert values to display names, filter out hidden
+    const names = values
+        .map(val => {
+            const opt = valueMap.get(val);
+            // Skip if option is hidden or doesn't exist
+            if (!opt || (opt.data as any)?.hidden) return null;
+            return opt.text ?? val;
+        })
+        .filter(Boolean);
 
-        setSelectedKeys(visibleKeys.length > 0 ? visibleKeys : undefined);
-        setVisibleOptions(options.filter((opt) => !(opt.data as any)?.hidden));
-    }, [value, options]);
-
-    return { visibleOptions, selectedKeys };
+    return names.length ? names.join(', ') : undefined;
 }
+
+
+/**
+ * Hook to convert comma-separated values to display text for multi-select components.
+ * Handles conversion of option values to their display names and filters 
+ * out hidden options in search bar.
+ * 
+ * @example
+ * ```tsx
+ * const options = [
+ *   { key: 'val1', text: 'Option 1', data: { value: 'val1' } },
+ *   { key: 'val2', text: 'Option 2', data: { value: 'val2', hidden: true } },
+ *   { key: 'val3', text: 'Option 3', data: { value: 'val3' } }
+ * ];
+ * const text = useText(options, 'val1,val2,val3');
+ * // Returns: "Option 1, Option 3" (val2 is filtered out as hidden)
+ * ```
+ * 
+ * @param options - Array of selectable options containing display text and metadata
+ * @param value - Comma-separated string of selected values (e.g., "val1,val2,val3")
+ * @returns Display text with option names joined by ", " or undefined if no valid selections
+ */
+export function useText(
+    options: UISelectableOption<ChoiceOptions>[],
+    value?: string
+): string | undefined {
+    return useMemo(() => getDisplayText(options, value), [options, value]);
+}
+
 
 /**
  * Hook to resolve a prompt message, supporting both static and dynamic messages.
