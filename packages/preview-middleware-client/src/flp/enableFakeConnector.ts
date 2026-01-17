@@ -94,12 +94,13 @@ export async function loadChanges(...args: []): Promise<LoadChangesResult> {
  * If the minor version of the SAP UI5 is less than 72, this function extends
  * the FakeLrepConnector's prototype with specific methods and enables the fake connector.
  *
- * Assumes the existence of a global 'sap' object with a 'ui.version' property,
+ * Assumes the existence of a global 'sap' object with an 'ui.version' property,
  * and global jQuery object with 'extend' method.
  *
  * @returns {void}
  */
 export default function (): void {
+    // eslint-disable-next-line no-undef
     jQuery.extend(FakeLrepConnector.prototype, {
         create,
         loadChanges,

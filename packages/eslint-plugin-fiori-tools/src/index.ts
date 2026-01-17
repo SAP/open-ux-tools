@@ -1,6 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-export { DiagnosticCache } from './language/diagnostic-cache';
+import { join, relative, posix } from 'node:path';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import js from '@eslint/js';
@@ -8,7 +7,10 @@ import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import { rules } from './rules';
 import { FioriLanguage } from './language/fiori-language';
-import { PACKAGE_NAME } from './constants';
+import { createSyncFn } from 'synckit';
+import type { getPathMappings } from '@sap-ux/project-access';
+import { uniformUrl } from './project-context/utils';
+export { DiagnosticCache } from './language/diagnostic-cache';
 
 // Use CommonJS require for modules with resolution issues
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -22,21 +24,31 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
     version: string;
 };
 
-// Plugin meta information (required for ESLint 9)
+/**
+ * Plugin meta information (required for ESLint 9).
+ * Contains the plugin name and version.
+ */
 export const meta = {
-    name: PACKAGE_NAME,
+    name: packageJson.name,
     version: packageJson.version
 };
 
+/**
+ * Language definitions supported by the plugin.
+ * Currently includes the Fiori language for annotation and manifest files.
+ */
 export const languages = {
     fiori: new FioriLanguage()
 };
 
-// Default export following ESLint 9 plugin structure
-// This is the recommended way to export plugins in ESLint 9
+/**
+ * Default export following ESLint 9 plugin structure.
+ * This is the recommended way to export plugins in ESLint 9.
+ * Contains plugin metadata, supported languages, rules, and processors.
+ */
 const plugin: Plugin = {
     meta: {
-        name: PACKAGE_NAME,
+        name: packageJson.name,
         version: '0.0.1',
         namespace: '@sap-ux/fiori-tools'
     },
@@ -45,7 +57,9 @@ const plugin: Plugin = {
     processors: {}
 };
 
-// Config definitions as constants
+/**
+ * Common configuration shared across all config presets.
+ */
 const commonConfig: Linter.Config[] = [
     {
         languageOptions: {
@@ -58,14 +72,32 @@ const commonConfig: Linter.Config[] = [
     }
 ];
 
+// Use synckit to create sync function for project-access getPathMappingsSync
+const workerPath = join(__dirname, 'worker-getPathMappingsSync.js');
+const getPathMappingsSync = createSyncFn<typeof getPathMappings>(workerPath);
+
+const pathMappingsAbsolute = getPathMappingsSync(process.cwd());
+const webappPathAbsolute =
+    'webapp' in pathMappingsAbsolute
+        ? pathMappingsAbsolute.webapp
+        : (pathMappingsAbsolute.src ?? join(process.cwd(), 'webapp'));
+const webappPathRelative = uniformUrl(relative(process.cwd(), webappPathAbsolute));
+const testPathRelative =
+    'webapp' in pathMappingsAbsolute
+        ? posix.join(webappPathRelative, 'test')
+        : uniformUrl(relative(process.cwd(), pathMappingsAbsolute.test ?? join(process.cwd(), 'webapp/test')));
+
 const prodConfig: Linter.Config[] = [
     {
-        files: ['./webapp/**/*.js', './webapp/**/*.ts'],
+        files: [`./${webappPathRelative}/**/*.js`, `./${webappPathRelative}/**/*.ts`],
 
         ignores: [
             'target/**',
-            'webapp/test/**',
-            'webapp/localservice/**',
+            `${testPathRelative}/**`,
+            `${posix.join(webappPathRelative, 'localservice')}/**`, // Ignore everything in the 'localservice' folder
+            `!${posix.join(webappPathRelative, 'localservice')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(webappPathRelative, 'localService')}/**`, // Ignore everything in the 'localService' folder
+            `!${posix.join(webappPathRelative, 'localService')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
             'backup/**',
             '**/Gruntfile.js',
             '**/changes_preview.js',
@@ -137,7 +169,7 @@ const prodConfig: Linter.Config[] = [
 
 const testConfig: Linter.Config[] = [
     {
-        files: ['webapp/test/**/*.js', 'webapp/test/**/*.ts'],
+        files: [`./${testPathRelative}/**/*.js`, `./${testPathRelative}/**/*.ts`],
         ignores: ['**/*.d.ts'],
 
         languageOptions: {
@@ -155,14 +187,16 @@ const testConfig: Linter.Config[] = [
 
 const typescriptConfig: Linter.Config[] = [
     {
-        files: ['./webapp/*.ts', './webapp/**/*.ts'],
+        files: [`./${webappPathRelative}/*.ts`, `./${webappPathRelative}/**/*.ts`],
 
         ignores: [
             'target/**',
-            'webapp/test/changes_loader.ts',
-            'webapp/test/changes_preview.ts',
-            'webapp/localservice/**',
-            'webapp/localService/**',
+            `${testPathRelative}/changes_loader.ts`,
+            `${testPathRelative}/changes_preview.ts`,
+            `${posix.join(webappPathRelative, 'localservice')}/**`, // Ignore everything in the 'localservice' folder
+            `!${posix.join(webappPathRelative, 'localservice')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
+            `${posix.join(webappPathRelative, 'localService')}/**`, // Ignore everything in the 'localService' folder
+            `!${posix.join(webappPathRelative, 'localService')}/**/*.{ts,js}`, // EXCEPT for .ts and .js files (that might be custom mockserver extensions)
             'undefined/**/Example.qunit.ts',
             'backup/**',
             '**/*.d.ts'

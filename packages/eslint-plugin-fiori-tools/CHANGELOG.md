@@ -1,5 +1,30 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.1.3
+
+### Patch Changes
+
+- be67fc4: fix: fix path mappings and also lint custom mockserver extensions
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/fiori-annotation-api@0.9.3
+
+## 9.1.2
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/fiori-annotation-api@0.9.2
+
+## 9.1.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+- Updated dependencies [4d6695f]
+    - @sap-ux/fiori-annotation-api@0.9.1
+
 ## 9.1.0
 
 ### Minor Changes

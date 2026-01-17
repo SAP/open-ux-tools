@@ -1,5 +1,49 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.40
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/ui5-application-writer@1.7.2
+    - @sap-ux/odata-service-writer@0.29.8
+    - @sap-ux/annotation-generator@0.4.10
+    - @sap-ux/cap-config-writer@0.12.45
+    - @sap-ux/fe-fpm-writer@0.40.11
+    - @sap-ux/fiori-generator-shared@0.13.54
+    - @sap-ux/ui5-test-writer@0.7.54
+
+## 2.8.39
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.53
+- @sap-ux/ui5-config@0.29.12
+- @sap-ux/cap-config-writer@0.12.44
+
+## 2.8.38
+
+### Patch Changes
+
+- 55ac9f0: enable generation of OPA5 tests based on project spec
+- Updated dependencies [55ac9f0]
+    - @sap-ux/ui5-test-writer@0.7.53
+    - @sap-ux/annotation-generator@0.4.9
+    - @sap-ux/cap-config-writer@0.12.43
+    - @sap-ux/fe-fpm-writer@0.40.10
+    - @sap-ux/fiori-generator-shared@0.13.52
+    - @sap-ux/odata-service-writer@0.29.7
+    - @sap-ux/ui5-application-writer@1.7.1
+
+## 2.8.37
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.8
+- @sap-ux/fe-fpm-writer@0.40.9
+- @sap-ux/ui5-application-writer@1.7.1
+
 ## 2.8.36
 
 ### Patch Changes
