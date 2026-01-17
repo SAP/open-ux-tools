@@ -75,10 +75,11 @@ describe('MultiSelect', () => {
         expect(screen.getByPlaceholderText('testText0')).toBeDefined();
     });
 
-    it('Test value reset', () => {
+    it.only('Test value reset', () => {
         const { rerender } = render(<MultiSelect {...props} value={'testValue0,testValue1'} />);
         let input = screen.getByRole('combobox');
         expect(input.getAttribute('value')).toEqual('testText0, testText1');
+        debugger;
         rerender(<MultiSelect {...props} value={undefined} />);
         input = screen.getByRole('combobox');
         expect(input.getAttribute('value')).toEqual('');
@@ -130,4 +131,68 @@ describe('MultiSelect', () => {
         const { container } = render(<MultiSelect {...props} pending={true} />);
         expect(container.getElementsByClassName('ms-Spinner-circle')).toBeDefined();
     });
+
+    it('should add and remove values when selecting and unselecting options', () => {
+        const onChangeFn = jest.fn();
+        render(<MultiSelect {...props} onChange={onChangeFn} />);
+        const button = document.getElementsByClassName('ms-Button')[0];
+        fireEvent.click(button);
+        const options = screen.queryAllByRole('option');
+
+        // Select first item
+        fireEvent.click(options[0]);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testValue0');
+
+        // Select second item
+        fireEvent.click(options[1]);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testValue0,testValue1');
+
+        // Unselect first item
+        fireEvent.click(options[0]);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testValue1');
+
+        // Unselect second item
+        fireEvent.click(options[1]);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', '');
+    });
+
+    it('should initialise with selected options and update when options change', () => {
+        const choices = [
+            { name: 'testText0', value: 'testValue0', selected: true },
+            { name: 'testText1', value: 'testValue1', selected: false },
+            { name: 'testText2', value: 'testValue2', selected: true }
+        ];
+        const selectedProps: MultiSelectProps = {
+            ...props,
+            dynamicChoices: choices,
+            value: undefined,
+            onChange: jest.fn()
+        };
+
+        render(<MultiSelect {...selectedProps} />);
+
+        const combobox = screen.getByRole('combobox');
+        const button = combobox.parentElement?.querySelector('.ms-Button') as HTMLElement;
+        fireEvent.click(button);
+        const options = screen.queryAllByRole('option');
+        const selectedOptions = options.filter(opt => opt.getAttribute('aria-selected') === 'true');
+        expect(selectedOptions.length).toBe(2);
+
+        // Select the unchecked option
+        fireEvent.click(options[1]);
+        expect(selectedProps.onChange).toHaveBeenCalledWith('testList', 'testValue0,testValue2,testValue1');
+
+        // Unselect one of the initially checked options
+        fireEvent.click(options[0]);
+        expect(selectedProps.onChange).toHaveBeenCalledWith('testList', 'testValue2,testValue1');
+
+        // Unselect the other initially checked option
+        fireEvent.click(options[2]);
+        expect(selectedProps.onChange).toHaveBeenCalledWith('testList', 'testValue1');
+
+        // Unselect the last option
+        fireEvent.click(options[1]);
+        expect(selectedProps.onChange).toHaveBeenCalledWith('testList', '');
+    });
+
 });
