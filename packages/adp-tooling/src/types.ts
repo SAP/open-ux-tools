@@ -1,7 +1,7 @@
 import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { AxiosRequestConfig, OperationsType } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig, KeyUserChangeContent, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
@@ -109,6 +109,10 @@ export interface AdpWriterConfig {
          */
         templatePathOverwrite?: string;
     };
+    /**
+     * Optional: Key-user changes to be written to the project.
+     */
+    keyUserChanges?: KeyUserChangeContent[];
 }
 
 /**
@@ -133,6 +137,7 @@ export interface AttributesAnswers {
     enableTypeScript: boolean;
     addDeployConfig?: boolean;
     addFlpConfig?: boolean;
+    importKeyUserChanges?: boolean;
 }
 
 export interface SourceApplication {
