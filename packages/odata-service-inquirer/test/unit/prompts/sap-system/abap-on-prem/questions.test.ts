@@ -3,7 +3,7 @@ import type { ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-u
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
