@@ -400,7 +400,7 @@ export async function getSelectedServiceMessage(
         if (serviceFilter && serviceFilter.length > 0) {
             return {
                 message: t('warnings.specifiedServicesNotAvailable', {
-                    odataVersion: requiredOdataVersion ? `V${requiredOdataVersion}` : undefined,
+                    odataVersion: requiredOdataVersion ? `V${requiredOdataVersion} ` : undefined,
                     service: serviceFilter[0],
                     count: serviceFilter.length
                 }),

@@ -263,8 +263,8 @@
         "certErrorIgnoredByNodeSetting": "An SSL certificate error is being ignored by the 'NODE_TLS_REJECT_UNAUTHORIZED=0' Node.js setting. This makes TLS connections and HTTPS requests insecure by disabling certificate verification. For details of the certification error, see the logs.",
         "noExternalServiceMetdataFetched": "No external service metadata were fetched. $t(texts.seeLogForDetails)",
         "missingServices": "OData V{{odataVersion}} services are not available.",
-        "specifiedServicesNotAvailable_one": "The required OData service: {{-service}} is not available from the {{odataVersion}} services catalog. Please ensure the service is available.",
-        "specifiedServicesNotAvailable_other": "The required OData services are not available from the {{odataVersion}} services catalog. Please ensure the services are available. $t(texts.seeLogForDetails)"
+        "specifiedServicesNotAvailable_one": "The required OData service: {{-service}} is not available from the {{odataVersion}}services catalog. Please ensure the service is available.",
+        "specifiedServicesNotAvailable_other": "The required OData services are not available from the {{odataVersion}}services catalog. Please ensure the services are available. $t(texts.seeLogForDetails)"
     },
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",
