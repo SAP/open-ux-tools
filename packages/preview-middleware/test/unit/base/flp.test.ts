@@ -47,6 +47,15 @@ class FlpSandbox extends FlpSandboxUnderTest {
     declare public readonly flpConfig: FlpConfig;
 }
 
+const mockUtils = {
+    getProject() {
+        return {
+            getSourcePath: () => tmpdir(),
+            getType: () => 'application'
+        };
+    }
+} as unknown as MiddlewareUtils;
+
 describe('FlpSandbox', () => {
     const mockProject = {
         byPath: jest.fn().mockResolvedValue(undefined),
@@ -64,13 +73,6 @@ describe('FlpSandbox', () => {
             )
         )
     } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
-    const mockUtils = {
-        getProject() {
-            return {
-                getSourcePath: () => tmpdir()
-            };
-        }
-    } as unknown as MiddlewareUtils;
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as Logger & {
         warn: jest.Mock;
         info: jest.Mock;
@@ -1434,7 +1436,7 @@ describe('initAdp', () => {
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as ToolsLogger;
 
     test('initAdp: throw an error if no adp project', async () => {
-        const flp = new FlpSandbox({}, mockNonAdpProject, {} as MiddlewareUtils, logger);
+        const flp = new FlpSandbox({}, mockNonAdpProject, mockUtils, logger);
         try {
             await flp.initAdp({} as AdpPreviewConfig);
         } catch (error) {
@@ -1444,7 +1446,7 @@ describe('initAdp', () => {
 
     test('initAdp', async () => {
         const config = { adp: { target: { url } } };
-        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, mockUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
@@ -1479,7 +1481,7 @@ describe('initAdp', () => {
             adp: { target: { url } },
             rta: { options: {}, editors: [] }
         } as unknown as Partial<MiddlewareConfig>;
-        const flp = new FlpSandbox(config, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flp = new FlpSandbox(config, mockAdpProject, mockUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
@@ -1532,7 +1534,7 @@ describe('initAdp', () => {
             adp: config,
             rta: { options: {}, editors: [] }
         } as unknown as Partial<MiddlewareConfig>;
-        const flp = new FlpSandbox(flpConfig, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flp = new FlpSandbox(flpConfig, mockAdpProject, mockUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });

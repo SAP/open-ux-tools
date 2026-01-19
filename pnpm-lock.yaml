@@ -28,6 +28,9 @@ importers:
       '@playwright/test':
         specifier: 1.56.1
         version: 1.56.1
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:packages/ui5-config
       '@types/jest':
         specifier: 30.0.0
         version: 30.0.0

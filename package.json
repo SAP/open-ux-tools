@@ -41,7 +41,8 @@
         "typescript-eslint": "8.49.0",
         "update-ts-references": "3.6.2",
         "yargs-parser": "21.1.1",
-        "yaml":  "2.8.2"
+        "yaml": "2.8.2",
+        "@sap-ux/ui5-config": "workspace:*"
     },
     "scripts": {
         "update-ts-references": "update-ts-references",

@@ -46,7 +46,7 @@ async function createRouter(
     }
 
     // add exposed endpoints for cds-plugin-ui5
-    flp.router.getAppPages = (): string[] => getPreviewPaths(config).map(({ path }) => path);
+    flp.router.getAppPages = (): string[] => getPreviewPaths(config, middlewareUtil).map(({ path }) => path);
     return flp.router;
 }
 

@@ -1,6 +1,9 @@
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
 import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../types';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareUtils } from '@ui5/server';
+import { posix } from 'node:path';
 
 const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
     qunit: {
@@ -27,19 +30,21 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
  * Merge the given test configuration with the default values.
  *
  * @param config test configuration
+ * @param utils middleware utils
  * @returns merged test configuration
  */
-export function mergeTestConfigDefaults(config: TestConfig): CompleteTestConfig {
-    //todo: Adjust to support ui5 type 'component'
-    // * type 'application' serves test sources at '/test/*'
-    // * type 'component' serves test sources at '/test-resources/the/app/id/*'
+export function mergeTestConfigDefaults(config: TestConfig, utils: MiddlewareUtils): CompleteTestConfig {
+    const testPathPrefix =
+        utils.getProject().getType() === 'component'
+            ? posix.join('/test-resources', utils.getProject().getNamespace())
+            : '/';
     const defaults = DEFAULTS[config.framework.toLowerCase()] ?? {};
     const merged: CompleteTestConfig = { ...defaults, ...config };
-    if (!merged.path.startsWith('/')) {
-        merged.path = `/${merged.path}`;
-    }
-    if (!merged.init.startsWith('/')) {
-        merged.init = `/${config.init}`;
+
+    for (const prop of ['path', 'init'] as const) {
+        if (typeof merged[prop] === 'string' && merged[prop]) {
+            merged[prop] = posix.join(testPathPrefix, merged[prop].replace(/^[\\/]+/, ''));
+        }
     }
     return merged;
 }

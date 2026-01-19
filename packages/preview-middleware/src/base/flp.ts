@@ -128,7 +128,7 @@ export class FlpSandbox {
         this.logger = logger;
         this.project = project;
         this.utils = utils;
-        this.flpConfig = getFlpConfigWithDefaults(config.flp);
+        this.flpConfig = getFlpConfigWithDefaults(config.flp, this.utils);
         this.test = config.test;
         this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
@@ -828,7 +828,7 @@ export class FlpSandbox {
             return;
         }
         const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.ejs'), 'utf-8');
-        const config = mergeTestConfigDefaults(testsuiteConfig);
+        const config = mergeTestConfigDefaults(testsuiteConfig, this.utils);
         this.logger.debug(`Add route for ${config.path}`);
         this.router.get(
             config.path,
@@ -849,7 +849,7 @@ export class FlpSandbox {
             if (testConfig.framework === 'Testsuite') {
                 continue;
             }
-            const mergedConfig = mergeTestConfigDefaults(testConfig);
+            const mergedConfig = mergeTestConfigDefaults(testConfig, this.utils);
             testPaths.push(posix.relative(posix.dirname(config.path), mergedConfig.path));
         }
 
@@ -955,7 +955,7 @@ export class FlpSandbox {
         const ns = id.replace(/\./g, '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const testConfig of configs) {
-            const config = mergeTestConfigDefaults(testConfig);
+            const config = mergeTestConfigDefaults(testConfig, this.utils);
             this.logger.debug(`Add route for ${config.path}`);
             // add route for the *.qunit.html
             this.router.get(

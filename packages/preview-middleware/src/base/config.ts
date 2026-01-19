@@ -19,6 +19,8 @@ import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareUtils } from '@ui5/server';
 
 export interface CustomConnector {
     applyConnector: string;
@@ -182,14 +184,16 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
  * Default configuration for the FLP.
  *
  * @param config partial configuration
+ * @param utils middleware utils
  * @returns a full configuration with default values
  */
-export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpConfig {
-    //todo: Adjust to support ui5 type 'component'
-    // * type 'application' serves path at '/test/*'
-    // * type 'component' serves path at '/test-resources/the/app/id/*'
+export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}, utils: MiddlewareUtils): FlpConfig {
+    const sandboxPathPrefix =
+        utils.getProject().getType() === 'component'
+            ? posix.join('/test-resources', utils.getProject().getNamespace())
+            : '/';
     const flpConfig = {
-        path: config.path ?? DEFAULT_PATH,
+        path: posix.join(sandboxPathPrefix, (config.path ?? DEFAULT_PATH).replace(/^[\\/]+/, '')),
         intent: config.intent ?? DEFAULT_INTENT,
         apps: config.apps ?? [],
         libs: config.libs,
@@ -197,9 +201,6 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
         init: config.init,
         enhancedHomePage: config.enhancedHomePage === true
     } satisfies FlpConfig;
-    if (!flpConfig.path.startsWith('/')) {
-        flpConfig.path = `/${flpConfig.path}`;
-    }
     return flpConfig;
 }
 
@@ -426,15 +427,20 @@ export function createTestTemplateConfig(config: CompleteTestConfig, id: string,
  * Returns the preview paths.
  *
  * @param config configuration from the ui5.yaml
+ * @param utils middleware utils
  * @param logger logger instance
  * @returns an array of preview paths
  */
-export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = new ToolsLogger()): PreviewUrls[] {
+export function getPreviewPaths(
+    config: MiddlewareConfig,
+    utils: MiddlewareUtils,
+    logger: ToolsLogger = new ToolsLogger()
+): PreviewUrls[] {
     const urls: PreviewUrls[] = [];
     // remove incorrect configurations
     sanitizeConfig(config, logger);
     // add flp preview url
-    const flpConfig = getFlpConfigWithDefaults(config.flp);
+    const flpConfig = getFlpConfigWithDefaults(config.flp, utils);
     urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
     if (config.editors?.rta) {
@@ -445,7 +451,7 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     // add test urls if configured
     if (config.test) {
         config.test.forEach((test) => {
-            const testConfig = mergeTestConfigDefaults(test);
+            const testConfig = mergeTestConfigDefaults(test, utils);
             urls.push({ path: testConfig.path, type: 'test' });
         });
     }
@@ -462,16 +468,18 @@ const TEMPLATE_PATH = join(__dirname, '../../templates');
  * @param fs mem fs editor instance
  * @param webappPath webapp path
  * @param flpTemplConfig FLP configuration
+ * @param utils middleware utils
  */
 function generateTestRunners(
     configs: TestConfig[] | undefined,
     manifest: Manifest,
     fs: Editor,
     webappPath: string,
-    flpTemplConfig: TemplateConfig
+    flpTemplConfig: TemplateConfig,
+    utils: MiddlewareUtils
 ): void {
     for (const test of configs ?? []) {
-        const testConfig = mergeTestConfigDefaults(test);
+        const testConfig = mergeTestConfigDefaults(test, utils);
         if (['QUnit', 'OPA5'].includes(test.framework)) {
             const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.ejs'), 'utf-8');
             const testTemplateConfig = createTestTemplateConfig(
@@ -516,7 +524,13 @@ export async function generatePreviewFiles(
 
     // generate FLP configuration
     const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8');
-    const flpConfig = getFlpConfigWithDefaults(config.flp);
+    //todo: do we need the real type here?
+    const fakeUtils = {
+        getProject: () => ({
+            getType: () => 'application'
+        })
+    } as MiddlewareUtils;
+    const flpConfig = getFlpConfigWithDefaults(config.flp, fakeUtils);
 
     const webappPath = await getWebappPath(basePath, fs);
     let manifest: Manifest | undefined;
@@ -539,7 +553,7 @@ export async function generatePreviewFiles(
             },
             logger
         );
-        generateTestRunners(config.test, manifest, fs, webappPath, flpTemplConfig);
+        generateTestRunners(config.test, manifest, fs, webappPath, flpTemplConfig, fakeUtils);
     } else {
         flpTemplConfig = createFlpTemplateConfig(flpConfig, {});
         flpPath = join(basePath, flpConfig.path);
