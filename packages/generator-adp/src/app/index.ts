@@ -304,7 +304,8 @@ export default class extends Generator {
                     hasBaseAppInbounds: !!this.prompter.baseAppInbounds,
                     hide: this.shouldCreateExtProject
                 },
-                addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase }
+                addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase },
+                importKeyUserChanges: { hide: this.shouldCreateExtProject }
             };
             const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
             this.attributeAnswers = await this.prompt(attributesQuestions);
@@ -558,7 +559,8 @@ export default class extends Generator {
             ui5ValidationCli: { hide: true },
             enableTypeScript: { hide: true },
             addFlpConfig: { hide: true },
-            addDeployConfig: { hide: true }
+            addDeployConfig: { hide: true },
+            importKeyUserChanges: { hide: true }
         };
 
         const projectPath = this.destinationPath();
