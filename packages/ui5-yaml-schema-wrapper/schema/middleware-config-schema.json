@@ -32,7 +32,9 @@
       },
       "additionalProperties": false
     },
-    "adp": {},
+    "adp": {
+      "$ref": "#/definitions/AdpPreviewConfig"
+    },
     "debug": {
       "type": "boolean"
     }
@@ -226,6 +228,58 @@
           }
         }
       }
+    },
+    "AdpPreviewConfig": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "$ref": "#/definitions/AbapTarget"
+        },
+        "ignoreCertErrors": {
+          "description": "If set to true then certification validation errors are ignored.",
+          "type": "boolean"
+        },
+        "cfBuildPath": {
+          "description": "For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AbapTarget": {
+      "description": "Reduce the options exposed as target configuration.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/DestinationAbapTarget"
+        },
+        {
+          "$ref": "#/definitions/Pick<UrlAbapTarget,\"url\"|\"client\"|\"scp\">"
+        }
+      ]
+    },
+    "DestinationAbapTarget": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Pick<UrlAbapTarget,\"url\"|\"client\"|\"scp\">": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "client": {
+          "type": "string"
+        },
+        "scp": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#"
