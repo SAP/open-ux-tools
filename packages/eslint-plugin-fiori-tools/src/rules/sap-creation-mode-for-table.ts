@@ -501,7 +501,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
         },
         messages: {
             invalidCreateMode:
-                'Invalid createMode value: "{{value}}"{{tableType}}. The recommended value is "creationRows".{{validValues}}',
+                'Invalid createMode value: "{{value}}"{{tableType}}. The recommended value is "creationRows".{{validValues}}.',
             recommendCreationRows: 'Consider using "creationRows" for a better user experience instead of "{{value}}".',
             suggestAppLevel: 'Consider adding createMode at the application level for a better user experience.',
             analyticalTableNotSupported:
