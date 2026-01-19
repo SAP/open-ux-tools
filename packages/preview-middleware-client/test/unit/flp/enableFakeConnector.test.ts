@@ -63,10 +63,11 @@ describe('flp/FakeLrepConnector', () => {
         test('loads changes correctly with baseUrl', async () => {
             const mockBaseUrl = '/test.base.url';
             jest.isolateModules(async () => {
-                Object.defineProperty(globalThis, 'data-open-ux-preview-base-url', {
-                    value: mockBaseUrl,
-                    writable: true,
-                    configurable: true
+                // Mock document.getElementById to return element with baseUrl in dataset
+                documentMock.getElementById.mockReturnValue({
+                    dataset: {
+                        openUxPreviewBaseUrl: mockBaseUrl
+                    }
                 });
 
                 // Mock LrepConnector before requiring the module
@@ -103,9 +104,6 @@ describe('flp/FakeLrepConnector', () => {
                 );
                 expect(result.changes.changes.length).toBe(1);
                 expect(result.changes.changes[0].changeType).toBe('propertyChange');
-
-                // Cleanup
-                delete (globalThis as any)['data-open-ux-preview-base-url'];
             });
         });
     });
