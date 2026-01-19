@@ -1,0 +1,48 @@
+{
+    "name": "@sap-ux/ui5-yaml-schema-wrapper",
+    "description": "UI5 YAML schema wrapper with preview-middleware configuration support",
+    "version": "0.1.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/ui5-yaml-schema-wrapper"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-yaml-schema-wrapper"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsx scripts/generate-schema.ts",
+        "watch": "tsx scripts/generate-schema.ts",
+        "clean": "rimraf --glob dist schema/middleware-config-schema.json *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global",
+        "test": "jest --ci",
+        "test:watch": "jest --watch"
+    },
+    "files": [
+        "LICENSE",
+        "schema"
+    ],
+    "dependencies": {
+        "@sap-ux/preview-middleware": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/js-yaml": "4.0.9",
+        "@types/node": "20.17.10",
+        "ajv": "8.17.1",
+        "ajv-formats": "3.0.1",
+        "js-yaml": "4.1.0",
+        "rimraf": "6.0.1",
+        "tsx": "4.19.2",
+        "typescript": "5.7.2",
+        "typescript-json-schema": "0.65.1"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
+}

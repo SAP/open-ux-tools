@@ -1,0 +1,232 @@
+{
+  "description": "Middleware configuration.",
+  "type": "object",
+  "properties": {
+    "flp": {
+      "$ref": "#/definitions/Partial<FlpConfig>"
+    },
+    "test": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TestConfig"
+      }
+    },
+    "rta": {
+      "$ref": "#/definitions/InternalRtaConfig"
+    },
+    "editors": {
+      "type": "object",
+      "properties": {
+        "rta": {
+          "$ref": "#/definitions/RtaConfig"
+        },
+        "cardGenerator": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "adp": {},
+    "debug": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Partial<FlpConfig>": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "intent": {
+          "description": "Intent object consisting of an object and an action.",
+          "$ref": "#/definitions/Intent"
+        },
+        "libs": {
+          "description": "Optional: if set to true then a locate-reuse-libs script will be attached to the html",
+          "type": "boolean"
+        },
+        "apps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/App"
+          }
+        },
+        "theme": {
+          "type": "string"
+        },
+        "init": {
+          "description": "Optional: allows to specify a custom init script executed in addition to the default one",
+          "type": "string"
+        },
+        "enhancedHomePage": {
+          "description": "Optional: if set to true then the new FLP homepage will be enabled",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Intent": {
+      "description": "Intent object consisting of an object and an action.",
+      "type": "object",
+      "properties": {
+        "object": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "App": {
+      "description": "Configuration for additional applications",
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string"
+        },
+        "local": {
+          "description": "Either a local path to a folder containing the application or the componentId of a remote app",
+          "type": "string"
+        },
+        "componentId": {
+          "description": "Optional component id if it differs from the manifest (e.g. for adaptation projects)",
+          "type": "string"
+        },
+        "intent": {
+          "description": "Intent object consisting of an object and an action.",
+          "$ref": "#/definitions/Intent"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TestConfig": {
+      "description": "Configration for the virtual test pages endpoints.",
+      "type": "object",
+      "properties": {
+        "framework": {
+          "enum": [
+            "OPA5",
+            "QUnit",
+            "Testsuite"
+          ],
+          "type": "string"
+        },
+        "path": {
+          "description": "Path hosting the main test page",
+          "type": "string"
+        },
+        "init": {
+          "description": "Path to the init script",
+          "type": "string"
+        },
+        "pattern": {
+          "description": "Pattern to match the test files",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "InternalRtaConfig": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "enum": [
+            "CUSTOMER_BASE",
+            "VENDOR"
+          ],
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "additionalProperties": {},
+          "properties": {
+            "baseId": {
+              "type": "string"
+            },
+            "projectId": {
+              "type": "string"
+            },
+            "scenario": {
+              "type": "string"
+            },
+            "appName": {
+              "type": "string"
+            }
+          }
+        },
+        "editors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RtaEditor"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "RtaEditor": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "developerMode": {
+          "type": "boolean"
+        },
+        "pluginScript": {
+          "type": "string"
+        },
+        "generator": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "RtaConfig": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "options": {
+          "type": "object",
+          "additionalProperties": {},
+          "properties": {
+            "baseId": {
+              "type": "string"
+            },
+            "projectId": {
+              "type": "string"
+            },
+            "scenario": {
+              "type": "string"
+            },
+            "appName": {
+              "type": "string"
+            }
+          }
+        },
+        "layer": {
+          "enum": [
+            "CUSTOMER_BASE",
+            "VENDOR"
+          ],
+          "type": "string"
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RtaEditor"
+          }
+        }
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
