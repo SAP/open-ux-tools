@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.10
+
+### Patch Changes
+
+- f4cf1d2: Update readme to contain description of latest features
+
+## 0.6.9
+
+### Patch Changes
+
+- 5652318: fix(server): downgrade MCP protocol version to '2024-11-05' to better backward compatibility
+
 ## 0.6.8
 
 ### Patch Changes
