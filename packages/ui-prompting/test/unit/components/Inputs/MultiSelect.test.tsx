@@ -79,7 +79,6 @@ describe('MultiSelect', () => {
         const { rerender } = render(<MultiSelect {...props} value={'testValue0,testValue1'} />);
         let input = screen.getByRole('combobox');
         expect(input.getAttribute('value')).toEqual('testText0, testText1');
-        debugger;
         rerender(<MultiSelect {...props} value={undefined} />);
         input = screen.getByRole('combobox');
         expect(input.getAttribute('value')).toEqual('');
