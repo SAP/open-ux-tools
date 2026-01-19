@@ -13,7 +13,7 @@ const compilerOptions = {
     strictNullChecks: true,
     esModuleInterop: true,
     skipLibCheck: true,
-    moduleResolution: 'node' as any,
+    moduleResolution: 'node',
     resolveJsonModule: true
 };
 
@@ -41,4 +41,3 @@ try {
     console.error('Error generating schema:', error);
     process.exit(1);
 }
-
