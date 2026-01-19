@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 1.34.2
+
+### Patch Changes
+
+- be67fc4: refactor getPathMappings and export respective type
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+
 ## 1.34.1
 
 ### Patch Changes

@@ -1,5 +1,39 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.7
+
+### Patch Changes
+
+- 7597059: add new promp option to hide 'New System' from system selection list
+
+## 2.14.6
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/telemetry@0.6.56
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.54
+    - @sap-ux/project-input-validator@0.6.45
+    - @sap-ux/inquirer-common@0.10.13
+
+## 2.14.5
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+    - @sap-ux/fiori-generator-shared@0.13.53
+    - @sap-ux/telemetry@0.6.55
+    - @sap-ux/inquirer-common@0.10.12
+
+## 2.14.4
+
+### Patch Changes
+
+- 4ec10e4: reset stale connection when switching system auth type
+
 ## 2.14.3
 
 ### Patch Changes
