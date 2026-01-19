@@ -1,33 +1,33 @@
-# Ensure proper creationMode configuration for tables in SAP Fiori Elements V2 and V4 applications (`sap-creation-mode-for-table`)
+# Ensure the Correct `creationMode` Configuration for Tables in SAP Fiori Elements for OData V2 and V4 Applications (`sap-creation-mode-for-table`)
 
-Validates that table creation mode (`createMode` in V2, `creationMode` in V4) is properly configured to ensure optimal user experience when creating new table entries.
+Validates that table creation mode (`createMode` in OData V2 and `creationMode` in OData V4) is correctly configured to ensure an optimal user experience when creating new table entries.
 
 ## Rule Details
 
-This rule validates the configuration of creation mode for tables in SAP Fiori Elements applications. Creation mode determines how users can add new entries to a table, impacting the overall user experience.
+This rule validates the configuration of creation mode for tables in SAP Fiori elements applications. Creation mode determines how users can add new entries to a table, which impacts the overall user experience.
 
-The rule performs different validations depending on the Fiori Elements version:
-
-
-### For V2 Applications
-
-- Validates `createMode` at three levels with cascading priority: section level → page level → application level
-- Recommends `creationRows` as the best practice value for optimal user experience
-- Warns if analytical tables have `createMode` configured (creation mode is not supported for analytical tables)
-- Suggests adding `createMode` at application level if not configured at any level
-
-### For V4 Applications
-
-- Validates `creationMode` at two levels: page level → application level
-- Recommends `InlineCreationRows` for Responsive Tables and Grid Tables
-- Recommends `Inline` for Tree Tables
-- Warns if analytical tables have `creationMode` configured (creation mode is not supported for analytical tables)
-- Suggests adding `creationMode` at application level if not configured
+The rule performs different validations depending on the SAP Fiori elements version:
 
 
-### Invalid createMode value in V2 (Fiori Elements V2)
+### For OData V2 Applications
 
-#### Section level
+- Validates `createMode` at three levels with cascading priority: section level → page level → application level.
+- Recommends `creationRows` as the best practice value for an optimal user experience.
+- Warns if analytical tables have `createMode` configured. Creation mode is not supported for analytical tables.
+- Suggests adding `createMode` at the application level, if it is not configured at any level.
+
+### For OData V4 Applications
+
+- Validates `creationMode` at two levels: page level → application level.
+- Recommends `InlineCreationRows` for responsive Tables and grid tables.
+- Recommends `Inline` for tree tables.
+- Warns if analytical tables have `creationMode` configured. Vreation mode is not supported for analytical tables.
+- Suggests adding `creationMode` at the application level, if not configured.
+
+
+### Invalid `createMode` Value in OData V2
+
+#### Section Level
 
 The following patterns are considered warnings:
 
@@ -73,7 +73,7 @@ The following patterns are not considered warnings:
 }
 ```
 
-#### Page level
+#### Page Level
 
 The following patterns are considered warnings:
 
@@ -111,7 +111,7 @@ The following patterns are not considered warnings:
 }
 ```
 
-#### Application level
+#### Application Level
 
 The following patterns are considered warnings:
 
@@ -141,9 +141,9 @@ The following patterns are not considered warnings:
 }
 ```
 
-### Invalid creationMode value in V4 (Fiori Elements V4)
+### Invalid `creationMode` Value in OData V4
 
-#### Page level
+#### Page Level
 
 The following patterns are considered warnings:
 
@@ -230,7 +230,7 @@ The following patterns are not considered warnings:
 }
 ```
 
-#### Application level
+#### Application Level
 
 The following patterns are considered warnings:
 
@@ -257,14 +257,14 @@ The following patterns are not considered warnings:
 ```
 
 
-#### Analytical table with creation mode (V2 and V4)
+#### Analytical Table with Creation Mode (OData V2 and OData V4)
 
 
-Analytical tables do not support creation mode. If you configure `createMode` (V2) or `creationMode` (V4) for an analytical table, this warning will be triggered.
+Analytical tables do not support creation mode. If you configure `createMode` (OData V2) or `creationMode` (OData V4) for an analytical table, this warning is triggered.
 
 The following patterns are considered warnings:
 
-**V2 Example:**
+**OData V2:**
 
 ```json
 {
@@ -289,7 +289,7 @@ The following patterns are considered warnings:
 }
 ```
 
-**V4 Example:**
+**OData V4:**
 
 ```json
 {
@@ -318,16 +318,16 @@ The following patterns are considered warnings:
 }
 ```
 
-#### Missing creation mode configuration (V2 and V4)
+#### Missing Creation Mode Configuration (OData V2 and OData V4)
 
-When no creation mode is configured at any level (section/page/application for V2, or page/application for V4), the rule suggests adding it at the application level. This ensures a consistent user experience across all tables in the application.
+When a creation mode is not configured at any level (section, page, or application for OData and page or application for OData V4), the rule suggests adding it at the application level. This ensures a consistent user experience across all tables in the application.
 
 ## How to Fix
 
-### For V2 Applications
+### For OData V2 Applications
 
-1. **Use `creationRows` as the recommended value** - This provides the best user experience for creating table entries
-2. **Configure at application level** to ensure consistency across all tables:
+1. **Use `creationRows` as the recommended value** - This provides the best user experience for creating table entries.
+2. **Configure at the application level** to ensure consistency across all tables:
 
 ```json
 {
@@ -341,7 +341,7 @@ When no creation mode is configured at any level (section/page/application for V
 }
 ```
 
-3. **Remove `createMode` from analytical tables** - They don't support creation mode:
+3. **Remove `createMode` from analytical tables**: They don't support creation mode.
 
 ```json
 {
@@ -366,13 +366,13 @@ When no creation mode is configured at any level (section/page/application for V
 }
 ```
 
-### For V4 Applications
+### For OData V4 Applications
 
-1. **Use the appropriate recommended value based on table type:**
-   - `InlineCreationRows` for Responsive Tables and Grid Tables
-   - `Inline` for Tree Tables
+1. **Use the appropriate recommended value based on the table type:**
+   - `InlineCreationRows` for responsive tables and grid tables.
+   - `Inline` for tree tables.
 
-2. **Configure at application level** for consistency:
+2. **Configure at the application level** for consistency:
 
 ```json
 {
@@ -386,7 +386,7 @@ When no creation mode is configured at any level (section/page/application for V
 }
 ```
 
-3. **Remove `creationMode` from analytical tables** - They don't support creation mode:
+3. **Remove `creationMode` from analytical tables**: They don't support creation mode.
 
 ```json
 {
@@ -400,7 +400,7 @@ When no creation mode is configured at any level (section/page/application for V
                 "incidentFlow/@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "AnalyticalTable"
-                    // Remove "creationMode" property
+                    // Remove `creationMode` property
                   }
                 }
               }
@@ -415,8 +415,8 @@ When no creation mode is configured at any level (section/page/application for V
 
 ## Bug Report
 
-In case you detect an issue with the check, please open a GitHub issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you detect an issue with the rules, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
 
 ## Further Reading
 
-- [Creation Mode Options in Fiori Elements](https://sapui5.hana.ondemand.com/sdk/#/topic/cfb04f0c58e7409992feb4c91aa9410b)
+- [Creation Mode Options in SAP Fiori Elements](https://sapui5.hana.ondemand.com/sdk/#/topic/cfb04f0c58e7409992feb4c91aa9410b)
