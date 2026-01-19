@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
+import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
 
 describe('Test validators', () => {

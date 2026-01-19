@@ -145,7 +145,10 @@ async function prompt(
     isYUI = false,
     connectedSystem?: ConnectedSystem
 ): Promise<OdataServiceAnswers> {
-    if (adapter?.promptModule && promptOptions?.serviceSelection?.useAutoComplete) {
+    if (
+        adapter?.promptModule &&
+        (promptOptions?.serviceSelection?.useAutoComplete ?? promptOptions?.capProject?.useAutoComplete)
+    ) {
         const pm = adapter.promptModule;
         pm.registerPrompt('autocomplete', autocomplete);
     }

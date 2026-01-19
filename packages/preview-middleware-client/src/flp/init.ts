@@ -188,7 +188,7 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
         const sapClient = urlParams.get('sap-client');
-        if (sapClient && sapClient.length === 3) {
+        if (sapClient?.length === 3) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
@@ -408,7 +408,7 @@ export async function init({
     renderer.placeAt('content');
 }
 
-// eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
+// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access,@sap-ux/fiori-tools/sap-browser-api-warning
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
@@ -442,7 +442,7 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
             });
         }
 
-        // eslint-disable-next-line fiori-custom/sap-no-location-reload
+        // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-location-reload
         window.location.reload();
     }
 }

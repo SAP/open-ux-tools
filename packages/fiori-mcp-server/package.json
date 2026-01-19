@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.6.2",
+    "version": "0.6.9",
     "keywords": [
         "SAP Fiori tools",
         "SAP Fiori elements",
@@ -53,12 +53,12 @@
     "devDependencies": {
         "npm-run-all2": "8.0.4",
         "esbuild": "0.25.6",
-        "@modelcontextprotocol/sdk": "1.24.1",
+        "@modelcontextprotocol/sdk": "1.25.2",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap/ux-specification": "1.139.2",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
-        "@sap-ux/annotation-converter": "0.10.9",
+        "@sap-ux/annotation-converter": "0.10.19",
         "@sap-ux/edmx-parser": "0.9.6",
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
@@ -81,7 +81,7 @@
         "@sap-ai-sdk/langchain": "2.3.0",
         "promptfoo": "0.119.14",
         "@langchain/mcp-adapters": "1.0.2",
-        "@langchain/core": "1.1.1"
+        "@langchain/core": "1.1.8"
     },
     "dependencies": {
         "@sap-ux/fiori-docs-embeddings": "workspace:*",

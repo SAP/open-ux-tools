@@ -1,5 +1,123 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.7
+
+### Patch Changes
+
+- 7597059: add new promp option to hide 'New System' from system selection list
+
+## 2.14.6
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/telemetry@0.6.56
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.54
+    - @sap-ux/project-input-validator@0.6.45
+    - @sap-ux/inquirer-common@0.10.13
+
+## 2.14.5
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+    - @sap-ux/fiori-generator-shared@0.13.53
+    - @sap-ux/telemetry@0.6.55
+    - @sap-ux/inquirer-common@0.10.12
+
+## 2.14.4
+
+### Patch Changes
+
+- 4ec10e4: reset stale connection when switching system auth type
+
+## 2.14.3
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.52
+    - @sap-ux/project-input-validator@0.6.44
+    - @sap-ux/telemetry@0.6.54
+    - @sap-ux/inquirer-common@0.10.11
+
+## 2.14.2
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.51
+    - @sap-ux/project-input-validator@0.6.43
+    - @sap-ux/telemetry@0.6.53
+    - @sap-ux/inquirer-common@0.10.10
+
+## 2.14.1
+
+### Patch Changes
+
+- 5d2a018: Adds services unavailable info message if with catalog request fails
+
+## 2.14.0
+
+### Minor Changes
+
+- f13d1c2: CAP project selection now searches parent directories and supports autocomplete in CLI
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.50
+    - @sap-ux/project-input-validator@0.6.42
+    - @sap-ux/telemetry@0.6.52
+    - @sap-ux/inquirer-common@0.10.9
+
+## 2.13.10
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/inquirer-common@0.10.8
+    - @sap-ux/project-access@1.33.1
+    - @sap-ux/fiori-generator-shared@0.13.49
+    - @sap-ux/project-input-validator@0.6.41
+    - @sap-ux/telemetry@0.6.51
+
+## 2.13.9
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+- Updated dependencies [2204ad3]
+    - @sap-ux/axios-extension@1.25.5
+    - @sap-ux/inquirer-common@0.10.7
+    - @sap-ux/fiori-generator-shared@0.13.48
+
+## 2.13.8
+
+### Patch Changes
+
+- Updated dependencies [4e0f204]
+    - @sap-ux/axios-extension@1.25.4
+    - @sap-ux/fiori-generator-shared@0.13.48
+
+## 2.13.7
+
+### Patch Changes
+
+- Updated dependencies [6382440]
+    - @sap-ux/inquirer-common@0.10.6
+
 ## 2.13.6
 
 ### Patch Changes

@@ -1,5 +1,74 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.40.11
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/fiori-annotation-api@0.9.3
+
+## 0.40.10
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/fiori-annotation-api@0.9.2
+
+## 0.40.9
+
+### Patch Changes
+
+- Updated dependencies [4d6695f]
+    - @sap-ux/fiori-annotation-api@0.9.1
+
+## 0.40.8
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/fiori-annotation-api@0.9.0
+
+## 0.40.7
+
+### Patch Changes
+
+- 38e4633: Fixed: Generation of custom extensions fails when the path to fpm-writer contains parentheses (e.g. myApp(1)), causing a `Trying to copy from a source that does not exist` error.
+
+## 0.40.6
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/fiori-annotation-api@0.8.6
+
+## 0.40.5
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.8.5
+
+## 0.40.4
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/fiori-annotation-api@0.8.4
+    - @sap-ux/project-access@1.33.1
+
+## 0.40.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+- Updated dependencies [2204ad3]
+    - @sap-ux/fiori-annotation-api@0.8.3
+
 ## 0.40.2
 
 ### Patch Changes
