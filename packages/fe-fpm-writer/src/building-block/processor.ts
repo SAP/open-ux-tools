@@ -377,7 +377,7 @@ function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, con
             // Remove existing <buttonGroups> wrapper - will be recreated with merged data
             const buttonGroupsElement = buttonGroupsElements[0];
             // @xmldom/xmldom doesn't support Element.remove(), must use removeChild()
-            buttonGroupsElement.parentNode?.removeChild(buttonGroupsElement);  // NOSONAR
+            buttonGroupsElement.parentNode?.removeChild(buttonGroupsElement); // NOSONAR
         }
     }
 
