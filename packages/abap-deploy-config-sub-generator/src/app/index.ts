@@ -72,6 +72,7 @@ export default class extends DeploymentGenerator {
         super(args, opts);
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
         this.launchStandaloneFromYui = opts.launchStandaloneFromYui;
+        this.adpProjectType = opts.adpProjectType;
 
         this.appWizard = opts.appWizard || AppWizard.create(opts);
         this.vscode = opts.vscode;
@@ -97,10 +98,9 @@ export default class extends DeploymentGenerator {
         if ((this.env as unknown as YeomanEnvironment).conflicter) {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
-        if (this.launchDeployConfigAsSubGenerator) {
-            this.adpProjectType = this.options?.adpProjectType;
-        } else {
-            await this._initAsStandaloneGenerator();
+
+        if (!this.launchDeployConfigAsSubGenerator) {
+            await this._initializing();
         }
     }
 
@@ -162,7 +162,7 @@ export default class extends DeploymentGenerator {
         this.adpProjectType = await getExistingAdpProjectType(this.destinationRoot(), ui5YamlPath);
     }
 
-    private async _initAsStandaloneGenerator(): Promise<void> {
+    private async _initializing(): Promise<void> {
         this._initDestinationRoot();
         try {
             this._processProjectConfig();
@@ -296,7 +296,7 @@ export default class extends DeploymentGenerator {
             await this._writing();
         } else {
             // Needed to delay `init` as the yaml configurations won't be ready!
-            await this._initAsStandaloneGenerator();
+            await this._initializing();
             await this._writing();
         }
     }
