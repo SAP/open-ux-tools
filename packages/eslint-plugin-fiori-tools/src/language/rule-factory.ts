@@ -122,10 +122,11 @@ export function createFioriRule<
                 MessageIds: MessageIds;
             }>
         ): RuleVisitor {
-            let cachedDiagnostics = DiagnosticCache.getMessages(ruleId);
+            const uri = context.filename;
+            let cachedDiagnostics = DiagnosticCache.getMessages(uri, ruleId);
             if (!cachedDiagnostics) {
                 cachedDiagnostics = check(context);
-                DiagnosticCache.addMessages(ruleId, cachedDiagnostics);
+                DiagnosticCache.addMessages(uri, ruleId, cachedDiagnostics);
             }
             const sourceCode = context.sourceCode;
             if (sourceCode instanceof JSONSourceCode && createJsonVisitorHandler) {

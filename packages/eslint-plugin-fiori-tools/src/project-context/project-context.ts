@@ -143,13 +143,13 @@ export class ProjectContext {
         const { diagnostics, index } = ProjectContext.parser.reparse(uri, this.index, ProjectContext.fileCacheProxy);
 
         for (const diagnostic of diagnostics) {
-            DiagnosticCache.addMessage(diagnostic.type, diagnostic);
+            DiagnosticCache.addMessage(uri, diagnostic.type, diagnostic);
         }
 
         const [linkedModel, linkerDiagnostics] = linkProject(index);
 
         for (const diagnostic of linkerDiagnostics) {
-            DiagnosticCache.addMessage(diagnostic.type, diagnostic);
+            DiagnosticCache.addMessage(uri, diagnostic.type, diagnostic);
         }
 
         this._linkedModel = linkedModel;
@@ -161,6 +161,9 @@ export class ProjectContext {
      * It should only be used by `findProjectRoot` method.
      */
     private static readonly projectArtifactCache = new Map<string, WorkerResult>();
+    private static readonly instanceCache = new Map<string, ProjectContext>();
+    private static readonly updateCache = new Map<string, number>();
+    private static readonly appRoots = new Set<string>();
 
     /**
      * Finds Fiori artifacts in the project using a worker process.
@@ -184,10 +187,6 @@ export class ProjectContext {
             return { artifacts: {}, projectType: 'EDMXBackend' };
         }
     }
-
-    private static readonly instanceCache = new Map<string, ProjectContext>();
-    private static readonly updateCache = new Map<string, number>();
-    private static readonly appRoots = new Set<string>();
 
     /**
      * If set to true, forces re-indexing on the first update of a file.
@@ -269,26 +268,26 @@ export class ProjectContext {
             }
         }
 
-        if (this.appRoots.size > 0) {
-            // Uri is not a part of known apps
-            // Assume a new app is opened
-            // Clear DiagnosticCache and continue to create new ProjectContext
-            DiagnosticCache.forceReindexOnFirstUpdate = true;
-            DiagnosticCache.clear(uri);
-        }
+        // if (this.appRoots.size > 0) {
+        //     // Uri is not a part of known apps
+        //     // Assume a new app is opened
+        //     // Clear DiagnosticCache and continue to create new ProjectContext
+        //     DiagnosticCache.forceReindexOnFirstUpdate = true;
+        //     DiagnosticCache.clear(uri);
+        // }
 
         const { artifacts, projectType } = this.findFioriArtifacts(uri);
 
         const { diagnostics, index } = this.parser.parse(projectType, artifacts, this.fileCacheProxy);
 
         for (const diagnostic of diagnostics) {
-            DiagnosticCache.addMessage(diagnostic.type, diagnostic);
+            DiagnosticCache.addMessage(uri, diagnostic.type, diagnostic);
         }
 
         const [linkedModel, linkerDiagnostics] = linkProject(index);
 
         for (const diagnostic of linkerDiagnostics) {
-            DiagnosticCache.addMessage(diagnostic.type, diagnostic);
+            DiagnosticCache.addMessage(uri, diagnostic.type, diagnostic);
         }
 
         const context = new ProjectContext(artifacts, index, linkedModel);
