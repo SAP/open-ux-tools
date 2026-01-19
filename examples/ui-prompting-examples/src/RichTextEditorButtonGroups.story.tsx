@@ -16,14 +16,6 @@ export const ExternalValues = (): JSX.Element => {
                 buildingBlockData: {
                     buildingBlockType: 'rich-text-editor-button-groups',
                     id: 'RichTextEditorButtonGroups'
-                    // buttonGroups: [
-                    //     { name: "font-style", value: "font-style", checked: true },
-                    //     { name: "clipboard", value: "clipboard", checked: true },
-                    //     { name: "font", value: "font", checked: true },
-                    //     { name: "undo", value: "undo", checked: true, hidden: true },
-                    //     { name: "insert", value: "insert", checked: true },
-                    //     { name: "structure", value: "structure", checked: true }
-                    // ]
                 }
             }}
         />
