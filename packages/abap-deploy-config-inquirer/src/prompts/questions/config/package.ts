@@ -99,7 +99,9 @@ export function getPackagePrompts(
                         answers,
                         options.packageManual,
                         options.ui5AbapRepo,
-                        options.backendTarget
+                        options.backendTarget,
+                        undefined,
+                        options.adpProjectType
                     );
                 }
                 prevAnswers = answers;
@@ -152,7 +154,9 @@ export function getPackagePrompts(
                         answers,
                         options.packageAutocomplete,
                         options.ui5AbapRepo,
-                        options.backendTarget
+                        options.backendTarget,
+                        undefined,
+                        options.adpProjectType
                     );
                 }
                 prevAnswers = answers;

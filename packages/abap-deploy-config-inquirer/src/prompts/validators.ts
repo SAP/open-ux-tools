@@ -68,18 +68,19 @@ async function validateSystemType(options?: TargetSystemPromptOptions): Promise<
  * @param destinations - list of destinations
  * @param options - target system options
  * @param backendTarget - backend target
+ * @param adpProjectType - The adaptation project type.
  * @returns boolean
  */
 export async function validateDestinationQuestion(
     destination: string,
     destinations?: Destinations,
     options?: TargetSystemPromptOptions,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
     await updateDestinationPromptState(destination, destinations, options, backendTarget);
 
-    const adpProjectType = options?.adpProjectType;
     const needAuth = await showUsernameQuestion(backendTarget);
     // We do the project type validation only if the system does not require authentication, otherwise
     // the system info api call will throw unathorized when called for the target system.
@@ -290,13 +291,15 @@ export function validateClient(client: string): boolean | string {
  * @param previousAnswers - previous answers
  * @param backendTarget - backend target from abap deploy config prompt options
  * @param targetSystemOptions - The target system options.
+ * @param adpProjectType - The adaptation project type.
  * @returns boolean or error message as a string
  */
 export async function validateCredentials(
     input: string,
     previousAnswers: AbapDeployConfigAnswersInternal,
     backendTarget?: BackendTarget,
-    targetSystemOptions?: TargetSystemPromptOptions
+    targetSystemOptions?: TargetSystemPromptOptions,
+    adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
     if (!input || !previousAnswers.username) {
         return t('errors.requireCredentials');
@@ -322,7 +325,6 @@ export async function validateCredentials(
 
     PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
 
-    const adpProjectType = targetSystemOptions?.adpProjectType;
     const adpProjectTypeValidation = adpProjectType
         ? await validateAdpProjectType(adpProjectType, backendTarget)
         : undefined;
@@ -699,6 +701,7 @@ async function validatePackageType(
  * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional for ui5AbapRepo.
  * @param {BackendTarget} [backendTarget] - The backend target for validation context.
  * @param {boolean} [useStandalone] - indicates if the package prompts are being ran in standalone.
+ * @param {AdaptationProjectType | undefined} adpProjectType - The adaptation project type.
  * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
  *                                        a `string` with an error message if validation fails,
  *                                        or the result of additional cloud package validation if applicable.
@@ -709,7 +712,8 @@ export async function validatePackage(
     promptOption?: PackagePromptOptions,
     ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
     backendTarget?: BackendTarget,
-    useStandalone?: boolean
+    useStandalone?: boolean,
+    adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
     PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
     if (!input?.trim()) {
@@ -748,13 +752,19 @@ export async function validatePackage(
         }
     }
 
-    const startingPrefixValidation = validatePackageStartingPrefix(input, answers, promptOption, ui5AbapPromptOptions);
+    const startingPrefixValidation = validatePackageStartingPrefix(
+        input,
+        answers,
+        promptOption,
+        ui5AbapPromptOptions,
+        adpProjectType
+    );
     if (typeof startingPrefixValidation === 'string') {
         return startingPrefixValidation;
     }
 
     if (promptOption?.additionalValidation?.shouldValidatePackageType) {
-        return await validatePackageType(input, backendTarget, ui5AbapPromptOptions?.adpProjectType);
+        return await validatePackageType(input, backendTarget, adpProjectType);
     }
 
     return true;
@@ -770,15 +780,17 @@ export async function validatePackage(
  * @param {AbapDeployConfigAnswersInternal} answers - User-provided answers including the UI5 ABAP repository name.
  * @param {PackagePromptOptions} [promptOption] - Optional prompt configuration for package validation.
  * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional UI5-specific ABAP prompt configuration.
+ * @param {AdaptationProjectType|undefined} adpProjectType - The adaptation project type.
  * @returns {string | boolean} - Returns `true` if the package is valid, otherwise returns an error message.
  */
 function validatePackageStartingPrefix(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
-    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
+    adpProjectType?: AdaptationProjectType
 ): string | boolean {
-    if (shouldValidatePackageForStartingPrefix(answers, promptOption, ui5AbapPromptOptions)) {
+    if (shouldValidatePackageForStartingPrefix(answers, promptOption, ui5AbapPromptOptions, adpProjectType)) {
         const startingPrefix = getPackageStartingPrefix(input);
 
         //validate package starting prefix
@@ -830,12 +842,14 @@ function validatePackageFormatAndSpecialCharacters(
  * @param {AbapDeployConfigAnswersInternal} answers - The user's deployment configuration answers.
  * @param {PackagePromptOptions} [promptOption] - Optional package prompt options.
  * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional UI5 ABAP repository prompt options.
+ * @param {AdaptationProjectType | undefined} adpProjectType - The adaptation project type.
  * @returns {boolean} - Returns `true` if the package should be validated for a starting prefix, otherwise `false`.
  */
 function shouldValidatePackageForStartingPrefix(
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
-    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
+    adpProjectType?: AdaptationProjectType
 ): boolean {
     const shouldValidatePackageForStartingPrefix = !!(
         answers.ui5AbapRepo &&
@@ -843,7 +857,7 @@ function shouldValidatePackageForStartingPrefix(
         !ui5AbapPromptOptions?.hide &&
         !(
             ui5AbapPromptOptions?.hideIfOnPremise === true &&
-            ui5AbapPromptOptions?.adpProjectType === AdaptationProjectType.ON_PREMISE &&
+            adpProjectType === AdaptationProjectType.ON_PREMISE &&
             PromptState.abapDeployConfig?.scp === false
         )
     );
