@@ -6,7 +6,8 @@ import {
     getPageBuildingBlockPrompts,
     getFilterBarBuildingBlockPrompts,
     getBuildingBlockTypePrompts,
-    getRichTextEditorBuildingBlockPrompts
+    getRichTextEditorBuildingBlockPrompts,
+    getFormBuildingBlockPrompts
 } from '../building-block/prompts/questions';
 import type {
     ChartPromptsAnswer,
@@ -14,7 +15,8 @@ import type {
     PagePromptsAnswer,
     FilterBarPromptsAnswer,
     BuildingBlockTypePromptsAnswer,
-    RichTextEditorPromptsAnswer
+    RichTextEditorPromptsAnswer,
+    FormPromptsAnswer
 } from '../building-block/prompts/questions';
 import { generateBuildingBlock, getSerializedFileContent } from '../building-block';
 
@@ -25,6 +27,7 @@ type AnswerMapping = {
     [PromptsType.FilterBar]: FilterBarPromptsAnswer;
     [PromptsType.RichTextEditor]: RichTextEditorPromptsAnswer;
     [PromptsType.BuildingBlocks]: BuildingBlockTypePromptsAnswer;
+    [PromptsType.Form]: FormPromptsAnswer;
 };
 
 type BasePrompt<T extends keyof AnswerMapping> = {
@@ -39,7 +42,8 @@ export type SupportedPrompts =
     | BasePrompt<PromptsType.FilterBar>
     | BasePrompt<PromptsType.Page>
     | BasePrompt<PromptsType.BuildingBlocks>
-    | BasePrompt<PromptsType.RichTextEditor>;
+    | BasePrompt<PromptsType.RichTextEditor>
+    | BasePrompt<PromptsType.Form>;
 
 export type SupportedGeneratorPrompts =
     | BasePrompt<PromptsType.Chart>
@@ -60,6 +64,7 @@ export const PromptsQuestionsMap: SupportedPromptsMap = {
     [PromptsType.Chart]: getChartBuildingBlockPrompts,
     [PromptsType.Table]: getTableBuildingBlockPrompts,
     [PromptsType.FilterBar]: getFilterBarBuildingBlockPrompts,
+    [PromptsType.Form]: getFormBuildingBlockPrompts,
     [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts,
     [PromptsType.Page]: getPageBuildingBlockPrompts,
     [PromptsType.RichTextEditor]: getRichTextEditorBuildingBlockPrompts
