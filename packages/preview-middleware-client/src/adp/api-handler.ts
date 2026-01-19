@@ -84,7 +84,7 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
     };
 
     try {
-        const baseUrl = document.getElementById('root').dataset.openUxPreviewBaseUrl ?? '';
+        const baseUrl = document.getElementById('root')?.dataset.openUxPreviewBaseUrl ?? '';
         const response: Response = await fetch(`${baseUrl}${endpoint}`, config);
 
         if (!response.ok) {

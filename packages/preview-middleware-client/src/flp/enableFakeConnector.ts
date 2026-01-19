@@ -24,7 +24,7 @@ interface LoadChangesResult {
     messagebundle: string | undefined;
 }
 
-const baseUrl = document.getElementById('root').dataset.openUxPreviewBaseUrl ?? '';
+const baseUrl = document.getElementById('root')?.dataset.openUxPreviewBaseUrl ?? '';
 const CHANGES_API_PATH = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
 
 /**
