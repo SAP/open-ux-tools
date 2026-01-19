@@ -1,6 +1,6 @@
 import React from 'react';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer, useOptions, useDisplayText, useCheckedKeys } from '../../../utilities';
+import { useValue, getLabelRenderer, useOptions, useMultiSelectKeys } from '../../../utilities';
 import type { AnswerValue, CheckboxPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface MultiSelectProps extends CheckboxPromptQuestion {
@@ -28,9 +28,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
     const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value?.toString() ?? '');
     const options = useOptions(props, dynamicChoices);
-
-    const text = useDisplayText(options, value);
-    const checkedOptions = useCheckedKeys(options);
+    const { checkedOptions, selectedKeys } = useMultiSelectKeys(options, value ?? '');
 
     const handleSubmitValue = (value: string): string => {
         const currentSelectedOptions =
@@ -42,16 +40,6 @@ export const MultiSelect = (props: MultiSelectProps) => {
         return Array.from(allSelectedOptions).join(',');
     };
 
-    // // Filter selectedKey to exclude checked options (to match what text displays)
-    // const selectedKeys = useMemo(() => {
-    //     if (!value) return [];
-    //     const checkedSet = new Set(checkedOptions);
-    //     return value
-    //         .split(',')
-    //         .map(v => v.trim())
-    //         .filter(v => v && !checkedSet.has(v));
-    // }, [value, checkedOptions]);
-
     return (
         <UIComboBox
             label={typeof message === 'string' ? message : name}
@@ -62,11 +50,9 @@ export const MultiSelect = (props: MultiSelectProps) => {
             autoComplete="on"
             required={mandatory}
             isLoading={pending ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined}
-            selectedKey={value?.split(',').map((v) => v.trim())}
-            // selectedKey={selectedKeys}
+            selectedKey={selectedKeys}
             multiSelect
             disabled={false}
-            text={text}
             calloutCollisionTransformation={calloutCollisionTransformation}
             onChange={(_, changedOption) => {
                 let updatedValue: string | undefined = '';
@@ -79,7 +65,6 @@ export const MultiSelect = (props: MultiSelectProps) => {
                 }
                 setValue(updatedValue);
                 onChange(name, handleSubmitValue(updatedValue));
-                // onChange(name, updatedValue);
             }}
             onRenderLabel={getLabelRenderer(hint)}
             errorMessage={errorMessage}

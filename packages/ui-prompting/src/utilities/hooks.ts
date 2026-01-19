@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components';
 import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
@@ -69,66 +69,37 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
 }
 
 /**
- * Hook to extract and track checked option keys
+ * Custom hook to manage checked and selected keys for multi-select.
+ * Separates pre-checked options from user-selected options.
  *
- * @param options - Array of selectable options
- * @returns Array of keys for options where checked is true
+ * @param options - Array of selectable options that may contain pre-checked items
+ * @param value - Comma-separated string of selected option keys
  */
-export function useCheckedKeys(options: UISelectableOption<ChoiceOptions>[]): string[] {
-    const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
+export function useMultiSelectKeys(
+    options: UISelectableOption<ChoiceOptions>[],
+    value: string
+): { checkedOptions: string[]; selectedKeys: string[] } {
+    const [checkedOptions, setCheckedOptions] = useState<string[]>([]);
 
     useEffect(() => {
         const checked = options
             .filter((opt) => (opt.data as any)?.checked === true)
             .map((opt) => opt.data?.value ?? opt.key.toString());
-        setCheckedKeys(checked);
+        setCheckedOptions(checked);
     }, [options]);
 
-    return checkedKeys;
-}
-
-/**
- * Hook to calculate display text for multi-select
- * Filters out hidden and checked options from display
- *
- * @param options - Array of selectable options
- * @param value - Comma-separated string of selected values
- * @returns Display text with option names joined by ", "
- */
-export function useDisplayText(options: UISelectableOption<ChoiceOptions>[], value?: string): string {
-    const [text, setText] = useState<string>('');
-
-    useEffect(() => {
+    const selectedKeys = useMemo(() => {
         if (!value) {
-            setText('');
-            return;
+            return [];
         }
-
-        const values = value
+        const checkedSet = new Set(checkedOptions);
+        return value
             .split(',')
             .map((v) => v.trim())
-            .filter(Boolean);
-        if (!values.length || !options.length) {
-            setText('');
-            return;
-        }
+            .filter((v) => v && !checkedSet.has(v));
+    }, [value, checkedOptions]);
 
-        const valueMap = new Map(options.map((opt) => [opt.data?.value ?? opt.key.toString(), opt]));
-
-        const names = values
-            .map((val) => {
-                const opt = valueMap.get(val);
-                if (!opt || (opt.data as any)?.hidden || (opt.data as any)?.checked) {
-                    return '';
-                }
-                return opt.text ?? val;
-            })
-            .filter(Boolean);
-
-        setText(names.length ? names.join(', ') : '');
-    }, [options, value]);
-
-    return text;
+    return { checkedOptions, selectedKeys };
 }
 
 /**

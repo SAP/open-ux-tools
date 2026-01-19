@@ -150,20 +150,6 @@ export function resolveBindingContextTypeChoices(context: PromptContext) {
 }
 
 /**
- * Gets selectable button group choices for the RichTextEditor building block.
- *
- * @returns An array of choice objects.
- */
-function getSelectableButtonGroupChoices() {
-    const t = translate(i18nNamespaces.buildingBlock, 'prompts.richTextEditorButtonGroups.');
-
-    return BUTTON_GROUP_CONFIGS.map((config) => ({
-        name: t(`choices.${config.name}`) as string,
-        value: config.name
-    }));
-}
-
-/**
  * Get button groups choices based on existing XML content.
  * If no existing button groups, only defaults are checked.
  *
@@ -186,11 +172,12 @@ export async function getButtonGroupsChoices(context: PromptContext, answers: An
 
     // If no existing button groups, use defaults
     const isInitial = !existingButtonGroups || existingButtonGroups.size === 0;
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.richTextEditorButtonGroups.');
 
-    const choices = getSelectableButtonGroupChoices().map((choice) => ({
-        ...choice,
-        hidden: !isInitial && existingButtonGroups.has(choice.value),
-        checked: existingButtonGroups.has(choice.value)
+    return BUTTON_GROUP_CONFIGS.map((config) => ({
+        name: t(`choices.${config.name}`) as string,
+        value: config.name,
+        hidden: !isInitial && existingButtonGroups.has(config.name),
+        checked: existingButtonGroups.has(config.name)
     }));
-    return choices;
 }

@@ -153,13 +153,11 @@ export async function getExistingButtonGroups(
 
         // Query the RichTextEditor element using the aggregation path
         const rteElements = xpathSelect(aggregationPath, xmlDocument) as Element[];
-
         if (rteElements.length === 0) {
             return existingButtonGroups;
         }
 
         const rteElement = rteElements[0];
-
         // Find the buttonGroups child element inside the RTE
         const buttonGroupsElement = Array.from(rteElement.childNodes).find(
             (child) => child.nodeType === 1 && (child as Element).localName === 'buttonGroups'
