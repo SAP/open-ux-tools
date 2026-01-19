@@ -1,6 +1,6 @@
 # Require `widthIncludingColumnHeader` for Small Tables (`sap-width-including-column-header`)
 
-Ensures that small tables (less than dix columns) include the `widthIncludingColumnHeader` property set to `true` for improved calculation of the column width.
+Ensures that small tables (less than six columns) include the `widthIncludingColumnHeader` property set to `true` for improved calculation of the column width.
 
 ## Rule Details
 
