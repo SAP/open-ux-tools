@@ -127,7 +127,7 @@ export function getAbapOnPremSystemQuestions(
                 return valRes;
             }
         } as InputQuestion<AbapOnPremAnswers>,
-        ...getCredentialsPrompts<AbapOnPremAnswers>(connectValidator, abapOnPremPromptNamespace, sapClientRef)
+        ...getCredentialsPrompts<AbapOnPremAnswers>(connectValidator, abapOnPremPromptNamespace, sapClientRef, requiredOdataVersion)
     ];
 
     if (systemNamePromptOptions?.hide !== true) {

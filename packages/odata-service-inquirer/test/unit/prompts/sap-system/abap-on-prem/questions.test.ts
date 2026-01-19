@@ -1,14 +1,18 @@
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
+import type { InputQuestion } from '@sap-ux/inquirer-common';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { BackendSystem } from '@sap-ux/store';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
+import { BasicCredentialsPromptNames } from '../../../../../src/prompts/datasources/sap-system/credentials/questions';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
+import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import { promptNames } from '../../../../../src/types';
-import { PromptState } from '../../../../../src/utils';
 import * as utils from '../../../../../src/utils';
-import type { InputQuestion } from '@sap-ux/inquirer-common';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import { PromptState } from '../../../../../src/utils';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue({ valResult: true });
@@ -186,6 +190,33 @@ describe('questions', () => {
             reachable: true
         };
         expect(await (systemUrlQuestion?.validate as Function)(systemUrl)).toBe('Authentication needed');
+    });
+
+    test('Should connect to abap-on-prem system with `requiredOdataVersion` if provided', async () => {
+        const newSystemQuestions = getAbapOnPremQuestions({
+            serviceSelection: { requiredOdataVersion: OdataVersion.v4 }
+        });
+
+        const passwordPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${BasicCredentialsPromptNames.systemPassword}`
+        );
+
+        connectionValidatorMock.validatedUrl = 'http://some.validate.url';
+        connectionValidatorMock.validateAuth = jest.fn().mockResolvedValue({ valResult: false });
+        const answers = {
+            'abapOnPrem:systemUsername': 'username1',
+            [promptNames.systemSelection]: {
+                type: 'backendSystem',
+                system: {} as BackendSystem
+            } as SystemSelectionAnswerType
+        };
+        expect(await (passwordPrompt?.validate as Function)('password1', answers)).toBe(false);
+        expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(
+            'http://some.validate.url',
+            'username1',
+            'password1',
+            { 'isSystem': true, 'odataVersion': '4', 'sapClient': undefined }
+        );
     });
 
     test('should prompt for new system name and create Backend System for storage (VSCode)', async () => {
