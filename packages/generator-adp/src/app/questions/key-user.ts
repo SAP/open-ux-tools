@@ -258,11 +258,25 @@ export class KeyUserImportPrompter {
     }
 
     /**
+     * Resets the state by clearing adaptations, flex versions, and key-user changes.
+     */
+    private resetState(): void {
+        this.flexVersions = [];
+        this.adaptations = [];
+        this.keyUserChanges = [];
+    }
+
+    /**
      * Loads flex versions and adaptations, then validates key-user changes if only DEFAULT adaptation exists.
      *
      * @returns The result of key-user validation if only DEFAULT exists, or true.
      */
     private async loadDataAndValidateKeyUserChanges(): Promise<string | boolean> {
+        /**
+         * Ensure provider is authenticated for CloudReady systems before making API calls
+         */
+        await this.provider.isAbapCloud();
+
         await this.loadFlexVersions();
         await this.loadAdaptations();
 
@@ -286,7 +300,7 @@ export class KeyUserImportPrompter {
         }
 
         try {
-            this.keyUserChanges = [];
+            this.resetState();
             if (system === this.defaultSystem && this.defaultProvider) {
                 this.provider = this.defaultProvider;
                 this.isAuthRequired = false;
@@ -325,7 +339,7 @@ export class KeyUserImportPrompter {
         }
 
         try {
-            this.keyUserChanges = [];
+            this.resetState();
             const options = {
                 system: answers.keyUserSystem,
                 client: undefined,
@@ -347,7 +361,7 @@ export class KeyUserImportPrompter {
      */
     private async validateKeyUserChanges(adaptationId: string | undefined): Promise<string | boolean> {
         try {
-            if (!adaptationId) {
+            if (!this.provider || !adaptationId) {
                 return false;
             }
 

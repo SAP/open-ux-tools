@@ -56,7 +56,8 @@ const mockLayeredRepository = {
 };
 
 const defaultProvider: AbapServiceProvider = {
-    getLayeredRepository: jest.fn().mockReturnValue(mockLayeredRepository)
+    getLayeredRepository: jest.fn().mockReturnValue(mockLayeredRepository),
+    isAbapCloud: jest.fn().mockResolvedValue(true)
 } as unknown as AbapServiceProvider;
 
 const systemLookup: SystemLookup = {
