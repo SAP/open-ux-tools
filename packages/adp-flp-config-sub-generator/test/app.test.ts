@@ -1043,6 +1043,71 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(callbackResult).toEqual('Network Error');
     });
 
+    it('Should show projectNotCloudReady error after authentication when base app inbounds request fails with 404', async () => {
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue(destinationList);
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        jest.spyOn(adpTooling, 'getBaseAppInbounds')
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                response: {
+                    status: 401
+                }
+            })
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                status: 404,
+                response: {
+                    status: 404
+                },
+                request: {
+                    path: '/test/path'
+                }
+            });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+        let callbackResult: string | boolean = '';
+        jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
+            async (
+                callback?: inquirerCommon.AdditionalValidation
+            ): Promise<inquirerCommon.YUIQuestion<inquirerCommon.CredentialsAnswers>[]> => {
+                callbackResult = (await callback?.({ username: 'testUsername', password: 'testPassword' })) as string;
+                return Promise.resolve([
+                    {
+                        username: 'testUsername'
+                    } as unknown as inquirerCommon.InputQuestion,
+                    {
+                        password: 'testPassword'
+                    } as unknown as inquirerCommon.PasswordQuestion
+                ]);
+            }
+        );
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await initI18n();
+        await runContext.run();
+        expect(callbackResult).toEqual(t('error.projectNotCloudReady'));
+    });
+
     it('Should pass authentication successfully', async () => {
         jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue(destinationList);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({

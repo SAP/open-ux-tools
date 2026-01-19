@@ -246,12 +246,7 @@ export default class AdpFlpConfigGenerator extends Generator {
                 `Base application inbounds fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
             );
 
-            let errorHelp: ValidationLink | string | undefined;
-            if (error.status === 404) {
-                errorHelp = t('error.projectNotCloudReady');
-            } else {
-                errorHelp = this._getErrorHandlerMessage(error);
-            }
+            const errorHelp = this._getErrorHandlerMessage(error);
 
             if (errorHelp) {
                 this._abortExecution(
@@ -380,7 +375,10 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @param {Error | AxiosError} error - The error to handle.
      * @returns {ValidationLink | string | undefined} The validation link or error message.
      */
-    private _getErrorHandlerMessage(error: Error | AxiosError): ValidationLink | string | undefined {
+    private _getErrorHandlerMessage(error: AxiosError): ValidationLink | string | undefined {
+        if (error.status === 404) {
+            return t('error.projectNotCloudReady');
+        }
         const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/adp-flp-config');
         return errorHandler.getValidationErrorHelp(error);
     }
