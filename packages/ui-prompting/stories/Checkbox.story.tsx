@@ -27,30 +27,13 @@ const hiddenChoices = [
     },
     {
         name: 'test2',
-        value: 'test2',
-        selected: true
+        value: 'test2'
     },
     {
         name: 'test3',
         value: 'test3',
-        selected: true,
         hidden: true
-    },
-    {
-        name: 'test4',
-        value: 'test4',
-        selected: true,
-        hidden: true
-    },
-    {
-        name: 'test5',
-        value: 'test5',
-        hidden: true
-    },
-    {
-        name: 'test6',
-        value: 'test6'
-    },
+    }
 ];
 
 const questions: PromptQuestion[] = [
@@ -68,8 +51,8 @@ const questions: PromptQuestion[] = [
         choices
     },
     {
-        message: 'With hidden value',
-        name: 'hidden value',
+        message: 'With hidden choices',
+        name: 'hidden choices',
         type: 'checkbox',
         choices: hiddenChoices
     },
