@@ -8,10 +8,6 @@ interface RequestedChoices {
     [key: string]: boolean;
 }
 
-interface CheckableChoiceOptions extends ChoiceOptions {
-    checked?: boolean;
-}
-
 /**
  * Hook for value update for input components.
  *
@@ -80,7 +76,7 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
  * @param value - Comma-separated string of selected option keys
  */
 export function useMultiSelectKeys(
-    options: UISelectableOption<CheckableChoiceOptions>[],
+    options: UISelectableOption<ChoiceOptions & { checked?: boolean }>[],
     value: string
 ): { checkedOptions: string[]; selectedKeys: string[] } {
     return useMemo(() => {
