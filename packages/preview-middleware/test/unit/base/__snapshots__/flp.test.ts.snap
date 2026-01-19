@@ -13,10 +13,7 @@ exports[`FlpSandbox cds-plugin-ui5 cpe 1`] = `
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id=\\"root\\"></div>
-        <script>
-            window['data-open-ux-preview-base-url'] = '/ui5.patched.router.base';
-        </script>
+        <div id=\\"root\\" data-open-ux-preview-base-url=\\"/ui5.patched.router.base\\"></div>
         <script type=\\"module\\">
             import { start } from './editor/app.js';
             start({
@@ -78,10 +75,6 @@ exports[`FlpSandbox cds-plugin-ui5 rta 1`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '/ui5.patched.router.base';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -99,7 +92,8 @@ exports[`FlpSandbox cds-plugin-ui5 rta 1`] = `
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'
+        data-open-ux-preview-base-url='/ui5.patched.router.base'>
     </script>
 
 
@@ -156,10 +150,6 @@ exports[`FlpSandbox cds-plugin-ui5 test/flp.html 1`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '/ui5.patched.router.base';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -175,7 +165,8 @@ exports[`FlpSandbox cds-plugin-ui5 test/flp.html 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url='/ui5.patched.router.base'>
     </script>
 
 
@@ -705,10 +696,6 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -724,7 +711,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -870,10 +858,6 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -889,7 +873,8 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -929,10 +914,6 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
          for productive scenarios.
     -->
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -948,6 +929,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -1098,10 +1080,6 @@ exports[`FlpSandbox router enhanced homepage disabled editor with config 1`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1117,7 +1095,8 @@ exports[`FlpSandbox router enhanced homepage disabled editor with config 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1173,10 +1152,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html 1`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1192,7 +1167,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1248,10 +1224,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 1.76.0 f
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1267,7 +1239,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 1.76.0 f
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1323,10 +1296,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] 
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1340,7 +1309,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] 
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1396,10 +1366,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-f
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1413,7 +1379,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-f
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1469,10 +1436,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 snapshot
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1488,7 +1451,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 snapshot
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1546,10 +1510,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html sap-ui-xx-vi
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1565,7 +1525,8 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html sap-ui-xx-vi
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1605,10 +1566,6 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
          for productive scenarios.
     -->
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1624,6 +1581,7 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -1666,10 +1624,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
          for productive scenarios.
     -->
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1685,6 +1639,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -1741,10 +1696,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 1.76.0 fr
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1760,7 +1711,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 1.76.0 fr
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1816,10 +1768,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] =
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1833,7 +1781,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] =
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1889,10 +1838,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-fr
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1906,7 +1851,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-fr
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -1946,10 +1892,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
          for productive scenarios.
     -->
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1965,6 +1907,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -2007,10 +1950,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
          for productive scenarios.
     -->
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -2026,6 +1965,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -2082,10 +2022,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html should fallba
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -2101,7 +2037,8 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html should fallba
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -2217,10 +2154,6 @@ exports[`FlpSandbox router rta with adp instance - preview 2`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -2236,7 +2169,8 @@ exports[`FlpSandbox router rta with adp instance - preview 2`] = `
         data-sap-ui-resourceroots='{\\"myResources1\\":\\"myResourcesUrl1\\",\\"myResources2\\":\\"myResourcesUrl2\\",\\"open.ux.preview.client\\":\\"../preview/client\\",\\"my.id\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -2350,10 +2284,6 @@ exports[`FlpSandbox router rta with adp instance 2`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -2374,7 +2304,8 @@ exports[`FlpSandbox router rta with adp instance 2`] = `
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"myComponent\\",\\"appName\\":\\"my.id\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"myComponent\\",\\"appName\\":\\"my.id\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -2414,10 +2345,7 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id=\\"root\\"></div>
-        <script>
-            window['data-open-ux-preview-base-url'] = '';
-        </script>
+        <div id=\\"root\\" data-open-ux-preview-base-url=\\"\\"></div>
         <script type=\\"module\\">
             import { start } from './editor/app.js';
             start({
@@ -2451,10 +2379,7 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 1`] = `
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id=\\"root\\"></div>
-        <script>
-            window['data-open-ux-preview-base-url'] = '';
-        </script>
+        <div id=\\"root\\" data-open-ux-preview-base-url=\\"\\"></div>
         <script type=\\"module\\">
             import { start } from './editor/app.js';
             start({
@@ -2516,10 +2441,6 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -2538,7 +2459,8 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
         data-sap-ui-xx-view-cache=\\"false\\"
         data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -2608,10 +2530,6 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -2632,7 +2550,8 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -2704,10 +2623,6 @@ exports[`FlpSandbox router rta with url parameters 1`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -2725,7 +2640,8 @@ exports[`FlpSandbox router rta with url parameters 1`] = `
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -2840,10 +2756,6 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] =
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -2864,7 +2776,8 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] =
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"myComponent\\",\\"appName\\":\\"my.id\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"myComponent\\",\\"appName\\":\\"my.id\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -2962,10 +2875,6 @@ exports[`FlpSandbox rta with new config rta w/o layer 1`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -2983,7 +2892,8 @@ exports[`FlpSandbox rta with new config rta w/o layer 1`] = `
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -3010,10 +2920,7 @@ exports[`FlpSandbox rta with new config rta with developerMode=true 1`] = `
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id=\\"root\\"></div>
-        <script>
-            window['data-open-ux-preview-base-url'] = '';
-        </script>
+        <div id=\\"root\\" data-open-ux-preview-base-url=\\"\\"></div>
         <script type=\\"module\\">
             import { start } from './editor/app.js';
             start({
@@ -3077,10 +2984,6 @@ exports[`FlpSandbox rta with new config rta with url parameters 1`] = `
         };
     </script>
 
-    <script>
-        window['data-open-ux-preview-base-url'] = '';
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -3098,7 +3001,8 @@ exports[`FlpSandbox rta with new config rta with url parameters 1`] = `
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'
+        data-open-ux-preview-base-url=''>
     </script>
 
 

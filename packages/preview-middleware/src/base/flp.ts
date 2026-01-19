@@ -490,6 +490,7 @@ export class FlpSandbox {
             this.logger.info(`HTML file returned at ${filePath} is loaded from the file system.`);
             next();
         } else {
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             this.templateConfig.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
             const ui5Version = await this.getUi5Version(
                 //use protocol from request header referer as fallback for connect API (karma test runner)
@@ -500,7 +501,7 @@ export class FlpSandbox {
                 this.templateConfig.baseUrl
             );
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
-            //for consistency reasons, we also add the baseUrl to the html here, although it is only used in editor mode
+            //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
             const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
@@ -1099,7 +1100,7 @@ export class FlpSandbox {
                 fallbackLocale = fallback;
             }
 
-            const requestedLocale = (req.query.locale as string) || fallbackLocale || '';
+            const requestedLocale = (req.query.locale as string) ?? fallbackLocale ?? '';
             const baseFilePath = join(webappPath, i18nPath);
             const filePath = requestedLocale
                 ? baseFilePath.replace('.properties', `_${requestedLocale}.properties`)

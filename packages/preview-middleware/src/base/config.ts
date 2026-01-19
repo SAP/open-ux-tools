@@ -509,9 +509,7 @@ export async function generatePreviewFiles(
     sanitizeConfig(config, logger);
 
     // create file system if not provided
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
 
     // generate FLP configuration
     const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8');
