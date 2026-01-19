@@ -222,7 +222,17 @@ const decodeUrlParams: CustomParamsSerializer = (params: URLSearchParams) => dec
  * @returns the transformed data
  */
 function transformResponse<T = unknown>(data: unknown): T {
-    return typeof data === 'string' ? JSON.parse(data) : (data as T);
+    if (typeof data === 'string') {
+        try {
+            return JSON.parse(data) as T;
+        } catch {
+            /**
+             * If parsing fails, return the original data to preserve error information for non-JSON error responses.
+             */
+            return data as T;
+        }
+    }
+    return data as T;
 }
 
 /**
