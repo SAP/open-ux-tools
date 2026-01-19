@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.10
+
+### Patch Changes
+
+- f4cf1d2: Update readme to contain description of latest features
+
 ## 0.6.9
 
 ### Patch Changes
