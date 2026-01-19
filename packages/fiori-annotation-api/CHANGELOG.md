@@ -1,5 +1,60 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.3
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/cds-odata-annotation-converter@0.7.1
+
+## 0.9.2
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/cds-odata-annotation-converter@0.7.1
+
+## 0.9.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+- Updated dependencies [4d6695f]
+    - @sap-ux/cds-odata-annotation-converter@0.7.1
+
+## 0.9.0
+
+### Minor Changes
+
+- b132944: feat: provide synchronous API for reading annotations
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/cds-odata-annotation-converter@0.7.0
+    - @sap-ux/project-access@1.34.0
+
+## 0.8.6
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/cds-odata-annotation-converter@0.6.19
+
+## 0.8.5
+
+### Patch Changes
+
+- Updated dependencies [d667a5e]
+    - @sap-ux/odata-entity-model@0.3.4
+    - @sap-ux/xml-odata-annotation-converter@0.4.6
+    - @sap-ux/cds-annotation-parser@0.2.26
+    - @sap-ux/odata-annotation-core@0.2.12
+    - @sap-ux/cds-odata-annotation-converter@0.6.19
+
 ## 0.8.4
 
 ### Patch Changes

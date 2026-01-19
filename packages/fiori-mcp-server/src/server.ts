@@ -2,7 +2,12 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import {
+    CallToolRequestSchema,
+    InitializeRequestSchema,
+    ListToolsRequestSchema,
+    type CallToolResult
+} from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json';
 import {
     docSearch,
@@ -35,6 +40,8 @@ type ToolArgs =
  */
 export class FioriFunctionalityServer {
     private readonly server: Server;
+    private mcpClientName = 'unknown-client';
+    private mcpClientVersion = 'unknown-version';
 
     /**
      * Initializes a new instance of the FioriFunctionalityServer.
@@ -81,6 +88,23 @@ export class FioriFunctionalityServer {
      * Configures handlers for listing tools, and calling specific Fiori functionality tools.
      */
     private setupToolHandlers(): void {
+        this.server.setRequestHandler(InitializeRequestSchema, async (request) => {
+            this.mcpClientName = request.params.clientInfo?.name || 'unknown-client';
+            this.mcpClientVersion = request.params.clientInfo?.version || 'unknown-version';
+            logger.info(`MCP Client connected: ${this.mcpClientName} v${this.mcpClientVersion}`);
+
+            return {
+                protocolVersion: '2024-11-05', // MCP protocol version
+                capabilities: {
+                    tools: {}
+                },
+                serverInfo: {
+                    name: 'fiori-mcp',
+                    version: packageJson.version
+                }
+            };
+        });
+
         this.server.setRequestHandler(ListToolsRequestSchema, async () => {
             return {
                 tools
@@ -93,10 +117,15 @@ export class FioriFunctionalityServer {
             try {
                 let result;
                 TelemetryHelper.markToolStartTime();
-                const telemetryProperties: TelemetryData = { tool: name };
+                const telemetryProperties: TelemetryData = {
+                    tool: name,
+                    mcpClientName: this.mcpClientName,
+                    mcpClientVersion: this.mcpClientVersion
+                };
                 if ('functionalityId' in args) {
                     telemetryProperties.functionalityId = args.functionalityId as string;
                 }
+
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
 
                 switch (name) {
@@ -116,7 +145,8 @@ export class FioriFunctionalityServer {
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
                     default:
-                        await TelemetryHelper.sendTelemetry(unknownTool, telemetryProperties, (args as any)?.appPath);
+                        // Do not pass telemetryProperties to unknownTool
+                        await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
                         throw new Error(
                             `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
                         );

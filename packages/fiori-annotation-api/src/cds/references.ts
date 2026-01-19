@@ -304,6 +304,7 @@ function addAvailableNamespaces(
 }
 
 /**
+ * Checks if a reference to an imported object is available in the given references.
  *
  * @param projectRoot - Absolute path to the projects root.
  * @param references - Reference objects.
