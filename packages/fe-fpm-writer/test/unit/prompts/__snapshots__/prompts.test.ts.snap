@@ -1837,6 +1837,7 @@ Object {
       "guiOptions": Object {
         "dependantPromptNames": Array [
           "aggregationPath",
+          "buildingBlockData.buttonGroups",
         ],
         "mandatory": true,
         "placeholder": "Select a view or fragment file",

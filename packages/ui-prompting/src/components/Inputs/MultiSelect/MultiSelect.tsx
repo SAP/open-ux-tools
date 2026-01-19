@@ -10,10 +10,21 @@ export interface MultiSelectProps extends CheckboxPromptQuestion {
     dynamicChoices?: PromptListChoices;
     pending?: boolean;
     errorMessage?: string;
+    calloutCollisionTransformation?: boolean;
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id } = props;
+    const {
+        name,
+        message,
+        onChange,
+        guiOptions = {},
+        pending,
+        errorMessage,
+        dynamicChoices,
+        id,
+        calloutCollisionTransformation
+    } = props;
     const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value?.toString() ?? '');
     const options = useOptions(props, dynamicChoices);
@@ -56,7 +67,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
             multiSelect
             disabled={false}
             text={text}
-            calloutCollisionTransformation={true}
+            calloutCollisionTransformation={calloutCollisionTransformation}
             onChange={(_, changedOption) => {
                 let updatedValue: string | undefined = '';
                 if (changedOption?.selected) {
