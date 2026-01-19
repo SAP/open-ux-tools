@@ -8,6 +8,10 @@ interface RequestedChoices {
     [key: string]: boolean;
 }
 
+interface CheckableChoiceOptions extends ChoiceOptions {
+    checked?: boolean;
+}
+
 /**
  * Hook for value update for input components.
  *
@@ -76,13 +80,13 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
  * @param value - Comma-separated string of selected option keys
  */
 export function useMultiSelectKeys(
-    options: UISelectableOption<ChoiceOptions>[],
+    options: UISelectableOption<CheckableChoiceOptions>[],
     value: string
 ): { checkedOptions: string[]; selectedKeys: string[] } {
     return useMemo(() => {
         // Extract pre-checked options from data
         const checkedOptions = options
-            .filter((opt) => (opt.data as any)?.checked === true)
+            .filter((opt) => opt.data?.checked === true)
             .map((opt) => opt.data?.value ?? opt.key.toString());
 
         // If no value, return empty selectedKeys
