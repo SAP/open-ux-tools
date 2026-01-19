@@ -106,8 +106,8 @@ export async function addDeployGen(
 ): Promise<void> {
     try {
         const subGenPromptOptions = {
-            ui5AbapRepo: { hideIfOnPremise: true, adpProjectType: projectType },
-            transportInputChoice: { hideIfOnPremise: true, adpProjectType: projectType },
+            ui5AbapRepo: { hideIfOnPremise: true },
+            transportInputChoice: { hideIfOnPremise: true },
             overwriteAbapConfig: { hide: true },
             packageAutocomplete: {
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
@@ -116,8 +116,7 @@ export async function addDeployGen(
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
             },
             targetSystem: {
-                additionalValidation: { shouldRestrictDifferentSystemType: true },
-                adpProjectType: projectType
+                additionalValidation: { shouldRestrictDifferentSystemType: true }
             }
         };
 

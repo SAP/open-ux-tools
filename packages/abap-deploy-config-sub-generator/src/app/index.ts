@@ -191,8 +191,8 @@ export default class extends DeploymentGenerator {
                 shouldValidateFormatAndSpecialCharacters: this.isAdp
             };
             const promptOptions: AbapDeployConfigPromptOptions = {
-                ui5AbapRepo: { hideIfOnPremise: this.isAdp, adpProjectType: this.adpProjectType },
-                transportInputChoice: { hideIfOnPremise: this.isAdp, adpProjectType: this.adpProjectType },
+                ui5AbapRepo: { hideIfOnPremise: this.isAdp },
+                transportInputChoice: { hideIfOnPremise: this.isAdp },
                 packageAutocomplete: {
                     additionalValidation: packageAdditionalValidation
                 },
@@ -200,9 +200,9 @@ export default class extends DeploymentGenerator {
                     additionalValidation: packageAdditionalValidation
                 },
                 targetSystem: {
-                    additionalValidation: { shouldRestrictDifferentSystemType: this.isAdp },
-                    adpProjectType: this.adpProjectType
-                }
+                    additionalValidation: { shouldRestrictDifferentSystemType: this.isAdp }
+                },
+                adpProjectType: this.adpProjectType
             };
             const indexGenerationAllowed = this.indexGenerationAllowed && !this.isAdp;
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({

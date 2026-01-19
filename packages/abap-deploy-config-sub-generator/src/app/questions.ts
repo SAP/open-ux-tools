@@ -128,6 +128,7 @@ export async function getAbapQuestions({
                 serviceProvider,
                 type: projectType
             },
+            adpProjectType: promptOptions.adpProjectType,
             ui5AbapRepo: {
                 default: deployAppConfig?.name,
                 ...promptOptions?.ui5AbapRepo
