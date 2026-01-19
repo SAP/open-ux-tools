@@ -8,7 +8,6 @@ module.exports = [
         ignores: ['!scripts/**']
     },
     {
-        files: ['scripts/**/*.ts'],
         languageOptions: {
             parserOptions: {
                 parser: tsParser,

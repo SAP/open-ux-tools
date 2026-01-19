@@ -101,9 +101,7 @@ describe('YAML Schema Validation', () => {
         expect(frameworkError).toBeDefined();
 
         // 2. Additional properties violations (unknownProperty at root level)
-        const additionalPropsError = validate.errors!.find(
-            (err: any) => err.keyword === 'additionalProperties'
-        );
+        const additionalPropsError = validate.errors!.find((err: any) => err.keyword === 'additionalProperties');
         expect(additionalPropsError).toBeDefined();
     });
 });
