@@ -5,14 +5,7 @@ import type { ConvertedMetadata, EntitySet, NavigationProperty } from '@sap-ux/v
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../i18n';
 import LoggerHelper from '../logger-helper';
-import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
-import {
-    filterAggregateTransformations,
-    hasAggregateTransformations,
-    hasRecursiveHierarchyForEntitySet,
-    findEntitySetByName,
-    shouldUseAnalyticalTable
-} from '@sap-ux/inquirer-common';
+import { filterAggregateTransformations, findEntitySetByName } from '@sap-ux/inquirer-common';
 
 export type EntityAnswer = {
     entitySetName: string;
@@ -238,55 +231,4 @@ export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[]
         const entitySetTypeProperties = entitySet.entityType.entityProperties;
         return !!entitySetTypeProperties.find((property) => property.name === 'HasDraftEntity');
     });
-}
-
-/**
- * Get the default table type based on the template type and entity capabilities.
- *
- * @param templateType the template type of the application to be generated
- * @param metadata the metadata (edmx) string of the service
- * @param odataVersion the OData version of the service
- * @param isCapService whether the service is a CAP service or not
- * @param mainEntitySetName the name of the main entity set
- * @returns the optimal table type for the given entity
- */
-export function getDefaultTableType(
-    templateType: TemplateType,
-    metadata: ConvertedMetadata,
-    odataVersion: OdataVersion,
-    isCapService: boolean,
-    mainEntitySetName?: string
-): TableType {
-    // Find the entity set once for all annotation checks
-    const entitySet = mainEntitySetName ? findEntitySetByName(metadata, mainEntitySetName) : undefined;
-
-    // Handle ALP template with OData v2 - always use AnalyticalTable
-    if (templateType === 'alp' && odataVersion === OdataVersion.v2) {
-        return 'AnalyticalTable';
-    }
-
-    // Handle OData v4 specific logic
-    if (odataVersion === OdataVersion.v4 && entitySet) {
-        const canUseAnalytical = templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp';
-        const hasHierarchy = hasRecursiveHierarchyForEntitySet(entitySet);
-        const hasAnalyticalData = hasAggregateTransformations(entitySet);
-
-        // Check for analytical capabilities first (highest priority)
-        if (canUseAnalytical && hasAnalyticalData) {
-            // For CAP services, any analytical data is sufficient
-            // For non-CAP services, require complete transformations
-            const hasAnalyticalCapabilities = shouldUseAnalyticalTable(entitySet, !isCapService);
-            if (hasAnalyticalCapabilities) {
-                return 'AnalyticalTable';
-            }
-        }
-
-        // Check for hierarchical data only (no analytical data or analytical requirements not met)
-        if ((templateType === 'lrop' || templateType === 'worklist') && hasHierarchy) {
-            return 'TreeTable';
-        }
-    }
-
-    // Default fallback to ResponsiveTable
-    return 'ResponsiveTable';
 }
