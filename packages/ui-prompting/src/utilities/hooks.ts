@@ -70,7 +70,7 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
 
 /**
  * Custom hook to manage checked and selected keys for multi-select.
- * Separates pre-checked options from user-selected options.
+ * Separates pre checked options from current selected options.
  *
  * @param options - Array of selectable options that may contain pre-checked items
  * @param value - Comma-separated string of selected option keys
@@ -79,27 +79,25 @@ export function useMultiSelectKeys(
     options: UISelectableOption<ChoiceOptions>[],
     value: string
 ): { checkedOptions: string[]; selectedKeys: string[] } {
-    const [checkedOptions, setCheckedOptions] = useState<string[]>([]);
-
-    useEffect(() => {
-        const checked = options
+    return useMemo(() => {
+        // Extract pre-checked options from data
+        const checkedOptions = options
             .filter((opt) => (opt.data as any)?.checked === true)
             .map((opt) => opt.data?.value ?? opt.key.toString());
-        setCheckedOptions(checked);
-    }, [options]);
 
-    const selectedKeys = useMemo(() => {
+        // If no value, return empty selectedKeys
         if (!value) {
-            return [];
+            return { checkedOptions, selectedKeys: [] };
         }
-        const checkedSet = new Set(checkedOptions);
-        return value
+
+        // Filter out pre-checked options
+        const selectedKeys = value
             .split(',')
             .map((v) => v.trim())
-            .filter((v) => v && !checkedSet.has(v));
-    }, [value, checkedOptions]);
+            .filter((v) => v && !checkedOptions.includes(v));
 
-    return { checkedOptions, selectedKeys };
+        return { checkedOptions, selectedKeys };
+    }, [options, value]);
 }
 
 /**

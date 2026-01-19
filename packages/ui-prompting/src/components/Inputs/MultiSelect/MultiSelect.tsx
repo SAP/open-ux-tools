@@ -36,8 +36,8 @@ export const MultiSelect = (props: MultiSelectProps) => {
                 ?.split(',')
                 .map((v) => v.trim())
                 .filter(Boolean) ?? [];
-        const allSelectedOptions = new Set([...currentSelectedOptions, ...checkedOptions]);
-        return Array.from(allSelectedOptions).join(',');
+        // Return combined list of checked options and current selected options
+        return [...checkedOptions, ...currentSelectedOptions].join(',');
     };
 
     return (
