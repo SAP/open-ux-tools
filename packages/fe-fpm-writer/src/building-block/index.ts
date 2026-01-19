@@ -54,9 +54,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 ): Promise<Editor> {
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
-    console.log('--buildingBlockData--', buildingBlockData);
-    console.log('--aggregationPath--', aggregationPath);
-    console.log('--viewOrFragmentPath--', viewOrFragmentPath);
     if (!fs) {
         fs = create(createStorage());
     }

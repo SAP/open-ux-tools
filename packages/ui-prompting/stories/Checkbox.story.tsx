@@ -48,9 +48,8 @@ const hiddenChoices = [
         hidden: true
     },
     {
-        name: 'test5',
-        value: 'test5',
-        selected: true
+        name: 'test6',
+        value: 'test6'
     },
 ];
 

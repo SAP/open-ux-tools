@@ -190,7 +190,7 @@ export async function getButtonGroupsChoices(context: PromptContext, answers: An
     const choices = getSelectableButtonGroupChoices().map((choice) => ({
         ...choice,
         hidden: !isInitial && existingButtonGroups.has(choice.value),
-        selected: existingButtonGroups.has(choice.value)
+        checked: existingButtonGroups.has(choice.value)
     }));
     return choices;
 }
