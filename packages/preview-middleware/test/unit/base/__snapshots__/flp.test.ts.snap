@@ -929,6 +929,10 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
          for productive scenarios.
     -->
 
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
+    </script>
+
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1601,6 +1605,10 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
          for productive scenarios.
     -->
 
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
+    </script>
+
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1657,6 +1665,10 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
+
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
+    </script>
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -1934,6 +1946,10 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
          for productive scenarios.
     -->
 
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
+    </script>
+
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -1990,6 +2006,10 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
+
+    <script>
+        window['data-open-ux-preview-base-url'] = '';
+    </script>
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
