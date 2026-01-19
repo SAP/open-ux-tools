@@ -59,4 +59,13 @@ export {
     getSpecificationPath,
     refreshSpecificationDistTags
 } from './specification';
+export {
+    getDefaultTableType,
+    findEntitySetByName,
+    hasRecursiveHierarchyForEntitySet,
+    findRecursiveHierarchyKey,
+    hasAggregateTransformations,
+    shouldUseAnalyticalTable,
+    hasAggregateTransformationsForEntitySet
+} from './manifest';
 export { readFlexChanges } from './flex-changes';

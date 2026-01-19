@@ -7,3 +7,10 @@ export * from './telemetry/telemetry';
 export * from './prompts/credentials';
 export * from './metadata';
 export { addi18nResourceBundle } from './i18n';
+export {
+    findEntitySetByName,
+    findRecursiveHierarchyKey,
+    hasAggregateTransformations,
+    hasAggregateTransformationsForEntitySet,
+    hasRecursiveHierarchyForEntitySet
+} from '@sap-ux/project-access';

@@ -12,7 +12,6 @@ import {
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp } from './types';
-import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import {
     setAppDefaults,
@@ -29,6 +28,7 @@ import {
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
+import { type TableType, TemplateType } from '@sap-ux/project-access';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
@@ -279,5 +279,14 @@ async function generate<T extends {}>(
     return fs;
 }
 
-export { generate, FioriElementsApp, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
+export {
+    TableType,
+    TemplateType,
+    generate,
+    FioriElementsApp,
+    App,
+    TemplateTypeAttributes,
+    minSupportedUI5Version,
+    minSupportedUI5VersionV4
+};
 export * from './types';

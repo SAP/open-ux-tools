@@ -66,7 +66,14 @@ export {
     checkCdsUi5PluginEnabled,
     readFlexChanges,
     processServices,
-    getMainService
+    getMainService,
+    getDefaultTableType,
+    findEntitySetByName,
+    hasRecursiveHierarchyForEntitySet,
+    findRecursiveHierarchyKey,
+    hasAggregateTransformations,
+    shouldUseAnalyticalTable,
+    hasAggregateTransformationsForEntitySet
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';

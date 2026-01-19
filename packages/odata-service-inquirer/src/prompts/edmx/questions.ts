@@ -26,12 +26,12 @@ import {
     type EntityAnswer,
     type EntityChoiceOptions,
     type EntitySetFilter,
-    getDefaultTableType,
     getEntityChoices,
     getNavigationEntityChoices,
     type NavigationEntityAnswer
 } from './entity-helper';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import { getDefaultTableType } from '@sap-ux/project-access';
 
 /**
  * Validate the entity choice options. If the entity choice options are empty, a validation message will be returned.

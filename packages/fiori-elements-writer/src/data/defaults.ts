@@ -11,7 +11,7 @@ import type {
     Template,
     WorklistSettings
 } from '../types';
-import { TableSelectionMode, TableType, TemplateType } from '../types';
+import { TableSelectionMode } from '../types';
 import {
     getBaseComponent,
     getTemplateUi5Libs,
@@ -23,6 +23,7 @@ import { getAnnotationV4Libs } from './annotationCustomUi5Libs';
 import { type TemplateOptions } from './templateAttributes';
 import semVer from 'semver';
 import { getFlpId } from '@sap-ux/fiori-generator-shared';
+import { TableType, TemplateType } from '@sap-ux/project-access';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
 const defaultVirtualPreviewFile = 'test/flp.html'; // Default virtual preview file name

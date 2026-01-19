@@ -43,6 +43,7 @@
     },
     "devDependencies": {
         "@sap-ux/logger": "workspace:*",
+        "@sap-ux/vocabularies-types": "0.14.5",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.5.2",
