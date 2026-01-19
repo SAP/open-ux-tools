@@ -9,17 +9,7 @@ export const Default = (): JSX.Element => {
 };
 
 export const ExternalValues = (): JSX.Element => {
-    return (
-        <BuildingBlockQuestions
-            type={PromptsType.RichTextEditorButtonGroups}
-            externalAnswers={{
-                buildingBlockData: {
-                    buildingBlockType: 'rich-text-editor-button-groups',
-                    id: 'RichTextEditorButtonGroups'
-                }
-            }}
-        />
-    );
+    return <BuildingBlockQuestions type={PromptsType.RichTextEditorButtonGroups} externalAnswers={{}} />;
 };
 
 export const WithoutLiveValidation = (): JSX.Element => {
