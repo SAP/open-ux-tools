@@ -27,6 +27,7 @@ import {
 import type { InputQuestion, ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Question } from 'inquirer';
 import { TargetSystemType } from '../../types';
+import type { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Returns the destination prompt.
@@ -35,13 +36,15 @@ import { TargetSystemType } from '../../types';
  * @param destinations - list of destinations
  * @param options - target system options
  * @param backendTarget - backend target
+ * @param adpProjectType - The adaptation project type.
  * @returns list question for destination
  */
 function getDestinationPrompt(
     choices: AbapSystemChoice[],
     destinations?: Destinations,
     options?: TargetSystemPromptOptions,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
 ): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
         {
@@ -57,7 +60,7 @@ function getDestinationPrompt(
             filter: (input: string): string => input?.trim(),
             choices: (): AbapSystemChoice[] => choices,
             validate: async (destination: string): Promise<boolean | string> =>
-                await validateDestinationQuestion(destination, destinations, options, backendTarget),
+                await validateDestinationQuestion(destination, destinations, options, backendTarget, adpProjectType),
             additionalMessages: (destination: string): IMessageSeverity | undefined => {
                 let additionalMessage;
                 if (destinations && destination && isOnPremiseDestination(destinations[destination])) {
@@ -271,7 +274,13 @@ export async function getAbapTargetPrompts(
 
     const abapSystemChoices = await getAbapSystemChoices(destinations, options?.backendTarget, backendSystems);
     return [
-        ...getDestinationPrompt(abapSystemChoices, destinations, options.targetSystem, options.backendTarget),
+        ...getDestinationPrompt(
+            abapSystemChoices,
+            destinations,
+            options.targetSystem,
+            options.backendTarget,
+            options.adpProjectType
+        ),
         ...getTargetSystemPrompt(abapSystemChoices, options.targetSystem),
         getUrlPrompt(destinations, options.backendTarget),
         ...getScpPrompt(options.backendTarget),

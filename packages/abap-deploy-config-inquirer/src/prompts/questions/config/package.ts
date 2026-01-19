@@ -90,7 +90,15 @@ export function getPackagePrompts(
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackage(previousAnswers.packageManual || options.packageManual?.default, options?.packageManual),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackage(input, answers, options.packageManual, options.ui5AbapRepo, options.backendTarget)
+                await validatePackage(
+                    input,
+                    answers,
+                    options.packageManual,
+                    options.ui5AbapRepo,
+                    options.backendTarget,
+                    undefined,
+                    options.adpProjectType
+                )
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
@@ -137,7 +145,9 @@ export function getPackagePrompts(
                     answers,
                     options.packageAutocomplete,
                     options.ui5AbapRepo,
-                    options.backendTarget
+                    options.backendTarget,
+                    undefined,
+                    options.adpProjectType
                 );
             }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
