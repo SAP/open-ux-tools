@@ -5,10 +5,9 @@ import type { FlexChange } from './common';
 import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
-import { Window } from '../../types/global';
 
 const baseUrl = document.getElementById('root')?.dataset.openUxPreviewBaseUrl ?? '';
-const CHANGES_API_PATH = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
+const changesApiPath = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
@@ -37,7 +36,7 @@ const connector = merge({}, ObjectStorageConnector, {
                 additionalChangeInfo
             };
 
-            return fetch(CHANGES_API_PATH, {
+            return fetch(changesApiPath, {
                 method: 'POST',
                 body: JSON.stringify(body, null, 2),
                 headers: {
@@ -54,7 +53,7 @@ const connector = merge({}, ObjectStorageConnector, {
                 }
             }
 
-            return fetch(CHANGES_API_PATH, {
+            return fetch(changesApiPath, {
                 method: 'DELETE',
                 body: JSON.stringify({ fileName: key }),
                 headers: {
@@ -69,7 +68,7 @@ const connector = merge({}, ObjectStorageConnector, {
             // not implemented
         },
         getItems: async function () {
-            const response = await fetch(CHANGES_API_PATH, {
+            const response = await fetch(changesApiPath, {
                 method: 'GET',
                 headers: {
                     'content-type': 'application/json'

@@ -4,7 +4,6 @@ import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
 import type { FlexChange } from './common';
 import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common';
-import { Window } from '../../types/global';
 
 interface FetchedChanges {
     [key: string]: FlexChange;
@@ -25,7 +24,7 @@ interface LoadChangesResult {
 }
 
 const baseUrl = document.getElementById('root')?.dataset.openUxPreviewBaseUrl ?? '';
-const CHANGES_API_PATH = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
+const changesApiPath = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
 
 /**
  * Processes an array of FlexChange objects.
@@ -59,7 +58,7 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
             };
 
 
-            return fetch(CHANGES_API_PATH, {
+            return fetch(changesApiPath, {
                 method: 'POST',
                 body: JSON.stringify(body, null, 2),
                 headers: {
@@ -79,7 +78,7 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
 export async function loadChanges(...args: []): Promise<LoadChangesResult> {
     const lrep = new LrepConnector();
 
-    const response = await fetch(CHANGES_API_PATH, {
+    const response = await fetch(changesApiPath, {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
