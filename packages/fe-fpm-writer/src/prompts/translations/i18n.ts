@@ -237,7 +237,7 @@ const ns1 = {
                 'link': 'Link Management (Add, and Remove Links)',
                 'text-align': 'Text Alignment (Left, Center, Right, and Justify)',
                 'table': 'Table Operations',
-                'style-select': 'Style Selection'
+                'styleselect': 'Style Selection'
             },
             'viewOrFragmentPath': {
                 'message': 'View or Fragment File',

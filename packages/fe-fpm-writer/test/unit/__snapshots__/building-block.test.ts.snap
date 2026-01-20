@@ -1298,7 +1298,7 @@ exports[`Building Blocks RichTextEditorButtonGroups building block RichTextEdito
                 <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" buttons=\\"link,unlink\\" customToolbarPriority=\\"7\\"/>
                 <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"8\\"/>
                 <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" customToolbarPriority=\\"9\\"/>
-                <richtexteditor:ButtonGroup name=\\"style-select\\" visible=\\"true\\" buttons=\\"styleselect\\" customToolbarPriority=\\"10\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" buttons=\\"styleselect\\" customToolbarPriority=\\"10\\"/>
             </macros:buttonGroups>
         </macros:RichTextEditorWithMetadata>
     </VBox>
@@ -1437,7 +1437,7 @@ exports[`Building Blocks RichTextEditorButtonGroups building block multiple Rich
         <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\">
             <macros:buttonGroups>
                 <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" buttons=\\"fontselect,fontsizeselect\\" customToolbarPriority=\\"1\\"/>
-                <richtexteditor:ButtonGroup name=\\"style-select\\" visible=\\"true\\" buttons=\\"styleselect\\" priority=\\"20\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" buttons=\\"styleselect\\" priority=\\"20\\" customToolbarPriority=\\"2\\"/>
                 <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"3\\"/>
                 <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" buttons=\\"link\\" customToolbarPriority=\\"40\\" id=\\"customLinkButton\\"/>
             </macros:buttonGroups>

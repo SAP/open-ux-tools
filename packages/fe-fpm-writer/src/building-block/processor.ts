@@ -68,7 +68,7 @@ export const BUTTON_GROUP_CONFIGS: { name: string; buttons: string }[] = [
     { name: 'link', buttons: 'link,unlink' },
     { name: 'text-align', buttons: 'alignleft,aligncenter,alignright,alignjustify' },
     { name: 'table', buttons: 'table' },
-    { name: 'style-select', buttons: 'styleselect' }
+    { name: 'styleselect', buttons: 'styleselect' }
 ];
 
 /**

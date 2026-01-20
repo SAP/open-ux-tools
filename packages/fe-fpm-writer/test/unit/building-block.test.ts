@@ -1538,7 +1538,7 @@ describe('Building Blocks', () => {
                     { name: 'link' },
                     { name: 'text-align' },
                     { name: 'table' },
-                    { name: 'style-select' }
+                    { name: 'styleselect' }
                 ]
             };
             const basePath = join(testAppPath, 'test-rte-button-groups');
@@ -1640,7 +1640,7 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
                 buttonGroups: [
                     { name: 'font', buttons: 'fontselect,fontsizeselect' },
-                    { name: 'style-select', visible: true, priority: 20 },
+                    { name: 'styleselect', visible: true, priority: 20 },
                     { name: 'undo' },
                     { name: 'link', buttons: 'link', customToolbarPriority: '40', id: 'customLinkButton' }
                 ]
