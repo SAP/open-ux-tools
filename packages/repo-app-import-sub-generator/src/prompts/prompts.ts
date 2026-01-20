@@ -101,7 +101,10 @@ export async function getPrompts(
         const systemQuestions = await getSystemSelectionQuestions(
             {
                 serviceSelection: { hide: true, useAutoComplete: isCli },
-                systemSelection: { defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name }
+                systemSelection: {
+                    defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name,
+                    hideNewSystem: true
+                }
             },
             !isCli
         );

@@ -7,6 +7,7 @@ export {
     fioriToolsDirectory
 } from './constants';
 export { getFilePaths } from './file';
+export { normalizePath } from './path';
 export {
     addPackageDevDependency,
     clearCdsModuleCache,
@@ -46,6 +47,7 @@ export {
     getMockDataPath,
     getNodeModulesPath,
     getPathMappings,
+    type PathMappings,
     getProject,
     getProjectType,
     getWebappPath,
@@ -62,7 +64,9 @@ export {
     getWorkspaceInfo,
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled,
-    readFlexChanges
+    readFlexChanges,
+    processServices,
+    getMainService
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';

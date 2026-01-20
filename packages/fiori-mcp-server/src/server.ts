@@ -5,7 +5,6 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
     CallToolRequestSchema,
     InitializeRequestSchema,
-    LATEST_PROTOCOL_VERSION,
     ListToolsRequestSchema,
     type CallToolResult
 } from '@modelcontextprotocol/sdk/types.js';
@@ -95,7 +94,7 @@ export class FioriFunctionalityServer {
             logger.info(`MCP Client connected: ${this.mcpClientName} v${this.mcpClientVersion}`);
 
             return {
-                protocolVersion: LATEST_PROTOCOL_VERSION,
+                protocolVersion: '2024-11-05', // MCP protocol version
                 capabilities: {
                     tools: {}
                 },

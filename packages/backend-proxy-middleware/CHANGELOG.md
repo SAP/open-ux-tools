@@ -1,5 +1,18 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.29
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+
+## 0.10.28
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
 ## 0.10.27
 
 ### Patch Changes
