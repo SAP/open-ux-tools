@@ -1,6 +1,5 @@
 import type { Layer } from 'sap/ui/fl';
 import { getError } from '../utils/error';
-import { Window } from '../../types/global';
 
 export const enum ApiEndpoints {
     CHANGES = '/preview/api/changes',
