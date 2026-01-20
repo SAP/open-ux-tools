@@ -515,7 +515,7 @@ describe('FioriFunctionalityServer', () => {
                         appPath: 'app1',
                         functionalityId: 'add-page',
                         parameters: {
-                            name: 'TestPage',
+                            name: 'TestPage'
                         }
                     }
                 }
@@ -576,7 +576,13 @@ describe('FioriFunctionalityServer', () => {
 
         test('functionalityId as array with multiple elements - should use last element with property-change prefix', async () => {
             const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
-                functionalityId: ['TravelObjectPage', 'sections', '_Booking::@com.sap.vocabularies.UI.v1.LineItem', 'table', 'creationMode'],
+                functionalityId: [
+                    'TravelObjectPage',
+                    'sections',
+                    '_Booking::@com.sap.vocabularies.UI.v1.LineItem',
+                    'table',
+                    'creationMode'
+                ],
                 status: 'ok',
                 message: 'Property changed',
                 appPath: 'app1',
@@ -593,7 +599,13 @@ describe('FioriFunctionalityServer', () => {
                     name: 'execute_functionality',
                     arguments: {
                         appPath: 'app1',
-                        functionalityId: ['TravelObjectPage', 'sections', '_Booking::@com.sap.vocabularies.UI.v1.LineItem', 'table', 'creationMode'],
+                        functionalityId: [
+                            'TravelObjectPage',
+                            'sections',
+                            '_Booking::@com.sap.vocabularies.UI.v1.LineItem',
+                            'table',
+                            'creationMode'
+                        ],
                         parameters: {
                             value: 'NewRow'
                         }
