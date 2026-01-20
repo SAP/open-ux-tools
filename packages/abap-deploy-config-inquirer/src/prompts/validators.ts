@@ -752,13 +752,7 @@ export async function validatePackage(
         }
     }
 
-    const startingPrefixValidation = validatePackageStartingPrefix(
-        input,
-        answers,
-        promptOption,
-        ui5AbapPromptOptions,
-        adpProjectType
-    );
+    const startingPrefixValidation = validatePackageStartingPrefix(input, answers, promptOption, ui5AbapPromptOptions);
     if (typeof startingPrefixValidation === 'string') {
         return startingPrefixValidation;
     }
@@ -780,17 +774,15 @@ export async function validatePackage(
  * @param {AbapDeployConfigAnswersInternal} answers - User-provided answers including the UI5 ABAP repository name.
  * @param {PackagePromptOptions} [promptOption] - Optional prompt configuration for package validation.
  * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional UI5-specific ABAP prompt configuration.
- * @param {AdaptationProjectType|undefined} adpProjectType - The adaptation project type.
  * @returns {string | boolean} - Returns `true` if the package is valid, otherwise returns an error message.
  */
 function validatePackageStartingPrefix(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
-    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
-    adpProjectType?: AdaptationProjectType
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions
 ): string | boolean {
-    if (shouldValidatePackageForStartingPrefix(answers, promptOption, ui5AbapPromptOptions, adpProjectType)) {
+    if (shouldValidatePackageForStartingPrefix(answers, promptOption, ui5AbapPromptOptions)) {
         const startingPrefix = getPackageStartingPrefix(input);
 
         //validate package starting prefix
@@ -842,24 +834,18 @@ function validatePackageFormatAndSpecialCharacters(
  * @param {AbapDeployConfigAnswersInternal} answers - The user's deployment configuration answers.
  * @param {PackagePromptOptions} [promptOption] - Optional package prompt options.
  * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional UI5 ABAP repository prompt options.
- * @param {AdaptationProjectType | undefined} adpProjectType - The adaptation project type.
  * @returns {boolean} - Returns `true` if the package should be validated for a starting prefix, otherwise `false`.
  */
 function shouldValidatePackageForStartingPrefix(
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
-    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
-    adpProjectType?: AdaptationProjectType
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions
 ): boolean {
     const shouldValidatePackageForStartingPrefix = !!(
         answers.ui5AbapRepo &&
         promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix &&
         !ui5AbapPromptOptions?.hide &&
-        !(
-            ui5AbapPromptOptions?.hideIfOnPremise === true &&
-            adpProjectType === AdaptationProjectType.ON_PREMISE &&
-            PromptState.abapDeployConfig?.scp === false
-        )
+        !(ui5AbapPromptOptions?.hideIfOnPremise && PromptState.abapDeployConfig?.scp === false)
     );
     return shouldValidatePackageForStartingPrefix;
 }
