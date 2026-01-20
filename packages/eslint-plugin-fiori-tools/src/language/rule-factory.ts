@@ -12,7 +12,8 @@ import { DiagnosticCache } from './diagnostic-cache';
 import type { Diagnostic } from './diagnostics';
 import type { DeepestExistingPathResult } from '../utils/helpers';
 import { findDeepestExistingPath } from '../utils/helpers';
-import { pathToFileURL } from 'url';
+import { pathToFileURL } from 'node:url';
+import { normalizePath } from '@sap-ux/project-access';
 
 /**
  * Rule context type for JSON-based rules.
@@ -123,7 +124,7 @@ export function createFioriRule<
                 MessageIds: MessageIds;
             }>
         ): RuleVisitor {
-            const uri = pathToFileURL(context.filename).toString();
+            const uri = pathToFileURL(normalizePath(context.filename)).toString();
             let cachedDiagnostics = DiagnosticCache.getMessages(uri, ruleId);
             if (!cachedDiagnostics) {
                 cachedDiagnostics = check(context);
