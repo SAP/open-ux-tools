@@ -515,7 +515,7 @@ export class ChangeService extends EventTarget {
                     continue;
                 }
                 return result;
-            } catch (error) {
+            } catch {
                 continue;
             }
         }
