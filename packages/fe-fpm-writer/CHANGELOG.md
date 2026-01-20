@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.40.12
+
+### Patch Changes
+
+- cc8871a: fix(fpm-writer): fix width issue with custom filter field in filter bar
+
 ## 0.40.11
 
 ### Patch Changes
