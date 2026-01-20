@@ -268,14 +268,6 @@ export class ProjectContext {
             }
         }
 
-        // if (this.appRoots.size > 0) {
-        //     // Uri is not a part of known apps
-        //     // Assume a new app is opened
-        //     // Clear DiagnosticCache and continue to create new ProjectContext
-        //     DiagnosticCache.forceReindexOnFirstUpdate = true;
-        //     DiagnosticCache.clear(uri);
-        // }
-
         const { artifacts, projectType } = this.findFioriArtifacts(uri);
 
         const { diagnostics, index } = this.parser.parse(projectType, artifacts, this.fileCacheProxy);
