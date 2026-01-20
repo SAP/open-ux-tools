@@ -1,4 +1,4 @@
-import type { BackendSystem } from '../entities/backend-system';
+import type { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import type { BackendSerializableKeys } from '../types';
 
 /**
@@ -63,6 +63,18 @@ export interface Service<Entity, EntityKey> {
      * @return An array of entities or an empty array if none exist
      */
     getAll(options?: ServiceGetAllOptions<Entity>): Promise<Entity[] | []>;
+}
+
+/**
+ * Backend system specific service extension with helper methods.
+ * This interface extends the generic `Service` API and adds `findBackendSystem`.
+ */
+export interface BackendSystemService extends Service<BackendSystem, BackendSystemKey> {
+    findBackendSystem(
+        url: string,
+        client?: string,
+        systemInfo?: { systemId: string; client: string }
+    ): Promise<BackendSystem | undefined>;
 }
 
 export type { SystemService } from './backend-system';

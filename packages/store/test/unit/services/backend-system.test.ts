@@ -1,5 +1,5 @@
 import { getInstance, SystemService } from '../../../src/services/backend-system';
-import { BackendSystem, BackendSystemKey } from '../../../src';
+import { BackendSystem, BackendSystemKey, ConnectionType, SystemType } from '../../../src';
 import { SystemDataProvider } from '../../../src/data-provider/backend-system';
 import { initI18n, text } from '../../../src/i18n';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
@@ -246,6 +246,81 @@ describe('BackendSystem service', () => {
             );
             expect(updatedEntity).toEqual({ ...existingSystem, name: update.name, hasSensitiveData: true });
             expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
+        });
+    });
+
+    describe('findBackendSystem', () => {
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('returns system on direct match', async () => {
+            const mockSystem = new BackendSystem({
+                name: 'Direct Match System',
+                url: 'https://direct.match.com',
+                client: '100',
+                systemType: 'OnPrem',
+                connectionType: ConnectionType.AbapCatalog
+            });
+            const readSpy = jest.spyOn(SystemDataProvider.prototype, 'read').mockResolvedValueOnce(mockSystem);
+            const systemService = new SystemService(logger);
+            const result = await systemService.findBackendSystem('https://direct.match.com', '100', {
+                systemId: 'SYS1',
+                client: '100'
+            });
+            expect(readSpy).toHaveBeenCalledWith(
+                new BackendSystemKey({ url: 'https://direct.match.com', client: '100' })
+            );
+            expect(result).toBe(mockSystem);
+        });
+
+        it('returns system on cloud match', async () => {
+            const mockSystem = new BackendSystem({
+                name: 'Cloud Match System',
+                url: 'https://cloud.match.com',
+                systemType: SystemType.AbapCloud,
+                connectionType: ConnectionType.AbapCatalog
+            });
+            jest.spyOn(SystemDataProvider.prototype, 'read').mockResolvedValueOnce(undefined);
+            const getAllSpy = jest.spyOn(SystemDataProvider.prototype, 'getAll').mockResolvedValueOnce([mockSystem]);
+            const systemService = new SystemService(logger);
+            const result = await systemService.findBackendSystem('https://cloud.match.com', undefined, {
+                systemId: 'SYS2',
+                client: '200'
+            });
+            expect(getAllSpy).toHaveBeenCalled();
+            expect(result).toBe(mockSystem);
+        });
+
+        it('returns system on system info match', async () => {
+            const mockSystem = new BackendSystem({
+                name: 'System Info Match System',
+                url: 'https://systeminfo.match.com',
+                systemInfo: { systemId: 'SYS3', client: '300' },
+                systemType: 'OnPrem',
+                connectionType: ConnectionType.AbapCatalog
+            });
+            jest.spyOn(SystemDataProvider.prototype, 'read').mockResolvedValueOnce(undefined);
+            const getAllSpy = jest.spyOn(SystemDataProvider.prototype, 'getAll').mockResolvedValueOnce([mockSystem]);
+            const systemService = new SystemService(logger);
+            const result = await systemService.findBackendSystem('https://other.url.com', '400', {
+                systemId: 'SYS3',
+                client: '300'
+            });
+            expect(getAllSpy).toHaveBeenCalled();
+            expect(result).toBe(mockSystem);
+        });
+
+        it('returns undefined if no match found', async () => {
+            jest.spyOn(SystemDataProvider.prototype, 'read').mockResolvedValueOnce(undefined);
+            const getAllSpy = jest.spyOn(SystemDataProvider.prototype, 'getAll').mockResolvedValueOnce([]);
+            const systemService = new SystemService(logger);
+            const result = await systemService.findBackendSystem('https://nomatch.com', '500', {
+                systemId: 'SYS4',
+                client: '400'
+            });
+            expect(getAllSpy).toHaveBeenCalled();
+            expect(result).toBeUndefined();
         });
     });
 });

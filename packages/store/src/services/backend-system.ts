@@ -1,7 +1,7 @@
 import type { Logger } from '@sap-ux/logger';
-import type { BackendServiceRetrievalOptions, Service } from '.';
+import type { BackendServiceRetrievalOptions, BackendSystemService, Service } from '.';
 import type { DataProvider } from '../data-provider';
-import type { ServiceOptions } from '../types';
+import { SystemType, type ServiceOptions } from '../types';
 import { SystemDataProvider } from '../data-provider/backend-system';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { text } from '../i18n';
@@ -89,9 +89,57 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     public async getAll(options?: BackendServiceRetrievalOptions): Promise<BackendSystem[] | []> {
         return this.dataProvider.getAll(options);
     }
+
+    /**
+     * Returns a backend system by applying multiple matching strategies.
+     * 1. Direct read from store: URL + client
+     * 2. URL-only match for cloud systems (as client is persisted for cloud systems).
+     * 3. Match via system info - systemId and client
+     *
+     * @param url - the url used to read the system from the store
+     * @param client - optional client used for reading
+     * @param systemInfo - system info
+     * @param systemInfo.systemId - the system id
+     * @param systemInfo.client - the system client
+     *
+     * @returns a backend system if found, otherswise undefined
+     */
+    public async findBackendSystem(
+        url: string,
+        client?: string,
+        systemInfo?: { systemId: string; client: string }
+    ): Promise<BackendSystem | undefined> {
+        let backendSystem: BackendSystem | undefined;
+
+        const directMatch = await this.dataProvider.read(new BackendSystemKey({ url, client }));
+        if (directMatch) {
+            backendSystem = directMatch;
+        }
+
+        if (!backendSystem) {
+            const allSystems = await this.dataProvider.getAll();
+            const cloudMatch = allSystems?.find(
+                (system) => system.url === url && system.systemType === SystemType.AbapCloud
+            );
+
+            if (cloudMatch) {
+                backendSystem = cloudMatch;
+            } else if (systemInfo.systemId && systemInfo.client) {
+                const systemInfoMatch = allSystems?.find(
+                    (system: BackendSystem) =>
+                        system.systemInfo?.systemId === systemInfo.systemId &&
+                        system.systemInfo?.client === systemInfo.client
+                );
+                if (systemInfoMatch) {
+                    backendSystem = systemInfoMatch;
+                }
+            }
+        }
+        return backendSystem;
+    }
 }
 
-export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
+export function getInstance(logger: Logger, options: ServiceOptions = {}): BackendSystemService {
     if (!options.baseDirectory) {
         try {
             ensureSystemsJsonMigrated();
