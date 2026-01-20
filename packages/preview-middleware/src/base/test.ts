@@ -33,17 +33,20 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
  * @param utils middleware utils
  * @returns merged test configuration
  */
-export function mergeTestConfigDefaults(config: TestConfig, utils: MiddlewareUtils): CompleteTestConfig {
-    const testPathPrefix =
-        utils.getProject().getType() === 'component'
-            ? posix.join('/test-resources', utils.getProject().getNamespace())
-            : '/';
+export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUtils): CompleteTestConfig {
+    let testPathPrefix = '/';
+    if (typeof utils === 'object') {
+        testPathPrefix =
+            utils.getProject().getType() === 'component'
+                ? posix.join('/test-resources', utils.getProject().getNamespace())
+                : '/';
+    }
     const defaults = DEFAULTS[config.framework.toLowerCase()] ?? {};
     const merged: CompleteTestConfig = { ...defaults, ...config };
 
     for (const prop of ['path', 'init'] as const) {
         if (typeof merged[prop] === 'string' && merged[prop]) {
-            merged[prop] = posix.join(testPathPrefix, merged[prop].replace(/^[\\/]+/, ''));
+            merged[prop] = posix.join(testPathPrefix, merged[prop]);
         }
     }
     return merged;

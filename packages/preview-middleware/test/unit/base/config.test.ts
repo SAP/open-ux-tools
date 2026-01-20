@@ -170,5 +170,26 @@ describe('config', () => {
             const fs = await generatePreviewFiles(basePath, config);
             expect(fs.dump(basePath)).toMatchSnapshot();
         });
+
+        test('test runners with custom test paths', async () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
+            const config = {
+                test: [
+                    { framework: 'QUnit', path: '/test/unit/unitTests.html' },
+                    { framework: 'OPA5', path: '/test/integration/opaTests.html' }
+                ]
+            } satisfies MiddlewareConfig;
+            const fs = await generatePreviewFiles(basePath, config);
+            expect(fs.dump(basePath)).toMatchSnapshot();
+        });
+
+        test('test runners with paths not starting with /test/', async () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
+            const config = {
+                test: [{ framework: 'QUnit', path: '/custom/path/unitTests.html' }]
+            } satisfies MiddlewareConfig;
+            const fs = await generatePreviewFiles(basePath, config);
+            expect(fs.dump(basePath)).toMatchSnapshot();
+        });
     });
 });
