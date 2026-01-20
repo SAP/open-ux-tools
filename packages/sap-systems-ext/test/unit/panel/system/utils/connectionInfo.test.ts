@@ -1,6 +1,6 @@
 import type { BackendSystem } from '@sap-ux/store';
 import { ODataVersion, type ODataServiceInfo } from '@sap-ux/axios-extension';
-import { getCatalogServiceCount } from '../../../../../src/panel/system/utils';
+import { getCatalogServiceCount, getSystemInfo } from '../../../../../src/panel/system/utils';
 
 const listServicesMock = jest.fn();
 
@@ -9,17 +9,19 @@ const catalogServiceMock = jest.fn().mockImplementation(() => ({
     listServices: listServicesMock
 }));
 
+const getSystemInfoMock = jest.fn();
 jest.mock('@sap-ux/axios-extension', () => ({
     ...jest.requireActual('@sap-ux/axios-extension'),
     createForAbap: jest.fn().mockImplementation(({ refreshTokenChangedCb }) => ({
-        catalog: catalogServiceMock
+        catalog: catalogServiceMock,
+        getSystemInfo: getSystemInfoMock
     })),
     createForAbapOnCloud: jest.fn().mockImplementation(({ refreshTokenChangedCb }) => ({
         catalog: catalogServiceMock
     }))
 }));
 
-describe('Test catalog utils', () => {
+describe('getCatalogServiceCount', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -66,5 +68,64 @@ describe('Test catalog utils', () => {
         };
         const counts = await getCatalogServiceCount(system);
         expect(counts).toEqual({ v2Request: { count: 3 }, v4Request: { count: undefined, error: v4Error } });
+    });
+});
+
+describe('getSystemInfo', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should retrieve system info successfully', async () => {
+        const mockSystemInfo = { systemID: 'SYS123', client: '100' };
+        getSystemInfoMock.mockResolvedValue(mockSystemInfo);
+
+        const system: BackendSystem = {
+            url: 'https://example.com',
+            client: '100',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'abap_catalog'
+        };
+
+        const result = await getSystemInfo(system);
+        expect(result).toEqual({ systemId: 'SYS123', client: '100' });
+    });
+
+    it('should return undefined if system info is not available', async () => {
+        getSystemInfoMock.mockResolvedValue(undefined);
+
+        const system: BackendSystem = {
+            url: 'https://example.com',
+            client: '100',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'abap_catalog'
+        };
+
+        const result = await getSystemInfo(system);
+        expect(result).toBeUndefined();
+    });
+
+    it('should handle errors when retrieving system info', async () => {
+        const mockError = new Error('Failed to retrieve system info');
+        getSystemInfoMock.mockRejectedValue(mockError);
+
+        const system: BackendSystem = {
+            url: 'https://example.com',
+            client: '100',
+            name: 'Test System',
+            systemType: 'OnPrem',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'abap_catalog'
+        };
+
+        const result = await getSystemInfo(system);
+        expect(result).toBeUndefined();
     });
 });

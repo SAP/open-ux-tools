@@ -1,4 +1,4 @@
-export * from './catalog';
+export * from './connectionInfo';
 export * from './validate';
 export * from './vscode';
 export * from './webview';

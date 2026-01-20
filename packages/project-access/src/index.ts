@@ -47,6 +47,7 @@ export {
     getMockDataPath,
     getNodeModulesPath,
     getPathMappings,
+    type PathMappings,
     getProject,
     getProjectType,
     getWebappPath,

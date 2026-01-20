@@ -28,9 +28,8 @@ export interface Resources {
     configuration?: Configuration;
 }
 
-export interface Ui5Document {
+interface Ui5DocumentBase {
     specVersion?: string;
-    type: 'application' | 'library' | 'theme-library' | 'module';
     metadata: {
         name: string;
         copyright?: string;
@@ -57,3 +56,37 @@ export interface Ui5Document {
     };
     customConfiguration?: { [key: string]: unknown };
 }
+
+export type Ui5Document =
+    | (Ui5DocumentBase & {
+          type: 'application';
+          configuration?: {
+              paths?: {
+                  webapp: string;
+              };
+          };
+      })
+    | (Ui5DocumentBase & {
+          type: 'library';
+          configuration?: {
+              paths?: {
+                  src: string;
+                  test: string;
+              };
+          };
+      })
+    | (Ui5DocumentBase & {
+          type: 'theme-library';
+          configuration?: {
+              paths?: {
+                  src: string;
+                  test: string;
+              };
+          };
+      })
+    | (Ui5DocumentBase & {
+          type: 'module';
+          configuration?: {
+              paths?: Record<string, never>;
+          };
+      });
