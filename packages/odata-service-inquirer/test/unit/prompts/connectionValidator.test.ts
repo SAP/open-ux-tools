@@ -118,6 +118,23 @@ describe('ConnectionValidator', () => {
         });
     });
 
+    test('should validate and return error message on non origin urls for isSystem URL and reentrance tickets', async () => {
+        const serviceUrl = 'https://example.com/service/path';
+        const validator = new ConnectionValidator();
+
+        // isSystem URL case
+        const result = await validator.validateUrl(serviceUrl, { isSystem: true });
+        expect(result).toBe(t('prompts.validationMessages.systemHostOnly'));
+        expect(validator.validity).toEqual({});
+
+        // Reentrance ticket case
+        const validatorReentrance = new ConnectionValidator();
+        validatorReentrance.systemAuthType = 'reentranceTicket';
+        const resultReentrance = await validatorReentrance.validateUrl(serviceUrl);
+        expect(resultReentrance).toBe(t('prompts.validationMessages.systemHostOnly'));
+        expect(validatorReentrance.validity).toEqual({});
+    });
+
     test('should handle url not found error', async () => {
         const axiosError = new AxiosError('', 'ENOTFOUND');
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(axiosError);
