@@ -54,7 +54,7 @@ export class RtaService {
             });
 
             this.rta.attachStop(() => {
-                // eslint-disable-next-line fiori-custom/sap-no-location-reload
+                // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-location-reload
                 location.reload();
             });
             this.rta.attachStart(() => {
