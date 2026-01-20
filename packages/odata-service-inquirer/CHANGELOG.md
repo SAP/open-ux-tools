@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.9
+
+### Patch Changes
+
+- 090cdec: Fix for odata version restriction not applied for Abap-on-prem credentials prompts
+
 ## 2.14.8
 
 ### Patch Changes
