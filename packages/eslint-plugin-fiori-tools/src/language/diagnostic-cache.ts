@@ -75,27 +75,17 @@ export class DiagnosticCache {
     }
 
     /**
-     * Clear diagnostics for a given URI. If ruleType is provided, only clears that specific rule type.
+     * Clear diagnostics for a given URI.
      *
      * @param uri - The file URI to clear diagnostics for.
-     * @param ruleType - Optional rule type to clear. If not provided, clears all diagnostics for the URI.
      */
-    public static clear(uri: string, ruleType?: string): void {
+    public static clear(uri: string): void {
         const numberOfRequests = this.requests.get(uri) ?? 0;
         this.requests.set(uri, numberOfRequests + 1);
         if (numberOfRequests > 0 || this.forceReindexOnFirstUpdate) {
             // the first time file is processed assume it is pristine
-            // clear cache on subsequent calls
-            if (ruleType) {
-                // Clear specific rule type for this URI
-                const uriCache = this.cache.get(uri);
-                if (uriCache) {
-                    delete uriCache[ruleType as Diagnostic['type']];
-                }
-            } else {
-                // Clear all diagnostics for this URI
-                this.cache.delete(uri);
-            }
+            // clear cache on subsequent calls for the URI
+            this.cache.delete(uri);
         }
     }
 }
