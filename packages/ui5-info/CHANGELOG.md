@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.13.8
+
+### Patch Changes
+
+- 9aad34c: Adds min supported spec version constant
+
 ## 0.13.7
 
 ### Patch Changes

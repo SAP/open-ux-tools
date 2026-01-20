@@ -9,30 +9,24 @@ import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
 
 import { getMinimumUI5Version } from '@sap-ux/project-access';
-
 import {
     BuildingBlockType,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
-    type CustomColumn,
     type RichTextEditor,
     bindingContextAbsolute,
-    type TemplateConfig,
-    type CustomFilterField,
-    type EmbededFragment
+    type TemplateConfig
 } from './types';
-import type { Manifest, InternalCustomElement } from '../common/types';
-
+import type { Manifest } from '../common/types';
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
-import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, detectTabSpacing, extendJSON } from '../common/file';
+import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
-import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
+import { processBuildingBlock } from './processor';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -40,69 +34,9 @@ const PLACEHOLDERS = {
     'qualifier': 'REPLACE_WITH_A_QUALIFIER'
 };
 
-/**
- * Type for embedded fragment data used in building block processing.
- */
-type EmbeddedFragmentData = InternalCustomElement & EmbededFragment;
-
-/**
- * Configuration for building block templates.
- */
-interface BuildingBlockTemplateConfig {
-    nodes: {
-        explicit: string;
-        default: string;
-    };
-    templateType: string;
-    templateFile: string;
-    namespace: {
-        uri: string;
-        prefix: string;
-    };
-    resultPropertyName: string;
-    processor: (
-        buildingBlockData: BuildingBlock,
-        fs: Editor,
-        viewPath: string,
-        config: BuildingBlockTemplateConfig,
-        embededFragment?: EmbeddedFragmentData
-    ) => void;
-}
-
-/**
- * Configuration map for building block types.
- */
-export const BUILDING_BLOCK_CONFIG: Partial<Record<BuildingBlockType, BuildingBlockTemplateConfig>> = {
-    [BuildingBlockType.CustomColumn]: {
-        nodes: { explicit: 'columns', default: 'Column' },
-        templateType: 'common',
-        templateFile: 'common/Fragment.xml',
-        namespace: { uri: 'sap.fe.macros.table', prefix: 'macrosTable' },
-        resultPropertyName: 'hasTableColumns',
-        processor: processCustomColumn
-    },
-    [BuildingBlockType.CustomFilterField]: {
-        nodes: { explicit: 'filterFields', default: 'FilterField' },
-        templateType: 'filter',
-        templateFile: 'filter/fragment.xml',
-        namespace: { uri: 'sap.fe.macros.filterBar', prefix: 'macros' },
-        resultPropertyName: 'hasFilterFields',
-        processor: processCustomFilterField
-    }
-};
-
 interface MetadataPath {
     contextPath?: string;
     metaPath: string;
-}
-
-/**
- * Configuration for aggregation path update.
- */
-interface AggregationConfig {
-    aggregationName: string;
-    elementName: string;
-    resultPropertyName: string;
 }
 
 /**
@@ -142,7 +76,10 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     };
     const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest, templateConfig);
 
-    if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
+    if (
+        buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
+        buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditorButtonGroups
+    ) {
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
         if (minUI5Version && lt(minUI5Version, '1.117.0')) {
             const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
@@ -175,229 +112,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     return fs;
-}
-
-/**
- * Updates aggregation path based on XML document structure.
- *
- * @param {Document} xmlDocument - The XML document to analyze
- * @param {string} aggregationPath - The current aggregation path
- * @param {CustomColumn | CustomFilterField} buildingBlockData - The building block data with embedded fragment
- * @param {AggregationConfig} config - Configuration specifying aggregation and element names
- * @returns {object} Object containing the updated aggregation path
- */
-function updateAggregationPath<T extends CustomColumn | CustomFilterField>(
-    xmlDocument: Document,
-    aggregationPath: string,
-    buildingBlockData: T,
-    config: AggregationConfig
-): { updatedAggregationPath: string; hasElement: boolean } {
-    if (!buildingBlockData.embededFragment) {
-        return { updatedAggregationPath: aggregationPath, hasElement: false };
-    }
-
-    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
-
-    // First, get the target element from the aggregationPath
-    const targetElement = xpathSelect(aggregationPath, xmlDocument);
-    if (!targetElement || !Array.isArray(targetElement) || targetElement.length === 0) {
-        return { updatedAggregationPath: aggregationPath, hasElement: false };
-    }
-
-    const targetNode = targetElement[0] as Element;
-
-    // Check if the explicit aggregation exists within the specific target element
-    const hasAggregation = xpathSelect(`./*[local-name()='${config.aggregationName}']`, targetNode);
-    if (hasAggregation && Array.isArray(hasAggregation) && hasAggregation.length > 0) {
-        return {
-            updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:${config.aggregationName}`,
-            hasElement: true
-        };
-    } else {
-        // Check if the default aggregation element exists within the specific target element
-        const useDefaultAggregation = xpathSelect(`./*[local-name()='${config.elementName}']`, targetNode);
-        if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
-            return { updatedAggregationPath: aggregationPath, hasElement: true };
-        }
-    }
-
-    return { updatedAggregationPath: aggregationPath, hasElement: false };
-}
-
-/**
- * Processes building block configuration.
- *
- * @param {BuildingBlock} buildingBlockData - The building block data
- * @param {Document} xmlDocument - The XML document
- * @param {string} manifestPath - The manifest file path
- * @param {Manifest} manifest - The manifest object
- * @param {string} aggregationPath - The aggregation path
- * @param {Editor} fs - The memfs editor instance
- * @returns {object} Object containing updated aggregation path and processed building block data
- */
-function processBuildingBlock<T extends BuildingBlock>(
-    buildingBlockData: T,
-    xmlDocument: Document,
-    manifestPath: string,
-    manifest: Manifest,
-    aggregationPath: string,
-    fs: Editor
-): {
-    updatedAggregationPath: string;
-    processedBuildingBlockData: T;
-    hasAggregation: boolean;
-    aggregationNamespace: string;
-} {
-    let updatedAggregationPath = aggregationPath;
-    let hasAggregation = false;
-    let aggregationNamespace = 'macrosTable';
-    let embededFragment: EmbeddedFragmentData | undefined;
-    let viewPath: string | undefined;
-
-    // Get configuration for the building block type
-    const config = BUILDING_BLOCK_CONFIG[buildingBlockData.buildingBlockType];
-    if (!config) {
-        // Return defaults if no configuration is found
-        return {
-            updatedAggregationPath,
-            processedBuildingBlockData: buildingBlockData,
-            hasAggregation,
-            aggregationNamespace
-        };
-    }
-
-    // Process embedded fragment for types that support it
-    if (
-        (isCustomColumn(buildingBlockData) || isCustomFilterField(buildingBlockData)) &&
-        buildingBlockData.embededFragment
-    ) {
-        embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
-        viewPath = join(embededFragment.path, `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`);
-
-        // Use the processor function from the configuration
-        config.processor(buildingBlockData, fs, viewPath, config, embededFragment);
-
-        const result = updateAggregationPath(xmlDocument, aggregationPath, buildingBlockData, {
-            aggregationName: config.nodes.explicit,
-            elementName: config.nodes.default,
-            resultPropertyName: config.resultPropertyName
-        });
-        updatedAggregationPath = result.updatedAggregationPath;
-        hasAggregation = result.hasElement;
-        aggregationNamespace = getOrAddNamespace(xmlDocument, config.namespace.uri, config.namespace.prefix);
-    }
-
-    return {
-        updatedAggregationPath,
-        processedBuildingBlockData: buildingBlockData,
-        hasAggregation,
-        aggregationNamespace
-    };
-}
-
-/**
- * Processes custom column building block.
- *
- * @param {BuildingBlock} buildingBlockData - The building block data
- * @param {Editor} fs - The memfs editor instance
- * @param {string} viewPath - The view path
- * @param {BuildingBlockTemplateConfig} config - The building block configuration
- */
-function processCustomColumn(
-    buildingBlockData: BuildingBlock,
-    fs: Editor,
-    viewPath: string,
-    config: BuildingBlockTemplateConfig
-): void {
-    if (!isCustomColumn(buildingBlockData)) {
-        throw new Error('Expected CustomColumn building block data');
-    }
-
-    const columnConfig = buildingBlockData.embededFragment!;
-    let processedEventHandler: string | undefined;
-
-    // Apply event handler
-    if (columnConfig.eventHandler) {
-        processedEventHandler = applyEventHandlerConfiguration(fs, columnConfig, columnConfig.eventHandler, {
-            controllerSuffix: false,
-            typescript: columnConfig.typescript
-        });
-        columnConfig.eventHandler = processedEventHandler;
-    }
-
-    columnConfig.content = getDefaultFragmentContent('Sample Text', processedEventHandler);
-    if (!fs.exists(viewPath)) {
-        copyTpl(fs, getTemplatePath(config.templateFile), viewPath, columnConfig);
-    }
-}
-
-/**
- * Processes custom filter field building block.
- *
- * @param {BuildingBlock} buildingBlockData - The building block data
- * @param {Editor} fs - The memfs editor instance
- * @param {string} viewPath - The view path
- * @param {BuildingBlockTemplateConfig} config - The building block configuration
- * @param {EmbeddedFragmentData} embededFragment - The embedded fragment data
- */
-function processCustomFilterField(
-    buildingBlockData: BuildingBlock,
-    fs: Editor,
-    viewPath: string,
-    config: BuildingBlockTemplateConfig,
-    embededFragment?: EmbeddedFragmentData
-): void {
-    if (!isCustomFilterField(buildingBlockData)) {
-        throw new Error('Expected CustomFilterField building block data');
-    }
-
-    if (!embededFragment) {
-        throw new Error('EmbeddedFragment is required for CustomFilterField');
-    }
-
-    const filterConfig = {
-        label: buildingBlockData.label,
-        property: buildingBlockData.property,
-        required: buildingBlockData.required ?? false,
-        position: buildingBlockData.position!,
-        eventHandler: buildingBlockData.embededFragment?.eventHandler,
-        ns: embededFragment.ns,
-        name: embededFragment.name,
-        path: embededFragment.path
-    };
-
-    // Apply event handler
-    if (filterConfig.eventHandler) {
-        filterConfig.eventHandler = applyEventHandlerConfiguration(fs, filterConfig, filterConfig.eventHandler, {
-            controllerSuffix: false,
-            typescript: buildingBlockData.embededFragment?.typescript,
-            templatePath: 'filter/Controller'
-        });
-    }
-
-    if (!fs.exists(viewPath)) {
-        copyTpl(fs, getTemplatePath(config.templateFile), viewPath, filterConfig);
-    }
-}
-
-/**
- * Type guard to check if the building block data is a custom column.
- *
- * @param {BuildingBlock} data - The building block data to check
- * @returns {boolean} True if the data is a custom column
- */
-function isCustomColumn(data: BuildingBlock): data is CustomColumn {
-    return data.buildingBlockType === BuildingBlockType.CustomColumn;
-}
-
-/**
- * Type guard to check if the building block data is a custom filter field.
- *
- * @param {BuildingBlock} data - The building block data to check
- * @returns {boolean} True if the data is a custom filter field
- */
-function isCustomFilterField(data: BuildingBlock): data is CustomFilterField {
-    return data.buildingBlockType === BuildingBlockType.CustomFilterField;
 }
 
 /**

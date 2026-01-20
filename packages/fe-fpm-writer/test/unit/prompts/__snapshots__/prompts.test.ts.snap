@@ -1824,6 +1824,58 @@ Object {
 }
 `;
 
+exports[`Prompts getRichTextEditorButtonGroupsBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "rich-text-editor-button-groups",
+    },
+  },
+  "questions": Array [
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "aggregationPath",
+          "buildingBlockData.buttonGroups",
+        ],
+        "mandatory": true,
+        "placeholder": "Select a view or fragment file",
+        "selectType": "dynamic",
+      },
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.buttonGroups",
+        ],
+        "mandatory": true,
+        "placeholder": "Select an aggregation path",
+        "selectType": "dynamic",
+      },
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "hint": "Adding button groups replaces the default button groups in the Rich Text Editor with your chosen configuration.",
+        "selectType": "dynamic",
+      },
+      "message": "Buttons",
+      "name": "buildingBlockData.buttonGroups",
+      "type": "checkbox",
+    },
+  ],
+}
+`;
+
 exports[`Prompts getTableBuildingBlockPrompts 1`] = `
 Object {
   "groups": Array [
