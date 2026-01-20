@@ -68,6 +68,7 @@ export const expressionNames: Record<string, string> = {
 };
 
 /**
+ * Type guard to check if a value is an annotation expression.
  *
  * @param value - Node.
  * @returns True if node is an expression.

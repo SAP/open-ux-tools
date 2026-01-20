@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.7.8
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+
+## 0.7.7
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 0.7.6
 
 ### Patch Changes

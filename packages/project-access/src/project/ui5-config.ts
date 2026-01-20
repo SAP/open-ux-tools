@@ -5,15 +5,35 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
 
-type PathMappings = { [key: string]: string | undefined };
+/**
+ * Type representing the possible path mappings defined in the UI5 configuration for the different project types.
+ *
+ */
+export type PathMappings = {
+    [K in keyof typeof PATH_MAPPING_DEFAULTS]: {
+        [P in keyof (typeof PATH_MAPPING_DEFAULTS)[K]]: string;
+    };
+}[keyof typeof PATH_MAPPING_DEFAULTS];
 
-const PATH_MAPPING_DEFAULTS: Record<Ui5Document['type'], Record<string, string>> = {
+/**
+ * Extracts the paths configuration type for a given UI5 project type.
+ *
+ * @template T - The UI5 project type.
+ */
+type PathsFor<T extends Ui5Document['type']> =
+    Extract<Ui5Document, { type: T }> extends { configuration?: { paths?: infer P } } ? P : never;
+
+/**
+ * Default path mappings for each UI5 project type.
+ *
+ */
+const PATH_MAPPING_DEFAULTS: { [K in Ui5Document['type']]: Required<PathsFor<K>> } = {
     component: { src: 'src', test: 'test' },
     application: { webapp: DirName.Webapp },
     library: { src: 'src', test: 'test' },
     'theme-library': { src: 'src', test: 'test' },
     module: {}
-};
+} as const;
 
 /**
  * Get base directory of the project where package.json is located.
@@ -39,13 +59,14 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
     if (await fileExists(join(appRoot, DirName.Webapp, FileName.Manifest), memFs)) {
         return join(appRoot, DirName.Webapp);
     }
-    let pathMappings: PathMappings = {};
+    let pathMappings;
     try {
         pathMappings = await getPathMappings(appRoot, memFs);
     } catch {
         // For backward compatibility ignore errors and use default
+        pathMappings = {} as PathMappings;
     }
-    return pathMappings?.webapp ?? pathMappings?.src ?? join(appRoot, DirName.Webapp);
+    return 'webapp' in pathMappings ? pathMappings.webapp : join(appRoot, DirName.Webapp);
 }
 
 /**
@@ -62,15 +83,14 @@ export async function getWebappTestPath(appRoot: string, memFs?: Editor): Promis
     if (await fileExists(join(appRoot, DirName.Webapp, FileName.Manifest), memFs)) {
         return join(appRoot, DirName.Webapp, 'test');
     }
-    let pathMappings: PathMappings = {};
+    let pathMappings;
     try {
         pathMappings = await getPathMappings(appRoot, memFs);
     } catch {
         // For backward compatibility ignore errors and use default
+        pathMappings = {} as PathMappings;
     }
-    return pathMappings?.webapp
-        ? join(pathMappings?.webapp, 'test')
-        : (pathMappings?.test ?? join(appRoot, DirName.Webapp, 'test'));
+    return 'webapp' in pathMappings ? join(pathMappings?.webapp, 'test') : join(appRoot, DirName.Webapp, 'test');
 }
 
 /**
@@ -104,19 +124,19 @@ export async function getPathMappings(
     }
 
     const baseDir = await getBaseDir(appRoot, memFs);
-    const pathMappings: PathMappings = {};
-    for (const [key, value] of Object.entries(configuration?.paths || {})) {
-        pathMappings[key] = join(baseDir, value ?? PATH_MAPPING_DEFAULTS[type][key]);
+
+    // Use Record<string, string> to permit index access during the merge loop
+    const result: Record<string, string> = {};
+    const configPaths = (configuration?.paths ?? {}) as Record<string, string>;
+    const defaults = PATH_MAPPING_DEFAULTS[type] as Record<string, string>;
+
+    for (const key in defaults) {
+        const value = configPaths[key] ?? defaults[key];
+        result[key] = join(baseDir, value);
     }
 
-    //Add defaults if no specific value exists
-    for (const [key, defaultValue] of Object.entries(PATH_MAPPING_DEFAULTS[type] ?? {})) {
-        if (!pathMappings[key]) {
-            pathMappings[key] = join(baseDir, defaultValue);
-        }
-    }
-
-    return pathMappings;
+    // Cast the merged result to PathMappings to re-enforce strict union keys for the caller
+    return result as PathMappings;
 }
 
 /**

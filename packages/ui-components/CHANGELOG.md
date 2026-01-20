@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.27.2
+
+### Patch Changes
+
+- 26dde65: UIComboBox: Fixed an issue where hidden options became visible after search.
+
+## 1.27.1
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 1.27.0
 
 ### Minor Changes
