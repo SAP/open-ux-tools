@@ -30,14 +30,8 @@ export const MultiSelect = (props: MultiSelectProps) => {
     const options = useOptions(props, dynamicChoices);
     const { checkedOptions, selectedKeys } = useMultiSelectKeys(options, value ?? '');
 
-    const handleSubmitValue = (value: string): string => {
-        const currentSelectedOptions =
-            value
-                ?.split(',')
-                .map((v) => v.trim())
-                .filter(Boolean) ?? [];
-        // Return combined list of checked options and current selected options
-        return [...checkedOptions, ...currentSelectedOptions].join(',');
+    const handleSubmitValue = (userSelections: string[]): string => {
+        return [...checkedOptions, ...userSelections].join(',');
     };
 
     return (
@@ -55,16 +49,16 @@ export const MultiSelect = (props: MultiSelectProps) => {
             disabled={false}
             calloutCollisionTransformation={calloutCollisionTransformation}
             onChange={(_, changedOption) => {
-                let updatedValue: string | undefined = '';
+                let updatedValue: string[];
                 if (changedOption?.selected) {
-                    updatedValue = [...(value?.split(',').filter((option) => option) ?? []), changedOption.key].join();
+                    updatedValue = [...selectedKeys, changedOption.key as string];
                 } else {
-                    updatedValue = (value?.split(',') ?? [])
-                        .filter((option) => option && option !== changedOption?.key)
-                        .join();
+                    updatedValue = selectedKeys.filter((key) => key !== changedOption?.key);
                 }
-                setValue(updatedValue);
-                onChange(name, handleSubmitValue(updatedValue));
+
+                const updatedValueString = handleSubmitValue(updatedValue);
+                setValue(updatedValueString);
+                onChange(name, updatedValueString);
             }}
             onRenderLabel={getLabelRenderer(hint)}
             errorMessage={errorMessage}

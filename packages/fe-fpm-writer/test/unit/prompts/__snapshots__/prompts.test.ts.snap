@@ -1865,7 +1865,7 @@ Object {
     Object {
       "choices": [Function],
       "guiOptions": Object {
-        "hint": "Adding button groups will replace the default button groups in the Rich Text Editor with your chosen configuration.",
+        "hint": "Adding button groups replaces the default button groups in the Rich Text Editor with your chosen configuration.",
         "selectType": "dynamic",
       },
       "message": "Buttons",
