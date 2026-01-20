@@ -7,7 +7,7 @@ import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoin
 
 import { t } from './i18n';
 import { getExtensionProjectData } from '../app/extension-project';
-import type { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 /**
  * Parameters required for composing the extension project generator.
  */
@@ -105,9 +105,10 @@ export async function addDeployGen(
     appWizard: AppWizard
 ): Promise<void> {
     try {
+        const hideIfOnPremise = projectType === AdaptationProjectType.ON_PREMISE;
         const subGenPromptOptions = {
-            ui5AbapRepo: { hideIfOnPremise: true },
-            transportInputChoice: { hideIfOnPremise: true },
+            ui5AbapRepo: { hideIfOnPremise },
+            transportInputChoice: { hideIfOnPremise },
             overwriteAbapConfig: { hide: true },
             packageAutocomplete: {
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION

@@ -5,7 +5,14 @@ import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { type InboundContent, type Inbound, AdaptationProjectType } from '@sap-ux/axios-extension';
-import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace, type Manifest } from '@sap-ux/project-access';
+import {
+    getWebappPath,
+    FileName,
+    readUi5Yaml,
+    type ManifestNamespace,
+    type Manifest,
+    getAppType
+} from '@sap-ux/project-access';
 
 import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
 
@@ -174,6 +181,10 @@ export async function getExistingAdpProjectType(
     yamlPath: string
 ): Promise<AdaptationProjectType | undefined> {
     try {
+        const appType = await getAppType(basePath);
+        if (appType !== 'Fiori Adaptation') {
+            return undefined;
+        }
         const ui5Config = await readUi5Config(basePath, yamlPath);
         return ui5Config.hasBuilderKey() ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
     } catch (error) {

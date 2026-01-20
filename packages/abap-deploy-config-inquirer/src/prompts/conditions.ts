@@ -136,19 +136,10 @@ export function showPasswordQuestion(): boolean {
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
  * @param ui5AbapPromptOptions - UI5 Abap Repo prompt options
- * @param adpProjectType - The adaptation project type.
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(
-    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
-    adpProjectType?: AdaptationProjectType
-): boolean {
-    if (
-        !ui5AbapPromptOptions?.hide &&
-        ui5AbapPromptOptions?.hideIfOnPremise &&
-        !PromptState.abapDeployConfig?.scp &&
-        adpProjectType === AdaptationProjectType.ON_PREMISE
-    ) {
+export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRepoPromptOptions): boolean {
+    if (!ui5AbapPromptOptions?.hide && ui5AbapPromptOptions?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
@@ -238,18 +229,10 @@ function defaultOrShowTransportQuestion(): boolean {
  * Determines if the transport input choice question should be shown.
  *
  * @param options - abap deploy config prompt options
- * @param adpProjectType - The adaptation project type.
  * @returns boolean
  */
-export function showTransportInputChoice(
-    options?: TransportInputChoicePromptOptions,
-    adpProjectType?: AdaptationProjectType
-): boolean {
-    if (
-        options?.hideIfOnPremise === true &&
-        adpProjectType === AdaptationProjectType.ON_PREMISE &&
-        !PromptState.abapDeployConfig?.scp
-    ) {
+export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
+    if (options?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
         return false;
     }
 
@@ -271,13 +254,11 @@ function isTransportListEmpty(transportList?: TransportListItem[]): boolean {
  *
  * @param transportInputChoice - transportInputChoice from previous answers
  * @param transportInputChoiceOptions - transportInputChoice options
- * @param adpProjectType - The adaptation project type.
  * @returns boolean
  */
 export function defaultOrShowTransportListQuestion(
     transportInputChoice?: string,
-    transportInputChoiceOptions?: TransportInputChoicePromptOptions,
-    adpProjectType?: AdaptationProjectType
+    transportInputChoiceOptions?: TransportInputChoicePromptOptions
 ): boolean {
     const showQuestion = defaultOrShowTransportQuestion();
     if (!showQuestion) {
@@ -287,7 +268,7 @@ export function defaultOrShowTransportListQuestion(
     return (
         transportInputChoice === TransportChoices.ListExistingChoice &&
         !isTransportListEmpty(PromptState.transportAnswers.transportList) &&
-        !(transportInputChoiceOptions?.hideIfOnPremise === true && adpProjectType === AdaptationProjectType.ON_PREMISE)
+        !transportInputChoiceOptions?.hideIfOnPremise
     );
 }
 
@@ -313,19 +294,15 @@ export function defaultOrShowTransportCreatedQuestion(transportInputChoice?: str
  *
  * @param transportInputChoice - transportInputChoice from previous answers
  * @param transportInputChoiceOptions - transportInputChoice options
- * @param adpProjectType - The adaptation project type.
  * @returns boolean
  */
 export function defaultOrShowManualTransportQuestion(
     transportInputChoice?: string,
-    transportInputChoiceOptions?: TransportInputChoicePromptOptions,
-    adpProjectType?: AdaptationProjectType
+    transportInputChoiceOptions?: TransportInputChoicePromptOptions
 ): boolean {
     return (
         defaultOrShowTransportQuestion() &&
-        (transportInputChoice === TransportChoices.EnterManualChoice ||
-            (transportInputChoiceOptions?.hideIfOnPremise === true &&
-                adpProjectType === AdaptationProjectType.ON_PREMISE))
+        (transportInputChoice === TransportChoices.EnterManualChoice || !!transportInputChoiceOptions?.hideIfOnPremise)
     );
 }
 

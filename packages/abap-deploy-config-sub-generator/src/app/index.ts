@@ -190,9 +190,10 @@ export default class extends DeploymentGenerator {
                 shouldValidatePackageType: this.isAdp,
                 shouldValidateFormatAndSpecialCharacters: this.isAdp
             };
+            const hideIfOnPremise = this.adpProjectType === AdaptationProjectType.ON_PREMISE;
             const promptOptions: AbapDeployConfigPromptOptions = {
-                ui5AbapRepo: { hideIfOnPremise: this.isAdp },
-                transportInputChoice: { hideIfOnPremise: this.isAdp },
+                ui5AbapRepo: { hideIfOnPremise },
+                transportInputChoice: { hideIfOnPremise },
                 packageAutocomplete: {
                     additionalValidation: packageAdditionalValidation
                 },
