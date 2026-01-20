@@ -12,6 +12,7 @@ import { DiagnosticCache } from './diagnostic-cache';
 import type { Diagnostic } from './diagnostics';
 import type { DeepestExistingPathResult } from '../utils/helpers';
 import { findDeepestExistingPath } from '../utils/helpers';
+import { pathToFileURL } from 'url';
 
 /**
  * Rule context type for JSON-based rules.
@@ -122,7 +123,7 @@ export function createFioriRule<
                 MessageIds: MessageIds;
             }>
         ): RuleVisitor {
-            const uri = context.filename;
+            const uri = pathToFileURL(context.filename).toString();
             let cachedDiagnostics = DiagnosticCache.getMessages(uri, ruleId);
             if (!cachedDiagnostics) {
                 cachedDiagnostics = check(context);
