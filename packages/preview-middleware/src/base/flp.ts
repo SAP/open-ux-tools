@@ -413,7 +413,6 @@ export class FlpSandbox {
     ): Promise<void> {
         if (!req.query['fiori-tools-rta-mode']) {
             this.logger.debug(`Adjusting URL parameters for runtime adaptation mode. Redirecting to correct URL.`);
-            //todo const url = posix.join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl);
             const url =
                 'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl) : previewUrl;
             const params = structuredClone(req.query);
@@ -475,7 +474,6 @@ export class FlpSandbox {
         // connect API (karma test runner) has no request query property
         if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
             this.logger.debug(`Adjusting URL parameters for preview. Redirecting to correct URL.`);
-            //todo const url = posix.join(req['ui5-patched-router']?.baseUrl ?? '', req.path);
             const url =
                 'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', req.path) : req.path;
             const params = structuredClone(req.query);
