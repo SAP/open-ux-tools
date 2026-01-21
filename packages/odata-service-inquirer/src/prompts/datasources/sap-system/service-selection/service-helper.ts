@@ -155,7 +155,9 @@ export async function getServiceChoices(
     }
 
     if (serviceFilter) {
-        flatServices = flatServices.filter((service) => serviceFilter.includes(service.id));
+        flatServices = flatServices.filter(
+            (service) => serviceFilter.includes(service.id) || serviceFilter.includes(service.path)
+        );
     }
     return createServiceChoices(flatServices);
 }
@@ -373,6 +375,7 @@ type ShowCollabDraftWarnOptions = {
  * @param options.hasAnnotations used to determine whether to show a warning message that annotations could not be retrieved
  * @param options.showCollabDraftWarnOptions to show the collaborative draft warning, the option `showCollabDraftWarning` must be true
  *  and the edmx metadata must be provided
+ * @param options.serviceFilter if a service filter has been specified this may alter the user messages when no services are listed
  * @returns the service selection prompt additional message
  */
 export async function getSelectedServiceMessage(
@@ -382,14 +385,27 @@ export async function getSelectedServiceMessage(
     {
         requiredOdataVersion,
         hasAnnotations = true,
-        showCollabDraftWarnOptions
+        showCollabDraftWarnOptions,
+        serviceFilter
     }: {
         requiredOdataVersion?: OdataVersion;
         hasAnnotations?: boolean;
         showCollabDraftWarnOptions?: ShowCollabDraftWarnOptions;
+        serviceFilter?: string[];
     }
 ): Promise<IMessageSeverity | undefined> {
+    // Note that the order of these conditions is critical
     if (serviceChoices?.length === 0) {
+        if (serviceFilter && serviceFilter.length > 0) {
+            return {
+                message: t('warnings.specifiedServicesNotAvailable', {
+                    odataVersion: requiredOdataVersion ? `V${requiredOdataVersion} ` : undefined,
+                    service: serviceFilter[0],
+                    count: serviceFilter.length
+                }),
+                severity: Severity.warning
+            };
+        }
         if (requiredOdataVersion) {
             return {
                 message: t('warnings.noServicesAvailableForOdataVersion', {
