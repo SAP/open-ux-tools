@@ -170,6 +170,8 @@ describe('Test system selection prompts', () => {
         isAuthRequiredMock.mockResolvedValue(false);
         validateServiceInfoResultMock = true;
         validateUrlResultMock = true;
+        // Reset the backend systems in place
+        backendSystems.splice(0, backendSystems.length, backendSystemBasic);
     });
 
     test('should return system selection prompts and choices based on development environment, BAS or non-BAS', async () => {
@@ -651,13 +653,46 @@ describe('Test system selection prompts', () => {
     test('Should set the default system choice based on the defaultChoice options', async () => {
         backendSystems.push(backendSystemReentrance);
         const defaultChoice = backendSystemReentrance.name;
-        const systemSelectionQuestions = await getSystemSelectionQuestions({
+        let systemSelectionQuestions = await getSystemSelectionQuestions({
             [promptNames.systemSelection]: { defaultChoice }
         });
-        const systemSelectionPrompt = systemSelectionQuestions.find(
+        let systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        const defaultIndex = (systemSelectionPrompt as Question).default;
+        let defaultIndex = (systemSelectionPrompt as Question).default();
+        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
+            value: {
+                system: backendSystemReentrance,
+                type: 'backendSystem'
+            }
+        });
+
+        const testBackendSystemDefault: BackendSystem = {
+            name: 'System Name1',
+            url: 'http://test.default.selection:1234',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
+        };
+        backendSystems.push(testBackendSystemDefault);
+
+        // Test the default choice as a bound value
+        const defaultChoiceValue = { value: testBackendSystemDefault.name };
+        systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.systemSelection]: { defaultChoice: defaultChoiceValue }
+        });
+        systemSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === promptNames.systemSelection
+        );
+        defaultIndex = (systemSelectionPrompt as Question).default();
+        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
+            value: {
+                system: testBackendSystemDefault,
+                type: 'backendSystem'
+            }
+        });
+        // Mimic a dynmaic update to the default choice value
+        defaultChoiceValue.value = backendSystemReentrance.name;
+        defaultIndex = (systemSelectionPrompt as Question).default();
         expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
             value: {
                 system: backendSystemReentrance,
@@ -675,7 +710,7 @@ describe('Test system selection prompts', () => {
         const systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        const defaultIndex = (systemSelectionPrompt as Question).default;
+        const defaultIndex = (systemSelectionPrompt as Question).default();
         expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(1);
         expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
             value: {
@@ -693,7 +728,7 @@ describe('Test system selection prompts', () => {
         const systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(8);
+        expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(3);
     });
 
     test('Should hide the service selection prompt when hide option in provided as true', async () => {
