@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.10
+
+### Patch Changes
+
+- 33d92e4: Adds new options for system and service selection.
+
+## 2.14.9
+
+### Patch Changes
+
+- 090cdec: Fix for odata version restriction not applied for Abap-on-prem credentials prompts
+
 ## 2.14.8
 
 ### Patch Changes
