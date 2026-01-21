@@ -1379,9 +1379,11 @@ describe('FlpSandbox', () => {
         });
 
         test('GET OPA5 paths', async () => {
-            const response = await server.get(`/test-resources/test/fe/v2/app/custom/integration/opaTests.qunit.html`);
+            let response = await server.get(`/test-resources/test/fe/v2/app/custom/integration/opaTests.qunit.html`);
             expect(response.status).toBe(200);
             expect(response.type).toBe('text/html');
+            response = await server.get(`/test-resources/test/fe/v2/app/custom/integration/opaTests.qunit.js`);
+            expect(response.status).toBe(404);
         });
 
         test('GET QUnit paths', async () => {

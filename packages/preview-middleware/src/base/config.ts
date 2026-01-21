@@ -8,7 +8,8 @@ import type {
     CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
-    TestConfig
+    TestConfig,
+    CardGeneratorConfig
 } from '../types';
 import { render } from 'ejs';
 import { resolve, join, posix } from 'node:path';
@@ -22,6 +23,7 @@ import {
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
+import { getSandboxPathPrefix, adjustPathForSandbox } from './utils/project';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
@@ -194,13 +196,9 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
  * @returns a full configuration with default values
  */
 export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}, utils?: MiddlewareUtils): FlpConfig {
-    const sandboxPathPrefix =
-        typeof utils === 'object' && utils.getProject?.()?.getType?.() === 'component'
-            ? posix.join('/test-resources', utils.getProject().getNamespace())
-            : undefined;
+    const sandboxPathPrefix = getSandboxPathPrefix(utils);
 
-    // remove leading /test from default if sandboxPathPrefix is set
-    const defaultPath = sandboxPathPrefix ? DEFAULT_PATH.replace(/^\/test/, '') : DEFAULT_PATH;
+    const defaultPath = adjustPathForSandbox(DEFAULT_PATH, sandboxPathPrefix);
 
     return {
         path: posix.join(sandboxPathPrefix ?? '/', config.path ?? defaultPath),
@@ -211,6 +209,58 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}, utils?
         init: config.init,
         enhancedHomePage: config.enhancedHomePage === true
     } satisfies FlpConfig;
+}
+
+/**
+ * Adjust RTA editor paths for component projects.
+ *
+ * @param rta RTA configuration
+ * @param utils middleware utils
+ * @returns RTA configuration with adjusted paths
+ */
+export function adjustRtaConfigPaths(rta: RtaConfig | undefined, utils?: MiddlewareUtils): RtaConfig | undefined {
+    if (!rta) {
+        return undefined;
+    }
+    return structuredClone({
+        ...rta,
+        endpoints: rta.endpoints.map((endpoint) => {
+            return {
+                ...endpoint,
+                path: posix.join(getSandboxPathPrefix(utils) ?? '/', endpoint.path)
+            };
+        })
+    });
+}
+
+/**
+ * Adjust card generator path for component projects and set default if needed.
+ *
+ * @param cardGenerator card generator configuration
+ * @param utils middleware utils
+ * @returns card generator configuration with adjusted path
+ */
+export function adjustCardGeneratorPath(
+    cardGenerator: CardGeneratorConfig | undefined,
+    utils?: MiddlewareUtils
+): { path: string } | undefined {
+    const sandboxPathPrefix = getSandboxPathPrefix(utils);
+    const defaultPath = CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
+    if (!cardGenerator) {
+        if (!sandboxPathPrefix) {
+            return { path: defaultPath };
+        }
+        const adjustedPath = adjustPathForSandbox(defaultPath, sandboxPathPrefix);
+        return { path: posix.join(sandboxPathPrefix, adjustedPath) };
+    }
+
+    const basePath = cardGenerator.path ?? defaultPath;
+
+    return {
+        path: sandboxPathPrefix
+            ? posix.join(sandboxPathPrefix, adjustPathForSandbox(basePath, sandboxPathPrefix))
+            : posix.join('/', basePath)
+    };
 }
 
 /**

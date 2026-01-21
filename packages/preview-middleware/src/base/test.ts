@@ -4,6 +4,7 @@ import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../type
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import { posix } from 'node:path';
+import { getSandboxPathPrefix, adjustPathForSandbox } from './utils/project';
 
 const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
     qunit: {
@@ -27,18 +28,32 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
 } satisfies TestConfigDefaults;
 
 /**
- * Get the test path prefix for component projects.
+ * Check if the init path is a default generated path (not user-provided).
+ * Compares the init path against what would be generated as default for the framework.
  *
+ * @param framework the test framework
+ * @param initPath the init path to check
  * @param utils middleware utils
- * @returns test path prefix or undefined
+ * @returns true if the init path matches the default for this framework
  */
-function getTestPathPrefix(utils?: MiddlewareUtils): string | undefined {
-    if (typeof utils !== 'object') {
-        return undefined;
+export function isDefaultInitPath(
+    framework: 'OPA5' | 'QUnit' | 'Testsuite',
+    initPath: string,
+    utils?: MiddlewareUtils
+): boolean {
+    const defaultInit = DEFAULTS[framework.toLowerCase()]?.init;
+    if (!defaultInit) {
+        return false;
     }
-    return utils.getProject?.()?.getType?.() === 'component'
-        ? posix.join('/test-resources', utils.getProject().getNamespace())
-        : undefined;
+    const testPathPrefix = getSandboxPathPrefix(utils);
+    if (testPathPrefix) {
+        // For component projects, compute the adjusted default
+        const adjustedInit = adjustPathForSandbox(defaultInit, testPathPrefix);
+        const expectedPath = posix.join('/', posix.join(testPathPrefix, adjustedInit));
+        return initPath === expectedPath;
+    }
+    // For non-component projects, check against the default
+    return initPath === defaultInit;
 }
 
 /**
@@ -49,14 +64,14 @@ function getTestPathPrefix(utils?: MiddlewareUtils): string | undefined {
  * @returns merged test configuration
  */
 export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUtils): CompleteTestConfig {
-    const testPathPrefix = getTestPathPrefix(utils);
+    const testPathPrefix = getSandboxPathPrefix(utils);
     const defaults: CompleteTestConfig = DEFAULTS[config.framework.toLowerCase()] ?? {};
 
     if (testPathPrefix) {
         // remove leading /test from defaults if sandboxPathPrefix is set
-        defaults.pattern = defaults.pattern.replace(/^\/test/, '');
+        defaults.pattern = adjustPathForSandbox(defaults.pattern, testPathPrefix);
         for (const prop of ['path', 'init'] as const) {
-            defaults[prop] = defaults[prop].replace(/^\/test/, '');
+            defaults[prop] = adjustPathForSandbox(defaults[prop], testPathPrefix);
         }
     }
 

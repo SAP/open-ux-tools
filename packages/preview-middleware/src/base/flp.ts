@@ -35,7 +35,7 @@ import {
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
-import { generateImportList, mergeTestConfigDefaults } from './test';
+import { generateImportList, mergeTestConfigDefaults, isDefaultInitPath } from './test';
 import type {
     RtaEditor,
     FlpConfig,
@@ -57,6 +57,8 @@ import {
     addApp,
     getAppName,
     sanitizeRtaConfig,
+    adjustRtaConfigPaths,
+    adjustCardGeneratorPath,
     CARD_GENERATOR_DEFAULT
 } from './config';
 import { generateCdm } from './cdm';
@@ -107,7 +109,7 @@ export class FlpSandbox {
     protected templateConfig: TemplateConfig;
     public readonly flpConfig: FlpConfig;
     public readonly rta?: RtaConfig;
-    public readonly test?: TestConfig[];
+    public readonly test?: CompleteTestConfig[];
     public readonly router: EnhancedRouter;
     private fs: MemFsEditor | undefined;
     private readonly logger: Logger;
@@ -128,12 +130,18 @@ export class FlpSandbox {
         this.logger = logger;
         this.project = project;
         this.utils = utils;
+
+        // Do path adjustments for all configs
         this.flpConfig = getFlpConfigWithDefaults(config.flp, this.utils);
-        this.test = config.test;
-        this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
+        this.test = config.test?.map((testConfig) => mergeTestConfigDefaults(testConfig, this.utils));
+        this.rta = adjustRtaConfigPaths(
+            config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger), //NOSONAR
+            this.utils
+        );
+        this.cardGenerator = adjustCardGeneratorPath(config.editors?.cardGenerator, this.utils);
+
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
-        this.cardGenerator = config.editors?.cardGenerator;
     }
 
     /**
@@ -417,21 +425,14 @@ export class FlpSandbox {
      */
     private addEditorRoutes(rta: RtaConfig): void {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
-        const sandboxPathPrefix =
-            typeof this.utils === 'object' && this.utils.getProject?.()?.getType?.() === 'component'
-                ? posix.join('/test-resources', this.utils.getProject().getNamespace())
-                : undefined;
         for (const editor of rta.endpoints) {
-            let previewUrl = posix.join(sandboxPathPrefix ?? '/', editor.path);
+            let previewUrl = editor.path;
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(
-                    posix.join(sandboxPathPrefix ?? '/', editor.path),
-                    async (_req: Request, res: Response) => {
-                        await this.editorGetHandlerDeveloperMode(res, rta, previewUrl);
-                    }
-                );
+                this.router.get(editor.path, async (_req: Request, res: Response) => {
+                    await this.editorGetHandlerDeveloperMode(res, rta, previewUrl);
+                });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
                     path = `${path}/`;
@@ -520,17 +521,8 @@ export class FlpSandbox {
      * @private
      */
     private async addCardGeneratorMiddlewareRoute(): Promise<void> {
-        const sandboxPathPrefix =
-            typeof this.utils === 'object' && this.utils.getProject?.()?.getType?.() === 'component'
-                ? posix.join('/test-resources', this.utils.getProject().getNamespace())
-                : undefined;
-        const previewGeneratorSandbox = sandboxPathPrefix
-            ? CARD_GENERATOR_DEFAULT.previewGeneratorSandbox.replace(/^\/test/, '')
-            : CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
-        const previewGeneratorPath = posix.join(
-            sandboxPathPrefix ?? '/',
-            this.cardGenerator?.path ?? previewGeneratorSandbox
-        );
+        // Path is already adjusted in constructor with proper defaults
+        const previewGeneratorPath = this.cardGenerator?.path ?? '/';
         this.logger.debug(`Add route for ${previewGeneratorPath}`);
         this.router.get(
             previewGeneratorPath,
@@ -830,7 +822,7 @@ export class FlpSandbox {
      * @param configs test configurations
      * @private
      */
-    private createTestSuite(configs: TestConfig[]): void {
+    private createTestSuite(configs: CompleteTestConfig[]): void {
         const testsuiteConfig = configs.find((config) => config.framework === 'Testsuite');
         if (!testsuiteConfig) {
             //silent skip: create a testsuite only if it is explicitly part of the test configuration
@@ -841,16 +833,17 @@ export class FlpSandbox {
             return;
         }
         const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.ejs'), 'utf-8');
-        const config = mergeTestConfigDefaults(testsuiteConfig, this.utils);
-        this.logger.debug(`Add route for ${config.path}`);
+        // Config is already merged with defaults in constructor
+        this.logger.debug(`Add route for ${testsuiteConfig.path}`);
         this.router.get(
-            config.path,
+            testsuiteConfig.path,
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
-                await this.testSuiteHtmlGetHandler(res, testsuite, config);
+                await this.testSuiteHtmlGetHandler(res, testsuite, testsuiteConfig);
             }
         );
 
-        if (testsuiteConfig.init !== undefined) {
+        // Skip generating init route if user provided a custom init script
+        if (!isDefaultInitPath('Testsuite', testsuiteConfig.init, this.utils)) {
             this.logger.debug(
                 `Skip serving testsuite init script in favor of provided script: ${testsuiteConfig.init}`
             );
@@ -862,20 +855,20 @@ export class FlpSandbox {
             if (testConfig.framework === 'Testsuite') {
                 continue;
             }
-            const mergedConfig = mergeTestConfigDefaults(testConfig, this.utils);
-            testPaths.push(posix.relative(posix.dirname(config.path), mergedConfig.path));
+            // Configs are already merged with defaults in constructor
+            testPaths.push(posix.relative(posix.dirname(testsuiteConfig.path), testConfig.path));
         }
 
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
-        this.logger.debug(`Add route for ${config.init}`);
+        this.logger.debug(`Add route for ${testsuiteConfig.init}`);
         this.router.get(
-            config.init,
+            testsuiteConfig.init,
             async (
                 _req: EnhancedRequest | connect.IncomingMessage,
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                await this.testSuiteJsGetHandler(res, next, config, initTemplate, testPaths);
+                await this.testSuiteJsGetHandler(res, next, testsuiteConfig, initTemplate, testPaths);
             }
         );
     }
@@ -964,11 +957,11 @@ export class FlpSandbox {
      * @param configs test configurations
      * @param id application id from manifest
      */
-    private addTestRoutes(configs: TestConfig[], id: string): void {
+    private addTestRoutes(configs: CompleteTestConfig[], id: string): void {
         const ns = id.replace(/\./g, '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
-        for (const testConfig of configs) {
-            const config = mergeTestConfigDefaults(testConfig, this.utils);
+        for (const config of configs) {
+            // Config is already merged with defaults in constructor
             this.logger.debug(`Add route for ${config.path}`);
             // add route for the *.qunit.html
             this.router.get(
@@ -981,10 +974,13 @@ export class FlpSandbox {
                     await this.testRunnerHtmlGetHandler(res, next, config, htmlTemplate, id);
                 }
             );
-            if (testConfig.init !== undefined) {
-                this.logger.debug(`Skip serving test init script in favor of provided script: ${testConfig.init}`);
+
+            // Skip generating init route if user provided a custom init script
+            if (!isDefaultInitPath(config.framework, config.init, this.utils)) {
+                this.logger.debug(`Skip serving test init script in favor of provided script: ${config.init}`);
                 continue;
             }
+
             // add route for the init file
             const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
             this.logger.debug(`Add route for ${config.init}`);
