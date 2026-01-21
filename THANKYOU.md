@@ -5,7 +5,7 @@ We are incredibly grateful to the developers who have helped build **Open UX Too
 > **Want to be on this list?** > Check out our [Contributing Guide](CONTRIBUTING.md) and open a PR. We welcome bug fixes, documentation updates, and new features for the monorepo.
 
 ### 🏆 Merged Contributors
-The following individuals have had their change successfully merged into the `main` branch:
+The following individuals have had their contributions successfully merged into the `main` branch:
 
 - [@815are](https://github.com/815are)
 - [@aislingnoone](https://github.com/aislingnoone)
