@@ -244,7 +244,7 @@ export const ui5VersionFallbacks = [
     },
     {
         version: '1.84.*',
-        support: supportState.maintenance
+        support: supportState.outOfMaintenance
     },
     {
         version: '1.82.*',
