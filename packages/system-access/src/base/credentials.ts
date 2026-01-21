@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import { getService, BackendSystemKey, BackendSystem } from '@sap-ux/store';
+import { getService, BackendSystemKey, BackendSystem, type SystemType, type ConnectionType } from '@sap-ux/store';
 import type { UrlAbapTarget } from '../types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import prompts from 'prompts';
@@ -63,6 +63,8 @@ export async function getCredentialsFromStore(
  * @param target target
  * @param target.url system url
  * @param target.client optional system client
+ * @param target.systemType system type
+ * @param target.connectionType connection type
  * @param credentials basic auth credentials
  * @param credentials.username username
  * @param credentials.password password
@@ -71,7 +73,7 @@ export async function getCredentialsFromStore(
  */
 export async function storeCredentials(
     name: string,
-    target: { url: string; client?: string },
+    target: { url: string; client?: string; systemType: SystemType; connectionType: ConnectionType },
     credentials: { username: string; password: string },
     logger: Logger
 ): Promise<boolean> {

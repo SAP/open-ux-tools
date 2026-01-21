@@ -20,6 +20,7 @@ export const quotedLiteralHandler: NodeHandler<QuotedLiteral> = {
 };
 
 /**
+ * Converts a quoted literal kind to its corresponding EDM element name.
  *
  * @param kind quoted string.
  * @returns check case and return Edm (Time of Day, date, dateOffset or binary).

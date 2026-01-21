@@ -65,14 +65,15 @@ import { collectComments } from './comments';
 import { getNodeFromPointer } from './pointer';
 
 /**
- *
+ * XML Annotation Service Adapter.
+ * Provides annotation editing capabilities for XML-based OData annotation files.
  */
 export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     public metadataService = new MetadataService();
     public splitAnnotationSupport = false;
     public fileCache: Map<string, string>;
 
-    private documents = new Map<string, Document>();
+    private readonly documents = new Map<string, Document>();
     private metadata: MetadataElement[] = [];
 
     private setFileCache(fileCache: Map<string, string>) {
@@ -81,6 +82,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
 
     private _compiledService: CompiledService | undefined;
     /**
+     * Gets the compiled XML service.
      *
      * @returns Compiled XML service.
      */
@@ -95,17 +97,18 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }
 
     /**
+     * Creates an instance of XMLAnnotationServiceAdapter.
      *
      * @param service - Service structure.
      * @param vocabularyService - Vocabulary API.
-     * @param project - Project structure.
+     * @param project - Project information.
      * @param appName - Name of the application.
      */
     constructor(
-        private service: LocalEDMXService,
-        private vocabularyService: VocabularyService,
-        private project: Project,
-        private appName: string
+        private readonly service: LocalEDMXService,
+        private readonly vocabularyService: VocabularyService,
+        private readonly project: Project,
+        private readonly appName: string
     ) {
         this.fileCache = new Map();
     }
@@ -148,6 +151,19 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             isCds: false
         });
         this.metadataService.import(this.metadata, this.service.metadataFile.uri);
+    }
+
+    /**
+     * Get annotation documents.
+     *
+     * @returns Annotation documents.
+     */
+    public getDocuments(): Record<string, AnnotationFile> {
+        const annotationFiles: Record<string, AnnotationFile> = {};
+        for (const [uri, document] of this.documents.entries()) {
+            annotationFiles[uri] = document.annotationFile;
+        }
+        return annotationFiles;
     }
 
     /**
@@ -757,7 +773,7 @@ function convertPointerSegment(
         // convert attribute segment to index based one
         // we assume that keys in the object are added in the order they are in file,
         // which in general should be true
-        elementIndex = Object.keys(currentNode).findIndex((key) => key === segment);
+        elementIndex = Object.keys(currentNode).indexOf(segment);
     }
     const mappedSegment = elementIndex !== -1 ? elementIndex.toString() : segment;
     return { mappedSegment, nextNode };

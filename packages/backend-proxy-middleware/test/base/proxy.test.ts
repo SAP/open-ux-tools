@@ -1,4 +1,4 @@
-import type { ClientRequest, IncomingMessage } from 'http';
+import type { ClientRequest, IncomingMessage } from 'node:http';
 import type { Options } from 'http-proxy-middleware';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import {
@@ -314,7 +314,9 @@ describe('proxy', () => {
     describe('enhanceConfigForSystem', () => {
         const system: BackendSystem = {
             name: 'example',
-            url: 'http://backend.example'
+            url: 'http://backend.example',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         };
 
         test('simple system', async () => {

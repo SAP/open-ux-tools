@@ -1,5 +1,17 @@
 # Change Log
 
+## 5.3.15
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 5.3.14
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 5.3.13
 
 ### Patch Changes

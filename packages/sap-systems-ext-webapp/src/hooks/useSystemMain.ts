@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { LoadingState } from '../types';
 import type { SystemState } from '../types';
-import type { BackendSystem, SystemType } from '@sap-ux/store';
+import type { AuthenticationType, BackendSystem, SystemType } from '@sap-ux/store';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
 
 /**
@@ -16,7 +16,7 @@ export function useSystemMain(): {
     defaultName: string;
     setName: (name: string | undefined) => void;
     setType: (systemType: SystemType) => void;
-    setAuthenticationType: (authenticationType: string | undefined) => void;
+    setAuthenticationType: (authenticationType: AuthenticationType | undefined) => void;
     setUrl: (url: string | undefined) => void;
     setClient: (client: string | undefined) => void;
     setUsername: (username: string) => void;
@@ -74,7 +74,8 @@ export function useSystemMain(): {
     );
 
     const setAuthenticationType = useCallback(
-        (authenticationType: string | undefined) => setSystemFields((fields) => ({ ...fields, authenticationType })),
+        (authenticationType: AuthenticationType | undefined) =>
+            setSystemFields((fields) => ({ ...fields, authenticationType })),
         []
     );
 

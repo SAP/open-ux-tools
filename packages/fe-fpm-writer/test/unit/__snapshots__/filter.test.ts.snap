@@ -49,14 +49,15 @@ Object {
 
 exports[`CustomFilter generateCustomFilter Create several new custom filters 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-        <ComboBox id=\\"testID2\\">
+        <ComboBox id=\\"testID2\\" width=\\"100%\\">
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
                 <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>"
+</core:FragmentDefinition>
+"
 `;
 
 exports[`CustomFilter generateCustomFilter New custom filter (no eventhandler) 1`] = `
@@ -102,14 +103,15 @@ Object {
 
 exports[`CustomFilter generateCustomFilter New custom filter (no eventhandler) 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-        <ComboBox id=\\"testID\\">
+        <ComboBox id=\\"testID\\" width=\\"100%\\">
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
                 <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>"
+</core:FragmentDefinition>
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Test 'position' property. Create with anchor 1`] = `
@@ -323,6 +325,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
         <ComboBox
             id=\\"testID\\"
+            width=\\"100%\\"
             core:require=\\"{handler: 'myTestApp/ext/custom/dummyFilter'}\\"
             selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.custom.dummyFilter.DummyFilterItems' }}\\"
         >
@@ -332,7 +335,8 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>"
+</core:FragmentDefinition>
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
@@ -537,6 +541,7 @@ exports[`CustomFilter generateCustomFilter specific target folder, event handler
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
         <ComboBox
             id=\\"testID\\"
+            width=\\"100%\\"
             core:require=\\"{handler: 'myTestApp/ext/newCustomFilter/NewCustomFilter'}\\"
             selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
         >
@@ -546,7 +551,8 @@ exports[`CustomFilter generateCustomFilter specific target folder, event handler
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>"
+</core:FragmentDefinition>
+"
 `;
 
 exports[`CustomFilter generateCustomFilter specific target folder, event handler as boolean 3`] = `
@@ -619,6 +625,7 @@ exports[`CustomFilter generateCustomFilter with existing event handler as string
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
         <ComboBox
             id=\\"testID\\"
+            width=\\"100%\\"
             core:require=\\"{handler: 'my/test/App/ext/ExistingHandler'}\\"
             selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'my.test.App.ext.ExistingHandler.onTestFilter' }}\\"
         >
@@ -628,7 +635,8 @@ exports[`CustomFilter generateCustomFilter with existing event handler as string
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>"
+</core:FragmentDefinition>
+"
 `;
 
 exports[`CustomFilter generateCustomFilter with new event handler as string 1`] = `
@@ -676,6 +684,7 @@ exports[`CustomFilter generateCustomFilter with new event handler as string 2`] 
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
         <ComboBox
             id=\\"testID\\"
+            width=\\"100%\\"
             core:require=\\"{handler: 'my/test/App/ext/ExistingHandler'}\\"
             selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'my.test.App.ext.ExistingHandler.onCustomAction' }}\\"
         >
@@ -685,5 +694,6 @@ exports[`CustomFilter generateCustomFilter with new event handler as string 2`] 
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
-</core:FragmentDefinition>"
+</core:FragmentDefinition>
+"
 `;

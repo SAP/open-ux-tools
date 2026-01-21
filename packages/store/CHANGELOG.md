@@ -1,5 +1,32 @@
 # @sap-ux/store
 
+## 1.5.0
+
+### Minor Changes
+
+- c9fd939: update backend systems with system info from adt api
+
+## 1.4.2
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+
+## 1.4.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+
+## 1.4.0
+
+### Minor Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+
 ## 1.3.5
 
 ### Patch Changes

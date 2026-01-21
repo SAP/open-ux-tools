@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('node:fs');
 
 /**
  * Returns a mock class for XMLHttpRequest.
@@ -129,7 +129,7 @@ function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData, X
                     responseText: this.responseText
                 });
             } else {
-                this['onload'].apply(this, []);
+                this.onload();
             }
         },
         /**

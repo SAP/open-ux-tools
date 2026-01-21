@@ -1,5 +1,29 @@
 # sap-ux-sap-systems-ext
 
+## 0.2.0
+
+### Minor Changes
+
+- c9fd939: update backend systems with system info from adt api
+
+## 0.1.4
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
+## 0.1.3
+
+### Patch Changes
+
+- 7b02fb9: fix refresh command
+
+## 0.1.2
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+
 ## 0.1.1
 
 ### Patch Changes

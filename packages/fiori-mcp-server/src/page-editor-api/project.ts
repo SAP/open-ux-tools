@@ -72,7 +72,7 @@ export async function getUI5Version(appAccess: ApplicationAccess): Promise<strin
     const manifest = await getManifest(appAccess);
     let ui5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
 
-    if (ui5Version !== undefined && Number.isNaN(parseFloat(ui5Version))) {
+    if (ui5Version !== undefined && Number.isNaN(Number.parseFloat(ui5Version))) {
         ui5Version = 'latest';
     }
 
@@ -89,11 +89,11 @@ export async function getFlexChangeLayer(root: string): Promise<FlexChangeLayer>
     let packageJson: Package | undefined;
     const packageJsonPath = join(root, FileName.Package);
     if (existsSync(packageJsonPath)) {
-        const file = await readFile(packageJsonPath);
+        const file = await readFile(packageJsonPath, { encoding: 'utf-8' });
         try {
-            packageJson = JSON.parse(file.toString());
+            packageJson = JSON.parse(file) as Package;
         } catch (error) {
-            logger.error(String(error));
+            logger.error(`Error parsing package.json file ${packageJsonPath} ${error}`);
         }
     }
 

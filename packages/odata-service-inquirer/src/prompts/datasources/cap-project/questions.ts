@@ -1,4 +1,5 @@
 import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { searchChoices } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -17,7 +18,7 @@ import {
     type CapServiceAnswers
 } from './types';
 import { validateCapPath } from './validators';
-import { realpath } from 'fs/promises';
+import { realpath } from 'node:fs/promises';
 
 /**
  * Find the specified choice in the list of CAP project choices and return its index.
@@ -42,6 +43,7 @@ function getDefaultCapChoice(
     }
     return -1;
 }
+
 /**
  * Get the prompts for selecting a CAP project from local path discovery.
  * Two prompts are returned, one for selecting a CAP project from a list of discovered projects and
@@ -62,26 +64,27 @@ export function getLocalCapProjectPrompts(
     let validCapPath: string | boolean = false;
     PromptState.reset();
 
-    const prompts: (ListQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
+    const prompts: (YUIQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
         {
             when: async (): Promise<boolean> => {
                 capChoices = await getCapProjectChoices(promptOptions?.[promptNames.capProject]?.capSearchPaths ?? []);
                 return capChoices?.length > 1;
             },
-            type: 'list',
+            type: promptOptions?.[promptNames.capProject]?.useAutoComplete ? 'autocomplete' : 'list',
             name: promptNames.capProject,
             message: t('prompts.capProject.message'),
             default: () => {
                 const defChoice = getDefaultCapChoice(capChoices, defaultCapPath);
                 return defChoice;
             },
+            source: (prevAnswers: unknown, input: string) => searchChoices(input, capChoices),
             choices: () => capChoices,
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 mandatory: true,
                 breadcrumb: t('prompts.capProject.breadcrumb')
             }
-        } as ListQuestion<CapServiceAnswers>,
+        } as YUIQuestion<CapServiceAnswers>,
         {
             when: (answers): boolean => capChoices.length === 1 || answers?.capProject === enterCapPathChoiceValue,
             type: 'input',

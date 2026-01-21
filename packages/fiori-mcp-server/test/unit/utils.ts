@@ -7,7 +7,7 @@ import objectPageSchema from './page-editor-api/test-data/schema/ObjectPage.json
 import objectPageConfig from './page-editor-api/test-data/config/ObjectPage.json';
 import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import type { FlexChange } from '../../src/page-editor-api/flex';
-import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
+import type { ReadAppParams, ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 
 const getDataFile = (
@@ -58,8 +58,8 @@ export const mockSpecificationReadAppWithModel = (
     appPath: string,
     applications: { [key: string]: ApplicationAccess } = {}
 ) => {
-    readAppMock.mockImplementation(async (): Promise<ReadAppResult> => {
-        return readAppWithModel(appPath, applications);
+    readAppMock.mockImplementation(async (options?: ReadAppParams): Promise<ReadAppResult> => {
+        return readAppWithModel(appPath, applications, options);
     });
 };
 
@@ -114,10 +114,12 @@ async function getLocalSpecification(): Promise<Specification> {
 
 export async function readAppWithModel(
     path: string,
-    applications: { [key: string]: ApplicationAccess } = {}
+    applications: { [key: string]: ApplicationAccess } = {},
+    options?: Partial<ReadAppParams>
 ): Promise<ReadAppResult> {
     const specification = await getLocalSpecification();
     const result = await specification.readApp({
+        ...options,
         app: applications[path] ?? path
     });
     return result;

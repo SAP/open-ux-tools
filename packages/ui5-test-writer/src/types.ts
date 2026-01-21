@@ -22,6 +22,7 @@ export type FEV4OPAConfig = {
     opaJourneyFileName: string;
     htmlTarget: string;
     hideFilterBar: boolean;
+    filterBarItems?: string[];
 };
 
 export type FEV4ManifestTarget = {
@@ -71,3 +72,8 @@ export interface FFOPAConfig {
     ui5Version?: string;
     ui5Theme?: string;
 }
+
+export type FeatureData = {
+    filterBarItems?: string[];
+    tableColumns?: Record<string, Record<string, string | number | boolean>>;
+};

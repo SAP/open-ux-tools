@@ -356,15 +356,15 @@ export async function init({
     renderer.placeAt('content');
 }
 
-// eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
+// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access,@sap-ux/fiori-tools/sap-browser-api-warning
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
-        appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
-        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
-        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage'),
-        enableCardGenerator: !!bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator')
+        appUrls: bootstrapConfig.dataset.openUxPreviewLibsManifests,
+        flex: bootstrapConfig.dataset.openUxPreviewFlexSettings,
+        customInit: bootstrapConfig.dataset.openUxPreviewCustomInit,
+        enhancedHomePage: !!bootstrapConfig.dataset.openUxPreviewEnhancedHomepage,
+        enableCardGenerator: !!bootstrapConfig.dataset.openUxPreviewEnableCardGenerator
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
@@ -390,7 +390,7 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
             });
         }
 
-        // eslint-disable-next-line fiori-custom/sap-no-location-reload
+        // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-location-reload
         window.location.reload();
     }
 }

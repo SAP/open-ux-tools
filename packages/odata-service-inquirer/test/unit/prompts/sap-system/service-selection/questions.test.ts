@@ -29,7 +29,7 @@ const serviceV4a = {
     serviceType: 'WEB_API',
     group: 'DMO_GRP',
     name: 'DMO_GRP > /DMO/FLIGHT',
-    path: '/sap/opu/odata4/dmo/flight/0001/?sap-client=000',
+    path: '/sap/opu/odata4/dmo/flight/0001',
     odataVersion: ODataVersion.v4
 } as ODataServiceInfo;
 
@@ -173,7 +173,7 @@ describe('Test new system prompt', () => {
                 name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
                 value: {
                     serviceODataVersion: '4',
-                    servicePath: '/sap/opu/odata4/dmo/flight/0001/?sap-client=000',
+                    servicePath: '/sap/opu/odata4/dmo/flight/0001',
                     serviceType: 'WEB_API',
                     serviceId: '/DMO/FLIGHT',
                     toString: expect.any(Function)
@@ -204,9 +204,30 @@ describe('Test new system prompt', () => {
                 name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
                 value: {
                     serviceODataVersion: '4',
-                    servicePath: '/sap/opu/odata4/dmo/flight/0001/?sap-client=000',
+                    servicePath: '/sap/opu/odata4/dmo/flight/0001',
                     serviceType: 'WEB_API',
                     serviceId: '/DMO/FLIGHT',
+                    toString: expect.any(Function)
+                }
+            }
+        ]);
+
+        // Should restrict service choices based on service path
+        systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
+            serviceFilter: ['/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002']
+        });
+        serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
+            {
+                name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
+                value: {
+                    serviceODataVersion: '2',
+                    servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
+                    serviceType: 'Not Classified',
+                    serviceId: 'ZTRAVEL_DESK_SRV_0002',
                     toString: expect.any(Function)
                 }
             }
@@ -779,5 +800,42 @@ describe('Test new system prompt', () => {
         expect(choices).toEqual([
             { name: 'http://abap01:1234/path/to/odata/service', value: { servicePath: '/path/to/odata/service' } }
         ]);
+    });
+
+    test('Should include value help download prompt when showValueHelpDownloadPrompt is true', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = { authenticated: true, reachable: true };
+
+        const systemServiceQuestions = getSystemServiceQuestion(
+            connectValidator,
+            promptNamespace,
+            undefined,
+            true // showValueHelpDownloadPrompt = true
+        );
+
+        const valueHelpPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.valueHelpDownload}`
+        );
+
+        expect(valueHelpPrompt).toBeDefined();
+        expect(valueHelpPrompt?.type).toBe('confirm');
+    });
+
+    test('Should not include value help download prompt when showValueHelpDownloadPrompt is false', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = { authenticated: true, reachable: true };
+
+        const systemServiceQuestions = getSystemServiceQuestion(
+            connectValidator,
+            promptNamespace,
+            undefined,
+            false // showValueHelpDownloadPrompt = false
+        );
+
+        const valueHelpPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.valueHelpDownload}`
+        );
+
+        expect(valueHelpPrompt).toBeUndefined();
     });
 });

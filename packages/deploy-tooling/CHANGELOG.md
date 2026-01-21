@@ -1,5 +1,163 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.32
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.14
+
+## 0.17.31
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/project-input-validator@0.6.45
+    - @sap-ux/system-access@0.6.41
+    - @sap-ux/inquirer-common@0.10.13
+
+## 0.17.30
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.41
+- @sap-ux/ui5-config@0.29.12
+- @sap-ux/inquirer-common@0.10.12
+
+## 0.17.29
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.6
+- @sap-ux/project-input-validator@0.6.44
+- @sap-ux/system-access@0.6.40
+- @sap-ux/inquirer-common@0.10.11
+
+## 0.17.28
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.6
+- @sap-ux/project-input-validator@0.6.43
+- @sap-ux/system-access@0.6.40
+- @sap-ux/inquirer-common@0.10.10
+
+## 0.17.27
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.6
+- @sap-ux/project-input-validator@0.6.42
+- @sap-ux/system-access@0.6.40
+- @sap-ux/inquirer-common@0.10.9
+
+## 0.17.26
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/inquirer-common@0.10.8
+    - @sap-ux/system-access@0.6.40
+    - @sap-ux/project-input-validator@0.6.41
+
+## 0.17.25
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/axios-extension@1.25.5
+    - @sap-ux/inquirer-common@0.10.7
+    - @sap-ux/system-access@0.6.39
+
+## 0.17.24
+
+### Patch Changes
+
+- Updated dependencies [4e0f204]
+    - @sap-ux/axios-extension@1.25.4
+    - @sap-ux/system-access@0.6.38
+
+## 0.17.23
+
+### Patch Changes
+
+- Updated dependencies [6382440]
+    - @sap-ux/inquirer-common@0.10.6
+
+## 0.17.22
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.5
+
+## 0.17.21
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.4
+
+## 0.17.20
+
+### Patch Changes
+
+- Updated dependencies [14a1bc2]
+    - @sap-ux/axios-extension@1.25.3
+    - @sap-ux/system-access@0.6.37
+
+## 0.17.19
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/axios-extension@1.25.2
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/inquirer-common@0.10.3
+    - @sap-ux/system-access@0.6.36
+    - @sap-ux/project-input-validator@0.6.40
+    - @sap-ux/ui5-config@0.29.12
+
+## 0.17.18
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-input-validator@0.6.39
+    - @sap-ux/axios-extension@1.25.1
+    - @sap-ux/inquirer-common@0.10.2
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.17.17
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.1
+
+## 0.17.16
+
+### Patch Changes
+
+- Updated dependencies [5287327]
+    - @sap-ux/axios-extension@1.25.0
+    - @sap-ux/inquirer-common@0.10.0
+    - @sap-ux/system-access@0.6.34
+
+## 0.17.15
+
+### Patch Changes
+
+- Updated dependencies [ba58398]
+    - @sap-ux/system-access@0.6.33
+    - @sap-ux/ui5-config@0.29.11
+    - @sap-ux/inquirer-common@0.9.17
+
 ## 0.17.14
 
 ### Patch Changes
