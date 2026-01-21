@@ -244,8 +244,22 @@ async function getServiceMetadataAndValidate(
         };
     } catch (error) {
         LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, error }));
+
+        // Extract error info for UI message (HTTP status or error code)
+        let errorInfo = '';
+        if (error && typeof error === 'object') {
+            const err = error as any;
+            if (err.response?.status) {
+                errorInfo = t('texts.httpStatus', { httpStatus: err.response.status });
+            } else if (err.status) {
+                errorInfo = t('texts.httpStatus', { httpStatus: err.status });
+            } else if (err.code) {
+                errorInfo = err.code;
+            }
+        }
+
         return {
-            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath })
+            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorInfo })
         };
     }
 }
