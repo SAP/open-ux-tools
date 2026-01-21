@@ -2,7 +2,7 @@
 
 We are incredibly grateful to the developers who have helped build **Open UX Tools**. This project wouldn't be possible without the community's effort to improve the open-source Fiori UX ecosystem.
 
-> **Want to be on this list?** > Check out our [Contributing Guide](CONTRIBUTING.md) and open a PR! We welcome bug fixes, documentation updates, and new features for the monorepo.
+> **Want to be on this list?** > Check out our [Contributing Guide](CONTRIBUTING.md) and open a PR. We welcome bug fixes, documentation updates, and new features for the monorepo.
 
 ### 🏆 Merged Contributors
 The following individuals have had their change successfully merged into the `main` branch:
