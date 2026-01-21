@@ -16,7 +16,6 @@ import {
     type TransportListItem,
     type TransportInputChoicePromptOptions
 } from '../types';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Determines if URL question should be shown.
