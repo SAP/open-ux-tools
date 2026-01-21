@@ -24,7 +24,6 @@ export enum ExtensionCommands {
 export enum SystemPanelViewType {
     Create,
     View,
-    Update,
     Import
 }
 

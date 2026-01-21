@@ -30,9 +30,10 @@ export class ApplicationParser {
     private index: ParsedProject;
     private diagnostics: Diagnostic[];
     /**
+     * Resets the parser state with new project type and file cache.
      *
-     * @param projectType
-     * @param fileCache
+     * @param projectType - The type of project being parsed
+     * @param fileCache - Map of file URIs to their contents
      */
     private reset(projectType: ProjectType, fileCache: Map<string, string>): void {
         this.index = { projectType, apps: {}, documents: {} };
@@ -94,9 +95,10 @@ export class ApplicationParser {
     }
 
     /**
+     * Reparses CDS files and updates the project index.
      *
-     * @param index
-     * @param fileCache
+     * @param index - The current parsed project index
+     * @param fileCache - Map of file URIs to their contents
      */
     private reparseCDS(index: ParsedProject, fileCache: Map<string, string>): void {
         // there is assumption that only one eslint config exists in CAP project and its run for the whole project
@@ -119,10 +121,11 @@ export class ApplicationParser {
     }
 
     /**
+     * Reparses a manifest.json file and updates the associated app in the project index.
      *
-     * @param uri
-     * @param index
-     * @param fileCache
+     * @param uri - The URI of the manifest.json file to reparse
+     * @param index - The current parsed project index
+     * @param fileCache - Map of file URIs to their contents
      */
     private reparseJSON(uri: string, index: ParsedProject, fileCache: Map<string, string>): void {
         for (const [key, previousApp] of Object.entries(index.apps)) {
@@ -170,9 +173,10 @@ export class ApplicationParser {
     }
 
     /**
+     * Reparses an XML annotation file and updates the affected services in the project index.
      *
-     * @param uri
-     * @param index
+     * @param uri - The URI of the XML file to reparse
+     * @param index - The current parsed project index
      */
     private reparseXML(uri: string, index: ParsedProject): void {
         for (const app of Object.values(index.apps)) {
@@ -194,10 +198,11 @@ export class ApplicationParser {
     }
 
     /**
+     * Reparses a specific file and updates the project index based on file type.
      *
-     * @param uri
-     * @param index
-     * @param fileCache
+     * @param uri - The URI of the file to reparse
+     * @param index - The current parsed project index
+     * @param fileCache - Map of file URIs to their contents
      */
     public reparse(uri: string, index: ParsedProject, fileCache: Map<string, string>): ParseResult {
         this.reset(index.projectType, fileCache);
@@ -212,10 +217,11 @@ export class ApplicationParser {
     }
 
     /**
+     * Parses a manifest.json file to extract app configuration and OData services.
      *
-     * @param webappPath
-     * @param manifestUri
-     * @param manifest
+     * @param webappPath - The absolute path to the webapp directory
+     * @param manifestUri - The URI of the manifest.json file
+     * @param manifest - The parsed manifest object
      */
     private parseManifest(
         webappPath: string,
@@ -290,9 +296,10 @@ export class ApplicationParser {
     }
 
     /**
+     * Parses an OData service and returns its artifacts (metadata and annotations).
      *
-     * @param projectRootPath
-     * @param service
+     * @param projectRootPath - The absolute path to the project root
+     * @param service - The OData service configuration to parse
      */
     private parseService(projectRootPath: string, service: FoundODataService): ServiceArtifacts | undefined {
         if (service.type === 'cap') {
@@ -309,7 +316,7 @@ export class ApplicationParser {
     }
 
     /**
-     *
+     * Checks if the current project is a CAP (Cloud Application Programming) project.
      */
     private isCapProject(): boolean {
         return this.context.projectType === 'CAPJava' || this.context.projectType === 'CAPNodejs';
@@ -320,10 +327,11 @@ type DataSources = Exclude<Manifest['sap.app']['dataSources'], undefined>;
 type DataSource = DataSources[keyof DataSources];
 
 /**
+ * Retrieves the list of annotation files configured for an OData data source.
  *
- * @param webappPath
- * @param dataSource
- * @param manifestDataSources
+ * @param webappPath - The absolute path to the webapp directory
+ * @param dataSource - The OData data source configuration
+ * @param manifestDataSources - All data sources defined in the manifest
  */
 function getAnnotationFiles(
     webappPath: string,
@@ -360,16 +368,18 @@ function getAnnotationFiles(
 }
 
 /**
+ * Determines if SAPUI5 flexibility (UI adaptation) is enabled in the manifest.
  *
- * @param manifest
+ * @param manifest - The parsed manifest object
  */
 function getFlexEnabled(manifest: Manifest): boolean {
     return manifest['sap.ui5']?.flexEnabled ?? false;
 }
 
 /**
+ * Extracts and parses the minimum UI5 version required by the application.
  *
- * @param manifest
+ * @param manifest - The parsed manifest object
  */
 function getMinUI5Version(manifest: Manifest): MinUI5Version | undefined {
     const value = manifest['sap.ui5']?.dependencies?.minUI5Version;

@@ -1,7 +1,9 @@
-import type { CatalogServicesCounts } from '@sap-ux/sap-systems-ext-types';
+import type { CatalogServicesCounts, RequestCount } from '@sap-ux/sap-systems-ext-types';
 import type { BackendSystem, SystemType } from '@sap-ux/store';
 import type { AbapServiceProvider, AxiosRequestConfig } from '@sap-ux/axios-extension';
 import { AbapCloudEnvironment, createForAbap, createForAbapOnCloud, ODataVersion } from '@sap-ux/axios-extension';
+import SystemsLogger from '../../../utils/logger';
+import { t } from '../../../utils';
 
 /**
  * Returns an abap service provider for an on-premise system using the specified details.
@@ -67,7 +69,7 @@ function getAbapServiceProvider(system: BackendSystem): AbapServiceProvider {
 export async function getCatalogServiceCount(system: BackendSystem): Promise<CatalogServicesCounts> {
     const abapServiceProvider = getAbapServiceProvider(system);
 
-    const fetchCount = async (version: ODataVersion) => {
+    const fetchCount = async (version: ODataVersion): Promise<RequestCount> => {
         try {
             const catalog = abapServiceProvider.catalog(version);
             const services = await catalog.listServices();
@@ -81,4 +83,29 @@ export async function getCatalogServiceCount(system: BackendSystem): Promise<Cat
     const v4Request = await fetchCount(ODataVersion.v4);
 
     return { v2Request, v4Request };
+}
+
+/**
+ * Returns a selection (systemId + client) from the system info retrieved from the system info api.
+ *
+ * @param system - the backend system instance
+ * @returns - the system ID if available, otherwise undefined
+ */
+export async function getSystemInfo(system: BackendSystem): Promise<{ systemId: string; client: string } | undefined> {
+    let systemInfo: { systemId: string; client: string } | undefined;
+    try {
+        const abapServiceProvider = getAbapServiceProvider(system);
+        const info = await abapServiceProvider.getSystemInfo();
+        if (info) {
+            systemInfo = {
+                systemId: info.systemID,
+                client: info.client
+            };
+        }
+    } catch (e) {
+        SystemsLogger.logger.debug(
+            t('debug.systemInfoRetrievalFailure', { error: e instanceof Error ? e.message : String(e) })
+        );
+    }
+    return systemInfo;
 }
