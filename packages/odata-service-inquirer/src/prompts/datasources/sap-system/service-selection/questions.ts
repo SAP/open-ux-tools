@@ -143,7 +143,8 @@ export function getSystemServiceQuestion(
                           showCollabDraftWarning: !!promptOptions?.showCollaborativeDraftWarning,
                           edmx: convertedMetadataRef.convertedMetadata
                       }
-                    : undefined
+                    : undefined,
+                serviceFilter: promptOptions?.serviceFilter
             }),
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI and cli when automcomplete is used

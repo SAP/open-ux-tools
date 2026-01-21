@@ -170,7 +170,7 @@ export async function getSystemConnectionQuestions(
         promptOptions?.systemSelection?.includeCloudFoundryAbapEnvChoice,
         promptOptions?.systemSelection?.hideNewSystem
     );
-    const defaultChoiceIndex = findDefaultSystemSelectionIndex(
+    let defaultChoiceIndex = findDefaultSystemSelectionIndex(
         systemChoices,
         promptOptions?.systemSelection?.defaultChoice
     );
@@ -189,7 +189,16 @@ export async function getSystemConnectionQuestions(
             },
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
             choices: shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices,
-            default: shouldOnlyShowDefaultChoice ? 0 : defaultChoiceIndex,
+            default: () => {
+                if (shouldOnlyShowDefaultChoice) {
+                    return 0;
+                }
+                defaultChoiceIndex = findDefaultSystemSelectionIndex(
+                    systemChoices,
+                    promptOptions?.systemSelection?.defaultChoice
+                ); // Recalc to allow default choice to be bound to ref from another prompt
+                return defaultChoiceIndex;
+            },
             validate: async (
                 selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
             ): Promise<ValidationResult> => {
