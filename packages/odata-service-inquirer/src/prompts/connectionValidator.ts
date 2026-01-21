@@ -834,7 +834,7 @@ export class ConnectionValidator {
                 (this.systemAuthType === 'reentranceTicket' || isSystem) &&
                 !(url.pathname.length === 0 || url.pathname === '/')
             ) {
-                return t('prompts.validationMessages.systemHostOnly');
+                return t('prompts.validationMessages.urlPathWarning');
             }
         } catch (error) {
             return t('errors.invalidUrl', { input: serviceUrl });
