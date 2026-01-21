@@ -15,7 +15,7 @@
         "check-dependency-version-consistency": "5.0.1",
         "esbuild": "0.25.11",
         "esbuild-sass-plugin": "3.3.1",
-        "eslint": "9.39.1",
+        "eslint": "9.39.2",
         "eslint-config-prettier": "10.1.1",
         "eslint-import-resolver-typescript": "4.4.4",
         "eslint-plugin-import": "2.32.0",
@@ -82,7 +82,7 @@
             "router@^2.0.0>path-to-regexp": "8.2.0",
             "mta-local": "1.0.4",
             "axios@<1.12.0": "^1.12.2",
-            "eslint": "^9.39.1"
+            "eslint": "^9.39.2"
         }
     }
 }

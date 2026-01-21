@@ -3,7 +3,7 @@
  *               sap.m.MessageToast.show
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     getIdentifierPath,
     resolveIdentifierPath,
@@ -43,7 +43,7 @@ function getEMValue(value: string): number {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -58,7 +58,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const X_UNARY = 'UnaryExpression';
         const VARIABLES: Record<string, string[]> = {};
 

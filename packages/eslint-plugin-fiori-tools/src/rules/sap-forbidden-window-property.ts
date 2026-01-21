@@ -2,7 +2,7 @@
  * @file Detect the definition of global properties in the window object
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isMember, isLiteral } from '../utils/helpers';
 
@@ -18,13 +18,13 @@ import { isIdentifier, isMember, isLiteral } from '../utils/helpers';
  */
 function isWindow(node: ASTNode | undefined): boolean {
     // true if node is the global variable 'window'
-    return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
+    return !!(isIdentifier(node) && node && typeof node === 'object' && node !== null && 'name' in node && (node as any).name === 'window');
 }
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -37,7 +37,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const WINDOW_OBJECTS: string[] = [];
         const FORBIDDEN_PROPERTIES = new Set(['top', 'addEventListener']);
 
@@ -55,7 +55,7 @@ const rule: Rule.RuleModule = {
             // true if node is the global variable 'window' or a reference to it
             return !!(
                 isWindow(node) ||
-                (node && isIdentifier(node) && 'name' in node && WINDOW_OBJECTS.includes(node.name))
+                (node && isIdentifier(node) && typeof node === 'object' && node !== null && 'name' in node && WINDOW_OBJECTS.includes((node as any).name))
             );
         }
 
@@ -70,8 +70,8 @@ const rule: Rule.RuleModule = {
          * @returns True if window object was remembered, false otherwise
          */
         function rememberWindow(left: ASTNode, right: ASTNode): boolean {
-            if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
-                WINDOW_OBJECTS.push(left.name);
+            if (isWindowObject(right) && isIdentifier(left) && typeof left === 'object' && left !== null && 'name' in left) {
+                WINDOW_OBJECTS.push((left as any).name);
                 return true;
             }
             return false;

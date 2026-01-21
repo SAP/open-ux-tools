@@ -2,7 +2,7 @@
  * @file Checks if autowait is true in Opa5.extendConfig
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 //------------------------------------------------------------------------------
 // Rule Definition
@@ -41,7 +41,7 @@ function findAutoWaitProperty(propsList: any[]): { exists: boolean; value?: bool
     return { exists: false };
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -55,7 +55,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         //----------------------------------------------------------------------
         // Helpers
         //----------------------------------------------------------------------

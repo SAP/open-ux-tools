@@ -2,7 +2,7 @@
  * @file Detect some forbidden usages of (window.)document APIs
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isMember, isCall, isLiteral, contains, isForbiddenObviousApi } from '../utils/helpers';
 
@@ -52,7 +52,7 @@ function getPropertyName(nodeObject: any): string {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -73,7 +73,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const FORBIDDEN_DOM_INSERTION = [
                 'createElement',
                 'createTextNode',
@@ -139,7 +139,7 @@ const rule: Rule.RuleModule = {
          * @param methodName The method name being called
          */
         function processDocumentMessage(node: ASTNode, methodName: string): void {
-            const parent = node.parent;
+            const parent = (node as any).parent;
             if (contains(FORBIDDEN_DOM_INSERTION, methodName)) {
                 if (
                     !(
