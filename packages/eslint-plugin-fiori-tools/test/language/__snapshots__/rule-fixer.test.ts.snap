@@ -1,0 +1,174 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`createJsonFixer DELETE operation should delete a property 1`] = `
+Array [
+  Object {
+    "range": Array [
+      10,
+      27,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
+exports[`createJsonFixer INSERT operation should handle special characters in property names 1`] = `
+Array [
+  Object {
+    "range": Array [
+      24,
+      24,
+    ],
+    "text": "
+      \\"@odata.context\\": {
+        \\"value\\": \\"test\\"
+      }
+    ",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`createJsonFixer INSERT operation should insert a new property into an empty object 1`] = `
+Array [
+  Object {
+    "range": Array [
+      24,
+      24,
+    ],
+    "text": "
+      \\"flexEnabled\\": true
+    ",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`createJsonFixer INSERT operation should insert nested properties for a deep path 1`] = `
+Array [
+  Object {
+    "range": Array [
+      21,
+      21,
+    ],
+    "text": "
+      \\"routing\\": {
+        \\"targets\\": {
+          \\"IncidentsObjectPage\\": {
+            \\"options\\": {
+              \\"settings\\": {
+                \\"controlConfiguration\\": {
+                  \\"incidentFlow/@com.sap.vocabularies.UI.v1.LineItem\\": {
+                    \\"tableSettings\\": {
+                      \\"creationMode\\": {
+                        \\"name\\": \\"NewRow\\"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`createJsonFixer Operation inference should infer DELETE when no missingSegments and value is undefined 1`] = `
+Array [
+  Object {
+    "range": Array [
+      10,
+      27,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
+exports[`createJsonFixer Operation inference should infer INSERT when missingSegments exist 1`] = `
+Array [
+  Object {
+    "range": Array [
+      24,
+      24,
+    ],
+    "text": "
+      \\"newProp\\": \\"test\\"
+    ",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`createJsonFixer Operation inference should infer UPDATE when no missingSegments and value is defined 1`] = `
+Array [
+  Object {
+    "range": Array [
+      10,
+      14,
+    ],
+    "text": "true",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update a boolean value 1`] = `
+Array [
+  Object {
+    "range": Array [
+      24,
+      29,
+    ],
+    "text": "true",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update a number value 1`] = `
+Array [
+  Object {
+    "range": Array [
+      10,
+      12,
+    ],
+    "text": "100",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update a string value 1`] = `
+Array [
+  Object {
+    "range": Array [
+      15,
+      26,
+    ],
+    "text": "\\"New Title\\"",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update an object value 1`] = `
+Array [
+  Object {
+    "range": Array [
+      10,
+      25,
+    ],
+    "text": "{
+  \\"enabled\\": true,
+  \\"count\\": 5
+}",
+    "type": "replace",
+  },
+]
+`;

@@ -9,6 +9,7 @@ import type { ParsedApp } from '../project-context/parser';
 import type { FioriLanguageOptions, FioriSourceCode, Node } from '../language/fiori-language';
 import type { Table as V2Table, FeV2ObjectPage } from '../project-context/linker/fe-v2';
 import type { Table as V4Table, FeV4ObjectPage } from '../project-context/linker/fe-v4';
+import { createJsonFixer } from '../language/rule-fixer';
 
 const RECOMMENDED_MODE_V2 = 'creationRows';
 const RECOMMENDED_MODE_V4_RESPONSIVE_GRID = 'InlineCreationRows';
@@ -511,7 +512,8 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
             recommendInlineCreationRowsV4:
                 'Consider using "{{recommendedValue}}" for better user experience instead of "{{value}}".',
             suggestAppLevelV4: 'Consider adding creationMode at application level for better user experience.'
-        }
+        },
+        fixable: 'code'
     },
     check(context) {
         const problems: CreationModeForTable[] = [];
@@ -521,7 +523,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
 
         return problems;
     },
-    createJsonVisitorHandler: (context, diagnostic) =>
+    createJsonVisitorHandler: (context, diagnostic, paths) =>
         function report(node: MemberNode): void {
             let tableType = '';
             if (diagnostic.tableType) {
@@ -539,6 +541,7 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
             } else if (node.name.type === 'String') {
                 value = node.name.value;
             }
+            const operation = diagnostic.messageId === 'analyticalTableNotSupported' ? 'delete' : undefined;
             context.report({
                 node,
                 messageId: diagnostic.messageId,
@@ -550,7 +553,14 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                             ? ` Valid values are: ${diagnostic.validValues.join(', ')}.`
                             : '',
                     recommendedValue: diagnostic.recommendedValue ?? ''
-                }
+                },
+                fix: createJsonFixer({
+                    value: operation === 'delete' ? undefined : diagnostic.recommendedValue,
+                    context,
+                    deepestPathResult: paths,
+                    node,
+                    operation
+                })
             });
         }
 });
