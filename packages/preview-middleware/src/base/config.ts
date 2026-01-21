@@ -194,15 +194,16 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
  * @returns a full configuration with default values
  */
 export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}, utils?: MiddlewareUtils): FlpConfig {
-    let sandboxPathPrefix = '/';
-    if (typeof utils === 'object') {
-        sandboxPathPrefix =
-            utils.getProject().getType() === 'component'
-                ? posix.join('/test-resources', utils.getProject().getNamespace())
-                : '/';
-    }
+    const sandboxPathPrefix =
+        typeof utils === 'object' && utils.getProject?.()?.getType?.() === 'component'
+            ? posix.join('/test-resources', utils.getProject().getNamespace())
+            : undefined;
+
+    // remove leading /test from default if sandboxPathPrefix is set
+    const defaultPath = sandboxPathPrefix ? DEFAULT_PATH.replace(/^\/test/, '') : DEFAULT_PATH;
+
     return {
-        path: posix.join(sandboxPathPrefix, config.path ?? DEFAULT_PATH),
+        path: posix.join(sandboxPathPrefix ?? '/', config.path ?? defaultPath),
         intent: config.intent ?? DEFAULT_INTENT,
         apps: config.apps ?? [],
         libs: config.libs,

@@ -27,6 +27,21 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
 } satisfies TestConfigDefaults;
 
 /**
+ * Get the test path prefix for component projects.
+ *
+ * @param utils middleware utils
+ * @returns test path prefix or undefined
+ */
+function getTestPathPrefix(utils?: MiddlewareUtils): string | undefined {
+    if (typeof utils !== 'object') {
+        return undefined;
+    }
+    return utils.getProject?.()?.getType?.() === 'component'
+        ? posix.join('/test-resources', utils.getProject().getNamespace())
+        : undefined;
+}
+
+/**
  * Merge the given test configuration with the default values.
  *
  * @param config test configuration
@@ -34,21 +49,31 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
  * @returns merged test configuration
  */
 export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUtils): CompleteTestConfig {
-    let testPathPrefix = '/';
-    if (typeof utils === 'object') {
-        testPathPrefix =
-            utils.getProject().getType() === 'component'
-                ? posix.join('/test-resources', utils.getProject().getNamespace())
-                : '/';
+    const testPathPrefix = getTestPathPrefix(utils);
+    const defaults: CompleteTestConfig = DEFAULTS[config.framework.toLowerCase()] ?? {};
+
+    if (testPathPrefix) {
+        // remove leading /test from defaults if sandboxPathPrefix is set
+        defaults.pattern = defaults.pattern.replace(/^\/test/, '');
+        for (const prop of ['path', 'init'] as const) {
+            defaults[prop] = defaults[prop].replace(/^\/test/, '');
+        }
     }
-    const defaults = DEFAULTS[config.framework.toLowerCase()] ?? {};
+
     const merged: CompleteTestConfig = { ...defaults, ...config };
 
-    for (const prop of ['path', 'init'] as const) {
-        if (typeof merged[prop] === 'string' && merged[prop]) {
+    if (testPathPrefix) {
+        // Prepend testPathPrefix
+        for (const prop of ['path', 'init'] as const) {
             merged[prop] = posix.join(testPathPrefix, merged[prop]);
         }
     }
+
+    // Ensure path and init start with leading slash when no prefix exists
+    for (const prop of ['path', 'init'] as const) {
+        merged[prop] = posix.join('/', merged[prop]);
+    }
+
     return merged;
 }
 

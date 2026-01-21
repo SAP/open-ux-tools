@@ -1,0 +1,43 @@
+specVersion: '5.0'
+metadata:
+    name: test-project
+type: component
+server:
+    customMiddleware:
+        - name: preview-middleware
+          afterMiddleware: compression
+          configuration:
+              flp:
+                path: /my/custom/path/preview.html
+                libs: true
+                rta:
+                  layer: CUSTOMER_BASE
+              debug: true
+        - name: ui5-proxy-middleware
+          afterMiddleware: preview-middleware
+          configuration:
+              ui5:
+                  - path: /resources
+                    url: https://ui5.sap.com
+                  - path: /test-resources
+                    url: https://ui5.sap.com
+        - name: sap-fe-mockserver
+          beforeMiddleware: csp
+          configuration:
+              mountPath: /
+              annotations:
+                  - localPath: ./webapp/localService/annotations.xml
+                    urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
+              services:
+                  - urlPath: /sap/opu/odata/myservice
+                    metadataPath: ./webapp/localService/metadata.xml
+                    mockdataPath: ./webapp/localService/data
+                    generateMockData: true
+---
+specVersion: '3.0'
+metadata:
+    name: preview-middleware
+kind: extension
+type: server-middleware
+middleware:
+    path: ../../../dist/ui5/middleware.js

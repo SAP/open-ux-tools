@@ -182,10 +182,6 @@ export class FlpSandbox {
         this.addStandardRoutes();
 
         if (this.cardGenerator?.path) {
-            this.cardGenerator.path = this.cardGenerator.path.startsWith('/')
-                ? this.cardGenerator.path
-                : `/${this.cardGenerator.path}`;
-
             await this.addCardGeneratorMiddlewareRoute();
             await this.addStoreCardManifestRoute();
             await this.addStoreI18nKeysRoute();
@@ -421,14 +417,23 @@ export class FlpSandbox {
      */
     private addEditorRoutes(rta: RtaConfig): void {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
+        //----------------------------
+        const sandboxPathPrefix =
+            typeof this.utils === 'object' && this.utils.getProject?.()?.getType?.() === 'component'
+                ? posix.join('/test-resources', this.utils.getProject().getNamespace())
+                : undefined;
+        //----------------------------
         for (const editor of rta.endpoints) {
-            let previewUrl = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
+            let previewUrl = posix.join(sandboxPathPrefix ?? '/', editor.path);
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(editor.path, async (_req: Request, res: Response) => {
-                    await this.editorGetHandlerDeveloperMode(res, rta, previewUrl);
-                });
+                this.router.get(
+                    posix.join(sandboxPathPrefix ?? '/', editor.path),
+                    async (_req: Request, res: Response) => {
+                        await this.editorGetHandlerDeveloperMode(res, rta, previewUrl);
+                    }
+                );
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
                     path = `${path}/`;
@@ -517,7 +522,17 @@ export class FlpSandbox {
      * @private
      */
     private async addCardGeneratorMiddlewareRoute(): Promise<void> {
-        const previewGeneratorPath = this.cardGenerator?.path ?? CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
+        const sandboxPathPrefix =
+            typeof this.utils === 'object' && this.utils.getProject?.()?.getType?.() === 'component'
+                ? posix.join('/test-resources', this.utils.getProject().getNamespace())
+                : undefined;
+        const previewGeneratorSandbox = sandboxPathPrefix
+            ? CARD_GENERATOR_DEFAULT.previewGeneratorSandbox.replace(/^\/test/, '')
+            : CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
+        const previewGeneratorPath = posix.join(
+            sandboxPathPrefix ?? '/',
+            this.cardGenerator?.path ?? previewGeneratorSandbox
+        );
         this.logger.debug(`Add route for ${previewGeneratorPath}`);
         this.router.get(
             previewGeneratorPath,
