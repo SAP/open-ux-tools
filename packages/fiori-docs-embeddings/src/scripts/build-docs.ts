@@ -352,7 +352,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: 'docs',
                     category: 'fiori-tools',
-                    enabled: false
+                    enabled: true
                 },
                 {
                     id: 'sapui5',
@@ -372,7 +372,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: '',
                     category: 'fiori-samples',
-                    enabled: false
+                    enabled: true
                 },
                 {
                     id: 'fiori-showcase',
@@ -382,7 +382,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: '',
                     category: 'fiori-features',
-                    enabled: false
+                    enabled: true
                 },
                 {
                     id: 'ui5-api',
