@@ -33,37 +33,40 @@ describe('manifest', () => {
             [undefined, undefined],
             [['1.120.10', '2.0.0'], undefined],
             ['1.144.0', undefined, '4.01']
-        ])('Ensure synchronizationMode is correctly set for minUI5Version %s', async (minUI5Version, syncMode, expectedOdataVersion = '4.0') => {
-            const testManifest = {
-                'sap.app': {
-                    id: 'test.update.manifest'
-                },
-                'sap.ui5': {
-                    dependencies: {
-                        minUI5Version: minUI5Version
+        ])(
+            'Ensure synchronizationMode is correctly set for minUI5Version %s',
+            async (minUI5Version, syncMode, expectedOdataVersion = '4.0') => {
+                const testManifest = {
+                    'sap.app': {
+                        id: 'test.update.manifest'
+                    },
+                    'sap.ui5': {
+                        dependencies: {
+                            minUI5Version: minUI5Version
+                        }
                     }
-                }
-            };
+                };
 
-            const service: OdataService = {
-                version: OdataVersion.v4,
-                client: '123',
-                model: 'amodel',
-                name: 'aname',
-                path: '/a/path'
-            };
+                const service: OdataService = {
+                    version: OdataVersion.v4,
+                    client: '123',
+                    model: 'amodel',
+                    name: 'aname',
+                    path: '/a/path'
+                };
 
-            // Write the test manifest to a file
-            fs.writeJSON('./webapp/manifest.json', testManifest);
+                // Write the test manifest to a file
+                fs.writeJSON('./webapp/manifest.json', testManifest);
 
-            // Call updateManifest
-            await updateManifest('./', service, fs);
-            const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
-            expect(manifestJson['sap.ui5']?.models?.['amodel'].settings?.['synchronizationMode']).toEqual(syncMode);
-            expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual(
-                expectedOdataVersion
-            );
-        });
+                // Call updateManifest
+                await updateManifest('./', service, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson['sap.ui5']?.models?.['amodel'].settings?.['synchronizationMode']).toEqual(syncMode);
+                expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual(
+                    expectedOdataVersion
+                );
+            }
+        );
         test('Ensure manifest are updated as expected as in edmx projects', async () => {
             const testManifest = {
                 'sap.app': {
