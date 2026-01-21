@@ -1,5 +1,5 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
 import { isAbapEnvironmentOnBtp, isAppStudio, isS4HC, type Destinations } from '@sap-ux/btp-utils';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
@@ -38,7 +38,6 @@ import {
     isValidUrl
 } from '../validator-utils';
 import { PromptState } from './prompt-state';
-import { showUsernameQuestion } from './conditions';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 
@@ -81,11 +80,7 @@ export async function validateDestinationQuestion(
     PromptState.resetAbapDeployConfig();
     await updateDestinationPromptState(destination, destinations, options, backendTarget);
 
-    const needAuth = await showUsernameQuestion(backendTarget);
-    // We do the project type validation only if the system does not require authentication, otherwise
-    // the system info api call will throw unathorized when called for the target system.
-    const adpProjectTypeValidation =
-        adpProjectType && !needAuth ? await validateAdpProjectType(adpProjectType, backendTarget) : undefined;
+    const adpProjectTypeValidation = await validateAdpProjectType(adpProjectType, backendTarget);
     if (typeof adpProjectTypeValidation === 'string') {
         return adpProjectTypeValidation;
     }
@@ -325,9 +320,7 @@ export async function validateCredentials(
 
     PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
 
-    const adpProjectTypeValidation = adpProjectType
-        ? await validateAdpProjectType(adpProjectType, backendTarget)
-        : undefined;
+    const adpProjectTypeValidation = await validateAdpProjectType(adpProjectType, backendTarget);
     if (typeof adpProjectTypeValidation === 'string') {
         return adpProjectTypeValidation;
     }
@@ -673,23 +666,24 @@ async function validatePackageType(
     backendTarget?: BackendTarget,
     adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
-    if (adpProjectType === AdaptationProjectType.ON_PREMISE) {
-        LoggerHelper.logger.debug(`Project is OnPremise, skipping package "${input}" type validation`);
-        return true;
-    }
-    const systemInfoResult = await getSystemInfo(input, backendTarget);
-    if (!systemInfoResult.apiExist) {
-        return true;
-    }
+    try {
+        if (adpProjectType === AdaptationProjectType.ON_PREMISE) {
+            LoggerHelper.logger.debug(`Project is OnPremise, skipping package "${input}" type validation`);
+            return true;
+        }
 
-    const types = systemInfoResult.systemInfo?.adaptationProjectTypes;
-    if (types && types?.length > 1) {
-        return true;
+        const { adaptationProjectTypes } = await getSystemInfo(input, backendTarget);
+
+        const isValidPackage =
+            adaptationProjectTypes.length > 1 || adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY;
+
+        return isValidPackage ? true : t('errors.validators.invalidCloudPackage');
+    } catch (error) {
+        if (isAxiosError(error) && error.response?.status === 405) {
+            return true;
+        }
+        return t('errors.validators.invalidCloudPackage');
     }
-
-    const isValidPackageType = types?.length === 1 && types[0] === AdaptationProjectType.CLOUD_READY;
-
-    return isValidPackageType ? true : t('errors.validators.invalidCloudPackage');
 }
 
 /**
@@ -853,19 +847,22 @@ function shouldValidatePackageForStartingPrefix(
 /**
  * Validates whether a provided type of an adaptation project can be deployed on the target system.
  *
- * @param {AdaptationProjectType} adpProjectType - The adaptation project type.
+ * @param {AdaptationProjectType | undefined} adpProjectType - The adaptation project type.
  * @param {BackendTarget | undefined} backendTarget - The backend target representing the target system.
  * @returns {Promise<boolean | string>} Promise resolved with true in case the validation succeed otherwise with a string
- * containing an error message.
+ * containing an error message or undefined if the project type is not provided.
  */
 async function validateAdpProjectType(
-    adpProjectType: AdaptationProjectType,
+    adpProjectType?: AdaptationProjectType,
     backendTarget?: BackendTarget
-): Promise<boolean | string> {
+): Promise<boolean | string | undefined> {
     try {
-        const { systemInfo } = await getSystemInfo(undefined, backendTarget);
-        const adaptationProjectTypes = systemInfo?.adaptationProjectTypes;
-        if (!adaptationProjectTypes?.length) {
+        if (!adpProjectType) {
+            return undefined;
+        }
+
+        const { adaptationProjectTypes } = await getSystemInfo(undefined, backendTarget);
+        if (!adaptationProjectTypes.length) {
             return t('errors.validators.invalidAdpProjectTypes');
         }
         const supportedAdpProjectTypes = adaptationProjectTypes.join(',');
@@ -876,6 +873,10 @@ async function validateAdpProjectType(
                   supportedAdpProjectTypes
               });
     } catch (error) {
+        // We omit the validation in case the user is not authenticated.
+        if (isAxiosError(error) && [401, 403].includes(error.response?.status ?? 0)) {
+            return true;
+        }
         return error.message;
     }
 }
