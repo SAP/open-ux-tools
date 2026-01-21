@@ -1,5 +1,23 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.12
+
+### Patch Changes
+
+- f31a340: Removes `lodash` use.
+
+## 2.14.11
+
+### Patch Changes
+
+- 43a86e2: ServiceFilter mutation should retrigger service choice filtering
+
+## 2.14.10
+
+### Patch Changes
+
+- 33d92e4: Adds new options for system and service selection.
+
 ## 2.14.9
 
 ### Patch Changes
