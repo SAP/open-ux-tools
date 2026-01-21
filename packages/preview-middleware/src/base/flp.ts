@@ -65,6 +65,7 @@ import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
+import { getSandboxPathPrefix } from './utils/project';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -115,7 +116,7 @@ export class FlpSandbox {
     private readonly logger: Logger;
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
-    private readonly cardGenerator?: CardGeneratorConfig;
+    private readonly cardGenerator?: Required<CardGeneratorConfig>;
     private projectType: ProjectType;
 
     /**
@@ -190,7 +191,7 @@ export class FlpSandbox {
         this.addStandardRoutes();
 
         if (this.cardGenerator?.path) {
-            await this.addCardGeneratorMiddlewareRoute();
+            await this.addCardGeneratorMiddlewareRoute(this.cardGenerator.path);
             await this.addStoreCardManifestRoute();
             await this.addStoreI18nKeysRoute();
         }
@@ -424,6 +425,8 @@ export class FlpSandbox {
      * @param rta runtime authoring configuration
      */
     private addEditorRoutes(rta: RtaConfig): void {
+        //todo: do we need to have a more specific path for open/ux/preview/client/* for project type component?
+        // multiple apps can run in parallel so one central route might cause conflicts
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.endpoints) {
             let previewUrl = editor.path;
@@ -518,14 +521,13 @@ export class FlpSandbox {
      * This route dynamically updates the `templateConfig` with the Card Generator application details
      * and serves the FLP sandbox HTML using the `flpGetHandler`.
      *
+     * @param cardGeneratorPath - The path at which the Card Generator middleware route should be added.
      * @private
      */
-    private async addCardGeneratorMiddlewareRoute(): Promise<void> {
-        // Path is already adjusted in constructor with proper defaults
-        const previewGeneratorPath = this.cardGenerator?.path ?? '/';
-        this.logger.debug(`Add route for ${previewGeneratorPath}`);
+    private async addCardGeneratorMiddlewareRoute(cardGeneratorPath: string): Promise<void> {
+        this.logger.debug(`Add route for ${cardGeneratorPath}`);
         this.router.get(
-            previewGeneratorPath,
+            cardGeneratorPath,
             async (
                 req: EnhancedRequest | connect.IncomingMessage,
                 res: Response | http.ServerResponse,
@@ -1054,7 +1056,7 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
-        this.router.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
+        this.router.use(posix.join(getSandboxPathPrefix(this.utils) ?? '/', CARD_GENERATOR_DEFAULT.cardsStore), json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.cardsStore}`);
 
         this.router.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
@@ -1131,7 +1133,7 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
-        this.router.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
+        this.router.use(posix.join(getSandboxPathPrefix(this.utils) ?? '/', CARD_GENERATOR_DEFAULT.i18nStore), json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.i18nStore}`);
 
         this.router.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
