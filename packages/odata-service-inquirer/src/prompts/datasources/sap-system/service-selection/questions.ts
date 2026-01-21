@@ -36,7 +36,8 @@ import {
 import type { SystemSelectionAnswers } from '../system-selection';
 import { type ServiceAnswer } from './types';
 import { getValueHelpDownloadPrompt } from '../external-services/value-help-download';
-import { isEqual, sortBy } from 'lodash';
+import isEqual from 'lodash/isEqual';
+import sortBy from 'lodash/sortBy';
 
 const cliServicePromptName = 'cliServiceSelection';
 
