@@ -417,12 +417,10 @@ export class FlpSandbox {
      */
     private addEditorRoutes(rta: RtaConfig): void {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
-        //----------------------------
         const sandboxPathPrefix =
             typeof this.utils === 'object' && this.utils.getProject?.()?.getType?.() === 'component'
                 ? posix.join('/test-resources', this.utils.getProject().getNamespace())
                 : undefined;
-        //----------------------------
         for (const editor of rta.endpoints) {
             let previewUrl = posix.join(sandboxPathPrefix ?? '/', editor.path);
             if (editor.developerMode) {
