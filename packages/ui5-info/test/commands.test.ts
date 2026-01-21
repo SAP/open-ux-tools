@@ -130,9 +130,6 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
                 "version": "1.96.0",
               },
               {
-                "version": "1.84.0",
-              },
-              {
                 "version": "1.71.0",
               },
             ]
