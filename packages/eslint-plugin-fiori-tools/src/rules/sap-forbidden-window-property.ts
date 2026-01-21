@@ -18,7 +18,14 @@ import { isIdentifier, isMember, isLiteral } from '../utils/helpers';
  */
 function isWindow(node: ASTNode | undefined): boolean {
     // true if node is the global variable 'window'
-    return !!(isIdentifier(node) && node && typeof node === 'object' && node !== null && 'name' in node && (node as any).name === 'window');
+    return !!(
+        isIdentifier(node) &&
+        node &&
+        typeof node === 'object' &&
+        node !== null &&
+        'name' in node &&
+        (node as any).name === 'window'
+    );
 }
 
 // ------------------------------------------------------------------------------
@@ -55,7 +62,12 @@ const rule: RuleDefinition = {
             // true if node is the global variable 'window' or a reference to it
             return !!(
                 isWindow(node) ||
-                (node && isIdentifier(node) && typeof node === 'object' && node !== null && 'name' in node && WINDOW_OBJECTS.includes((node as any).name))
+                (node &&
+                    isIdentifier(node) &&
+                    typeof node === 'object' &&
+                    node !== null &&
+                    'name' in node &&
+                    WINDOW_OBJECTS.includes((node as any).name))
             );
         }
 
@@ -70,7 +82,13 @@ const rule: RuleDefinition = {
          * @returns True if window object was remembered, false otherwise
          */
         function rememberWindow(left: ASTNode, right: ASTNode): boolean {
-            if (isWindowObject(right) && isIdentifier(left) && typeof left === 'object' && left !== null && 'name' in left) {
+            if (
+                isWindowObject(right) &&
+                isIdentifier(left) &&
+                typeof left === 'object' &&
+                left !== null &&
+                'name' in left
+            ) {
                 WINDOW_OBJECTS.push((left as any).name);
                 return true;
             }

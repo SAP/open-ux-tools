@@ -178,7 +178,6 @@ const rule: RuleDefinition = {
                     // && hasUnderscore(identifier)
                     !isSpecialCaseIdentifierForMemberExpression(identifier)
                 ) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                     const parent = ((sourceCode as any).getAncestors(node) as any[]).pop();
                     if (!parent) {
                         return;

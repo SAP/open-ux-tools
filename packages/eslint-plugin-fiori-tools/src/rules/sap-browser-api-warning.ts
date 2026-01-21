@@ -25,7 +25,14 @@ import {
  * @returns True if the node represents the window object
  */
 function isWindow(node: ASTNode | undefined): boolean {
-    return !!(isIdentifier(node) && node && typeof node === 'object' && node !== null && 'name' in node && (node as any).name === 'window');
+    return !!(
+        isIdentifier(node) &&
+        node &&
+        typeof node === 'object' &&
+        node !== null &&
+        'name' in node &&
+        (node as any).name === 'window'
+    );
 }
 
 /**
@@ -145,7 +152,10 @@ const rule: RuleDefinition = {
          */
         function isHistory(node: ASTNode | undefined, justHistory: boolean): boolean {
             if (node && isIdentifier(node) && typeof node === 'object' && node !== null && 'name' in node) {
-                return (node as any).name === 'history' || (!justHistory && FORBIDDEN_HISTORY_OBJECT.includes((node as any).name));
+                return (
+                    (node as any).name === 'history' ||
+                    (!justHistory && FORBIDDEN_HISTORY_OBJECT.includes((node as any).name))
+                );
             } else if (node && isMember(node)) {
                 return (
                     isWindow((node as any).object) &&

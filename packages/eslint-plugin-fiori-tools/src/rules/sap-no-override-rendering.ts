@@ -191,7 +191,7 @@ const rule: RuleDefinition = {
         function processMemberExpression(node: any): void {
             if (node.object.type === 'Identifier') {
                 let namespace = node.object.name + '.' + node.property.name;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
                 const ancestors = (sourceCode as any).getAncestors(node) as any[];
 
                 ancestors.reverse();

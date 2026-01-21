@@ -95,7 +95,13 @@ const rule: RuleDefinition = {
          */
         function getPropertyFromObjectExpression(node: ASTNode | undefined, propertyName: string): ASTNode | undefined {
             // Check if node is of type object expression
-            if (node && typeof node === 'object' && node !== null && 'type' in node && (node as any).type === T_OBJECT) {
+            if (
+                node &&
+                typeof node === 'object' &&
+                node !== null &&
+                'type' in node &&
+                (node as any).type === T_OBJECT
+            ) {
                 // Get property list from object expression
                 const propertyList = (node as any).properties;
                 // Go through the properties
@@ -130,7 +136,13 @@ const rule: RuleDefinition = {
                 // Get includes data
                 const includes = getPropertyFromObjectExpression(metadata, P_INCLUDES);
                 // Check if includes type is array expression
-                if (includes && typeof includes === 'object' && includes !== null && 'type' in includes && (includes as any).type === T_ARRAY) {
+                if (
+                    includes &&
+                    typeof includes === 'object' &&
+                    includes !== null &&
+                    'type' in includes &&
+                    (includes as any).type === T_ARRAY
+                ) {
                     // Get array elements
                     const includesElements = (includes as any).elements;
                     let element;
