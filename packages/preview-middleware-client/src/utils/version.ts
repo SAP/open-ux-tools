@@ -11,14 +11,14 @@ type UI5VersionDetails = {
      * - the name of the distribution or
      * - the id of the application in case the UI5 sources have beeng loaded from npmjs.
      */
-    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents, @typescript-eslint/no-redundant-type-constituents
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     name: 'SAPUI5 Distribution' | Manifest['sap.app']['id'];
     /**
      * Contains either
      * - the version of the UI5 framework or
      * - the version of the application in case the UI5 sources have been loaded from npmjs.
      */
-    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents, @typescript-eslint/no-redundant-type-constituents
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
     version: string | Manifest['sap.app']['applicationVersion']['version'];
     libraries: LibraryInfo[]
 };
