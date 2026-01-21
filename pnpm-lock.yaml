@@ -1841,6 +1841,9 @@ importers:
       '@sap-ux/vocabularies-types':
         specifier: 0.13.1
         version: 0.13.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
       '@typescript-eslint/eslint-plugin':
         specifier: '>=8.49.0'
         version: 8.49.0(@typescript-eslint/parser@8.49.0)(eslint@9.39.1)(typescript@5.9.3)
@@ -1862,6 +1865,9 @@ importers:
       requireindex:
         specifier: ^1.2.0
         version: 1.2.0
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
       synckit:
         specifier: 0.11.11
         version: 0.11.11
@@ -1875,6 +1881,9 @@ importers:
       '@typescript-eslint/rule-tester':
         specifier: 8.46.2
         version: 8.46.2(eslint@9.39.1)(typescript@5.9.3)
+      c8:
+        specifier: ^10.1.3
+        version: 10.1.3
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -2269,6 +2278,9 @@ importers:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -4900,6 +4912,9 @@ importers:
       '@sap-ux/ui5-application-writer':
         specifier: workspace:*
         version: link:../ui5-application-writer
+      '@sap/ux-specification':
+        specifier: 1.139.2
+        version: 1.139.2(typescript@5.9.3)
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -8905,6 +8920,11 @@ packages:
 
   /@bcoe/v8-coverage@0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+    dev: true
+
+  /@bcoe/v8-coverage@1.0.2:
+    resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
+    engines: {node: '>=18'}
     dev: true
 
   /@biomejs/cli-darwin-arm64@2.3.7:
@@ -13560,7 +13580,6 @@ packages:
     resolution: {integrity: sha512-eUSTT0oPBdyDC/jGay+VVgW9BB80NSpl/HeTo3H+K99or88MR2eHtXH8wCabH55Qgzyrnc7BSWaYXk9AMbYWJg==}
     dependencies:
       '@sap-ux/vocabularies-types': 0.13.1
-    dev: true
 
   /@sap-ux/cds-annotation-parser@0.2.21:
     resolution: {integrity: sha512-PouMuIrSlRETc2oOTYFQB22fzxG06fFe83saIsHDIhOohp0cGbAcVstbDziGoAMCujSIz8hh4P29PF7PZ2IhUA==}
@@ -13570,7 +13589,6 @@ packages:
       '@sap-ux/odata-vocabularies': 0.4.18
       '@sap-ux/text-document-utils': 0.3.2
       chevrotain: 7.1.1
-    dev: true
 
   /@sap-ux/cds-odata-annotation-converter@0.6.14(@sap-ux/odata-annotation-core-types@0.5.1)(@sap-ux/project-access@1.32.11)(typescript@5.9.3):
     resolution: {integrity: sha512-zITH+GGRbkiJxJbXEh/GhBzL9wyEDiGSLNzb2yDYLXWFhjuNKt22rTmYCwNIRiCQqvmExoksHS4l/yhuRzsdvg==}
@@ -13585,7 +13603,6 @@ packages:
       - '@sap-ux/odata-annotation-core-types'
       - '@sap-ux/project-access'
       - typescript
-    dev: true
 
   /@sap-ux/edmx-parser@0.9.1:
     resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
@@ -13625,7 +13642,6 @@ packages:
     transitivePeerDependencies:
       - debug
       - typescript
-    dev: true
 
   /@sap-ux/fe-mockserver-core@1.6.38:
     resolution: {integrity: sha512-05bX1pmCwotRMVSx6WmqJZKgCOAF9Ql02CPbfWNfs0cIkEIUieoJKuPgUhrm18dh0RMSZt+gicUaJIpqe+znjw==}
@@ -13678,7 +13694,6 @@ packages:
     transitivePeerDependencies:
       - debug
       - typescript
-    dev: true
 
   /@sap-ux/i18n@0.3.5:
     resolution: {integrity: sha512-TqRxH5U/dUPnKspKsSjRe5aI1Dy187F72rPBph0130D0//GVrAF5gaT/LTvhytf/+J/BibJ2XCsG/l9KipQNjw==}
@@ -13687,7 +13702,6 @@ packages:
       '@sap-ux/text-document-utils': 0.3.2
       jsonc-parser: 3.2.0
       vscode-languageserver-textdocument: 1.0.11
-    dev: true
 
   /@sap-ux/logger@0.7.0:
     resolution: {integrity: sha512-1SoumSMkMCNRbO58IdI0+IwO1JUGq0cBtqZOS/BTbpZhGLaZ8X6Sd2ZkhLVG6eVQC+hn4rGelrnD2L2Bbgjx/A==}
@@ -13707,30 +13721,25 @@ packages:
       lodash: 4.17.21
       winston: 3.11.0
       winston-transport: 4.7.0
-    dev: true
 
   /@sap-ux/odata-annotation-core-types@0.5.1:
     resolution: {integrity: sha512-9Hh65kCyyr0kZNUqoRIK0fDjrEj09Fz7MdRGMIvhYOhtUGiM7hRb+ZYdEsTgS523A9LypEnxnMLEcQA8gj3hyA==}
     dependencies:
       '@sap-ux/text-document-utils': 0.3.2
-    dev: true
 
   /@sap-ux/odata-annotation-core@0.2.10:
     resolution: {integrity: sha512-WPf+jHAHQ7ppNIRYgdrF64+e+6qMg7NHpEaFKk9avSbcRK50iV1I5mF4ZVALimMZleN66f0Atj9VHadikp1LGg==}
     dependencies:
       '@sap-ux/odata-annotation-core-types': 0.5.1
       '@sap-ux/text-document-utils': 0.3.2
-    dev: true
 
   /@sap-ux/odata-entity-model@0.3.2:
     resolution: {integrity: sha512-EXIDkaxlB4ZC2U/zJQ207q20Prlw6DR5yfvXr7UzxPIZBCJlSFv7yaLQSQ3zftDyTHL4b/sgJAjYX6Szi7iQhw==}
-    dev: true
 
   /@sap-ux/odata-vocabularies@0.4.18:
     resolution: {integrity: sha512-66DOm4a2orXXtIfaI8LVsGqiBAbw32SmxHa+X2ONY3G7G/0XpR/qiHQerRHr3VwaK/iRXfQJ3xBJ4CHnsa1Q0Q==}
     dependencies:
       '@sap-ux/odata-annotation-core-types': 0.5.1
-    dev: true
 
   /@sap-ux/project-access@1.32.11:
     resolution: {integrity: sha512-kXkFdbykDgUbWegUF+5YUoiUb5xCH+Zopg9lyK0GFJnTPVjfuaW7jndhBG+Et9ppHXO29KI3nf8NKAmaUq6pAA==}
@@ -13746,7 +13755,6 @@ packages:
       semver: 7.5.4
     transitivePeerDependencies:
       - debug
-    dev: true
 
   /@sap-ux/store@1.1.3(typescript@5.9.3):
     resolution: {integrity: sha512-uF/Q/OaAVNqBY0axt+K+k4FQUjbHYAoewPikdm8fkKeBmjWK94MsqY+12TDZ+HEsQlZRgXgmxQOY2jSxeFyDIA==}
@@ -13767,7 +13775,6 @@ packages:
     engines: {node: '>=20.x'}
     dependencies:
       vscode-languageserver-types: 3.17.2
-    dev: true
 
   /@sap-ux/ui5-config@0.29.10:
     resolution: {integrity: sha512-4ckrcBlHYbzvxWONr2FaWAa5bwEdzxY+3QufWinlHYGUTRznB6rjkgXK5aEImf/4kqq0w4FsmTY3FD1zJWAFBw==}
@@ -13781,7 +13788,6 @@ packages:
       semver: 7.5.4
     transitivePeerDependencies:
       - debug
-    dev: true
 
   /@sap-ux/ui5-middleware-fe-mockserver@2.3.38:
     resolution: {integrity: sha512-7HBYgqIfdlPA537JhbDtGyzDSUWB6FSeS4favvWlv64tfJeUTKXLfOOCAQo74jY5R58IvY+3pPWVSksxQINACQ==}
@@ -13798,7 +13804,6 @@ packages:
   /@sap-ux/vocabularies-types@0.13.2:
     resolution: {integrity: sha512-lPFiWVXyA4yUBeQBJePxnqXZ/bMKk6vR3GoLtW/5ayBcQAJxWTpeyK8QX91sR+AajDmzkCF/8ND2ewi8SewySg==}
     engines: {node: '>=18.x'}
-    dev: true
 
   /@sap-ux/vocabularies-types@0.14.5:
     resolution: {integrity: sha512-66Q7Q4zVVSirPopU7oRw0ZDtUiOhAF2DuKy70uJl2wRfQ2WXLbrezEkHRxVdiVpQYm5n5qTkr6sX/I+/WXQjXQ==}
@@ -13808,7 +13813,6 @@ packages:
     resolution: {integrity: sha512-eSjWFBWzLfxpNetfabC0wOARdSkn26687K/0JjcIUfSzF0F0sP671O05MXaH+7XTcIC5bs76JTql6P1patImJQ==}
     dependencies:
       '@sap-ux/odata-annotation-core': 0.2.10
-    dev: true
 
   /@sap-ux/yaml@0.17.2:
     resolution: {integrity: sha512-CEIrJrJsORjg9WrkE7IaLTT+n4d/ReuKGVJYodhNYEFciFovmCudsQStSBJAqbKUMfkKwGEGbAjbOoFuI1j89Q==}
@@ -13816,7 +13820,6 @@ packages:
     dependencies:
       lodash: 4.17.21
       yaml: 2.2.2
-    dev: true
 
   /@sap/bas-sdk@3.12.0:
     resolution: {integrity: sha512-7PHLhBtJYNAYkgCuLz8TPHuIYhqlKZxqyT0MAtF05bNLKOLpcMhX3OG0FyypVWmjhGo9qKeG78NTlmMHOMcsQg==}
@@ -13894,7 +13897,6 @@ packages:
       '@sap-ux/odata-annotation-core': 0.2.10
       '@sap-ux/odata-annotation-core-types': 0.5.1
       '@sap-ux/project-access': 1.32.11
-    dev: true
 
   /@sap/ux-cds-compiler-facade@1.19.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
     resolution: {integrity: sha512-lPjt+K7Xyxwr0hm3lUW7Lzt3MYMVvbkzhpzDbNpG0guBp4l+8FgXl1/2ZrHoQ8ZjHv6e3YUTWm9ICZkb+7s8Qg==}
@@ -13918,7 +13920,6 @@ packages:
     transitivePeerDependencies:
       - debug
       - typescript
-    dev: true
 
   /@sap/xsenv@6.0.0:
     resolution: {integrity: sha512-9bNpJXmxndWn5JbRCPPtbeMqldXOn2Od17ybS92PHd1rNkZ80IMmOURHNct5YSVQ1MKBIDAyC+ck6VL7cVAfUA==}
@@ -15283,8 +15284,8 @@ packages:
       file-system-cache: 2.3.0
     dev: true
 
-  /@swc/core-darwin-arm64@1.15.3:
-    resolution: {integrity: sha512-AXfeQn0CvcQ4cndlIshETx6jrAM45oeUrK8YeEY6oUZU/qzz0Id0CyvlEywxkWVC81Ajpd8TQQ1fW5yx6zQWkQ==}
+  /@swc/core-darwin-arm64@1.15.8:
+    resolution: {integrity: sha512-M9cK5GwyWWRkRGwwCbREuj6r8jKdES/haCZ3Xckgkl8MUQJZA3XB7IXXK1IXRNeLjg6m7cnoMICpXv1v1hlJOg==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [darwin]
@@ -15292,8 +15293,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-darwin-x64@1.15.3:
-    resolution: {integrity: sha512-p68OeCz1ui+MZYG4wmfJGvcsAcFYb6Sl25H9TxWl+GkBgmNimIiRdnypK9nBGlqMZAcxngNPtnG3kEMNnvoJ2A==}
+  /@swc/core-darwin-x64@1.15.8:
+    resolution: {integrity: sha512-j47DasuOvXl80sKJHSi2X25l44CMc3VDhlJwA7oewC1nV1VsSzwX+KOwE5tLnfORvVJJyeiXgJORNYg4jeIjYQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [darwin]
@@ -15301,8 +15302,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-linux-x64-gnu@1.15.3:
-    resolution: {integrity: sha512-aKttAZnz8YB1VJwPQZtyU8Uk0BfMP63iDMkvjhJzRZVgySmqt/apWSdnoIcZlUoGheBrcqbMC17GGUmur7OT5A==}
+  /@swc/core-linux-x64-gnu@1.15.8:
+    resolution: {integrity: sha512-4p6lOMU3bC+Vd5ARtKJ/FxpIC5G8v3XLoPEZ5s7mLR8h7411HWC/LmTXDHcrSXRC55zvAVia1eldy6zDLz8iFQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
@@ -15310,8 +15311,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-linux-x64-musl@1.15.3:
-    resolution: {integrity: sha512-oe8FctPu1gnUsdtGJRO2rvOUIkkIIaHqsO9xxN0bTR7dFTlPTGi2Fhk1tnvXeyAvCPxLIcwD8phzKg6wLv9yug==}
+  /@swc/core-linux-x64-musl@1.15.8:
+    resolution: {integrity: sha512-z3XBnbrZAL+6xDGAhJoN4lOueIxC/8rGrJ9tg+fEaeqLEuAtHSW2QHDHxDwkxZMjuF/pZ6MUTjHjbp8wLbuRLA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
@@ -15319,8 +15320,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-win32-x64-msvc@1.15.3:
-    resolution: {integrity: sha512-SpZKMR9QBTecHeqpzJdYEfgw30Oo8b/Xl6rjSzBt1g0ZsXyy60KLXrp6IagQyfTYqNYE/caDvwtF2FPn7pomog==}
+  /@swc/core-win32-x64-msvc@1.15.8:
+    resolution: {integrity: sha512-GpMePrh9Sl4d61o4KAHOOv5is5+zt6BEXCOCgs/H0FLGeii7j9bWDE8ExvKFy2GRRZVNR1ugsnzaGWHKM6kuzA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
@@ -16083,7 +16084,6 @@ packages:
 
   /@types/semver@7.5.2:
     resolution: {integrity: sha512-7aqorHYgdNO4DM36stTiGO3DvKoex9TQRwsJU6vMaFGyqpBA1MNZkz+PG3gaNUPpTAOYhT1WR7M1JyA3fbS9Cw==}
-    dev: true
 
   /@types/semver@7.5.4:
     resolution: {integrity: sha512-MMzuxN3GdFwskAnb6fz0orFvhfqi752yjaXylr0Rp4oDg5H0Zn1IuyRhDVvYOwAXoJirx2xuS16I3WjxnAIHiQ==}
@@ -18761,6 +18761,29 @@ packages:
   /bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
+
+  /c8@10.1.3:
+    resolution: {integrity: sha512-LvcyrOAaOnrrlMpW22n690PUvxiq4Uf9WMhQwNJ9vgagkL/ph1+D4uvjvDA5XCbykrc0sx+ay6pVi9YZ1GnhyA==}
+    engines: {node: '>=18'}
+    hasBin: true
+    peerDependencies:
+      monocart-coverage-reports: ^2
+    peerDependenciesMeta:
+      monocart-coverage-reports:
+        optional: true
+    dependencies:
+      '@bcoe/v8-coverage': 1.0.2
+      '@istanbuljs/schema': 0.1.3
+      find-up: 5.0.0
+      foreground-child: 3.3.1
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-reports: 3.1.7
+      test-exclude: 7.0.1
+      v8-to-istanbul: 9.3.0
+      yargs: 17.7.2
+      yargs-parser: 21.1.1
+    dev: true
 
   /cacache@15.3.0:
     resolution: {integrity: sha512-VVdYzXEn+cnbXpFgWs5hTT7OScegHVmLhJIR8Ufqk3iFD6A6j5iSX1KuBTfNEv4tdJWE2PzA6IVFtcLC7fN9wQ==}
@@ -28635,11 +28658,11 @@ packages:
       '@rollup/rollup-linux-x64-gnu': 4.53.3
       '@slack/web-api': 7.13.0
       '@smithy/node-http-handler': 4.4.5
-      '@swc/core-darwin-arm64': 1.15.3
-      '@swc/core-darwin-x64': 1.15.3
-      '@swc/core-linux-x64-gnu': 1.15.3
-      '@swc/core-linux-x64-musl': 1.15.3
-      '@swc/core-win32-x64-msvc': 1.15.3
+      '@swc/core-darwin-arm64': 1.15.8
+      '@swc/core-darwin-x64': 1.15.8
+      '@swc/core-linux-x64-gnu': 1.15.8
+      '@swc/core-linux-x64-musl': 1.15.8
+      '@swc/core-win32-x64-msvc': 1.15.8
       fluent-ffmpeg: 2.1.3
       google-auth-library: 10.5.0
       ibm-cloud-sdk-core: 5.4.4
@@ -31798,6 +31821,15 @@ packages:
       '@istanbuljs/schema': 0.1.3
       glob: 7.2.3
       minimatch: 3.0.5
+    dev: true
+
+  /test-exclude@7.0.1:
+    resolution: {integrity: sha512-pFYqmTw68LXVjeWJMST4+borgQP2AyMNbg1BpZh9LbyhUeNkeaPF9gzfPGUAnSMV3qPYdWUwDIjjCLiSDOl7vg==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@istanbuljs/schema': 0.1.3
+      glob: 10.4.5
+      minimatch: 9.0.5
     dev: true
 
   /text-decoder@1.1.0:

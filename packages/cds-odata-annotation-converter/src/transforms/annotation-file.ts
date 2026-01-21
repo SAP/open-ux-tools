@@ -374,6 +374,7 @@ function convertTargetAnnotations(
 }
 
 /**
+ * Checks for ghost targets in propagation map and adds them to the file targets.
  *
  * @param returnValue - The return value containing file targets.
  * @param [propagationMap] - The map of propagated targets.
@@ -408,6 +409,7 @@ function checkGhostTarget(
 }
 
 /**
+ * Extracts the ValueListProperty path value from a value list parameter record element.
  *
  * @param valueListParameterRecordElement record element inside value list information.
  * @returns value list property path or undefined.
@@ -439,6 +441,7 @@ const getRecordPropertyElement = (recordElement: Element, propertyName: string):
 };
 
 /**
+ * Extracts the CollectionPath value from a value list record element.
  *
  * @param valueListRecordElement record element inside value list information.
  * @returns value of value list CollectionPath
@@ -461,6 +464,7 @@ function getValueListCollectionPathValue(valueListRecordElement: Element): strin
 }
 
 /**
+ * Extracts collection path and parameters from a value list term annotation.
  *
  * @param term valueList term element
  * @returns value list properties e.g collection path, parameters.
@@ -489,6 +493,7 @@ function extractValueListPropertiesFromAnnotation(term: Element): { collectionPa
 }
 
 /**
+ * Collects all ValueListProperty values from a collection element.
  *
  * @param collection collection inside valueList Term
  * @returns list of all value list properties in string array.
@@ -510,6 +515,7 @@ function collectAllValueListProperty(collection: Element): string[] {
 }
 
 /**
+ * Extracts metadata paths from ValueList annotations and adds them to the provided set.
  *
  * @param terms - An array of elements representing terms with annotations.
  * @param mdPathSet - The set to which metadata paths are added.

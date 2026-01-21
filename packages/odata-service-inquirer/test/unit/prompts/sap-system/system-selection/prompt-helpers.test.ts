@@ -100,6 +100,24 @@ describe('Test system selection prompt helpers', () => {
                     }
                 }
             ]);
+
+            // hideNewSystem set to true
+            expect(await createSystemChoices(undefined, false, true)).toEqual([
+                {
+                    name: backendSystemBasic.name,
+                    value: {
+                        system: backendSystemBasic,
+                        type: 'backendSystem'
+                    }
+                },
+                {
+                    name: `${backendSystemReentrance.name} (ABAP Cloud)`,
+                    value: {
+                        system: backendSystemReentrance,
+                        type: 'backendSystem'
+                    }
+                }
+            ]);
         });
 
         test('Should return index of default', async () => {
