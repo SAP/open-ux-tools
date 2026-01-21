@@ -14,7 +14,7 @@
         "typeOptions": "Click to display the list of options."
     },
     "validations": {
-        "systemUrlOriginOnlyWarning": "System urls must only contain the hostname and/or port, for example, 'https://abc.com:123/'"
+        "systemUrlOriginOnlyWarning": "System URLs must only contain the hostname and may also include the port, for example, 'https://abc.com:123/'."
     },
     "titles": {
         "sapSystemDetails": "SAP System Details",
