@@ -22,8 +22,7 @@ export enum SupportedProject {
 export async function getSupportedProject(provider: AbapServiceProvider): Promise<SupportedProject> {
     try {
         const layerdRepositoryService = provider.getLayeredRepository();
-        const systemInfo = await layerdRepositoryService.getSystemInfo();
-        const { adaptationProjectTypes } = systemInfo;
+        const { adaptationProjectTypes } = await layerdRepositoryService.getSystemInfo();
 
         const hasCloudReady = adaptationProjectTypes?.includes(AdaptationProjectType.CLOUD_READY);
         const hasOnPrem = adaptationProjectTypes?.includes(AdaptationProjectType.ON_PREMISE);
@@ -37,7 +36,7 @@ export async function getSupportedProject(provider: AbapServiceProvider): Promis
         }
     } catch (error) {
         // Handle the case where the API is not available and continue to standard onPremise flow.
-        if (isAxiosError(error) && (error.response?.status === 405 || error.response?.status === 404)) {
+        if (isAxiosError(error) && [404, 405].includes(error.response?.status ?? 0)) {
             return SupportedProject.ON_PREM;
         }
         throw error;
