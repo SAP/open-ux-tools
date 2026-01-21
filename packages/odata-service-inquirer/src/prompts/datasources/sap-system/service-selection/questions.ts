@@ -104,9 +104,7 @@ export function getSystemServiceQuestion(
                     );
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
-                    previousServiceFilter = promptOptions?.serviceFilter
-                        ? [...promptOptions.serviceFilter]
-                        : undefined;
+                    previousServiceFilter = promptOptions?.serviceFilter ? [...promptOptions.serviceFilter] : undefined;
 
                     // Telemetry event for successful service listing using a destination
                     if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
