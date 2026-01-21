@@ -22,6 +22,9 @@ import {
     loadAppVariant
 } from '../../../src/base/helper';
 import { readUi5Yaml } from '@sap-ux/project-access';
+import { tmpdir } from 'node:os';
+//eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareUtils } from '@ui5/server';
 
 jest.mock('fs', () => {
     return {
@@ -421,6 +424,14 @@ describe('helper', () => {
             namespace: 'apps/base.app/appVariants/my.adaptation/',
             content: []
         };
+        const mockUtils = {
+            getProject() {
+                return {
+                    getSourcePath: () => tmpdir(),
+                    getType: () => 'application'
+                };
+            }
+        } as unknown as MiddlewareUtils;
 
         beforeEach(() => {
             jest.clearAllMocks();
@@ -435,7 +446,7 @@ describe('helper', () => {
                 byPath: jest.fn().mockResolvedValue(mockResource)
             } as unknown as ReaderCollection;
 
-            const result = await loadAppVariant(mockRootProject);
+            const result = await loadAppVariant(mockRootProject, mockUtils);
 
             expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
             expect(mockResource.getString).toHaveBeenCalled();
@@ -447,7 +458,7 @@ describe('helper', () => {
                 byPath: jest.fn().mockResolvedValue(null)
             } as unknown as ReaderCollection;
 
-            await expect(loadAppVariant(mockRootProject)).rejects.toThrow(
+            await expect(loadAppVariant(mockRootProject, mockUtils)).rejects.toThrow(
                 'ADP configured but no manifest.appdescr_variant found.'
             );
             expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
@@ -462,7 +473,7 @@ describe('helper', () => {
                 byPath: jest.fn().mockResolvedValue(mockResource)
             } as unknown as ReaderCollection;
 
-            await expect(loadAppVariant(mockRootProject)).rejects.toThrow(
+            await expect(loadAppVariant(mockRootProject, mockUtils)).rejects.toThrow(
                 'ADP configured but manifest.appdescr_variant file is empty.'
             );
             expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
@@ -479,7 +490,7 @@ describe('helper', () => {
                 byPath: jest.fn().mockResolvedValue(mockResource)
             } as unknown as ReaderCollection;
 
-            await expect(loadAppVariant(mockRootProject)).rejects.toThrow(
+            await expect(loadAppVariant(mockRootProject, mockUtils)).rejects.toThrow(
                 'Failed to parse manifest.appdescr_variant: File read error'
             );
             expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');

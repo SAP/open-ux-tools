@@ -1145,10 +1145,11 @@ export class FlpSandbox {
      * Initialize the preview for an adaptation project.
      *
      * @param config configuration from the ui5.yaml
+     * @param utils middleware utils
      * @throws Error in case no manifest.appdescr_variant found
      */
-    async initAdp(config: AdpPreviewConfig): Promise<void> {
-        const variant = await loadAppVariant(this.project);
+    async initAdp(config: AdpPreviewConfig, utils: MiddlewareUtils): Promise<void> {
+        const variant = await loadAppVariant(this.project, utils);
         const adp = new AdpPreview(config, this.project, this.utils, this.logger as ToolsLogger);
         const layer = await adp.init(variant);
 

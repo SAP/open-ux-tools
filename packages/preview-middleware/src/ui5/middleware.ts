@@ -6,6 +6,7 @@ import { type EnhancedRouter, FlpSandbox } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
 import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
+import { getSandboxPathPrefix } from '../base/utils/project';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -30,10 +31,12 @@ async function createRouter(
     const flp = new FlpSandbox(config, resources.rootProject, middlewareUtil, logger);
 
     if (config.adp) {
-        await flp.initAdp(config.adp);
+        await flp.initAdp(config.adp, middlewareUtil);
     } else {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const manifest = await resources.rootProject.byPath('/manifest.json');
+        const manifest = await resources.rootProject.byPath(
+            `${getSandboxPathPrefix(middlewareUtil) ?? ''}/manifest.json`
+        );
         if (manifest) {
             await flp.init(JSON.parse(await manifest.getString()));
         } else {
