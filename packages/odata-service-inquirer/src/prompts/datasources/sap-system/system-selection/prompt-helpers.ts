@@ -278,7 +278,7 @@ export async function createSystemChoices(
  */
 export function findDefaultSystemSelectionIndex(
     systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[],
-    defaultChoice: string | { value?: string | undefined } | undefined
+    defaultChoice: string | { value?: string } | undefined
 ): number {
     const choice = typeof defaultChoice === 'string' ? defaultChoice : defaultChoice?.value;
     if (!choice) {
@@ -293,10 +293,10 @@ export function findDefaultSystemSelectionIndex(
             return (system as BackendSystem).name === choice;
         }
         if (systemType === 'newSystemChoice') {
-            return (choice as string) === NewSystemChoice;
+            return choice === NewSystemChoice;
         }
         if (systemType === 'cfAbapEnvService') {
-            return (choice as string) === CfAbapEnvServiceChoice;
+            return choice === CfAbapEnvServiceChoice;
         }
     });
     return defaultChoiceIndex;

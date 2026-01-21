@@ -158,7 +158,6 @@ export async function getServiceChoices(
         flatServices = flatServices.filter(
             (service) => serviceFilter.includes(service.id) || serviceFilter.includes(service.path)
         );
-        // todo: If passed service is not found we should have a specific message, otherwise the "no service for template" message is shown incorrectly
     }
     return createServiceChoices(flatServices);
 }

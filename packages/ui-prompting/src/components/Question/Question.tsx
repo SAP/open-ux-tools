@@ -15,10 +15,21 @@ export interface QuestionProps {
     pending?: boolean;
     validation: ValidationResults;
     isI18nInputSupported?: boolean;
+    calloutCollisionTransformation?: boolean;
 }
 
 export const Question = (props: QuestionProps) => {
-    const { question, onChange, answers, choices, pending, validation = {}, id, isI18nInputSupported } = props;
+    const {
+        question,
+        onChange,
+        answers,
+        choices,
+        pending,
+        validation = {},
+        id,
+        isI18nInputSupported,
+        calloutCollisionTransformation
+    } = props;
     let questionInput: JSX.Element;
     let errorMessage = '';
     const value: AnswerValue = getAnswer(answers, question.name) as AnswerValue;
@@ -56,6 +67,8 @@ export const Question = (props: QuestionProps) => {
                     {...question}
                     dynamicChoices={choices}
                     onChange={onChange}
+                    pending={pending}
+                    calloutCollisionTransformation={calloutCollisionTransformation}
                     errorMessage={errorMessage}
                     id={inputId}
                 />
