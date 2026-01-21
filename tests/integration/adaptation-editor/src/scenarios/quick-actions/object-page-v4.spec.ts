@@ -48,19 +48,17 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ],
                 fragments: {
-                    'table-column.fragment.xml': new RegExp(
-                        `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">\\s*` +
-                            `<!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->\\s*` +
-                            `<!-- controlType: sap.ui.mdc.Table -->\\s*` +
-                            `<!-- targetAggregation: columns -->\\s*` +
-                            `<table:Column\\s*` +
-                            `id="column-[a-z0-9]+"\\s*` +
-                            `width="10%"\\s*` +
-                            `header="New Column">\\s*` +
-                            `<Text id="text-[a-z0-9]+" text="Sample data"/>\\s*` +
-                            `</table:Column>\\s*` +
-                            `</core:FragmentDefinition>`
-                    )
+                    'table-column.fragment.xml': `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
+    <!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->
+    <!-- controlType: sap.ui.mdc.Table -->
+    <!-- targetAggregation: columns --> 
+    <table:Column
+        id="column-[a-z0-9]+"
+        width="10%"
+        header="New Column">
+        <Text id="text-[a-z0-9]+" text="Sample data"/>
+    </table:Column>
+</core:FragmentDefinition>`
                 }
             });
 
@@ -299,16 +297,14 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ],
                 fragments: {
-                    'op-table-action.fragment.xml': new RegExp(
-                        `<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
-                            `<!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->\\s*` +
-                            `<!-- controlType: sap.ui.mdc.Table -->\\s*` +
-                            `<!-- targetAggregation: actions -->\\s*` +
-                            `<actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-[a-z0-9]+" >\\s*` +
-                            `<Button xmlns:m="sap.m" id="btn-[a-z0-9]+" visible="true" text="New Action" />\\s*` +
-                            `</actiontoolbar:ActionToolbarAction>\\s*` +
-                            `</core:FragmentDefinition>`
-                    )
+                    'op-table-action.fragment.xml': `<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->
+    <!-- controlType: sap.ui.mdc.Table -->
+    <!-- targetAggregation: actions --> 
+    <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-[a-z0-9]+" >
+        <Button xmlns:m="sap.m" id="btn-[a-z0-9]+" visible="true" text="New Action" />
+    </actiontoolbar:ActionToolbarAction>
+</core:FragmentDefinition>`
                 }
             });
 
