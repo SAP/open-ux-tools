@@ -137,7 +137,7 @@ export async function loadApps(
         ).flat();
 
         return appIndex.map(toSourceApplication).sort(compareByTitleOrId);
-    } catch (e) {
-        throw new Error(`Could not load applications: ${e.message}`);
+    } catch (error) {
+        throw new Error(`Could not load applications: ${error.message}`);
     }
 }
