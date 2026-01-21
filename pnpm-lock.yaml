@@ -3179,9 +3179,6 @@ importers:
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7)
-      lodash:
-        specifier: 4.17.21
-        version: 4.17.21
       os-name:
         specifier: 4.0.1
         version: 4.0.1
@@ -3213,9 +3210,6 @@ importers:
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.2
         version: 2.0.2
-      '@types/lodash':
-        specifier: 4.14.202
-        version: 4.14.202
       jest-extended:
         specifier: 6.0.0
         version: 6.0.0(jest@30.2.0)(typescript@5.9.3)

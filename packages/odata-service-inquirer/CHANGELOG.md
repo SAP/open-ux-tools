@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.12
+
+### Patch Changes
+
+- f31a340: Removes `lodash` use.
+
 ## 2.14.11
 
 ### Patch Changes
