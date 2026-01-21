@@ -31,8 +31,9 @@ describe('manifest', () => {
             ['', undefined],
             ['1.105.0', 'None'],
             [undefined, undefined],
-            [['1.120.10', '2.0.0'], undefined]
-        ])('Ensure synchronizationMode is correctly set for minUI5Version %s', async (minUI5Version, syncMode) => {
+            [['1.120.10', '2.0.0'], undefined],
+            ['1.144.0', undefined, '4.01']
+        ])('Ensure synchronizationMode is correctly set for minUI5Version %s', async (minUI5Version, syncMode, expectedOdataVersion = '4.0') => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
@@ -59,6 +60,9 @@ describe('manifest', () => {
             await updateManifest('./', service, fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
             expect(manifestJson['sap.ui5']?.models?.['amodel'].settings?.['synchronizationMode']).toEqual(syncMode);
+            expect(manifestJson['sap.app']?.dataSources?.['aname'].settings?.['odataVersion']).toEqual(
+                expectedOdataVersion
+            );
         });
         test('Ensure manifest are updated as expected as in edmx projects', async () => {
             const testManifest = {

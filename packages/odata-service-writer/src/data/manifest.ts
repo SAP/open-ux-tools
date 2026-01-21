@@ -23,7 +23,7 @@ interface DataSourceUpdateSettings {
  * @param {Editor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {DataSourceUpdateSettings} dataSourceUpdateSettings - dataSource settings for update
- * @param {string} minimumUi5Version - dataSource settings for update
+ * @param {string} minimumUi5Version - minimum UI5 version of the application
  */
 function enhanceManifestDatasources(
     fs: Editor,
@@ -308,16 +308,21 @@ function enhanceManifest(
     // Enhance model settings for service
     const serviceSettings = Object.assign(service, getModelSettings(minimumUi5Version));
     if (serviceSettings.name && serviceSettings.path && serviceSettings.model !== undefined) {
-        enhanceManifestDatasources(fs, webappPath, {
-            serviceName: serviceSettings.name,
-            servicePath: serviceSettings.path,
-            serviceVersion: serviceSettings.version,
-            manifest,
-            forceServiceUpdate,
-            serviceMetadata: serviceSettings.metadata,
-            serviceRemoteAnnotations: serviceSettings.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
-            serviceLocalAnnotations: serviceSettings.localAnnotationsName
-        });
+        enhanceManifestDatasources(
+            fs,
+            webappPath,
+            {
+                serviceName: serviceSettings.name,
+                servicePath: serviceSettings.path,
+                serviceVersion: serviceSettings.version,
+                manifest,
+                forceServiceUpdate,
+                serviceMetadata: serviceSettings.metadata,
+                serviceRemoteAnnotations: serviceSettings.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
+                serviceLocalAnnotations: serviceSettings.localAnnotationsName
+            },
+            minimumUi5Version
+        );
         // Add or update existing service model settings for manifest.json
         enhanceManifestModels(
             serviceSettings.name,
