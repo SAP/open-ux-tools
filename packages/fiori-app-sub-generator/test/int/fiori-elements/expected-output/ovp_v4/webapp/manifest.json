@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:ovp",
-      "version": "2.8.38",
-      "toolsId": "8e0623d5-f351-4ea7-b0c0-2c4f60c08343"
+      "version": "2.8.42",
+      "toolsId": "052d03f1-e8e8-471d-887c-8eaae86dc4df"
     },
     "dataSources": {
       "annotation": {
@@ -31,7 +31,7 @@
             "annotation"
           ],
           "localUri": "localService/mainService/metadata.xml",
-          "odataVersion": "4.1"
+          "odataVersion": "4.0"
         }
       }
     }
