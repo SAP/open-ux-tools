@@ -131,7 +131,7 @@ export async function loadAppVariant(
 ): Promise<DescriptorVariant> {
     const pathPrefix =
         utils.getProject?.()?.getType?.() === 'component'
-            ? posix.join('/test-resources', utils.getProject().getNamespace())
+            ? posix.join('/resources', utils.getProject().getNamespace())
             : '';
     const appVariant = await rootProject.byPath(`${pathPrefix}/manifest.appdescr_variant`);
     if (!appVariant) {

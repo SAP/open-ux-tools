@@ -10,11 +10,28 @@ import { posix } from 'node:path';
  * @returns sandbox path prefix or undefined
  */
 export function getSandboxPathPrefix(utils?: MiddlewareUtils): string | undefined {
+    //todo: rename to getTestResourcesPathPrefix;
     if (typeof utils !== 'object') {
         return undefined;
     }
     return utils.getProject?.()?.getType?.() === 'component'
         ? posix.join('/test-resources', utils.getProject().getNamespace())
+        : undefined;
+}
+
+/**
+ * Get the sources path prefix for component projects.
+ * Component projects need a special path prefix based on their namespace.
+ *
+ * @param utils middleware utils
+ * @returns resources path prefix or undefined
+ */
+export function getResourcesPathPrefix(utils?: MiddlewareUtils): string | undefined {
+    if (typeof utils !== 'object') {
+        return undefined;
+    }
+    return utils.getProject?.()?.getType?.() === 'component'
+        ? posix.join('/resources', utils.getProject().getNamespace())
         : undefined;
 }
 

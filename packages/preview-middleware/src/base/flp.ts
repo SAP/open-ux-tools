@@ -1056,8 +1056,12 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
-        this.router.use(posix.join(getSandboxPathPrefix(this.utils) ?? '/', CARD_GENERATOR_DEFAULT.cardsStore), json());
-        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.cardsStore}`);
+        const storeCardManifestPath = posix.join(
+            getSandboxPathPrefix(this.utils) ?? '/',
+            CARD_GENERATOR_DEFAULT.cardsStore
+        );
+        this.router.use(storeCardManifestPath, json());
+        this.logger.debug(`Add route for ${storeCardManifestPath}`);
 
         this.router.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
             await this.storeCardManifestHandler(req, res);
@@ -1133,8 +1137,9 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
-        this.router.use(posix.join(getSandboxPathPrefix(this.utils) ?? '/', CARD_GENERATOR_DEFAULT.i18nStore), json());
-        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.i18nStore}`);
+        const storeI18nKeysPath = posix.join(getSandboxPathPrefix(this.utils) ?? '/', CARD_GENERATOR_DEFAULT.i18nStore);
+        this.router.use(storeI18nKeysPath, json());
+        this.logger.debug(`Add route for ${storeI18nKeysPath}`);
 
         this.router.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
             await this.storeI18nKeysHandler(req, res);

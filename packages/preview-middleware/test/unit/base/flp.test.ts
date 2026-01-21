@@ -1561,7 +1561,7 @@ describe('initAdp', () => {
     test('initAdp: throw an error if no adp project', async () => {
         const flp = new FlpSandbox({}, mockNonAdpProject, mockUtils, logger);
         try {
-            await flp.initAdp({} as AdpPreviewConfig);
+            await flp.initAdp({} as AdpPreviewConfig, mockUtils);
         } catch (error) {
             expect(error).toBeDefined();
         }
@@ -1573,7 +1573,7 @@ describe('initAdp', () => {
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await flp.initAdp(config.adp);
+        await flp.initAdp(config.adp, mockUtils);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
     });
@@ -1608,7 +1608,7 @@ describe('initAdp', () => {
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await flp.initAdp(config.adp as AdpPreviewConfig);
+        await flp.initAdp(config.adp as AdpPreviewConfig, mockUtils);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
         expect(flp.rta?.options?.isCloud).toBe(true);
@@ -1662,7 +1662,7 @@ describe('initAdp', () => {
             jest.fn();
         });
 
-        await flp.initAdp(config);
+        await flp.initAdp(config, mockUtils);
 
         expect(readManifestFromBuildPathMock).toHaveBeenCalledWith(cfBuildPath);
         expect(adpToolingMock).toHaveBeenCalled();
