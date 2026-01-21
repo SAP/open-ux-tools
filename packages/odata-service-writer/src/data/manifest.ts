@@ -23,11 +23,13 @@ interface DataSourceUpdateSettings {
  * @param {Editor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {DataSourceUpdateSettings} dataSourceUpdateSettings - dataSource settings for update
+ * @param {string} minimumUi5Version - dataSource settings for update
  */
 function enhanceManifestDatasources(
     fs: Editor,
     webappPath: string,
-    dataSourceUpdateSettings: DataSourceUpdateSettings
+    dataSourceUpdateSettings: DataSourceUpdateSettings,
+    minimumUi5Version?: string
 ): void {
     const {
         serviceName,
@@ -61,10 +63,11 @@ function enhanceManifestDatasources(
         settings['localUri'] = `localService/${serviceName}/metadata.xml`;
     }
     if (serviceVersion === '4') {
-        settings['odataVersion'] = '4.1';
+        settings['odataVersion'] = minimumUi5Version && semVer.satisfies(minimumUi5Version, '>=1.144') ? '4.01' : '4.0';
     } else if (serviceVersion === '2') {
         settings['odataVersion'] = '2.0';
     }
+
     // Create or update service dataSource in manifest.json for service
     dataSources[serviceName] = {
         uri: servicePath,

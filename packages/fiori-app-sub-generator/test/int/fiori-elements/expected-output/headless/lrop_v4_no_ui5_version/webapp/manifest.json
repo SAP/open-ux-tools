@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:lrop",
-      "version": "2.8.38",
-      "toolsId": "08ebf3b1-2485-4f27-9d7e-4d123a1aa2ee"
+      "version": "2.8.40",
+      "toolsId": "80920525-49ae-4aa4-ad7b-b0717ddc2f31"
     },
     "dataSources": {
       "annotation": {
