@@ -168,30 +168,32 @@ describe('Test new system prompt', () => {
             }
         };
 
-        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
-            {
-                name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
-                value: {
-                    serviceODataVersion: '4',
-                    servicePath: '/sap/opu/odata4/dmo/flight/0001',
-                    serviceType: 'WEB_API',
-                    serviceId: '/DMO/FLIGHT',
-                    toString: expect.any(Function)
-                }
-            },
-            {
-                name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
-                value: {
-                    serviceODataVersion: '2',
-                    servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
-                    serviceType: 'Not Classified',
-                    serviceId: 'ZTRAVEL_DESK_SRV_0002',
-                    toString: expect.any(Function)
-                }
+        const serviceDmoFlightV4 = {
+            name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
+            value: {
+                serviceODataVersion: '4',
+                servicePath: '/sap/opu/odata4/dmo/flight/0001',
+                serviceType: 'WEB_API',
+                serviceId: '/DMO/FLIGHT',
+                toString: expect.any(Function)
             }
+        };
+        const serviceTravelDeskV2 = {
+            name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
+            value: {
+                serviceODataVersion: '2',
+                servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
+                serviceType: 'Not Classified',
+                serviceId: 'ZTRAVEL_DESK_SRV_0002',
+                toString: expect.any(Function)
+            }
+        };
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
+            serviceDmoFlightV4,
+            serviceTravelDeskV2
         ]);
 
-        // The service choices should be restricted based on the service filter prompt option
+        // The service choices should be restricted based on the service filter prompt option, if service id is specified
         systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
             serviceFilter: ['/DMO/FLIGHT']
         });
@@ -199,39 +201,23 @@ describe('Test new system prompt', () => {
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
 
-        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
-            {
-                name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
-                value: {
-                    serviceODataVersion: '4',
-                    servicePath: '/sap/opu/odata4/dmo/flight/0001',
-                    serviceType: 'WEB_API',
-                    serviceId: '/DMO/FLIGHT',
-                    toString: expect.any(Function)
-                }
-            }
-        ]);
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([serviceDmoFlightV4]);
 
-        // Should restrict service choices based on service path
+        // Should restrict service choices based on service path, service filter can be updated as external reference also
+        const serviceFilter = ['/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'];
         systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
-            serviceFilter: ['/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002']
+            serviceFilter
         });
         serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
 
-        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
-            {
-                name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
-                value: {
-                    serviceODataVersion: '2',
-                    servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
-                    serviceType: 'Not Classified',
-                    serviceId: 'ZTRAVEL_DESK_SRV_0002',
-                    toString: expect.any(Function)
-                }
-            }
-        ]);
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([serviceTravelDeskV2]);
+
+        // Choices should be updated when the service filter is updated and not the system url
+        serviceFilter.length = 0;
+        serviceFilter.push('/sap/opu/odata4/dmo/flight/0001');
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([serviceDmoFlightV4]);
 
         // The services choices should be restricted to the specified required odata version
         systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
@@ -241,18 +227,7 @@ describe('Test new system prompt', () => {
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
 
-        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
-            {
-                name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
-                value: {
-                    serviceODataVersion: '2',
-                    servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
-                    serviceType: 'Not Classified',
-                    serviceId: 'ZTRAVEL_DESK_SRV_0002',
-                    toString: expect.any(Function)
-                }
-            }
-        ]);
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([serviceTravelDeskV2]);
     });
 
     test('should show additional messages in service selection prompt when no matching services', async () => {
