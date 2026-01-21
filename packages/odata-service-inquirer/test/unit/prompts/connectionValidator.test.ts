@@ -124,14 +124,14 @@ describe('ConnectionValidator', () => {
 
         // isSystem URL case
         const result = await validator.validateUrl(serviceUrl, { isSystem: true });
-        expect(result).toBe(t('prompts.validationMessages.urlPathWarning'));
+        expect(result).toBe(t('prompts.validationMessages.systemUrlOriginOnlyWarning'));
         expect(validator.validity).toEqual({});
 
         // Reentrance ticket case
         const validatorReentrance = new ConnectionValidator();
         validatorReentrance.systemAuthType = 'reentranceTicket';
         const resultReentrance = await validatorReentrance.validateUrl(serviceUrl);
-        expect(resultReentrance).toBe(t('prompts.validationMessages.urlPathWarning'));
+        expect(resultReentrance).toBe(t('prompts.validationMessages.systemUrlOriginOnlyWarning'));
         expect(validatorReentrance.validity).toEqual({});
     });
 
