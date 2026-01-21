@@ -91,7 +91,7 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     }
 
     /**
-     * Returns a backend system by applying multiple matching strategies.
+     * Returns an array of backend systems by applying multiple matching strategies.
      * 1. Direct read from store: URL + client
      * 2. URL-only match for cloud systems (as client is persisted for cloud systems).
      * 3. Match via system info - systemId and client
@@ -102,40 +102,40 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
      * @param systemInfo.systemId - the system id
      * @param systemInfo.client - the system client
      *
-     * @returns a backend system if found, otherswise undefined
+     * @returns an array of matching backend systems if found, empty array otherwise
      */
-    public async findBackendSystem(
+    public async findBackendSystems(
         url: string,
         client?: string,
         systemInfo?: { systemId: string; client: string }
-    ): Promise<BackendSystem | undefined> {
-        let backendSystem: BackendSystem | undefined;
+    ): Promise<BackendSystem[]> {
+        let backendSystems: BackendSystem[] = [];
 
         const directMatch = await this.dataProvider.read(new BackendSystemKey({ url, client }));
         if (directMatch) {
-            backendSystem = directMatch;
+            backendSystems[0] = directMatch;
         }
 
-        if (!backendSystem) {
+        if (!backendSystems[0]) {
             const allSystems = await this.dataProvider.getAll();
             const cloudMatch = allSystems?.find(
                 (system) => system.url === url && system.systemType === SystemType.AbapCloud
             );
 
             if (cloudMatch) {
-                backendSystem = cloudMatch;
-            } else if (systemInfo.systemId && systemInfo.client) {
-                const systemInfoMatch = allSystems?.find(
+                backendSystems[0] = cloudMatch;
+            } else if (systemInfo?.systemId && systemInfo?.client) {
+                const systemInfoMatches = allSystems.filter(
                     (system: BackendSystem) =>
                         system.systemInfo?.systemId === systemInfo.systemId &&
                         system.systemInfo?.client === systemInfo.client
                 );
-                if (systemInfoMatch) {
-                    backendSystem = systemInfoMatch;
+                if (systemInfoMatches) {
+                    backendSystems = systemInfoMatches;
                 }
             }
         }
-        return backendSystem;
+        return backendSystems;
     }
 }
 

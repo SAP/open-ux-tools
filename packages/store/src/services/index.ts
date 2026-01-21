@@ -70,11 +70,11 @@ export interface Service<Entity, EntityKey> {
  * This interface extends the generic `Service` API and adds `findBackendSystem`.
  */
 export interface BackendSystemService extends Service<BackendSystem, BackendSystemKey> {
-    findBackendSystem(
+    findBackendSystems(
         url: string,
         client?: string,
         systemInfo?: { systemId: string; client: string }
-    ): Promise<BackendSystem | undefined>;
+    ): Promise<BackendSystem[]>;
 }
 
 export type { SystemService } from './backend-system';

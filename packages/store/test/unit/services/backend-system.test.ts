@@ -264,14 +264,14 @@ describe('BackendSystem service', () => {
             });
             const readSpy = jest.spyOn(SystemDataProvider.prototype, 'read').mockResolvedValueOnce(mockSystem);
             const systemService = new SystemService(logger);
-            const result = await systemService.findBackendSystem('https://direct.match.com', '100', {
+            const result = await systemService.findBackendSystems('https://direct.match.com', '100', {
                 systemId: 'SYS1',
                 client: '100'
             });
             expect(readSpy).toHaveBeenCalledWith(
                 new BackendSystemKey({ url: 'https://direct.match.com', client: '100' })
             );
-            expect(result).toBe(mockSystem);
+            expect(result).toStrictEqual([mockSystem]);
         });
 
         it('returns system on cloud match', async () => {
@@ -284,12 +284,12 @@ describe('BackendSystem service', () => {
             jest.spyOn(SystemDataProvider.prototype, 'read').mockResolvedValueOnce(undefined);
             const getAllSpy = jest.spyOn(SystemDataProvider.prototype, 'getAll').mockResolvedValueOnce([mockSystem]);
             const systemService = new SystemService(logger);
-            const result = await systemService.findBackendSystem('https://cloud.match.com', undefined, {
+            const result = await systemService.findBackendSystems('https://cloud.match.com', undefined, {
                 systemId: 'SYS2',
                 client: '200'
             });
             expect(getAllSpy).toHaveBeenCalled();
-            expect(result).toBe(mockSystem);
+            expect(result).toStrictEqual([mockSystem]);
         });
 
         it('returns system on system info match', async () => {
@@ -303,24 +303,45 @@ describe('BackendSystem service', () => {
             jest.spyOn(SystemDataProvider.prototype, 'read').mockResolvedValueOnce(undefined);
             const getAllSpy = jest.spyOn(SystemDataProvider.prototype, 'getAll').mockResolvedValueOnce([mockSystem]);
             const systemService = new SystemService(logger);
-            const result = await systemService.findBackendSystem('https://other.url.com', '400', {
+            const result = await systemService.findBackendSystems('https://other.url.com', '400', {
                 systemId: 'SYS3',
                 client: '300'
             });
             expect(getAllSpy).toHaveBeenCalled();
-            expect(result).toBe(mockSystem);
+            expect(result).toStrictEqual([mockSystem]);
+        });
+
+        it('returns multiple systems based on system info match', async () => {
+            const mockSystem = new BackendSystem({
+                name: 'System Info Match System',
+                url: 'https://systeminfo.match.com',
+                systemInfo: { systemId: 'SYS3', client: '300' },
+                systemType: 'OnPrem',
+                connectionType: ConnectionType.AbapCatalog
+            });
+            jest.spyOn(SystemDataProvider.prototype, 'read').mockResolvedValueOnce(undefined);
+            const getAllSpy = jest
+                .spyOn(SystemDataProvider.prototype, 'getAll')
+                .mockResolvedValueOnce([mockSystem, { ...mockSystem, url: 'https://another.system.com' }]);
+            const systemService = new SystemService(logger);
+            const result = await systemService.findBackendSystems('https://other.url.com', '400', {
+                systemId: 'SYS3',
+                client: '300'
+            });
+            expect(getAllSpy).toHaveBeenCalled();
+            expect(result).toStrictEqual([mockSystem, { ...mockSystem, url: 'https://another.system.com' }]);
         });
 
         it('returns undefined if no match found', async () => {
             jest.spyOn(SystemDataProvider.prototype, 'read').mockResolvedValueOnce(undefined);
             const getAllSpy = jest.spyOn(SystemDataProvider.prototype, 'getAll').mockResolvedValueOnce([]);
             const systemService = new SystemService(logger);
-            const result = await systemService.findBackendSystem('https://nomatch.com', '500', {
+            const result = await systemService.findBackendSystems('https://nomatch.com', '500', {
                 systemId: 'SYS4',
                 client: '400'
             });
             expect(getAllSpy).toHaveBeenCalled();
-            expect(result).toBeUndefined();
+            expect(result).toStrictEqual([]);
         });
     });
 });
