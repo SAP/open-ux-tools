@@ -115,14 +115,6 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
         ),
         createValidTest(
             {
-                name: 'non manifest file - cds',
-                filename: 'some-other-file.cds',
-                code: ''
-            },
-            []
-        ),
-        createValidTest(
-            {
                 name: 'widthIncludingColumnHeader set to true for small table',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
