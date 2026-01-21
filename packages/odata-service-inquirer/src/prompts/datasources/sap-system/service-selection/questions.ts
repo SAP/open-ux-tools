@@ -36,6 +36,8 @@ import {
 import type { SystemSelectionAnswers } from '../system-selection';
 import { type ServiceAnswer } from './types';
 import { getValueHelpDownloadPrompt } from '../external-services/value-help-download';
+import isEqual from 'lodash/isEqual';
+import sortBy from 'lodash/sortBy';
 
 const cliServicePromptName = 'cliServiceSelection';
 
@@ -60,6 +62,7 @@ export function getSystemServiceQuestion(
     let previousSystemUrl: string | undefined;
     let previousClient: string | undefined;
     let previousService: ServiceAnswer | undefined;
+    let previousServiceFilter: ServiceSelectionPromptOptions['serviceFilter'];
     // State shared across validate and additionalMessages functions
     let hasBackendAnnotations: boolean | undefined;
     // Wrap to allow pass by ref to nested prompts
@@ -89,7 +92,8 @@ export function getSystemServiceQuestion(
             if (
                 serviceChoices.length === 0 ||
                 previousSystemUrl !== connectValidator.validatedUrl ||
-                previousClient !== connectValidator.validatedClient
+                previousClient !== connectValidator.validatedClient ||
+                !isEqual(sortBy(previousServiceFilter), sortBy(promptOptions?.serviceFilter))
             ) {
                 // if we have a catalog, use it to list services
                 if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
@@ -100,6 +104,7 @@ export function getSystemServiceQuestion(
                     );
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
+                    previousServiceFilter = promptOptions?.serviceFilter ? [...promptOptions.serviceFilter] : undefined;
 
                     // Telemetry event for successful service listing using a destination
                     if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
