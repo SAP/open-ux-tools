@@ -39,14 +39,14 @@ export interface JsonFixerConfig<MessageIds extends string, RuleOptions extends 
  * Creates a fixer function for JSON modifications based on path analysis.
  *
  * This generic function handles three types of operations:
- * 1. **Insert**: Creates missing path segments and sets a value
- * 2. **Update**: Modifies an existing value at a complete path
- * 3. **Delete**: Removes a property from the JSON structure
+ * 1. **Insert**: Creates missing path segments and sets a value.
+ * 2. **Update**: Modifies an existing value at a complete path.
+ * 3. **Delete**: Removes a property from the JSON structure.
  *
  * The operation is determined by:
- * - If `missingSegments.length > 0`: INSERT operation (path doesn't fully exist)
- * - If `missingSegments.length === 0` and `value !== undefined`: UPDATE operation
- * - If `missingSegments.length === 0` and `value === undefined`: DELETE operation
+ * - If `missingSegments.length > 0`: INSERT operation (path doesn't fully exist).
+ * - If `missingSegments.length === 0` and `value !== undefined`: UPDATE operation.
+ * - If `missingSegments.length === 0` and `value === undefined`: DELETE operation.
  *
  * @example
  * // Update an existing boolean property
@@ -56,7 +56,6 @@ export interface JsonFixerConfig<MessageIds extends string, RuleOptions extends 
  *   deepestPathResult: paths,
  *   node
  * })
- *
  * @example
  * // Insert a new nested property path
  * fix: createJsonFixer({
@@ -68,7 +67,6 @@ export interface JsonFixerConfig<MessageIds extends string, RuleOptions extends 
  *   },
  *   node
  * })
- *
  * @example
  * // Delete a property
  * fix: createJsonFixer({
@@ -78,11 +76,10 @@ export interface JsonFixerConfig<MessageIds extends string, RuleOptions extends 
  *   node,
  *   operation: 'delete'
  * })
- *
- * @template MessageIds - Union type of message IDs used in the rule
- * @template RuleOptions - Array type of rule option values
- * @param config - Configuration object for the fixer
- * @returns A fixer function compatible with ESLint's fix mechanism, or undefined if no fix is possible
+ * @template MessageIds - Union type of message IDs used in the rule.
+ * @template RuleOptions - Array type of rule option values.
+ * @param config - Configuration object for the fixer.
+ * @returns A fixer function compatible with ESLint's fix mechanism, or undefined if no fix is possible.
  */
 export function createJsonFixer<MessageIds extends string, RuleOptions extends unknown[]>(
     config: JsonFixerConfig<MessageIds, RuleOptions>
@@ -159,7 +156,7 @@ function handleUpdate(
  * Handles the INSERT operation - creates missing path segments and sets a value.
  *
  * For example, if we need to insert:
- * ['targets', 'IncidentsObjectPage', 'options', 'settings', 'controlConfiguration']
+ * ['targets', 'IncidentsObjectPage', 'options', 'settings', 'controlConfiguration'].
  *
  * We'll build nested objects like:
  * "targets": {
@@ -170,7 +167,7 @@ function handleUpdate(
  *       }
  *     }
  *   }
- * }
+ * }.
  *
  * @param fixer - The ESLint fixer object
  * @param node - The MemberNode at the deepest valid path
@@ -222,10 +219,9 @@ function handleInsert(
 /**
  * Handles the DELETE operation - removes a property from the JSON structure.
  *
- * @param fixer - The ESLint fixer object
- * @param node - The MemberNode to delete
- * @param validatedPath - The complete path that was validated
- * @returns Fixer result or undefined if no fix is possible
+ * @param fixer - The ESLint fixer object.
+ * @param node - The MemberNode to delete.
+ * @returns Fixer result or undefined if no fix is possible.
  */
 function handleDelete(fixer: RuleTextEditor, node: MemberNode): RuleTextEdit | undefined {
     if (!node.name || !node.value) {
