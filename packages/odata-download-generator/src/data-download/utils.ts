@@ -55,26 +55,6 @@ export function createEntitySetData(
         } else {
             resultDataByEntitySet[entitySetName] = [resultEntry];
         }
-
-        /* if (nodeEntity.navPropEntities) {
-                // Traverse each nav property and add to entity set data
-                nodeEntity.navPropEntities?.forEach((entity: Entity) => {
-                    // get nav prop data if expanded
-                    const expandedEntityData = resultEntry[entity.entityPath];
-                    if (expandedEntityData) {
-                        const entitySetData = createEntitySetData(expandedEntityData, entity);
-                        merge(resultDataByEntitySet, entitySetData);
-                    }
-                });
-            } else {
-                // We are at a leaf, assign the data to an entity set file
-                let entityData = Array.isArray(odataResult) ? odataResult : [odataResult];
-                if (resultDataByEntitySet[nodeEntity.entitySetName]) {
-                    resultDataByEntitySet[nodeEntity.entitySetName].push(...entityData);
-                } else {
-                    resultDataByEntitySet[nodeEntity.entitySetName] = [...entityData];
-                }
-            } */
     });
 
     return resultDataByEntitySet;

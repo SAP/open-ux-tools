@@ -14,9 +14,7 @@ import { t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
 import {
     getODataDownloaderPrompts,
-    promptNames,
-    type SelectedEntityAnswer,
-    type SelectedEntityAnswerAsJSONString
+    promptNames
 } from './prompts';
 import { type ReferencedEntities } from './types';
 import { createEntitySetData } from './utils';
@@ -172,8 +170,7 @@ export class ODataDownloadGenerator extends Generator {
                 }
                 // If no config found use the default location for mock data
                 this.state.mockDataRootPath =
-                    serviceConfig?.mockdataPath ??
-                    join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
+                    serviceConfig?.mockdataPath ?? join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
             }
 
             this.state.updateMainServiceMetadata = promptAnswers[promptNames.updateMainServiceMetadata];
