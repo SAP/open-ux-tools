@@ -44,6 +44,16 @@ const backendSystems: BackendSystem[] = [
         username: 'some-user',
         connectionType: 'abap_catalog',
         systemType: 'OnPrem'
+    },
+    {
+        client: '100',
+        name: undefined as any,
+        password: 'some-pw',
+        url: 'undefined-name-url',
+        userDisplayName: 'No Name User',
+        username: 'no-name-user',
+        connectionType: 'abap_catalog',
+        systemType: 'AbapCloud'
     }
 ];
 
@@ -110,6 +120,19 @@ describe('SystemLookup', () => {
             expect(systemsFirstCall).toEqual(mappedBackendSystems);
         });
 
+        test('should filter out systems with undefined names in VS Code', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue(backendSystems)
+            });
+
+            const systems = await sourceSystems.getSystems();
+
+            expect(systems).toHaveLength(1);
+            expect(systems[0].Name).toBe('SYS_010');
+            expect(systems.every(s => s.Name !== undefined)).toBe(true);
+        });
+
         test('should throw an error if loadSystems fails', async () => {
             const error = new Error('Fetch failed');
             mockIsAppStudio.mockReturnValue(true);
@@ -170,7 +193,7 @@ describe('SystemLookup', () => {
             expect(result).toBe(false);
         });
 
-        test('should return false if system is found in VS Code', async () => {
+        test('should return false if system is found with credentials in VS Code', async () => {
             mockIsAppStudio.mockReturnValue(false);
             getServiceMock.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue(backendSystems)
@@ -190,6 +213,153 @@ describe('SystemLookup', () => {
             const result = await sourceSystems.getSystemRequiresAuth('NonExisting');
 
             expect(result).toBe(true);
+        });
+
+        test('should return true if system is found but credentials are missing in VS Code', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const systemWithoutCredentials: BackendSystem = {
+                client: '010',
+                name: 'SYS_NO_CREDS',
+                password: undefined as any,
+                url: 'some-url',
+                userDisplayName: 'some-name',
+                username: undefined as any,
+                connectionType: 'abap_catalog',
+                systemType: 'OnPrem'
+            };
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue([...backendSystems, systemWithoutCredentials])
+            });
+
+            const result = await sourceSystems.getSystemRequiresAuth('SYS_NO_CREDS');
+
+            expect(result).toBe(true);
+        });
+
+        test('should return false for AbapCloud system even without credentials in VS Code', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const cloudSystem: BackendSystem = {
+                client: '100',
+                name: 'CLOUD_SYS',
+                password: undefined as any,
+                url: 'cloud-url',
+                userDisplayName: 'Cloud User',
+                username: undefined as any,
+                connectionType: 'abap_catalog',
+                systemType: 'AbapCloud'
+            };
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue([cloudSystem])
+            });
+
+            const result = await sourceSystems.getSystemRequiresAuth('CLOUD_SYS');
+
+            expect(result).toBe(false);
+        });
+
+        test('should return true for OnPrem system with only username but no password', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const partialCredsSystem: BackendSystem = {
+                client: '010',
+                name: 'PARTIAL_CREDS',
+                password: undefined as any,
+                url: 'partial-url',
+                userDisplayName: 'Partial User',
+                username: 'testuser',
+                connectionType: 'abap_catalog',
+                systemType: 'OnPrem'
+            };
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue([partialCredsSystem])
+            });
+
+            const result = await sourceSystems.getSystemRequiresAuth('PARTIAL_CREDS');
+
+            expect(result).toBe(true);
+        });
+
+        test('should return true for OnPrem system with only password but no username', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const partialCredsSystem: BackendSystem = {
+                client: '010',
+                name: 'PARTIAL_CREDS2',
+                password: 'testpass',
+                url: 'partial-url2',
+                userDisplayName: 'Partial User 2',
+                username: undefined as any,
+                connectionType: 'abap_catalog',
+                systemType: 'OnPrem'
+            };
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue([partialCredsSystem])
+            });
+
+            const result = await sourceSystems.getSystemRequiresAuth('PARTIAL_CREDS2');
+
+            expect(result).toBe(true);
+        });
+
+        test('should return false for OnPrem system with both username and password', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const systemWithCreds: BackendSystem = {
+                client: '010',
+                name: 'FULL_CREDS',
+                password: 'testpass',
+                url: 'full-creds-url',
+                userDisplayName: 'Full Creds User',
+                username: 'testuser',
+                connectionType: 'abap_catalog',
+                systemType: 'OnPrem'
+            };
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue([systemWithCreds])
+            });
+
+            const result = await sourceSystems.getSystemRequiresAuth('FULL_CREDS');
+
+            expect(result).toBe(false);
+        });
+
+        test('should return false for system with undefined SystemType but has credentials', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const systemUndefinedType: BackendSystem = {
+                client: '010',
+                name: 'UNDEFINED_TYPE',
+                password: 'testpass',
+                url: 'undefined-type-url',
+                userDisplayName: 'Undefined Type User',
+                username: 'testuser',
+                connectionType: 'abap_catalog',
+                systemType: undefined as any
+            };
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue([systemUndefinedType])
+            });
+
+            const result = await sourceSystems.getSystemRequiresAuth('UNDEFINED_TYPE');
+
+            expect(result).toBe(false);
+        });
+
+        test('should return false for system with non-OnPrem SystemType and missing credentials', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const nonOnPremSystem: BackendSystem = {
+                client: '010',
+                name: 'NON_ONPREM',
+                password: undefined as any,
+                url: 'non-onprem-url',
+                userDisplayName: 'Non OnPrem User',
+                username: undefined as any,
+                connectionType: 'abap_catalog',
+                systemType: 'SomeOtherType' as any
+            };
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue([nonOnPremSystem])
+            });
+
+            const result = await sourceSystems.getSystemRequiresAuth('NON_ONPREM');
+
+            expect(result).toBe(false);
         });
     });
 });
