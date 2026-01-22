@@ -22,7 +22,7 @@ import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
+import { areArraysEquivalent, getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -60,6 +60,7 @@ export function getSystemServiceQuestion(
     let previousSystemUrl: string | undefined;
     let previousClient: string | undefined;
     let previousService: ServiceAnswer | undefined;
+    let previousServiceFilter: ServiceSelectionPromptOptions['serviceFilter'];
     // State shared across validate and additionalMessages functions
     let hasBackendAnnotations: boolean | undefined;
     // Wrap to allow pass by ref to nested prompts
@@ -89,7 +90,8 @@ export function getSystemServiceQuestion(
             if (
                 serviceChoices.length === 0 ||
                 previousSystemUrl !== connectValidator.validatedUrl ||
-                previousClient !== connectValidator.validatedClient
+                previousClient !== connectValidator.validatedClient ||
+                !areArraysEquivalent(previousServiceFilter, promptOptions?.serviceFilter)
             ) {
                 // if we have a catalog, use it to list services
                 if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
@@ -100,6 +102,7 @@ export function getSystemServiceQuestion(
                     );
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
+                    previousServiceFilter = promptOptions?.serviceFilter ? [...promptOptions.serviceFilter] : undefined;
 
                     // Telemetry event for successful service listing using a destination
                     if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
@@ -143,7 +146,8 @@ export function getSystemServiceQuestion(
                           showCollabDraftWarning: !!promptOptions?.showCollaborativeDraftWarning,
                           edmx: convertedMetadataRef.convertedMetadata
                       }
-                    : undefined
+                    : undefined,
+                serviceFilter: promptOptions?.serviceFilter
             }),
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI and cli when automcomplete is used
