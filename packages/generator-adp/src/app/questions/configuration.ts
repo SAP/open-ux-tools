@@ -58,6 +58,7 @@ import {
 import { getExtProjectMessage } from './helper/message';
 import { validateExtensibilityExtension } from './helper/validators';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
@@ -448,6 +449,11 @@ export class ConfigPrompter {
                 !!system && this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM,
             validate: async (projectType: AdaptationProjectType) => {
                 this.selectedProjectType = projectType;
+
+                const isInternalUsage = isInternalFeaturesSettingEnabled();
+                if (this.selectedProjectType === AdaptationProjectType.CLOUD_READY && isInternalUsage) {
+                    return t('error.cloudSystemsForInternalUsers');
+                }
 
                 try {
                     this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
