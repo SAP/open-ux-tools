@@ -129,10 +129,9 @@ export async function getAppConfig(
             RepoAppDownloadLogger.logger?.error(t('error.dataSourcesNotFound'));
         }
 
-        const odataVersion =
-            manifest?.['sap.app']?.dataSources?.mainService?.settings?.odataVersion?.startsWith('4.0')
-                ? OdataVersion.v4
-                : OdataVersion.v2;
+        const odataVersion = manifest?.['sap.app']?.dataSources?.mainService?.settings?.odataVersion?.startsWith('4.0')
+            ? OdataVersion.v4
+            : OdataVersion.v2;
 
         // Fetch metadata for the service
         const metadata = await fetchServiceMetadata(
