@@ -47,6 +47,7 @@ import type {
     FioriIdPromptOptions,
     PasswordPromptOptions,
     ShouldCreateExtProjectPromptOptions,
+    StoreCredentialsPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
@@ -62,6 +63,7 @@ import {
 import { getExtProjectMessage } from './helper/message';
 import { validateExtensibilityExtension } from './helper/validators';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -242,6 +244,7 @@ export class ConfigPrompter {
             [configPromptNames.systemValidationCli]: this.getSystemValidationPromptForCli(),
             [configPromptNames.username]: this.getUsernamePrompt(promptOptions?.[configPromptNames.username]),
             [configPromptNames.password]: this.getPasswordPrompt(promptOptions?.[configPromptNames.password]),
+            [configPromptNames.storeCredentials]: this.getStoreCredentialsPrompt(promptOptions?.[configPromptNames.storeCredentials]),
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
@@ -362,6 +365,37 @@ export class ConfigPrompter {
                     return this.systemAdditionalMessage;
                 }
                 return undefined;
+            }
+        };
+    }
+
+    /**
+     * Creates the store credentials prompt configuration.
+     *
+     * @param {StoreCredentialsPromptOptions} _ - Optional configuration for the store credentials prompt.
+     * @returns The store credentials prompt as a {@link ConfigQuestion}.
+     */
+    private getStoreCredentialsPrompt(_?: StoreCredentialsPromptOptions): ConfirmQuestion<ConfigAnswers> {
+        return {
+            type: 'confirm',
+            name: configPromptNames.storeCredentials,
+            message: t('prompts.storeCredentialsLabel'),
+            default: false,
+            guiOptions: {
+                breadcrumb: t('prompts.storeCredentialsBreadcrumb')
+            },
+            when: (answers: ConfigAnswers) => 
+                !isAppStudio() && 
+                showCredentialQuestion(answers, this.isAuthRequired) && 
+                this.isLoginSuccessful &&
+                !!answers.password,
+            additionalMessages: (input?: unknown) => {
+                if (input === true) {
+                    return {
+                        message: t('warnings.passwordStoreWarning'),
+                        severity: Severity.warning
+                    };
+                }
             }
         };
     }
@@ -565,10 +599,18 @@ export class ConfigPrompter {
      * @param {ConfigAnswers} answers - The configuration answers provided by the user.
      * @returns An error message if validation fails, or true if the system selection is valid.
      */
-    private async validatePassword(password: string, answers: ConfigAnswers): Promise<string | boolean> {
+    private async validatePassword(password: string, answers?: ConfigAnswers): Promise<string | boolean> {
         const validationResult = validateEmptyString(password);
         if (typeof validationResult === 'string') {
             return validationResult;
+        }
+
+        if (!answers) {
+            return true;
+        }
+
+        if (!answers.system || !answers.username) {
+            return t('error.pleaseProvideAllRequiredData');
         }
 
         const options = {

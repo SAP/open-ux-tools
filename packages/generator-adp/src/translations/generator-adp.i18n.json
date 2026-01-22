@@ -25,6 +25,8 @@
         "usernameTooltip": "Enter the user name for the back-end system.",
         "passwordLabel": "Password",
         "passwordTooltip": "Enter the password for the back-end system.",
+        "storeCredentialsLabel": "Do you want to store the system credentials?",
+        "storeCredentialsBreadcrumb": "Store Credentials",
         "applicationListLabel": "Application",
         "applicationListTooltip": "Select the application for which you want to create an application variant.",
         "fioriIdLabel": "Fiori ID",
@@ -73,6 +75,9 @@
         "projectNameValidationErrorInt": "The name must only contain Latin alphanumeric characters and it must have at least two parts. Every part must start with a letter and the different parts must be separated by a period.",
         "projectNotInWorkspace": "The project: '{{- path}}' is not in the workspace. Some adaptation project tools may not work. What do you want to do?",
         "emptyAnnotationFile": "An empty annotation file will be created in the webapp/changes/annotations folder of your project."
+    },
+    "warnings": {
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
     },
     "error": {
         "selectCannotBeEmptyError": "The {{value}} has to be selected.",

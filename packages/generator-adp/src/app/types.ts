@@ -36,6 +36,7 @@ export enum configPromptNames {
     systemValidationCli = 'systemValidationCli',
     username = 'username',
     password = 'password',
+    storeCredentials = 'storeCredentials',
     application = 'application',
     appValidationCli = 'appValidationCli',
     fioriId = 'fioriId',
@@ -68,6 +69,10 @@ export interface PasswordPromptOptions {
     hide?: boolean;
 }
 
+export interface StoreCredentialsPromptOptions {
+    hide?: boolean;
+}
+
 export interface ApplicationPromptOptions {
     default?: string;
     hide?: boolean;
@@ -94,6 +99,7 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.systemValidationCli]: CliValidationPromptOptions;
     [configPromptNames.username]: UsernamePromptOptions;
     [configPromptNames.password]: PasswordPromptOptions;
+    [configPromptNames.storeCredentials]: StoreCredentialsPromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
     [configPromptNames.appValidationCli]: CliValidationPromptOptions;
     [configPromptNames.fioriId]: FioriIdPromptOptions;
