@@ -223,7 +223,7 @@ jobs:
                   # Check if extension was directly published (normal case)
                   EXT_PKG=$(echo "$PUBLISHED_JSON" | jq -r '.[].name' | grep -E '^sap-ux-.*-ext$' | head -n 1 || true)
 
-                  #Check if any extension has updated dependencies
+                  # Check if extension has updated dependencies
                   if [ -z "$EXT_PKG" ]; then
                     PUBLISHED_NAMES=$(echo "$PUBLISHED_JSON" | jq -r '.[].name')
                     for pkg_json in packages/*-ext/package.json; do
