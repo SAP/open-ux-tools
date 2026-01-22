@@ -1,5 +1,17 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.0.9
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
+## 0.0.8
+
+### Patch Changes
+
+- fc67b03: reword the readme
+
 ## 0.0.7
 
 ### Patch Changes
