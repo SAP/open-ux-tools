@@ -21,7 +21,7 @@ interface ViewDataType {
     stableId: string;
 }
 const regexForAnnotationPath =
-    /controlConfiguration\/(?:[^@]+\/)@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/actions\//;
+    /controlConfiguration\/(?:[^@]+\/)?@com\.sap\.vocabularies\.UI\.v1\.LineItem(?:#[^/]+)?\/actions\//;
 
 /**
  * Quick Action for adding a custom page action.
@@ -63,7 +63,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                     title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION',
                     controllerReference: controllerPath
                         ? `.extension.${controllerPath}.<methodName>`
-                        : '<ApplicationId.FolderName.ScriptFilename.methodName>',
+                        : '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
                     actionType: 'tableAction',
                     appDescriptor: {
                         appComponent: getV4AppComponent(this.context.view)!,
