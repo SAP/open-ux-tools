@@ -2,17 +2,14 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import type { SourceApplication } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
 
 import {
     getAppAdditionalMessages,
     getSystemAdditionalMessages,
     getVersionAdditionalMessages,
-    getTargetEnvAdditionalMessages,
-    getKeyUserSystemAdditionalMessages
+    getTargetEnvAdditionalMessages
 } from '../../../../src/app/questions/helper/additional-messages';
 import { initI18n, t } from '../../../../src/utils/i18n';
-import { DEFAULT_ADAPTATION_ID } from '../../../../src/app/questions/key-user';
 
 describe('additional-messages', () => {
     beforeAll(async () => {
@@ -170,72 +167,6 @@ describe('additional-messages', () => {
 
         it('should return undefined when not CF environment', () => {
             const result = getTargetEnvAdditionalMessages('ABAP', true, mockCfConfig);
-            expect(result).toBeUndefined();
-        });
-    });
-
-    describe('getKeyUserSystemAdditionalMessages', () => {
-        const mockDefaultAdaptation: AdaptationDescriptor = {
-            id: DEFAULT_ADAPTATION_ID,
-            title: '',
-            type: 'DEFAULT'
-        };
-
-        const mockMultipleAdaptations: AdaptationDescriptor[] = [
-            mockDefaultAdaptation,
-            { id: 'CTX1', title: 'Context 1', type: 'CONTEXT', contexts: { role: ['/UI2/ADMIN'] } }
-        ];
-
-        it('should return message for multiple adaptations when auth matches', () => {
-            const result = getKeyUserSystemAdditionalMessages({
-                adaptations: mockMultipleAdaptations,
-                isAuthRequired: false,
-                isSystemPrompt: true
-            });
-
-            expect(result).toEqual({
-                message: t('prompts.keyUserAdaptationLabelMulti'),
-                severity: Severity.information
-            });
-        });
-
-        it('should return undefined when auth does not match', () => {
-            const result = getKeyUserSystemAdditionalMessages({
-                adaptations: mockMultipleAdaptations,
-                isAuthRequired: true,
-                isSystemPrompt: true
-            });
-
-            expect(result).toBeUndefined();
-        });
-
-        it('should return undefined when auth does not match (password prompt, no auth)', () => {
-            const result = getKeyUserSystemAdditionalMessages({
-                adaptations: mockMultipleAdaptations,
-                isAuthRequired: false,
-                isSystemPrompt: false
-            });
-
-            expect(result).toBeUndefined();
-        });
-
-        it('should return undefined when no changes found for DEFAULT adaptation', () => {
-            const result = getKeyUserSystemAdditionalMessages({
-                adaptations: [mockDefaultAdaptation],
-                isAuthRequired: false,
-                isSystemPrompt: true
-            });
-
-            expect(result).toBeUndefined();
-        });
-
-        it('should return undefined when empty adaptations array', () => {
-            const result = getKeyUserSystemAdditionalMessages({
-                adaptations: [],
-                isAuthRequired: false,
-                isSystemPrompt: true
-            });
-
             expect(result).toBeUndefined();
         });
     });

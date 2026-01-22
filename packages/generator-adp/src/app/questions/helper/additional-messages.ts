@@ -2,7 +2,6 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
 import type { FlexUISupportedSystem, SourceApplication } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../utils/i18n';
@@ -149,40 +148,6 @@ export const getTargetEnvAdditionalMessages = (
     if (value === 'CF' && isCFLoggedIn) {
         return {
             message: `You are logged in to Cloud Foundry: ${cfConfig.url} / ${cfConfig.org?.Name} / ${cfConfig.space?.Name}.`,
-            severity: Severity.information
-        };
-    }
-
-    return undefined;
-};
-
-/**
- * Provides additional messages for key-user prompts (system or password).
- *
- * @param {object} options - The options for the key-user additional messages.
- * @param {AdaptationDescriptor[]} options.adaptations - The list of adaptations available.
- * @param {boolean} options.isAuthRequired - Whether authentication is required.
- * @param {boolean} options.isSystemPrompt - Whether this is for the system prompt (true) or password prompt (false).
- * @returns {IMessageSeverity | undefined} Message object or undefined if no message is applicable.
- */
-export const getKeyUserSystemAdditionalMessages = ({
-    adaptations,
-    isAuthRequired,
-    isSystemPrompt
-}: {
-    adaptations: AdaptationDescriptor[];
-    isAuthRequired: boolean;
-    isSystemPrompt: boolean;
-}): IMessageSeverity | undefined => {
-    const authMatches = isSystemPrompt ? !isAuthRequired : isAuthRequired;
-
-    if (!authMatches) {
-        return undefined;
-    }
-
-    if (adaptations.length > 1) {
-        return {
-            message: t('prompts.keyUserAdaptationLabelMulti'),
             severity: Severity.information
         };
     }

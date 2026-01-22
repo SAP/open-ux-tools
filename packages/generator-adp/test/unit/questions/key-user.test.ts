@@ -11,14 +11,13 @@ import type { SystemLookup } from '@sap-ux/adp-tooling';
 import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 
-import { getKeyUserSystemAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
-import { initI18n, t } from '../../../src/utils/i18n';
-import { keyUserPromptNames } from '../../../src/app/types';
 import {
     KeyUserImportPrompter,
     DEFAULT_ADAPTATION_ID,
     determineFlexVersion
 } from '../../../src/app/questions/key-user';
+import { initI18n, t } from '../../../src/utils/i18n';
+import { keyUserPromptNames } from '../../../src/app/types';
 import { getAdaptationChoices, getKeyUserSystemChoices } from '../../../src/app/questions/helper/choices';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
@@ -102,7 +101,6 @@ const getKeyUserDataMock = mockLayeredRepository.getKeyUserData as jest.Mock;
 const getFlexVersionsMock = mockLayeredRepository.getFlexVersions as jest.Mock;
 const listAdaptationsMock = mockLayeredRepository.listAdaptations as jest.Mock;
 const getSystemRequiresAuthMock = systemLookup.getSystemRequiresAuth as jest.Mock;
-const getKeyUserSystemAdditionalMessagesMock = getKeyUserSystemAdditionalMessages as jest.Mock;
 
 describe('KeyUserImportPrompter', () => {
     const componentId = 'demoapps.rta';
@@ -116,7 +114,6 @@ describe('KeyUserImportPrompter', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         validateEmptyStringMock.mockReturnValue(true);
-        getKeyUserSystemAdditionalMessagesMock.mockReturnValue(undefined);
         getAdaptationChoicesMock.mockReturnValue([{ name: 'Default Adaptation', value: mockAdaptations[0] }]);
         getKeyUserSystemChoicesMock.mockReturnValue([
             { name: 'SystemA', value: 'SystemA' },
@@ -257,22 +254,6 @@ describe('KeyUserImportPrompter', () => {
                 expect(result).toBe('Connection failed');
             });
         });
-
-        describe('additionalMessages', () => {
-            it('should call getKeyUserSystemAdditionalMessages with correct parameters', () => {
-                prompter['adaptations'] = mockAdaptations;
-                prompter['isAuthRequired'] = false;
-
-                const prompt = prompter['getSystemPrompt']();
-                prompt?.additionalMessages?.();
-
-                expect(getKeyUserSystemAdditionalMessagesMock).toHaveBeenCalledWith({
-                    adaptations: mockAdaptations,
-                    isAuthRequired: false,
-                    isSystemPrompt: true
-                });
-            });
-        });
     });
 
     describe('Username Prompt', () => {
@@ -383,22 +364,6 @@ describe('KeyUserImportPrompter', () => {
                 const result = await prompt?.validate?.('password123', answers);
 
                 expect(result).toBe('Authentication failed');
-            });
-        });
-
-        describe('additionalMessages', () => {
-            it('should call getKeyUserSystemAdditionalMessages with correct parameters', () => {
-                prompter['adaptations'] = mockAdaptations;
-                prompter['isAuthRequired'] = true;
-
-                const prompt = prompter['getPasswordPrompt']();
-                prompt?.additionalMessages?.();
-
-                expect(getKeyUserSystemAdditionalMessagesMock).toHaveBeenCalledWith({
-                    adaptations: mockAdaptations,
-                    isAuthRequired: true,
-                    isSystemPrompt: false
-                });
             });
         });
 

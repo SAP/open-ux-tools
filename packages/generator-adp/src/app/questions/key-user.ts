@@ -22,7 +22,6 @@ import type {
 import { t } from '../../utils/i18n';
 import { keyUserPromptNames } from '../types';
 import { getAdaptationChoices, getKeyUserSystemChoices } from './helper/choices';
-import { getKeyUserSystemAdditionalMessages } from './helper/additional-messages';
 
 export const DEFAULT_ADAPTATION_ID = 'DEFAULT';
 
@@ -145,13 +144,7 @@ export class KeyUserImportPrompter {
                 breadcrumb: true
             },
             default: options?.default ?? '',
-            validate: async (value: string, answers: KeyUserImportAnswers) => await this.validateSystem(value, answers),
-            additionalMessages: () =>
-                getKeyUserSystemAdditionalMessages({
-                    adaptations: this.adaptations,
-                    isAuthRequired: this.isAuthRequired,
-                    isSystemPrompt: true
-                })
+            validate: async (value: string, answers: KeyUserImportAnswers) => await this.validateSystem(value, answers)
         } as ListQuestion<KeyUserImportAnswers>;
     }
 
@@ -195,13 +188,7 @@ export class KeyUserImportPrompter {
             },
             when: (answers: KeyUserImportAnswers) => !!answers.keyUserSystem && this.isAuthRequired,
             validate: async (value: string, answers: KeyUserImportAnswers) =>
-                await this.validatePassword(value, answers),
-            additionalMessages: () =>
-                getKeyUserSystemAdditionalMessages({
-                    adaptations: this.adaptations,
-                    isAuthRequired: this.isAuthRequired,
-                    isSystemPrompt: false
-                })
+                await this.validatePassword(value, answers)
         } as PasswordQuestion<KeyUserImportAnswers>;
     }
 
