@@ -53,7 +53,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
             const overlay = OverlayRegistry.getOverlay(table) || [];
             const controlInfo = getControllerInfoForControl(table);
             const data = await getExistingController(controlInfo.controllerName);
-            const controllerPath = data.controllerPathFromRoot.replace(/\//g, '.').replace(/\.[^.]+$/, '');
+            const controllerPath = data.controllerPathFromRoot.replaceAll(/\//g, '.').replace(/\.[^.]+$/, '');
             const propertyPath = `${getActionsPropertyPath(table.getParent() as MacroTable)}`;
             await DialogFactory.createDialog(
                 overlay,

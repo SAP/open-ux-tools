@@ -128,7 +128,7 @@ describe('AddActionFragment', () => {
                         projectId: 'test',
                         pageId: 'listPage',
                         appComponent: {} as any,
-                        appType: 'fe-v4',
+                        appType: 'fe-v4'
                     },
                     actionType: 'pageAction',
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
@@ -277,7 +277,10 @@ describe('AddActionFragment', () => {
             await addFragment.setup(addFragment.dialog);
             addFragment.onActionIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
-            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Action ID must start with a letter or _ and may contain letters, digits, _, ., :, and -.');
+            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
+                1,
+                'Action ID must start with a letter or _ and may contain letters, digits, _, ., :, and -.'
+            );
         });
 
         test('sets error when action id starts with numerals', async () => {
@@ -293,7 +296,10 @@ describe('AddActionFragment', () => {
 
             addFragment.onActionIdInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
-            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, 'Action ID must start with a letter or _ and may contain letters, digits, _, ., :, and -.');
+            expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(
+                1,
+                'Action ID must start with a letter or _ and may contain letters, digits, _, ., :, and -.'
+            );
         });
 
         test('sets error when action id already being used', async () => {
@@ -337,7 +343,7 @@ describe('AddActionFragment', () => {
             expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(2, '');
         });
     });
-    describe('onCreateBtnPress', () => {
+    describe('onCreateBtnPress - PageAction', () => {
         let addFragment: AddActionFragment;
         const overlays = {
             getId: jest.fn().mockReturnValue('some-id')
@@ -437,6 +443,118 @@ describe('AddActionFragment', () => {
                             enabled: true,
                             visible: true,
                             text: 'Add Item'
+                        },
+                        operation: 'UPSERT'
+                    }
+                }
+            });
+        });
+    });
+
+    describe('onCreateBtnPress - tableAction', () => {
+        const overlays = {
+            getId: jest.fn().mockReturnValue('some-id')
+        };
+        let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
+        const createDialog = (
+            content: Control[],
+            validateActionIdResult = true,
+            rta: RuntimeAuthoring = {} as RuntimeAuthoring
+        ) => {
+            const addFragment = new AddActionFragment(
+                'adp.extension.controllers.AddActionFragment',
+                overlays as unknown as UI5Element,
+                rta,
+                {
+                    propertyPath: 'controlConfiguration/@com.sap.v1.UI.LineItem/actions/',
+                    controllerReference: '.extension.adp.v4.app.controllers.TableActionController.onPress',
+                    validateActionId: () => validateActionIdResult,
+                    name: 'AddActionFragmentTest',
+                    appDescriptor: {
+                        anchor: 'someAnchor',
+                        projectId: 'adp.v4.app',
+                        pageId: 'listPage',
+                        appComponent: {} as any,
+                        appType: 'fe-v4'
+                    },
+                    actionType: 'tableAction',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
+                    position: { placement: 'After', anchor: 'SomeAction' }
+                }
+            );
+            beginBtnSetEnabledMock = jest.fn().mockReturnValue({ rerender: jest.fn() });
+            addFragment.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: beginBtnSetEnabledMock }),
+                getContent: jest.fn().mockReturnValue([
+                    {
+                        getContent: jest.fn().mockReturnValue(content)
+                    } as unknown as SimpleForm<Control[]>
+                ])
+            } as unknown as Dialog;
+            return addFragment;
+        };
+
+        beforeEach(() => {
+            jest.restoreAllMocks();
+            CommandFactory.getCommandFor.mockClear();
+            mocks.setValueStateTextMock = jest.fn();
+            mocks.setValueStateMock = jest.fn().mockReturnValue({
+                setValueStateText: mocks.setValueStateTextMock
+            });
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+        test('create table action', async () => {
+            const testModel = {
+                setProperty: jest.fn(),
+                getProperty: nCallsMock(['AddItem', 'Add Item'])
+            } as unknown as JSONModel;
+            const executeSpy = jest.fn();
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.v4.app' });
+            const event = mockInputEvent('AddItem');
+            const event1 = mockInputEvent('Add Item');
+            const addFragment = createDialog(
+                [
+                    mockFormInput(false),
+                    mockFormInput(true, '', ValueState.Success),
+                    mockFormInput(false),
+                    mockFormInput(true, '', ValueState.Success)
+                ] as unknown as Control[],
+                true,
+                rtaMock
+            );
+            addFragment.model = testModel;
+            addFragment.handleDialogClose = jest.fn();
+            addFragment.onActionIdInputChange(event as unknown as Event);
+            addFragment.onButtonTextInputChange(event1 as unknown as Event);
+            await addFragment.onCreateBtnPress({
+                getSource: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+            } as unknown as Event);
+
+            expect(executeSpy).toHaveBeenCalledTimes(1);
+            const commandCall = CommandFactory.getCommandFor.mock.calls[0];
+            expect(commandCall[1]).toBe('appDescriptor');
+            expect(commandCall[2]).toStrictEqual({
+                appComponent: {} as any,
+                changeType: 'appdescr_fe_changePageConfiguration',
+                reference: 'adp.v4.app',
+                parameters: {
+                    page: 'listPage',
+                    entityPropertyChange: {
+                        propertyPath: 'controlConfiguration/@com.sap.v1.UI.LineItem/actions/AddItem',
+                        propertyValue: {
+                            press: '.extension.adp.v4.app.controllers.TableActionController.onPress',
+                            enabled: true,
+                            requiresSelection: false,
+                            visible: true,
+                            text: 'Add Item',
+                            position: { placement: 'After', anchor: 'SomeAction' }
                         },
                         operation: 'UPSERT'
                     }
