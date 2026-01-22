@@ -4,16 +4,20 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Stores system credentials securely using the @sap-ux/store service.
- * 
+ *
  * @param configAnswers - Configuration answers containing credentials and system info
- * @param systemLookup - SystemLookup instance to retrieve system endpoint details
- * @param logger - Logger instance for logging messages
+ * @param configAnswers.storeCredentials - Whether to store the credentials
+ * @param configAnswers.system - System name to retrieve endpoint information
+ * @param configAnswers.username - Username for authentication
+ * @param configAnswers.password - Password for authentication
+ * @param systemLookup - System lookup service for retrieving endpoint details
+ * @param logger - Logger for informational and warning messages
  */
 export async function storeCredentials(
-    configAnswers: { 
-        storeCredentials?: boolean; 
-        system: string; 
-        username?: string; 
+    configAnswers: {
+        storeCredentials?: boolean;
+        system: string;
+        username?: string;
         password?: string;
     },
     systemLookup: SystemLookup,
@@ -25,8 +29,8 @@ export async function storeCredentials(
             if (!systemEndpoint?.Url) {
                 logger.warn('Cannot store credentials: system endpoint or URL not found.');
             } else {
-                const systemService = await getService<BackendSystem, BackendSystemKey>({ 
-                    entityName: 'system' 
+                const systemService = await getService<BackendSystem, BackendSystemKey>({
+                    entityName: 'system'
                 });
                 const backendSystemKey = new BackendSystemKey({
                     url: systemEndpoint.Url,
@@ -44,7 +48,7 @@ export async function storeCredentials(
                     connectionType: 'abap_catalog'
                 });
                 await systemService.write(backendSystem, { force: shouldForceUpdate });
-                
+
                 logger.info('System credentials have been stored securely.');
             }
         } catch (error) {

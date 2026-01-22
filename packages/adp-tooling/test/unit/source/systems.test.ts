@@ -130,7 +130,7 @@ describe('SystemLookup', () => {
 
             expect(systems).toHaveLength(1);
             expect(systems[0].Name).toBe('SYS_010');
-            expect(systems.every(s => s.Name !== undefined)).toBe(true);
+            expect(systems.every((s) => s.Name !== undefined)).toBe(true);
         });
 
         test('should throw an error if loadSystems fails', async () => {

@@ -82,9 +82,7 @@ export class SystemLookup {
                     entityName: 'system'
                 });
                 const backendSystems = await systemStore?.getAll();
-                endpoints = backendSystems
-                    .filter(system => system.name !== undefined)
-                    .map(transformBackendSystem);
+                endpoints = backendSystems.filter((system) => system.name !== undefined).map(transformBackendSystem);
             }
             return endpoints;
         } catch (e) {

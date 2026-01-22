@@ -1,5 +1,5 @@
 import { getService, BackendSystem, SystemType } from '@sap-ux/store';
-import { SystemLookup } from '@sap-ux/adp-tooling';
+import type { SystemLookup } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { storeCredentials } from '../../src/app/credential-storage';
 
@@ -58,10 +58,7 @@ describe('Credential Storage Logic', () => {
 
             expect(getServiceMock).toHaveBeenCalledWith({ entityName: 'system' });
             expect(mockSystemService.read).toHaveBeenCalled();
-            expect(mockSystemService.write).toHaveBeenCalledWith(
-                expect.any(Object),
-                { force: false }
-            );
+            expect(mockSystemService.write).toHaveBeenCalledWith(expect.any(Object), { force: false });
             expect(mockLogger.info).toHaveBeenCalledWith('System credentials have been stored securely.');
         });
 
@@ -84,10 +81,7 @@ describe('Credential Storage Logic', () => {
 
             await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
 
-            expect(mockSystemService.write).toHaveBeenCalledWith(
-                expect.any(Object),
-                { force: true }
-            );
+            expect(mockSystemService.write).toHaveBeenCalledWith(expect.any(Object), { force: true });
             expect(mockLogger.info).toHaveBeenCalledWith('System credentials have been stored securely.');
         });
 
@@ -145,9 +139,7 @@ describe('Credential Storage Logic', () => {
 
             await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
 
-            expect(mockLogger.warn).toHaveBeenCalledWith(
-                'Cannot store credentials: system endpoint or URL not found.'
-            );
+            expect(mockLogger.warn).toHaveBeenCalledWith('Cannot store credentials: system endpoint or URL not found.');
             expect(mockSystemService.write).not.toHaveBeenCalled();
         });
 
@@ -167,9 +159,7 @@ describe('Credential Storage Logic', () => {
 
             await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
 
-            expect(mockLogger.warn).toHaveBeenCalledWith(
-                'Cannot store credentials: system endpoint or URL not found.'
-            );
+            expect(mockLogger.warn).toHaveBeenCalledWith('Cannot store credentials: system endpoint or URL not found.');
             expect(mockSystemService.write).not.toHaveBeenCalled();
         });
 

@@ -244,7 +244,9 @@ export class ConfigPrompter {
             [configPromptNames.systemValidationCli]: this.getSystemValidationPromptForCli(),
             [configPromptNames.username]: this.getUsernamePrompt(promptOptions?.[configPromptNames.username]),
             [configPromptNames.password]: this.getPasswordPrompt(promptOptions?.[configPromptNames.password]),
-            [configPromptNames.storeCredentials]: this.getStoreCredentialsPrompt(promptOptions?.[configPromptNames.storeCredentials]),
+            [configPromptNames.storeCredentials]: this.getStoreCredentialsPrompt(
+                promptOptions?.[configPromptNames.storeCredentials]
+            ),
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
@@ -384,9 +386,9 @@ export class ConfigPrompter {
             guiOptions: {
                 breadcrumb: t('prompts.storeCredentialsBreadcrumb')
             },
-            when: (answers: ConfigAnswers) => 
-                !isAppStudio() && 
-                showCredentialQuestion(answers, this.isAuthRequired) && 
+            when: (answers: ConfigAnswers) =>
+                !isAppStudio() &&
+                showCredentialQuestion(answers, this.isAuthRequired) &&
                 this.isLoginSuccessful &&
                 !!answers.password,
             additionalMessages: (input?: unknown) => {
