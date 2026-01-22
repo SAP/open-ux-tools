@@ -93,8 +93,8 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     /**
      * Returns an array of backend systems by applying multiple matching strategies.
      * 1. Direct read from store: URL + client
-     * 2. URL-only match for cloud systems (as client is persisted for cloud systems).
-     * 3. Match via system info - systemId and client
+     * 2. URL-only match for cloud systems (as the client is not persisted).
+     * 3. Match via system info - systemId and client (may result in multiple matches)
      *
      * @param url - the url used to read the system from the store
      * @param client - optional client used for reading
