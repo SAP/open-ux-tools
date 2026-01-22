@@ -110,7 +110,7 @@
         "projectDoesNotExistMta": "Provide the path to the MTA project where you want to have your Adaptation Project created.",
         "noAdaptableBusinessServiceFoundInMta": "No adaptable business service found in the MTA.",
         "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}.",
-        "keyUserNoChangesDefault": "Only a single adaptation ('DEFAULT') was found and no key-user changes were found for it. Please select a different system to continue, or navigate to the 'Project Attributes' page and click 'Back' and choose not to import key-user changes.",
+        "keyUserNoChangesDefault": "Only a single adaptation ('DEFAULT') was found and no key-user changes were found for it. Please select a different system to continue, or navigate back to the 'Project Attributes' page and choose not to import key-user changes.",
         "keyUserNoChangesAdaptation": "No key-user changes have been found for the '{{adaptationId}}' adaptation. Please select a different adaptation.",
         "keyUserNoAdaptations": "No context-based adaptations have been found for the selected application. Please refer to the documentation.",
         "keyUserNotSupported": "The selected system does not allow or support the import of key-user changes. Please refer to the documentation."
