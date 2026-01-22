@@ -7,8 +7,10 @@ import type {
     V4CatalogService
 } from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ListQuestion, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ChoiceOptions } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
@@ -20,8 +22,6 @@ import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { promptNames } from '../../../../../src/types';
 import * as utils from '../../../../../src/utils';
 import { PromptState } from '../../../../../src/utils';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 const serviceV4a = {
     id: '/DMO/FLIGHT',
@@ -228,6 +228,68 @@ describe('Test new system prompt', () => {
         );
 
         expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([serviceTravelDeskV2]);
+    });
+
+    test('Should re-request service information if the prompt state has been reset (by a system reselection), and there is only one service selected', async () => {
+        // This test replicates the reselection of a system where there is only one service listed
+        // Or the case where system selection is changed but the same service url exists on that system also
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = { authenticated: true, reachable: true };
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a])
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+        const serviceFilter = ['/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'];
+        let systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
+            serviceFilter
+        });
+        let serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+        // Only one service
+        const serviceTravelDeskV2 = {
+            name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
+            value: {
+                serviceODataVersion: '2',
+                servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
+                serviceType: 'Not Classified',
+                serviceId: 'ZTRAVEL_DESK_SRV_0002',
+                toString: expect.any(Function)
+            }
+        };
+        const validateServiceSpy = jest.spyOn(serviceHelpers, 'validateService').mockImplementation(async () => {
+            PromptState.odataService.metadata = '';
+            PromptState.odataService.odataVersion = OdataVersion.v2;
+            PromptState.odataService.servicePath = serviceTravelDeskV2.value.servicePath;
+            PromptState.odataService.serviceId = serviceTravelDeskV2.value.serviceId;
+            PromptState.odataService.origin = 'http://some.abap.system:1234';
+            return { validationResult: true, convertedMetadata: {} as ConvertedMetadata };
+        });
+
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([serviceTravelDeskV2]);
+        expect(
+            await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)(serviceTravelDeskV2.value)
+        ).toEqual(true);
+        expect(validateServiceSpy).toHaveBeenCalledWith(serviceTravelDeskV2.value, connectValidator, undefined);
+        validateServiceSpy.mockClear();
+        // Test the optimization: dont rerequest the same service data repeatedly
+        expect(
+            await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)(serviceTravelDeskV2.value)
+        ).toEqual(true);
+        expect(validateServiceSpy).not.toHaveBeenCalled();
+
+        // This replicates a system re-selection or any other interaction that resets the PromptState
+        PromptState.reset();
+        expect(
+            await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)(serviceTravelDeskV2.value)
+        ).toEqual(true);
+        expect(validateServiceSpy).toHaveBeenCalledWith(serviceTravelDeskV2.value, connectValidator, undefined);
+        expect(PromptState.odataService.servicePath).toEqual(serviceTravelDeskV2.value.servicePath);
     });
 
     test('should show additional messages in service selection prompt when no matching services', async () => {
