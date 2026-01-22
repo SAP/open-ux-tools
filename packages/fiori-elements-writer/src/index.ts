@@ -250,16 +250,6 @@ async function generate<T extends {}>(
     }
     fs.writeJSON(packagePath, packageJson);
 
-    if (addTest) {
-        const opaConfig = getOpaConfig(
-            {
-                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
-            },
-            feApp.app.flpAppId
-        );
-        await generateOPAFiles(basePath, opaConfig, fs, log);
-    }
-
     if (feApp.service.capService) {
         const settings: CapProjectSettings = {
             appRoot: basePath,
@@ -275,6 +265,16 @@ async function generate<T extends {}>(
 
     if (feApp.appOptions?.addAnnotations) {
         await writeAnnotations(basePath, feApp, fs, log);
+    }
+
+    if (addTest) {
+        const opaConfig = getOpaConfig(
+            {
+                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
+            },
+            feApp.app.flpAppId
+        );
+        await generateOPAFiles(basePath, opaConfig, fs, log);
     }
     return fs;
 }
