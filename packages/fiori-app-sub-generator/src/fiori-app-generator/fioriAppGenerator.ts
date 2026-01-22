@@ -377,14 +377,14 @@ export class FioriAppGenerator extends Generator {
                     this.state,
                     !!service.capService || this.options.generateIndexHtml
                 );
-                await generateFioriFreestyleApp(destRoot, ffApp, this.fs);
+                await generateFioriFreestyleApp(destRoot, ffApp, this.fs, FioriAppGenerator.logger);
                 appConfig = ffApp;
             } else {
                 const feApp = await transformState<FioriElementsApp<{}>>(
                     this.state,
                     !!service.capService || this.options.generateIndexHtml
                 );
-                await generateFioriElementsApp(destRoot, feApp, this.fs);
+                await generateFioriElementsApp(destRoot, feApp, this.fs, FioriAppGenerator.logger);
                 appConfig = feApp;
             }
 

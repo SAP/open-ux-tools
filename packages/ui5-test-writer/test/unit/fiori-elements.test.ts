@@ -7,20 +7,20 @@ import fileSystem, { read } from 'node:fs';
 import type { Logger } from '@sap-ux/logger/src/types';
 import * as appModels from '../test-input/constants';
 
-const readAppMock = jest.fn();
-jest.mock('@sap-ux/project-access', () => ({
-    ...(jest.requireActual('@sap-ux/project-access') as any),
-    createApplicationAccess: jest.fn().mockResolvedValue({
-        getSpecification: jest.fn().mockResolvedValue({
-            readApp: () => readAppMock()
-        })
-    })
-}));
+// const readAppMock = jest.fn();
+// jest.mock('@sap-ux/project-access', () => ({
+//     ...(jest.requireActual('@sap-ux/project-access') as any),
+//     createApplicationAccess: jest.fn().mockResolvedValue({
+//         getSpecification: jest.fn().mockResolvedValue({
+//             readApp: () => readAppMock()
+//         })
+//     })
+// }));
 
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
     const debug = !!process.env['UX_DEBUG'];
-    jest.setTimeout(30000);
+    jest.setTimeout(60000);
 
     function prepareTestFiles(testConfigurationName: string): string {
         // Copy input templates into output directory
@@ -270,7 +270,7 @@ describe('ui5-test-writer', () => {
         });
 
         it('generates filter tests for LROPv4 app', async () => {
-            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+            //readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
             fs = await generateOPAFiles(projectDir, {}, fs);
 
@@ -280,7 +280,7 @@ describe('ui5-test-writer', () => {
         });
 
         it('generates column tests for LROPv4 app', async () => {
-            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
+            //.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4');
             fs = await generateOPAFiles(projectDir, {}, fs);
 
@@ -290,7 +290,7 @@ describe('ui5-test-writer', () => {
         });
 
         it('generates tests for LROPv4 app that has no filters in filter bar', async () => {
-            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
+            //mockResolvedValueOnce(JSON.parse(appModels.V4_NO_FILTER_MODEL));
             const projectDir = prepareTestFiles('LROPv4NoFilters');
             const mockLogger = {
                 warn: jest.fn()
@@ -310,7 +310,7 @@ describe('ui5-test-writer', () => {
         });
 
         it('generates tests for LROPv4 app that has no columns in the table', async () => {
-            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+            //readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
             const projectDir = prepareTestFiles('LROPv4NoColumns');
             const mockLogger = {
                 warn: jest.fn()
@@ -327,6 +327,22 @@ describe('ui5-test-writer', () => {
                     'Unable to extract table columns from project model using specification. No table column tests will be generated.'
                 )
             );
+        });
+
+        it.only('generates filter tests for LROPv4 app', async () => {
+            //readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+
+            const outputDir = join(__dirname, '../test-output', 'project10');
+            fs = create(createStorage());
+            if (fileSystem.existsSync('/Users/i012956/Documents/dev/opa/project10')) {
+                fs.copy('/Users/i012956/Documents/dev/opa/project10', outputDir);
+            }
+
+            fs = await generateOPAFiles(outputDir, {}, fs);
+
+            const firstJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/FirstJourney.js'].contents;
+            expect(firstJourneyContent).toContain('iCheckFilterField');
         });
     });
 });

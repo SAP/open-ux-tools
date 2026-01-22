@@ -5,11 +5,21 @@ sap.ui.define([
     "use strict";
 
     function journey() {
-        QUnit.module("First journey");
+        QUnit.module("ListReport journey");
 
         opaTest("Start application", function (Given, When, Then) {
             Given.iStartMyApp();
-            Then.onThe<%- startLR %>.iSeeThisPage();
+            <%_ startPages.forEach(function(pageName) { %>
+            Then.onThe<%- pageName %>.iSeeThisPage();
+            <%_ if (listReportFeatures.filterBarItems && listReportFeatures.filterBarItems.length > 0) { -%>
+                <%_ listReportFeatures.filterBarItems.forEach(function(item) { _%>
+            Then.onThe<%- pageName%>.onFilterBar().iCheckFilterField("<%- item %>");
+                <%_ }); -%>
+            <%_ } -%>
+            <%_ if (listReportFeatures.tableColumns && Object.keys(listReportFeatures.tableColumns).length > 0) { _%>
+            Then.onThe<%- pageName %>.onTable().iCheckColumns(<%- Object.keys(listReportFeatures.tableColumns).length %>, <%- JSON.stringify(listReportFeatures.tableColumns) %>);
+            <%_ } %>
+            <%_ }); -%>
         });
 
 <% if (startLR) { %>

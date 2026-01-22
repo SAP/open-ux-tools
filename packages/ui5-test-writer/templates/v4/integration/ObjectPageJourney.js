@@ -1,0 +1,21 @@
+sap.ui.define([
+    "sap/ui/test/opaQunit",
+    "./pages/JourneyRunner"
+], function (opaTest, runner) {
+    "use strict";
+
+    function journey() {
+        QUnit.module("<%- targetKey %> journey");
+
+        opaTest("Start application", function (Given, When, Then) {
+            Given.iStartMyApp();
+            Then.onThe<%- startLR %>.iSeeThisPage();
+        });
+        opaTest("Teardown", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
+    }
+
+    runner.run([journey]);
+});

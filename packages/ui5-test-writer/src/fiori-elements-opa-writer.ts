@@ -3,12 +3,18 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/project-access';
-import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
+import type {
+    FEV4OPAConfig,
+    FEV4OPAPageConfig,
+    FEV4ManifestTarget,
+    ObjectPageFeatures,
+    ListReportFeatures
+} from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
 import { FileName, DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import { getFeatureData } from './utils/modelUtils';
+import { getAppFeatures, getModelFromSpecification } from './utils/modelUtils';
 
 /**
  * Reads the manifest for an app.
@@ -241,11 +247,48 @@ function writePageObject(
     rootTemplateDirPath: string,
     testOutDirPath: string,
     fs: Editor
-) {
+): void {
     fs.copyTpl(
         join(rootTemplateDirPath, `integration/pages/${pageConfig.template}.js`),
         join(testOutDirPath, `integration/pages/${pageConfig.targetKey}.js`),
         pageConfig,
+        undefined,
+        {
+            globOptions: { dot: true }
+        }
+    );
+}
+
+/**
+ * Writes a page object in a mem-fs-editor.
+ *
+ * @param journeyParams - the journey parameters object
+ * @param rootTemplateDirPath - template root directory
+ * @param testOutDirPath - output test directory (.../webapp/test)
+ * @param fs - a reference to a mem-fs editor
+ * @param pageConfig - the page configuration object
+ * @param listReportFeatures - features of the List Report page
+ * @param objectPageFeatures - features of the Object Page(s)
+ */
+function writeJourneys(
+    journeyParams: any,
+    rootTemplateDirPath: string,
+    testOutDirPath: string,
+    fs: Editor,
+    pageConfig: FEV4OPAPageConfig,
+    listReportFeatures?: ListReportFeatures,
+    objectPageFeatures?: ObjectPageFeatures[]
+): void {
+    if (pageConfig.template === 'ListReport') {
+        journeyParams.listReportFeatures = listReportFeatures;
+    } else {
+        journeyParams.objectPageFeatures = objectPageFeatures?.find((op) => op.hasOwnProperty(pageConfig.targetKey));
+    }
+    journeyParams.targetKey = pageConfig.targetKey;
+    fs.copyTpl(
+        join(rootTemplateDirPath, `integration/${pageConfig.template}Journey.js`),
+        join(testOutDirPath, `integration/${pageConfig.targetKey}Journey.js`),
+        journeyParams,
         undefined,
         {
             globOptions: { dot: true }
@@ -315,17 +358,25 @@ export async function generateOPAFiles(
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
 
-    // Access ux-specification to get feature data for OPA test generation
-    const { filterBarItems, tableColumns } = await getFeatureData(basePath, editor, log);
-
     const journeyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
-        hideFilterBar: config.hideFilterBar,
-        filterBarItems: filterBarItems,
-        tableColumns: tableColumns
+        hideFilterBar: config.hideFilterBar
+        // filterBarItems: filterBarItems,
+        // tableColumns: tableColumns
     };
+
+    if (LROP.pageLR) {
+        // Access ux-specification to get feature data for OPA test generation
+        const appModel = await getModelFromSpecification(basePath, editor, log);
+        const { listReport, objectPages } = await getAppFeatures(appModel, editor, log);
+
+        // Journey files (one for each page in the app)
+        config.pages.forEach((page) => {
+            writeJourneys(journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, page, listReport, objectPages);
+        });
+    }
 
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),

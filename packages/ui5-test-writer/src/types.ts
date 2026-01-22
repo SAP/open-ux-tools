@@ -73,7 +73,16 @@ export interface FFOPAConfig {
     ui5Theme?: string;
 }
 
-export type FeatureData = {
+export type AppFeatures = {
+    listReport?: ListReportFeatures;
+    objectPages?: ObjectPageFeatures[];
+};
+
+export type ListReportFeatures = {
     filterBarItems?: string[];
+    tableColumns?: Record<string, Record<string, string | number | boolean>>;
+};
+
+export type ObjectPageFeatures = {
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
 };

@@ -22,7 +22,8 @@ sap.ui.require(
     "sap/ui/thirdparty/qunit-2",
     "sap/ui/qunit/qunit-junit",
     "sap/ui/qunit/qunit-coverage",
-    '<%- appPath %>/test/integration/<%- opaJourneyFileName %>'
+    '<%- appPath %>/test/integration/<%- opaJourneyFileName %>',
+<%_ pages.forEach(function(page) { %>   '<%- appPath %>/test/integration/<%- page.targetKey %>Journey',<%_ }); -%>
   ], function (QUnit) {
     "use strict";
     QUnit.start();

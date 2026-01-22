@@ -9,7 +9,7 @@ import type {
     TreeModel,
     ApplicationModel
 } from '@sap/ux-specification/dist/types/src/parser';
-import type { FeatureData } from '../types';
+import type { AppFeatures, ListReportFeatures, ObjectPageFeatures } from '../types';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
@@ -23,17 +23,15 @@ export interface AggregationItem extends TreeAggregation {
  * @param log - optional logger instance
  * @returns feature data extracted from the application model
  */
-export async function getFeatureData(basePath: string, fs?: Editor, log?: Logger): Promise<FeatureData> {
-    const featureData: FeatureData = {};
+export async function getAppFeatures(appModel?: ReadAppResult, fs?: Editor, log?: Logger): Promise<AppFeatures> {
+    const featureData: AppFeatures = {};
     let listReportPage: PageWithModelV4 | null = null;
+    let objectPages: PageWithModelV4[] | null = null;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
-        // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
-        const appAccess = await createApplicationAccess(basePath, { fs: fs });
-        const specification = await appAccess.getSpecification<Specification>();
-        const appResult: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
-        listReportPage = appResult.applicationModel ? getListReportPage(appResult.applicationModel) : listReportPage;
+        listReportPage = appModel?.applicationModel ? getListReportPage(appModel?.applicationModel) : listReportPage;
+        objectPages = appModel?.applicationModel ? getObjectPages(appModel?.applicationModel) : objectPages;
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -43,15 +41,51 @@ export async function getFeatureData(basePath: string, fs?: Editor, log?: Logger
     }
 
     if (!listReportPage) {
-        log?.warn('List Report page not found in application model. Dynamic tests will not be generated.');
+        log?.warn(
+            'List Report page not found in application model. Dynamic tests will not be generated for List Report pages.'
+        );
+        return featureData;
+    }
+    if (!objectPages || objectPages.length === 0) {
+        log?.warn(
+            'Object Page(s) not found in application model. Dynamic tests will not be generated for Object Pages.'
+        );
         return featureData;
     }
 
     // attempt to get individual feature data
-    featureData.filterBarItems = getFilterFieldNames(listReportPage.model, log);
-    featureData.tableColumns = getTableColumnData(listReportPage.model, log);
+    featureData.listReport = getListReportFeatures(listReportPage.model, log);
+    featureData.objectPages = getObjectPageFeatures(objectPages, log);
 
     return featureData;
+}
+
+/**
+ * Gets the application model using ux-specification.
+ *
+ * @param basePath - the absolute target path where the application will be generated
+ * @param fs - optional mem-fs editor instance
+ * @param log - optional logger instance
+ * @returns application model extracted from the specification
+ */
+export async function getModelFromSpecification(
+    basePath: string,
+    fs?: Editor,
+    log?: Logger
+): Promise<ReadAppResult | undefined> {
+    let appResult: ReadAppResult | undefined;
+    try {
+        // readApp calls createApplicationAccess internally if given a path, but it uses the "live" version of project-access without fs enhancement
+        const appAccess = await createApplicationAccess(basePath, { fs: fs });
+        const specification = await appAccess.getSpecification<Specification>();
+        appResult = await specification.readApp({ app: appAccess, fs: fs });
+    } catch (error) {
+        log?.warn(
+            'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
+                (error as Error).message
+        );
+    }
+    return appResult;
 }
 
 /**
@@ -90,6 +124,25 @@ function transformTableColumns(columnAggregations: Record<string, any>): Record<
         };
     });
     return columns;
+}
+
+export function getListReportFeatures(pageModel: TreeModel, log?: Logger): ListReportFeatures {
+    return {
+        filterBarItems: getFilterFieldNames(pageModel, log),
+        tableColumns: getTableColumnData(pageModel, log)
+    };
+}
+
+export function getObjectPageFeatures(objectPages: PageWithModelV4[], log?: Logger): ObjectPageFeatures[] {
+    const features: ObjectPageFeatures[] = [];
+    objectPages.forEach((objectPage) => {
+        features.push({
+            [`${objectPage.name}`]: {
+                tableColumns: getTableColumnData(objectPage.model, log)
+            }
+        });
+    });
+    return features;
 }
 
 /**
@@ -174,6 +227,7 @@ export function getObjectPages<T = ApplicationModel['pages'][string]>(applicatio
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
         if (page.pageType === 'ObjectPage') {
+            page.name = pageKey; // store page key as name for later identification
             objectPages.push(page as T);
         }
     }
