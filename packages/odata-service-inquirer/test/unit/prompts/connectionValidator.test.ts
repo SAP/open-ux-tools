@@ -886,7 +886,7 @@ describe('ConnectionValidator', () => {
                         text: 'Need help with this error?',
                         url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.BAD_GATEWAY}`
                     },
-                    message: 'The server returned an error. Bad gateway: 502'
+                    message: 'Bad gateway: 502'
                 }
             })
         );

@@ -31,7 +31,7 @@
         "invalidUrl": "Invalid URL{{-input, addMsgWithColonFormatter}}",
         "connectionError": "A connection error occurred. Please ensure the target host is available on the network: {{- error}}",
         "timeout": "A connection timeout error occurred{{- errorMsg, addMsgWithColonFormatter}}",
-        "serverReturnedAnError": "The server returned an error. {{- errorDesc}}",
+        "serverReturnedAnError": "{{- errorDesc}}",
         "serverUnableToCompleteRequest": "The server was unable to complete the request. Please try again.",
         "catalogServiceNotActive": "Catalog service is not active.",
         "urlNotFound": "URL not found.",
