@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/sap-systems-ext-webapp",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
