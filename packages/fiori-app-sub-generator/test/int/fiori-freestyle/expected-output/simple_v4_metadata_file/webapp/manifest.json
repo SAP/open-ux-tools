@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-freestyle-writer:basic",
-      "version": "2.5.29",
-      "toolsId": "f9484e91-62c0-4d50-bd06-4e0a6d0b0b7a"
+      "version": "2.2.5",
+      "toolsId": "d31a2206-b1aa-4ea5-8463-2a026a695661"
     },
     "dataSources": {
       "mainService": {

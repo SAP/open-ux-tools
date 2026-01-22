@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:alp",
-      "version": "2.8.42",
-      "toolsId": "173e32f0-9b31-45aa-b821-0f3c550d0c96"
+      "version": "2.8.16",
+      "toolsId": "fc6bba53-024a-49db-8623-c8d43d29b9d4"
     },
     "dataSources": {
       "mainService": {
