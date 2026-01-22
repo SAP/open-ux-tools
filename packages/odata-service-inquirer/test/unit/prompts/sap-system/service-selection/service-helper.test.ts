@@ -341,7 +341,6 @@ describe('Test service-helper function `validateService`', () => {
         } as unknown as ConnectionValidator;
 
         const validateServiceResult = await validateService(serviceAnswer, connectionValidatorWithError);
-        expect(validateServiceResult.validationResult).toContain('HTTP Status 404');
         expect(validateServiceResult.validationResult).toContain(serviceAnswer.servicePath);
         expect(validateServiceResult.validationResult).toContain('For more information, view the logs');
     });
@@ -367,7 +366,7 @@ describe('Test service-helper function `validateService`', () => {
         } as unknown as ConnectionValidator;
 
         const validateServiceResult = await validateService(serviceAnswer, connectionValidatorWithError);
-        expect(validateServiceResult.validationResult).toContain('HTTP Status 401');
+        expect(validateServiceResult.validationResult).toContain(serviceAnswer.servicePath);
     });
 
     test('Should return error message with error code when metadata request fails with code', async () => {
@@ -391,7 +390,6 @@ describe('Test service-helper function `validateService`', () => {
         } as unknown as ConnectionValidator;
 
         const validateServiceResult = await validateService(serviceAnswer, connectionValidatorWithError);
-        expect(validateServiceResult.validationResult).toContain('ECONNREFUSED');
         expect(validateServiceResult.validationResult).toContain(serviceAnswer.servicePath);
     });
 

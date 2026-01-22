@@ -234,7 +234,7 @@
         "certValidationRequired": "Certificate validation is required to continue.",
         "exitingGeneration": "Exiting generation. Exit: {{exitReason}}.",
         "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}.",
-        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }){{errorInfo, addMsgWithColonFormatter}} $t(texts.seeLogForDetails)",
+        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }){{error, addMsgWithColonFormatter}} $t(texts.seeLogForDetails)",
         "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}.",
         "serviceTypeRequestError": "An error occurred when retrieving the service type: {{- error}}.",
         "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
