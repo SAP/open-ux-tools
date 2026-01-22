@@ -372,7 +372,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     /**
      * Retrieves the error handler message for the provided error.
      *
-     * @param {Error | AxiosError} error - The error to handle.
+     * @param {AxiosError} error - The error to handle.
      * @returns {ValidationLink | string | undefined} The validation link or error message.
      */
     private _getErrorHandlerMessage(error: AxiosError): ValidationLink | string | undefined {
