@@ -4,8 +4,8 @@
         "configurationDescr": "Configure the system and select an application.",
         "projectAttributesName": "Project Attributes",
         "projectAttributesDescr": "Configure the main project attributes.",
-        "keyUserImportName": "Import Key User Adaptations",
-        "keyUserImportDescr": "Select the system from which key user changes should be taken over.",
+        "keyUserImportName": "Import Key User Changes",
+        "keyUserImportDescr": "You can either continue with the preselected source system or choose a system from which the key-user changes will be taken over.",
         "flpConfigName": "SAP Fiori Launchpad Configuration: Tile Settings",
         "tileSettingsName": "SAP Fiori Launchpad Configuration: Tile Handling",
         "tileSettingsDescr": "Add a new tile or replace existing tiles of the base application.\nProject: {{projectName}}",
@@ -51,9 +51,9 @@
         "addDeployConfig": "Add Deployment Configuration",
         "addFlpConfig": "Add SAP Fiori Launchpad Configuration",
         "importKeyUserChangesLabel": "Import Key User Changes",
-        "keyUserAdaptationLabel": "Adaptation",
+        "keyUserAdaptationLabel": "Context-based Adaptation",
+        "keyUserAdaptationBreadcrumb": "Adaptation",
         "keyUserAdaptationLabelMulti": "There are multiple context-based adaptations. Select an adaptation to take over as an app variant.",
-        "keyUserChangesFoundAdaptation": "Key-user changes have been found for the '{{adaptationId}}' adaptation and will be added after the project has been generated.",
         "targetEnvLabel": "Environment",
         "targetEnvTooltip": "Select the target environment for your Adaptation Project.",
         "targetEnvBreadcrumb": "Target Environment",
@@ -111,9 +111,10 @@
         "projectDoesNotExistMta": "Provide the path to the MTA project where you want to have your Adaptation Project created.",
         "noAdaptableBusinessServiceFoundInMta": "No adaptable business service found in the MTA.",
         "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}.",
-        "keyUserNoChangesDefault": "Only a single adaptation ('DEFAULT') was found and no key-user changes were found for it.",
+        "keyUserNoChangesDefault": "Only a single adaptation ('DEFAULT') was found and no key-user changes were found for it. Please select a different system to continue, or click Back and choose the option without importing key-user changes.",
         "keyUserNoChangesAdaptation": "No key-user changes have been found for the '{{adaptationId}}' adaptation.",
-        "keyUserNoAdaptations": "No context-based adaptations have been found for the selected application."
+        "keyUserNoAdaptations": "No context-based adaptations have been found for the selected application.",
+        "keyUserNotSupported": "The system does not allow or support the import of key-user changes."
     },
     "validators": {
         "ui5VersionNotDetectedError": "The SAPUI5 version of the selected system cannot be determined. You are able to create and edit adaptation projects that use the latest SAPUI5 version, but they are not usable on this system until the system's SAPUI5 version is upgraded to version 1.71 or higher."

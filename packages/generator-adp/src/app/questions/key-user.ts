@@ -5,6 +5,7 @@ import type {
     KeyUserChangeContent
 } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
+import { isAxiosError } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { type SystemLookup, getConfiguredProvider } from '@sap-ux/adp-tooling';
 import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
@@ -21,10 +22,7 @@ import type {
 import { t } from '../../utils/i18n';
 import { keyUserPromptNames } from '../types';
 import { getAdaptationChoices, getKeyUserSystemChoices } from './helper/choices';
-import {
-    getKeyUserSystemAdditionalMessages,
-    getKeyUserAdaptationAdditionalMessages
-} from './helper/additional-messages';
+import { getKeyUserSystemAdditionalMessages } from './helper/additional-messages';
 
 export const DEFAULT_ADAPTATION_ID = 'DEFAULT';
 
@@ -152,7 +150,6 @@ export class KeyUserImportPrompter {
                 getKeyUserSystemAdditionalMessages({
                     adaptations: this.adaptations,
                     isAuthRequired: this.isAuthRequired,
-                    keyUserChangesCount: this.keyUserChanges.length,
                     isSystemPrompt: true
                 })
         } as ListQuestion<KeyUserImportAnswers>;
@@ -203,7 +200,6 @@ export class KeyUserImportPrompter {
                 getKeyUserSystemAdditionalMessages({
                     adaptations: this.adaptations,
                     isAuthRequired: this.isAuthRequired,
-                    keyUserChangesCount: this.keyUserChanges.length,
                     isSystemPrompt: false
                 })
         } as PasswordQuestion<KeyUserImportAnswers>;
@@ -222,12 +218,10 @@ export class KeyUserImportPrompter {
             message: t('prompts.keyUserAdaptationLabel'),
             guiOptions: {
                 mandatory: true,
-                breadcrumb: true
+                breadcrumb: t('prompts.keyUserAdaptationBreadcrumb')
             },
             choices: () => getAdaptationChoices(this.adaptations),
             default: () => getAdaptationChoices(this.adaptations)[0]?.name,
-            additionalMessages: (adaptation: AdaptationDescriptor | null) =>
-                getKeyUserAdaptationAdditionalMessages(adaptation, this.keyUserChanges.length),
             validate: async (adaptation: AdaptationDescriptor) => await this.validateKeyUserChanges(adaptation?.id),
             when: () => this.adaptations.length > 1
         } as ListQuestion<KeyUserImportAnswers>;
@@ -384,6 +378,11 @@ export class KeyUserImportPrompter {
         } catch (e) {
             this.logger.error(`Error validating key-user changes for adaptation ${adaptationId}: ${e.message}`);
             this.logger.debug(e);
+
+            if (isAxiosError(e) && (e.response?.status === 405 || e.response?.status === 404)) {
+                return t('error.keyUserNotSupported');
+            }
+
             return e.message;
         }
     }

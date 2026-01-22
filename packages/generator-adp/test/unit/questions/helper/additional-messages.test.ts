@@ -9,8 +9,7 @@ import {
     getSystemAdditionalMessages,
     getVersionAdditionalMessages,
     getTargetEnvAdditionalMessages,
-    getKeyUserSystemAdditionalMessages,
-    getKeyUserAdaptationAdditionalMessages
+    getKeyUserSystemAdditionalMessages
 } from '../../../../src/app/questions/helper/additional-messages';
 import { initI18n, t } from '../../../../src/utils/i18n';
 import { DEFAULT_ADAPTATION_ID } from '../../../../src/app/questions/key-user';
@@ -191,7 +190,6 @@ describe('additional-messages', () => {
             const result = getKeyUserSystemAdditionalMessages({
                 adaptations: mockMultipleAdaptations,
                 isAuthRequired: false,
-                keyUserChangesCount: 0,
                 isSystemPrompt: true
             });
 
@@ -201,25 +199,10 @@ describe('additional-messages', () => {
             });
         });
 
-        it('should return message for DEFAULT adaptation with changes when auth matches', () => {
-            const result = getKeyUserSystemAdditionalMessages({
-                adaptations: [mockDefaultAdaptation],
-                isAuthRequired: false,
-                keyUserChangesCount: 5,
-                isSystemPrompt: true
-            });
-
-            expect(result).toEqual({
-                message: t('prompts.keyUserChangesFoundAdaptation', { adaptationId: DEFAULT_ADAPTATION_ID }),
-                severity: Severity.information
-            });
-        });
-
         it('should return undefined when auth does not match', () => {
             const result = getKeyUserSystemAdditionalMessages({
                 adaptations: mockMultipleAdaptations,
                 isAuthRequired: true,
-                keyUserChangesCount: 0,
                 isSystemPrompt: true
             });
 
@@ -230,7 +213,6 @@ describe('additional-messages', () => {
             const result = getKeyUserSystemAdditionalMessages({
                 adaptations: mockMultipleAdaptations,
                 isAuthRequired: false,
-                keyUserChangesCount: 0,
                 isSystemPrompt: false
             });
 
@@ -241,7 +223,6 @@ describe('additional-messages', () => {
             const result = getKeyUserSystemAdditionalMessages({
                 adaptations: [mockDefaultAdaptation],
                 isAuthRequired: false,
-                keyUserChangesCount: 0,
                 isSystemPrompt: true
             });
 
@@ -252,47 +233,9 @@ describe('additional-messages', () => {
             const result = getKeyUserSystemAdditionalMessages({
                 adaptations: [],
                 isAuthRequired: false,
-                keyUserChangesCount: 0,
                 isSystemPrompt: true
             });
 
-            expect(result).toBeUndefined();
-        });
-    });
-
-    describe('getKeyUserAdaptationAdditionalMessages', () => {
-        const mockAdaptation: AdaptationDescriptor = {
-            id: 'CTX1',
-            title: 'Context 1',
-            type: 'CONTEXT',
-            contexts: { role: ['/UI2/ADMIN'] }
-        };
-
-        const mockAdaptationWithoutTitle: AdaptationDescriptor = {
-            id: 'CTX2',
-            type: 'CONTEXT'
-        };
-
-        it('should return message when adaptation is provided and changes exist', () => {
-            const result = getKeyUserAdaptationAdditionalMessages(mockAdaptation, 5);
-
-            expect(result).toEqual({
-                message: t('prompts.keyUserChangesFoundAdaptation', { adaptationId: 'Context 1' }),
-                severity: Severity.information
-            });
-        });
-
-        it('should use adaptation id when title is not available', () => {
-            const result = getKeyUserAdaptationAdditionalMessages(mockAdaptationWithoutTitle, 3);
-
-            expect(result).toEqual({
-                message: t('prompts.keyUserChangesFoundAdaptation', { adaptationId: 'CTX2' }),
-                severity: Severity.information
-            });
-        });
-
-        it('should return undefined when adaptation is null', () => {
-            const result = getKeyUserAdaptationAdditionalMessages(null, 5);
             expect(result).toBeUndefined();
         });
     });

@@ -1,18 +1,17 @@
 import type {
     AbapServiceProvider,
     AdaptationDescriptor,
+    AxiosError,
     FlexVersion,
     KeyUserChangeContent
 } from '@sap-ux/axios-extension';
+import { isAxiosError } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { SystemLookup } from '@sap-ux/adp-tooling';
 import { getConfiguredProvider } from '@sap-ux/adp-tooling';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 
-import {
-    getKeyUserSystemAdditionalMessages,
-    getKeyUserAdaptationAdditionalMessages
-} from '../../../src/app/questions/helper/additional-messages';
+import { getKeyUserSystemAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
 import { initI18n, t } from '../../../src/utils/i18n';
 import { keyUserPromptNames } from '../../../src/app/types';
 import {
@@ -33,13 +32,17 @@ jest.mock('@sap-ux/adp-tooling', () => ({
 }));
 
 jest.mock('../../../src/app/questions/helper/additional-messages', () => ({
-    getKeyUserSystemAdditionalMessages: jest.fn(),
-    getKeyUserAdaptationAdditionalMessages: jest.fn()
+    getKeyUserSystemAdditionalMessages: jest.fn()
 }));
 
 jest.mock('../../../src/app/questions/helper/choices', () => ({
     getAdaptationChoices: jest.fn(),
     getKeyUserSystemChoices: jest.fn()
+}));
+
+jest.mock('@sap-ux/axios-extension', () => ({
+    ...jest.requireActual('@sap-ux/axios-extension'),
+    isAxiosError: jest.fn()
 }));
 
 const logger: ToolsLogger = {
@@ -90,6 +93,7 @@ const mockKeyUserChanges: KeyUserChangeContent[] = [
 ];
 
 const getSystemsMock = systemLookup.getSystems as jest.Mock;
+const isAxiosErrorMock = isAxiosError as unknown as jest.Mock;
 const validateEmptyStringMock = validateEmptyString as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getAdaptationChoicesMock = getAdaptationChoices as jest.Mock;
@@ -99,7 +103,6 @@ const getFlexVersionsMock = mockLayeredRepository.getFlexVersions as jest.Mock;
 const listAdaptationsMock = mockLayeredRepository.listAdaptations as jest.Mock;
 const getSystemRequiresAuthMock = systemLookup.getSystemRequiresAuth as jest.Mock;
 const getKeyUserSystemAdditionalMessagesMock = getKeyUserSystemAdditionalMessages as jest.Mock;
-const getKeyUserAdaptationAdditionalMessagesMock = getKeyUserAdaptationAdditionalMessages as jest.Mock;
 
 describe('KeyUserImportPrompter', () => {
     const componentId = 'demoapps.rta';
@@ -114,7 +117,6 @@ describe('KeyUserImportPrompter', () => {
         jest.clearAllMocks();
         validateEmptyStringMock.mockReturnValue(true);
         getKeyUserSystemAdditionalMessagesMock.mockReturnValue(undefined);
-        getKeyUserAdaptationAdditionalMessagesMock.mockReturnValue(undefined);
         getAdaptationChoicesMock.mockReturnValue([{ name: 'Default Adaptation', value: mockAdaptations[0] }]);
         getKeyUserSystemChoicesMock.mockReturnValue([
             { name: 'SystemA', value: 'SystemA' },
@@ -260,7 +262,6 @@ describe('KeyUserImportPrompter', () => {
             it('should call getKeyUserSystemAdditionalMessages with correct parameters', () => {
                 prompter['adaptations'] = mockAdaptations;
                 prompter['isAuthRequired'] = false;
-                prompter['keyUserChanges'] = mockKeyUserChanges;
 
                 const prompt = prompter['getSystemPrompt']();
                 prompt?.additionalMessages?.();
@@ -268,7 +269,6 @@ describe('KeyUserImportPrompter', () => {
                 expect(getKeyUserSystemAdditionalMessagesMock).toHaveBeenCalledWith({
                     adaptations: mockAdaptations,
                     isAuthRequired: false,
-                    keyUserChangesCount: mockKeyUserChanges.length,
                     isSystemPrompt: true
                 });
             });
@@ -390,7 +390,6 @@ describe('KeyUserImportPrompter', () => {
             it('should call getKeyUserSystemAdditionalMessages with correct parameters', () => {
                 prompter['adaptations'] = mockAdaptations;
                 prompter['isAuthRequired'] = true;
-                prompter['keyUserChanges'] = mockKeyUserChanges;
 
                 const prompt = prompter['getPasswordPrompt']();
                 prompt?.additionalMessages?.();
@@ -398,7 +397,6 @@ describe('KeyUserImportPrompter', () => {
                 expect(getKeyUserSystemAdditionalMessagesMock).toHaveBeenCalledWith({
                     adaptations: mockAdaptations,
                     isAuthRequired: true,
-                    keyUserChangesCount: mockKeyUserChanges.length,
                     isSystemPrompt: false
                 });
             });
@@ -490,6 +488,7 @@ describe('KeyUserImportPrompter', () => {
                 prompter['adaptations'] = mockAdaptations;
                 const error = new Error('API call failed');
                 getKeyUserDataMock.mockRejectedValue(error);
+                isAxiosErrorMock.mockReturnValue(false);
 
                 const prompt = prompter['getAdaptationPrompt']();
                 const result = await prompt?.validate?.(mockAdaptations[0]);
@@ -498,18 +497,27 @@ describe('KeyUserImportPrompter', () => {
                 expect(logger.error).toHaveBeenCalled();
                 expect(logger.debug).toHaveBeenCalledWith(error);
             });
-        });
 
-        describe('additionalMessages', () => {
-            it('should call getKeyUserAdaptationAdditionalMessages with adaptation and changes count', () => {
-                prompter['keyUserChanges'] = mockKeyUserChanges;
+            it('should return user-friendly message for 404 status code', async () => {
+                prompter['adaptations'] = mockAdaptations;
+                const axiosError = {
+                    isAxiosError: true,
+                    message: 'Not Found',
+                    name: 'AxiosError',
+                    response: {
+                        status: 404,
+                        statusText: 'Not Found'
+                    }
+                } as AxiosError;
+                getKeyUserDataMock.mockRejectedValue(axiosError);
+                isAxiosErrorMock.mockReturnValue(true);
+
                 const prompt = prompter['getAdaptationPrompt']();
-                prompt?.additionalMessages?.(mockAdaptations[0]);
+                const result = await prompt?.validate?.(mockAdaptations[0]);
 
-                expect(getKeyUserAdaptationAdditionalMessagesMock).toHaveBeenCalledWith(
-                    mockAdaptations[0],
-                    mockKeyUserChanges.length
-                );
+                expect(result).toBe(t('error.keyUserNotSupported'));
+                expect(logger.error).toHaveBeenCalled();
+                expect(logger.debug).toHaveBeenCalledWith(axiosError);
             });
         });
 

@@ -6,7 +6,6 @@ import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
 import type { FlexUISupportedSystem, SourceApplication } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../utils/i18n';
-import { DEFAULT_ADAPTATION_ID } from '../key-user';
 
 interface SupportFlags {
     hasSyncViews: boolean;
@@ -163,22 +162,18 @@ export const getTargetEnvAdditionalMessages = (
  * @param {object} options - The options for the key-user additional messages.
  * @param {AdaptationDescriptor[]} options.adaptations - The list of adaptations available.
  * @param {boolean} options.isAuthRequired - Whether authentication is required.
- * @param {number} options.keyUserChangesCount - The number of key-user changes found.
  * @param {boolean} options.isSystemPrompt - Whether this is for the system prompt (true) or password prompt (false).
  * @returns {IMessageSeverity | undefined} Message object or undefined if no message is applicable.
  */
 export const getKeyUserSystemAdditionalMessages = ({
     adaptations,
     isAuthRequired,
-    keyUserChangesCount,
     isSystemPrompt
 }: {
     adaptations: AdaptationDescriptor[];
     isAuthRequired: boolean;
-    keyUserChangesCount: number;
     isSystemPrompt: boolean;
 }): IMessageSeverity | undefined => {
-    const hasOnlyDefaultAdaptation = adaptations.length === 1 && adaptations[0]?.id === DEFAULT_ADAPTATION_ID;
     const authMatches = isSystemPrompt ? !isAuthRequired : isAuthRequired;
 
     if (!authMatches) {
@@ -192,35 +187,5 @@ export const getKeyUserSystemAdditionalMessages = ({
         };
     }
 
-    if (hasOnlyDefaultAdaptation && keyUserChangesCount > 0) {
-        return {
-            message: t('prompts.keyUserChangesFoundAdaptation', { adaptationId: DEFAULT_ADAPTATION_ID }),
-            severity: Severity.information
-        };
-    }
-
     return undefined;
-};
-
-/**
- * Provides additional messages for the key-user adaptation prompt.
- *
- * @param {AdaptationDescriptor | null} adaptation - The selected adaptation, or null if not selected.
- * @param {number} keyUserChangesCount - The number of key-user changes found.
- * @returns {IMessageSeverity | undefined} Message object or undefined if no message is applicable.
- */
-export const getKeyUserAdaptationAdditionalMessages = (
-    adaptation: AdaptationDescriptor | null,
-    keyUserChangesCount: number
-): IMessageSeverity | undefined => {
-    if (!adaptation || keyUserChangesCount === 0) {
-        return undefined;
-    }
-
-    return {
-        message: t('prompts.keyUserChangesFoundAdaptation', {
-            adaptationId: adaptation.title ?? adaptation.id
-        }),
-        severity: Severity.information
-    };
 };
