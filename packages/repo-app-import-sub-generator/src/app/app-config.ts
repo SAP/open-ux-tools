@@ -129,7 +129,7 @@ export async function getAppConfig(
             RepoAppDownloadLogger.logger?.error(t('error.dataSourcesNotFound'));
         }
 
-        const odataVersion = manifest?.['sap.app']?.dataSources?.mainService?.settings?.odataVersion?.startsWith('4.0')
+        const odataVersion = manifest?.['sap.app']?.dataSources?.mainService?.settings?.odataVersion?.startsWith('4')
             ? OdataVersion.v4
             : OdataVersion.v2;
 
