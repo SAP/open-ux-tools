@@ -29,21 +29,17 @@ type AddActionFragmentsModel = JSONModel & {
 export interface AddActionOptions {
     name: string;
     propertyPath: string;
-    actionType: 'pageAction' | 'tableAction';
     title: string;
     controllerReference: string;
     appDescriptor?: PageDescriptorV4;
     validateActionId?: (actionId: string) => boolean;
-    position?: {
-        placement: 'Before' | 'After';
-        anchor: string;
-    };
 }
 
 /**
  * Validates Action ID input.
  *
  * @param input control of action ID to validate
+ * @param resource text bundle for messages
  * @param validateForDuplicateId custom validation function
  * @return validation result
  */
@@ -58,7 +54,7 @@ function validateActionId(
         return { isValid: false, errorMessage: resource.getText('ACTION_ID_REQUIRED') };
     }
 
-    if (!validateForDuplicateId?.(actionId)) {
+    if (typeof validateForDuplicateId === 'function' && !validateForDuplicateId(actionId)) {
         return { isValid: false, errorMessage: resource.getText('ACTION_WITH_GIVEN_ID_ALREADY_EXISTS', [actionId]) };
     }
 
@@ -67,9 +63,9 @@ function validateActionId(
         return { isValid: false, errorMessage: resource.getText('ACTION_ID_CANNOT_CONTAIN_SPACES') };
     }
 
-    // Check if starts with number
-    if (/^\d/.test(actionId)) {
-        return { isValid: false, errorMessage: resource.getText('ACTION_ID_CANNOT_START_WITH_NUMBER') };
+    // Check starts and only allowed characters
+    if (!/(^([A-Za-z_][-A-Za-z0-9_.:]*)$)/.test(actionId)) {
+        return { isValid: false, errorMessage: resource.getText('ACTION_ID_INVALID_FORMAT') };
     }
     return { isValid: true, errorMessage: '' };
 }
@@ -217,9 +213,7 @@ export default class AddActionFragment extends BaseDialog<AddActionFragmentsMode
                         press: this.options.controllerReference,
                         visible: true,
                         enabled: true,
-                        text: actionLabel,
-                        ...(this.options.actionType === 'tableAction' ? { requiresSelection: false } : {}),
-                        ...(this.options.position && { position: this.options.position }),
+                        text: actionLabel
                     }
                 }
             }

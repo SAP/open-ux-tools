@@ -1,5 +1,20 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.2.0
+
+### Minor Changes
+
+- cd27778: Fix plugin integration issue when working with multiple projects: create new ProjectContext and cache diagnostics by file uri and ruleId.
+
+## 9.1.3
+
+### Patch Changes
+
+- be67fc4: fix: fix path mappings and also lint custom mockserver extensions
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/fiori-annotation-api@0.9.3
+
 ## 9.1.2
 
 ### Patch Changes

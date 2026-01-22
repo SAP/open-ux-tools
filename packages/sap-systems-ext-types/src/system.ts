@@ -1,4 +1,4 @@
-interface RequestCount {
+export interface RequestCount {
     count?: number;
     error?: unknown;
 }
