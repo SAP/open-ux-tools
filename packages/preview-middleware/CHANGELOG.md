@@ -1,5 +1,33 @@
 # @sap-ux/preview-middleware
 
+## 0.23.95
+
+### Patch Changes
+
+- 1970178: Fix: Switch Page Action creation for OData V4 from addXML to appDescriptor based
+
+## 0.23.94
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.41
+
+## 0.23.93
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/adp-tooling@0.18.40
+    - @sap-ux/system-access@0.6.41
+
+## 0.23.92
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.39
+- @sap-ux/system-access@0.6.41
+
 ## 0.23.91
 
 ### Patch Changes

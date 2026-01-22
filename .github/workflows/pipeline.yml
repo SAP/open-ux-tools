@@ -218,17 +218,35 @@ jobs:
             - name: Detect extension publication
               if: steps.changesetPublish.outputs.published == 'true'
               run: |
-                  PUBLISHED=$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq -r '.[].name')
-                  # Extract the first package name matching sap-ux-*-ext
-                  EXT_PKG=$(echo "$PUBLISHED" | grep -E '^sap-ux-.*-ext$' | head -n 1 || true)
+                  PUBLISHED_JSON='${{ steps.changesetPublish.outputs.publishedPackages }}'
+
+                  # Check if extension was directly published (normal case)
+                  EXT_PKG=$(echo "$PUBLISHED_JSON" | jq -r '.[].name' | grep -E '^sap-ux-.*-ext$' | head -n 1 || true)
+
+                  # Check if extension has updated dependencies
+                  if [ -z "$EXT_PKG" ]; then
+                    PUBLISHED_NAMES=$(echo "$PUBLISHED_JSON" | jq -r '.[].name')
+                    for pkg_json in packages/*-ext/package.json; do
+                      [ ! -f "$pkg_json" ] && continue
+                      
+                      ALL_DEPS=$(jq -r '(.dependencies // {}) + (.devDependencies // {}) | keys[]' "$pkg_json" 2>/dev/null || true)
+                      
+                      while IFS= read -r published_pkg; do
+                        [ -z "$published_pkg" ] && continue
+                        if echo "$ALL_DEPS" | grep -Fxq "$published_pkg"; then
+                          EXT_PKG=$(jq -r '.name' "$pkg_json")
+                          break 2
+                        fi
+                      done <<< "$PUBLISHED_NAMES"
+                    done
+                  fi
 
                   if [ -n "$EXT_PKG" ]; then
                     echo "EXTENSION_UPDATED=true" >> $GITHUB_ENV
                     echo "EXT_PKG=$EXT_PKG" >> $GITHUB_ENV
-
-                    # Strip 'sap-ux-' prefix to derive directory name
                     EXT_DIR_NAME=$(echo "$EXT_PKG" | sed 's/^sap-ux-//')
                     echo "EXT_DIR=packages/${EXT_DIR_NAME}" >> $GITHUB_ENV
+                    echo "Releasing extension: $EXT_PKG"
                   else
                     echo "EXTENSION_UPDATED=false" >> $GITHUB_ENV
                   fi

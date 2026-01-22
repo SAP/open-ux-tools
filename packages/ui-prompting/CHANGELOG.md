@@ -1,5 +1,11 @@
 # @sap-ux/ui-prompting
 
+## 0.6.0
+
+### Minor Changes
+
+- 68b0e54: Add hidden, calloutCollisionTransformation and checked support for multi select component
+
 ## 0.5.13
 
 ### Patch Changes
