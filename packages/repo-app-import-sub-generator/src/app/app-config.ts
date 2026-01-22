@@ -130,7 +130,7 @@ export async function getAppConfig(
         }
 
         const odataVersion =
-            manifest?.['sap.app']?.dataSources?.mainService?.settings?.odataVersion === '4.0'
+            manifest?.['sap.app']?.dataSources?.mainService?.settings?.odataVersion?.startsWith('4.0')
                 ? OdataVersion.v4
                 : OdataVersion.v2;
 
