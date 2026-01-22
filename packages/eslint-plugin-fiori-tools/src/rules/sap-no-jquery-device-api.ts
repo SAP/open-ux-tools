@@ -2,7 +2,7 @@
  * @file Rule to flag use of the deprecated JQuery.device API
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 // ------------------------------------------------------------------------------
 // Invoking global form of strict mode syntax for whole script
@@ -16,7 +16,7 @@ import type { Rule } from 'eslint';
 // Rule Definition
 // ------------------------------------------------------------------------------
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -30,7 +30,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         return {
             'MemberExpression': function (node): void {
                 if (

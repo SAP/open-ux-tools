@@ -2,7 +2,7 @@
  * @file Check "sap-ui5-no-private-prop" should detect the usage of private properties and functions of UI5 elements
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     type ASTNode,
     isIdentifier,
@@ -53,7 +53,7 @@ function isSpecialCaseIdentifierForMemberExpression(identifier: string): boolean
     return identifier === '__proto__';
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -82,9 +82,9 @@ const rule: Rule.RuleModule = {
         ],
         defaultOptions: [{}]
     },
-    create(context: Rule.RuleContext) {
-        const sourceCode = context.sourceCode ?? context.getSourceCode();
-        const customNS = (context.options[0]?.ns as string[] | undefined) ?? [];
+    create(context: RuleContext) {
+        const sourceCode = context.sourceCode;
+        const customNS = ((context.options[0] as any)?.ns as string[] | undefined) ?? [];
         const configuration = {
             'ns': uniquifyArray(
                 [
@@ -178,7 +178,7 @@ const rule: Rule.RuleModule = {
                     // && hasUnderscore(identifier)
                     !isSpecialCaseIdentifierForMemberExpression(identifier)
                 ) {
-                    const parent = sourceCode.getAncestors(node).pop();
+                    const parent = ((sourceCode as any).getAncestors(node) as any[]).pop();
                     if (!parent) {
                         return;
                     }

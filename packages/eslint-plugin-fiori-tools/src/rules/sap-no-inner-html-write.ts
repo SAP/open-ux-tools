@@ -2,7 +2,7 @@
  * @file Detect the overriding of the innerHTML.
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     type ASTNode,
     type IdentifierNode,
@@ -49,7 +49,7 @@ function isValid(property: ASTNode): boolean {
     return true;
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -62,7 +62,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------

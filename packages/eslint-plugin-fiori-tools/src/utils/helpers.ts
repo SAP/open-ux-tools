@@ -2,10 +2,8 @@
  * Common AST helper functions for ESLint rules
  */
 
-import type { Rule } from 'eslint';
-
 // Type aliases for better readability
-export type ASTNode = Rule.Node;
+export type ASTNode = unknown;
 
 // ESLint AST node type interfaces - using intersections instead of extensions
 interface BaseNode {
@@ -479,7 +477,7 @@ export function getIdentifierPath(node: unknown): string {
         return '';
     }
 
-    const astNode = node as ASTNode;
+    const astNode = node as BaseNode;
     switch (astNode.type) {
         case 'Identifier':
             return (node as IdentifierNode).name;
@@ -639,7 +637,7 @@ export function createStorageRuleHelpers(
          * @param forbiddenStorageObjects Array to store forbidden storage object references
          */
         processVariableDeclarator(node: ASTNode, forbiddenStorageObjects: string[]): void {
-            const declaratorNode = node as { init?: ASTNode; id: IdentifierNode };
+            const declaratorNode = node as { init?: BaseNode; id: IdentifierNode };
             if (declaratorNode.init) {
                 if (declaratorNode.init.type === 'MemberExpression') {
                     const memberInit = declaratorNode.init as MemberExpressionNode;
@@ -783,6 +781,7 @@ export function findDeepestExistingPath(
     startObject: any,
     pathSegments: string[]
 ): DeepestExistingPathResult | undefined {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     let current: any = startObject;
     for (let i = 0; i < pathSegments.length; i++) {
         const segment = pathSegments[i];
@@ -792,6 +791,7 @@ export function findDeepestExistingPath(
                 missingSegments: pathSegments.slice(i)
             };
         }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         current = current[segment];
     }
 

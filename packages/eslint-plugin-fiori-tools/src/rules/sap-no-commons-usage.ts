@@ -2,7 +2,7 @@
  * @file Detects the usage of sap.ui.commons objects.
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode, isMember, isLiteral, isArray, startsWith, getMemberAsString } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ function isValid(node: ASTNode): boolean {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -63,7 +63,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         return {
             'NewExpression'(node: ASTNode): void {
                 if (
