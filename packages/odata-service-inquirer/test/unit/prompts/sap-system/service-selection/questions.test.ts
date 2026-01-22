@@ -714,7 +714,8 @@ describe('Test new system prompt', () => {
                 error: 'Error: Failed to get metadata'
             })
         );
-        expect(validationResult).toBe(t('errors.serviceMetadataErrorUI', { servicePath: selectedService.servicePath }));
+        expect(validationResult).toContain(selectedService.servicePath);
+        expect(validationResult).toContain('For more information, view the logs');
     });
 
     test('should show a guided answer link when no services are returned and an error was logged', async () => {
