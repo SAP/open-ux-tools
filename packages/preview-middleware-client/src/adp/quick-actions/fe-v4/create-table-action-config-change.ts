@@ -9,13 +9,14 @@ import { getExistingController } from '../../api-handler';
 import { getControllerInfoForControl } from '../../utils';
 import { getV4AppComponent } from '../../../utils/fe-v4';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { CREATE_TABLE_ACTION } from './create-table-action';
 import { MDC_TABLE_TYPE } from '../control-types';
 import { isA } from '../../../utils/core';
 import Table from 'sap/ui/mdc/Table';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import ActionToolbarAction from 'sap/ui/mdc/actiontoolbar/ActionToolbarAction';
 import { getActionsPropertyPath, MacroTable } from './utils';
+
+export const CREATE_TABLE_ACTION = 'create-table-action';
 
 interface ViewDataType {
     stableId: string;
