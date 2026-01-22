@@ -245,10 +245,10 @@ describe('Test new system prompt', () => {
             }
         };
         const serviceFilter = ['/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'];
-        let systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
+        const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
             serviceFilter
         });
-        let serviceSelectionPrompt = systemServiceQuestions.find(
+        const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
         // Only one service
