@@ -177,6 +177,51 @@ export function sendDestinationServiceSuccessTelemetryEvent(destination: Destina
 }
 
 /**
+ * Extracts error information from an error object for display in UI messages.
+ *
+ * @param error the error object
+ * @returns formatted error info string (HTTP status or error code)
+ */
+function extractErrorInfo(error: unknown): string {
+    if (!error || typeof error !== 'object') {
+        return '';
+    }
+
+    const err = error as { response?: { status?: number }; status?: number; code?: string };
+
+    if (err.response?.status) {
+        return t('texts.httpStatus', { httpStatus: err.response.status });
+    }
+    if (err.status) {
+        return t('texts.httpStatus', { httpStatus: err.status });
+    }
+    if (err.code) {
+        return err.code;
+    }
+
+    return '';
+}
+
+/**
+ * Creates a catalog service for V2 OData services to retrieve annotations.
+ *
+ * @param axiosConfig the axios config used to create the catalog service
+ * @returns the catalog service or undefined if creation fails
+ */
+function createV2CatalogService(axiosConfig: AxiosRequestConfig): CatalogService | undefined {
+    try {
+        LoggerHelper.logger.debug('Creating a catalog service object for v2 service path to request annotations.');
+        const abapProvider = createForAbap(axiosConfig);
+        const catalog = abapProvider.catalog(ODataVersion.v2);
+        LoggerHelper.attachAxiosLogger(catalog.interceptors);
+        return catalog;
+    } catch (err) {
+        LoggerHelper.logger.warn(t('error.v2CatalogServiceNoAnnotations', err));
+        return undefined;
+    }
+}
+
+/**
  * Gets the service metadata and annotations for the specified service path. Validate that the service metadata is of the required OData version.
  * If a catalog service is provided, it will be used to get the annotations for the specified service path.
  * If the catalog service is not provided and the metadata is OData version 2, a catalog service will be created using the axios config to get the annotations.
@@ -215,17 +260,7 @@ async function getServiceMetadataAndValidate(
         // For non `odata_abap` (full/partial v2 urls) destinations we wont have a catalog defined, but the annotations may be available so we need to try or warn.
         // Creation of the catalog service is a best effort and makes no assumptions about the existence of a real catalog service. The annotation call does not rely on it.
         if (!catalog && version === OdataVersion.v2 && axiosConfig) {
-            try {
-                // Create an abap provider instance to get the annotations using the same request config
-                LoggerHelper.logger.debug(
-                    'Creating a catalog service object for v2 service path to request annotations.'
-                );
-                const abapProvider = createForAbap(axiosConfig);
-                catalog = abapProvider.catalog(ODataVersion.v2);
-                LoggerHelper.attachAxiosLogger(catalog.interceptors);
-            } catch (err) {
-                LoggerHelper.logger.warn(t('error.v2CatalogServiceNoAnnotations', err));
-            }
+            catalog = createV2CatalogService(axiosConfig);
         }
 
         if (catalog) {
@@ -245,18 +280,7 @@ async function getServiceMetadataAndValidate(
     } catch (error) {
         LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, error }));
 
-        // Extract error info for UI message (HTTP status or error code)
-        let errorInfo = '';
-        if (error && typeof error === 'object') {
-            const err = error as any;
-            if (err.response?.status) {
-                errorInfo = t('texts.httpStatus', { httpStatus: err.response.status });
-            } else if (err.status) {
-                errorInfo = t('texts.httpStatus', { httpStatus: err.status });
-            } else if (err.code) {
-                errorInfo = err.code;
-            }
-        }
+        const errorInfo = extractErrorInfo(error);
 
         return {
             validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorInfo })
