@@ -3,7 +3,14 @@
  */
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
-import { type ASTNode, type IdentifierNode, type LiteralNode, isIdentifier, isLiteral } from '../utils/helpers';
+import {
+    type ASTNode,
+    type IdentifierNode,
+    type LiteralNode,
+    isIdentifier,
+    isLiteral,
+    asMemberExpression
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -51,7 +58,8 @@ const rule: RuleDefinition = {
         // --------------------------------------------------------------------------
         return {
             'MemberExpression'(node: ASTNode): void {
-                if (!isValid((node as any).property)) {
+                const memberExpr = asMemberExpression(node);
+                if (memberExpr && !isValid(memberExpr.property)) {
                     context.report({ node: node, messageId: 'innerHtmlAccess' });
                 }
             }

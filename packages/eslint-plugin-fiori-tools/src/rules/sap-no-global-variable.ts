@@ -2,7 +2,7 @@
  * @file flag global variable declaration
  */
 import type { RuleDefinition, RuleContext } from '@eslint/core';
-import { type ASTNode } from '../utils/helpers';
+import { type ASTNode, asVariableDeclaration } from '../utils/helpers';
 
 //------------------------------------------------------------------------------
 // Helper Functions
@@ -52,18 +52,21 @@ const rule: RuleDefinition = {
 
                 // Check if this is a global/module scope variable declaration
                 if (scope.type === 'global' || scope.type === 'module') {
-                    (node as any).declarations.forEach((declaration: any) => {
-                        if (declaration.id?.type === 'Identifier') {
-                            const name = declaration.id.name;
-                            if (!contains(ALLOWED_VARIABLES, name)) {
-                                context.report({
-                                    node: declaration.id,
-                                    messageId: 'globalVariableNotAllowed',
-                                    data: { name }
-                                });
+                    const varDecl = asVariableDeclaration(node);
+                    if (varDecl) {
+                        varDecl.declarations.forEach((declaration: any) => {
+                            if (declaration.id?.type === 'Identifier') {
+                                const name = declaration.id.name;
+                                if (!contains(ALLOWED_VARIABLES, name)) {
+                                    context.report({
+                                        node: declaration.id,
+                                        messageId: 'globalVariableNotAllowed',
+                                        data: { name }
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             }
         };

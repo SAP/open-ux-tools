@@ -50,7 +50,7 @@ function isInCondition(node: any, maxDepth: number): boolean {
     // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
     // (true?history.back():''); || if(true) history.back(); || if(true){history.back();} || if(true){}else{history.back();}
     if (maxDepth > 0) {
-        const parent = node.parent;
+        const parent = node.parent as { type: string; parent?: any };
         return isCondition(parent) || isInCondition(parent, maxDepth - 1);
     }
     return false;

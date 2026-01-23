@@ -3,7 +3,7 @@
  */
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
-import { type ASTNode } from '../utils/helpers';
+import { type ASTNode, asCallExpression, asMemberExpression, asIdentifier } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -17,7 +17,7 @@ import { type ASTNode } from '../utils/helpers';
  * @returns True if the node is of the specified type
  */
 function isType(node: ASTNode | undefined, type: string): boolean {
-    return !!(node && typeof node === 'object' && node !== null && 'type' in node && (node as any).type === type);
+    return !!(node && typeof node === 'object' && node !== null && 'type' in node && node.type === type);
 }
 
 /**
@@ -80,12 +80,15 @@ const rule: RuleDefinition = {
          * @param node The call expression node to process
          */
         function processDomInsertion(node: ASTNode): void {
-            const callee = (node as any).callee;
-            if (isMember(callee)) {
-                if (isIdentifier(callee.property) && 'name' in callee.property) {
-                    if (FORBIDDEN_METHODS.has(callee.property.name)) {
-                        context.report({ node: node, messageId: 'domInsertion' });
-                    }
+            const callExpr = asCallExpression(node);
+            if (!callExpr) {
+                return;
+            }
+            const memberCallee = asMemberExpression(callExpr.callee);
+            if (memberCallee) {
+                const identProp = asIdentifier(memberCallee.property);
+                if (identProp && FORBIDDEN_METHODS.has(identProp.name)) {
+                    context.report({ node: node, messageId: 'domInsertion' });
                 }
             }
         }

@@ -3,7 +3,13 @@
  */
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
-import { type ASTNode, isIdentifier, contains, createDocumentBasedRuleVisitors } from '../utils/helpers';
+import {
+    type ASTNode,
+    contains,
+    createDocumentBasedRuleVisitors,
+    asMemberExpression,
+    getPropertyName
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -31,14 +37,12 @@ const rule: RuleDefinition = {
 
         const createVisitors = createDocumentBasedRuleVisitors({
             isInteresting: (node: ASTNode, isDocumentObject: (node: unknown) => boolean): boolean => {
-                const n = node as any;
-                return !!(n && isDocumentObject(n.object));
+                const memberNode = asMemberExpression(node);
+                return !!(memberNode && isDocumentObject(memberNode.object));
             },
             isValid: (node: ASTNode): boolean => {
-                return !(
-                    isIdentifier((node as any).property) &&
-                    contains(FORBIDDEN_DOCUMENT_METHODS, (node as any).property.name)
-                );
+                const propertyName = getPropertyName(asMemberExpression(node)?.property);
+                return !propertyName || !contains(FORBIDDEN_DOCUMENT_METHODS, propertyName);
             },
             messageId: 'domAccess'
         });

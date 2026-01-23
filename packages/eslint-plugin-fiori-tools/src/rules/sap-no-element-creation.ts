@@ -5,11 +5,15 @@
 import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     type ASTNode,
-    isIdentifier,
     isCall,
     isLiteral,
     contains,
-    createDocumentBasedRuleVisitors
+    createDocumentBasedRuleVisitors,
+    getParent,
+    asCallExpression,
+    getPropertyName,
+    asLiteral,
+    asMemberExpression
 } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -41,27 +45,33 @@ const rule: RuleDefinition = {
 
         const createVisitors = createDocumentBasedRuleVisitors({
             isInteresting: (node: ASTNode, isDocumentObject: (node: unknown) => boolean): boolean => {
-                const n = node as any;
-                return !!(n && isCall(n.parent) && isDocumentObject(n.object));
+                const parent = getParent(node);
+                const memberNode = asMemberExpression(node);
+                return !!(node && parent && isCall(parent) && memberNode && isDocumentObject(memberNode.object));
             },
             isValid: (node: ASTNode): boolean => {
-                let methodName: string | false = false;
-
-                if (isIdentifier((node as any).property)) {
-                    methodName = (node as any).property.name;
-                } else if (isLiteral((node as any).property)) {
-                    methodName = (node as any).property.value;
+                const memberNode = asMemberExpression(node);
+                if (!memberNode) {
+                    return true;
                 }
-                return (
-                    methodName &&
-                    (!contains(FORBIDDEN_DOM_INSERTION, methodName) ||
-                        (methodName === 'createElement' &&
-                            isCall((node as any).parent) &&
-                            (node as any).parent.arguments &&
-                            (node as any).parent.arguments.length > 0 &&
-                            isLiteral((node as any).parent.arguments[0]) &&
-                            (node as any).parent.arguments[0].value === 'a'))
-                );
+
+                const methodName = getPropertyName(memberNode.property);
+                if (!methodName) {
+                    return true;
+                }
+
+                const parent = getParent(node);
+                const parentCall = asCallExpression(parent);
+
+                const isValid =
+                    !contains(FORBIDDEN_DOM_INSERTION, methodName) ||
+                    (methodName === 'createElement' &&
+                        parentCall &&
+                        parentCall.arguments &&
+                        parentCall.arguments.length > 0 &&
+                        isLiteral(parentCall.arguments[0]) &&
+                        asLiteral(parentCall.arguments[0])?.value === 'a');
+                return !!isValid;
             },
             messageId: 'elementCreation'
         });

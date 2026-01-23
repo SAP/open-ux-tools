@@ -6,7 +6,7 @@
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
 
-import { contains } from '../utils/helpers';
+import { contains, type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -100,8 +100,8 @@ const rule: RuleDefinition = {
     },
     create(context: RuleContext) {
         const sourceCode = context.sourceCode;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const customNS = (context.options[0] as any)?.ns ? (context.options[0] as any).ns : [];
+
+        const customNS = ((context.options[0] as any)?.ns as string[] | undefined) ?? [];
         const configuration = {
             'ns': uniquifyArray(
                 [
@@ -194,23 +194,20 @@ const rule: RuleDefinition = {
             if (node.object.type === 'Identifier') {
                 let namespace = node.object.name + '.' + node.property.name;
 
-                const ancestors = (sourceCode as any).getAncestors(node) as any[];
+                const ancestors = (sourceCode as any).getAncestors(node) as ASTNode[];
 
                 ancestors.reverse();
                 const newExpressionPosition = checkIfAncestorsContainsNewExpression(ancestors);
                 if (newExpressionPosition !== -1) {
                     for (let i = 0; i < newExpressionPosition; i++) {
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                        const ancestor = ancestors[i];
+                        const ancestor = ancestors[i] as any;
                         if (ancestor && 'property' in ancestor && ancestor.property && 'name' in ancestor.property) {
-                            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                             const propertyName = ancestor.property.name;
                             namespace += '.' + propertyName;
                         }
                     }
 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                    const targetAncestor = ancestors[newExpressionPosition];
+                    const targetAncestor = ancestors[newExpressionPosition] as any;
                     if (
                         checkIfReportedNamespace(namespace) &&
                         targetAncestor &&

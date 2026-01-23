@@ -12,7 +12,9 @@ import {
     getIdentifierPath,
     resolveIdentifierPath,
     createVariableDeclaratorProcessor,
-    hasUnderscore
+    hasUnderscore,
+    asMemberExpression,
+    getParent
 } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -168,10 +170,15 @@ const rule: RuleDefinition = {
         return {
             'VariableDeclarator': processVariableDeclarator,
             'MemberExpression'(node: ASTNode): void {
-                if (!(node as any).property || !('name' in (node as any).property)) {
+                const memberExpr = asMemberExpression(node);
+                if (!memberExpr || !memberExpr.property) {
                     return;
                 }
-                const identifier = (node as any).property.name;
+                const propertyNode = memberExpr.property as any;
+                if (!('name' in propertyNode)) {
+                    return;
+                }
+                const identifier = propertyNode.name;
 
                 if (
                     identifier !== undefined &&
@@ -190,9 +197,9 @@ const rule: RuleDefinition = {
                             path = resolveIdentifierPath(path, VARIABLES);
                             if (
                                 isinterestingPath(path) &&
-                                isIdentifier((node as any).property) &&
-                                'name' in (node as any).property &&
-                                (!isCall((node as any).parent) || hasUnderscore((node as any).property.name))
+                                isIdentifier(memberExpr.property) &&
+                                'name' in propertyNode &&
+                                (!isCall(getParent(node)) || hasUnderscore(propertyNode.name))
                             ) {
                                 context.report({ node: node, messageId: 'privateProperty' });
                             }

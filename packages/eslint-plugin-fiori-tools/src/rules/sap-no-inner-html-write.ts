@@ -9,7 +9,9 @@ import {
     type LiteralNode,
     isIdentifier,
     isLiteral,
-    isMember
+    isMember,
+    asAssignmentExpression,
+    asMemberExpression
 } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -68,11 +70,12 @@ const rule: RuleDefinition = {
         // --------------------------------------------------------------------------
         return {
             'AssignmentExpression'(node: ASTNode): void {
-                if (
-                    isInteresting((node as any).left) &&
-                    'property' in (node as any).left &&
-                    !isValid((node as any).left.property)
-                ) {
+                const assignExpr = asAssignmentExpression(node);
+                if (!assignExpr) {
+                    return;
+                }
+                const leftMember = asMemberExpression(assignExpr.left);
+                if (leftMember && !isValid(leftMember.property)) {
                     context.report({ node: node, messageId: 'innerHtmlWrite' });
                 }
             }

@@ -3,7 +3,16 @@
  */
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
-import { type ASTNode, isIdentifier, contains, createIsWindowObject, createRememberWindow } from '../utils/helpers';
+import {
+    type ASTNode,
+    contains,
+    createIsWindowObject,
+    createRememberWindow,
+    asMemberExpression,
+    asIdentifier,
+    asVariableDeclarator,
+    asAssignmentExpression
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -41,19 +50,21 @@ const rule: RuleDefinition = {
         // --------------------------------------------------------------------------
         return {
             'VariableDeclarator'(node: ASTNode): boolean {
-                return rememberWindow((node as any).id, (node as any).init);
+                const declarator = asVariableDeclarator(node);
+                return declarator ? rememberWindow(declarator.id, declarator.init) : false;
             },
             'AssignmentExpression'(node: ASTNode): boolean {
-                return rememberWindow((node as any).left, (node as any).right);
+                const assignment = asAssignmentExpression(node);
+                return assignment ? rememberWindow(assignment.left, assignment.right) : false;
             },
             'MemberExpression'(node: ASTNode): void {
-                if (
-                    node &&
-                    isWindowObject((node as any).object) &&
-                    isIdentifier((node as any).property) &&
-                    'name' in (node as any).property &&
-                    contains(FORBIDDEN_METHODS, (node as any).property.name)
-                ) {
+                const memberNode = asMemberExpression(node);
+                if (!memberNode) {
+                    return;
+                }
+
+                const propertyId = asIdentifier(memberNode.property);
+                if (isWindowObject(memberNode.object) && propertyId && contains(FORBIDDEN_METHODS, propertyId.name)) {
                     context.report({ node: node, messageId: 'globalSelection' });
                 }
             }

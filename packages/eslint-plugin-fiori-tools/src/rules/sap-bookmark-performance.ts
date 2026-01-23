@@ -4,7 +4,17 @@
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
 import type { ASTNode } from '../utils/helpers';
-import { isIdentifier, isLiteral, isProperty, isMember, isObject, contains } from '../utils/helpers';
+import {
+    isObject,
+    contains,
+    asCallExpression,
+    asMemberExpression,
+    asObjectExpression,
+    asProperty,
+    asLiteral,
+    asIdentifier,
+    getPropertyName
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Helpers
@@ -64,9 +74,14 @@ const rule: RuleDefinition = {
          * @returns True if the node represents an interesting method call
          */
         function isInteresting(node: ASTNode): boolean {
-            const callee = (node as any).callee;
-            if (isMember(callee)) {
-                if (isIdentifier(callee.property) && contains(INTERESTING_METHODS, callee.property.name)) {
+            const callExpr = asCallExpression(node);
+            if (!callExpr) {
+                return false;
+            }
+            const memberCallee = asMemberExpression(callExpr.callee);
+            if (memberCallee) {
+                const propertyName = getPropertyName(memberCallee.property);
+                if (propertyName && contains(INTERESTING_METHODS, propertyName)) {
                     return true;
                 }
             }
@@ -80,14 +95,24 @@ const rule: RuleDefinition = {
          * @returns True if the property value is valid
          */
         function isObjectArgumentValid(argument: ASTNode): boolean {
-            const propertyList = (argument as any).properties;
+            const objectExpr = asObjectExpression(argument);
+            if (!objectExpr) {
+                return true;
+            }
+            const propertyList = objectExpr.properties;
             // argument is object literal, check every property
             for (const key in propertyList) {
                 if (propertyList.hasOwnProperty(key)) {
-                    const property = propertyList[key];
-                    if (isProperty(property) && INTERESTING_KEY === property.key.name && isLiteral(property.value)) {
-                        // check if value is in range
-                        return !isInRange(property.value.value);
+                    const prop = asProperty(propertyList[key]);
+                    if (prop) {
+                        const keyName = asIdentifier(prop.key)?.name;
+                        if (keyName && INTERESTING_KEY === keyName) {
+                            const literalValue = asLiteral(prop.value);
+                            if (literalValue) {
+                                // check if value is in range
+                                return !isInRange(literalValue.value);
+                            }
+                        }
                     }
                 }
             }
@@ -104,7 +129,11 @@ const rule: RuleDefinition = {
          * @returns True if the function call parameters are valid
          */
         function isValid(node: ASTNode): boolean {
-            const args = (node as any).arguments;
+            const callExpr = asCallExpression(node);
+            if (!callExpr) {
+                return true;
+            }
+            const args = callExpr.arguments;
             if (args?.length > 0) {
                 // get firtst argument
                 const argument = args[0];
@@ -112,8 +141,11 @@ const rule: RuleDefinition = {
                     return isObjectArgumentValid(argument);
                 } else {
                     // argument is single literal
-                    // check if value is in range
-                    return !isInRange(argument.value);
+                    const literalArg = asLiteral(argument);
+                    if (literalArg) {
+                        // check if value is in range
+                        return !isInRange(literalArg.value);
+                    }
                 }
             }
             return true;

@@ -4,7 +4,13 @@
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
 import type { ASTNode } from '../utils/helpers';
-import { isIdentifier, isMember, isLiteral } from '../utils/helpers';
+import {
+    isIdentifier,
+    getLiteralOrIdentifierName,
+    asIdentifier,
+    asMemberExpression,
+    getPropertyName
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -24,7 +30,7 @@ function isWindow(node: ASTNode | undefined): boolean {
         typeof node === 'object' &&
         node !== null &&
         'name' in node &&
-        (node as any).name === 'window'
+        getLiteralOrIdentifierName(node) === 'window'
     );
 }
 
@@ -67,7 +73,7 @@ const rule: RuleDefinition = {
                     typeof node === 'object' &&
                     node !== null &&
                     'name' in node &&
-                    WINDOW_OBJECTS.includes((node as any).name))
+                    WINDOW_OBJECTS.includes(getLiteralOrIdentifierName(node)))
             );
         }
 
@@ -82,14 +88,9 @@ const rule: RuleDefinition = {
          * @returns True if window object was remembered, false otherwise
          */
         function rememberWindow(left: ASTNode, right: ASTNode): boolean {
-            if (
-                isWindowObject(right) &&
-                isIdentifier(left) &&
-                typeof left === 'object' &&
-                left !== null &&
-                'name' in left
-            ) {
-                WINDOW_OBJECTS.push((left as any).name);
+            const leftId = asIdentifier(left);
+            if (isWindowObject(right) && leftId) {
+                WINDOW_OBJECTS.push(leftId.name);
                 return true;
             }
             return false;
@@ -102,7 +103,8 @@ const rule: RuleDefinition = {
          * @returns True if the node represents an interesting window property access
          */
         function isInteresting(node: ASTNode): boolean {
-            return isMember(node) && isWindowObject((node as any).object);
+            const memberNode = asMemberExpression(node);
+            return !!memberNode && isWindowObject(memberNode.object);
         }
 
         /**
@@ -112,16 +114,13 @@ const rule: RuleDefinition = {
          * @returns True if the window property access is valid
          */
         function isValid(node: ASTNode): boolean {
-            let method = '';
-
-            if (isIdentifier((node as any).property) && 'name' in (node as any).property) {
-                method = (node as any).property.name;
+            const memberNode = asMemberExpression(node);
+            if (!memberNode) {
+                return true;
             }
 
-            if (isLiteral((node as any).property) && 'value' in (node as any).property) {
-                method = (node as any).property.value;
-            }
-            return !FORBIDDEN_PROPERTIES.has(method);
+            const method = getPropertyName(memberNode.property);
+            return !method || !FORBIDDEN_PROPERTIES.has(method);
         }
 
         // --------------------------------------------------------------------------
