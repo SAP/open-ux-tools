@@ -65,7 +65,7 @@ import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
-import { getSandboxPathPrefix } from './utils/project';
+import { getResourcesPathPrefix, getSandboxPathPrefix } from './utils/project';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -173,7 +173,7 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
+        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources, this.utils);
         this.adp = adp;
         this.manifest = manifest;
 
@@ -182,7 +182,7 @@ export class FlpSandbox {
             manifest,
             {
                 componentId,
-                target: resources[componentId ?? id] ?? this.templateConfig.basePath,
+                target: resources[componentId ?? id] ?? this.templateConfig.appBasePath,
                 local: '.',
                 intent: this.flpConfig.intent
             },
@@ -427,6 +427,7 @@ export class FlpSandbox {
     private addEditorRoutes(rta: RtaConfig): void {
         //todo: do we need to have a more specific path for open/ux/preview/client/* for project type component?
         // multiple apps can run in parallel so one central route might cause conflicts
+        // or is the UI5 resourceroots mapping enough, e.g. {"open.ux.preview.client":"/resources/com/sap/cap/fe/ts/sample/preview/client"}
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.endpoints) {
             let previewUrl = editor.path;
@@ -500,7 +501,11 @@ export class FlpSandbox {
      */
     private addStandardRoutes(): void {
         // register static client sources
-        this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
+        this.router.use(
+            //todo: use getSandboxPathPrefix instead?
+            posix.join(getResourcesPathPrefix(this.utils) ?? '/', PREVIEW_URL.client.path),
+            serveStatic(PREVIEW_URL.client.local)
+        );
 
         // add route for the sandbox html
         this.router.get(
@@ -780,9 +785,9 @@ export class FlpSandbox {
     ): Promise<void> {
         this.logger.debug(`Serving test route: ${config.path}`);
         const templateConfig = {
-            basePath: this.templateConfig.basePath,
+            basePath: this.templateConfig.appBasePath,
             initPath: config.init
-        };
+        }; //todo: create type
         const html = render(testsuite, templateConfig);
         this.sendResponse(res, 'text/html', 200, html);
     }

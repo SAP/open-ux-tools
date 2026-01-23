@@ -2,12 +2,13 @@
 
 exports[`config createFlpTemplateConfig minimum settings 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {},
-  "basePath": "..",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": undefined,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -40,12 +41,13 @@ Object {
 
 exports[`config createFlpTemplateConfig minimum settings with one reuse lib 1`] = `
 Object {
+  "appBasePath": "..",
   "apps": Object {},
-  "basePath": "..",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": undefined,
+  "rootBasePath": "..",
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [

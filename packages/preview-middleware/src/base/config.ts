@@ -23,7 +23,7 @@ import {
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
-import { getSandboxPathPrefix, adjustPathForSandbox } from './utils/project';
+import { getSandboxPathPrefix, adjustPathForSandbox, getResourcesPathPrefix } from './utils/project';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
@@ -59,7 +59,21 @@ export type PreviewUrls = {
  * Internal structure used to fill the sandbox.html template
  */
 export interface TemplateConfig {
-    basePath: string;
+    /**
+     * Base path to the app root
+     * Example:
+     * - UI5 project type 'application': relative '..' (depending on the nesting level of the HTML file)
+     * - UI5 project type 'component': absolute '/resources/the/app/id'
+     * todo 1: check if we can use absolute paths for both project types
+     */
+    appBasePath: string;
+    /**
+     * Base path to the server root. Path is relative depending on the nesting level of the HTML file when the project is served.
+     * Example:
+     * - http://localhost:8080/test/flp.html -> '..'
+     * - http://localhost:8080/test-resources/my/app/id/flp.html -> '../../../../..'
+     */
+    rootBasePath: string;
     apps: Record<
         string,
         {
@@ -197,7 +211,6 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
  */
 export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}, utils?: MiddlewareUtils): FlpConfig {
     const sandboxPathPrefix = getSandboxPathPrefix(utils);
-
     const defaultPath = adjustPathForSandbox(DEFAULT_PATH, sandboxPathPrefix);
 
     return {
@@ -206,7 +219,7 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}, utils?
         apps: config.apps ?? [],
         libs: config.libs,
         theme: config.theme,
-        init: config.init,
+        init: config.init ? posix.join(sandboxPathPrefix ?? '/', config.init) : undefined,
         enhancedHomePage: config.enhancedHomePage === true
     } satisfies FlpConfig;
 }
@@ -426,35 +439,32 @@ async function getI18nTextFromProperty(
  * @param config FLP configuration
  * @param manifest application manifest
  * @param resources additional resources
+ * @param utils middleware utils
  * @returns configuration object for the sandbox.html template
  */
 export function createFlpTemplateConfig(
     config: FlpConfig,
     manifest: Partial<Manifest>,
-    resources: Record<string, string> = {}
+    resources: Record<string, string> = {},
+    utils?: MiddlewareUtils | undefined
 ): TemplateConfig {
     const flex = getFlexSettings();
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
-    const id = manifest['sap.app']?.id ?? '';
-    const ns = id.replace(/\./g, '/');
-    const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
-    let initPath: string | undefined;
-    if (config.init) {
-        const separator = config.init.startsWith('/') ? '' : '/';
-        initPath = `${ns}${separator}${config.init}`;
-    }
+    const rootBasePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
+    const appBasePath = getResourcesPathPrefix(utils) ?? rootBasePath;
     return {
-        basePath: basePath,
+        appBasePath: appBasePath,
+        rootBasePath: rootBasePath,
         apps: {},
-        init: initPath,
+        init: config.init,
         ui5: {
             libs: getUI5Libs(manifest),
             theme: ui5Theme,
             flex,
             resources: {
                 ...resources,
-                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.getUrl(basePath)
+                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.getUrl(getResourcesPathPrefix(utils) ?? appBasePath)
             },
             bootstrapOptions: ''
         },
@@ -552,7 +562,7 @@ function generateTestRunners(
         } else if (test.framework === 'Testsuite') {
             const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.ejs'), 'utf-8');
             const testTemplateConfig = {
-                basePath: flpTemplConfig.basePath,
+                basePath: flpTemplConfig.appBasePath,
                 initPath: testConfig.init
             };
             fs.write(join(basePath, testConfig.path), render(testTemplate, testTemplateConfig));
@@ -601,7 +611,7 @@ export async function generatePreviewFiles(
             flpTemplConfig,
             manifest,
             {
-                target: flpTemplConfig.basePath,
+                target: flpTemplConfig.appBasePath,
                 local: '.',
                 intent: flpConfig.intent
             },
