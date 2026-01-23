@@ -33,7 +33,7 @@ export interface ToolsSupport {
 type AbapTarget = DestinationAbapTarget | Pick<UrlAbapTarget, 'url' | 'client' | 'scp'>;
 
 export interface AdpPreviewConfig {
-    target: AbapTarget;
+    target?: AbapTarget;
 
     /**
      * If set to true then certification validation errors are ignored.
