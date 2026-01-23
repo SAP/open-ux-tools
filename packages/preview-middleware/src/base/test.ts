@@ -4,7 +4,7 @@ import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../type
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import { posix } from 'node:path';
-import { getSandboxPathPrefix, adjustPathForSandbox } from './utils/project';
+import { getTestResourcesPathPrefix, adjustPathForSandbox } from './utils/project';
 
 const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
     qunit: {
@@ -45,7 +45,7 @@ export function isDefaultInitPath(
     if (!defaultInit) {
         return false;
     }
-    const testPathPrefix = getSandboxPathPrefix(utils);
+    const testPathPrefix = getTestResourcesPathPrefix(utils);
     if (testPathPrefix) {
         // For component projects, compute the adjusted default
         const adjustedInit = adjustPathForSandbox(defaultInit, testPathPrefix);
@@ -64,7 +64,7 @@ export function isDefaultInitPath(
  * @returns merged test configuration
  */
 export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUtils): CompleteTestConfig {
-    const testPathPrefix = getSandboxPathPrefix(utils);
+    const testPathPrefix = getTestResourcesPathPrefix(utils);
     const defaults: CompleteTestConfig = DEFAULTS[config.framework.toLowerCase()] ?? {};
 
     if (testPathPrefix) {

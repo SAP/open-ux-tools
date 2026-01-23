@@ -65,7 +65,7 @@ import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
-import { getResourcesPathPrefix, getSandboxPathPrefix } from './utils/project';
+import { getResourcesPathPrefix, getTestResourcesPathPrefix } from './utils/project';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -502,7 +502,7 @@ export class FlpSandbox {
     private addStandardRoutes(): void {
         // register static client sources
         this.router.use(
-            //todo: use getSandboxPathPrefix instead?
+            //todo: endpoint at /test-resources or /resources? use getTestResourcesPathPrefix instead?
             posix.join(getResourcesPathPrefix(this.utils) ?? '/', PREVIEW_URL.client.path),
             serveStatic(PREVIEW_URL.client.local)
         );
@@ -1061,8 +1061,9 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
+        //todo: endpoint at /test-resources or /resources? use getResourcesPathPrefix instead?
         const storeCardManifestPath = posix.join(
-            getSandboxPathPrefix(this.utils) ?? '/',
+            getTestResourcesPathPrefix(this.utils) ?? '/',
             CARD_GENERATOR_DEFAULT.cardsStore
         );
         this.router.use(storeCardManifestPath, json());
@@ -1142,7 +1143,11 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
-        const storeI18nKeysPath = posix.join(getSandboxPathPrefix(this.utils) ?? '/', CARD_GENERATOR_DEFAULT.i18nStore);
+        //todo: endpoint at /test-resources or /resources? use getResourcesPathPrefix instead?
+        const storeI18nKeysPath = posix.join(
+            getTestResourcesPathPrefix(this.utils) ?? '/',
+            CARD_GENERATOR_DEFAULT.i18nStore
+        );
         this.router.use(storeI18nKeysPath, json());
         this.logger.debug(`Add route for ${storeI18nKeysPath}`);
 

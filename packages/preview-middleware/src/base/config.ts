@@ -23,7 +23,7 @@ import {
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
-import { getSandboxPathPrefix, adjustPathForSandbox, getResourcesPathPrefix } from './utils/project';
+import { getTestResourcesPathPrefix, adjustPathForSandbox, getResourcesPathPrefix } from './utils/project';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
@@ -210,7 +210,7 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
  * @returns a full configuration with default values
  */
 export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}, utils?: MiddlewareUtils): FlpConfig {
-    const sandboxPathPrefix = getSandboxPathPrefix(utils);
+    const sandboxPathPrefix = getTestResourcesPathPrefix(utils);
     const defaultPath = adjustPathForSandbox(DEFAULT_PATH, sandboxPathPrefix);
 
     return {
@@ -240,7 +240,7 @@ export function adjustRtaConfigPaths(rta: RtaConfig | undefined, utils?: Middlew
         endpoints: rta.endpoints.map((endpoint) => {
             return {
                 ...endpoint,
-                path: posix.join(getSandboxPathPrefix(utils) ?? '/', endpoint.path)
+                path: posix.join(getTestResourcesPathPrefix(utils) ?? '/', endpoint.path)
             };
         })
     });
@@ -257,7 +257,7 @@ export function adjustCardGeneratorPath(
     cardGenerator: CardGeneratorConfig | undefined,
     utils?: MiddlewareUtils
 ): { path: string } | undefined {
-    const sandboxPathPrefix = getSandboxPathPrefix(utils);
+    const sandboxPathPrefix = getTestResourcesPathPrefix(utils);
     const defaultPath = CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
     if (!cardGenerator) {
         if (!sandboxPathPrefix) {

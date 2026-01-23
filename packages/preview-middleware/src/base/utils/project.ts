@@ -3,20 +3,34 @@ import type { MiddlewareUtils } from '@ui5/server';
 import { posix } from 'node:path';
 
 /**
+ * Get the path prefix for component projects based on the specified type.
+ * Component projects need a special path prefix based on their namespace.
+ *
+ * @param utils middleware utils
+ * @param prefixType the type of prefix ('test-resources' or 'resources')
+ * @returns path prefix or undefined
+ */
+function getComponentPathPrefix(
+    utils: MiddlewareUtils | undefined,
+    prefixType: 'test-resources' | 'resources'
+): string | undefined {
+    if (typeof utils !== 'object') {
+        return undefined;
+    }
+    return utils.getProject?.()?.getType?.() === 'component'
+        ? posix.join(`/${prefixType}`, utils.getProject().getNamespace())
+        : undefined;
+}
+
+/**
  * Get the sandbox path prefix for component projects.
  * Component projects need a special path prefix based on their namespace.
  *
  * @param utils middleware utils
  * @returns sandbox path prefix or undefined
  */
-export function getSandboxPathPrefix(utils?: MiddlewareUtils): string | undefined {
-    //todo: rename to getTestResourcesPathPrefix;
-    if (typeof utils !== 'object') {
-        return undefined;
-    }
-    return utils.getProject?.()?.getType?.() === 'component'
-        ? posix.join('/test-resources', utils.getProject().getNamespace())
-        : undefined;
+export function getTestResourcesPathPrefix(utils?: MiddlewareUtils): string | undefined {
+    return getComponentPathPrefix(utils, 'test-resources');
 }
 
 /**
@@ -27,12 +41,7 @@ export function getSandboxPathPrefix(utils?: MiddlewareUtils): string | undefine
  * @returns resources path prefix or undefined
  */
 export function getResourcesPathPrefix(utils?: MiddlewareUtils): string | undefined {
-    if (typeof utils !== 'object') {
-        return undefined;
-    }
-    return utils.getProject?.()?.getType?.() === 'component'
-        ? posix.join('/resources', utils.getProject().getNamespace())
-        : undefined;
+    return getComponentPathPrefix(utils, 'resources');
 }
 
 /**
