@@ -42,6 +42,8 @@
         "semver": "7.5.4"
     },
     "devDependencies": {
+        "@sap-ux/annotation-converter": "0.10.19",
+        "@sap-ux/edmx-parser": "0.9.1",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/vocabularies-types": "0.14.5",
         "@types/mem-fs": "1.1.2",

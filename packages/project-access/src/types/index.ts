@@ -5,6 +5,6 @@ export * from './find';
 export * from './info';
 export * from './library';
 export * from './package';
-export * from './manifest';
+export * from './odata';
 export * from './vscode';
 export * from './webapp';
