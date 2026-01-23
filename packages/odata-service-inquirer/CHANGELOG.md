@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.14
+
+### Patch Changes
+
+- e746e10: Fix for system selection where one service and answers are undefined
+
+## 2.14.13
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
 ## 2.14.12
 
 ### Patch Changes
