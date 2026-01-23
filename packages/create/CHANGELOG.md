@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.14.37
+
+### Patch Changes
+
+- 8306385: fix(deps): update dependency diff to v5.2.2 [security]
+
 ## 0.14.36
 
 ### Patch Changes
