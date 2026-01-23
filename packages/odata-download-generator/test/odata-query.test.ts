@@ -254,7 +254,7 @@ describe('Test odata query builder', () => {
         });
     });
 
-    test.only('`createEntitySetData` should create an entity set data map for writing to files', async () => {
+    test('`createEntitySetData` should create an entity set data map for writing to files', async () => {
         const rootEntity: ReferencedEntities['listEntity'] = JSON.parse(
             await readFile(join(__dirname, './test-data/TravelEntityModel.json'), 'utf8')
         );

@@ -191,7 +191,7 @@ export async function getODataDownloaderPrompts(): Promise<{
     };
 
     // Generate the max size of key parts allowed
-    keyPrompts = getKeyPrompts(3, appConfig);
+    keyPrompts = getKeyPrompts(5, appConfig);
     const odataQueryResult: { odata: []; entitySetsFlat: EntitySetsFlat } = {
         odata: [],
         entitySetsFlat: {}
@@ -224,10 +224,7 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
             when: async () => !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name,
             name: `entityKeyIdx:${keypart}`,
             message: () => `Enter values for: ${appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name}`,
-            type:
-                appConfig.referencedEntities?.listEntity.semanticKeys?.[keypart]?.type === 'Edm.Boolean'
-                    ? 'confirm'
-                    : 'input',
+            type: 'input',
             guiOptions: {
                 hint: "For range selection use '-' between values. Use commas to select non-contigous values."
             },
@@ -236,9 +233,10 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
                 if (invalidEntityKeyFilterChars.includes(keyValue)) {
                     return `Invalid key value contain not allowed characters: ${invalidEntityKeyFilterChars.join()}`;
                 }
+                const keyRef = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
                 // Clear key values
-                if (!keyValue && appConfig.referencedEntities?.listEntity.semanticKeys[keypart]) {
-                    delete appConfig.referencedEntities.listEntity.semanticKeys[keypart].value;
+                if (!keyValue && keyRef) {
+                    delete keyRef.value;
                 }
 
                 const filterAndParts = keyValue.split(',');
@@ -250,8 +248,16 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
                 });
 
                 // todo: validate the input based on the key type
-                if (appConfig.referencedEntities?.listEntity.semanticKeys[keypart]) {
-                    appConfig.referencedEntities.listEntity.semanticKeys[keypart].value = keyValue;
+                if (keyRef) {
+                    if (keyRef.type === 'Edm.Boolean') {
+                        try {
+                            keyRef.value = JSON.parse(keyValue);
+                        } catch {
+                            return 'Invalid boolean value entered. Please enter true or false.';
+                        }
+                    } else {
+                        keyRef.value = keyValue;
+                    }
                 }
                 return true;
             }
@@ -307,7 +313,7 @@ function getConfirmDownloadPrompt(
                 appConfig.referencedEntities?.listEntity.entitySetName,
                 //...(appConfig.referencedEntities?.pageObjectEntities?.map((entity) => entity.entitySetName) ?? []),
                 ...((answers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswerAsJSONString[])?.map(
-                    (selEntityAnswer) => JSON.parse(selEntityAnswer).entity.entitySetName // silly workaround for YUI checkbox issue
+                    (selEntityAnswer) => JSON.parse(selEntityAnswer).entity.entitySetName // silly workaround for YUI checkbox issue, fix is pending
                 ) ?? [])
             ];
 

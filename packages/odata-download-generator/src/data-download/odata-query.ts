@@ -63,36 +63,43 @@ export function createQueryFromEntities(
     const mainEntity = listEntity;
     const mainEntityFilters: Filter<string>[] = [];
     mainEntity.semanticKeys.forEach((key) => {
+        // Process ranges and/or comma seperated values
         if (key.value) {
-            // Create the range and set values
-            const filterParts = key.value.split(',');
-            const filters: Filter<string>[] = [];
-            filterParts.forEach((filterPart) => {
-                const filterRangeParts = filterPart.trim().split('-');
+            if (key.type === 'Edm.String') {
+                // Create the range and set values
+                const filterParts = key.value.split(',');
+                const filters: Filter<string>[] = [];
+                filterParts.forEach((filterPart) => {
+                    const filterRangeParts = filterPart.trim().split('-');
 
-                if (filterRangeParts.length === 1) {
-                    // Single value
-                    filters.push({
-                        [key.name]: filterPart
-                    });
-                } else if (filterRangeParts.length === 2) {
-                    // Range
-                    filters.push({
-                        [key.name]: {
-                            ge: filterRangeParts[0],
-                            le: filterRangeParts[1]
-                        }
-                    });
-                }
-            });
+                    if (filterRangeParts.length === 1) {
+                        // Single value
+                        filters.push({
+                            [key.name]: filterPart
+                        });
+                    } else if (filterRangeParts.length === 2) {
+                        // Range
+                        filters.push({
+                            [key.name]: {
+                                ge: filterRangeParts[0],
+                                le: filterRangeParts[1]
+                            }
+                        });
+                    }
+                });
 
-            mainEntityFilters.push(
-                filters.length == 1
-                    ? filters[0]
-                    : {
-                          or: filters
-                      }
-            );
+                mainEntityFilters.push(
+                    filters.length == 1
+                        ? filters[0]
+                        : {
+                              or: filters
+                          }
+                );
+            } else {
+                mainEntityFilters.push({
+                    [key.name]: key.value
+                });
+            }
         }
     });
 

@@ -92,7 +92,17 @@ function getSemanticKeyProperties(entityType: EntityType): SemanticKeyFilter[] {
         semanticKey.forEach((keyProperty) => {
             keyNames.push({
                 name: keyProperty.value,
-                type: keyProperty.$target?.type ?? 'Emd.String',
+                type: keyProperty.$target?.type ?? 'Edm.String',
+                value: undefined
+            });
+        });
+    }
+    // If no semantic key annotations defined use the key properties
+    if (keyNames.length === 0) {
+        entityType.keys.forEach((keyProperty) => {
+            keyNames.push({
+                name: keyProperty.name,
+                type: keyProperty.type,
                 value: undefined
             });
         });
@@ -134,23 +144,23 @@ function getNavPropsForExpansion(
 ): Entity[] {
     const navPropEntities: Entity[] = [];
     if (--maxDepth > 0) {
-        if (ancestorTypes) {
+        /* if (ancestorTypes) {
             ancestorTypes.push(entityType.name);
         } else {
             ancestorTypes = [entityType.name];
-        }
+        } */
         entityType.navigationProperties.forEach((entityTypeNavProp) => {
             // Exclude entities that are using specific property names and prevent re-inclusion of the entity type again along the same branch
             if (
-                !navPropNameExclusions.includes(entityTypeNavProp.name) &&
-                !ancestorTypes?.includes(entityTypeNavProp.targetType.name)
+                !navPropNameExclusions.includes(entityTypeNavProp.name) /* &&
+                !ancestorTypes?.includes(entityTypeNavProp.targetType.name) */
             ) {
                 let nestedNavPropEntities: Entity[] = [];
                 if (entityTypeNavProp.targetType.navigationProperties.length > 0 && maxDepth > 0) {
                     nestedNavPropEntities = getNavPropsForExpansion(
                         entityTypeNavProp.targetType,
                         convertedMetadata,
-                        [...ancestorTypes!],
+                        undefined, //[...ancestorTypes!],
                         maxDepth
                     );
                 }

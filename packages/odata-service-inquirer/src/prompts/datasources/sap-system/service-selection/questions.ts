@@ -22,7 +22,7 @@ import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
+import { areArraysEquivalent, getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -36,8 +36,6 @@ import {
 import type { SystemSelectionAnswers } from '../system-selection';
 import { type ServiceAnswer } from './types';
 import { getValueHelpDownloadPrompt } from '../external-services/value-help-download';
-import isEqual from 'lodash/isEqual';
-import sortBy from 'lodash/sortBy';
 
 const cliServicePromptName = 'cliServiceSelection';
 
@@ -93,7 +91,7 @@ export function getSystemServiceQuestion(
                 serviceChoices.length === 0 ||
                 previousSystemUrl !== connectValidator.validatedUrl ||
                 previousClient !== connectValidator.validatedClient ||
-                !isEqual(sortBy(previousServiceFilter), sortBy(promptOptions?.serviceFilter))
+                !areArraysEquivalent(previousServiceFilter, promptOptions?.serviceFilter)
             ) {
                 // if we have a catalog, use it to list services
                 if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
@@ -170,7 +168,11 @@ export function getSystemServiceQuestion(
                 return ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE) ?? false;
             }
             // Dont re-request the same service details
-            if (serviceAnswer && previousService?.servicePath !== serviceAnswer.servicePath) {
+            if (
+                serviceAnswer &&
+                (previousService?.servicePath !== serviceAnswer.servicePath ||
+                    previousService?.servicePath !== PromptState.odataService.servicePath) // PromptState was reset by a system selection
+            ) {
                 hasBackendAnnotations = undefined;
                 convertedMetadataRef.convertedMetadata = undefined;
                 previousService = serviceAnswer;

@@ -10,12 +10,9 @@ import { join } from 'path';
 import prettifyXml from 'prettify-xml';
 import type { GeneratorOptions } from 'yeoman-generator';
 import Generator from 'yeoman-generator';
-import { t } from '../utils/i18n';
+import { initI18nODataDownloadGnerator, t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
-import {
-    getODataDownloaderPrompts,
-    promptNames
-} from './prompts';
+import { getODataDownloaderPrompts, promptNames } from './prompts';
 import { type ReferencedEntities } from './types';
 import { createEntitySetData } from './utils';
 import { getValueHelpSelectionPrompt } from './value-help-prompts';
@@ -126,16 +123,8 @@ export class ODataDownloadGenerator extends Generator {
 
     async initializing(): Promise<void> {
         // Ensure i18n bundles are loaded, default loading is unreliable
-        // await initI18nODataDownloadGnerator();
-        /* await initTelemetrySettings({
-            consumerModule: { name: APP_GENERATOR_MODULE, version: this.rootGeneratorVersion() },
-            internalFeature: isInternalFeaturesSettingEnabled(),
-            watchTelemetrySettingStore: false
-        });
+        await initI18nODataDownloadGnerator();
 
-        TelemetryHelper.createTelemetryData({
-            ...this.options.telemetryData
-        }); */
         ODataDownloadGenerator._logger = this._configureLogging(
             this.options.logLevel,
             this.options.logger,
@@ -159,7 +148,7 @@ export class ODataDownloadGenerator extends Generator {
             if (this.state.appRootPath) {
                 const mockConfig = await getMockServerConfig(this.state.appRootPath);
                 let serviceConfig;
-                if (mockConfig && mockConfig.services) {
+                if (mockConfig?.services) {
                     ODataDownloadGenerator.logger.info(`Mock config: ${JSON.stringify(mockConfig)}`);
                     // Find the matching service from mock config ignoring leading and trailing '/'
                     serviceConfig = mockConfig.services.find(
@@ -267,7 +256,7 @@ export class ODataDownloadGenerator extends Generator {
             vscLogger,
             vscode
         );
-        logWrapper.debug(t('LOGGING_INITIALISED', { logLevel }));
+        logWrapper.info(t('info.loggingInitialised', { logLevel: logWrapper.getLogLevel() }));
         return logWrapper;
     }
 }

@@ -1,5 +1,11 @@
 {
     "errors": {
-        "odataQueryError": "An error occurred when querying for odata: {{error}}"
+        "odataQueryError": "An error occurred when querying for odata: {{error}}. $t(texts.seeLogForDetails)"
+    },
+    "info": {
+        "loggingInitialised": "Logger has been configure with level: {{logLevel}}"
+    },
+    "texts": {
+        "seeLogForDetails": "For more information, view the logs."
     }
 }
