@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.2.2
+
+### Patch Changes
+
+- 3ffe28e: fix input background styling when Chrome autofill is applied
+
 ## 0.2.1
 
 ### Patch Changes
