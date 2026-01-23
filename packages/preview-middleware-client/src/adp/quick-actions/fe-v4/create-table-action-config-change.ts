@@ -46,15 +46,15 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
 
     async execute(path: string): Promise<FlexCommand[]> {
         const { table } = this.tableMap[path];
-        if (!table) {
+        const propertyPath = `${getActionsPropertyPath(table)}`;
+        if (!table || !propertyPath) {
             return [];
         }
         if (table) {
             const overlay = OverlayRegistry.getOverlay(table) || [];
             const controlInfo = getControllerInfoForControl(table);
             const data = await getExistingController(controlInfo.controllerName);
-            const controllerPath = data.controllerPathFromRoot.replaceAll(/\//g, '.').replace(/\.[^.]+$/, '');
-            const propertyPath = `${getActionsPropertyPath(table.getParent() as MacroTable)}`;
+            const controllerPath = data.controllerPathFromRoot.replaceAll('/', '.').replace(/\.[^.]+$/, '');
             await DialogFactory.createDialog(
                 overlay,
                 this.context.rta,

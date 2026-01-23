@@ -1,8 +1,10 @@
+import UI5Element from 'sap/ui/core/Element';
 import { getActionsPropertyPath } from '../../../../src/adp/quick-actions/fe-v4/utils';
 import type { MacroTable } from '../../../../src/adp/quick-actions/fe-v4/utils';
 
 describe('getActionsPropertyPath', () => {
     let mockTable: MacroTable;
+    let mdcTable: UI5Element
     let mockMetaModel: any;
 
     beforeEach(() => {
@@ -18,8 +20,12 @@ describe('getActionsPropertyPath', () => {
             getProperty: jest.fn(),
             getModel: jest.fn().mockReturnValue({
                 getMetaModel: jest.fn().mockReturnValue(mockMetaModel)
-            })
+            }),
+            isA: (type: string) => type === 'sap.fe.macros.table.TableAPI'
         } as unknown as MacroTable;
+        mdcTable = {
+            getParent: jest.fn().mockReturnValue(mockTable)
+        } as unknown as UI5Element;
     });
 
     describe('getLineItemAnnotationForTable - default line item annotation', () => {
@@ -30,7 +36,7 @@ describe('getActionsPropertyPath', () => {
 
             mockMetaModel.getObject.mockReturnValue({});
 
-            const result = getActionsPropertyPath(mockTable);
+            const result = getActionsPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -50,7 +56,7 @@ describe('getActionsPropertyPath', () => {
                 ]
             });
 
-            const result = getActionsPropertyPath(mockTable);
+            const result = getActionsPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -72,7 +78,7 @@ describe('getActionsPropertyPath', () => {
                 }
             });
 
-            const result = getActionsPropertyPath(mockTable);
+            const result = getActionsPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -98,7 +104,7 @@ describe('getActionsPropertyPath', () => {
                     ]
                 });
 
-            const result = getActionsPropertyPath(mockTable);
+            const result = getActionsPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -122,7 +128,7 @@ describe('getActionsPropertyPath', () => {
                     ]
                 });
 
-            const result = getActionsPropertyPath(mockTable);
+            const result = getActionsPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -138,7 +144,7 @@ describe('getActionsPropertyPath', () => {
                 // No Visualizations, no PresentationVariant
             });
 
-            const result = getActionsPropertyPath(mockTable);
+            const result = getActionsPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration//NewEntity/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
