@@ -9,8 +9,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         type: 'suggestion',
         docs: {
             recommended: true,
-            description:
-                'Anchor Bar Visible should not be configured in manifest settings for Object Page headers',
+            description: 'Anchor Bar Visible should not be configured in manifest settings for Object Page headers',
             url: 'https://ui5.sap.com/#/topic/d2ef0099542d44dc868719d908e576d0'
         },
         messages: {
@@ -32,12 +31,12 @@ const rule: FioriRuleDefinition = createFioriRule({
                 }
                 const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
                 const manifest = parsedApp.manifestObject;
-                
-                // Navigate to the target in the manifest  
+
+                // Navigate to the target in the manifest
                 const sapUi5 = manifest['sap.ui5'] as any;
                 const target = sapUi5?.routing?.targets?.[page.targetName];
                 const anchorBarVisible = target?.options?.settings?.content?.header?.anchorBarVisible;
-                
+
                 // Check if anchorBarVisible is configured (regardless of value)
                 if (anchorBarVisible !== undefined) {
                     problems.push({
