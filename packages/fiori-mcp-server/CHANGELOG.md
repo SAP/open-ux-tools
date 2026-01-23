@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.11
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/fiori-docs-embeddings@0.4.9
+
 ## 0.6.10
 
 ### Patch Changes
