@@ -84,7 +84,7 @@ export interface JsonFixerConfig<MessageIds extends string, RuleOptions extends 
 export function createJsonFixer<MessageIds extends string, RuleOptions extends unknown[]>(
     config: JsonFixerConfig<MessageIds, RuleOptions>
 ): ((fixer: RuleTextEditor) => RuleTextEdit | Iterable<RuleTextEdit>) | undefined {
-    const { node, deepestPathResult, value, operation } = config;
+    const { node, deepestPathResult, value, operation, context } = config;
     const { missingSegments } = deepestPathResult;
 
     // Determine the operation if not explicitly provided
@@ -113,7 +113,7 @@ export function createJsonFixer<MessageIds extends string, RuleOptions extends u
                 }
 
                 case 'delete': {
-                    const result = handleDelete(fixer, node);
+                    const result = handleDelete(fixer, node, context);
                     return result ? [result] : [];
                 }
 
@@ -218,25 +218,59 @@ function handleInsert(
 
 /**
  * Handles the DELETE operation - removes a property from the JSON structure.
+ * Deletes the complete line including leading whitespace, the property with its value,
+ * trailing comma, and newline. Assumes formatted JSON.
+ *
+ * Supports:
+ * - Deletion of a property with primitive or object value
+ * - Deletion of an object with all its properties
+ * - Multi-line values (e.g., objects spanning multiple lines)
+ *
+ * Out of scope:
+ * - Deletion of array values
  *
  * @param fixer - The ESLint fixer object.
  * @param node - The MemberNode to delete.
+ * @param context - The rule context to access source code text.
  * @returns Fixer result or undefined if no fix is possible.
  */
-function handleDelete(fixer: RuleTextEditor, node: MemberNode): RuleTextEdit | undefined {
+function handleDelete<MessageIds extends string, RuleOptions extends unknown[]>(
+    fixer: RuleTextEditor,
+    node: MemberNode,
+    context: JSONRuleContext<MessageIds, RuleOptions>
+): RuleTextEdit | undefined {
     if (!node.name || !node.value) {
         return undefined;
     }
 
-    // Calculate range to delete the entire property (including the key)
+    const sourceCode = context.sourceCode.text;
     const startOffset = node.name.loc.start.offset;
     const endOffset = node.value.loc.end.offset;
 
-    // Try to include trailing comma if present
-    // This is a simplified approach - a more robust implementation would parse surrounding tokens
-    const range: [number, number] = [startOffset, endOffset];
+    // Find the start of the line where the property name begins (including leading whitespace)
+    let lineStartOffset = startOffset;
+    while (lineStartOffset > 0 && sourceCode[lineStartOffset - 1] !== '\n') {
+        lineStartOffset--;
+    }
 
-    return fixer.removeRange(range);
+    // Find the end of deletion: include trailing comma and newline after the value
+    let deleteEndOffset = endOffset;
+
+    // Look ahead to include trailing comma and whitespace up to and including the newline
+    for (let i = endOffset; i < sourceCode.length; i++) {
+        const char = sourceCode[i];
+        if (char === '\n') {
+            deleteEndOffset = i + 1;
+            break;
+        } else if (char === ',' || /\s/.test(char)) {
+            deleteEndOffset = i + 1;
+        } else {
+            // Hit a non-whitespace, non-comma character - stop here
+            break;
+        }
+    }
+
+    return fixer.removeRange([lineStartOffset, deleteEndOffset]);
 }
 
 /**

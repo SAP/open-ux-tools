@@ -115,16 +115,7 @@ function checkAnalyticalTableV2(
         });
         return true;
     }
-    if (appCreateMode.valueInFile) {
-        reportDiagnostic(problems, {
-            messageId: 'analyticalTableNotSupported',
-            pageName,
-            parsedApp,
-            configurationPath: appCreateMode.configurationPath,
-            tableType
-        });
-        return true;
-    }
+    // table type is AnalyticalTable, but there is not creation mode configured - is valid.
     return false;
 }
 
@@ -157,7 +148,8 @@ function validateCreateModeV2(
             parsedApp,
             configurationPath: createMode.configurationPath,
             tableType,
-            validValues: createMode.values
+            validValues: createMode.values,
+            recommendedValue: RECOMMENDED_MODE_V2
         });
         return true;
     }
@@ -168,7 +160,8 @@ function validateCreateModeV2(
             pageName,
             parsedApp,
             configurationPath: createMode.configurationPath,
-            tableType
+            tableType,
+            recommendedValue: RECOMMENDED_MODE_V2
         });
     }
     return true;
@@ -258,26 +251,19 @@ function checkAnalyticalTableV4(
     }
 
     if (tableCreationMode.valueInFile) {
+        // Remove 'name' segment to delete the entire creationMode object
+        const pathWithoutName = tableCreationMode.configurationPath.slice(0, -1);
         reportDiagnostic(problems, {
             messageId: 'analyticalTableNotSupported',
             pageName,
             parsedApp,
-            configurationPath: tableCreationMode.configurationPath,
+            configurationPath: pathWithoutName,
             tableType
         });
         return true;
     }
-    if (appCreateMode.valueInFile) {
-        reportDiagnostic(problems, {
-            messageId: 'analyticalTableNotSupported',
-            pageName,
-            parsedApp,
-            configurationPath: appCreateMode.configurationPath,
-            tableType
-        });
-        return true;
-    }
-    return false;
+    // table type is AnalyticalTable, but there is not creation mode configured - is valid.
+    return true;
 }
 
 /**

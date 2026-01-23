@@ -230,6 +230,30 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ])
             },
             [OBJECT_PAGE_FACETS]
+        ),
+        createValidTest(
+            {
+                name: 'Object Page: ✅ Valid at Page level → ✅ PASS - AnalyticalTable with creation mode not defined',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'AnalyticalTable'
+                    }
+                ])
+            },
+            [OBJECT_PAGE_FACETS]
         )
     ],
     invalid: [

@@ -1,11 +1,24 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`createJsonFixer DELETE operation should delete a property 1`] = `
+exports[`createJsonFixer DELETE operation should delete a deeply nested object property 1`] = `
 Array [
   Object {
     "range": Array [
-      10,
-      27,
+      37,
+      187,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
+exports[`createJsonFixer DELETE operation should delete a property with trailing comma 1`] = `
+Array [
+  Object {
+    "range": Array [
+      2,
+      34,
     ],
     "text": "",
     "type": "remove",
@@ -17,14 +30,14 @@ exports[`createJsonFixer INSERT operation should handle special characters in pr
 Array [
   Object {
     "range": Array [
-      24,
-      24,
+      12,
+      12,
     ],
     "text": "
-      \\"@odata.context\\": {
-        \\"value\\": \\"test\\"
-      }
-    ",
+    \\"@odata.context\\": {
+      \\"value\\": \\"test\\"
+    }
+  ",
     "type": "insert",
   },
 ]
@@ -34,12 +47,12 @@ exports[`createJsonFixer INSERT operation should insert a new property into an e
 Array [
   Object {
     "range": Array [
-      24,
-      24,
+      13,
+      13,
     ],
     "text": "
-      \\"flexEnabled\\": true
-    ",
+    \\"flexEnabled\\": true
+  ",
     "type": "insert",
   },
 ]
@@ -49,21 +62,20 @@ exports[`createJsonFixer INSERT operation should insert nested properties for a 
 Array [
   Object {
     "range": Array [
-      21,
-      21,
+      13,
+      13,
     ],
     "text": "
-      \\"routing\\": {
-        \\"targets\\": {
-          \\"IncidentsObjectPage\\": {
-            \\"options\\": {
-              \\"settings\\": {
-                \\"controlConfiguration\\": {
-                  \\"incidentFlow/@com.sap.vocabularies.UI.v1.LineItem\\": {
-                    \\"tableSettings\\": {
-                      \\"creationMode\\": {
-                        \\"name\\": \\"NewRow\\"
-                      }
+    \\"routing\\": {
+      \\"targets\\": {
+        \\"IncidentsObjectPage\\": {
+          \\"options\\": {
+            \\"settings\\": {
+              \\"controlConfiguration\\": {
+                \\"incidentFlow/@com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"tableSettings\\": {
+                    \\"creationMode\\": {
+                      \\"name\\": \\"NewRow\\"
                     }
                   }
                 }
@@ -71,7 +83,8 @@ Array [
             }
           }
         }
-      },",
+      }
+    },",
     "type": "insert",
   },
 ]
@@ -81,8 +94,8 @@ exports[`createJsonFixer Operation inference should infer DELETE when no missing
 Array [
   Object {
     "range": Array [
-      10,
-      27,
+      0,
+      17,
     ],
     "text": "",
     "type": "remove",
@@ -94,12 +107,12 @@ exports[`createJsonFixer Operation inference should infer INSERT when missingSeg
 Array [
   Object {
     "range": Array [
-      24,
-      24,
+      12,
+      12,
     ],
     "text": "
-      \\"newProp\\": \\"test\\"
-    ",
+    \\"newProp\\": \\"test\\"
+  ",
     "type": "insert",
   },
 ]
@@ -109,8 +122,8 @@ exports[`createJsonFixer Operation inference should infer UPDATE when no missing
 Array [
   Object {
     "range": Array [
-      10,
-      14,
+      12,
+      17,
     ],
     "text": "true",
     "type": "replace",
@@ -122,8 +135,8 @@ exports[`createJsonFixer UPDATE operation should update a boolean value 1`] = `
 Array [
   Object {
     "range": Array [
-      24,
-      29,
+      28,
+      33,
     ],
     "text": "true",
     "type": "replace",
@@ -148,8 +161,8 @@ exports[`createJsonFixer UPDATE operation should update a string value 1`] = `
 Array [
   Object {
     "range": Array [
-      15,
-      26,
+      10,
+      21,
     ],
     "text": "\\"New Title\\"",
     "type": "replace",
@@ -161,8 +174,8 @@ exports[`createJsonFixer UPDATE operation should update an object value 1`] = `
 Array [
   Object {
     "range": Array [
-      10,
-      25,
+      11,
+      24,
     ],
     "text": "{
   \\"enabled\\": true,

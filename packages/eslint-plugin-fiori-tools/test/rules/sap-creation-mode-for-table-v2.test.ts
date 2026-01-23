@@ -82,6 +82,35 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ])
             },
             []
+        ),
+        createValidTest(
+            {
+                name: 'AnalyticalTable without createMode at Section - ✅ PASS when app-level createMode exists',
+                filename: V2_MANIFEST_PATH,
+                code: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'pages',
+                            'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'sections',
+                            'SalesOrderItems',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'AnalyticalTable'
+                    },
+                    {
+                        path: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
+                        value: 'creationRows'
+                    }
+                ])
+            },
+            []
         )
     ],
     invalid: [
