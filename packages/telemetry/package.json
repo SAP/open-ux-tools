@@ -42,7 +42,7 @@
         "jest-extended": "6.0.0",
         "memfs": "3.4.13",
         "unionfs": "4.4.0",
-        "dotenv": "16.3.1"
+        "dotenv": "16.6.1"
     },
     "files": [
         "dist",
