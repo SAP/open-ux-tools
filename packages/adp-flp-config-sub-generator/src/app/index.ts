@@ -376,6 +376,8 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @returns {ValidationLink | string | undefined} The validation link or error message.
      */
     private _getErrorHandlerMessage(error: AxiosError): ValidationLink | string | undefined {
+        // If `system_info` endpoint returns 404, the system is not cloud ready
+        // `system_info` endpoint needs to be called before `isAbapCloud`, because `isAbapCloud` silently catches the errors
         if (error.status === 404) {
             return t('error.projectNotCloudReady');
         }
