@@ -78,11 +78,11 @@ const rule: RuleDefinition = {
          * @returns True if the node represents an interesting eval-related call
          */
         function isInteresting(node: ASTNode): boolean {
-            const callNode = node as unknown as { callee: ASTNode };
+            const callNode = node as { callee: ASTNode };
             const callee = callNode.callee;
             if (isMember(callee)) {
-                const memberNode = callee as unknown as { property: ASTNode };
-                const identifierProp = memberNode.property as unknown as { name: string };
+                const memberNode = callee as { property: ASTNode };
+                const identifierProp = memberNode.property as { name: string };
                 if (isIdentifier(memberNode.property) && contains(INTERESTING_METHODS_JQUERY, identifierProp.name)) {
                     return true;
                 }

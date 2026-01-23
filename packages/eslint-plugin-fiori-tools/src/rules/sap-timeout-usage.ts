@@ -34,13 +34,13 @@ function isTimeout(node: ASTNode): boolean {
  * @returns True if the setTimeout call has valid timeout arguments
  */
 function isValid(node: ASTNode): boolean {
-    const args = (node as unknown as { arguments: ASTNode[] }).arguments;
+    const args = (node as { arguments: ASTNode[] }).arguments;
     return (
         args &&
         (args.length === 1 ||
             (args.length > 1 &&
-                ((args[1] as unknown as { value: string | number }).value === 0 ||
-                    (args[1] as unknown as { value: string | number }).value === '0')))
+                ((args[1] as { value: string | number }).value === 0 ||
+                    (args[1] as { value: string | number }).value === '0')))
     );
 }
 
@@ -70,13 +70,13 @@ const rule: RuleDefinition = {
          * @returns True if the node represents an interesting setTimeout call
          */
         function isInteresting(node: ASTNode): boolean {
-            let obj = (node as unknown as { callee: ASTNode }).callee;
+            let obj = (node as { callee: ASTNode }).callee;
             if (isMember(obj)) {
-                const memberObj = obj as unknown as { object: ASTNode; property: ASTNode };
+                const memberObj = obj as { object: ASTNode; property: ASTNode };
                 if (
                     isWindow(memberObj.object) ||
                     (isIdentifier(memberObj.object) &&
-                        contains(WINDOW_OBJECTS, (memberObj.object as unknown as { name: string }).name))
+                        contains(WINDOW_OBJECTS, (memberObj.object as { name: string }).name))
                 ) {
                     // is member expression on window, check property
                     obj = memberObj.property;
@@ -106,13 +106,13 @@ const rule: RuleDefinition = {
         // --------------------------------------------------------------------------
         return {
             'VariableDeclarator': function (node: ASTNode): void {
-                const declaratorNode = node as unknown as { id: ASTNode; init?: ASTNode };
+                const declaratorNode = node as { id: ASTNode; init?: ASTNode };
                 if (declaratorNode.init) {
                     rememberWindow(declaratorNode.id, declaratorNode.init);
                 }
             },
             'AssignmentExpression': function (node: ASTNode): void {
-                const assignmentNode = node as unknown as { left: ASTNode; right: ASTNode };
+                const assignmentNode = node as { left: ASTNode; right: ASTNode };
                 rememberWindow(assignmentNode.left, assignmentNode.right);
             },
             'CallExpression': function (node: ASTNode): void {

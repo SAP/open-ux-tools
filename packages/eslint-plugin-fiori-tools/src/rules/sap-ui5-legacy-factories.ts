@@ -108,7 +108,7 @@ const rule: RuleDefinition = {
 
         return {
             'CallExpression': function (node: unknown): void {
-                if (isInteresting(node as ASTNode)) {
+                if (isInteresting(node)) {
                     context.report({ node: node, messageId: 'legacyFactories' });
                 }
             }

@@ -4,7 +4,6 @@
  *               namespaces
  */
 
-// import type { Rule, SourceCode } from 'eslint';
 import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 import { contains } from '../utils/helpers';
@@ -46,8 +45,10 @@ function uniquifyArray<T>(array: T[]): T[] {
 function calculateObjectName(memberExpressionObject: any): string {
     let objectName = '';
     if (memberExpressionObject.type === 'MemberExpression') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         objectName = memberExpressionObject.property.name;
     } else if (memberExpressionObject.type === 'Identifier') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         objectName = memberExpressionObject.name;
     }
     return objectName;
@@ -99,6 +100,7 @@ const rule: RuleDefinition = {
     },
     create(context: RuleContext) {
         const sourceCode = context.sourceCode;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const customNS = (context.options[0] as any)?.ns ? (context.options[0] as any).ns : [];
         const configuration = {
             'ns': uniquifyArray(
@@ -198,14 +200,17 @@ const rule: RuleDefinition = {
                 const newExpressionPosition = checkIfAncestorsContainsNewExpression(ancestors);
                 if (newExpressionPosition !== -1) {
                     for (let i = 0; i < newExpressionPosition; i++) {
-                        const ancestor = ancestors[i] as any;
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                        const ancestor = ancestors[i];
                         if (ancestor && 'property' in ancestor && ancestor.property && 'name' in ancestor.property) {
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                             const propertyName = ancestor.property.name;
                             namespace += '.' + propertyName;
                         }
                     }
 
-                    const targetAncestor = ancestors[newExpressionPosition] as any;
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                    const targetAncestor = ancestors[newExpressionPosition];
                     if (
                         checkIfReportedNamespace(namespace) &&
                         targetAncestor &&
@@ -227,9 +232,12 @@ const rule: RuleDefinition = {
          */
         function checkAssignmentAgainstOverride(node: any): void {
             if (node.left.type === 'MemberExpression' && node.right.type === 'FunctionExpression') {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const memberExpression = node.left,
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     objectProperty = memberExpression.property.name;
                 let objectNameToCheck;
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const memberExpressionObject = memberExpression.object;
 
                 if (checkIfNotAllowedMethod(objectProperty)) {

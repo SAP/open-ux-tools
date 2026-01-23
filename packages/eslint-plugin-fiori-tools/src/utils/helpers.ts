@@ -211,7 +211,7 @@ export function createRememberWindow(
     isWindowObject: (node: unknown) => boolean
 ): (left: unknown, right: unknown) => boolean {
     return function rememberWindow(left: unknown, right: unknown): boolean {
-        if (isWindowObject(right as ASTNode) && isIdentifier(left as ASTNode)) {
+        if (isWindowObject(right) && isIdentifier(left)) {
             windowObjects.push((left as IdentifierNode).name);
             return true;
         }
@@ -236,7 +236,7 @@ export function createIsDocument(isWindowObject: (node: unknown) => boolean): (n
                 return (node as IdentifierNode).name === 'document';
             } else if (isMember(node)) {
                 const memberNode = node as MemberExpressionNode;
-                return isWindowObject(memberNode.object as ASTNode) && isDocument(memberNode.property as ASTNode);
+                return isWindowObject(memberNode.object) && isDocument(memberNode.property);
             }
         }
         return false;
@@ -274,7 +274,7 @@ export function createRememberDocument(
     isDocumentObject: (node: unknown) => boolean
 ): (left: unknown, right: unknown) => boolean {
     return function rememberDocument(left: unknown, right: unknown): boolean {
-        if (isDocumentObject(right as ASTNode) && isIdentifier(left as ASTNode)) {
+        if (isDocumentObject(right) && isIdentifier(left)) {
             documentObjects.push((left as IdentifierNode).name);
             return true;
         }
@@ -339,7 +339,7 @@ export function createIsHistory(isWindowObject: (node: unknown) => boolean): (no
                 return (node as IdentifierNode).name === 'history';
             } else if (isMember(node)) {
                 const memberNode = node as MemberExpressionNode;
-                return isWindowObject(memberNode.object as ASTNode) && isHistory(memberNode.property as ASTNode);
+                return isWindowObject(memberNode.object) && isHistory(memberNode.property);
             }
         }
         return false;
@@ -376,7 +376,7 @@ export function createRememberHistory(
     isHistoryObject: (node: unknown) => boolean
 ): (left: unknown, right: unknown) => boolean {
     return function rememberHistory(left: unknown, right: unknown): boolean {
-        if (isHistoryObject(right as ASTNode) && isIdentifier(left as ASTNode)) {
+        if (isHistoryObject(right) && isIdentifier(left)) {
             historyObjects.push((left as IdentifierNode).name);
             return true;
         }
@@ -401,7 +401,7 @@ export function createIsLocation(isWindowObject: (node: unknown) => boolean): (n
                 return (node as IdentifierNode).name === 'location';
             } else if (isMember(node)) {
                 const memberNode = node as MemberExpressionNode;
-                return isWindowObject(memberNode.object as ASTNode) && isLocation(memberNode.property as ASTNode);
+                return isWindowObject(memberNode.object) && isLocation(memberNode.property);
             }
         }
         return false;
@@ -439,7 +439,7 @@ export function createRememberLocation(
     isLocationObject: (node: unknown) => boolean
 ): (left: unknown, right: unknown) => boolean {
     return function rememberLocation(left: unknown, right: unknown): boolean {
-        if (isLocationObject(right as ASTNode) && isIdentifier(left as ASTNode)) {
+        if (isLocationObject(right) && isIdentifier(left)) {
             locationObjects.push((left as IdentifierNode).name);
             return true;
         }
