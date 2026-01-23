@@ -4,7 +4,8 @@ import {
     FLEX_ENABLED,
     WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     DISABLE_COPY_TO_CLIPBOARD,
-    CREATION_MODE_FOR_TABLE
+    CREATION_MODE_FOR_TABLE,
+    ANCHOR_BAR_VISIBLE
 } from '../language/diagnostics';
 
 // Import all rules
@@ -61,6 +62,7 @@ import flexEnabledRule from './sap-flex-enabled';
 import requireWidthIncludingColumnHeader from './sap-width-including-column-header';
 import creationModeForTable from './sap-creation-mode-for-table';
 import disableCopyToClipboard from './sap-disable-copy-to-clipboard';
+import anchorBarVisibleRule from './sap-anchor-bar-visible';
 
 import type { Rule } from 'eslint';
 
@@ -116,5 +118,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [FLEX_ENABLED]: flexEnabledRule,
     [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
     [DISABLE_COPY_TO_CLIPBOARD]: disableCopyToClipboard,
-    [CREATION_MODE_FOR_TABLE]: creationModeForTable
+    [CREATION_MODE_FOR_TABLE]: creationModeForTable,
+    [ANCHOR_BAR_VISIBLE]: anchorBarVisibleRule
 };
