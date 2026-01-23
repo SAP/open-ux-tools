@@ -1,5 +1,13 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.34
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.44
+- @sap-ux/fiori-freestyle-writer@2.5.31
+- @sap-ux/odata-service-inquirer@2.14.15
+
 ## 0.11.33
 
 ### Patch Changes
