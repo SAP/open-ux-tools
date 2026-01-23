@@ -15,9 +15,6 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-/** sap.fe.core */
-import type AppComponentV4 from 'sap/fe/core/AppComponent';
-
 /** sap.suite.ui.generic */
 import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
 
@@ -32,6 +29,7 @@ import { CommunicationService } from '../../cpe/communication-service';
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { generateRoutePattern } from '../quick-actions/fe-v4/utils';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { PageDescriptorV4 } from './types';
 
 type SubpageType = 'ObjectPage' | 'CustomPage';
 
@@ -40,13 +38,6 @@ export interface PageDescriptorV2 {
     appComponent: AppComponentV2;
     entitySet: string;
     pageType: string;
-}
-
-export interface PageDescriptorV4 {
-    appType: 'fe-v4';
-    appComponent: AppComponentV4;
-    pageId: string;
-    routePattern: string;
 }
 
 export interface AddSubpageOptions {
@@ -123,7 +114,6 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         source.setEnabled(false);
         await super.onCreateBtnPressHandler();
 
-
         const flexSettings = this.rta.getFlexSettings();
         const navProperty = this.model.getProperty('/selectedNavigation/key');
         const navigation = this.model.getProperty('/navigationData').find((item) => (item.navProperty = navProperty));
@@ -151,7 +141,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
                     }
                 }
             };
-        } else {
+        } else if (pageDescriptor.routePattern) {
             const routePattern = generateRoutePattern(pageDescriptor.routePattern, navProperty, targetEntitySet);
             modifiedValue = {
                 appComponent: pageDescriptor.appComponent,

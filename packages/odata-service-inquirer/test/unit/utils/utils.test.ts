@@ -2,7 +2,12 @@ import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { areArraysEquivalent, originToRelative, parseOdataVersion, removeCircularFromServiceProvider } from '../../../src/utils';
+import {
+    areArraysEquivalent,
+    originToRelative,
+    parseOdataVersion,
+    removeCircularFromServiceProvider
+} from '../../../src/utils';
 
 describe('Utils', () => {
     test('parseOdataVersion - should return the odata version of metadata', async () => {

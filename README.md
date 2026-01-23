@@ -161,6 +161,10 @@ All modules are published under the `@sap-ux` scope. Publishing packages to npmj
 
 Everyone participating in this joint project is welcome as long as our [Code of Conduct](./docs/CODE_OF_CONDUCT.md) is being adhered to.
 
+## Thank you
+
+We are incredibly grateful to the developers who have helped build **Open UX Tools**. [Thank You](./THANKYOU.md).
+
 ## Licensing
 
 Copyright (2021) SAP SE and `open-ux-tools` contributors. Please see our [LICENSE](./LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available via the [REUSE tool](https://api.reuse.software/info/github.com/SAP/open-ux-tools).
