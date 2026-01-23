@@ -443,8 +443,8 @@ const rule: RuleDefinition = {
          * @param node The member expression node
          */
         function handleCallExpressionMember(node: ASTNode): void {
-            const n = node as any;
-            if (!n.parent) {
+            const baseNode = node as BaseNode;
+            if (!baseNode.parent) {
                 return;
             }
             const methodName = getRightestMethodName(n.parent);
