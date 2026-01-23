@@ -243,14 +243,10 @@ async function getServiceMetadataAndValidate(
             convertedMetadata
         };
     } catch (error) {
-        let errorText = errorHandler.logErrorMsgs(error);
-        // Ensure errorText ends with a period
-        if (!errorText.endsWith('.')) {
-            errorText += '.';
-        }
-        errorHandler.logErrorMsgs(error, t('errors.serviceMetadataErrorLog', { servicePath, error }));
+        const errorText = errorHandler.logErrorMsgs(error);
+        LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, errorText }));
         return {
-            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText: errorHandler.getErrorMsg() })
+            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText })
         };
     }
 }
