@@ -23,7 +23,7 @@ interface LoadChangesResult {
     messagebundle: string | undefined;
 }
 
-const baseUrl = document.getElementById('root')?.dataset.openUxPreviewBaseUrl ?? '';
+const baseUrl = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ?? '';
 const changesApiPath = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
 
 /**
