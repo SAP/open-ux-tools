@@ -1,5 +1,11 @@
 # @sap-ux/odata-cli
 
+## 0.17.32
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+
 ## 0.17.31
 
 ### Patch Changes

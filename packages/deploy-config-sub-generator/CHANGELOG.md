@@ -1,5 +1,17 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.53
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.131
+    - @sap-ux/fiori-generator-shared@0.13.57
+    - @sap-ux/inquirer-common@0.10.17
+    - @sap-ux/odata-service-inquirer@2.14.17
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.115
+    - @sap-ux/deploy-config-generator-shared@0.1.76
+
 ## 0.5.52
 
 ### Patch Changes

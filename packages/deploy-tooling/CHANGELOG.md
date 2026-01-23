@@ -1,5 +1,12 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.35
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+    - @sap-ux/inquirer-common@0.10.17
+
 ## 0.17.34
 
 ### Patch Changes
