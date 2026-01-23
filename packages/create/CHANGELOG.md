@@ -1,5 +1,33 @@
 # @sap-ux/create
 
+## 0.14.38
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.80
+- @sap-ux/adp-tooling@0.18.42
+- @sap-ux/app-config-writer@0.6.81
+- @sap-ux/preview-middleware@0.23.96
+- @sap-ux/system-access@0.6.42
+- @sap-ux/ui5-config@0.29.13
+- @sap-ux/flp-config-inquirer@0.4.101
+- @sap-ux/abap-deploy-config-writer@0.2.57
+- @sap-ux/cap-config-writer@0.12.46
+
+## 0.14.37
+
+### Patch Changes
+
+- 8306385: fix(deps): update dependency diff to v5.2.2 [security]
+
+## 0.14.36
+
+### Patch Changes
+
+- Updated dependencies [1970178]
+    - @sap-ux/preview-middleware@0.23.95
+    - @sap-ux/app-config-writer@0.6.80
+
 ## 0.14.35
 
 ### Patch Changes

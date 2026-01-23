@@ -1,5 +1,33 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.15
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/fiori-generator-shared@0.13.55
+    - @sap-ux/telemetry@0.6.57
+    - @sap-ux/inquirer-common@0.10.15
+
+## 2.14.14
+
+### Patch Changes
+
+- e746e10: Fix for system selection where one service and answers are undefined
+
+## 2.14.13
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
+## 2.14.12
+
+### Patch Changes
+
+- f31a340: Removes `lodash` use.
+
 ## 2.14.11
 
 ### Patch Changes
