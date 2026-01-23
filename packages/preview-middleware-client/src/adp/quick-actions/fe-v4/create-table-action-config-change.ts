@@ -14,7 +14,7 @@ import { isA } from '../../../utils/core';
 import Table from 'sap/ui/mdc/Table';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import ActionToolbarAction from 'sap/ui/mdc/actiontoolbar/ActionToolbarAction';
-import { getActionsPropertyPath, MacroTable } from './utils';
+import { getActionsPropertyPath } from './utils';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 
