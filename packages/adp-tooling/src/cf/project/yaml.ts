@@ -24,7 +24,6 @@ const SAP_APPLICATION_CONTENT = 'com.sap.application.content';
 
 interface AdjustMtaYamlParams {
     projectPath: string;
-    moduleName: string;
     appRouterType: AppRouterType;
     businessSolutionName: string;
     businessService: string;
@@ -230,9 +229,8 @@ function adjustMtaYamlManagedApprouter(
  *
  * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string} projectName - The project name.
- * @param {string} moduleName - The module name.
  */
-function adjustMtaYamlUDeployer(yamlContent: MtaYaml, projectName: string, moduleName: string): void {
+function adjustMtaYamlUDeployer(yamlContent: MtaYaml, projectName: string): void {
     const uiDeployerName = `${projectName}_ui_deployer`;
     let uiDeployer = yamlContent.modules?.find((module: MtaModule) => module.name === uiDeployerName);
     if (uiDeployer == null) {
@@ -257,10 +255,10 @@ function adjustMtaYamlUDeployer(yamlContent: MtaYaml, projectName: string, modul
             }
         });
     }
-    if (uiDeployer['build-parameters']?.requires?.every((require: { name: string }) => require.name !== moduleName)) {
+    if (uiDeployer['build-parameters']?.requires?.every((require: { name: string }) => require.name !== projectName)) {
         uiDeployer['build-parameters']?.requires?.push({
-            artifacts: [`${moduleName}.zip`],
-            name: moduleName,
+            artifacts: [`${projectName}.zip`],
+            name: projectName,
             'target-path': 'resources/'
         });
     }
@@ -349,15 +347,15 @@ function adjustMtaYamlResources(
  * Adjusts the MTA YAML for the own module.
  *
  * @param {MtaYaml} yamlContent - The YAML content.
- * @param {string} moduleName - The module name.
+ * @param {string} projectName - The project name.
  */
-function adjustMtaYamlOwnModule(yamlContent: MtaYaml, moduleName: string): void {
-    let module = yamlContent.modules?.find((module: MtaModule) => module.name === moduleName);
+function adjustMtaYamlOwnModule(yamlContent: MtaYaml, projectName: string): void {
+    let module = yamlContent.modules?.find((module: MtaModule) => module.name === projectName);
     if (module == null) {
         module = {
-            name: moduleName,
+            name: projectName,
             type: 'html5',
-            path: moduleName,
+            path: projectName,
             'build-parameters': {
                 builder: 'custom',
                 commands: ['npm install', 'npm run build'],
@@ -417,7 +415,7 @@ function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, busin
  * @returns {Promise<void>} The promise.
  */
 export async function adjustMtaYaml(
-    { projectPath, moduleName, appRouterType, businessSolutionName, businessService }: AdjustMtaYamlParams,
+    { projectPath, appRouterType, businessSolutionName, businessService }: AdjustMtaYamlParams,
     memFs: Editor,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
@@ -449,9 +447,9 @@ export async function adjustMtaYaml(
     } else {
         adjustMtaYamlManagedApprouter(yamlContent, projectName, businessSolutionName, businessService, timestamp);
     }
-    adjustMtaYamlUDeployer(yamlContent, projectName, moduleName);
+    adjustMtaYamlUDeployer(yamlContent, projectName);
     adjustMtaYamlResources(yamlContent, projectName, timestamp, !isStandaloneApprouter);
-    adjustMtaYamlOwnModule(yamlContent, moduleName);
+    adjustMtaYamlOwnModule(yamlContent, projectName);
     // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
     adjustMtaYamlFlpModule(yamlContent, projectName, businessService);
 

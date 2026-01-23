@@ -35,7 +35,6 @@ export async function generateCf(
     await adjustMtaYaml(
         {
             projectPath: basePath,
-            moduleName: app.id,
             appRouterType: cf.approuter,
             businessSolutionName: cf.businessSolutionName ?? '',
             businessService: cf.businessService

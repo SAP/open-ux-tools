@@ -28,12 +28,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - mta-project.zip
+          name: mta-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: mta-project
     type: html5
-    path: my.test.cf.app
+    path: mta-project
     build-parameters:
       builder: custom
       commands:
@@ -258,12 +258,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - mta-project.zip
+          name: mta-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: mta-project
     type: html5
-    path: my.test.cf.app
+    path: mta-project
     build-parameters:
       builder: custom
       commands:
@@ -492,12 +492,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - mta-project.zip
+          name: mta-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: mta-project
     type: html5
-    path: my.test.cf.app
+    path: mta-project
     build-parameters:
       builder: custom
       commands:
@@ -694,12 +694,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - mta-project.zip
+          name: mta-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: mta-project
     type: html5
-    path: my.test.cf.app
+    path: mta-project
     build-parameters:
       builder: custom
       commands:
@@ -924,12 +924,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - mta-project.zip
+          name: mta-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: mta-project
     type: html5
-    path: my.test.cf.app
+    path: mta-project
     build-parameters:
       builder: custom
       commands:
@@ -1167,12 +1167,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - mta-project.zip
+          name: mta-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: mta-project
     type: html5
-    path: my.test.cf.app
+    path: mta-project
     build-parameters:
       builder: custom
       commands:

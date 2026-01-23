@@ -303,7 +303,6 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
                     appRouterType: AppRouterType.STANDALONE,
                     businessSolutionName,
                     businessService
@@ -335,7 +334,6 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService
@@ -372,7 +370,6 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
                     appRouterType: null as unknown as AppRouterType,
                     businessSolutionName,
                     businessService
@@ -407,7 +404,6 @@ describe('YAML Project Functions', () => {
                 adjustMtaYaml(
                     {
                         projectPath,
-                        moduleName,
                         appRouterType: AppRouterType.STANDALONE,
                         businessSolutionName,
                         businessService
@@ -455,7 +451,6 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService
@@ -510,7 +505,6 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService
@@ -569,7 +563,6 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService
@@ -628,7 +621,6 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService
