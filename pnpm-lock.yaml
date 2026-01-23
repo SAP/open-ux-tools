@@ -1498,8 +1498,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0
       diff:
-        specifier: 5.1.0
-        version: 5.1.0
+        specifier: 5.2.2
+        version: 5.2.2
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -20271,8 +20271,8 @@ packages:
     engines: {node: '>=0.3.1'}
     dev: true
 
-  /diff@5.1.0:
-    resolution: {integrity: sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==}
+  /diff@5.2.2:
+    resolution: {integrity: sha512-vtcDfH3TOjP8UekytvnHH1o1P4FcUdt4eQ1Y+Abap1tk/OB2MWQvcwS2ClCd1zuIhc3JKOx6p3kod8Vfys3E+A==}
     engines: {node: '>=0.3.1'}
 
   /dijkstrajs@1.0.3:
@@ -33751,7 +33751,7 @@ packages:
       commander: 7.1.0
       dateformat: 4.6.3
       debug: 4.4.3
-      diff: 5.1.0
+      diff: 5.2.2
       error: 10.4.0
       escape-string-regexp: 4.0.0
       execa: 5.1.1
