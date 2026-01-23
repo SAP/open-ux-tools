@@ -89,6 +89,25 @@ const rule: RuleDefinition = {
         }
 
         /**
+         * Check if a property is the serviceRefreshInterval and has an invalid value.
+         *
+         * @param prop The property to check
+         * @returns True if property is invalid, false otherwise
+         */
+        function isInvalidRefreshProperty(prop: unknown): boolean {
+            const property = asProperty(prop);
+            if (!property) {
+                return false;
+            }
+            const keyName = asIdentifier(property.key)?.name;
+            if (keyName !== INTERESTING_KEY) {
+                return false;
+            }
+            const literalValue = asLiteral(property.value);
+            return literalValue ? isInRange(literalValue.value) : false;
+        }
+
+        /**
          * Check if an object argument contains a valid serviceRefreshInterval property.
          *
          * @param argument The object argument to check
@@ -102,18 +121,8 @@ const rule: RuleDefinition = {
             const propertyList = objectExpr.properties;
             // argument is object literal, check every property
             for (const key in propertyList) {
-                if (propertyList.hasOwnProperty(key)) {
-                    const prop = asProperty(propertyList[key]);
-                    if (prop) {
-                        const keyName = asIdentifier(prop.key)?.name;
-                        if (keyName && INTERESTING_KEY === keyName) {
-                            const literalValue = asLiteral(prop.value);
-                            if (literalValue) {
-                                // check if value is in range
-                                return !isInRange(literalValue.value);
-                            }
-                        }
-                    }
+                if (propertyList.hasOwnProperty(key) && isInvalidRefreshProperty(propertyList[key])) {
+                    return false;
                 }
             }
             return true;

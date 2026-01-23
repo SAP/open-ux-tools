@@ -39,6 +39,24 @@ function isInteresting(node: ASTNode): boolean {
 }
 
 /**
+ * Check if an import list contains commons usage.
+ *
+ * @param importList The array of imports to check
+ * @returns True if commons usage is found
+ */
+function hasCommonsImport(importList: any[]): boolean {
+    for (const key in importList) {
+        if (importList.hasOwnProperty(key)) {
+            const lib = importList[key];
+            if (isLiteral(lib) && startsWith(lib.value, 'sap/ui/commons')) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
  * Check if a function call has valid (non-commons) imports.
  *
  * @param node The function call node to validate
@@ -53,14 +71,7 @@ function isValid(node: ASTNode): boolean {
         const arrayExpr = asArrayExpression(callExpr.arguments[0]);
         if (arrayExpr) {
             const importList = arrayExpr.elements as any[];
-            for (const key in importList) {
-                if (importList.hasOwnProperty(key)) {
-                    const lib = importList[key];
-                    if (isLiteral(lib) && startsWith(lib.value, 'sap/ui/commons')) {
-                        return false;
-                    }
-                }
-            }
+            return !hasCommonsImport(importList);
         }
     }
     return true;

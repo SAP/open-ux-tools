@@ -76,6 +76,21 @@ function isDirectBodyAccess(calleePathNonCmpt: string, speciousObjectNonCmpt: st
     );
 }
 
+/**
+ * Check if a node represents the value -1.
+ *
+ * @param node The node to check
+ * @returns True if the node represents the value -1
+ */
+function isMinusOne(node: ASTNode): boolean {
+    const unaryExpr = asUnaryExpression(node);
+    if (!unaryExpr) {
+        return false;
+    }
+    const literalArg = asLiteral(unaryExpr.argument);
+    return unaryExpr.operator === '-' && literalArg?.value === 1;
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -266,21 +281,6 @@ const rule: RuleDefinition = {
                 return isCondition(parent) || isInCondition(parent, maxDepth - 1);
             }
             return false;
-        }
-
-        /**
-         * Check if a node represents the value -1.
-         *
-         * @param node The node to check
-         * @returns True if the node represents the value -1
-         */
-        function isMinusOne(node: ASTNode): boolean {
-            const unaryExpr = asUnaryExpression(node);
-            if (!unaryExpr) {
-                return false;
-            }
-            const literalArg = asLiteral(unaryExpr.argument);
-            return unaryExpr.operator === '-' && literalArg?.value === 1;
         }
 
         /**
