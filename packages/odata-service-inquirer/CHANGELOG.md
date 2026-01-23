@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.14
+
+### Patch Changes
+
+- e746e10: Fix for system selection where one service and answers are undefined
+
 ## 2.14.13
 
 ### Patch Changes
