@@ -63,11 +63,16 @@ describe('flp/FakeLrepConnector', () => {
         test('loads changes correctly with baseUrl', async () => {
             const mockBaseUrl = '/test.base.url';
             jest.isolateModules(async () => {
-                // Mock document.getElementById to return element with baseUrl in dataset
-                documentMock.getElementById.mockReturnValue({
-                    dataset: {
-                        openUxPreviewBaseUrl: mockBaseUrl
+                // Mock document.getElementById to return element with baseUrl in dataset of sap-ui-bootstrap
+                documentMock.getElementById.mockImplementation((id: string) => {
+                    if (id === 'sap-ui-bootstrap') {
+                        return {
+                            dataset: {
+                                openUxPreviewBaseUrl: mockBaseUrl
+                            }
+                        };
                     }
+                    return null;
                 });
 
                 // Mock LrepConnector before requiring the module
