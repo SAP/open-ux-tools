@@ -40,7 +40,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/odata-service-inquirer": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
-        "i18next": "25.3.0",
+        "i18next": "25.8.0",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
