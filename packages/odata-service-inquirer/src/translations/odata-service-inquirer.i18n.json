@@ -234,8 +234,8 @@
         "certValidationRequired": "Certificate validation is required to continue.",
         "exitingGeneration": "Exiting generation. Exit: {{exitReason}}.",
         "serviceMetadataError": "An error occurred when reading the service metadata for service: {{- servicePath}}.",
-        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }) {{errorText}} $t(texts.seeLogForDetails)",
-        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }) {{errorText}}",
+        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }) Error: {{errorText}} $t(texts.seeLogForDetails)",
+        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }) Error: {{error}}",
         "serviceTypeRequestError": "An error occurred when retrieving the service type: {{- error}}.",
         "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
         "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}: {{error}}.",
@@ -269,7 +269,6 @@
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",
         "seeLogForDetails": "For more information, view the logs.",
-        "serverReturnedAnError": "The server returned an error.",
         "forUserName": "(for user [{{username}}])",
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",

@@ -248,10 +248,9 @@ async function getServiceMetadataAndValidate(
         if (!errorText.endsWith('.')) {
             errorText += '.';
         }
-        LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, errorText }));
-
+        errorHandler.logErrorMsgs(error, t('errors.serviceMetadataErrorLog', { servicePath, error }));
         return {
-            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText })
+            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText: errorHandler.getErrorMsg() })
         };
     }
 }
