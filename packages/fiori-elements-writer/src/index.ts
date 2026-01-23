@@ -267,6 +267,7 @@ async function generate<T extends {}>(
         await writeAnnotations(basePath, feApp, fs, log);
     }
 
+    // OPA tests must be generated last since they depend on other parts of the app, such as annotations, being in place
     if (addTest) {
         const opaConfig = getOpaConfig(
             {
