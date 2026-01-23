@@ -447,7 +447,7 @@ const rule: RuleDefinition = {
             if (!baseNode.parent) {
                 return;
             }
-            const methodName = getRightestMethodName(n.parent);
+            const methodName = getRightestMethodName(baseNode.parent);
             if (typeof methodName !== 'string') {
                 return;
             }
