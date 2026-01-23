@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.56
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+
 ## 0.13.55
 
 ### Patch Changes

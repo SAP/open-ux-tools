@@ -1,5 +1,13 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.75
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/fiori-generator-shared@0.13.56
+
 ## 0.1.74
 
 ### Patch Changes
