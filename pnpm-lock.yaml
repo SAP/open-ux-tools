@@ -4982,8 +4982,8 @@ importers:
         version: 2.2.2
     devDependencies:
       '@types/i18next-fs-backend':
-        specifier: 1.1.2
-        version: 1.1.2
+        specifier: 1.2.0
+        version: 1.2.0
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -15744,10 +15744,11 @@ packages:
       '@types/node': 17.0.9
     dev: true
 
-  /@types/i18next-fs-backend@1.1.2:
-    resolution: {integrity: sha512-ZzTRXA5B0x0oGhzKNp08IsYjZpli4LjRZpg3q4j0XFxN5lKG2MVLnR4yHX8PPExBk4sj9Yfk1z9O6CjPrAlmIQ==}
+  /@types/i18next-fs-backend@1.2.0:
+    resolution: {integrity: sha512-30XnjBF+SLndemvooRQRtcoD5xmF2nNNTa5RqE63+OWssaZOxN9r895ZvXUMbkk8YZr1Cy3scpQBZ6YXLH+jEg==}
+    deprecated: This is a stub types definition. i18next-fs-backend provides its own type definitions, so you do not need this installed.
     dependencies:
-      i18next: 21.10.0
+      i18next-fs-backend: 2.6.1
     dev: true
 
   /@types/inquirer-autocomplete-prompt@2.0.2:
@@ -23405,10 +23406,8 @@ packages:
     engines: {node: '>=14'}
     dev: true
 
-  /i18next@21.10.0:
-    resolution: {integrity: sha512-YeuIBmFsGjUfO3qBmMOc0rQaun4mIpGKET5WDwvu8lU7gvwpcariZLNtL0Fzj+zazcHUrlXHiptcFhBMFaxzfg==}
-    dependencies:
-      '@babel/runtime': 7.27.6
+  /i18next-fs-backend@2.6.1:
+    resolution: {integrity: sha512-eYWTX7QT7kJ0sZyCPK6x1q+R63zvNKv2D6UdbMf15A8vNb2ZLyw4NNNZxPFwXlIv/U+oUtg8SakW6ZgJZcoqHQ==}
     dev: true
 
   /i18next@25.3.0(typescript@5.9.3):
