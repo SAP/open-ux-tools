@@ -5,7 +5,6 @@
 import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     type ASTNode,
-    isMember,
     isLiteral,
     isArray,
     startsWith,

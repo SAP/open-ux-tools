@@ -38,9 +38,7 @@ const rule: RuleDefinition = {
     },
     create(context: RuleContext) {
         const T_MEMBER = 'MemberExpression';
-        const T_ARRAY = 'ArrayExpression';
         const T_IDENTIFIER = 'Identifier';
-        const T_OBJECT = 'ObjectExpression';
         const T_PROPERTY = 'Property';
         const P_METADATA = 'metadata';
         const P_INCLUDES = 'includes';

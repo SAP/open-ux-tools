@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------------------
 
 import type { RuleDefinition, RuleContext } from '@eslint/core';
-import { type ASTNode, contains, isIdentifier, isMember, asCallExpression } from '../utils/helpers';
+import { type ASTNode, contains, isIdentifier, isMember } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition

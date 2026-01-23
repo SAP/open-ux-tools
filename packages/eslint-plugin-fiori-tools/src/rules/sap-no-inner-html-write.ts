@@ -9,7 +9,6 @@ import {
     type LiteralNode,
     isIdentifier,
     isLiteral,
-    isMember,
     asAssignmentExpression,
     asMemberExpression
 } from '../utils/helpers';
@@ -24,16 +23,6 @@ import {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-
-/**
- * Check if a left-hand side expression is interesting for analysis.
- *
- * @param left The left-hand side expression to check
- * @returns True if the expression is interesting for analysis
- */
-function isInteresting(left: ASTNode): boolean {
-    return isMember(left);
-}
 
 /**
  * Check if a property access is valid (not innerHTML).
