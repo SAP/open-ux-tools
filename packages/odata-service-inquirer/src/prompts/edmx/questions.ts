@@ -2,11 +2,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import {
-    searchChoices,
-    getRecursiveHierarchyQualifierForEntitySet,
-    findEntitySetByName
-} from '@sap-ux/inquirer-common';
+import { searchChoices, findEntitySetByName } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../i18n';
@@ -31,7 +27,7 @@ import {
     type NavigationEntityAnswer
 } from './entity-helper';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { getDefaultTableType } from '@sap-ux/project-access';
+import { getDefaultTableType, getRecursiveHierarchyQualifierForEntitySet } from '@sap-ux/project-access';
 
 /**
  * Validate the entity choice options. If the entity choice options are empty, a validation message will be returned.

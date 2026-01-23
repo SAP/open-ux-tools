@@ -5,7 +5,8 @@ import type { ConvertedMetadata, EntitySet, NavigationProperty } from '@sap-ux/v
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../i18n';
 import LoggerHelper from '../logger-helper';
-import { filterAggregateTransformations, findEntitySetByName } from '@sap-ux/inquirer-common';
+import { findEntitySetByName } from '@sap-ux/inquirer-common';
+import { filterAggregateTransformations } from '@sap-ux/project-access';
 
 export type EntityAnswer = {
     entitySetName: string;
