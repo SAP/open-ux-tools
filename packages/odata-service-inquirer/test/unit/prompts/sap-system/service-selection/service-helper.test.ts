@@ -342,7 +342,7 @@ describe('Test service-helper function `validateService`', () => {
 
         const validateServiceResult = await validateService(serviceAnswer, connectionValidatorWithError);
         expect(validateServiceResult.validationResult).toContain(serviceAnswer.servicePath);
-        expect(validateServiceResult.validationResult).toContain('For more information, view the logs');
+        expect(validateServiceResult.validationResult).toContain(t('texts.seeLogForDetails'));
     });
 
     test('Should return error message with HTTP status when metadata request fails with direct status', async () => {

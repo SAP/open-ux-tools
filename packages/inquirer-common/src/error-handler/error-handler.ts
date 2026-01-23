@@ -191,12 +191,13 @@ export class ErrorHandler {
      * @param subTextKey an i18next key used to provide additional context to the error message
      * @returns the localized error message
      */
-    private static readonly serverErrorMessage = (error: Error | object | string | undefined, subTextKey?: string) =>
-        t('errors.serverReturnedAnError', {
-            errorDesc: subTextKey
-                ? t(subTextKey, { errorMsg: ErrorHandler.getMessageFromError(error) })
-                : ErrorHandler.getMessageFromError(error)
-        });
+    private static readonly serverErrorMessage = (error: Error | object | string | undefined, subTextKey?: string) => {
+        const serverError = t('errors.serverReturnedAnError');
+        const errorMsg = subTextKey
+            ? t(subTextKey, { errorMsg: ErrorHandler.getMessageFromError(error) })
+            : ErrorHandler.getMessageFromError(error);
+        return `${serverError} ${errorMsg}`;
+    };
 
     // Get the localized parameterized error message for the specified error type
     private static readonly _errorTypeToMsg: Record<ERROR_TYPE, (error?: Error | object | string) => string> = {
