@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.10
+
+### Patch Changes
+
+- c99758e: chore - Update embeddings docs from original sources for mcp server
+
 ## 0.4.9
 
 ### Patch Changes
