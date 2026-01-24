@@ -4981,9 +4981,6 @@ importers:
         specifier: 2.2.2
         version: 2.2.2
     devDependencies:
-      '@types/i18next-fs-backend':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -15744,12 +15741,6 @@ packages:
       '@types/node': 17.0.9
     dev: true
 
-  /@types/i18next-fs-backend@1.1.2:
-    resolution: {integrity: sha512-ZzTRXA5B0x0oGhzKNp08IsYjZpli4LjRZpg3q4j0XFxN5lKG2MVLnR4yHX8PPExBk4sj9Yfk1z9O6CjPrAlmIQ==}
-    dependencies:
-      i18next: 21.10.0
-    dev: true
-
   /@types/inquirer-autocomplete-prompt@2.0.2:
     resolution: {integrity: sha512-Y7RM1dY3KVg11JnFkaQkTT+2Cgmn9K8De/VtrTT2a5grGIoMfkQuYM5Sss+65oiuqg1h1cTsKHG8pkoPsASdbQ==}
     dependencies:
@@ -23403,12 +23394,6 @@ packages:
   /husky@8.0.3:
     resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
     engines: {node: '>=14'}
-    dev: true
-
-  /i18next@21.10.0:
-    resolution: {integrity: sha512-YeuIBmFsGjUfO3qBmMOc0rQaun4mIpGKET5WDwvu8lU7gvwpcariZLNtL0Fzj+zazcHUrlXHiptcFhBMFaxzfg==}
-    dependencies:
-      '@babel/runtime': 7.27.6
     dev: true
 
   /i18next@25.3.0(typescript@5.9.3):
