@@ -55,10 +55,9 @@ Array [
       12,
     ],
     "text": "
-    \\"@odata.context\\": {
-      \\"value\\": \\"test\\"
-    }
-  ",
+   \\"@odata.context\\": {
+     \\"value\\": \\"test\\"
+   }",
     "type": "insert",
   },
 ]
@@ -72,8 +71,7 @@ Array [
       13,
     ],
     "text": "
-    \\"flexEnabled\\": true
-  ",
+   \\"flexEnabled\\": true",
     "type": "insert",
   },
 ]
@@ -87,25 +85,25 @@ Array [
       13,
     ],
     "text": "
-    \\"routing\\": {
-      \\"targets\\": {
-        \\"IncidentsObjectPage\\": {
-          \\"options\\": {
-            \\"settings\\": {
-              \\"controlConfiguration\\": {
-                \\"incidentFlow/@com.sap.vocabularies.UI.v1.LineItem\\": {
-                  \\"tableSettings\\": {
-                    \\"creationMode\\": {
-                      \\"name\\": \\"NewRow\\"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },",
+   \\"routing\\": {
+     \\"targets\\": {
+       \\"IncidentsObjectPage\\": {
+         \\"options\\": {
+           \\"settings\\": {
+             \\"controlConfiguration\\": {
+               \\"incidentFlow/@com.sap.vocabularies.UI.v1.LineItem\\": {
+                 \\"tableSettings\\": {
+                   \\"creationMode\\": {
+                     \\"name\\": \\"NewRow\\"
+                   }
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+   },",
     "type": "insert",
   },
 ]
@@ -132,8 +130,7 @@ Array [
       12,
     ],
     "text": "
-    \\"newProp\\": \\"test\\"
-  ",
+   \\"newProp\\": \\"test\\"",
     "type": "insert",
   },
 ]

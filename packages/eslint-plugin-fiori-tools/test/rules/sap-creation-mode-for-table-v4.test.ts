@@ -19,28 +19,6 @@ const ruleTester = new RuleTester({
 const TEST_NAME = 'sap-creation-mode-for-table-v4';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-// Helper annotations for List Report table
-const LIST_REPORT_TABLE_ANNOTATIONS = {
-    filename: V4_ANNOTATIONS_PATH,
-    code: getAnnotationsAsXmlCode(
-        V4_ANNOTATIONS,
-        `
-            <Annotations Target="IncidentService.Incidents">
-                <Annotation Term="UI.LineItem">
-                    <Collection>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="identifier"/>
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="title"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-        `
-    )
-};
-
 // Helper annotations for Object Page sections with tables
 const OBJECT_PAGE_FACETS = {
     filename: V4_ANNOTATIONS_PATH,
@@ -794,7 +772,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
         ),
         createInvalidTest(
             {
-                name: 'Object Page: - 💡 Suggest adding creationMode',
+                name: 'Object Page:💡 Suggest adding creationMode',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
@@ -813,8 +791,29 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'ResponsiveTable'
                     },
                     {
-                        path: ['sap.fe', 'macros', 'table'],
+                        path: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
                         value: ''
+                    }
+                ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
+                        value: 'InlineCreationRows'
                     }
                 ]),
                 errors: [
