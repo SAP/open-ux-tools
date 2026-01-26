@@ -1,4 +1,4 @@
-import type { MemberNode } from '@humanwhocodes/momoa';
+import type { DocumentNode, MemberNode } from '@humanwhocodes/momoa';
 import { parse } from '@humanwhocodes/momoa';
 import type { JSONRuleContext } from '../../src/language/rule-factory';
 import { createJsonFixer } from '../../src/language/rule-fixer';
@@ -10,10 +10,10 @@ import type { DeepestExistingPathResult } from '../../src/utils/helpers';
  *
  * @param jsonText - The JSON text to parse
  * @param path - Array of property names to navigate to the target node
- * @returns The MemberNode at the specified path
+ * @returns The MemberNode and AST at the specified path
  * @throws {Error} If the JSON structure is invalid or the path is not found
  */
-function createNodeFromJson(jsonText: string, path: string[]): MemberNode {
+function createNodeFromJson(jsonText: string, path: string[]): { node: MemberNode; ast: DocumentNode } {
     const ast = parse(jsonText);
 
     if (ast.type !== 'Document' || ast.body.type !== 'Object') {
@@ -40,7 +40,7 @@ function createNodeFromJson(jsonText: string, path: string[]): MemberNode {
         throw new Error('No node found');
     }
 
-    return currentNode;
+    return { node: currentNode, ast };
 }
 // Mock fixer object that simulates ESLint's fixer API
 const createMockFixer = () => ({
@@ -96,12 +96,11 @@ describe('createJsonFixer', () => {
     describe('UPDATE operation', () => {
         it('should update a boolean value', () => {
             const sourceText = `{"sap.ui5": {"flexEnabled": false}}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['sap.ui5', 'flexEnabled']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['sap.ui5', 'flexEnabled']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['sap.ui5', 'flexEnabled'],
@@ -124,12 +123,11 @@ describe('createJsonFixer', () => {
 
         it('should update a string value', () => {
             const sourceText = `{"title": "Old Title"}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['title']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['title']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['title'],
@@ -152,12 +150,11 @@ describe('createJsonFixer', () => {
 
         it('should update a number value', () => {
             const sourceText = `{"count": 42}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['count']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['count']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['count'],
@@ -180,12 +177,11 @@ describe('createJsonFixer', () => {
 
         it('should update an object value', () => {
             const sourceText = `{"config": {"old": true}}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['config']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['config']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['config'],
@@ -210,12 +206,11 @@ describe('createJsonFixer', () => {
     describe('INSERT operation', () => {
         it('should insert a new property into an empty object', () => {
             const sourceText = `{"sap.ui5": {}}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['sap.ui5']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['sap.ui5']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['sap.ui5'],
@@ -238,12 +233,11 @@ describe('createJsonFixer', () => {
 
         it('should insert nested properties for a deep path', () => {
             const sourceText = `{"sap.ui5": {"existing": true}}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['sap.ui5']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['sap.ui5']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['sap.ui5'],
@@ -278,12 +272,11 @@ describe('createJsonFixer', () => {
 
         it('should handle special characters in property names', () => {
             const sourceText = `{"config": {}}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['config']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['config']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['config'],
@@ -337,12 +330,11 @@ describe('createJsonFixer', () => {
                 "name": "John",
                 "age": 30
             }`;
+            const { node, ast } = createNodeFromJson(sourceText, ['name']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['name']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['name'],
@@ -364,6 +356,43 @@ describe('createJsonFixer', () => {
             expect(result).toMatchSnapshot();
         });
 
+        it('should delete a deeply nested object property with preceding comma if this is last property', () => {
+            // we should delete the preceding comma in this case
+            const sourceText = `{
+                "tableSettings": {
+                    "shouldStay": true,
+                    "creationMode": {
+                        "name": "InlineCreationRows",
+                        "createAtEnd": true
+                    }
+                },
+                "type": "AnalyticalTable"
+            }`;
+            const { node, ast } = createNodeFromJson(sourceText, ['tableSettings', 'creationMode']);
+            const mockContextWithText = {
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
+                report: jest.fn()
+            } as unknown as JSONRuleContext<string, unknown[]>;
+
+            const deepestPathResult: DeepestExistingPathResult = {
+                validatedPath: ['tableSettings', 'creationMode'],
+                missingSegments: []
+            };
+
+            const fixer = createMockFixer();
+            const fixerFn = createJsonFixer({
+                context: mockContextWithText,
+                node,
+                deepestPathResult,
+                value: undefined,
+                operation: 'delete'
+            });
+
+            const result = fixerFn!(fixer);
+
+            expect(fixer.removeRange).toHaveBeenCalled();
+            expect(result).toMatchSnapshot();
+        });
         it('should delete a deeply nested object property', () => {
             const sourceText = `{
                 "tableSettings": {
@@ -374,12 +403,11 @@ describe('createJsonFixer', () => {
                 },
                 "type": "AnalyticalTable"
             }`;
+            const { node, ast } = createNodeFromJson(sourceText, ['tableSettings', 'creationMode']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['tableSettings', 'creationMode']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['tableSettings', 'creationMode'],
@@ -434,12 +462,11 @@ describe('createJsonFixer', () => {
     describe('Operation inference', () => {
         it('should infer INSERT when missingSegments exist', () => {
             const sourceText = `{"config": {}}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['config']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['config']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['config'],
@@ -463,12 +490,11 @@ describe('createJsonFixer', () => {
 
         it('should infer UPDATE when no missingSegments and value is defined', () => {
             const sourceText = `{"enabled": false}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['enabled']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['enabled']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['enabled'],
@@ -492,12 +518,11 @@ describe('createJsonFixer', () => {
 
         it('should infer DELETE when no missingSegments and value is undefined', () => {
             const sourceText = '{"obsolete": true}';
+            const { node, ast } = createNodeFromJson(sourceText, ['obsolete']);
             const mockContextWithText = {
-                sourceCode: { text: sourceText },
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
                 report: jest.fn()
             } as unknown as JSONRuleContext<string, unknown[]>;
-
-            const node = createNodeFromJson(sourceText, ['obsolete']);
 
             const deepestPathResult: DeepestExistingPathResult = {
                 validatedPath: ['obsolete'],

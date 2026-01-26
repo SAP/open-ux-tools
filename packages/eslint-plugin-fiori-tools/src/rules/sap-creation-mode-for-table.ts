@@ -221,7 +221,8 @@ function processTableV2(
             pageName: page.targetName,
             parsedApp,
             configurationPath: appCreateMode.configurationPath,
-            tableType
+            tableType,
+            recommendedValue: RECOMMENDED_MODE_V2
         });
     }
 }
@@ -294,14 +295,15 @@ function validateCreationModeV4(
     parsedApp: ParsedApp,
     tableType: string,
     recommendedValue: string,
-    problems: CreationModeForTable[]
+    problems: CreationModeForTable[],
+    shouldSuggestAppLevel: boolean
 ): boolean {
-    if (!creationMode.valueInFile) {
+    if (!creationMode.valueInFile && shouldSuggestAppLevel) {
         return false;
     }
-
+    const value = creationMode.valueInFile;
     const validValues = creationMode.values;
-    if (!validValues.includes(creationMode.valueInFile)) {
+    if (!creationMode.valueInFile) {
         reportDiagnostic(problems, {
             messageId: 'invalidCreateModeV4',
             pageName,
@@ -314,7 +316,24 @@ function validateCreationModeV4(
         return true;
     }
 
-    if (creationMode.valueInFile !== recommendedValue) {
+    if (!value) {
+        return false;
+    }
+
+    if (!validValues.includes(value)) {
+        reportDiagnostic(problems, {
+            messageId: 'invalidCreateModeV4',
+            pageName,
+            parsedApp,
+            configurationPath: creationMode.configurationPath,
+            tableType,
+            validValues,
+            recommendedValue
+        });
+        return true;
+    }
+
+    if (value !== recommendedValue) {
         reportDiagnostic(problems, {
             messageId: 'recommendInlineCreationRowsV4',
             pageName,
@@ -338,13 +357,15 @@ function validateCreationModeV4(
  * @param appCreateMode - Application-level create mode configuration
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
+ * @param shouldSuggestAppLevel - Whether to suggest app-level configuration (only if all tables have same recommended value)
  */
 function processTableV4(
     table: V4Table,
     page: FeV4ObjectPage,
     appCreateMode: CreateModeConfig,
     parsedApp: ParsedApp,
-    problems: CreationModeForTable[]
+    problems: CreationModeForTable[],
+    shouldSuggestAppLevel: boolean = true
 ): void {
     const tableCreationMode = table.configuration.creationMode;
     const tableType = table.configuration.tableType?.valueInFile ?? '';
@@ -357,19 +378,29 @@ function processTableV4(
     const recommendedValue = getRecommendedValueV4(tableType);
 
     // Check table level
-    if (validateCreationModeV4(tableCreationMode, page.targetName, parsedApp, tableType, recommendedValue, problems)) {
+    if (
+        validateCreationModeV4(
+            tableCreationMode,
+            page.targetName,
+            parsedApp,
+            tableType,
+            recommendedValue,
+            problems,
+            shouldSuggestAppLevel
+        )
+    ) {
         return;
     }
 
     // Check app level
     if (appCreateMode.valueInFile) {
-        const validValues = tableCreationMode.values;
+        const validValues = appCreateMode.values;
         if (!validValues.includes(appCreateMode.valueInFile)) {
             reportDiagnostic(problems, {
                 messageId: 'invalidCreateModeV4',
                 pageName: page.targetName,
                 parsedApp,
-                configurationPath: tableCreationMode.configurationPath,
+                configurationPath: appCreateMode.configurationPath,
                 tableType,
                 validValues,
                 recommendedValue
@@ -381,7 +412,7 @@ function processTableV4(
                 messageId: 'recommendInlineCreationRowsV4',
                 pageName: page.targetName,
                 parsedApp,
-                configurationPath: tableCreationMode.configurationPath,
+                configurationPath: appCreateMode.configurationPath,
                 tableType,
                 validValues,
                 recommendedValue
@@ -390,8 +421,9 @@ function processTableV4(
         return;
     }
 
-    // Suggest app level only once
+    // Suggest app level only once and only if all tables have the same recommended value
     if (
+        shouldSuggestAppLevel &&
         !problems.some((p) => p.messageId === 'suggestAppLevelV4' && p.manifest.uri === parsedApp.manifest.manifestUri)
     ) {
         reportDiagnostic(problems, {
@@ -464,13 +496,30 @@ function processV4Apps(
         const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
         const appCreateMode = app.configuration.createMode;
 
+        // Collect all table types and their recommended values to determine if app-level suggestion is appropriate
+        const recommendedValues = new Set<string>();
+        for (const page of app.pages) {
+            if (page.type !== 'object-page') {
+                continue;
+            }
+            for (const table of page.lookup['table'] ?? []) {
+                const tableType = table.configuration.tableType?.valueInFile ?? '';
+                if (tableType !== 'AnalyticalTable') {
+                    recommendedValues.add(getRecommendedValueV4(tableType));
+                }
+            }
+        }
+
+        // Only suggest app level if all tables have the same recommended value
+        const shouldSuggestAppLevel = recommendedValues.size === 1;
+
         for (const page of app.pages) {
             if (page.type !== 'object-page') {
                 continue;
             }
 
             for (const table of page.lookup['table'] ?? []) {
-                processTableV4(table, page, appCreateMode, parsedApp, problems);
+                processTableV4(table, page, appCreateMode, parsedApp, problems, shouldSuggestAppLevel);
             }
         }
     }

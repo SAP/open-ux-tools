@@ -1,15 +1,7 @@
 import createTableRule from '../../src/rules/sap-creation-mode-for-table';
 import { RuleTester } from 'eslint';
 import { meta, languages } from '../../src/index';
-import {
-    getAnnotationsAsXmlCode,
-    getManifestAsCode,
-    setup,
-    V2_ANNOTATIONS,
-    V2_ANNOTATIONS_PATH,
-    V2_MANIFEST,
-    V2_MANIFEST_PATH
-} from '../test-helper';
+import { getManifestAsCode, setup, V2_MANIFEST, V2_MANIFEST_PATH } from '../test-helper';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -135,6 +127,23 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'badValue'
                     }
                 ]),
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'pages',
+                            'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'sections',
+                            'SalesOrderItems',
+                            'createMode'
+                        ],
+                        value: 'creationRows'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'invalidCreateMode'
@@ -162,6 +171,21 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'badValue'
                     }
                 ]),
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'pages',
+                            'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'createMode'
+                        ],
+                        value: 'creationRows'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'invalidCreateMode'
@@ -178,6 +202,12 @@ ruleTester.run(TEST_NAME, createTableRule, {
                     {
                         path: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
                         value: 'badValue'
+                    }
+                ]),
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
+                        value: 'creationRows'
                     }
                 ]),
                 errors: [
@@ -225,6 +255,24 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'creationRows'
                     }
                 ]),
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'pages',
+                            'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'sections',
+                            'SalesOrderItems',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'AnalyticalTable'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'analyticalTableNotSupported'
@@ -268,19 +316,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'creationRows'
                     }
                 ]),
-                errors: [
-                    {
-                        messageId: 'analyticalTableNotSupported'
-                    }
-                ]
-            },
-            []
-        ),
-        createInvalidTest(
-            {
-                name: 'AnalyticalTable at App - ⚠️ Creation mode not supported for Analytical tables',
-                filename: V2_MANIFEST_PATH,
-                code: getManifestAsCode(V2_MANIFEST, [
+                output: getManifestAsCode(V2_MANIFEST, [
                     {
                         path: [
                             'sap.ui.generic.app',
@@ -296,10 +332,6 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'type'
                         ],
                         value: 'AnalyticalTable'
-                    },
-                    {
-                        path: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
-                        value: 'creationRows'
                     }
                 ]),
                 errors: [
@@ -314,7 +346,18 @@ ruleTester.run(TEST_NAME, createTableRule, {
             {
                 name: 'Scenario 7 - 💡 SUGGEST (No config at any level)',
                 filename: V2_MANIFEST_PATH,
-                code: JSON.stringify(V2_MANIFEST, undefined, 2),
+                code: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
+                        value: ''
+                    }
+                ]),
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
+                        value: 'creationRows'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'suggestAppLevel'
@@ -329,6 +372,10 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
+                        path: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
+                        value: ''
+                    },
+                    {
                         path: [
                             'sap.ui.generic.app',
                             'pages',
@@ -339,7 +386,27 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'settings',
                             'sections',
                             'SalesOrderItems'
-                            // here creationMode is missing, report on parent e.g. SalesOrderItems
+                            // here createMode is missing, report on parent e.g. SalesOrderItems
+                        ],
+                        value: 'badValue'
+                    }
+                ]),
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
+                        value: 'creationRows'
+                    },
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'pages',
+                            'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'sections',
+                            'SalesOrderItems'
                         ],
                         value: 'badValue'
                     }

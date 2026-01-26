@@ -295,6 +295,39 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'InvalidMode'
                     }
                 ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'creationMode',
+                            'name'
+                        ],
+                        value: 'InlineCreationRows'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'invalidCreateModeV4'
@@ -339,6 +372,39 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'name'
                         ],
                         value: 'NewPage'
+                    }
+                ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'GridTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'creationMode',
+                            'name'
+                        ],
+                        value: 'InlineCreationRows'
                     }
                 ]),
                 errors: [
@@ -387,6 +453,39 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'InlineCreationRows'
                     }
                 ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'TreeTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'creationMode',
+                            'name'
+                        ],
+                        value: 'Inline'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'invalidCreateModeV4'
@@ -433,6 +532,39 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'NewPage'
                     }
                 ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'TreeTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'creationMode',
+                            'name'
+                        ],
+                        value: 'Inline'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'recommendInlineCreationRowsV4'
@@ -476,6 +608,23 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'name'
                         ],
                         value: 'NewPage'
+                    }
+                ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'AnalyticalTable'
                     }
                 ]),
                 errors: [
@@ -524,6 +673,39 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'NewPage'
                     }
                 ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'creationMode',
+                            'name'
+                        ],
+                        value: 'InlineCreationRows'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'recommendInlineCreationRowsV4'
@@ -567,6 +749,39 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'name'
                         ],
                         value: 'CreationDialog'
+                    }
+                ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'TreeTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'creationMode',
+                            'name'
+                        ],
+                        value: 'Inline'
                     }
                 ]),
                 errors: [
@@ -636,6 +851,27 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'NewPage'
                     }
                 ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'TreeTable'
+                    },
+                    {
+                        path: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
+                        value: 'Inline'
+                    }
+                ]),
                 errors: [
                     {
                         messageId: 'recommendInlineCreationRowsV4'
@@ -669,19 +905,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                         value: 'InvalidMode'
                     }
                 ]),
-                errors: [
-                    {
-                        messageId: 'invalidCreateModeV4'
-                    }
-                ]
-            },
-            [OBJECT_PAGE_FACETS]
-        ),
-        createInvalidTest(
-            {
-                name: 'Object Page: ⚠️ Invalid at App level (defaultCreationMode) → ⚠️ WARN - Creation mode not supported for AnalyticalTable',
-                filename: V4_MANIFEST_PATH,
-                code: getManifestAsCode(V4_MANIFEST, [
+                output: getManifestAsCode(V4_MANIFEST, [
                     {
                         path: [
                             'sap.ui5',
@@ -695,7 +919,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'tableSettings',
                             'type'
                         ],
-                        value: 'AnalyticalTable'
+                        value: 'ResponsiveTable'
                     },
                     {
                         path: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
@@ -704,7 +928,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        messageId: 'analyticalTableNotSupported'
+                        messageId: 'invalidCreateModeV4'
                     }
                 ]
             },
@@ -749,6 +973,43 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'name'
                         ],
                         value: 'NewPage'
+                    }
+                ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
+                        value: 'InlineCreationRows'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'creationMode',
+                            'name'
+                        ],
+                        value: 'InlineCreationRows'
                     }
                 ]),
                 errors: [

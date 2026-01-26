@@ -1,5 +1,5 @@
 import type { JSONRuleContext } from './rule-factory';
-import type { MemberNode } from '@humanwhocodes/momoa';
+import type { MemberNode, ObjectNode } from '@humanwhocodes/momoa';
 import type { DeepestExistingPathResult } from '../utils/helpers';
 import type { RuleTextEdit, RuleTextEditor } from '@eslint/core';
 
@@ -114,7 +114,10 @@ export function createJsonFixer<MessageIds extends string, RuleOptions extends u
 
                 case 'delete': {
                     const result = handleDelete(fixer, node, context);
-                    return result ? [result] : [];
+                    if (!result) {
+                        return [];
+                    }
+                    return Array.isArray(result) ? result : [result];
                 }
 
                 default:
@@ -191,7 +194,7 @@ function handleInsert(
     }
 
     // Calculate indentation based on the node's location
-    const baseIndent = node.name.loc.start.column;
+    const baseIndent = node.name.loc.start.column - 1; // Columns are 1-based
     const indentSize = 2; // Standard JSON indent
     const currentIndent = baseIndent + indentSize;
 
@@ -207,7 +210,7 @@ function handleInsert(
     let textToInsert: string;
     if (isEmpty) {
         // Empty object - insert without trailing comma
-        textToInsert = `\n${newContent}\n${' '.repeat(baseIndent)}`;
+        textToInsert = `\n${newContent}`;
     } else {
         // Has existing properties - insert with trailing comma
         textToInsert = `\n${newContent},`;
@@ -219,7 +222,11 @@ function handleInsert(
 /**
  * Handles the DELETE operation - removes a property from the JSON structure.
  * Deletes the complete line including leading whitespace, the property with its value,
- * trailing comma, and newline. Assumes formatted JSON.
+ * and handles comma removal based on whether the property is last in the object.
+ *
+ * Behavior:
+ * - If deleting the last property: removes the preceding comma from the previous property
+ * - If deleting a middle property: removes the trailing comma from the current property
  *
  * Supports:
  * - Deletion of a property with primitive or object value
@@ -231,14 +238,14 @@ function handleInsert(
  *
  * @param fixer - The ESLint fixer object.
  * @param node - The MemberNode to delete.
- * @param context - The rule context to access source code text.
- * @returns Fixer result or undefined if no fix is possible.
+ * @param context - The rule context to access source code text and find parent object.
+ * @returns Fixer result (single or multiple edits) or undefined if no fix is possible.
  */
 function handleDelete<MessageIds extends string, RuleOptions extends unknown[]>(
     fixer: RuleTextEditor,
     node: MemberNode,
     context: JSONRuleContext<MessageIds, RuleOptions>
-): RuleTextEdit | undefined {
+): RuleTextEdit | RuleTextEdit[] | undefined {
     if (!node.name || !node.value) {
         return undefined;
     }
@@ -247,30 +254,121 @@ function handleDelete<MessageIds extends string, RuleOptions extends unknown[]>(
     const startOffset = node.name.loc.start.offset;
     const endOffset = node.value.loc.end.offset;
 
+    // Find the parent object by locating the nearest enclosing object in the AST
+    // We need to traverse the AST from the root to find the parent containing this member
+    const parentObject = findParentObject(context.sourceCode.ast.body, node);
+    const parentMembers = parentObject?.members ?? [];
+    const nodeIndex = parentMembers.findIndex(
+        (member: MemberNode) =>
+            member.name.loc.start.offset === startOffset && member.value.loc.end.offset === endOffset
+    );
+    const isLastProperty = nodeIndex !== -1 && nodeIndex === parentMembers.length - 1;
+
     // Find the start of the line where the property name begins (including leading whitespace)
     let lineStartOffset = startOffset;
     while (lineStartOffset > 0 && sourceCode[lineStartOffset - 1] !== '\n') {
         lineStartOffset--;
     }
 
-    // Find the end of deletion: include trailing comma and newline after the value
+    // Find the end of deletion
     let deleteEndOffset = endOffset;
 
-    // Look ahead to include trailing comma and whitespace up to and including the newline
-    for (let i = endOffset; i < sourceCode.length; i++) {
-        const char = sourceCode[i];
-        if (char === '\n') {
-            deleteEndOffset = i + 1;
-            break;
-        } else if (char === ',' || /\s/.test(char)) {
-            deleteEndOffset = i + 1;
-        } else {
-            // Hit a non-whitespace, non-comma character - stop here
-            break;
+    if (isLastProperty && nodeIndex > 0) {
+        // This is the last property - we need to remove the trailing comma from the previous property
+        const previousNode = parentMembers[nodeIndex - 1];
+        const previousValueEnd = previousNode.value.loc.end.offset;
+
+        // Find the comma after the previous property's value
+        let commaOffset = -1;
+        for (let i = previousValueEnd; i < startOffset; i++) {
+            if (sourceCode[i] === ',') {
+                commaOffset = i;
+                break;
+            }
+        }
+
+        // Extend deletion to include newline after current property if present
+        for (let i = endOffset; i < sourceCode.length; i++) {
+            const char = sourceCode[i];
+            if (char === '\n') {
+                deleteEndOffset = i + 1;
+                break;
+            } else if (/\s/.test(char)) {
+                deleteEndOffset = i + 1;
+            } else {
+                break;
+            }
+        }
+
+        // Return multiple edits: remove the comma from previous line and remove current line
+        if (commaOffset !== -1) {
+            return [
+                fixer.removeRange([commaOffset, commaOffset + 1]),
+                fixer.removeRange([lineStartOffset, deleteEndOffset])
+            ];
+        }
+    } else {
+        // Not the last property - include trailing comma and newline after the value
+        for (let i = endOffset; i < sourceCode.length; i++) {
+            const char = sourceCode[i];
+            if (char === '\n') {
+                deleteEndOffset = i + 1;
+                break;
+            } else if (char === ',' || /\s/.test(char)) {
+                deleteEndOffset = i + 1;
+            } else {
+                // Hit a non-whitespace, non-comma character - stop here
+                break;
+            }
         }
     }
 
     return fixer.removeRange([lineStartOffset, deleteEndOffset]);
+}
+
+/**
+ * Recursively searches for the parent ObjectNode containing the specified MemberNode.
+ *
+ * @param node - The current node to search
+ * @param targetMember - The MemberNode we're looking for the parent of
+ * @returns The parent ObjectNode if found, undefined otherwise
+ */
+function findParentObject(node: ObjectNode | any, targetMember: MemberNode): ObjectNode | undefined {
+    if (!node) {
+        return undefined;
+    }
+
+    // If this node is an Object with members, check if it contains our target member
+    if (node.type === 'Object' && node.members) {
+        for (const member of node.members as MemberNode[]) {
+            if (
+                member.name.loc.start.offset === targetMember.name.loc.start.offset &&
+                member.value.loc.end.offset === targetMember.value.loc.end.offset
+            ) {
+                return node;
+            }
+        }
+
+        // Recursively search in member values
+        for (const member of node.members as MemberNode[]) {
+            const found = findParentObject(member.value, targetMember);
+            if (found) {
+                return found;
+            }
+        }
+    }
+
+    // Handle Array type
+    if (node.type === 'Array' && node.elements) {
+        for (const element of node.elements as any[]) {
+            const found = findParentObject(element, targetMember);
+            if (found) {
+                return found;
+            }
+        }
+    }
+
+    return undefined;
 }
 
 /**

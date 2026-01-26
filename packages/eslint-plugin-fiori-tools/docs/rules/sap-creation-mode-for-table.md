@@ -24,6 +24,7 @@ The rule performs different validations depending on the Fiori Elements version:
 - Warns if analytical tables have `creationMode` configured (creation mode is not supported for analytical tables)
 - Suggests adding `creationMode` at application level if not configured
 
+**Note**: If nixed mode of table types e.g. `ResponsiveTable` and `TreeTable` is configured, diagnostic is reported on page level.
 
 ### Invalid createMode value in V2 (Fiori Elements V2)
 

@@ -13,6 +13,27 @@ Array [
 ]
 `;
 
+exports[`createJsonFixer DELETE operation should delete a deeply nested object property with preceding comma if this is last property 1`] = `
+Array [
+  Object {
+    "range": Array [
+      75,
+      76,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+  Object {
+    "range": Array [
+      77,
+      235,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
 exports[`createJsonFixer DELETE operation should delete a property with trailing comma 1`] = `
 Array [
   Object {
