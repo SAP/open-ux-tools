@@ -1,5 +1,19 @@
 # @sap-ux/telemetry
 
+## 0.6.58
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+
+## 0.6.57
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/ui5-config@0.29.13
+
 ## 0.6.56
 
 ### Patch Changes

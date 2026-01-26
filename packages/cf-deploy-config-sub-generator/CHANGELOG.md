@@ -1,5 +1,35 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.115
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.57
+- @sap-ux/inquirer-common@0.10.17
+- @sap-ux/deploy-config-generator-shared@0.1.76
+- @sap-ux/cf-deploy-config-inquirer@0.5.72
+
+## 0.2.114
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/cf-deploy-config-inquirer@0.5.71
+    - @sap-ux/cf-deploy-config-writer@0.3.54
+    - @sap-ux/deploy-config-generator-shared@0.1.75
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/inquirer-common@0.10.16
+
+## 0.2.113
+
+### Patch Changes
+
+- @sap-ux/deploy-config-generator-shared@0.1.74
+- @sap-ux/fiori-generator-shared@0.13.55
+- @sap-ux/inquirer-common@0.10.15
+- @sap-ux/cf-deploy-config-inquirer@0.5.70
+
 ## 0.2.112
 
 ### Patch Changes

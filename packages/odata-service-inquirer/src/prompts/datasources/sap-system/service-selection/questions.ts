@@ -168,7 +168,11 @@ export function getSystemServiceQuestion(
                 return ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE) ?? false;
             }
             // Dont re-request the same service details
-            if (serviceAnswer && previousService?.servicePath !== serviceAnswer.servicePath) {
+            if (
+                serviceAnswer &&
+                (previousService?.servicePath !== serviceAnswer.servicePath ||
+                    previousService?.servicePath !== PromptState.odataService.servicePath) // PromptState was reset by a system selection
+            ) {
                 hasBackendAnnotations = undefined;
                 convertedMetadataRef.convertedMetadata = undefined;
                 previousService = serviceAnswer;

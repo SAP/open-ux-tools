@@ -10,6 +10,7 @@ export * from './base/helper';
 export * from './base/constants';
 export * from './base/project-builder';
 export * from './base/abap/manifest-service';
+export { writeKeyUserChanges } from './base/change-utils';
 export { promptGeneratorInput, PromptDefaults } from './base/prompt';
 export * from './preview/adp-preview';
 export * from './writer/cf';

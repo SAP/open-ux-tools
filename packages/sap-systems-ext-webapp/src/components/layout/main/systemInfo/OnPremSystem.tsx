@@ -47,7 +47,7 @@ export function OnPremSystem({
             const url = new URL(value);
             if (url.pathname && url.pathname !== '/') {
                 setIsDetailsValid(false);
-                urlMessage = t('validations.urlPathWarning');
+                urlMessage = t('validations.systemUrlOriginOnlyWarning');
             }
             setIsDetailsValid(true);
         } catch {
