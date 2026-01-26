@@ -115,7 +115,8 @@ export function addDeployGen(
             },
             packageManual: {
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
-            }
+            },
+            adpProjectType: projectType
         };
 
         const generatorOptions = {
