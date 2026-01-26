@@ -1,5 +1,134 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.14.17
+
+### Patch Changes
+
+- Updated dependencies [c707af1]
+    - @sap-ux/telemetry@0.6.58
+    - @sap-ux/fiori-generator-shared@0.13.57
+    - @sap-ux/inquirer-common@0.10.17
+
+## 2.14.16
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/inquirer-common@0.10.16
+    - @sap-ux/project-input-validator@0.6.46
+
+## 2.14.15
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/fiori-generator-shared@0.13.55
+    - @sap-ux/telemetry@0.6.57
+    - @sap-ux/inquirer-common@0.10.15
+
+## 2.14.14
+
+### Patch Changes
+
+- e746e10: Fix for system selection where one service and answers are undefined
+
+## 2.14.13
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
+## 2.14.12
+
+### Patch Changes
+
+- f31a340: Removes `lodash` use.
+
+## 2.14.11
+
+### Patch Changes
+
+- 43a86e2: ServiceFilter mutation should retrigger service choice filtering
+
+## 2.14.10
+
+### Patch Changes
+
+- 33d92e4: Adds new options for system and service selection.
+
+## 2.14.9
+
+### Patch Changes
+
+- 090cdec: Fix for odata version restriction not applied for Abap-on-prem credentials prompts
+
+## 2.14.8
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.14
+
+## 2.14.7
+
+### Patch Changes
+
+- 7597059: add new promp option to hide 'New System' from system selection list
+
+## 2.14.6
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/telemetry@0.6.56
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.54
+    - @sap-ux/project-input-validator@0.6.45
+    - @sap-ux/inquirer-common@0.10.13
+
+## 2.14.5
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+    - @sap-ux/fiori-generator-shared@0.13.53
+    - @sap-ux/telemetry@0.6.55
+    - @sap-ux/inquirer-common@0.10.12
+
+## 2.14.4
+
+### Patch Changes
+
+- 4ec10e4: reset stale connection when switching system auth type
+
+## 2.14.3
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.52
+    - @sap-ux/project-input-validator@0.6.44
+    - @sap-ux/telemetry@0.6.54
+    - @sap-ux/inquirer-common@0.10.11
+
+## 2.14.2
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.51
+    - @sap-ux/project-input-validator@0.6.43
+    - @sap-ux/telemetry@0.6.53
+    - @sap-ux/inquirer-common@0.10.10
+
 ## 2.14.1
 
 ### Patch Changes
