@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.41.0
+
+### Minor Changes
+
+- 68b0e54: Add Rich Text Editor Button Groups support
+
+## 0.40.12
+
+### Patch Changes
+
+- cc8871a: fix(fpm-writer): fix width issue with custom filter field in filter bar
+
 ## 0.40.11
 
 ### Patch Changes

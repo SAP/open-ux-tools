@@ -39,6 +39,17 @@ jest.mock('../../../../../src/prompts/logger-helper', () => ({
     }
 }));
 
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    TelemetryHelper: {
+        createTelemetryData: jest.fn((props) => ({
+            ...props,
+            Platform: 'CLI',
+            OperatingSystem: 'test'
+        }))
+    }
+}));
+
 const mockGetExternalServiceReferences = getExternalServiceReferences as jest.Mock;
 const mockSendTelemetryEvent = sendTelemetryEvent as jest.Mock;
 
