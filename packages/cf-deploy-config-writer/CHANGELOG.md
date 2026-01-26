@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.54
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+
 ## 0.3.53
 
 ### Patch Changes
