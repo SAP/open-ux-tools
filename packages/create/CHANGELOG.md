@@ -1,5 +1,150 @@
 # @sap-ux/create
 
+## 0.14.41
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/adp-tooling@0.18.45
+    - @sap-ux/abap-deploy-config-inquirer@1.6.83
+    - @sap-ux/app-config-writer@0.6.83
+    - @sap-ux/flp-config-inquirer@0.4.104
+    - @sap-ux/odata-service-writer@0.29.9
+    - @sap-ux/preview-middleware@0.23.99
+    - @sap-ux/system-access@0.6.43
+    - @sap-ux/abap-deploy-config-writer@0.2.58
+
+## 0.14.40
+
+### Patch Changes
+
+- Updated dependencies [c707af1]
+    - @sap-ux/adp-tooling@0.18.44
+    - @sap-ux/preview-middleware@0.23.98
+    - @sap-ux/flp-config-inquirer@0.4.103
+    - @sap-ux/app-config-writer@0.6.82
+    - @sap-ux/abap-deploy-config-inquirer@1.6.82
+    - @sap-ux/cap-config-writer@0.12.48
+
+## 0.14.39
+
+### Patch Changes
+
+- Updated dependencies [d11943d]
+    - @sap-ux/abap-deploy-config-inquirer@1.6.81
+    - @sap-ux/adp-tooling@0.18.43
+    - @sap-ux/app-config-writer@0.6.82
+    - @sap-ux/cap-config-writer@0.12.47
+    - @sap-ux/flp-config-inquirer@0.4.102
+    - @sap-ux/mockserver-config-writer@0.9.41
+    - @sap-ux/odata-service-writer@0.29.9
+    - @sap-ux/preview-middleware@0.23.97
+
+## 0.14.38
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.80
+- @sap-ux/adp-tooling@0.18.42
+- @sap-ux/app-config-writer@0.6.81
+- @sap-ux/preview-middleware@0.23.96
+- @sap-ux/system-access@0.6.42
+- @sap-ux/ui5-config@0.29.13
+- @sap-ux/flp-config-inquirer@0.4.101
+- @sap-ux/abap-deploy-config-writer@0.2.57
+- @sap-ux/cap-config-writer@0.12.46
+
+## 0.14.37
+
+### Patch Changes
+
+- 8306385: fix(deps): update dependency diff to v5.2.2 [security]
+
+## 0.14.36
+
+### Patch Changes
+
+- Updated dependencies [1970178]
+    - @sap-ux/preview-middleware@0.23.95
+    - @sap-ux/app-config-writer@0.6.80
+
+## 0.14.35
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.41
+- @sap-ux/preview-middleware@0.23.94
+- @sap-ux/flp-config-inquirer@0.4.100
+- @sap-ux/abap-deploy-config-inquirer@1.6.79
+- @sap-ux/app-config-writer@0.6.80
+
+## 0.14.34
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/abap-deploy-config-inquirer@1.6.78
+    - @sap-ux/abap-deploy-config-writer@0.2.56
+    - @sap-ux/adp-tooling@0.18.40
+    - @sap-ux/app-config-writer@0.6.80
+    - @sap-ux/mockserver-config-writer@0.9.40
+    - @sap-ux/odata-service-writer@0.29.8
+    - @sap-ux/cap-config-writer@0.12.45
+    - @sap-ux/flp-config-inquirer@0.4.99
+    - @sap-ux/preview-middleware@0.23.93
+    - @sap-ux/system-access@0.6.41
+
+## 0.14.33
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.77
+- @sap-ux/adp-tooling@0.18.39
+- @sap-ux/app-config-writer@0.6.79
+- @sap-ux/preview-middleware@0.23.92
+- @sap-ux/system-access@0.6.41
+- @sap-ux/ui5-config@0.29.12
+- @sap-ux/flp-config-inquirer@0.4.98
+- @sap-ux/abap-deploy-config-writer@0.2.55
+- @sap-ux/cap-config-writer@0.12.44
+
+## 0.14.32
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/abap-deploy-config-writer@0.2.54
+    - @sap-ux/adp-tooling@0.18.38
+    - @sap-ux/app-config-writer@0.6.78
+    - @sap-ux/cap-config-writer@0.12.43
+    - @sap-ux/flp-config-inquirer@0.4.97
+    - @sap-ux/mockserver-config-writer@0.9.39
+    - @sap-ux/odata-service-writer@0.29.7
+    - @sap-ux/preview-middleware@0.23.91
+    - @sap-ux/system-access@0.6.40
+    - @sap-ux/abap-deploy-config-inquirer@1.6.76
+
+## 0.14.31
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/abap-deploy-config-writer@0.2.53
+    - @sap-ux/adp-tooling@0.18.37
+    - @sap-ux/app-config-writer@0.6.77
+    - @sap-ux/cap-config-writer@0.12.42
+    - @sap-ux/flp-config-inquirer@0.4.96
+    - @sap-ux/mockserver-config-writer@0.9.38
+    - @sap-ux/odata-service-writer@0.29.6
+    - @sap-ux/preview-middleware@0.23.90
+    - @sap-ux/system-access@0.6.40
+    - @sap-ux/abap-deploy-config-inquirer@1.6.75
+
 ## 0.14.30
 
 ### Patch Changes

@@ -1,3 +1,4 @@
+import semver from 'semver';
 import type { MinUI5Version } from '../project-context/parser/types';
 
 /**
@@ -11,11 +12,8 @@ export function isLowerThanMinimalUi5Version(
     providedUi5Version: MinUI5Version,
     minUi5Version: Partial<Pick<MinUI5Version, 'patch'>> & Pick<MinUI5Version, 'major' | 'minor'>
 ): boolean {
-    return (
-        providedUi5Version.major < minUi5Version.major ||
-        (providedUi5Version.major === minUi5Version.major && providedUi5Version.minor < minUi5Version.minor) ||
-        (providedUi5Version.major === minUi5Version.major &&
-            providedUi5Version.minor === minUi5Version.minor &&
-            (providedUi5Version?.patch ?? 0) < (minUi5Version?.patch ?? 0))
-    );
+    const providedVersion = `${providedUi5Version.major}.${providedUi5Version.minor}.${providedUi5Version.patch ?? 0}`;
+    const minVersion = `${minUi5Version.major}.${minUi5Version.minor}.${minUi5Version.patch ?? 0}`;
+
+    return semver.lt(providedVersion, minVersion);
 }

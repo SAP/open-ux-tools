@@ -45,7 +45,9 @@ export type FioriParseResultAst = {
 };
 
 /**
- *
+ * Language implementation for Fiori Elements applications.
+ * Provides parsing and validation for manifest.json, XML annotations, and CDS annotation files.
+ * Unlike typical ESLint languages, this operates on a set of related files that comprise a Fiori app.
  */
 export class FioriLanguage
     implements
@@ -62,18 +64,22 @@ export class FioriLanguage
     nodeTypeKey = 'type';
 
     /**
+     * Validates language options for the Fiori language.
+     * Currently no validation is performed.
      *
-     * @param _languageOptions
+     * @param _languageOptions - Language options to validate
      */
     validateLanguageOptions(_languageOptions: FioriLanguageOptions): void {} // NOSONAR - Empty method required by ESLint Language interface
 
     visitorKeys = { ...xmlVisitorKeys, ...Object.fromEntries(jsonVisitorKeys), ...annotationVisitorKeys };
 
     /**
+     * Parses a Fiori file (manifest.json, XML annotations, or CDS annotations).
+     * Determines file type and creates appropriate AST representation.
      *
-     * @param file
-     * @param _context
-     * @returns
+     * @param file - File to parse
+     * @param _context - Language context (unused)
+     * @returns Parse result containing AST and project context
      */
     parse(file: File, _context: LanguageContext<FioriLanguageOptions>): ParseResult<FioriParseResultAst> {
         const text = typeof file.body === 'string' ? file.body : new TextDecoder().decode(file.body);

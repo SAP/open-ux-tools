@@ -582,3 +582,34 @@ export const WithExternalSearch = (): JSX.Element => {
         </div>
     );
 };
+
+const hiddenOptionsData = data.map((item: IComboBoxOption) => {
+    const result = { ...item };
+    if (['AR', 'AT'].includes(item.key.toString())) {
+        result.hidden = true;
+    }
+    return result;
+});
+export const HiddenOptions = (): JSX.Element => {
+    return (
+        <div style={{ width: '300px' }}>
+            <UIComboBox
+                options={hiddenOptionsData}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                label="Argentina and Austria is hidden"
+            />
+            <UIComboBox
+                options={hiddenOptionsData}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                multiSelect={true}
+                autoComplete="on"
+                label="Argentina and Austria is hidden"
+            />
+        </div>
+    );
+};
