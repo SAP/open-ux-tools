@@ -1,5 +1,11 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.40
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+
 ## 0.0.39
 
 ### Patch Changes

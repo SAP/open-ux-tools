@@ -4,6 +4,7 @@ exports[`config createFlpTemplateConfig minimum settings 1`] = `
 Object {
   "appBasePath": "..",
   "apps": Object {},
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -43,6 +44,7 @@ exports[`config createFlpTemplateConfig minimum settings with one reuse lib 1`] 
 Object {
   "appBasePath": "..",
   "apps": Object {},
+  "baseUrl": "",
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
@@ -122,10 +124,6 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -141,7 +139,8 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -199,10 +198,6 @@ Object {
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -218,7 +213,8 @@ Object {
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"/apps/simple-app\\",\\"test.fe.v2.other\\":\\"/apps/other-app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -279,10 +275,6 @@ Object {
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -298,7 +290,8 @@ Object {
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -446,10 +439,6 @@ Object {
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -465,7 +454,8 @@ Object {
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 
@@ -526,10 +516,6 @@ Object {
         };
     </script>
 
-    <script type=\\"text/javascript\\">
-        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
-    </script>
-
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -545,7 +531,8 @@ Object {
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
+        data-open-ux-preview-base-url=''>
     </script>
 
 

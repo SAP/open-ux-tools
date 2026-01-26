@@ -74,6 +74,11 @@ export interface TemplateConfig {
      * - http://localhost:8080/test-resources/my/app/id/flp.html -> '../../../../..'
      */
     rootBasePath: string;
+    /**
+     * Base url from ui5-patched-router
+     * todo
+     */
+    baseUrl: string;
     apps: Record<
         string,
         {
@@ -456,6 +461,7 @@ export function createFlpTemplateConfig(
     return {
         appBasePath: appBasePath,
         rootBasePath: rootBasePath,
+        baseUrl: '',
         apps: {},
         init: config.init,
         ui5: {
