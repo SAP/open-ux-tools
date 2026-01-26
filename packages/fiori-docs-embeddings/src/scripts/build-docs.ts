@@ -512,7 +512,7 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
     async cloneOrUpdateRepository(source: SourceConfig): Promise<string> {
         const repoName = `${source.owner}-${source.repo}`;
         const repoPath = path.join(this.gitReposPath, repoName);
-        
+
         // Use environment variables for authentication if specified
         let repoUrl: string;
         if (source.useEnvAuth && process.env.GITHUB_HOST && process.env.GITHUB_TOKEN) {
