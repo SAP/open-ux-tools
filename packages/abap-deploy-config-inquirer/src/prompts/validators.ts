@@ -791,12 +791,14 @@ function shouldValidatePackageForStartingPrefix(
 }
 
 /**
- * Validates whether a provided type of an adaptation project can be deployed on the target system.
+ * Validates whether the provided type of an adaptation project can be deployed on the
+ * system with destination: {@link PromptState.abapDeployConfig.destination}.
  *
  * @param {AdaptationProjectType | undefined} adpProjectType - The adaptation project type.
- * @param {BackendTarget | undefined} backendTarget - The backend target representing the target system.
+ * @param {BackendTarget | undefined} backendTarget - The system on which the Adaptation project is created.
  * @returns {Promise<boolean | string>} Promise resolved with true in case the validation succeed otherwise with a string
- * containing an error message or undefined if the project type is not provided.
+ * containing an error message or undefined if the project type is not provided. If the deployment destination
+ * requires authentication the function resolves with true.
  */
 async function validateSystemSupportAdpProjectType(
     adpProjectType?: AdaptationProjectType,
@@ -819,22 +821,49 @@ async function validateSystemSupportAdpProjectType(
                   supportedAdpProjectTypes
               });
     } catch (error) {
+        if (!isAxiosError(error)) {
+            return error.message;
+        }
+
+        const status = error.response?.status;
+
         // We omit the validation in case the user is not authenticated.
-        if (isAxiosError(error) && [401, 403].includes(error.response?.status ?? 0)) {
+        if (status === 401 || status === 403) {
             return true;
         }
+
+        // In case the system info api is not found we assume we are in an onPremise system.
+        if (status === 404) {
+            return adpProjectType === AdaptationProjectType.ON_PREMISE
+                ? true
+                : t('errors.validators.unsupportedAdpProjectType', {
+                      adpProjectType,
+                      supportedAdpProjectTypes: AdaptationProjectType.ON_PREMISE
+                  });
+        }
+
         return error.message;
     }
 }
 
 /**
- * Fetches system information for a specified package from an ABAP system.
+ * Fetches system information for a specified package from an ABAP system. This method
+ * calls the system info api call for the system related to the destination prompt.
  *
  * @param {string | undefined} packageName - The name of the package for which to retrieve system information.
  * @param {BackendTarget} [backendTarget] - Optional backend target information.
  * @returns {Promise<SystemInfo>} A promise resolved with the system information.
  */
 async function getSystemInfo(packageName?: string, backendTarget?: BackendTarget): Promise<SystemInfo> {
+    // TODO avasilev: The provider instance here actualy does not point always the
+    // backendTarget but the system with destination: PromptState.abapDeployConfig.destination
+    // which is actualy the system selected from the destination prompt which is ok for the consumers of this method.
+    // From a developer experience point of view the AbapServiceProviderManager.buildAbapTarget()
+    // which is a private static method of the class uses the PromptState.abapDeployConfig.destination
+    // in order to construct the provider instance returned by the AbapServiceProviderManager.getOrCreateServiceProvider(),
+    // the destination variable is not part of the class definition and is mutated outside of the class body in various places.
+    // This breaks the class encapsulation and is hard to understand and brings a confusion also could lead
+    // to unexpected behaviour.
     const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget);
     const lrep = provider.getLayeredRepository();
     return lrep.getSystemInfo(undefined, packageName);
