@@ -191,7 +191,7 @@ export class FlpSandbox {
         this.addStandardRoutes();
 
         if (this.cardGenerator?.path) {
-            await this.addCardGeneratorMiddlewareRoute(this.cardGenerator.path);
+            await this.addCardGeneratorMiddlewareRoute();
             await this.addStoreCardManifestRoute();
             await this.addStoreI18nKeysRoute();
         }
@@ -526,13 +526,15 @@ export class FlpSandbox {
      * This route dynamically updates the `templateConfig` with the Card Generator application details
      * and serves the FLP sandbox HTML using the `flpGetHandler`.
      *
-     * @param cardGeneratorPath - The path at which the Card Generator middleware route should be added.
      * @private
      */
-    private async addCardGeneratorMiddlewareRoute(cardGeneratorPath: string): Promise<void> {
-        this.logger.debug(`Add route for ${cardGeneratorPath}`);
+    private async addCardGeneratorMiddlewareRoute(): Promise<void> {
+        if (!this.cardGenerator) {
+            return;
+        }
+        this.logger.debug(`Add route for ${this.cardGenerator.path}`);
         this.router.get(
-            cardGeneratorPath,
+            this.cardGenerator.path,
             async (
                 req: EnhancedRequest | connect.IncomingMessage,
                 res: Response | http.ServerResponse,
