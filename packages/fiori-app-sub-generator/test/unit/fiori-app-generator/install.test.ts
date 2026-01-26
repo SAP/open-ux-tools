@@ -15,6 +15,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
 
 jest.mock('@sap-ux/project-access', () => {
     return {
+        ...jest.requireActual('@sap-ux/project-access'),
         addPackageDevDependency: jest.fn().mockResolvedValue(undefined)
     };
 });
