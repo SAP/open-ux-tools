@@ -56,7 +56,7 @@ This process fetches and processes documentation from various Fiori sources usin
 ### Command
 
 ```bash
-AI_CORE_SERVICE_KEY='{"serviceurls":{"AI_API_URL":""},"appname":"","clientid":"","clientsecret":"","identityzone":"","identityzoneid":"","url":""}' pnpm run update-docs
+GITHUB_HOST=git_hostname GITHUB_TOKEN=your_token AI_CORE_SERVICE_KEY='{"serviceurls":{"AI_API_URL":""},"appname":"","clientid":"","clientsecret":"","identityzone":"","identityzoneid":"","url":""}' pnpm run update-docs
 ```
 
 ### Environment Variables
@@ -71,6 +71,11 @@ The `AI_CORE_SERVICE_KEY` must be a JSON string containing the following fields:
 - `identityzoneid`: Identity zone ID
 - `url`: Authentication URL
 
+For sources requiring authenticated access (e.g., internal repositories):
+
+- `GITHUB_HOST`: The GitHub host URL (e.g., `https://github.wdf.sap.corp/`)
+- `GITHUB_TOKEN`: Your GitHub personal access token for authentication
+
 ### Output
 
 This command generates or updates the following files:
@@ -80,6 +85,7 @@ data_local/btp-fiori-tools.md
 data_local/fiori-samples.md
 data_local/fiori-showcase.md
 data_local/sapui5.md
+data_local/tools-suite.md
 ```
 
 ---
