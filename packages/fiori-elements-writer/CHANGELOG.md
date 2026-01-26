@@ -1,5 +1,25 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.46
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.57
+- @sap-ux/cap-config-writer@0.12.48
+
+## 2.8.45
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/cap-config-writer@0.12.47
+    - @sap-ux/fe-fpm-writer@0.41.1
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/odata-service-writer@0.29.9
+    - @sap-ux/annotation-generator@0.4.11
+    - @sap-ux/ui5-application-writer@1.7.2
+
 ## 2.8.44
 
 ### Patch Changes

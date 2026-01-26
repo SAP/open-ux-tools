@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.2
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+
 ## 0.7.1
 
 ### Patch Changes

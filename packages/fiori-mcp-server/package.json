@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.6.12",
+    "version": "0.6.14",
     "keywords": [
         "SAP Fiori tools",
         "SAP Fiori elements",
@@ -74,7 +74,7 @@
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
-        "i18next": "25.3.0",
+        "i18next": "25.8.0",
         "os-name": "4.0.1",
         "zod": "4.1.13",
         "@sap-ai-sdk/foundation-models": "2.3.0",

@@ -1,5 +1,28 @@
 # @sap-ux/preview-middleware
 
+## 0.23.99
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/adp-tooling@0.18.45
+    - @sap-ux/system-access@0.6.43
+
+## 0.23.98
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+- Updated dependencies [c707af1]
+    - @sap-ux/adp-tooling@0.18.44
+
+## 0.23.97
+
+### Patch Changes
+
+- Updated dependencies [d11943d]
+    - @sap-ux/adp-tooling@0.18.43
+
 ## 0.23.96
 
 ### Patch Changes
