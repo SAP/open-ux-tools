@@ -22,7 +22,7 @@ import { addAllVocabulariesToAliasInformation } from './vocabularies';
  * @returns Service artifacts.
  */
 export function getXmlServiceArtifacts(
-    odataVersion: '2.0' | '4.0',
+    odataVersion: '2.0' | '4.0' | '4.01',
     path: string,
     metadataFile: TextFile,
     annotationFiles: TextFile[],
