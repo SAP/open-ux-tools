@@ -9,6 +9,7 @@ import {
 } from '@sap-ux/telemetry';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { randomUUID } from 'crypto';
 import osName from 'os-name';
 import i18next from 'i18next';
 import { version } from '../../package.json';
@@ -29,6 +30,7 @@ export interface TelemetryData {
 export abstract class TelemetryHelper {
     private static _telemetryData: TelemetryData;
     private static _previousEventTimestamp: number;
+    private static _sessionId: string;
 
     /**
      * Returns the telemetry data.
@@ -40,11 +42,23 @@ export abstract class TelemetryHelper {
     }
 
     /**
+     * Returns the session ID for the current server session.
+     *
+     * @returns session ID
+     */
+    public static get sessionId(): string {
+        return this._sessionId;
+    }
+
+    /**
      * Load telemetry settings.
      *
      * @param options - tools suite telemetry init settings
      */
     public static async initTelemetrySettings(options?: ToolsSuiteTelemetryInitSettings): Promise<void> {
+        this._sessionId = randomUUID();
+        logger.info(`Telemetry session initialized with ID: ${this._sessionId}`);
+
         const telemetryOptions: ToolsSuiteTelemetryInitSettings = {
             consumerModule: {
                 name: mcpServerName,
@@ -88,7 +102,8 @@ export abstract class TelemetryHelper {
             }
             this._telemetryData = {
                 Platform: isAppStudio() ? 'SBAS' : 'VSCode',
-                OperatingSystem: osVersionName
+                OperatingSystem: osVersionName,
+                SessionId: this.sessionId
             };
         }
 
@@ -152,6 +167,7 @@ export abstract class TelemetryHelper {
 
     /**
      * Sends the telemetry event to the telemetry client.
+     * Automatically enriches the telemetry data with base properties (SessionId, Platform, OperatingSystem).
      *
      * @param telemetryEventName - the event name to be reported
      * @param telemetryData - the telemetry data
@@ -163,7 +179,9 @@ export abstract class TelemetryHelper {
         telemetryData: TelemetryData,
         appPath?: string
     ): Promise<void> {
-        const telemetryEvent = this.prepareTelemetryEvent(telemetryEventName, telemetryData);
+        const telemetryDataWithContext = this.createTelemetryData(telemetryData) ?? telemetryData;
+
+        const telemetryEvent = this.prepareTelemetryEvent(telemetryEventName, telemetryDataWithContext);
         await ClientFactory.getTelemetryClient().reportEvent(
             telemetryEvent,
             SampleRate.NoSampling,
