@@ -1,5 +1,20 @@
 # @sap-ux/generator-adp
 
+## 0.8.0
+
+### Minor Changes
+
+- 0492325: feat(generator-adp): Developer taking over Key-User changes
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/adp-tooling@0.18.45
+    - @sap-ux/fiori-generator-shared@0.13.57
+    - @sap-ux/odata-service-writer@0.29.9
+    - @sap-ux/system-access@0.6.43
+
 ## 0.7.44
 
 ### Patch Changes
