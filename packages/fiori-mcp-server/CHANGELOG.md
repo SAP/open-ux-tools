@@ -1,5 +1,25 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.14
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.13
+
+### Patch Changes
+
+- Updated dependencies [c99758e]
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.12
+
+### Patch Changes
+
+- 924e26f: fix(deps): update dependency @sap/ux-specification to v1.142.0
+
 ## 0.6.11
 
 ### Patch Changes
