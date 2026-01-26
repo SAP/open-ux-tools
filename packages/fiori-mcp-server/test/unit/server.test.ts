@@ -1,6 +1,7 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { FioriFunctionalityServer } from '../../src/server';
 import { TelemetryHelper, unknownTool } from '../../src/telemetry';
+import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from '../../src/constant';
 import * as tools from '../../src/tools';
 
 const setRequestHandlerMock = jest.fn();
@@ -195,6 +196,116 @@ describe('FioriFunctionalityServer', () => {
             );
 
             listFioriAppsSpy.mockRestore();
+            sendTelemetryMock.mockRestore();
+        });
+
+        test('should send telemetry when Initialize is called', async () => {
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+
+            const server = new FioriFunctionalityServer();
+
+            const initHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const initCallback = initHandlerCall[1];
+            await initCallback({
+                params: {
+                    clientInfo: {
+                        name: 'testClient',
+                        version: '1.0.0'
+                    }
+                }
+            });
+
+            expect(sendTelemetryMock).toHaveBeenCalledWith(TELEMETRY_MCP_SERVER_INITIALIZED, {
+                mcpClientName: 'testClient',
+                mcpClientVersion: '1.0.0'
+            });
+
+            sendTelemetryMock.mockRestore();
+        });
+
+        test('should use default client info when Initialize is called without clientInfo', async () => {
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+
+            const server = new FioriFunctionalityServer();
+
+            const initHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const initCallback = initHandlerCall[1];
+            await initCallback({
+                params: {}
+            });
+
+            expect(sendTelemetryMock).toHaveBeenCalledWith(TELEMETRY_MCP_SERVER_INITIALIZED, {
+                mcpClientName: 'unknown-client',
+                mcpClientVersion: 'unknown-version'
+            });
+
+            sendTelemetryMock.mockRestore();
+        });
+    });
+
+    describe('ListToolsRequestSchema handler', () => {
+        test('should return list of tools', async () => {
+            const server = new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const onRequestCB = setRequestHandlerCall[1];
+            const result = await onRequestCB();
+
+            expect(result).toHaveProperty('tools');
+            expect(Array.isArray(result.tools)).toBe(true);
+            expect(result.tools.length).toBeGreaterThan(0);
+            expect(result.tools.map((tool: { name: string }) => tool.name)).toEqual([
+                'search_docs',
+                'list_fiori_apps',
+                'list_functionality',
+                'get_functionality_details',
+                'execute_functionality'
+            ]);
+        });
+
+        test('should send telemetry when ListTools is called', async () => {
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+
+            const server = new FioriFunctionalityServer();
+
+            const initHandlerCall = setRequestHandlerMock.mock.calls[0];
+            const initCallback = initHandlerCall[1];
+            await initCallback({
+                params: {
+                    clientInfo: {
+                        name: 'test-client',
+                        version: '1.0.0'
+                    }
+                }
+            });
+
+            sendTelemetryMock.mockClear();
+
+            const listToolsHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const listToolsCallback = listToolsHandlerCall[1];
+            await listToolsCallback();
+
+            expect(sendTelemetryMock).toHaveBeenCalledWith(TELEMETRY_MCP_LIST_TOOLS, {
+                mcpClientName: 'test-client',
+                mcpClientVersion: '1.0.0'
+            });
+
+            sendTelemetryMock.mockRestore();
+        });
+
+        test('should use default client info when ListTools is called before initialization', async () => {
+            const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+
+            const server = new FioriFunctionalityServer();
+
+            const listToolsHandlerCall = setRequestHandlerMock.mock.calls[1];
+            const listToolsCallback = listToolsHandlerCall[1];
+            await listToolsCallback();
+
+            expect(sendTelemetryMock).toHaveBeenCalledWith(TELEMETRY_MCP_LIST_TOOLS, {
+                mcpClientName: 'unknown-client',
+                mcpClientVersion: 'unknown-version'
+            });
+
             sendTelemetryMock.mockRestore();
         });
     });

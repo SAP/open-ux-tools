@@ -18,6 +18,7 @@ import {
     tools
 } from './tools';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
+import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant';
 import type {
     ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
@@ -93,6 +94,12 @@ export class FioriFunctionalityServer {
             this.mcpClientVersion = request.params.clientInfo?.version || 'unknown-version';
             logger.info(`MCP Client connected: ${this.mcpClientName} v${this.mcpClientVersion}`);
 
+            const telemetryProperties: TelemetryData = {
+                mcpClientName: this.mcpClientName,
+                mcpClientVersion: this.mcpClientVersion
+            };
+            await TelemetryHelper.sendTelemetry(TELEMETRY_MCP_SERVER_INITIALIZED, telemetryProperties);
+
             return {
                 protocolVersion: '2024-11-05', // MCP protocol version
                 capabilities: {
@@ -106,6 +113,12 @@ export class FioriFunctionalityServer {
         });
 
         this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+            const telemetryProperties: TelemetryData = {
+                mcpClientName: this.mcpClientName,
+                mcpClientVersion: this.mcpClientVersion
+            };
+            await TelemetryHelper.sendTelemetry(TELEMETRY_MCP_LIST_TOOLS, telemetryProperties);
+
             return {
                 tools
             };
@@ -213,9 +226,9 @@ export class FioriFunctionalityServer {
      * Connects the server to a StdioServerTransport and begins listening for requests.
      */
     async run(): Promise<void> {
+        await this.setupTelemetry();
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
-        await this.setupTelemetry();
         logger.info(
             `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${packageJson.version}) running on stdio`
         );
