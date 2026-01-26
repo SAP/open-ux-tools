@@ -25,6 +25,7 @@
         "authenticationFailed": "Authentication failed.",
         "projectNotCloudReady": "FLP Configuration is supported for Cloud Ready adaptation projects only",
         "baseAppInboundsFetching": "Error while fetching base application inbounds",
-        "warningCachingNotSupported": "Warning: caching is not supported"
+        "warningCachingNotSupported": "Warning: caching is not supported",
+        "missingTargetConfiguration": "The Adaptation Project 'target' configuration is missing in the 'ui5.yaml' file."
     }
 }

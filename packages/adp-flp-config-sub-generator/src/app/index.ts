@@ -12,7 +12,7 @@ import {
     SystemLookup,
     getBaseAppInbounds,
     type InternalInboundNavigation,
-    type AdpPreviewConfig,
+    type AdpPreviewConfigWithTarget,
     type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
@@ -68,7 +68,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     private authenticationRequired: boolean = false;
     // Flag to determine if the generator was aborted
     private abort: boolean = false;
-    private ui5Yaml: AdpPreviewConfig;
+    private ui5Yaml: AdpPreviewConfigWithTarget;
     private credentials: CredentialsAnswers;
     private inbounds?: ManifestNamespace.Inbound;
     private layer: UI5FlexLayer;
@@ -454,7 +454,12 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @returns {Promise<void>} A promise that resolves when the initialization is complete.
      */
     private async _initializeStandAloneGenerator(): Promise<void> {
-        this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
+        const ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
+        if (!('target' in ui5Yaml)) {
+            this._abortExecution(t('error.missingTargetConfiguration'));
+            return;
+        }
+        this.ui5Yaml = ui5Yaml;
         this.variant = await getVariant(this.projectRootPath, this.fs);
         this.appId = this.variant.reference;
         this.layer = this.variant.layer;
