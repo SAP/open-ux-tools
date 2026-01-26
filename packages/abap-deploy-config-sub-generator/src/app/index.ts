@@ -42,7 +42,6 @@ import type {
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { getVariantNamespace } from '../utils/project';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
-import { join } from 'path';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
@@ -154,18 +153,13 @@ export default class extends DeploymentGenerator {
         this.backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
     }
 
-    private async _initAdpProjectType(): Promise<void> {
-        const ui5YamlPath = join(this.destinationRoot(), FileName.Ui5Yaml);
-        this.adpProjectType = await getExistingAdpProjectType(this.destinationRoot(), ui5YamlPath);
-    }
-
     private async _initializing(): Promise<void> {
         this._initDestinationRoot();
         try {
             this._processProjectConfig();
             await this._initBackendConfig();
             await this._processIndexHtmlConfig();
-            await this._initAdpProjectType();
+            this.adpProjectType = await getExistingAdpProjectType(this.destinationRoot());
         } catch (e) {
             if (e === ERROR_TYPE.ABORT_SIGNAL) {
                 DeploymentGenerator.logger?.debug(
@@ -199,9 +193,6 @@ export default class extends DeploymentGenerator {
                 },
                 packageManual: {
                     additionalValidation: packageAdditionalValidation
-                },
-                targetSystem: {
-                    additionalValidation: { shouldRestrictDifferentSystemType: this.isAdp }
                 },
                 adpProjectType: this.adpProjectType
             };

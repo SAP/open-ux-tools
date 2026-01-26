@@ -6,7 +6,7 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import { FileName, type UI5FlexLayer } from '@sap-ux/project-access';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type {
     AbapServiceProvider,
@@ -37,7 +37,7 @@ import {
 } from './change-handler';
 import { addCustomSectionFragment } from './descriptor-change-handler';
 import { getExistingAdpProjectType } from '../base/helper';
-import path, { join } from 'node:path';
+import path from 'node:path';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
 
@@ -154,19 +154,10 @@ export class AdpPreview {
         this.lrep = this.provider.getLayeredRepository();
         // fetch a merged descriptor from the backend
         await this.lrep.getCsrfToken();
-        await this.initProjectType();
+        this.projectTypeValue = await getExistingAdpProjectType(path.resolve());
 
         await this.sync();
         return descriptorVariant.layer;
-    }
-
-    /**
-     * Sets the project type from the ui5.yaml.
-     */
-    private async initProjectType(): Promise<void> {
-        const projectRootPath = path.resolve();
-        const ui5YamlPath = join(projectRootPath, FileName.Ui5Yaml);
-        this.projectTypeValue = await getExistingAdpProjectType(projectRootPath, ui5YamlPath);
     }
 
     /**
