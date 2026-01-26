@@ -57,7 +57,7 @@ describe('utility.ts', () => {
         expect(ui5VersionsGrouped(ui5Vers, true)).toMatchInlineSnapshot(`
             [
               Separator {
-                "line": "Maintained versions",
+                "line": "[2mMaintained versions[22m",
                 "type": "separator",
               },
               {
@@ -69,7 +69,7 @@ describe('utility.ts', () => {
                 "value": "1.117.0",
               },
               Separator {
-                "line": "Out of maintenance versions",
+                "line": "[2mOut of maintenance versions[22m",
                 "type": "separator",
               },
               {
@@ -156,7 +156,7 @@ describe('utility.ts', () => {
         expect(ui5VersWithExistingChoice).toMatchInlineSnapshot(`
             [
               Separator {
-                "line": "Maintained versions",
+                "line": "[2mMaintained versions[22m",
                 "type": "separator",
               },
               {
@@ -168,7 +168,7 @@ describe('utility.ts', () => {
                 "value": "1.117.0",
               },
               Separator {
-                "line": "Out of maintenance versions",
+                "line": "[2mOut of maintenance versions[22m",
                 "type": "separator",
               },
               {
