@@ -1,5 +1,33 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.103
+
+### Patch Changes
+
+- Updated dependencies [c707af1]
+    - @sap-ux/adp-tooling@0.18.44
+    - @sap-ux/fiori-generator-shared@0.13.57
+    - @sap-ux/inquirer-common@0.10.17
+
+## 0.4.102
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/adp-tooling@0.18.43
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/inquirer-common@0.10.16
+    - @sap-ux/project-input-validator@0.6.46
+
+## 0.4.101
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.42
+- @sap-ux/fiori-generator-shared@0.13.55
+- @sap-ux/inquirer-common@0.10.15
+
 ## 0.4.100
 
 ### Patch Changes

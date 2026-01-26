@@ -1,5 +1,32 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.82
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.57
+- @sap-ux/inquirer-common@0.10.17
+
+## 1.6.81
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/inquirer-common@0.10.16
+
+## 1.6.80
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/fiori-generator-shared@0.13.55
+    - @sap-ux/system-access@0.6.42
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/inquirer-common@0.10.15
+
 ## 1.6.79
 
 ### Patch Changes

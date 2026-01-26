@@ -1,5 +1,19 @@
 # @sap-ux/environment-check
 
+## 0.18.73
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+
+## 0.18.72
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/ui5-config@0.29.13
+
 ## 0.18.71
 
 ### Patch Changes
