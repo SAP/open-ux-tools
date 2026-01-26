@@ -5,7 +5,8 @@ import {
     getPromptsForChangeDataSource,
     getAdpConfig,
     ManifestService,
-    getVariant
+    getVariant,
+    type AdpPreviewConfigWithTarget
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
@@ -49,7 +50,10 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         }
         await validateAdpProject(basePath);
         const variant = await getVariant(basePath);
-        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
+        const { target, ignoreCertErrors = false } = (await getAdpConfig(
+            basePath,
+            yamlPath
+        )) as AdpPreviewConfigWithTarget;
         const provider = await createAbapServiceProvider(
             target,
             {

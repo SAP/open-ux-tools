@@ -9,7 +9,8 @@ import {
     getVariant,
     getBaseAppInbounds,
     type InternalInboundNavigation,
-    type DescriptorVariant
+    type DescriptorVariant,
+    type AdpPreviewConfigWithTarget
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getPrompts, tileActions } from '@sap-ux/flp-config-inquirer';
@@ -136,7 +137,10 @@ async function getInbounds(
     variant: Variant
 ): Promise<ManifestNamespace.Inbound | undefined> {
     if (variant.isAdp) {
-        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
+        const { target, ignoreCertErrors = false } = (await getAdpConfig(
+            basePath,
+            yamlPath
+        )) as AdpPreviewConfigWithTarget;
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
         return getBaseAppInbounds(variant.content.reference as string, provider);
     }
