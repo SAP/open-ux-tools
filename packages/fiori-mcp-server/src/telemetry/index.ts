@@ -9,7 +9,7 @@ import {
 } from '@sap-ux/telemetry';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import osName from 'os-name';
 import i18next from 'i18next';
 import { version } from '../../package.json';
