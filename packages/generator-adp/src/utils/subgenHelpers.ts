@@ -115,9 +115,6 @@ export async function addDeployGen(
             },
             packageManual: {
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
-            },
-            targetSystem: {
-                additionalValidation: { shouldRestrictDifferentSystemType: true }
             }
         };
 

@@ -44,13 +44,7 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
             input: string,
             previousAnswers: AbapDeployConfigAnswersInternal
         ): Promise<boolean | string | IValidationLink> =>
-            await validateCredentials(
-                input,
-                previousAnswers,
-                options.backendTarget,
-                options.targetSystem,
-                options.adpProjectType
-            )
+            await validateCredentials(input, previousAnswers, options.backendTarget, options.adpProjectType)
     } as PasswordQuestion<AbapDeployConfigAnswersInternal>;
 }
 

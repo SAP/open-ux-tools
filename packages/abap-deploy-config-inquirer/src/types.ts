@@ -185,12 +185,6 @@ export type TransportInputChoicePromptOptions = {
     showCreateDuringDeploy?: boolean;
 };
 
-export type TargetSystemPromptOptions = {
-    additionalValidation?: {
-        shouldRestrictDifferentSystemType: boolean;
-    };
-};
-
 type AbapPromptsCommonOptions =
     | promptNames.destination
     | promptNames.url
@@ -205,7 +199,6 @@ type AbapPromptsCommonOptions =
 type abapPromptOptions = {
     [K in AbapPromptsCommonOptions]: CommonPromptOptions;
 } & {
-    [promptNames.targetSystem]: TargetSystemPromptOptions & CommonPromptOptions;
     [promptNames.ui5AbapRepo]: UI5AbapRepoPromptOptions & CommonPromptOptions;
     [promptNames.description]: DescriptionPromptOptions & CommonPromptOptions;
     [promptNames.packageManual]: PackageManualPromptOptions & CommonPromptOptions;

@@ -468,14 +468,6 @@ export default class AdpFlpConfigGenerator extends Generator {
     }
 
     /**
-     * @returns {Promise<AdaptationProjectType | undefined>} The project type.
-     */
-    private _getProjectType(): Promise<AdaptationProjectType | undefined> {
-        const ui5YamlPath = join(this.projectRootPath, FileName.Ui5Yaml);
-        return getExistingAdpProjectType(this.projectRootPath, ui5YamlPath);
-    }
-
-    /**
      * Initializes the generator when launched as a standalone generator.
      *
      * @returns {Promise<void>} A promise that resolves when the initialization is complete.

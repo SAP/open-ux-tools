@@ -726,6 +726,7 @@ export class UI5Config {
     }
 
     /**
+     * Determines whether the UI5 configuration document contains the builder key.
      *
      * @returns True if the configuration contains builder key at root level otherwise false.
      */

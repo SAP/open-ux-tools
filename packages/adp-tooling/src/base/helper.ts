@@ -173,18 +173,16 @@ export async function getAdpConfig<T = AdpPreviewConfig>(basePath: string, yamlP
  * in a cloudReady project otherwise - onPremise.
  *
  * @param {string} basePath - The path to the adaptation project root folder.
- * @param {string} yamlPath - The path to the ui5.yaml file.
- * @returns {Promise<AdaptationProjectType | undefined>} The project type or undefined.
+ * @returns {Promise<AdaptationProjectType | undefined>} The project type or undefined in casde the project is
+ * NOT an Adaptation project or an error is thrown from reading the configuration file.
  */
-export async function getExistingAdpProjectType(
-    basePath: string,
-    yamlPath: string
-): Promise<AdaptationProjectType | undefined> {
+export async function getExistingAdpProjectType(basePath: string): Promise<AdaptationProjectType | undefined> {
     try {
         const appType = await getAppType(basePath);
         if (appType !== 'Fiori Adaptation') {
             return undefined;
         }
+        const yamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Config(basePath, yamlPath);
         return ui5Config.hasBuilderKey() ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
     } catch (error) {
