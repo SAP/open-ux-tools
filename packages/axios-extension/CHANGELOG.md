@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.7
+
+### Patch Changes
+
+- 0492325: feat(generator-adp): Developer taking over Key-User changes
+
 ## 1.25.6
 
 ### Patch Changes
