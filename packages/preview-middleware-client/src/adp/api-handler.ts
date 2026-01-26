@@ -83,7 +83,8 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
     };
 
     try {
-        const response: Response = await fetch(endpoint, config);
+        const baseUrl = document.getElementById('root')?.dataset.openUxPreviewBaseUrl ?? '';
+        const response: Response = await fetch(`${baseUrl}${endpoint}`, config);
 
         if (!response.ok) {
             const errorData = (await response.json()) as ResponseMessage;
