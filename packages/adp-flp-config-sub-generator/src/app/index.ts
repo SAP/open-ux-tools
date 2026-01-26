@@ -450,18 +450,10 @@ export default class AdpFlpConfigGenerator extends Generator {
             this._abortExecution(t('error.projectNotSupported'));
             return;
         }
-        const projectType = await this._getProjectType();
+        const projectType = await getExistingAdpProjectType(this.projectRootPath);
         if (projectType !== AdaptationProjectType.CLOUD_READY) {
             this._abortExecution(t('error.projectNotCloudReady'));
         }
-    }
-
-    /**
-     * @returns {Promise<AdaptationProjectType | undefined>} The project type.
-     */
-    private _getProjectType(): Promise<AdaptationProjectType | undefined> {
-        const ui5YamlPath = join(this.projectRootPath, FileName.Ui5Yaml);
-        return getExistingAdpProjectType(this.projectRootPath, ui5YamlPath);
     }
 
     /**
