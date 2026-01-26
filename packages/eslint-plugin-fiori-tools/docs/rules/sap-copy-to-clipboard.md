@@ -4,11 +4,11 @@
 
 ### For OData V2 Applications
 
-This rule checks if the `copy` property is not defined or set to `false` in `tableSettings` in the `manifest.json` file for OData V2 applications. This property sets whether to enable the copy to clipboard button in tables.
+This rule checks if the `copy` property set to `false` in `tableSettings` in the `manifest.json` file for OData V2 applications. This property sets whether to enable the copy to clipboard button in tables.
 
 ### For OData V4 Applications
 
-This rule checks if the `disableCopyToClipboard` property is not defined or set to `true` in `tableSettings` in the `manifest.json` file for OData V4 applications. This property sets whether to disable the copy to clipboard button in tables.
+This rule checks if the `disableCopyToClipboard` property set to `true` in `tableSettings` in the `manifest.json` file for OData V4 applications. This property sets whether to disable the copy to clipboard button in tables.
 
 ### Why Was This Rule Introduced?
 
