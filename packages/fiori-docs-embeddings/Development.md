@@ -73,7 +73,7 @@ The `AI_CORE_SERVICE_KEY` must be a JSON string containing the following fields:
 
 For sources requiring authenticated access (e.g., internal repositories):
 
-- `GITHUB_HOST`: The GitHub host URL (e.g., `https://github.wdf.sap.corp/`)
+- `GITHUB_HOST`: The GitHub host URL (e.g., `https://github.com`)
 - `GITHUB_TOKEN`: Your GitHub personal access token for authentication
 
 ### Output
