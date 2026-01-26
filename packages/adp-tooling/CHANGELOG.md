@@ -1,5 +1,15 @@
 # @sap-ux/adp-tooling
 
+## 0.18.45
+
+### Patch Changes
+
+- 0492325: feat(generator-adp): Developer taking over Key-User changes
+- Updated dependencies [0492325]
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/odata-service-writer@0.29.9
+    - @sap-ux/system-access@0.6.43
+
 ## 0.18.44
 
 ### Patch Changes

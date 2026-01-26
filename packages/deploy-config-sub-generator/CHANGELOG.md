@@ -1,5 +1,14 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.54
+
+### Patch Changes
+
+- @sap-ux/deploy-config-generator-shared@0.1.76
+- @sap-ux/fiori-generator-shared@0.13.57
+- @sap-ux/odata-service-inquirer@2.14.18
+- @sap-ux/abap-deploy-config-sub-generator@0.1.132
+
 ## 0.5.53
 
 ### Patch Changes
