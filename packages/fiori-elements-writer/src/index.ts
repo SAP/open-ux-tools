@@ -279,6 +279,6 @@ async function generate<T extends {}>(
     return fs;
 }
 
-export { generate, FioriElementsApp, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
+export { generate, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
 export * from './types';
 export { TableType, TemplateType } from '@sap-ux/project-access';
