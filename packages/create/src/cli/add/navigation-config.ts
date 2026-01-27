@@ -137,10 +137,7 @@ async function getInbounds(
     variant: Variant
 ): Promise<ManifestNamespace.Inbound | undefined> {
     if (variant.isAdp) {
-        const { target, ignoreCertErrors = false } = (await getAdpConfig(
-            basePath,
-            yamlPath
-        )) as AdpPreviewConfigWithTarget;
+        const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(basePath, yamlPath);
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
         return getBaseAppInbounds(variant.content.reference as string, provider);
     }

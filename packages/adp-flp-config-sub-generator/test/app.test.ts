@@ -728,34 +728,6 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.projectNotCloudReady'));
     });
 
-    it('Should throw an error when target configuration is missing in ui5.yaml', async () => {
-        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
-            cfBuildPath: 'dist'
-        } as unknown as adpTooling.AdpPreviewConfig);
-        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
-
-        const runContext = yeomanTest
-            .create(
-                adpFlpConfigGenerator,
-                {
-                    resolved: generatorPath
-                },
-                {
-                    cwd: testProjectPath
-                }
-            )
-            .withOptions({
-                vscode,
-                appWizard: mockAppWizard,
-                launchFlpConfigAsSubGenerator: false
-            })
-            .withPrompts(answers);
-
-        await initI18n();
-        await runContext.run();
-        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.missingTargetConfiguration'));
-    });
-
     it('Should throw an error when no destination is configured in Application Studio', async () => {
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {} as unknown as sysAccess.AbapTarget

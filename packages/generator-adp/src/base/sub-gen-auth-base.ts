@@ -82,10 +82,10 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         await initI18n();
 
         this.systemLookup = new SystemLookup(this.logger);
-        const adpConfig = (await getAdpConfig(
+        const adpConfig = await getAdpConfig<AdpPreviewConfigWithTarget>(
             this.projectPath,
             path.join(this.projectPath, 'ui5.yaml')
-        )) as AdpPreviewConfigWithTarget;
+        );
         this.abapTarget = adpConfig.target;
         this.system = (isAppStudio() ? this.abapTarget.destination : this.abapTarget.url) ?? '';
         this.logger.log(`Successfully retrieved abap target\n${JSON.stringify(this.abapTarget, null, 2)}`);

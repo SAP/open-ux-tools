@@ -52,10 +52,7 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         }
         await validateAdpProject(basePath);
         const variant = await getVariant(basePath);
-        const { target, ignoreCertErrors = false } = (await getAdpConfig(
-            basePath,
-            yamlPath
-        )) as AdpPreviewConfigWithTarget;
+        const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(basePath, yamlPath);
         const provider = await createAbapServiceProvider(
             target,
             {
