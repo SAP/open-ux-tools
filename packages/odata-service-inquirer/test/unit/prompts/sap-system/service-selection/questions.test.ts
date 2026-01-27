@@ -773,8 +773,12 @@ describe('Test new system prompt', () => {
         const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService);
         expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(selectedService.servicePath));
         expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to get metadata'));
-        expect(validationResult).toContain(selectedService.servicePath);
-        expect(validationResult).toContain(t('texts.seeLogForDetails'));
+        expect(validationResult).toBe(
+            t('errors.serviceMetadataErrorUI', {
+                servicePath: selectedService.servicePath,
+                errorText: 'An error occurred: Failed to get metadata'
+            })
+        );
     });
 
     test('should show a guided answer link when no services are returned and an error was logged', async () => {
