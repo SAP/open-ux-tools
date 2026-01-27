@@ -440,7 +440,6 @@ export default class AdpFlpConfigGenerator extends Generator {
         const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
         if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
             this._abortExecution(t('error.projectNotSupported'));
-            return;
         }
     }
 
