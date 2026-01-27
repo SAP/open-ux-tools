@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.47
+
+### Patch Changes
+
+- 4368c00: fix order of test file creation
+
 ## 2.8.46
 
 ### Patch Changes

@@ -11,11 +11,11 @@ const rule: FioriRuleDefinition = createFioriRule({
         docs: {
             recommended: true,
             description:
-                '"flexEnabled" flag in the manifest.json indicates that your application is enabled for UI adaptation.',
+                'The "flexEnabled" flag in the manifest.json file indicates that your application is enabled for UI adaptation.',
             url: 'https://ui5.sap.com/sdk/#/topic/f1430c0337534d469da3a56307ff76af'
         },
         messages: {
-            [FLEX_ENABLED]: '"flexEnabled" should be set to true to enable UI adaptation features'
+            [FLEX_ENABLED]: '"flexEnabled" must be set to "true" to enable UI adaptation features.'
         },
         fixable: 'code'
     },

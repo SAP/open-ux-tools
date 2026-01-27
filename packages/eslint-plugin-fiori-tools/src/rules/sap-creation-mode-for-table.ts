@@ -21,7 +21,7 @@ interface CreateModeConfig {
 }
 
 /**
- * Reports a diagnostic issue related to creation mode configuration.
+ * Reports a diagnostic issue related to the creation mode configuration.
  *
  * @param problems - Array to collect diagnostic problems
  * @param options - Diagnostic options
@@ -29,7 +29,7 @@ interface CreateModeConfig {
  * @param options.pageName - Name of the page where the issue occurs
  * @param options.parsedApp - Parsed application context
  * @param options.configurationPath - Path to the configuration in manifest
- * @param options.tableType - Type of table (e.g., 'GridTable', 'ResponsiveTable')
+ * @param options.tableType - Type of table (for example, 'GridTable' or 'ResponsiveTable')
  * @param options.validValues - Valid values for the configuration
  * @param options.recommendedValue - Recommended value for the configuration
  */
@@ -69,17 +69,17 @@ function reportDiagnostic(
 }
 
 /**
- * Checks if an analytical table has createMode configured at any level in V2 applications.
- * Analytical tables do not support creation mode and this function reports diagnostics if configured.
+ * Checks if an analytical table has createMode configured at any level in OData V2 applications.
+ * Analytical tables do not support creation mode and this function reports diagnostics, if configured.
  *
  * @param tableType - Type of the table
- * @param sectionCreateMode - Create mode configuration at section level
- * @param pageCreateMode - Create mode configuration at page level
- * @param appCreateMode - Create mode configuration at application level
+ * @param sectionCreateMode - Create mode configuration at the section level
+ * @param pageCreateMode - Create mode configuration at the page level
+ * @param appCreateMode - Create mode configuration at the application level
  * @param pageName - Name of the page
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
- * @returns True if analytical table issue was found and reported, false otherwise
+ * @returns True, if an analytical table issue was found and reported. Otherwise, false
  */
 function checkAnalyticalTableV2(
     tableType: string,
@@ -128,15 +128,15 @@ function checkAnalyticalTableV2(
 }
 
 /**
- * Validates the create mode configuration for V2 applications.
- * Checks if the value is valid and recommends the best practice value.
+ * Validates the create mode configuration for OData V2 applications.
+ * Checks if the value is valid and recommends a value according to best practice.
  *
  * @param createMode - Create mode configuration to validate
  * @param pageName - Name of the page
  * @param parsedApp - Parsed application context
  * @param tableType - Type of the table
  * @param problems - Array to collect diagnostic problems
- * @returns True if validation found and reported an issue, false if no configuration exists
+ * @returns True, if a configuration is found and an issue reported. False, if no configuration exists
  */
 function validateCreateModeV2(
     createMode: CreateModeConfig,
@@ -174,8 +174,8 @@ function validateCreateModeV2(
 }
 
 /**
- * Processes a single table in a V2 application.
- * Validates create mode at section, page, and application levels with proper priority.
+ * Processes a single table in a OData V2 application.
+ * Validates create mode at the section, page, and application levels with the correct priority.
  *
  * @param table - The table node to process
  * @param page - The object page containing the table
@@ -233,16 +233,16 @@ function processTableV2(
 }
 
 /**
- * Checks if an analytical table has creationMode configured at any level in V4 applications.
- * Analytical tables do not support creation mode and this function reports diagnostics if configured.
+ * Checks if an analytical table has creationMode configured at any level in OData V4 applications.
+ * Analytical tables do not support creation mode and this function reports diagnostics, if configured.
  *
  * @param tableType - Type of the table
- * @param tableCreationMode - Creation mode configuration at table level
- * @param appCreateMode - Create mode configuration at application level
+ * @param tableCreationMode - Creation mode configuration at the table level
+ * @param appCreateMode - Create mode configuration at the application level
  * @param pageName - Name of the page
  * @param parsedApp - Parsed application context
  * @param problems - Array to collect diagnostic problems
- * @returns True if analytical table issue was found and reported, false otherwise
+ * @returns True, if an analytical table issue was found and reported. Otherwise, false
  */
 function checkAnalyticalTableV4(
     tableType: string,
@@ -280,18 +280,18 @@ function checkAnalyticalTableV4(
 }
 
 /**
- * Gets the recommended creation mode value based on table type for V4 applications.
+ * Gets the recommended creation mode value based on the table type for OData V4 applications.
  *
  * @param tableType - Type of the table
- * @returns 'Inline' for TreeTable, 'InlineCreationRows' for other table types
+ * @returns 'Inline' for TreeTable and 'InlineCreationRows' for other table types
  */
 function getRecommendedValueV4(tableType: string): string {
     return tableType === 'TreeTable' ? RECOMMENDED_MODE_V4_TREE : RECOMMENDED_MODE_V4_RESPONSIVE_GRID;
 }
 
 /**
- * Validates the creation mode configuration for V4 applications.
- * Checks if the value is valid and recommends the best practice value based on table type.
+ * Validates the creation mode configuration for OData V4 applications.
+ * Checks if the value is valid and recommends a value based on best practices and the table type.
  *
  * @param creationMode - Creation mode configuration to validate
  * @param pageName - Name of the page
@@ -299,7 +299,7 @@ function getRecommendedValueV4(tableType: string): string {
  * @param tableType - Type of the table
  * @param recommendedValue - The recommended value for this table type
  * @param problems - Array to collect diagnostic problems
- * @returns True if validation found and reported an issue, false if no configuration exists
+ * @returns True, if a configuration was found and issue was reported. False, if no configuration exists
  */
 function validateCreationModeV4(
     creationMode: CreateModeConfig,
@@ -342,8 +342,8 @@ function validateCreationModeV4(
 }
 
 /**
- * Processes a single table in a V4 application.
- * Validates creation mode at table and application levels with proper priority.
+ * Processes a single table in a OData V4 application.
+ * Validates creation mode at the table and application levels with the correct priority.
  * Different table types have different recommended values.
  *
  * @param table - The table node to process
@@ -418,8 +418,8 @@ function processTableV4(
 }
 
 /**
- * Processes all V2 applications in the project context.
- * Iterates through apps, pages, and tables to validate creation mode configuration.
+ * Processes all OData V2 applications in the project context.
+ * Iterates through apps, pages, and tables to validate the creation mode configuration.
  *
  * @param context - Rule context containing source code and project information
  * @param problems - Array to collect diagnostic problems
@@ -454,8 +454,8 @@ function processV2Apps(
 }
 
 /**
- * Processes all V4 applications in the project context.
- * Iterates through apps, pages, and tables to validate creation mode configuration.
+ * Processes all OData V4 applications in the project context.
+ * Iterates through apps, pages, and tables to validate the creation mode configuration.
  *
  * @param context - Rule context containing source code and project information
  * @param problems - Array to collect diagnostic problems
@@ -496,21 +496,21 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
         docs: {
             recommended: true,
             description:
-                'Ensure proper creationMode configuration for tables in SAP Fiori Elements V2 and V4 applications',
+                'Ensure proper creationMode configuration for tables in SAP Fiori elements V2 and V4 applications',
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-creation-mode-for-table.md'
         },
         messages: {
             invalidCreateMode:
-                'Invalid createMode value "{{value}}"{{tableType}}. Recommended value is "creationRows".{{validValues}}',
-            recommendCreationRows: 'Consider using "creationRows" for better user experience instead of "{{value}}".',
-            suggestAppLevel: 'Consider adding createMode at application level for better user experience.',
+                'Invalid createMode value: "{{value}}"{{tableType}}. The recommended value is "creationRows".{{validValues}}.',
+            recommendCreationRows: 'Consider using "creationRows" for a better user experience instead of "{{value}}".',
+            suggestAppLevel: 'Consider adding createMode at the application level for a better user experience.',
             analyticalTableNotSupported:
-                'Creation mode is not supported for Analytical tables. Remove the createMode/creationMode property.',
+                'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.',
             invalidCreateModeV4:
-                'Invalid creationMode value "{{value}}"{{tableType}}. Recommended value is "{{recommendedValue}}".{{validValues}}',
+                'Invalid creationMode value "{{value}}"{{tableType}}. The recommended value is "{{recommendedValue}}".{{validValues}}',
             recommendInlineCreationRowsV4:
-                'Consider using "{{recommendedValue}}" for better user experience instead of "{{value}}".',
-            suggestAppLevelV4: 'Consider adding creationMode at application level for better user experience.'
+                'Consider using "{{recommendedValue}}" for a better user experience instead of "{{value}}".',
+            suggestAppLevelV4: 'Consider adding creationMode at the application level for better user experience.'
         }
     },
     check(context) {
