@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, KeyUserChangeContent } from '@sap-ux/axios-extension';
 
 import type {
     AdpWriterConfig,
@@ -11,6 +11,7 @@ import type {
     CloudApp,
     ConfigAnswers,
     CreateCfConfigParams,
+    CustomConfig,
     OnpremApp,
     UI5Version
 } from '../types';
@@ -23,7 +24,6 @@ import {
     shouldSetMinUI5Version
 } from '../ui5';
 import { getProviderConfig } from '../abap';
-import { getCustomConfig } from './project-utils';
 import { AppRouterType, FlexLayer } from '../types';
 import { t } from '../i18n';
 
@@ -64,6 +64,14 @@ export interface ConfigOptions {
      * Logger instance for debugging and error reporting.
      */
     logger: ToolsLogger;
+    /**
+     * The tools ID.
+     */
+    toolsId: string;
+    /**
+     * Optional: Key-user changes to be written to the project.
+     */
+    keyUserChanges?: KeyUserChangeContent[];
 }
 
 /**
@@ -89,14 +97,15 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         provider,
         publicVersions,
         systemVersion,
-        manifest
+        manifest,
+        toolsId,
+        keyUserChanges
     } = options;
 
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
     const target = await getProviderConfig(configAnswers.system, logger);
-    const customConfig = getCustomConfig(operationsType, packageJson);
 
     const isCloudProject = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
@@ -137,12 +146,22 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     return {
         app,
         ui5,
-        customConfig,
+        customConfig: {
+            adp: {
+                environment: operationsType,
+                support: {
+                    id: packageJson.name ?? '',
+                    version: packageJson.version ?? '',
+                    toolsId
+                }
+            }
+        },
         target,
         options: {
             fioriTools: true,
             enableTypeScript
-        }
+        },
+        keyUserChanges
     };
 }
 
@@ -208,6 +227,15 @@ export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
             path: params.projectPath,
             folder: join(params.projectPath, params.attributeAnswers.projectName)
         },
+        customConfig: {
+            adp: {
+                support: {
+                    id: params.packageJson?.name ?? '',
+                    version: params.packageJson?.version ?? '',
+                    toolsId: params.toolsId ?? ''
+                }
+            }
+        } as CustomConfig,
         ui5: {
             version: ui5Version
         },

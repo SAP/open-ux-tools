@@ -50,6 +50,7 @@ export type PreviewUrls = {
  */
 export interface TemplateConfig {
     basePath: string;
+    baseUrl: string;
     apps: Record<
         string,
         {
@@ -376,10 +377,16 @@ export function createFlpTemplateConfig(
     const id = manifest['sap.app']?.id ?? '';
     const ns = id.replace(/\./g, '/');
     const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
+    let initPath: string | undefined;
+    if (config.init) {
+        const separator = config.init.startsWith('/') ? '' : '/';
+        initPath = `${ns}${separator}${config.init}`;
+    }
     return {
         basePath: basePath,
+        baseUrl: '',
         apps: {},
-        init: config.init ? ns + config.init : undefined,
+        init: initPath,
         ui5: {
             libs: getUI5Libs(manifest),
             theme: ui5Theme,
@@ -502,9 +509,7 @@ export async function generatePreviewFiles(
     sanitizeConfig(config, logger);
 
     // create file system if not provided
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
 
     // generate FLP configuration
     const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8');

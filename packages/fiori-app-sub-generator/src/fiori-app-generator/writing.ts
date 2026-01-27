@@ -104,7 +104,8 @@ export async function writeAppGenInfoFiles(
         generatorName: appGenInfoCustom?.generatorName ?? '',
         entityRelatedConfig: appGenInfoCustom?.entityRelatedConfig ?? [],
         externalParameters: appGenInfoCustom?.externalParameters,
-        launchText
+        launchText,
+        valueHelpDownloaded: service.valueListMetadata && service.valueListMetadata.length > 0
     };
 
     generateAppGenInfo(targetPath, genInfo, fs);

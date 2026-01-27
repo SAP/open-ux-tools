@@ -1,5 +1,101 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.55
+
+### Patch Changes
+
+- 924e26f: fix(deps): update dependency @sap/ux-specification to v1.142.0
+
+## 0.7.54
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/ui5-application-writer@1.7.2
+
+## 0.7.53
+
+### Patch Changes
+
+- 55ac9f0: enable generation of OPA5 tests based on project spec
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/ui5-application-writer@1.7.1
+
+## 0.7.52
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/ui5-application-writer@1.7.1
+
+## 0.7.51
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/ui5-application-writer@1.7.1
+
+## 0.7.50
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/ui5-application-writer@1.7.1
+    - @sap-ux/project-access@1.33.1
+
+## 0.7.49
+
+### Patch Changes
+
+- Updated dependencies [03598eb]
+    - @sap-ux/ui5-application-writer@1.7.0
+
+## 0.7.48
+
+### Patch Changes
+
+- Updated dependencies [d24f36d]
+    - @sap-ux/ui5-application-writer@1.6.8
+
+## 0.7.47
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+- Updated dependencies [dad2bd7]
+    - @sap-ux/ui5-application-writer@1.6.7
+
+## 0.7.46
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/ui5-application-writer@1.6.6
+
+## 0.7.45
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-application-writer@1.6.6
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/logger@0.7.3
+
+## 0.7.44
+
+### Patch Changes
+
+- Updated dependencies [63c0f52]
+    - @sap-ux/ui5-application-writer@1.6.5
+
 ## 0.7.43
 
 ### Patch Changes

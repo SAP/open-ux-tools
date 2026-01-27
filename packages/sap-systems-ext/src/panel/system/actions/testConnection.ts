@@ -2,6 +2,7 @@ import type { AxiosError } from '@sap-ux/axios-extension';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
 import type { TestConnection, CatalogServicesCounts } from '@sap-ux/sap-systems-ext-types';
 import type { PanelContext } from '../../../types';
+import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import {
     createGALink,
@@ -10,14 +11,22 @@ import {
     getErrorType,
     getErrorMessage,
     loadingTestConnectionInfo,
-    validateSystemInfo
+    validateSystemInfo,
+    getSystemInfo
 } from '../utils';
-import { TelemetryHelper, t } from '../../../utils';
-import { GuidedAnswersLinkAction, SystemAction, SYSTEMS_EVENT, TestConnectionStatus } from '../../../utils/constants';
+import { TelemetryHelper, compareSystems, getBackendSystemService, shouldStoreSystemInfo, t } from '../../../utils';
+import {
+    GuidedAnswersLinkAction,
+    SystemAction,
+    SystemPanelViewType,
+    SYSTEMS_EVENT,
+    TestConnectionStatus
+} from '../../../utils/constants';
 import SystemsLogger from '../../../utils/logger';
 
 /**
  * Tests the connection to a specified backend system and retrieves the count of available OData services.
+ * Also makes an API call for other system information e.g. system ID and client.
  *
  * @param context - panel context
  * @param action - test connection action containing the system to test
@@ -51,6 +60,14 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
     } catch (e) {
         handleCatalogError(postMessage, serviceCount, isGuidedAnswersEnabled, e as Error);
         logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
+    }
+
+    try {
+        if (shouldStoreSystemInfo(system)) {
+            await storeSystemInfo(context, system);
+        }
+    } catch (e) {
+        SystemsLogger.logger.error(t('error.systemInfoUpdate', { error: (e as Error).message }));
     }
 }
 
@@ -190,4 +207,48 @@ function logGATelemetry(status: GuidedAnswersLinkAction, errorType = '', isGuide
         errorType,
         isGuidedAnswersEnabled: isGuidedAnswersEnabled ? 'true' : 'false'
     });
+}
+
+/**
+ * Attempts a partial update to store the system ID for existing (unchanged) saved systems.
+ *
+ * @param context - panel context
+ * @param backendSystemPayload - backend system passed in the payload
+ */
+async function storeSystemInfo(context: PanelContext, backendSystemPayload: BackendSystem): Promise<void> {
+    // determines if this is a simple view (viewing an existing system without any backend key changes)
+    const isSimpleView =
+        context.panelViewType === SystemPanelViewType.View &&
+        context.backendSystem &&
+        compareSystems(context.backendSystem, backendSystemPayload);
+
+    // not suitable for a partial update if the system has been modified or it is a new system
+    if (!isSimpleView) {
+        return;
+    }
+
+    // no action needed if system id is already present
+    if (isSimpleView && context.backendSystem?.systemInfo?.systemId) {
+        return;
+    }
+
+    const systemInfo = await getSystemInfo(backendSystemPayload);
+    if (systemInfo) {
+        SystemsLogger.logger.debug(
+            t('debug.systemInfoRetrieved', {
+                systemId: systemInfo.systemId,
+                client: systemInfo.client
+            })
+        );
+        const systemService = await getBackendSystemService();
+        await systemService.partialUpdate(
+            new BackendSystemKey({
+                url: backendSystemPayload.url,
+                client: backendSystemPayload.client
+            }),
+            {
+                systemInfo: { systemId: systemInfo.systemId, client: systemInfo.client }
+            }
+        );
+    }
 }

@@ -1,5 +1,56 @@
 # @sap-ux/project-access
 
+## 1.34.2
+
+### Patch Changes
+
+- be67fc4: refactor getPathMappings and export respective type
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+
+## 1.34.1
+
+### Patch Changes
+
+- 55ac9f0: enable generation of OPA5 tests based on project spec
+
+## 1.34.0
+
+### Minor Changes
+
+- b132944: feat: add consistency rules `sap-flex-enabled`, `sap-disable-copy-to-clipboard` and `sap-width-including-column-header`.
+
+## 1.33.2
+
+### Patch Changes
+
+- f13d1c2: CAP project selection now searches parent directories and supports autocomplete in CLI
+
+## 1.33.1
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 1.33.0
+
+### Minor Changes
+
+- c7f9a60: Export fioriToolsDirectory
+
+### Patch Changes
+
+- @sap-ux/ui5-config@0.29.12
+
+## 1.32.17
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/ui5-config@0.29.12
+    - @sap-ux/i18n@0.3.7
+
 ## 1.32.16
 
 ### Patch Changes

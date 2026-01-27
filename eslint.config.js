@@ -6,6 +6,7 @@ const pluginJsdoc = require('eslint-plugin-jsdoc');
 const tseslint = require('typescript-eslint');
 const importPlugin = require('eslint-plugin-import');
 const sonarjs = require('eslint-plugin-sonarjs');
+const isFixMode = process.argv.includes('--fix');
 
 const compat = new FlatCompat({
     baseDirectory: __dirname, // optional; default: process.cwd()
@@ -54,6 +55,7 @@ module.exports = [
             '.storybook',
             '**/snapshotResolver.js',
             '**/expected-output/**',
+            '**/playwright-report/**'
         ]
     },
     eslintPluginPrettierRecommended,
@@ -86,7 +88,9 @@ module.exports = [
                     contexts: ['TSMethodSignature']
                 }
             ],
-
+            ...(isFixMode && { // disable in fix mode to avoid generating incorrect JSDoc
+                'jsdoc/require-jsdoc': 'off'
+            }),
             'jsdoc/valid-types': 'error',
             'jsdoc/check-types': 'error',
             'jsdoc/check-param-names': 'error',
@@ -346,6 +350,9 @@ module.exports = [
                     'exemptEmptyFunctions': true
                 }
             ],
+            ...(isFixMode && { // disable in fix mode to avoid generating incorrect JSDoc
+                'jsdoc/require-jsdoc': 'off'
+            }),
             'jsdoc/valid-types': 'off',
             'jsdoc/check-types': 'off',
             'jsdoc/check-tag-names': 'off',

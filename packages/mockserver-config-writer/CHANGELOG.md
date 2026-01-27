@@ -1,5 +1,64 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.9.41
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+
+## 0.9.40
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/project-access@1.34.2
+
+## 0.9.39
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+
+## 0.9.38
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+
+## 0.9.37
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+
+## 0.9.36
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/project-access@1.33.1
+
+## 0.9.35
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/ui5-config@0.29.12
+
+## 0.9.34
+
+### Patch Changes
+
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/ui5-config@0.29.12
+
 ## 0.9.33
 
 ### Patch Changes

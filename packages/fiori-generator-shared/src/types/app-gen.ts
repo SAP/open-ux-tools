@@ -62,8 +62,6 @@ export interface AppGenInfo {
     generatorPlatform?: string;
     /** The filename of the metadata file */
     metadataFilename?: string;
-    /** Flag indicating whether code assistance is enabled. */
-    enableCodeAssist?: boolean;
     /** Flag indicating whether TypeScript is enabled. */
     enableTypeScript?: boolean;
     /** Flag indicating whether ESLint is enabled. */
@@ -72,6 +70,8 @@ export interface AppGenInfo {
     showMockDataInfo?: boolean;
     /** Text used to launch the application */
     launchText?: string;
+    /** Flag indicating whether value help metadata was downloaded */
+    valueHelpDownloaded?: boolean;
     /**
      * An array used to store information on the various entities, e.g main, navigation entity, and filter entity type.
      */

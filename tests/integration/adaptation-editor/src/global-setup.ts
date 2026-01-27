@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import path, { join } from 'node:path';
 import fs from 'node:fs';
 

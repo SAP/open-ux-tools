@@ -10,7 +10,7 @@ import type { TelemetryMeasurements, TelemetryProperties } from '../types';
  *
  */
 class ApplicationInsightClient extends Client {
-    private clients: Map<SampleRate, appInsights.TelemetryClient>;
+    private readonly clients: Map<SampleRate, appInsights.TelemetryClient>;
 
     /**
      *

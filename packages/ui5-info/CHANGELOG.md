@@ -1,5 +1,32 @@
 # @sap-ux/ui5-info
 
+## 0.13.8
+
+### Patch Changes
+
+- 9aad34c: Adds min supported spec version constant
+
+## 0.13.7
+
+### Patch Changes
+
+- 03598eb: Remove codeAssist support during project generation prompts and writing.
+
+## 0.13.6
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+
+## 0.13.5
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+
 ## 0.13.4
 
 ### Patch Changes

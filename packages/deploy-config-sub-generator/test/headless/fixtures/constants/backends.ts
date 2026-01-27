@@ -6,7 +6,9 @@ export const backendSystemOnPrem: BackendSystem = {
     name: 'SYS_010',
     password: 'some-pw',
     userDisplayName: 'some-name',
-    username: 'some-user'
+    username: 'some-user',
+    systemType: 'OnPrem',
+    connectionType: 'abap_catalog'
 };
 
 export const backendSystemBtp: BackendSystem = {
@@ -14,5 +16,7 @@ export const backendSystemBtp: BackendSystem = {
     client: '100',
     name: 'SYS_BTP',
     serviceKeys: '<MOCK SERVICE KEYS FOR SYS_BTP>',
-    userDisplayName: 'some-name'
+    userDisplayName: 'some-name',
+    systemType: 'AbapCloud',
+    connectionType: 'abap_catalog'
 };

@@ -2,10 +2,10 @@
 
 import fetch from 'node-fetch';
 import { marked } from 'marked';
-import * as fs from 'fs/promises';
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { spawn, type SpawnOptionsWithoutStdio } from 'node:child_process';
-import { default as matter } from 'gray-matter';
+import matter from 'gray-matter';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { setTimeout } from 'node:timers/promises';
 
@@ -352,7 +352,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: 'docs',
                     category: 'fiori-tools',
-                    enabled: false
+                    enabled: true
                 },
                 {
                     id: 'sapui5',
@@ -372,7 +372,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: '',
                     category: 'fiori-samples',
-                    enabled: false
+                    enabled: true
                 },
                 {
                     id: 'fiori-showcase',
@@ -382,7 +382,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: '',
                     category: 'fiori-features',
-                    enabled: false
+                    enabled: true
                 },
                 {
                     id: 'ui5-api',

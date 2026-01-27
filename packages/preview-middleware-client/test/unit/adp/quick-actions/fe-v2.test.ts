@@ -2167,6 +2167,7 @@ describe('FE V2 quick actions', () => {
                 let tooltip;
                 let enabled = true;
                 if (!testCase.isEnabled) {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                     (tooltip =
                         'This option has been disabled because variant management is already enabled for tables and charts'),
                         (enabled = false);

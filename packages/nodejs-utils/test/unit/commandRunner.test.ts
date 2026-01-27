@@ -1,4 +1,4 @@
-import childProcess, { type SpawnOptionsWithoutStdio } from 'child_process';
+import childProcess, { type SpawnOptionsWithoutStdio } from 'node:child_process';
 import { CommandRunner } from '../../src/commandRunner';
 import { type Logger } from '@sap-ux/logger';
 

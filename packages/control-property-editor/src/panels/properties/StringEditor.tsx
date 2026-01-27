@@ -66,7 +66,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
             if (type === FLOAT_VALUE_TYPE) {
                 let newValue: string | number = String(e.currentTarget.value);
                 if (type === FLOAT_VALUE_TYPE && !isExpression(newValue)) {
-                    newValue = parseFloat(String(newValue?.trim()));
+                    newValue = Number.parseFloat(String(newValue?.trim()));
                 }
                 setCachedValue(controlId, name, InputType.number, newValue);
                 setValue(newValue);
@@ -119,7 +119,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
                     } else {
                         if (type === INTEGER_VALUE_TYPE && !isExpression(value)) {
                             value = value.trim().replace(/(^-)|(\D+)/g, '$1');
-                            value = parseInt(String(value), 10);
+                            value = Number.parseInt(String(value), 10);
                         }
                         const inputType = type === INTEGER_VALUE_TYPE ? InputType.number : InputType.string;
                         setCachedValue(controlId, name, inputType, value);

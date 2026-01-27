@@ -1,37 +1,33 @@
-const { defineConfig } = require('eslint/config');
-const js = require('@eslint/js');
-
 const jsdoc = require('eslint-plugin-jsdoc');
-// const config = require('@sap-ux/eslint-plugin-fiori-tools');
+const typescriptEslint = require('@typescript-eslint/eslint-plugin');
+const tsParser = require('@typescript-eslint/parser');
+const fioriTools = require('@sap-ux/eslint-plugin-fiori-tools');
 
-module.exports = defineConfig([
+module.exports = [
     {
-        ignores: ['dist', 'test/fixtures/**', 'coverage', 'node_modules/**', 'eslint.config.js']
+        ignores: [
+            'test/fixtures/**',
+            'dist/**',
+            'node_modules/**',
+            '**/*.config.js',
+            'coverage/**',
+            '**/*.d.ts'
+        ]
     },
-    // ...config.defaultTS,
+    ...fioriTools.configs['recommended'],
     {
         languageOptions: {
+            parser: tsParser,
             ecmaVersion: 5,
             sourceType: 'script',
-
-            parserOptions: {
-                project: './tsconfig.eslint.json',
-                tsconfigRootDir: './'
-            }
         },
         plugins: {
-            jsdoc
+            '@typescript-eslint': typescriptEslint,
+            jsdoc,
+            'fiori-custom': fioriTools // backward compatibility
         },
         rules: {
             'quotes': ['error', 'single', { 'allowTemplateLiterals': true }],
-            'valid-jsdoc': [
-                'error',
-                {
-                    requireParamType: false,
-                    requireReturn: false,
-                    requireReturnType: false
-                }
-            ],
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 {
@@ -39,9 +35,12 @@ module.exports = defineConfig([
                     argsIgnorePattern: '^_'
                 }
             ],
+            'no-unused-vars': 'off',
+            'no-redeclare': 'off',
             '@typescript-eslint/no-unsafe-argument': 'warn',
             '@typescript-eslint/no-unsafe-member-access': 'warn',
-            '@typescript-eslint/no-unsafe-assignment': 'warn'
+            '@typescript-eslint/no-unsafe-assignment': 'warn',
+            '@sap-ux/fiori-tools/sap-no-global-variable': 'warn'
         }
     },
     {
@@ -51,4 +50,4 @@ module.exports = defineConfig([
             'jsdoc/require-jsdoc': 'off'
         }
     }
-]);
+];
