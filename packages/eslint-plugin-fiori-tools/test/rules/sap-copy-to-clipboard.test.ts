@@ -205,7 +205,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 errors: [
                     {
                         messageId: 'sap-copy-to-clipboard',
-                        line: 122,
+                        line: 127,
                         column: 21
                     }
                 ]

@@ -3,6 +3,7 @@ import { createFioriRule } from '../language/rule-factory';
 import { FLEX_ENABLED, type FlexEnabled } from '../language/diagnostics';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { isLowerThanMinimalUi5Version } from '../utils/version';
+import { createJsonFixer } from '../language/rule-fixer';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: FLEX_ENABLED,
@@ -43,29 +44,17 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJsonVisitorHandler: (context, _diagnostic, paths) =>
+    createJsonVisitorHandler: (context, diagnostic, paths) =>
         function report(node: MemberNode): void {
             context.report({
                 node,
                 messageId: FLEX_ENABLED,
-                fix(fixer) {
-                    if (paths.missingSegments.length === 0) {
-                        const expectedValue = true;
-                        if (node.value.type === 'Boolean') {
-                            return fixer.replaceTextRange(
-                                node.value.range ?? [node.value.loc.start.offset, node.value.loc.end.offset],
-                                expectedValue.toString()
-                            );
-                        }
-                        return null;
-                    } else {
-                        const valueOffset = node.value.loc.start.offset + 1;
-                        return fixer.insertTextBeforeRange(
-                            [valueOffset, valueOffset],
-                            `\n${new Array(node.value.loc.end.column + 1).join(' ')}"flexEnabled": true,`
-                        );
-                    }
-                }
+                fix: createJsonFixer({
+                    value: true,
+                    context,
+                    deepestPathResult: paths,
+                    node
+                })
             });
         }
 });
