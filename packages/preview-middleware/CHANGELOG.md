@@ -1,5 +1,53 @@
 # @sap-ux/preview-middleware
 
+## 0.23.100
+
+### Patch Changes
+
+- c061595: fix: support rta and cpe for CAP node w/o mockserver
+
+## 0.23.99
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/adp-tooling@0.18.45
+    - @sap-ux/system-access@0.6.43
+
+## 0.23.98
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+- Updated dependencies [c707af1]
+    - @sap-ux/adp-tooling@0.18.44
+
+## 0.23.97
+
+### Patch Changes
+
+- Updated dependencies [d11943d]
+    - @sap-ux/adp-tooling@0.18.43
+
+## 0.23.96
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.42
+- @sap-ux/system-access@0.6.42
+
+## 0.23.95
+
+### Patch Changes
+
+- 1970178: Fix: Switch Page Action creation for OData V4 from addXML to appDescriptor based
+
+## 0.23.94
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.41
+
 ## 0.23.93
 
 ### Patch Changes

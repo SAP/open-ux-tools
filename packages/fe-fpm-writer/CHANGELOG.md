@@ -1,5 +1,24 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.41.1
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/fiori-annotation-api@0.9.4
+
+## 0.41.0
+
+### Minor Changes
+
+- 68b0e54: Add Rich Text Editor Button Groups support
+
+## 0.40.12
+
+### Patch Changes
+
+- cc8871a: fix(fpm-writer): fix width issue with custom filter field in filter bar
+
 ## 0.40.11
 
 ### Patch Changes
