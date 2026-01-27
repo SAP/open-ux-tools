@@ -99,7 +99,8 @@ const rule: FioriRuleDefinition = createFioriRule({
                 'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for better column width calculation. Add it to the control configuration for "{{table}}" table.',
             ['width-including-column-header']:
                 'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for better column width calculation.'
-        }
+        },
+        fixable: 'code'
     },
     check(context) {
         const problems: WidthIncludingColumnHeaderDiagnostic[] = [];
@@ -121,13 +122,60 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJsonVisitorHandler: (context, diagnostic) =>
+    createJsonVisitorHandler: (context, diagnostic, paths) =>
         function report(node: MemberNode): void {
             context.report({
                 node,
                 messageId: 'width-including-column-header-manifest',
                 data: {
                     table: diagnostic.annotation.annotationPath
+                },
+                fix(fixer) {
+                    if (paths.missingSegments.length === 0) {
+                        // Property exists but has wrong value - replace it
+                        const expectedValue = true;
+                        if (node.value.type === 'Boolean') {
+                            return fixer.replaceTextRange(
+                                node.value.range ?? [node.value.loc.start.offset, node.value.loc.end.offset],
+                                expectedValue.toString()
+                            );
+                        }
+                        return null;
+                    } else {
+                        // Property missing - need to build nested structure
+                        const baseIndent = node.value.loc.end.column + 1;
+                        const indent = ' '.repeat(baseIndent);
+
+                        // Build the nested JSON structure from the missing segments
+                        let jsonStructure = '';
+                        const segments = paths.missingSegments;
+
+                        // Start with the first missing segment
+                        jsonStructure = `\n${indent}"${segments[0]}": `;
+
+                        // Build nested objects for intermediate segments
+                        for (let i = 1; i < segments.length - 1; i++) {
+                            jsonStructure += `{\n${indent}  ${'  '.repeat(i)}"${segments[i]}": `;
+                        }
+
+                        // Add the final property with its value
+                        if (segments.length === 1) {
+                            // Direct property
+                            jsonStructure += `true,`;
+                        } else {
+                            // Nested property
+                            jsonStructure += `{\n${indent}  ${'  '.repeat(segments.length - 1)}"${segments[segments.length - 1]}": true\n`;
+
+                            // Close all nested objects
+                            for (let i = segments.length - 2; i >= 1; i--) {
+                                jsonStructure += `${indent}  ${'  '.repeat(i)}}\n`;
+                            }
+                            jsonStructure += `${indent}},`;
+                        }
+
+                        const valueOffset = node.value.loc.start.offset + 1;
+                        return fixer.insertTextBeforeRange([valueOffset, valueOffset], jsonStructure);
+                    }
                 }
             });
         },
