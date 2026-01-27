@@ -1,5 +1,29 @@
 # @sap-ux/inquirer-common
 
+## 0.10.17
+
+### Patch Changes
+
+- Updated dependencies [c707af1]
+    - @sap-ux/telemetry@0.6.58
+    - @sap-ux/fiori-generator-shared@0.13.57
+
+## 0.10.16
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/odata-service-writer@0.29.9
+
+## 0.10.15
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.55
+- @sap-ux/telemetry@0.6.57
+
 ## 0.10.14
 
 ### Patch Changes

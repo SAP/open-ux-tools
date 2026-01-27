@@ -1,5 +1,23 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.13
+
+### Patch Changes
+
+- af8d6b8: fix: change table action creation for v4 from addXML to app descriptor change
+
+## 0.18.12
+
+### Patch Changes
+
+- c061595: fix: support rta and cpe for CAP node w/o mockserver
+
+## 0.18.11
+
+### Patch Changes
+
+- 1970178: Fix: Switch Page Action creation for OData V4 from addXML to appDescriptor based
+
 ## 0.18.10
 
 ### Patch Changes

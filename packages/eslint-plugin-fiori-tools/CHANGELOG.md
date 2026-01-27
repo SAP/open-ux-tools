@@ -1,5 +1,29 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.2.3
+
+### Patch Changes
+
+- 98a5947: fix: add auto fix for creation mode for table
+
+## 9.2.2
+
+### Patch Changes
+
+- 40b2423: fix: revised text
+
+## 9.2.1
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.4
+
+## 9.2.0
+
+### Minor Changes
+
+- cd27778: Fix plugin integration issue when working with multiple projects: create new ProjectContext and cache diagnostics by file uri and ruleId.
+
 ## 9.1.3
 
 ### Patch Changes

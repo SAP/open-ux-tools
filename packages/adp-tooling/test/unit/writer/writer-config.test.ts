@@ -73,7 +73,8 @@ const baseConfig: ConfigOptions = {
     packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
     logger: {} as ToolsLogger,
     manifest,
-    toolsId: 'test-tools-id'
+    toolsId: 'test-tools-id',
+    keyUserChanges: []
 };
 
 describe('getConfig', () => {
@@ -115,7 +116,8 @@ describe('getConfig', () => {
                 shouldSetMinVersion: true,
                 version: '1.135.0'
             },
-            options: { fioriTools: true, enableTypeScript: false }
+            options: { fioriTools: true, enableTypeScript: false },
+            keyUserChanges: []
         });
     });
 });

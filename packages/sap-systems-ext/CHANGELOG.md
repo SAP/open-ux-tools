@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 0.2.2
+
+### Patch Changes
+
+- 3ffe28e: fix input background styling when Chrome autofill is applied
+
+## 0.2.1
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
 ## 0.2.0
 
 ### Minor Changes

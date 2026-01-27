@@ -115,14 +115,6 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
         ),
         createValidTest(
             {
-                name: 'non manifest file - cds',
-                filename: 'some-other-file.cds',
-                code: ''
-            },
-            []
-        ),
-        createValidTest(
-            {
                 name: 'widthIncludingColumnHeader set to true for small table',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
@@ -164,7 +156,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                 errors: [
                     {
                         messageId: 'width-including-column-header-manifest',
-                        line: 119,
+                        line: 124,
                         column: 19
                     }
                 ]
@@ -214,7 +206,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                 errors: [
                     {
                         messageId: 'width-including-column-header-manifest',
-                        line: 134,
+                        line: 139,
                         column: 13
                     }
                 ]

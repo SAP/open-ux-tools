@@ -97,6 +97,17 @@ type Ui5Version = {
     isCdn: boolean;
 };
 
+type RtaDeveloperModeTemplateConfig = {
+    previewUrl: string;
+    telemetry: boolean;
+    appName: string | undefined;
+    scenario?: string;
+    livereloadPort: number;
+    livereloadUrl?: string;
+    features: string;
+    baseUrl: string;
+};
+
 /**
  * Class handling preview of a sandbox FLP.
  */
@@ -109,7 +120,7 @@ export class FlpSandbox {
     public readonly rta?: RtaConfig;
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
-    private fs: MemFsEditor | undefined;
+    private readonly fs: MemFsEditor;
     private readonly logger: Logger;
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
@@ -125,6 +136,7 @@ export class FlpSandbox {
      * @param logger logger instance
      */
     constructor(config: Partial<MiddlewareConfig>, project: ReaderCollection, utils: MiddlewareUtils, logger: Logger) {
+        this.fs = create(createStorage());
         this.logger = logger;
         this.project = project;
         this.utils = utils;
@@ -302,12 +314,20 @@ export class FlpSandbox {
             : '@sap-ux/preview-middleware';
 
         await this.setApplicationDependencies();
-        const config = { ...this.templateConfig };
-        /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
+        this.templateConfig.baseUrl = req['ui5-patched-router']?.baseUrl ?? '';
+        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, this.templateConfig.baseUrl);
+        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
+        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
+            this.removeAsyncHintsRequests();
+        }
+
+        const config = structuredClone(this.templateConfig);
         if (!config.ui5.libs.includes('sap.ui.rta')) {
-            const libs = config.ui5.libs.split(',');
-            libs.push('sap.ui.rta');
-            config.ui5.libs = libs.join(',');
+            // sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects
+            config.ui5.libs += ',sap.ui.rta';
+        }
+        if (editor.developerMode) {
+            config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
         }
         config.flexSettings = {
             layer: rta.layer ?? 'CUSTOMER_BASE',
@@ -318,17 +338,6 @@ export class FlpSandbox {
         };
         config.features = FeatureToggleAccess.getAllFeatureToggles();
 
-        const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
-
-        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
-
-        if (editor.developerMode === true) {
-            config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
-        }
-
-        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
-            this.removeAsyncHintsRequests();
-        }
         return render(this.getSandboxTemplate(ui5Version), config);
     }
 
@@ -349,12 +358,18 @@ export class FlpSandbox {
     /**
      * Handler for the GET requests to the runtime adaptation editor in developer mode.
      *
+     * @param req the request
      * @param res the response
      * @param rta runtime adaptation configuration
      * @param previewUrl the url of the preview
      * @private
      */
-    private async editorGetHandlerDeveloperMode(res: Response, rta: RtaConfig, previewUrl: string): Promise<void> {
+    private async editorGetHandlerDeveloperMode(
+        req: EnhancedRequest,
+        res: Response,
+        rta: RtaConfig,
+        previewUrl: string
+    ): Promise<void> {
         const scenario = rta.options?.scenario;
         let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
         if (scenario === 'ADAPTATION_PROJECT') {
@@ -368,13 +383,14 @@ export class FlpSandbox {
         const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
         const html = render(template, {
             previewUrl: templatePreviewUrl,
-            telemetry: rta.options?.telemetry ?? false,
+            telemetry: !!rta.options?.telemetry,
             appName: rta.options?.appName,
             scenario,
             livereloadPort,
             livereloadUrl: envLivereloadUrl,
-            features: JSON.stringify(features)
-        });
+            features: JSON.stringify(features),
+            baseUrl: req['ui5-patched-router']?.baseUrl ?? ''
+        } satisfies RtaDeveloperModeTemplateConfig);
         this.sendResponse(res, 'text/html', 200, html);
     }
 
@@ -398,7 +414,9 @@ export class FlpSandbox {
         if (!req.query['fiori-tools-rta-mode']) {
             this.logger.debug(`Adjusting URL parameters for runtime adaptation mode. Redirecting to correct URL.`);
             const url =
-                'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl) : previewUrl;
+                'ui5-patched-router' in req
+                    ? posix.join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl)
+                    : previewUrl;
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
             params['fiori-tools-rta-mode'] = 'true';
@@ -426,8 +444,8 @@ export class FlpSandbox {
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(editor.path, async (_req: Request, res: Response) => {
-                    await this.editorGetHandlerDeveloperMode(res, rta, previewUrl);
+                this.router.get(editor.path, async (req: EnhancedRequest, res: Response) => {
+                    await this.editorGetHandlerDeveloperMode(req, res, rta, previewUrl);
                 });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
@@ -459,7 +477,7 @@ export class FlpSandbox {
         if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
             this.logger.debug(`Adjusting URL parameters for preview. Redirecting to correct URL.`);
             const url =
-                'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', req.path) : req.path;
+                'ui5-patched-router' in req ? posix.join(req['ui5-patched-router']?.baseUrl ?? '', req.path) : req.path;
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
             res.redirect(302, `${url}?${new URLSearchParams(params)}`);
@@ -474,15 +492,18 @@ export class FlpSandbox {
             this.logger.info(`HTML file returned at ${filePath} is loaded from the file system.`);
             next();
         } else {
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            this.templateConfig.baseUrl = ('ui5-patched-router' in req && req['ui5-patched-router']?.baseUrl) || '';
             const ui5Version = await this.getUi5Version(
                 //use protocol from request header referer as fallback for connect API (karma test runner)
                 'protocol' in req
                     ? req.protocol
                     : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http'),
                 req.headers.host,
-                'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
+                this.templateConfig.baseUrl
             );
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
+            //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
             const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
@@ -612,7 +633,6 @@ export class FlpSandbox {
     private removeAsyncHintsRequests(): void {
         for (const app in this.templateConfig.apps) {
             const appDependencies = this.templateConfig.apps[app].applicationDependencies;
-
             if (appDependencies?.asyncHints.requests) {
                 appDependencies.asyncHints.requests = [];
             }
@@ -636,7 +656,6 @@ export class FlpSandbox {
         for (const app of this.flpConfig.apps) {
             let manifest: Manifest | undefined;
             if (app.local) {
-                this.fs = this.fs ?? create(createStorage());
                 const webappPath = await getWebappPath(app.local, this.fs);
                 manifest = JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest | undefined;
                 this.router.use(app.target, serveStatic(webappPath));
@@ -683,7 +702,6 @@ export class FlpSandbox {
     private async flexGetHandler(res: Response): Promise<void> {
         const changes = await readChanges(this.project, this.logger);
         if (this.onChangeRequest) {
-            this.fs = this.fs ?? create(createStorage());
             for (const change of Object.values(changes)) {
                 await this.onChangeRequest('read', change, this.fs, this.logger);
             }
@@ -699,7 +717,6 @@ export class FlpSandbox {
      * @private
      */
     private async flexPostHandler(req: Request, res: Response): Promise<void> {
-        this.fs = this.fs ?? create(createStorage());
         try {
             const body = req.body;
             if (this.onChangeRequest) {
@@ -1008,7 +1025,6 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            this.fs = this.fs ?? create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
@@ -1062,7 +1078,6 @@ export class FlpSandbox {
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            this.fs = this.fs ?? create(createStorage());
             const webappPath = await getWebappPath(path.resolve(), this.fs);
             const i18nConfig = this.manifest['sap.app'].i18n;
             let i18nPath = 'i18n/i18n.properties';
@@ -1087,7 +1102,7 @@ export class FlpSandbox {
                 fallbackLocale = fallback;
             }
 
-            const requestedLocale = (req.query.locale as string) || fallbackLocale || '';
+            const requestedLocale = (req.query.locale as string) ?? fallbackLocale ?? '';
             const baseFilePath = join(webappPath, i18nPath);
             const filePath = requestedLocale
                 ? baseFilePath.replace('.properties', `_${requestedLocale}.properties`)
