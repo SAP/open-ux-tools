@@ -40,7 +40,8 @@ describe('Credential Storage Logic', () => {
             const configAnswers = {
                 system: 'SystemA',
                 username: 'user1',
-                password: 'pass1'
+                password: 'pass1',
+                application: {} as any
             };
 
             (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue({
@@ -64,7 +65,8 @@ describe('Credential Storage Logic', () => {
             const configAnswers = {
                 system: 'SystemA',
                 username: 'user1',
-                password: 'pass1'
+                password: 'pass1',
+                application: {} as any
             };
 
             (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue({
@@ -86,8 +88,9 @@ describe('Credential Storage Logic', () => {
             const configAnswers = {
                 system: 'SystemA',
                 username: 'user1',
-                password: undefined
-            };
+                password: '',
+                application: {} as any
+            } as any;
 
             await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
 
@@ -99,7 +102,8 @@ describe('Credential Storage Logic', () => {
             const configAnswers = {
                 system: 'SystemA',
                 username: 'user1',
-                password: 'pass1'
+                password: 'pass1',
+                application: {} as any
             };
 
             (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue(undefined);
@@ -114,7 +118,8 @@ describe('Credential Storage Logic', () => {
             const configAnswers = {
                 system: 'SystemA',
                 username: 'user1',
-                password: 'pass1'
+                password: 'pass1',
+                application: {} as any
             };
 
             (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue({
