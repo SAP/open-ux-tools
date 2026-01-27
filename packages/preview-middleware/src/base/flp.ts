@@ -452,6 +452,7 @@ export class FlpSandbox {
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
+                this.logger.debug(`Add route for ${editor.path}`);
                 this.router.get(editor.path, async (req: EnhancedRequest, res: Response) => {
                     await this.editorGetHandlerDeveloperMode(req, res, rta, previewUrl);
                 });
@@ -461,7 +462,7 @@ export class FlpSandbox {
                 }
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
-
+            this.logger.debug(`Add route for ${previewUrl}`);
             this.router.get(previewUrl, async (req: Request, res: Response) => {
                 await this.editorGetHandler(req, res, rta, previewUrl, editor);
             });
@@ -527,6 +528,8 @@ export class FlpSandbox {
             posix.join(getResourcesPathPrefix(this.utils) ?? '/', PREVIEW_URL.client.path),
             serveStatic(PREVIEW_URL.client.local)
         );
+
+        this.logger.debug(`Add route for ${this.flpConfig.path}`);
 
         // add route for the sandbox html
         this.router.get(
