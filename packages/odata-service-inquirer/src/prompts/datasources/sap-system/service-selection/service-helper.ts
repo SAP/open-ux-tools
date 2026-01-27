@@ -243,7 +243,7 @@ async function getServiceMetadataAndValidate(
             convertedMetadata
         };
     } catch (error) {
-        const errorText = errorHandler.logErrorMsgs(error);
+        const errorText = errorHandler.getErrorMsg(error);
         LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, errorText }));
         return {
             validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText })
