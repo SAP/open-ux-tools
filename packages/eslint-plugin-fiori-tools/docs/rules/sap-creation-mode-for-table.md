@@ -21,7 +21,7 @@ The rule performs different validations depending on the SAP Fiori elements vers
 - Validates `creationMode` at two levels: page level → application level.
 - Recommends `InlineCreationRows` for responsive Tables and grid tables.
 - Recommends `Inline` for tree tables.
-- Warns if analytical tables have `creationMode` configured. Vreation mode is not supported for analytical tables.
+- Warns if analytical tables have `creationMode` configured. Creation mode is not supported for analytical tables.
 - Suggests adding `creationMode` at the application level, if not configured.
 
 
