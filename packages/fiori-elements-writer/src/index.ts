@@ -28,7 +28,7 @@ import {
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
-import { TableType, TemplateType } from '@sap-ux/project-access';
+import { TemplateType } from '@sap-ux/project-access';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
@@ -105,7 +105,7 @@ function shouldAddTest(service: Partial<OdataService>, addTests?: boolean): bool
  * @param log - optional logger instance
  * @returns Reference to a mem-fs-editor
  */
-async function generate<T extends {}>(
+export async function generate<T extends {}>(
     basePath: string,
     data: FioriElementsApp<T>,
     fs?: Editor,
@@ -279,7 +279,7 @@ async function generate<T extends {}>(
     return fs;
 }
 
-export { generate, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
 export * from './types';
 export { TableType, TemplateType } from '@sap-ux/project-access';
 export type { App } from '@sap-ux/ui5-application-writer';
+export { TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 } from './data/templateAttributes';
