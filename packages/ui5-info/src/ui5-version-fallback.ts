@@ -424,7 +424,6 @@ export const ui5VersionFallbacks = [
     }
 ] as UI5VersionSupport[];
 
-
 const supportedUi5VersionFallbacks: UI5VersionSupport[] = ui5VersionFallbacks
     .filter(
         (supportVersion) =>
