@@ -24,7 +24,7 @@ The rule performs different validations depending on the SAP Fiori elements vers
 - Warns if analytical tables have `creationMode` configured. Creation mode is not supported for analytical tables.
 - Suggests adding `creationMode` at the application level, if not configured.
 
-**Note**: If mixed mode of table types e.g. `ResponsiveTable` and `TreeTable` is configured, diagnostic is reported on page level.
+**Note**: If multiple table types are configured, for example, `ResponsiveTable` and `TreeTable`, an issue is reported at the page level.
 
 ### Invalid `createMode` Value in OData V2
 
