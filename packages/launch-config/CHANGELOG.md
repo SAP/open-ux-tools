@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.10.53
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+
 ## 0.10.52
 
 ### Patch Changes
