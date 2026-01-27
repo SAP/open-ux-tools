@@ -25,7 +25,7 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
         pattern: '',
         framework: 'Testsuite'
     }
-} satisfies TestConfigDefaults;
+} as const satisfies TestConfigDefaults;
 
 /**
  * Check if the init path is a default generated path (not user-provided).
@@ -65,7 +65,7 @@ export function isDefaultInitPath(
  */
 export function mergeTestConfigDefaults(config: TestConfig, utils?: MiddlewareUtils): CompleteTestConfig {
     const testPathPrefix = getTestResourcesPathPrefix(utils);
-    const defaults: CompleteTestConfig = DEFAULTS[config.framework.toLowerCase()] ?? {};
+    const defaults: CompleteTestConfig = structuredClone(DEFAULTS[config.framework.toLowerCase()] ?? {});
 
     if (testPathPrefix) {
         // remove leading /test from defaults if sandboxPathPrefix is set
