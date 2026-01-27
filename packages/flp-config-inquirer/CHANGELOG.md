@@ -1,5 +1,14 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.104
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/adp-tooling@0.18.45
+    - @sap-ux/fiori-generator-shared@0.13.57
+
 ## 0.4.103
 
 ### Patch Changes
