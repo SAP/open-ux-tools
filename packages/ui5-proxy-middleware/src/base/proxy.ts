@@ -21,7 +21,8 @@ import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 import type { MiddlewareParameters } from '@ui5/server';
 
 /**
- * Creates a combined proxy filter by merging the base filter with namespace exclusion and custom filters.
+ * Create a combined filter function for the proxy middleware by combining
+ * either a custom filter or the default filter with the namespace exclusion filter.
  *
  * @param customFilter - optional custom filter from configuration
  * @param middlewareUtil - middleware utilities for namespace detection
