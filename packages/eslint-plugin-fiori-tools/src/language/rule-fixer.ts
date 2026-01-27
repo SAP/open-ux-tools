@@ -1,7 +1,12 @@
 import type { JSONRuleContext } from './rule-factory';
-import type { MemberNode, ObjectNode } from '@humanwhocodes/momoa';
+import type { AnyNode, MemberNode, ObjectNode } from '@humanwhocodes/momoa';
 import type { DeepestExistingPathResult } from '../utils/helpers';
 import type { RuleTextEdit, RuleTextEditor } from '@eslint/core';
+
+/**
+ * Represents a JSON value that can be set in the manifest.
+ */
+type JsonValue = string | number | boolean | null | Record<string, unknown> | unknown[];
 
 /**
  * Configuration for creating a JSON fixer.
@@ -26,7 +31,7 @@ export interface JsonFixerConfig<MessageIds extends string, RuleOptions extends 
      * The value to set. If undefined, the property will be deleted.
      * Can be a primitive value, an object, or an array.
      */
-    value?: string | number | boolean | null | Record<string, unknown> | unknown[];
+    value?: JsonValue;
 
     /**
      * The operation to perform: 'insert', 'update', or 'delete'.
@@ -92,10 +97,10 @@ export function createJsonFixer<MessageIds extends string, RuleOptions extends u
     if (!fixOperation) {
         if (missingSegments.length > 0) {
             fixOperation = 'insert';
-        } else if (value !== undefined) {
-            fixOperation = 'update';
-        } else {
+        } else if (value === undefined) {
             fixOperation = 'delete';
+        } else {
+            fixOperation = 'update';
         }
     }
 
@@ -137,11 +142,7 @@ export function createJsonFixer<MessageIds extends string, RuleOptions extends u
  * @param value - The new value to set
  * @returns Fixer result or undefined if no fix is possible
  */
-function handleUpdate(
-    fixer: RuleTextEditor,
-    node: MemberNode,
-    value: string | number | boolean | null | undefined | Record<string, unknown> | unknown[]
-): RuleTextEdit | undefined {
+function handleUpdate(fixer: RuleTextEditor, node: MemberNode, value: JsonValue | undefined): RuleTextEdit | undefined {
     if (!node.value) {
         return undefined;
     }
@@ -182,7 +183,7 @@ function handleInsert(
     fixer: RuleTextEditor,
     node: MemberNode,
     missingSegments: string[],
-    value: string | number | boolean | null | undefined | Record<string, unknown> | unknown[]
+    value: JsonValue | undefined
 ): RuleTextEdit | undefined {
     if (missingSegments.length === 0) {
         return undefined;
@@ -254,73 +255,137 @@ function handleDelete<MessageIds extends string, RuleOptions extends unknown[]>(
     const startOffset = node.name.loc.start.offset;
     const endOffset = node.value.loc.end.offset;
 
-    // Find the parent object by locating the nearest enclosing object in the AST
-    // We need to traverse the AST from the root to find the parent containing this member
     const parentObject = findParentObject(context.sourceCode.ast.body, node);
     const parentMembers = parentObject?.members ?? [];
-    const nodeIndex = parentMembers.findIndex(
+    const nodeIndex = findNodeIndex(parentMembers, startOffset, endOffset);
+    const isLastProperty = nodeIndex !== -1 && nodeIndex === parentMembers.length - 1;
+
+    const lineStartOffset = findLineStart(sourceCode, startOffset);
+
+    if (isLastProperty && nodeIndex > 0) {
+        return handleLastPropertyDelete(fixer, sourceCode, parentMembers, nodeIndex, endOffset, lineStartOffset);
+    }
+
+    const deleteEndOffset = findDeleteEndOffset(sourceCode, endOffset, true);
+    return fixer.removeRange([lineStartOffset, deleteEndOffset]);
+}
+
+/**
+ * Finds the index of a node in the parent members array.
+ *
+ * @param parentMembers - Array of member nodes
+ * @param startOffset - Start offset of the node
+ * @param endOffset - End offset of the node
+ * @returns Index of the node or -1 if not found
+ */
+function findNodeIndex(parentMembers: MemberNode[], startOffset: number, endOffset: number): number {
+    return parentMembers.findIndex(
         (member: MemberNode) =>
             member.name.loc.start.offset === startOffset && member.value.loc.end.offset === endOffset
     );
-    const isLastProperty = nodeIndex !== -1 && nodeIndex === parentMembers.length - 1;
+}
 
-    // Find the start of the line where the property name begins (including leading whitespace)
+/**
+ * Finds the start of the line (including leading whitespace).
+ *
+ * @param sourceCode - The source code text
+ * @param startOffset - The starting offset
+ * @returns The offset at the start of the line
+ */
+function findLineStart(sourceCode: string, startOffset: number): number {
     let lineStartOffset = startOffset;
     while (lineStartOffset > 0 && sourceCode[lineStartOffset - 1] !== '\n') {
         lineStartOffset--;
     }
+    return lineStartOffset;
+}
 
-    // Find the end of deletion
+/**
+ * Finds the end offset for deletion, optionally including trailing comma.
+ *
+ * @param sourceCode - The source code text
+ * @param endOffset - The current end offset
+ * @param includeComma - Whether to include a trailing comma
+ * @returns The end offset for deletion
+ */
+function findDeleteEndOffset(sourceCode: string, endOffset: number, includeComma: boolean): number {
     let deleteEndOffset = endOffset;
-
-    if (isLastProperty && nodeIndex > 0) {
-        // This is the last property - we need to remove the trailing comma from the previous property
-        const previousNode = parentMembers[nodeIndex - 1];
-        const previousValueEnd = previousNode.value.loc.end.offset;
-
-        // Find the comma after the previous property's value
-        let commaOffset = -1;
-        for (let i = previousValueEnd; i < startOffset; i++) {
-            if (sourceCode[i] === ',') {
-                commaOffset = i;
-                break;
-            }
-        }
-
-        // Extend deletion to include newline after current property if present
-        for (let i = endOffset; i < sourceCode.length; i++) {
-            const char = sourceCode[i];
-            if (char === '\n') {
-                deleteEndOffset = i + 1;
-                break;
-            } else if (/\s/.test(char)) {
-                deleteEndOffset = i + 1;
+    let commaFound = false;
+    for (let i = endOffset; i < sourceCode.length; i++) {
+        const char = sourceCode[i];
+        if (char === '\n') {
+            deleteEndOffset = i + 1;
+            break;
+        } else if (char === ',') {
+            deleteEndOffset = i + 1;
+            if (includeComma) {
+                commaFound = true;
+                // Continue to find the newline after the comma
             } else {
+                // Don't include comma, stop before it
+                deleteEndOffset = i;
                 break;
             }
+        } else if (/\s/.test(char)) {
+            deleteEndOffset = i + 1;
+            if (commaFound && !includeComma) {
+                // Already found comma and don't want to include it, stop
+                break;
+            }
+        } else {
+            // Hit a non-whitespace, non-comma character
+            break;
         }
+    }
+    return deleteEndOffset;
+}
 
-        // Return multiple edits: remove the comma from previous line and remove current line
-        if (commaOffset !== -1) {
-            return [
-                fixer.removeRange([commaOffset, commaOffset + 1]),
-                fixer.removeRange([lineStartOffset, deleteEndOffset])
-            ];
+/**
+ * Finds the comma offset after a node's value.
+ *
+ * @param sourceCode - The source code text
+ * @param previousValueEnd - End offset of the previous value
+ * @param startOffset - Start offset to search up to
+ * @returns The comma offset or -1 if not found
+ */
+function findCommaOffset(sourceCode: string, previousValueEnd: number, startOffset: number): number {
+    for (let i = previousValueEnd; i < startOffset; i++) {
+        if (sourceCode[i] === ',') {
+            return i;
         }
-    } else {
-        // Not the last property - include trailing comma and newline after the value
-        for (let i = endOffset; i < sourceCode.length; i++) {
-            const char = sourceCode[i];
-            if (char === '\n') {
-                deleteEndOffset = i + 1;
-                break;
-            } else if (char === ',' || /\s/.test(char)) {
-                deleteEndOffset = i + 1;
-            } else {
-                // Hit a non-whitespace, non-comma character - stop here
-                break;
-            }
-        }
+    }
+    return -1;
+}
+
+/**
+ * Handles deletion of the last property in an object.
+ *
+ * @param fixer - The ESLint fixer object
+ * @param sourceCode - The source code text
+ * @param parentMembers - Array of parent members
+ * @param nodeIndex - Index of the node being deleted
+ * @param endOffset - End offset of the node
+ * @param lineStartOffset - Start of the line offset
+ * @returns Fixer result or undefined
+ */
+function handleLastPropertyDelete(
+    fixer: RuleTextEditor,
+    sourceCode: string,
+    parentMembers: MemberNode[],
+    nodeIndex: number,
+    endOffset: number,
+    lineStartOffset: number
+): RuleTextEdit[] | RuleTextEdit | undefined {
+    const previousNode = parentMembers[nodeIndex - 1];
+    const previousValueEnd = previousNode.value.loc.end.offset;
+    const commaOffset = findCommaOffset(sourceCode, previousValueEnd, lineStartOffset);
+    const deleteEndOffset = findDeleteEndOffset(sourceCode, endOffset, false);
+
+    if (commaOffset !== -1) {
+        return [
+            fixer.removeRange([commaOffset, commaOffset + 1]),
+            fixer.removeRange([lineStartOffset, deleteEndOffset])
+        ];
     }
 
     return fixer.removeRange([lineStartOffset, deleteEndOffset]);
@@ -333,41 +398,76 @@ function handleDelete<MessageIds extends string, RuleOptions extends unknown[]>(
  * @param targetMember - The MemberNode we're looking for the parent of
  * @returns The parent ObjectNode if found, undefined otherwise
  */
-function findParentObject(node: ObjectNode | any, targetMember: MemberNode): ObjectNode | undefined {
+function findParentObject(node: AnyNode, targetMember: MemberNode): ObjectNode | undefined {
     if (!node) {
         return undefined;
     }
 
-    // If this node is an Object with members, check if it contains our target member
     if (node.type === 'Object' && node.members) {
-        for (const member of node.members as MemberNode[]) {
-            if (
-                member.name.loc.start.offset === targetMember.name.loc.start.offset &&
-                member.value.loc.end.offset === targetMember.value.loc.end.offset
-            ) {
-                return node;
-            }
-        }
-
-        // Recursively search in member values
-        for (const member of node.members as MemberNode[]) {
-            const found = findParentObject(member.value, targetMember);
-            if (found) {
-                return found;
-            }
-        }
+        return searchInObjectMembers(node, targetMember);
     }
 
-    // Handle Array type
     if (node.type === 'Array' && node.elements) {
-        for (const element of node.elements as any[]) {
-            const found = findParentObject(element, targetMember);
-            if (found) {
-                return found;
-            }
+        return searchInArrayElements(node.elements, targetMember);
+    }
+
+    return undefined;
+}
+
+/**
+ * Checks if a member node matches the target member.
+ *
+ * @param member - The member to check
+ * @param targetMember - The target member to match against
+ * @returns True if the member matches the target
+ */
+function isMemberMatchingTarget(member: MemberNode, targetMember: MemberNode): boolean {
+    return (
+        member.name.loc.start.offset === targetMember.name.loc.start.offset &&
+        member.value.loc.end.offset === targetMember.value.loc.end.offset
+    );
+}
+
+/**
+ * Searches for the parent object in object members.
+ *
+ * @param node - The object node to search in
+ * @param targetMember - The target member to find
+ * @returns The parent ObjectNode if found, undefined otherwise
+ */
+function searchInObjectMembers(node: ObjectNode, targetMember: MemberNode): ObjectNode | undefined {
+    // Check if any direct member matches the target
+    for (const member of node.members as MemberNode[]) {
+        if (isMemberMatchingTarget(member, targetMember)) {
+            return node;
         }
     }
 
+    // Recursively search in member values
+    for (const member of node.members as MemberNode[]) {
+        const found = findParentObject(member.value, targetMember);
+        if (found) {
+            return found;
+        }
+    }
+
+    return undefined;
+}
+
+/**
+ * Searches for the parent object in array elements.
+ *
+ * @param elements - The array elements to search in
+ * @param targetMember - The target member to find
+ * @returns The parent ObjectNode if found, undefined otherwise
+ */
+function searchInArrayElements(elements: AnyNode[], targetMember: MemberNode): ObjectNode | undefined {
+    for (const element of elements) {
+        const found = findParentObject(element, targetMember);
+        if (found) {
+            return found;
+        }
+    }
     return undefined;
 }
 
@@ -382,7 +482,7 @@ function findParentObject(node: ObjectNode | any, targetMember: MemberNode): Obj
  */
 function buildNestedJson(
     segments: string[],
-    value: string | number | boolean | null | undefined | Record<string, unknown> | unknown[],
+    value: JsonValue | undefined,
     currentIndent: number,
     indentSize: number
 ): string {
@@ -410,9 +510,7 @@ function buildNestedJson(
  * @param value - The value to format
  * @returns Formatted JSON string
  */
-function formatJsonValue(
-    value: string | number | boolean | null | undefined | Record<string, unknown> | unknown[]
-): string {
+function formatJsonValue(value: JsonValue | undefined): string {
     if (value === null) {
         return 'null';
     }
