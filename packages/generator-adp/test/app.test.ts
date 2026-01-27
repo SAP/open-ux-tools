@@ -32,6 +32,7 @@ import {
     isLoggedInCf,
     loadApps,
     loadCfConfig,
+    storeCredentials,
     validateUI5VersionExists
 } from '@sap-ux/adp-tooling';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
@@ -128,7 +129,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getModuleNames: jest.fn(),
     getApprouterType: jest.fn(),
     hasApprouter: jest.fn(),
-    createServices: jest.fn()
+    createServices: jest.fn(),
+    storeCredentials: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -335,6 +337,7 @@ const mockIsInternalFeaturesSettingEnabled = isInternalFeaturesSettingEnabled as
 >;
 const mockIsFeatureEnabled = isFeatureEnabled as jest.MockedFunction<typeof isFeatureEnabled>;
 const getServiceMock = getService as jest.Mock;
+const storeCredentialsMock = storeCredentials as jest.MockedFunction<typeof storeCredentials>;
 const mockSystemService = {
     read: jest.fn(),
     write: jest.fn()
@@ -541,6 +544,7 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         it('should generate an onPremise adaptation project successfully', async () => {
             mockIsAppStudio.mockReturnValue(false);
+            storeCredentialsMock.mockResolvedValue(undefined);
 
             const runContext = yeomanTest
                 .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
@@ -550,6 +554,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             await expect(runContext.run()).resolves.not.toThrow();
 
             expect(executeCommandSpy).toHaveBeenCalledTimes(1);
+            expect(storeCredentialsMock).not.toHaveBeenCalled();
 
             const generatedDirs = fs.readdirSync(testOutputDir);
             expect(generatedDirs).toContain(answers.projectName);
