@@ -50,6 +50,7 @@ export type PreviewUrls = {
  */
 export interface TemplateConfig {
     basePath: string;
+    baseUrl: string;
     apps: Record<
         string,
         {
@@ -383,6 +384,7 @@ export function createFlpTemplateConfig(
     }
     return {
         basePath: basePath,
+        baseUrl: '',
         apps: {},
         init: initPath,
         ui5: {
@@ -507,9 +509,7 @@ export async function generatePreviewFiles(
     sanitizeConfig(config, logger);
 
     // create file system if not provided
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
 
     // generate FLP configuration
     const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8');

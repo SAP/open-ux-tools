@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.6.58
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+
 ## 0.6.57
 
 ### Patch Changes
