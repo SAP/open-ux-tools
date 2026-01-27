@@ -14,6 +14,7 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
+    type Credentials,
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
     type BackendTarget,
@@ -250,14 +251,15 @@ export async function validateCredentials(
         return t('errors.requireCredentials');
     }
 
+    const credentials: Credentials = {
+        username: previousAnswers.username,
+        password: input
+    };
     const { transportConfigNeedsCreds } = await initTransportConfig({
         backendTarget: backendTarget,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
-        credentials: {
-            username: previousAnswers.username,
-            password: input
-        },
+        credentials,
         errorHandler: (e: string) => {
             handleTransportConfigError(e);
         }
@@ -265,7 +267,11 @@ export async function validateCredentials(
 
     PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
 
-    const adpProjectTypeValidation = await validateSystemSupportAdpProjectType(adpProjectType, backendTarget);
+    const adpProjectTypeValidation = await validateSystemSupportAdpProjectType(
+        adpProjectType,
+        backendTarget,
+        credentials
+    );
     if (typeof adpProjectTypeValidation === 'string') {
         return adpProjectTypeValidation;
     }
@@ -796,20 +802,22 @@ function shouldValidatePackageForStartingPrefix(
  *
  * @param {AdaptationProjectType | undefined} adpProjectType - The adaptation project type.
  * @param {BackendTarget | undefined} backendTarget - The system on which the Adaptation project is created.
+ * @param {Credentials | undefined} [credentials] - Optional credentials to the ABAP system.
  * @returns {Promise<boolean | string>} Promise resolved with true in case the validation succeed otherwise with a string
  * containing an error message or undefined if the project type is not provided. If the deployment destination
  * requires authentication the function resolves with true.
  */
 async function validateSystemSupportAdpProjectType(
     adpProjectType?: AdaptationProjectType,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    credentials?: Credentials
 ): Promise<boolean | string | undefined> {
     try {
         if (!adpProjectType) {
             return undefined;
         }
 
-        const { adaptationProjectTypes } = await getSystemInfo(undefined, backendTarget);
+        const { adaptationProjectTypes } = await getSystemInfo(undefined, backendTarget, credentials);
         if (!adaptationProjectTypes.length) {
             return t('errors.validators.invalidAdpProjectTypes');
         }
@@ -852,9 +860,14 @@ async function validateSystemSupportAdpProjectType(
  *
  * @param {string | undefined} packageName - The name of the package for which to retrieve system information.
  * @param {BackendTarget} [backendTarget] - Optional backend target information.
+ * @param {Credentials | undefined} [credentials] - Optional credentials to the ABAP system.
  * @returns {Promise<SystemInfo>} A promise resolved with the system information.
  */
-async function getSystemInfo(packageName?: string, backendTarget?: BackendTarget): Promise<SystemInfo> {
+async function getSystemInfo(
+    packageName?: string,
+    backendTarget?: BackendTarget,
+    credentials?: Credentials
+): Promise<SystemInfo> {
     // TODO avasilev: The provider instance here actualy does not point always the
     // backendTarget but the system with destination: PromptState.abapDeployConfig.destination
     // which is actualy the system selected from the destination prompt which is ok for the consumers of this method.
@@ -864,7 +877,7 @@ async function getSystemInfo(packageName?: string, backendTarget?: BackendTarget
     // the destination variable is not part of the class definition and is mutated outside of the class body in various places.
     // This breaks the class encapsulation and is hard to understand and brings a confusion also could lead
     // to unexpected behaviour.
-    const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget);
+    const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget, credentials);
     const lrep = provider.getLayeredRepository();
     return lrep.getSystemInfo(undefined, packageName);
 }
