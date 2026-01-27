@@ -52,6 +52,53 @@ const OBJECT_PAGE_FACETS = {
     )
 };
 
+const OBJECT_PAGE_TWO_TABLES = {
+    filename: V4_ANNOTATIONS_PATH,
+    code: getAnnotationsAsXmlCode(
+        V4_ANNOTATIONS,
+        `
+            <Annotations Target="IncidentService.Incidents">
+                 <Annotation Term="UI.Facets" >
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="IncidentFlowSection"/>
+                            <PropertyValue Property="Label" String="Incident Flow"/>
+                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="CategorySection"/>
+                            <PropertyValue Property="Label" String="Category"/>
+                            <PropertyValue Property="Target" AnnotationPath="category/@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="IncidentService.IncidentFlow">
+                 <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="processStep" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="stepStatus" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+
+            <Annotations Target="IncidentService.Category">
+                 <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="name" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        `
+    )
+};
+
 //------------------------------------------------------------------------------
 // FE V4 Tests - Responsive Table / Grid Table
 //------------------------------------------------------------------------------
@@ -1051,6 +1098,117 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]
             },
             [OBJECT_PAGE_FACETS]
+        ),
+        createInvalidTest(
+            {
+                name: 'Object Page: Mixed mode table types - report on each page level',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'category/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'TreeTable'
+                    }
+                ]),
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'creationMode',
+                            'name'
+                        ],
+                        value: 'InlineCreationRows'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'category/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'creationMode',
+                            'name'
+                        ],
+                        value: 'Inline'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'category/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'TreeTable'
+                    }
+                ]),
+                errors: [
+                    {
+                        messageId: 'invalidCreateModeV4'
+                    },
+                    {
+                        messageId: 'invalidCreateModeV4'
+                    }
+                ]
+            },
+            [OBJECT_PAGE_TWO_TABLES]
         )
     ]
 });
