@@ -144,6 +144,23 @@ const ns1 = {
             'valuesDependentOnEntityTypeInfo': 'Values are dependent on entity set',
             'bindingContextType': 'Binding Context Path Type'
         },
+        'form': {
+            'aggregation': 'Aggregation Path',
+            'bindingContextType': 'Binding Context',
+            'entity': 'Entity',
+            'id': {
+                'message': 'Building Block ID',
+                'validation': 'An ID is required to generate the form building block'
+            },
+            'qualifier': 'FieldGroup Annotation Path',
+            'qualifierPlaceholder': 'Select a FieldGroup annotation path',
+            'title': {
+                'message': 'Form Title',
+                'validation': 'Enter a Form Title',
+                'translationAnnotation': 'Title of the Form'
+            },
+            'valuesDependentOnEntityTypeInfo': 'Values are dependent on entity set'
+        },
         'table': {
             'tableBuildingBlockPropertiesTitle': 'Table Building Block Properties',
             'tableBuildingBlockPropertiesDescription': [

@@ -50,6 +50,7 @@ export type SupportedGeneratorPrompts =
     | BasePrompt<PromptsType.Table>
     | BasePrompt<PromptsType.Page>
     | BasePrompt<PromptsType.FilterBar>
+    | BasePrompt<PromptsType.Form>
     | BasePrompt<PromptsType.RichTextEditor>;
 
 export type NarrowPrompt<T, N = SupportedPrompts> = N extends { type: T } ? N : never;
@@ -74,6 +75,7 @@ export const PromptsGeneratorsMap = {
     [PromptsType.Chart]: generateBuildingBlock,
     [PromptsType.Table]: generateBuildingBlock,
     [PromptsType.FilterBar]: generateBuildingBlock,
+    [PromptsType.Form]: generateBuildingBlock,
     [PromptsType.RichTextEditor]: generateBuildingBlock,
     [PromptsType.Page]: generateBuildingBlock
 };
@@ -82,6 +84,7 @@ export const PromptsCodePreviewMap = {
     [PromptsType.Chart]: getSerializedFileContent,
     [PromptsType.Table]: getSerializedFileContent,
     [PromptsType.FilterBar]: getSerializedFileContent,
+    [PromptsType.Form]: getSerializedFileContent,
     [PromptsType.RichTextEditor]: getSerializedFileContent,
     [PromptsType.Page]: getSerializedFileContent
 };
@@ -90,5 +93,6 @@ export type SupportedGeneratorAnswers =
     | TablePromptsAnswer
     | ChartPromptsAnswer
     | FilterBarPromptsAnswer
+    | FormPromptsAnswer
     | PagePromptsAnswer
     | RichTextEditorPromptsAnswer;

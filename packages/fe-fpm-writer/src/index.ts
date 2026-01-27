@@ -26,6 +26,7 @@ export { validateBasePath, validateVersion } from './common/validate';
 export {
     BuildingBlockType,
     FilterBar,
+    Form,
     Chart,
     Field,
     FieldFormatOptions,
@@ -40,6 +41,7 @@ export { generateBuildingBlock, getSerializedFileContent } from './building-bloc
 export {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
+    FormPromptsAnswer,
     TablePromptsAnswer,
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer,

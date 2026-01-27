@@ -1,29 +1,26 @@
 import type { Answers } from 'inquirer';
+import { SapShortTextType } from '@sap-ux/i18n';
+import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
+
+import type { PromptContext, Prompts } from '../../../prompts/types';
+import type { BuildingBlockConfig, Form } from '../../types';
+
 import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getBuildingBlockIdPrompt,
-    getViewOrFragmentPathPrompt,
     getBindingContextTypePrompt,
-    getAggregationPathPrompt,
     getEntityPrompt,
-    getCAPServicePrompt,
-    isCapProject
+    getAggregationPathPrompt,
+    getAnnotationPathQualifierPrompt
 } from '../utils';
-import type { PromptContext, Prompts } from '../../../prompts/types';
-import { BuildingBlockType } from '../../types';
-import type { BuildingBlockConfig, Form } from '../../types';
-import { SapShortTextType } from '@sap-ux/i18n';
+import { BuildingBlockType, bindingContextAbsolute } from '../../types';
+import { resolveBindingContextTypeChoices } from '../utils/prompt-helpers';
 
 export type FormPromptsAnswer = BuildingBlockConfig<Form> & Answers;
 
 const defaultAnswers = {
     id: 'Form',
     bindingContextType: 'absolute'
-};
-
-const groupIds = {
-    commonFormBuildingBlockProperties: 'formBuildingBlockProperties',
-    filterConfigureEvents: 'filterConfigureEvents'
 };
 
 /**
@@ -33,57 +30,54 @@ const groupIds = {
  * @returns Prompt with questions for form.
  */
 export async function getFormBuildingBlockPrompts(context: PromptContext): Promise<Prompts<FormPromptsAnswer>> {
-    const { project } = context;
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.form.');
 
     return {
         questions: [
-            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
-                message: t('viewOrFragmentPath.message') as string,
-                guiOptions: {
-                    groupId: groupIds.commonFormBuildingBlockProperties,
-                    mandatory: true,
-                    dependantPromptNames: ['aggregationPath']
-                }
-            }),
             getBuildingBlockIdPrompt(context, t('id.validation') as string, {
                 message: t('id.message') as string,
                 default: defaultAnswers.id,
-                guiOptions: { groupId: groupIds.commonFormBuildingBlockProperties, mandatory: true }
+                guiOptions: {
+                    mandatory: true
+                }
             }),
+
+            getEntityPrompt(context, {
+                message: t('entity') as string,
+                guiOptions: {
+                    mandatory: true,
+                    dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
+                }
+            }),
+
             getBindingContextTypePrompt({
                 message: t('bindingContextType') as string,
                 default: defaultAnswers.bindingContextType,
                 guiOptions: {
-                    groupId: groupIds.commonFormBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
             }),
-            ...(project && isCapProject(project)
-                ? [
-                      await getCAPServicePrompt(context, {
-                          message: t('service') as string,
-                          guiOptions: {
-                              groupId: groupIds.commonFormBuildingBlockProperties,
-                              mandatory: true,
-                              dependantPromptNames: []
-                          }
-                      })
-                  ]
-                : []),
+
+            getAnnotationPathQualifierPrompt(
+                context,
+                {
+                    message: t('qualifier') as string,
+                    guiOptions: {
+                        mandatory: true,
+                        placeholder: t('qualifierPlaceholder') as string
+                    }
+                },
+                [UIAnnotationTerms.FieldGroup]
+            ),
+
             getAggregationPathPrompt(context, {
                 message: t('aggregation') as string,
-                guiOptions: { groupId: groupIds.commonFormBuildingBlockProperties, mandatory: true }
-            }),
-            getEntityPrompt(context, {
-                message: t('entity') as string,
                 guiOptions: {
-                    groupId: groupIds.commonFormBuildingBlockProperties,
-                    mandatory: true,
-                    dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
+                    mandatory: true
                 }
             }),
+
             {
                 type: 'input',
                 name: 'buildingBlockData.title',
@@ -102,5 +96,5 @@ export async function getFormBuildingBlockPrompts(context: PromptContext): Promi
                 buildingBlockType: BuildingBlockType.Form
             }
         }
-    };
+    } as Prompts<FormPromptsAnswer>;
 }
