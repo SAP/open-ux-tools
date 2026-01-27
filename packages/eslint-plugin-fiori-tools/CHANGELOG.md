@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.2.2
+
+### Patch Changes
+
+- 40b2423: fix: revised text
+
 ## 9.2.1
 
 ### Patch Changes
