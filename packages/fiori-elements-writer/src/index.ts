@@ -279,6 +279,7 @@ async function generate<T extends {}>(
     return fs;
 }
 
-export { generate, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
+export { generate, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
 export * from './types';
 export { TableType, TemplateType } from '@sap-ux/project-access';
+export type { App } from '@sap-ux/ui5-application-writer';
