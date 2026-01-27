@@ -156,7 +156,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                 errors: [
                     {
                         messageId: 'width-including-column-header-manifest',
-                        line: 119,
+                        line: 124,
                         column: 19
                     }
                 ]
@@ -206,7 +206,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                 errors: [
                     {
                         messageId: 'width-including-column-header-manifest',
-                        line: 134,
+                        line: 139,
                         column: 13
                     }
                 ]

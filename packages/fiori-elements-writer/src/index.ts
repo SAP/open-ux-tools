@@ -245,16 +245,6 @@ export async function generate<T extends {}>(
     }
     fs.writeJSON(packagePath, packageJson);
 
-    if (addTest) {
-        const opaConfig = getOpaConfig(
-            {
-                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
-            },
-            feApp.app.flpAppId
-        );
-        await generateOPAFiles(basePath, opaConfig, fs, log);
-    }
-
     if (feApp.service.capService) {
         const settings: CapProjectSettings = {
             appRoot: basePath,
@@ -270,6 +260,17 @@ export async function generate<T extends {}>(
 
     if (feApp.appOptions?.addAnnotations) {
         await writeAnnotations(basePath, feApp, fs, log);
+    }
+
+    // OPA tests must be generated last since they depend on other parts of the app, such as annotations, being in place
+    if (addTest) {
+        const opaConfig = getOpaConfig(
+            {
+                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
+            },
+            feApp.app.flpAppId
+        );
+        await generateOPAFiles(basePath, opaConfig, fs, log);
     }
     return fs;
 }
