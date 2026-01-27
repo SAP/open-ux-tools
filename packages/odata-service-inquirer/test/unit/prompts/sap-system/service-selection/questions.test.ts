@@ -757,6 +757,8 @@ describe('Test new system prompt', () => {
             } as Partial<ODataService>)
         } as Partial<ServiceProvider>;
 
+        const loggerSpy = jest.spyOn(LoggerHelper.logger, 'error');
+
         const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -769,6 +771,8 @@ describe('Test new system prompt', () => {
         } as ServiceAnswer;
 
         const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService);
+        expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(selectedService.servicePath));
+        expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to get metadata'));
         expect(validationResult).toContain(selectedService.servicePath);
         expect(validationResult).toContain(t('texts.seeLogForDetails'));
     });

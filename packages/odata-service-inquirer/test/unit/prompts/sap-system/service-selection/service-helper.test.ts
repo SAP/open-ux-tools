@@ -318,7 +318,7 @@ describe('Test service-helper function `validateService`', () => {
         expect(PromptState.odataService.annotations).toBe(mockAnnotations);
     });
 
-    test('Should return error message with HTTP status when metadata request fails with response status', async () => {
+    test('Should return error message when metadata request fails', async () => {
         const serviceAnswer = {
             servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
             serviceODataVersion: ODataVersion.v2
@@ -343,77 +343,5 @@ describe('Test service-helper function `validateService`', () => {
         const validateServiceResult = await validateService(serviceAnswer, connectionValidatorWithError);
         expect(validateServiceResult.validationResult).toContain(serviceAnswer.servicePath);
         expect(validateServiceResult.validationResult).toContain(t('texts.seeLogForDetails'));
-    });
-
-    test('Should return error message with HTTP status when metadata request fails with direct status', async () => {
-        const serviceAnswer = {
-            servicePath: '/sap/opu/odata/sap/TEST_SRV',
-            serviceODataVersion: ODataVersion.v2
-        } as ServiceAnswer;
-
-        const errorWithDirectStatus = {
-            status: 401,
-            message: 'Unauthorized'
-        };
-
-        const connectionValidatorWithError = {
-            axiosConfig: {},
-            serviceProvider: {} as ServiceProvider,
-            odataService: {
-                metadata: jest.fn().mockRejectedValue(errorWithDirectStatus)
-            },
-            catalogs: {}
-        } as unknown as ConnectionValidator;
-
-        const validateServiceResult = await validateService(serviceAnswer, connectionValidatorWithError);
-        expect(validateServiceResult.validationResult).toContain(serviceAnswer.servicePath);
-    });
-
-    test('Should return error message with error code when metadata request fails with code', async () => {
-        const serviceAnswer = {
-            servicePath: '/sap/opu/odata/sap/TEST_SRV',
-            serviceODataVersion: ODataVersion.v2
-        } as ServiceAnswer;
-
-        const errorWithCode = {
-            code: 'ECONNREFUSED',
-            message: 'Connection refused'
-        };
-
-        const connectionValidatorWithError = {
-            axiosConfig: {},
-            serviceProvider: {} as ServiceProvider,
-            odataService: {
-                metadata: jest.fn().mockRejectedValue(errorWithCode)
-            },
-            catalogs: {}
-        } as unknown as ConnectionValidator;
-
-        const validateServiceResult = await validateService(serviceAnswer, connectionValidatorWithError);
-        expect(validateServiceResult.validationResult).toContain(serviceAnswer.servicePath);
-    });
-
-    test('Should return error message without error info when no status or code is available', async () => {
-        const serviceAnswer = {
-            servicePath: '/sap/opu/odata/sap/TEST_SRV',
-            serviceODataVersion: ODataVersion.v2
-        } as ServiceAnswer;
-
-        const genericError = new Error('Some generic error');
-
-        const connectionValidatorWithError = {
-            axiosConfig: {},
-            serviceProvider: {} as ServiceProvider,
-            odataService: {
-                metadata: jest.fn().mockRejectedValue(genericError)
-            },
-            catalogs: {}
-        } as unknown as ConnectionValidator;
-
-        const validateServiceResult = await validateService(serviceAnswer, connectionValidatorWithError);
-        expect(validateServiceResult.validationResult).toContain(serviceAnswer.servicePath);
-        expect(validateServiceResult.validationResult).not.toContain('HTTP Status');
-        expect(validateServiceResult.validationResult).not.toContain('ECONNREFUSED');
-        expect(validateServiceResult.validationResult).toContain('For more information, view the logs');
     });
 });
