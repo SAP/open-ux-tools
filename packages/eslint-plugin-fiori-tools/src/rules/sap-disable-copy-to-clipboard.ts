@@ -14,7 +14,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [DISABLE_COPY_TO_CLIPBOARD]:
-                'Disable Copy To Clipboard must be correctly configured. If not set, copy button is displayed'
+                'Disable Copy To Clipboard must be correctly configured. If not set, the "Copy" button is displayed.'
         },
         fixable: 'code'
     },

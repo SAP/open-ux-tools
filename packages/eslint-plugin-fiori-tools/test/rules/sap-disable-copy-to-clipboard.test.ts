@@ -114,7 +114,7 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
                 errors: [
                     {
                         messageId: 'sap-disable-copy-to-clipboard',
-                        line: 122,
+                        line: 127,
                         column: 21
                     }
                 ]
