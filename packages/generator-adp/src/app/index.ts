@@ -137,6 +137,10 @@ export default class extends Generator {
      */
     private manifest: Manifest;
     /**
+     * The Adaptation project type.
+     */
+    private projectType?: AdaptationProjectType;
+    /**
      * Publicly available UI5 versions.
      */
     private publicVersions: UI5Version;
@@ -366,6 +370,7 @@ export default class extends Generator {
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
             const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
+            const projectType = this.jsonInput ? this.projectType : this.prompter.projectType;
 
             const packageJson = getPackageInfo();
             const config = await getConfig({
@@ -377,7 +382,8 @@ export default class extends Generator {
                 manifest,
                 layer: this.layer,
                 packageJson,
-                logger: this.toolsLogger
+                logger: this.toolsLogger,
+                projectType
             });
 
             if (config.options) {
@@ -649,6 +655,7 @@ export default class extends Generator {
         } else if (supportedProject === SupportedProject.CLOUD_READY) {
             selectedProjectType = AdaptationProjectType.CLOUD_READY;
         }
+        this.projectType = selectedProjectType;
 
         const applications = await loadApps(this.abapProvider, this.isCustomerBase, selectedProjectType);
         const application = applications.find((application) => application.id === baseApplicationName);

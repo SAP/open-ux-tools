@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import type {
     AdpWriterConfig,
@@ -61,6 +61,12 @@ export interface ConfigOptions {
      * The application manifest.
      */
     manifest: Manifest | undefined;
+
+    /**
+     * The Adaptation project type.
+     */
+    projectType?: AdaptationProjectType;
+
     /**
      * Logger instance for debugging and error reporting.
      */
@@ -90,7 +96,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         provider,
         publicVersions,
         systemVersion,
-        manifest
+        manifest,
+        projectType
     } = options;
 
     const ato = await provider.getAtoInfo();
@@ -123,7 +130,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         fioriId
     };
 
-    if (isCloudSystem) {
+    if (projectType === AdaptationProjectType.CLOUD_READY) {
         const lrep = provider.getLayeredRepository();
         const { activeLanguages: languages } = await lrep.getSystemInfo();
 
