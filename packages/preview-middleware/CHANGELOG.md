@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.100
+
+### Patch Changes
+
+- c061595: fix: support rta and cpe for CAP node w/o mockserver
+
 ## 0.23.99
 
 ### Patch Changes
