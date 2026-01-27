@@ -161,6 +161,6 @@ module.exports = [
 | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect usage of private properties and functions of UI5 elements | | |
 | [sap-usage-basemastercontroller](docs/rules/sap-usage-basemastercontroller.md) | Detect usage of deprecated BaseMasterController | ✅ | ✅ |
 | [sap-creation-mode-for-table](docs/rules/sap-creation-mode-for-table.md) | Validates that table creation mode (`createMode` in V2, `creationMode` in V4) is properly configured to ensure optimal user experience when creating new table entries. | | ✅ |
-| [sap-disable-copy-to-clipboard](docs/rules/sap-disable-copy-to-clipboard.md) | Ensures that the `disableCopyToClipboard` property in any table is set to `false` or ommited from `tableSettings` in the manifest file for V4 applications (the default value is `false`) | | ✅ |
+| [sap-copy-to-clipboard](docs/rules/sap-copy-to-clipboard.md) | Ensures that the copy functionality in any table is available | | ✅ |
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the manifest file for applications using UI5 versions 1.56 or higher. | | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than 6 columns) include the `widthIncludingColumnHeader` property set to `true` for better column width calculation. | | ✅ |
