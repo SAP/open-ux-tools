@@ -416,8 +416,8 @@ You are given a documentation snippet and you need to optimize it for AI agents 
 The output will be used by AI code generation tools, so focus on making the content clear, concise, and code-focused.
 
 Your task:
-1. Extract and enhance code examples with proper context
-2. Improve descriptions to be action-oriented for code generation
+1. Extract code examples with proper context. you MUST keep code snippets intact.
+2. Improve and enhance descriptions to be action-oriented for code generation
 3. Combine related information that belongs together
 4. Preserve all technical details, file paths, and code snippets
 5. Format the output as markdown following this structure:
