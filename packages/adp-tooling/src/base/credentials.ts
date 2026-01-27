@@ -1,24 +1,19 @@
 import { getService, BackendSystem, BackendSystemKey, SystemType } from '@sap-ux/store';
 import type { SystemLookup } from '../source';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { ConfigAnswers } from '../types';
 
 /**
  * Stores system credentials securely using the @sap-ux/store service.
  * Only stores credentials for ABAP environments when all required fields are provided.
  *
- * @param configAnswers - Configuration answers containing credentials and system info
- * @param configAnswers.system - System name to retrieve endpoint information
- * @param configAnswers.username - Username for authentication
- * @param configAnswers.password - Password for authentication
- * @param systemLookup - System lookup service for retrieving endpoint details
- * @param logger - Logger for informational and warning messages
+ * @param {ConfigAnswers} configAnswers - Configuration answers containing credentials and system info
+ * @param {SystemLookup} systemLookup - System lookup service for retrieving endpoint details
+ * @param {ToolsLogger} logger - Logger for informational and warning messages
+ * @returns {Promise<void>} Promise that resolves when credentials are stored or operation completes
  */
 export async function storeCredentials(
-    configAnswers: {
-        system: string;
-        username?: string;
-        password?: string;
-    },
+    configAnswers: ConfigAnswers,
     systemLookup: SystemLookup,
     logger: ToolsLogger
 ): Promise<void> {
