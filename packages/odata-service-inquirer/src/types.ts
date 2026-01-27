@@ -324,9 +324,10 @@ export type SystemSelectionPromptOptions = {
      * Provide a default choice for the system selection prompt, this is used to pre-select a system based on the system name.
      * Set as string literal types `NewSystemChoice` or `CfAbapEnvServiceChoice` to specify the default choice to create a new system connection config in VSCode
      * or to select the Cloud Foundry Abap environments service discovery choice in BAS respectively.
+     * Supported as object reference `{ value: }` to allow binding to runtime variables of other prompts or as string
      *
      */
-    defaultChoice?: string;
+    defaultChoice?: string | { value?: string };
     /**
      * Only show the default choice in the system selection prompt, this is used to skip the system selection prompt if the default choice is already known.
      * If the `defaultChoice` value is not found in the systems choices, or the `defaultChoice` option is not specified,
@@ -334,7 +335,7 @@ export type SystemSelectionPromptOptions = {
      */
     onlyShowDefaultChoice?: boolean;
     /**
-     * If true, the 'New System' option is not added to the system selection list.
+     * If true, the 'New System' option is not added to the system selection list. Default is false - the 'New System' option will be available.
      */
     hideNewSystem?: boolean;
 };
@@ -367,7 +368,7 @@ export type ServiceSelectionPromptOptions = {
      */
     showCollaborativeDraftWarning?: boolean;
     /**
-     * A list of service ids ({@link ODataServiceInfo.id}), used to filter the catalog results
+     * A list of service ids ({@link ODataServiceInfo.id}) or service paths ({@link ODataServiceInfo.path}), used to filter the service catalog results
      */
     serviceFilter?: string[];
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;

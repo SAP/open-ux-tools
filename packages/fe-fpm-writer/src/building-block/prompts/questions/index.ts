@@ -5,3 +5,4 @@ export * from './form';
 export * from './table';
 export * from './page';
 export * from './richTextEditor';
+export * from './richTextEditorButtonGroups';

@@ -35,7 +35,8 @@ export {
     Page,
     CustomColumn,
     CustomFilterField,
-    RichTextEditor
+    RichTextEditor,
+    ButtonGroupConfig
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
@@ -45,6 +46,7 @@ export {
     TablePromptsAnswer,
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer,
+    RichTextEditorButtonGroupsPromptsAnswer,
     BuildingBlockTypePromptsAnswer
 } from './building-block/prompts/questions';
 export {

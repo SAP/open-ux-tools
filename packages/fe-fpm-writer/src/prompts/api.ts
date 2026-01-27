@@ -35,7 +35,7 @@ export class PromptsAPI {
      * Contructore of prompt API.
      *
      * @param fs the file system object for reading files
-     * @param project project information
+     * @param project
      * @param appId app id in CAP project
      * @param options additional prompt context options.
      */
@@ -64,7 +64,9 @@ export class PromptsAPI {
         fs?: Editor,
         options?: PromptContextOptions
     ): Promise<PromptsAPI> {
-        fs ??= create(createStorage());
+        if (!fs) {
+            fs = create(createStorage());
+        }
         await initI18n();
         const project = projectPath ? await getProject(projectPath) : undefined;
         return new PromptsAPI(fs, project, appId, options);
@@ -95,7 +97,7 @@ export class PromptsAPI {
      * @param type - The prompt type
      * @param fieldName - The field name
      * @param answers - The answers object
-     * @returns List of prompt choices
+     * @returns
      */
     public async getChoices<T extends Answers>(
         type: PromptsType,
@@ -103,9 +105,9 @@ export class PromptsAPI {
         answers: T
     ): Promise<PromptListChoices> {
         try {
-            const prompt = this.cache[type as Exclude<PromptsType, 'form'>] ?? (await this.getPrompts(type as any));
-            const question = prompt.questions.find((question: PromptQuestion) => question.name === fieldName);
-            if (question?.type === 'list') {
+            const prompt = this.cache[type] ?? (await this.getPrompts(type));
+            const question = prompt.questions.find((question) => question.name === fieldName);
+            if (question && (question.type === 'list' || question.type === 'checkbox')) {
                 const choices =
                     typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
                 return choices ?? [];
@@ -129,13 +131,14 @@ export class PromptsAPI {
         answers: Answers,
         questions?: Question[]
     ): Promise<ValidationResults> {
-        const originalPrompts =
-            this.cache[type as Exclude<PromptsType, 'form'>] ?? (await this.getPrompts(type as any));
+        const originalPrompts = this.cache[type] ?? (await this.getPrompts(type));
         const result: ValidationResults = {};
-        questions ??= originalPrompts.questions;
+        if (!questions) {
+            questions = originalPrompts.questions;
+        }
         for (const q of questions) {
             const question: PromptQuestion | undefined = originalPrompts.questions.find(
-                (blockQuestion: PromptQuestion) => q.name === blockQuestion.name
+                (blockQuestion) => q.name === blockQuestion.name
             );
             if (!question) {
                 continue;
@@ -209,8 +212,8 @@ export class PromptsAPI {
      * Method checks if passed type of prompt supports generation and code preview.
      *
      * @param config Prompt configuration
-     * @param config.type prompt type
-     * @param config.answers prompt answers
+     * @param config.type
+     * @param config.answers
      * @returns true if code generation is supported.
      */
     private isGenerationSupported(config: {
