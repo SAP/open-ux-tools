@@ -21,9 +21,9 @@ import {
     isLoggedInCf,
     isMtaProject,
     loadApps,
-    loadCfConfig
+    loadCfConfig,
+    storeCredentials
 } from '@sap-ux/adp-tooling';
-import { storeCredentials } from './credential-storage';
 import {
     getDefaultTargetFolder,
     isCli,
@@ -354,7 +354,9 @@ export default class extends Generator {
                 return;
             }
 
-            await storeCredentials(this.configAnswers, this.systemLookup, this.logger);
+            if (this.configAnswers.storeCredentials) {
+                await storeCredentials(this.configAnswers, this.systemLookup, this.logger);
+            }
 
             if (this.shouldCreateExtProject) {
                 await addExtProjectGen(

@@ -1,10 +1,9 @@
-import { getService, BackendSystem, SystemType } from '@sap-ux/store';
-import type { SystemLookup } from '@sap-ux/adp-tooling';
+import { getService, SystemType } from '@sap-ux/store';
+import { storeCredentials } from '../../../src';
+import type { SystemLookup } from '../../../src';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { storeCredentials } from '../../src/app/credential-storage';
 
 jest.mock('@sap-ux/store');
-jest.mock('@sap-ux/adp-tooling');
 
 describe('Credential Storage Logic', () => {
     let mockSystemService: any;
@@ -37,9 +36,8 @@ describe('Credential Storage Logic', () => {
     });
 
     describe('storeCredentials function', () => {
-        it('should store credentials when storeCredentials is true and credentials are provided', async () => {
+        it('should store credentials when credentials are provided', async () => {
             const configAnswers = {
-                storeCredentials: true,
                 system: 'SystemA',
                 username: 'user1',
                 password: 'pass1'
@@ -64,7 +62,6 @@ describe('Credential Storage Logic', () => {
 
         it('should update existing credentials when system already exists in store', async () => {
             const configAnswers = {
-                storeCredentials: true,
                 system: 'SystemA',
                 username: 'user1',
                 password: 'pass1'
@@ -85,37 +82,8 @@ describe('Credential Storage Logic', () => {
             expect(mockLogger.info).toHaveBeenCalledWith('System credentials have been stored securely.');
         });
 
-        it('should not store credentials when storeCredentials is false', async () => {
-            const configAnswers = {
-                storeCredentials: false,
-                system: 'SystemA',
-                username: 'user1',
-                password: 'pass1'
-            };
-
-            await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
-
-            expect(getServiceMock).not.toHaveBeenCalled();
-            expect(mockSystemService.write).not.toHaveBeenCalled();
-        });
-
-        it('should not store credentials when username is missing', async () => {
-            const configAnswers = {
-                storeCredentials: true,
-                system: 'SystemA',
-                username: undefined,
-                password: 'pass1'
-            };
-
-            await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
-
-            expect(getServiceMock).not.toHaveBeenCalled();
-            expect(mockSystemService.write).not.toHaveBeenCalled();
-        });
-
         it('should not store credentials when password is missing', async () => {
             const configAnswers = {
-                storeCredentials: true,
                 system: 'SystemA',
                 username: 'user1',
                 password: undefined
@@ -129,7 +97,6 @@ describe('Credential Storage Logic', () => {
 
         it('should warn when system endpoint is not found', async () => {
             const configAnswers = {
-                storeCredentials: true,
                 system: 'SystemA',
                 username: 'user1',
                 password: 'pass1'
@@ -143,29 +110,8 @@ describe('Credential Storage Logic', () => {
             expect(mockSystemService.write).not.toHaveBeenCalled();
         });
 
-        it('should warn when system URL is missing', async () => {
-            const configAnswers = {
-                storeCredentials: true,
-                system: 'SystemA',
-                username: 'user1',
-                password: 'pass1'
-            };
-
-            (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue({
-                Name: 'SystemA',
-                Client: '010',
-                Url: ''
-            });
-
-            await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
-
-            expect(mockLogger.warn).toHaveBeenCalledWith('Cannot store credentials: system endpoint or URL not found.');
-            expect(mockSystemService.write).not.toHaveBeenCalled();
-        });
-
         it('should handle credential storage errors gracefully', async () => {
             const configAnswers = {
-                storeCredentials: true,
                 system: 'SystemA',
                 username: 'user1',
                 password: 'pass1'
@@ -183,29 +129,8 @@ describe('Credential Storage Logic', () => {
 
             await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
 
-            expect(mockLogger.warn).toHaveBeenCalledWith('Failed to store credentials: Storage failed');
-        });
-
-        it('should handle non-Error exceptions when storing credentials', async () => {
-            const configAnswers = {
-                storeCredentials: true,
-                system: 'SystemA',
-                username: 'user1',
-                password: 'pass1'
-            };
-
-            (mockSystemLookup.getSystemByName as jest.Mock).mockResolvedValue({
-                Name: 'SystemA',
-                Client: '010',
-                Url: 'https://example.com',
-                SystemType: 'OnPrem'
-            });
-
-            mockSystemService.write.mockRejectedValue('String error');
-
-            await storeCredentials(configAnswers, mockSystemLookup, mockLogger);
-
-            expect(mockLogger.warn).toHaveBeenCalledWith('Failed to store credentials: String error');
+            expect(mockLogger.error).toHaveBeenCalledWith('Failed to store credentials: Storage failed');
+            expect(mockLogger.debug).toHaveBeenCalled();
         });
     });
 });

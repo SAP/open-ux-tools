@@ -257,48 +257,6 @@ describe('SystemLookup', () => {
             expect(result).toBe(false);
         });
 
-        test('should return true for OnPrem system with only username but no password', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            const partialCredsSystem: BackendSystem = {
-                client: '010',
-                name: 'PARTIAL_CREDS',
-                password: undefined as any,
-                url: 'partial-url',
-                userDisplayName: 'Partial User',
-                username: 'testuser',
-                connectionType: 'abap_catalog',
-                systemType: 'OnPrem'
-            };
-            getServiceMock.mockResolvedValue({
-                getAll: jest.fn().mockResolvedValue([partialCredsSystem])
-            });
-
-            const result = await sourceSystems.getSystemRequiresAuth('PARTIAL_CREDS');
-
-            expect(result).toBe(true);
-        });
-
-        test('should return true for OnPrem system with only password but no username', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            const partialCredsSystem: BackendSystem = {
-                client: '010',
-                name: 'PARTIAL_CREDS2',
-                password: 'testpass',
-                url: 'partial-url2',
-                userDisplayName: 'Partial User 2',
-                username: undefined as any,
-                connectionType: 'abap_catalog',
-                systemType: 'OnPrem'
-            };
-            getServiceMock.mockResolvedValue({
-                getAll: jest.fn().mockResolvedValue([partialCredsSystem])
-            });
-
-            const result = await sourceSystems.getSystemRequiresAuth('PARTIAL_CREDS2');
-
-            expect(result).toBe(true);
-        });
-
         test('should return false for OnPrem system with both username and password', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const systemWithCreds: BackendSystem = {

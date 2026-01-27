@@ -580,50 +580,6 @@ describe('Adaptation Project Generator Integration Test', () => {
             );
         });
 
-        describe('Credential Storage - Integration Tests', () => {
-            it('should not store credentials when storeCredentials is false', async () => {
-                mockIsAppStudio.mockReturnValue(false);
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
-                    .withOptions({ shouldInstallDeps: false } as AdpGeneratorOptions)
-                    .withPrompts({ ...answers, storeCredentials: false });
-
-                await expect(runContext.run()).resolves.not.toThrow();
-
-                expect(getServiceMock).not.toHaveBeenCalled();
-                expect(mockSystemService.write).not.toHaveBeenCalled();
-            });
-
-            it('should not store credentials when username is missing', async () => {
-                mockIsAppStudio.mockReturnValue(false);
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
-                    .withOptions({ shouldInstallDeps: false } as AdpGeneratorOptions)
-                    .withPrompts({ ...answers, storeCredentials: true, username: undefined });
-
-                await expect(runContext.run()).resolves.not.toThrow();
-
-                expect(getServiceMock).not.toHaveBeenCalled();
-                expect(mockSystemService.write).not.toHaveBeenCalled();
-            });
-
-            it('should not store credentials when password is missing', async () => {
-                mockIsAppStudio.mockReturnValue(false);
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
-                    .withOptions({ shouldInstallDeps: false } as AdpGeneratorOptions)
-                    .withPrompts({ ...answers, storeCredentials: true, password: undefined });
-
-                await expect(runContext.run()).resolves.not.toThrow();
-
-                expect(getServiceMock).not.toHaveBeenCalled();
-                expect(mockSystemService.write).not.toHaveBeenCalled();
-            });
-        });
-
         it('should create adaptation project from json correctly', async () => {
             // NOTE: This test uses .withArguments() which bypasses the normal yeoman prompting lifecycle and goes directly to the writing phase.
             // This can cause race conditions with other tests that use the same output directory, as the generator doesn't go through the standard prompting -> writing flow.

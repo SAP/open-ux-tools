@@ -58,7 +58,8 @@ import {
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
-    showInternalQuestions
+    showInternalQuestions,
+    showStoreCredentialsQuestion
 } from './helper/conditions';
 import { getExtProjectMessage } from './helper/message';
 import { validateExtensibilityExtension } from './helper/validators';
@@ -387,10 +388,7 @@ export class ConfigPrompter {
                 breadcrumb: t('prompts.storeCredentialsBreadcrumb')
             },
             when: (answers: ConfigAnswers) =>
-                !isAppStudio() &&
-                showCredentialQuestion(answers, this.isAuthRequired) &&
-                this.isLoginSuccessful &&
-                !!answers.password,
+                showStoreCredentialsQuestion(answers, this.isLoginSuccessful, this.isAuthRequired),
             additionalMessages: (input?: unknown) => {
                 if (input === true) {
                     return {
