@@ -145,15 +145,27 @@ const ns1 = {
             'bindingContextType': 'Binding Context Path Type'
         },
         'form': {
-            'aggregation': 'Aggregation Path',
-            'bindingContextType': 'Binding Context',
-            'entity': 'Entity',
+            'formBuildingBlockPropertiesTitle': 'Form Building Block Properties',
+            'formBuildingBlockPropertiesDescription': [
+                'Select the `View or Fragment File` where you would like to insert the form building block and provide a `Building Block ID` to identify the form.',
+                'Select an `Entity Set`, and a `Field Group Annotation` you would like to use for the form building block.',
+                'Select an `Aggregation Path` to determine where you would like the form to appear on the page.',
+                'Provide a `Form Title` to be displayed.'
+            ],
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validate': 'A View or Fragment is required to generate the form building block'
+            },
             'id': {
                 'message': 'Building Block ID',
                 'validation': 'An ID is required to generate the form building block'
             },
-            'qualifier': 'FieldGroup Annotation Path',
-            'qualifierPlaceholder': 'Select a FieldGroup annotation path',
+            'bindingContextType': 'Binding Context',
+            'entity': 'Entity',
+            'service': 'Service',
+            'qualifier': 'Line Item Annotation Path',
+            'qualifierPlaceholder': 'Select a line item annotation path',
+            'aggregation': 'Aggregation Path',
             'title': {
                 'message': 'Form Title',
                 'validation': 'Enter a Form Title',
