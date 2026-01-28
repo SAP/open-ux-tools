@@ -184,6 +184,7 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     "default": 6,
     "guiOptions": {
       "breadcrumb": true,
+      "mandatory": true,
     },
     "message": "Main Entity",
     "name": "mainEntity",
@@ -229,10 +230,12 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
       "hint": "Defines the table type for the list report page.",
+      "mandatory": true,
     },
     "message": "Table Type",
     "name": "tableType",
     "type": "list",
+    "validate": [Function],
     "when": [Function],
   },
   {
