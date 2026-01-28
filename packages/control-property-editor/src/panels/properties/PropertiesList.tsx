@@ -37,9 +37,9 @@ export function PropertiesList(): ReactElement {
     const controlChanges = useSelector<RootState, ControlChangeStats | undefined>(
         (state) => state.changes.controls[control?.id ?? '']
     );
-    const isEditableOnly = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery).filter(
+    const isEditableOnly = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery).find(
         (item) => item.name === FilterName.showEditableProperties
-    )[0].value as boolean;
+    )?.value as boolean | undefined;
     const [filterValue, setFilterValue] = useState('');
     if (!control) {
         // Nothing selected, show message

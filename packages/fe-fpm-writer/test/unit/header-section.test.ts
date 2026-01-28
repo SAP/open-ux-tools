@@ -12,6 +12,7 @@ import {
 import type { Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifestSections from './sample/section/webapp/manifest.json';
+import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 
 const testDir = join(__dirname, 'sample/headers-ection');
 
@@ -58,6 +59,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
         });
 
         test(`for version 1.85 (edit mode not supported)`, async () => {
+            const copyTplSpy = jest.spyOn(fs, 'copyTpl');
             const customHeaderSection = createCustomHeaderSectionWithEditFragment('1.85.0', {
                 name: 'NewCustomHeaderSectionEdit',
                 folder: 'extensions/custom',
@@ -89,6 +91,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             } catch (error) {
                 expect(error).toBeDefined();
             }
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
         });
 
         test(`for version 1.86 (edit mode disabled)`, async () => {

@@ -80,14 +80,19 @@ async function getPrompts(
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
  * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host. PromptState.isYUI will be set to this value
+ * @param logger - set an externally configured logger
  * @returns the prompts used to provide input for system selection and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
  */
 async function getSystemSelectionQuestions(
     promptOptions?: OdataServicePromptOptions,
-    isYUI?: boolean
+    isYUI?: boolean,
+    logger?: Logger
 ): Promise<{ prompts: Question<SystemSelectionAnswers & ServiceAnswer>[]; answers: Partial<OdataServiceAnswers> }> {
     if (isYUI !== undefined) {
         PromptState.isYUI = isYUI;
+    }
+    if (logger) {
+        LoggerHelper.logger = logger;
     }
     return {
         prompts: await getSystemSelectionQuestionsBase(promptOptions),
@@ -145,7 +150,10 @@ async function prompt(
     isYUI = false,
     connectedSystem?: ConnectedSystem
 ): Promise<OdataServiceAnswers> {
-    if (adapter?.promptModule && promptOptions?.serviceSelection?.useAutoComplete) {
+    if (
+        adapter?.promptModule &&
+        (promptOptions?.serviceSelection?.useAutoComplete ?? promptOptions?.capProject?.useAutoComplete)
+    ) {
         const pm = adapter.promptModule;
         pm.registerPrompt('autocomplete', autocomplete);
     }

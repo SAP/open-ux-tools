@@ -115,9 +115,9 @@ export function getManifestJsonExtensionHelper(
     return (key, value) => {
         switch (key) {
             case 'routing':
-                value.routes = value.routes ?? [];
+                value.routes ??= [];
                 break;
-            case 'routes':
+            case 'routes': {
                 const routes = value as ManifestNamespace.Route[];
                 routes.push({
                     name: config.id ?? `${config.entity}${config.name}`,
@@ -130,6 +130,7 @@ export function getManifestJsonExtensionHelper(
                     )
                 });
                 break;
+            }
             default:
                 break;
         }

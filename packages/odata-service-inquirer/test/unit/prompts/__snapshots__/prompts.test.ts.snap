@@ -62,7 +62,7 @@ exports[`getQuestions getQuestions 1`] = `
         },
       },
     ],
-    "default": -1,
+    "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Select a system configuration.",
@@ -350,6 +350,7 @@ exports[`getQuestions getQuestions 1`] = `
     },
     "message": "Choose a CAP Project",
     "name": "capProject",
+    "source": [Function],
     "type": "list",
     "when": [Function],
   },

@@ -31,6 +31,9 @@
       "path": "../odata-service-writer"
     },
     {
+      "path": "../project-access"
+    },
+    {
       "path": "../ui5-application-writer"
     },
     {

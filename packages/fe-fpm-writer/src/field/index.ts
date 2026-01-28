@@ -8,7 +8,7 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContentData } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { extendJSON } from '../common/file';
+import { copyTpl, extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { getManifest } from '../common/utils';
 
@@ -67,7 +67,7 @@ export async function generateCustomField(basePath: string, customField: CustomF
     // add fragment
     const viewPath = join(completeField.path, `${completeField.fragmentFile ?? completeField.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeField);
+        copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeField);
     }
 
     // enhance manifest with field definition

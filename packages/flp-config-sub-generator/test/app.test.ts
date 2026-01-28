@@ -247,7 +247,8 @@ describe('flp-config generator', () => {
         const answers: FLPConfigAnswers = {
             semanticObject: 'com-fiori-tools-travel',
             action: 'inbound',
-            title: '{{com-fiori-tools-travel-inbound.flpTitle}}'
+            title: '{{com-fiori-tools-travel-inbound.flpTitle}}',
+            overwrite: true
         };
 
         await expect(

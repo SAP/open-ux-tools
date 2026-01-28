@@ -1,5 +1,60 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.56
+
+### Patch Changes
+
+- be6ea11: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [be6ea11]
+    - @sap-ux/ui5-application-writer@1.7.3
+
+## 0.7.55
+
+### Patch Changes
+
+- 924e26f: fix(deps): update dependency @sap/ux-specification to v1.142.0
+
+## 0.7.54
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/ui5-application-writer@1.7.2
+
+## 0.7.53
+
+### Patch Changes
+
+- 55ac9f0: enable generation of OPA5 tests based on project spec
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/ui5-application-writer@1.7.1
+
+## 0.7.52
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/ui5-application-writer@1.7.1
+
+## 0.7.51
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/ui5-application-writer@1.7.1
+
+## 0.7.50
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/ui5-application-writer@1.7.1
+    - @sap-ux/project-access@1.33.1
+
 ## 0.7.49
 
 ### Patch Changes

@@ -1,5 +1,124 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.37
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.44
+- @sap-ux/ui5-config@0.29.13
+- @sap-ux/inquirer-common@0.10.18
+
+## 0.17.36
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/system-access@0.6.43
+
+## 0.17.35
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+    - @sap-ux/inquirer-common@0.10.17
+
+## 0.17.34
+
+### Patch Changes
+
+- Updated dependencies [d11943d]
+    - @sap-ux/inquirer-common@0.10.16
+    - @sap-ux/project-input-validator@0.6.46
+
+## 0.17.33
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.42
+- @sap-ux/ui5-config@0.29.13
+- @sap-ux/inquirer-common@0.10.15
+
+## 0.17.32
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.14
+
+## 0.17.31
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/project-input-validator@0.6.45
+    - @sap-ux/system-access@0.6.41
+    - @sap-ux/inquirer-common@0.10.13
+
+## 0.17.30
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.41
+- @sap-ux/ui5-config@0.29.12
+- @sap-ux/inquirer-common@0.10.12
+
+## 0.17.29
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.6
+- @sap-ux/project-input-validator@0.6.44
+- @sap-ux/system-access@0.6.40
+- @sap-ux/inquirer-common@0.10.11
+
+## 0.17.28
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.6
+- @sap-ux/project-input-validator@0.6.43
+- @sap-ux/system-access@0.6.40
+- @sap-ux/inquirer-common@0.10.10
+
+## 0.17.27
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.6
+- @sap-ux/project-input-validator@0.6.42
+- @sap-ux/system-access@0.6.40
+- @sap-ux/inquirer-common@0.10.9
+
+## 0.17.26
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/inquirer-common@0.10.8
+    - @sap-ux/system-access@0.6.40
+    - @sap-ux/project-input-validator@0.6.41
+
+## 0.17.25
+
+### Patch Changes
+
+- Updated dependencies [2204ad3]
+    - @sap-ux/axios-extension@1.25.5
+    - @sap-ux/inquirer-common@0.10.7
+    - @sap-ux/system-access@0.6.39
+
+## 0.17.24
+
+### Patch Changes
+
+- Updated dependencies [4e0f204]
+    - @sap-ux/axios-extension@1.25.4
+    - @sap-ux/system-access@0.6.38
+
 ## 0.17.23
 
 ### Patch Changes

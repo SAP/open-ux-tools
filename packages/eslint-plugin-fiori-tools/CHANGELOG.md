@@ -1,5 +1,73 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.2.3
+
+### Patch Changes
+
+- 98a5947: fix: add auto fix for creation mode for table
+
+## 9.2.2
+
+### Patch Changes
+
+- 40b2423: fix: revised text
+
+## 9.2.1
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.4
+
+## 9.2.0
+
+### Minor Changes
+
+- cd27778: Fix plugin integration issue when working with multiple projects: create new ProjectContext and cache diagnostics by file uri and ruleId.
+
+## 9.1.3
+
+### Patch Changes
+
+- be67fc4: fix: fix path mappings and also lint custom mockserver extensions
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/fiori-annotation-api@0.9.3
+
+## 9.1.2
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/fiori-annotation-api@0.9.2
+
+## 9.1.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+- Updated dependencies [4d6695f]
+    - @sap-ux/fiori-annotation-api@0.9.1
+
+## 9.1.0
+
+### Minor Changes
+
+- b132944: feat: add consistency rules `sap-flex-enabled`, `sap-disable-copy-to-clipboard` and `sap-width-including-column-header`.
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/fiori-annotation-api@0.9.0
+
+## 9.0.5
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
 ## 9.0.4
 
 ### Patch Changes

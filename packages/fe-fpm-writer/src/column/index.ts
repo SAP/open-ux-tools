@@ -8,7 +8,7 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 import type { Manifest } from '../common/types';
 import { validateVersion, validateBasePath } from '../common/validate';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { extendJSON } from '../common/file';
+import { copyTpl, extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils';
@@ -94,7 +94,7 @@ export async function generateCustomColumn(
     // add fragment
     const viewPath = join(completeColumn.path, `${completeColumn.fragmentFile ?? completeColumn.name}.fragment.xml`);
     if (completeColumn.control || !fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
+        copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
     }
 
     // enhance manifest with column definition
