@@ -5,18 +5,12 @@ import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join, dirname } from 'node:path';
-import {
-    TableType,
-    type FEOPSettings,
-    type FioriElementsApp,
-    type LROPSettings,
-    type WorklistSettings,
-    TemplateType
-} from '../src/types';
+import { type FEOPSettings, type FioriElementsApp, type LROPSettings, type WorklistSettings } from '../src/types';
 import { promisify } from 'node:util';
 import { exec as execCP } from 'node:child_process';
 const exec = promisify(execCP);
 import { type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import { TableType, TemplateType } from '@sap-ux/project-access';
 
 export const testOutputDir = join(__dirname, 'test-output');
 

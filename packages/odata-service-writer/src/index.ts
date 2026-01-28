@@ -166,7 +166,6 @@ export async function remove(basePath: string, service: OdataService, fs?: Edito
 }
 
 export {
-    OdataVersion,
     OdataService,
     ServiceType,
     EdmxAnnotationsInfo,
@@ -175,3 +174,4 @@ export {
     NamespaceAlias
 } from './types';
 export { getExternalServiceReferences, getAnnotationNamespaces, writeExternalServiceMetadata } from './data';
+export { OdataVersion } from '@sap-ux/project-access';

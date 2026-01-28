@@ -1,17 +1,7 @@
 import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
-
-export const TemplateType = {
-    Worklist: 'worklist',
-    ListReportObjectPage: 'lrop',
-    AnalyticalListPage: 'alp',
-    OverviewPage: 'ovp',
-    FormEntryObjectPage: 'feop',
-    FlexibleProgrammingModel: 'fpm'
-} as const;
-
-export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType];
+import type { TableType, TemplateType } from '@sap-ux/project-access';
 
 /**
  * General validation error thrown if app config options contain invalid combinations
@@ -72,15 +62,6 @@ export interface EntityConfig {
         Name: string; // Defines the entity name for object page navigation
     };
 }
-
-export const TableType = {
-    GRID: 'GridTable',
-    ANALYTICAL: 'AnalyticalTable',
-    RESPONSIVE: 'ResponsiveTable',
-    TREE: 'TreeTable'
-} as const;
-
-export type TableType = (typeof TableType)[keyof typeof TableType];
 
 export const TableSelectionMode = {
     NONE: 'None',
