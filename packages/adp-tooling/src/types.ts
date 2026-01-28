@@ -32,18 +32,32 @@ export interface ToolsSupport {
  */
 type AbapTarget = DestinationAbapTarget | Pick<UrlAbapTarget, 'url' | 'client' | 'scp'>;
 
-export interface AdpPreviewConfig {
+/**
+ * Configuration for ADP preview using ABAP target connection.
+ */
+export interface AdpPreviewConfigWithTarget {
     target: AbapTarget;
-
     /**
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
+}
+
+/**
+ * Configuration for ADP preview using CF build output path.
+ */
+export interface AdpPreviewConfigWithBuildPath {
     /**
      * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
      */
-    cfBuildPath?: string;
+    cfBuildPath: string;
+    /**
+     * If set to true then certification validation errors are ignored.
+     */
+    ignoreCertErrors?: boolean;
 }
+
+export type AdpPreviewConfig = AdpPreviewConfigWithTarget | AdpPreviewConfigWithBuildPath;
 
 export interface OnpremApp {
     /** Application variant id. */

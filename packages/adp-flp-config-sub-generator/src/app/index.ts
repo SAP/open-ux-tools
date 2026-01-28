@@ -12,7 +12,7 @@ import {
     SystemLookup,
     getBaseAppInbounds,
     type InternalInboundNavigation,
-    type AdpPreviewConfig,
+    type AdpPreviewConfigWithTarget,
     type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
@@ -68,7 +68,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     private authenticationRequired: boolean = false;
     // Flag to determine if the generator was aborted
     private abort: boolean = false;
-    private ui5Yaml: AdpPreviewConfig;
+    private ui5Yaml: AdpPreviewConfigWithTarget;
     private credentials: CredentialsAnswers;
     private inbounds?: ManifestNamespace.Inbound;
     private layer: UI5FlexLayer;
@@ -136,7 +136,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             return;
         }
         if (!this.launchAsSubGen) {
-            await this._validateProject();
+            await this._validateCloudProject();
             if (this.abort) {
                 return;
             }
@@ -438,16 +438,23 @@ export default class AdpFlpConfigGenerator extends Generator {
     }
 
     /**
-     * Validates the project type and cloud readiness.
+     * Validates the project type.
      *
      * @throws {Error} If the project is not supported or not cloud ready.
      */
-    private async _validateProject(): Promise<void> {
+    private async _validateProjectType(): Promise<void> {
         const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
         if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
             this._abortExecution(t('error.projectNotSupported'));
-            return;
         }
+    }
+
+    /**
+     * Validates the project is cloud ready.
+     *
+     * @throws {Error} If the project is not supported or not cloud ready.
+     */
+    private async _validateCloudProject(): Promise<void> {
         const isCloud = await this.provider.isAbapCloud();
         if (!isCloud) {
             this._abortExecution(t('error.projectNotCloudReady'));
@@ -460,7 +467,12 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @returns {Promise<void>} A promise that resolves when the initialization is complete.
      */
     private async _initializeStandAloneGenerator(): Promise<void> {
-        this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
+        await this._validateProjectType();
+
+        this.ui5Yaml = await getAdpConfig<AdpPreviewConfigWithTarget>(
+            this.projectRootPath,
+            join(this.projectRootPath, FileName.Ui5Yaml)
+        );
         this.variant = await getVariant(this.projectRootPath, this.fs);
         this.appId = this.variant.reference;
         this.layer = this.variant.layer;

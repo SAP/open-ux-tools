@@ -135,7 +135,7 @@ export class AdpPreview {
      * @returns {Promise<UI5FlexLayer>} The UI5 flex layer for which editing is enabled.
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        if (this.config.cfBuildPath) {
+        if ('cfBuildPath' in this.config) {
             return this.initCfBuildMode(descriptorVariant);
         }
 
@@ -176,7 +176,7 @@ export class AdpPreview {
      * The descriptor is refreshed only if the global flag is set to true.
      */
     async sync(): Promise<void> {
-        if (this.config.cfBuildPath) {
+        if ('cfBuildPath' in this.config) {
             return;
         }
         if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
