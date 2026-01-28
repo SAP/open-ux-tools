@@ -1,11 +1,56 @@
 {
     "errors": {
-        "odataQueryError": "An error occurred when querying for odata: {{error}}. $t(texts.seeLogForDetails)"
+        "odataQueryError": "An error occurred when querying for odata: {{error}}. $t(texts.seeLogForDetails)",
+        "dataNotFetched": "Data was not fetched"
     },
     "info": {
-        "loggingInitialised": "Logger has been configure with level: {{logLevel}}"
+        "loggingInitialised": "Logger has been configure with level: {{logLevel}}",
+        "noServiceEntityData": "No service entity data to write.",
+        "noValueHelpData": "No Value Help service data to write.",
+        "entityFilesToBeGenerated": "The following entity files will be created: {{entities}}"
+
     },
     "texts": {
         "seeLogForDetails": "For more information, view the logs."
+    },
+    "prompts": {
+        "appSelection": {
+            "message": "Select an application as data download target",
+            "breadcrumb": "Selected App"
+        },
+        "relatedEntitySelection": {
+            "message": "Select entities for data download (pre-selected entities are referenced by the application)"
+        },
+        "entityKey": {
+            "message": "Enter values for: {{keyName}}",
+            "hint": "For range selection use '-' between values. Use commas to select non-contiguous values.",
+            "validationMessage": {
+                "invalidKeyValueChars": "Invalid key value contain not allowed characters: {{chars}}",
+                "invalidRangeSpecified": "Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'",
+                "invalidBooleanValue": "Invalid boolean value entered. Please enter true or false."
+            }
+        },
+        "confirmDownload": {
+            "message": "Confirm entity files to be generated",
+            "labelTrue": "Run odata query (files will be generated on finish)",
+            "labelFalse": "Dont generate files"
+        },
+        "updateMainServiceMetadata": {
+            "message": "Update local metadata file from backend (remote service metadata is always used for data download):",
+            "additionalMessage": "The local metadata file will be updated from the backend"
+        },
+        "valueHelpSelection": {
+            "message": "Select Value Help data"
+        }
+    },
+    "steps": {
+        "odataDownloader": {
+            "name": "OData Downloader",
+            "description": "Download data from an OData service for use with the UX Tools Mockdata Server"
+        },
+        "valueHelpSelection": {
+            "name": "Value Help selection",
+            "description": "Value Help selection"
+        }
     }
 }

@@ -4,7 +4,7 @@ import type { ReferencedEntities } from '../src/data-download/types';
 import { createEntitySetData } from '../src/data-download/utils';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { SelectedEntityAnswer } from '../src/data-download/prompts';
+import type { SelectedEntityAnswer } from '../src/data-download/prompts/prompts';
 
 describe('Test odata query builder', () => {
     const testEntities1 = [

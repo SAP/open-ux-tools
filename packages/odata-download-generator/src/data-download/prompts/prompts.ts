@@ -1,4 +1,3 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { type CheckBoxQuestion, type ConfirmQuestion, type InputQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
@@ -6,11 +5,12 @@ import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
-import type { EntitySetsFlat } from './odata-query';
-import { ODataDownloadGenerator } from './odataDownloadGenerator';
-import { createEntityChoices, getData, getServiceDetails } from './prompt-helpers';
-import type { AppConfig } from './types';
-import { getEntityModel } from './utils';
+import { t } from '../../utils/i18n';
+import type { EntitySetsFlat } from '../odata-query';
+import { ODataDownloadGenerator } from '../odataDownloadGenerator';
+import { createEntityChoices, getData, getServiceDetails } from '../prompt-helpers';
+import type { AppConfig } from '../types';
+import { getEntityModel } from '../utils';
 
 export const promptNames = {
     relatedEntitySelection: 'relatedEntitySelection',
@@ -77,11 +77,10 @@ export async function getODataDownloaderPrompts(): Promise<{
         type: 'input',
         guiType: 'folder-browser',
         name: 'appSelection',
-        message: 'Select an application as data download target',
+        message: t('prompts.appSelection.message'),
         default: (answers: Answers) => answers.appSelection ?? appConfig.appAccess?.app.appRoot,
-        guiOptions: { mandatory: true, breadcrumb: `Selected App` },
+        guiOptions: { mandatory: true, breadcrumb: t('prompts.appSelection.breadcrumb') },
         validate: async (appPath: string): Promise<string | boolean> => {
-            // todo: validate required files presence...deleting the metadata file crashes the gen.
             if (!appPath) {
                 return false;
             }
@@ -120,7 +119,7 @@ export async function getODataDownloaderPrompts(): Promise<{
             },
             systemSelection: {
                 includeCloudFoundryAbapEnvChoice: false,
-                defaultChoice: appConfig.systemName,
+                defaultChoice: appConfig.systemName, // todo: Destination test BAS
                 hideNewSystem: true
             },
             serviceSelection: {
@@ -138,13 +137,12 @@ export async function getODataDownloaderPrompts(): Promise<{
     };
     let previousServicePath: string | undefined;
 
-    const relatedEntitySelectionQuestion: CheckBoxQuestion = {
-        when: async () => {
-            // No selected service connection
-            if (!systemSelectionQuestions.answers.metadata || !appConfig.referencedEntities?.listEntity) {
-                return false;
-            }
+    const relatedEntityChoicesDefault: { choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } = {
+        choices: []
+    };
 
+    const toggleSelection = {
+        when: () => {
             if (
                 systemSelectionQuestions.answers.servicePath !== previousServicePath &&
                 appConfig.referencedEntities?.listEntity
@@ -160,33 +158,69 @@ export async function getODataDownloaderPrompts(): Promise<{
             }
             return relatedEntityChoices.choices.length > 0;
         },
+        name: 'toggleSelection',
+        type: 'confirm',
+        message: 'Reset selection',
+        labelTrue: 'Clear selected',
+        labelFalse: 'Restore default selection',
+        default: false,
+        validate: (reset: boolean) => {
+            if (reset) {
+                relatedEntityChoicesDefault.choices = structuredClone(relatedEntityChoices.choices);
+                relatedEntityChoices.choices.forEach((entityChoice) => {
+                    // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
+                    const entityChoiceValue = JSON.parse(entityChoice.value) as SelectedEntityAnswer;
+                    entityChoiceValue.entity.selected = false;
+                    entityChoice.value = JSON.stringify(entityChoiceValue);
+                });
+            } else if (relatedEntityChoicesDefault.choices.length > 0) {
+                relatedEntityChoices.choices = structuredClone(relatedEntityChoicesDefault.choices);
+            }
+            return true;
+        }
+    } as ConfirmQuestion;
+
+    const relatedEntitySelectionQuestion: CheckBoxQuestion = {
+        when: async () => {
+            // No selected service connection
+            /* if (!systemSelectionQuestions.answers.metadata || !appConfig.referencedEntities?.listEntity) {
+                return false;
+            }
+ */
+
+            return relatedEntityChoices.choices.length > 0;
+        },
         name: promptNames.relatedEntitySelection,
         type: 'checkbox',
         guiOptions: {
             applyDefaultWhenDirty: true
         },
-        message: 'Select entities for data download (pre-selected entities are referenced by the application)',
+        message: t('prompts.relatedEntitySelection.message'),
         choices: () => relatedEntityChoices.choices,
-        default: (previousAnswers: Answers) => {
-            let defaults: SelectedEntityAnswer[] = [];
-            const previousEntitySelections = previousAnswers?.[promptNames.relatedEntitySelection];
-            if (
-                !previousEntitySelections ||
-                (Array.isArray(previousEntitySelections) && previousEntitySelections.length === 0)
-            ) {
-                // Pre-select entities with default selection property
-                relatedEntityChoices.choices.forEach((entityChoice) => {
-                    // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
-                    if ((JSON.parse(entityChoice.value) as SelectedEntityAnswer).entity.selected) {
-                        defaults.push(entityChoice.value);
-                    }
-                });
-            } else {
-                defaults = (previousAnswers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswer[])?.map(
-                    (entityAnswer) => entityAnswer
-                );
-            }
+        default: () => {
+            const defaults: SelectedEntityAnswer[] = [];
+            relatedEntityChoices.choices.forEach((entityChoice) => {
+                // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
+                if ((JSON.parse(entityChoice.value) as SelectedEntityAnswer).entity.selected) {
+                    defaults.push(entityChoice.value);
+                }
+            });
             return defaults;
+        },
+        validate: (selectedEntities) => {
+            selectedEntities.forEach((selectedEntity) => {
+                const selectedEntityChoice = relatedEntityChoices.choices.find(
+                    (entityChoice) => entityChoice.value === selectedEntity
+                );
+                if (selectedEntityChoice) {
+                    // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
+                    const choiceValue = JSON.parse(selectedEntityChoice.value) as SelectedEntityAnswer;
+                    choiceValue.entity.selected = true;
+                    // Hack for https://github.com/SAP/inquirer-gui/issues/787
+                    selectedEntityChoice.value = JSON.stringify(choiceValue);
+                }
+            });
+            return true;
         }
     };
 
@@ -202,6 +236,7 @@ export async function getODataDownloaderPrompts(): Promise<{
         ...(systemSelectionQuestions.prompts as Question[]),
         getUpdateMainServiceMetadataPrompt(systemSelectionQuestions.answers, appConfig),
         ...keyPrompts,
+        toggleSelection,
         relatedEntitySelectionQuestion,
         getConfirmDownloadPrompt(systemSelectionQuestions.answers, appConfig, odataQueryResult)
     );
@@ -223,15 +258,20 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
         ({
             when: async () => !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name,
             name: `entityKeyIdx:${keypart}`,
-            message: () => `Enter values for: ${appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name}`,
+            message: () =>
+                t('prompts.entityKey.message', {
+                    keyName: appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name
+                }),
             type: 'input',
             guiOptions: {
-                hint: "For range selection use '-' between values. Use commas to select non-contigous values."
+                hint: t('prompts.entityKey.hint')
             },
             validate: (keyValue: string) => {
                 // todo : move to a validator
                 if (invalidEntityKeyFilterChars.includes(keyValue)) {
-                    return `Invalid key value contain not allowed characters: ${invalidEntityKeyFilterChars.join()}`;
+                    return t('prompts.entityKey.validation.invalidKeyValueChars', {
+                        chars: invalidEntityKeyFilterChars.join()
+                    });
                 }
                 const keyRef = appConfig.referencedEntities?.listEntity.semanticKeys[keypart];
                 // Clear key values
@@ -243,7 +283,7 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
                 filterAndParts.forEach((filterPart) => {
                     const filterRangeParts = filterPart.split('-');
                     if (filterRangeParts.length > 2) {
-                        return "Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'";
+                        return t('prompts.entityKey.validation.invalidRangeSpecified');
                     }
                 });
 
@@ -253,7 +293,7 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
                         try {
                             keyRef.value = JSON.parse(keyValue);
                         } catch {
-                            return 'Invalid boolean value entered. Please enter true or false.';
+                            return t('prompts.entityKey.validation.invalidBooleanValue');
                         }
                     } else {
                         keyRef.value = keyValue;
@@ -289,9 +329,9 @@ function getConfirmDownloadPrompt(
         },
         name: promptNames.confirmDownload,
         type: 'confirm',
-        message: 'Confirm entity files to be generated',
-        labelTrue: 'Run odata query (files will be generated on finish)',
-        labelFalse: 'Dont generate files',
+        message: t('prompts.confirmDownload.message'),
+        labelTrue: t('prompts.confirmDownload.labelTrue'),
+        labelFalse: t('prompts.confirmDownload.labelFalse'),
         default: false,
         guiOptions: {
             mandatory: true
@@ -305,22 +345,17 @@ function getConfirmDownloadPrompt(
                 odataQueryResult.odata = result.odataQueryResult;
                 odataQueryResult.entitySetsFlat = result.entitySetsFlat;
             }
-            return true;
-        },
-        additionalMessages: (confirmDownload, answers) => {
-            // All entities to be created
+            // Log entities to be created
             const allEntities = [
                 appConfig.referencedEntities?.listEntity.entitySetName,
-                //...(appConfig.referencedEntities?.pageObjectEntities?.map((entity) => entity.entitySetName) ?? []),
                 ...((answers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswerAsJSONString[])?.map(
                     (selEntityAnswer) => JSON.parse(selEntityAnswer).entity.entitySetName // silly workaround for YUI checkbox issue, fix is pending
                 ) ?? [])
             ];
-
-            return {
-                message: `The following entity files will be created: ${allEntities.join(', ')}`,
-                severity: Severity.information
-            };
+            ODataDownloadGenerator.logger.info(
+                t('info.entityFilesToBeGenerated', { entities: allEntities.join(', ') })
+            );
+            return true;
         }
     } as ConfirmQuestion;
 }
@@ -346,17 +381,8 @@ function getUpdateMainServiceMetadataPrompt(
         },
         name: promptNames.updateMainServiceMetadata,
         type: 'confirm',
-        message: 'Update local metadata file from backend (remote service metadata is always used for data download):',
+        message: t('prompts.updateMainServiceMetadata.message'),
         default: false
-        /* additionalMessages: (updateMetadata: unknown) => {
-            if (updateMetadata === true) {
-                return {
-                    message: 'The local metadata file will be updated from the backend',
-                    severity: Severity.information 
-                }
-            }
-            return;
-        } */
     };
     return question;
 }

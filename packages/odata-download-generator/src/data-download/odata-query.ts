@@ -2,7 +2,7 @@ import type { ODataService } from '@sap-ux/axios-extension';
 import buildQuery, { type Filter } from 'odata-query';
 import { t } from '../utils/i18n';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
-import { type SelectedEntityAnswer } from './prompts';
+import { type SelectedEntityAnswer } from './prompts/prompts';
 import type { ReferencedEntities } from './types';
 
 export type EntitySetsFlat = { [entityPath: string]: string };

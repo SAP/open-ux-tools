@@ -11,11 +11,12 @@ import { readFile } from 'fs/promises';
 import type { CheckboxChoiceOptions } from 'inquirer';
 import { join } from 'path';
 import type { Answers } from 'yeoman-generator';
+import { t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
 import { fetchData } from './odata-query';
 import { ODataDownloadGenerator } from './odataDownloadGenerator';
-import type { SelectedEntityAnswer, SelectedEntityAnswerAsJSONString } from './prompts';
-import { promptNames } from './prompts';
+import type { SelectedEntityAnswer, SelectedEntityAnswerAsJSONString } from './prompts/prompts';
+import { promptNames } from './prompts/prompts';
 import type { AppConfig, Entity } from './types';
 import { getSystemNameFromStore } from './utils';
 
@@ -53,7 +54,7 @@ export async function getData(
                     1
                 );
                 if (odataResult.entityData) {
-                    ODataDownloadGenerator.logger.info('Got result rows:' + `${odataResult.entityData.length}`);
+                    ODataDownloadGenerator.logger.debug(`Got result rows: ${odataResult.entityData.length}`);
                     return { odataQueryResult: odataResult.entityData, entitySetsFlat };
                 } else if (odataResult.error) {
                     return `${odataResult.error}`;
@@ -61,7 +62,7 @@ export async function getData(
             }
         }
     }
-    return 'Data was not fetched';
+    return t('errors.dataNotFetched');
 }
 
 /**

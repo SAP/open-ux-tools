@@ -12,6 +12,7 @@ import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
 import type { CheckboxChoiceOptions } from 'inquirer';
 import merge from 'lodash/merge';
 import { join } from 'path';
+import { t } from '../utils/i18n';
 import { PromptState } from './prompt-state';
 import { entityTypeExclusions } from './types';
 
@@ -34,7 +35,7 @@ export function getValueHelpSelectionPrompt(
     const vhSelectionQuestion: CheckBoxQuestion = {
         name: 'valueHelpSelection',
         type: 'checkbox',
-        message: 'Select Value Help data',
+        message: t('prompts.valueHelpSelection.message'),
         choices: () => valueHelpChoices,
         validate: async (selectedValueHelps: ExternalServiceReference[][]) => {
             if (!selectedValueHelps || selectedValueHelps.length === 0) {
@@ -65,14 +66,6 @@ async function getExternalServiceEntityData(
     const externalServiceEntityData: ExternalService[] = [];
 
     const reqConfig: AxiosRequestConfig = {
-        responseType: 'json',
-        params: { '$format': 'json' },
-        headers: {
-            Accept: 'application/json'
-        },
-        transitional: {
-            forcedJSONParsing: true
-        },
         transformResponse: (data) => {
             if (typeof data === 'string') {
                 return JSON.parse(data);

@@ -12,7 +12,7 @@ import type { GeneratorOptions } from 'yeoman-generator';
 import Generator from 'yeoman-generator';
 import { initI18nODataDownloadGnerator, t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
-import { getODataDownloaderPrompts, promptNames } from './prompts';
+import { getODataDownloaderPrompts, promptNames } from './prompts/prompts';
 import { type ReferencedEntities } from './types';
 import { createEntitySetData } from './utils';
 import { getValueHelpSelectionPrompt } from './value-help-prompts';
@@ -96,12 +96,12 @@ export class ODataDownloadGenerator extends Generator {
         // Generator steps
         this.prompts = new Prompts([
             {
-                description: 'Download data from an OData service for use with the UX Tools Mockdata Server',
-                name: 'OData Downloader'
+                description: t('steps.odataDownloader.description'),
+                name: t('steps.odataDownloader.name')
             },
             {
-                description: 'Value Help selection',
-                name: 'Value Help selection'
+                description: t('steps.valueHelpSelection.description'),
+                name: t('steps.valueHelpSelection.name')
             }
         ]);
 
@@ -149,7 +149,7 @@ export class ODataDownloadGenerator extends Generator {
                 const mockConfig = await getMockServerConfig(this.state.appRootPath);
                 let serviceConfig;
                 if (mockConfig?.services) {
-                    ODataDownloadGenerator.logger.info(`Mock config: ${JSON.stringify(mockConfig)}`);
+                    ODataDownloadGenerator.logger.debug(`Mock config: ${JSON.stringify(mockConfig)}`);
                     // Find the matching service from mock config ignoring leading and trailing '/'
                     serviceConfig = mockConfig.services.find(
                         (service) =>
@@ -199,7 +199,7 @@ export class ODataDownloadGenerator extends Generator {
                 ODataDownloadGenerator.logger.error(error);
             }
         } else {
-            ODataDownloadGenerator.logger.info('No service entity data to write.');
+            ODataDownloadGenerator.logger.info(t('info.noServiceEntityData'));
         }
 
         // Write value help data files
@@ -214,7 +214,7 @@ export class ODataDownloadGenerator extends Generator {
                 this.state.mainServicePath
             );
         } else {
-            ODataDownloadGenerator.logger.info('No Value Help service data to write.');
+            ODataDownloadGenerator.logger.info(t('info.noValueHelpData'));
         }
         // Update the metadata
         if (this.state.updateMainServiceMetadata && this.state.mainServiceMetadata && this.state.mainServiceName) {
