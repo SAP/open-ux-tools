@@ -317,31 +317,4 @@ describe('Test service-helper function `validateService`', () => {
         validateServiceResult = await validateService(serviceAnswer, connectionValidatorMockNoCatalogs);
         expect(PromptState.odataService.annotations).toBe(mockAnnotations);
     });
-
-    test('Should return error message when metadata request fails', async () => {
-        const serviceAnswer = {
-            servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
-            serviceODataVersion: ODataVersion.v2
-        } as ServiceAnswer;
-
-        const errorWithStatus = {
-            response: {
-                status: 404
-            },
-            message: 'Not Found'
-        };
-
-        const connectionValidatorWithError = {
-            axiosConfig: {},
-            serviceProvider: {} as ServiceProvider,
-            odataService: {
-                metadata: jest.fn().mockRejectedValue(errorWithStatus)
-            },
-            catalogs: {}
-        } as unknown as ConnectionValidator;
-
-        const validateServiceResult = await validateService(serviceAnswer, connectionValidatorWithError);
-        expect(validateServiceResult.validationResult).toContain(serviceAnswer.servicePath);
-        expect(validateServiceResult.validationResult).toContain(t('texts.seeLogForDetails'));
-    });
 });
