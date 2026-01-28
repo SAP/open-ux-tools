@@ -243,9 +243,10 @@ async function getServiceMetadataAndValidate(
             convertedMetadata
         };
     } catch (error) {
-        LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, error }));
+        const errorText = errorHandler.getErrorMsg(error);
+        LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, errorText }));
         return {
-            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath })
+            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText })
         };
     }
 }
