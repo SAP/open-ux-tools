@@ -1,3 +1,5 @@
+import type { NetworkError } from '../types';
+
 /**
  * In VS Code extension host, we can't rely on navigator.onLine.
  * Focus on error messages that indicate network connectivity issues
@@ -20,9 +22,14 @@ const networkErrorMessages = [
  * This function is designed for VS Code's Yeoman UI environment where network
  * errors may differ from browser environments.
  *
- * @param {Error} error - The error object from a failed fetch request.
+ * @param {object} error - The error object from a failed fetch request.
+ * @param {string} [error.message] - The error message string.
+ * @param {string} [error.name] - The error name string.
+ * @param {string} [error.code] - The error code string.
  * @returns {boolean} True if the error indicates offline/network issues.
  */
-export function isOfflineError(error: Error): boolean {
-    return networkErrorMessages.some((msg) => error.message?.includes(msg) || error.name?.includes(msg));
+export function isOfflineError(error: NetworkError): boolean {
+    return networkErrorMessages.some(
+        (msg) => error.message?.includes(msg) || error.name?.includes(msg) || error.code?.includes(msg)
+    );
 }

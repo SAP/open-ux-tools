@@ -1,8 +1,8 @@
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
 import { basename, dirname, join, normalize, relative, sep } from 'node:path';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
-import { FileName, MinCdsVersionUi5Plugin } from '../constants';
+import { FileName, MinCdsVersion } from '../constants';
 import type {
     CapCustomPaths,
     CapProjectType,
@@ -206,27 +206,8 @@ export async function getCapModelAndServices(
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'projectRoot': ${_projectRoot}`);
 
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
-    // filter services that have ( urlPath defined AND no endpoints) OR have endpoints with kind 'odata'
-    // i.e. ignore services for websockets and other unsupported protocols
-    if (services.filter) {
-        services = services.filter(
-            (service) =>
-                (service.urlPath && service.endpoints === undefined) ||
-                service.endpoints?.find(filterCapServiceEndpoints)
-        );
-    }
-    if (services.map) {
-        services = services.map((value) => {
-            const { endpoints, urlPath } = value;
-            const odataEndpoint = endpoints?.find(filterCapServiceEndpoints);
-            const endpointPath = odataEndpoint?.path ?? urlPath;
-            return {
-                name: value.name,
-                urlPath: uniformUrl(endpointPath),
-                runtime: value.runtime
-            };
-        });
-    }
+
+    services = processServices(services);
     return {
         model,
         services,
@@ -236,6 +217,36 @@ export async function getCapModelAndServices(
             root: cds.root
         }
     };
+}
+
+/**
+ * Filter and normalize service definitions from CAP project.
+ *
+ * @param services - list of services from cds.compile.to['serviceinfo'](model)
+ * @returns list of normalized service info
+ */
+export function processServices(services: ServiceInfo[] | object | undefined): ServiceInfo[] {
+    // filter services that have ( urlPath defined AND no endpoints) OR have endpoints with kind 'odata'
+    // i.e. ignore services for websockets and other unsupported protocols
+    if (services && Array.isArray(services)) {
+        return services
+            .filter(
+                (service) =>
+                    (service.urlPath && service.endpoints === undefined) ||
+                    service.endpoints?.find(filterCapServiceEndpoints)
+            )
+            .map((value) => {
+                const { endpoints, urlPath } = value;
+                const odataEndpoint = endpoints?.find(filterCapServiceEndpoints);
+                const endpointPath = odataEndpoint?.path ?? urlPath;
+                return {
+                    name: value.name,
+                    urlPath: uniformUrl(endpointPath),
+                    runtime: value.runtime
+                };
+            });
+    }
+    return [];
 }
 
 /**
@@ -891,7 +902,7 @@ export async function checkCdsUi5PluginEnabled(
         // If it does, it uses that version information to determine if it satisfies the minimum CDS version required.
         // If 'cdsVersionInfo' is not available or does not contain version information,it falls back to check the version specified in the package.json file.
         hasMinCdsVersion: cdsVersionInfo?.version
-            ? satisfies(cdsVersionInfo?.version, `>=${MinCdsVersionUi5Plugin}`)
+            ? satisfies(cdsVersionInfo?.version, `>=${MinCdsVersion}`)
             : satisfiesMinCdsVersion(packageJson),
         isWorkspaceEnabled: workspaceEnabled,
         hasCdsUi5Plugin: hasDependency(packageJson, 'cds-plugin-ui5'),
@@ -944,10 +955,7 @@ function getWorkspacePackages(packageJson: Package): string[] | undefined {
  * @returns - true: cds version satisfies the min cds version; false: cds version does not satisfy min cds version
  */
 export function satisfiesMinCdsVersion(packageJson: Package): boolean {
-    return (
-        hasMinCdsVersion(packageJson) ||
-        satisfies(MinCdsVersionUi5Plugin, packageJson.dependencies?.['@sap/cds'] ?? '0.0.0')
-    );
+    return hasMinCdsVersion(packageJson) || satisfies(MinCdsVersion, packageJson.dependencies?.['@sap/cds'] ?? '0.0.0');
 }
 
 /**
@@ -958,5 +966,5 @@ export function satisfiesMinCdsVersion(packageJson: Package): boolean {
  * @returns - true: min cds version is present; false: cds version needs update
  */
 export function hasMinCdsVersion(packageJson: Package): boolean {
-    return gte(coerce(packageJson.dependencies?.['@sap/cds']) ?? '0.0.0', MinCdsVersionUi5Plugin);
+    return gte(coerce(packageJson.dependencies?.['@sap/cds']) ?? '0.0.0', MinCdsVersion);
 }

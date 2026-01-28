@@ -2,7 +2,7 @@ import { expect } from '@sap-ux-private/playwright';
 
 import { test } from '../../fixture';
 import { ADP_FIORI_ELEMENTS_V4 } from '../../project';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from './test-utils';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
 import { satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V4 });
@@ -22,7 +22,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -48,14 +48,19 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                     }
                 ],
                 fragments: {
-                    'table-column.fragment.xml': `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
-    <table:Column
-        id="column-[a-z0-9]+"
-        width="10%"
-        header="New Column">
-        <Text id="text-[a-z0-9]+" text="Sample data"/>
-    </table:Column>
-</core:FragmentDefinition>`
+                    'table-column.fragment.xml': new RegExp(
+                        `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">\\s*` +
+                            `<!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->\\s*` +
+                            `<!-- controlType: sap.ui.mdc.Table -->\\s*` +
+                            `<!-- targetAggregation: columns -->\\s*` +
+                            `<table:Column\\s*` +
+                            `id="column-[a-z0-9]+"\\s*` +
+                            `width="10%"\\s*` +
+                            `header="New Column">\\s*` +
+                            `<Text id="text-[a-z0-9]+" text="Sample data"/>\\s*` +
+                            `</table:Column>\\s*` +
+                            `</core:FragmentDefinition>`
+                    )
                 }
             });
 
@@ -88,7 +93,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const lr = new ListReport(previewFrame, 'fev4');
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -132,7 +137,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const lr = new ListReport(previewFrame, 'fev4');
             await editor.toolbar.navigationModeButton.click();
 
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -178,7 +183,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const tableSettings = new TableSettings(previewFrame, 'Toolbar Configuration', 'fev4');
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -212,7 +217,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const dialog = new AdpDialog(previewFrame, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -259,7 +264,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.130.0'
+                description: '<1.120.0'
             }
         },
         async ({ page, previewFrame, projectCopy, ui5Version }) => {
@@ -268,7 +273,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await lr.clickOnTableNthRow(0);
 
             await editor.toolbar.uiAdaptationModeButton.click();
@@ -276,7 +281,8 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addCustomTableAction.click();
 
-            await dialog.fillField('Fragment Name', 'op-table-action');
+            await dialog.fillField('Action Id', 'testTableActionId');
+            await dialog.fillField('Button Text', 'Test Table Action');
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();
 
@@ -285,25 +291,85 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                 changes: [
                     {
                         fileType: 'change',
-                        changeType: 'addXML',
+                        changeType: 'appdescr_fe_changePageConfiguration',
                         content: {
-                            targetAggregation: 'actions',
-                            index: 0,
-                            fragmentPath: 'fragments/op-table-action.fragment.xml'
+                            page: 'RootEntityObjectPage',
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath:
+                                    'controlConfiguration/toFirstAssociatedEntity/@com.sap.vocabularies.UI.v1.LineItem#tableSection/actions/testTableActionId',
+                                propertyValue: {
+                                    enabled: true,
+                                    position: {
+                                        anchor: 'DataFieldForAction::Service.approveRootEntity',
+                                        placement: 'Before'
+                                    },
+                                    press: '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
+                                    text: 'Test Table Action',
+                                    visible: true,
+                                    requiresSelection: false
+                                }
+                            }
                         }
                     }
-                ],
-                fragments: {
-                    'op-table-action.fragment.xml': `<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
-   <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-[a-z0-9]+" >
-        <Button xmlns:m="sap.m" id="btn-[a-z0-9]+" visible="true" text="New Action" />
-    </actiontoolbar:ActionToolbarAction>
-</core:FragmentDefinition>`
-                }
+                ]
             });
 
             await editor.reloadCompleted();
-            await lr.checkControlVisible('New Action');
+            await lr.checkControlVisible('Test Table Action');
+        }
+    );
+
+    test(
+        '7: Add Custom Page Action to OP page',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.96.0'
+            }
+        },
+        async ({ page, previewFrame, ui5Version, projectCopy }) => {
+            const lr = new ListReport(previewFrame, 'fev4');
+            const dialog = new AdpDialog(previewFrame, ui5Version);
+            const editor = new AdaptationEditorShell(page, ui5Version);
+
+            await editor.toolbar.navigationModeButton.click();
+            await lr.clickOnButton();
+            await lr.clickOnTableNthRow(0);
+
+            await editor.toolbar.uiAdaptationModeButton.click();
+            // wait until the quick actions label is rendered in the preview
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
+            await editor.quickActions.addCustomPageAction.click();
+            await dialog.fillField('Action Id', 'testActionId');
+            await dialog.fillField('Button Text', 'Test Page Action');
+            await dialog.createButton.click();
+            await editor.toolbar.saveAndReloadButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            page: 'RootEntityObjectPage',
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath: 'content/header/actions/testActionId',
+                                propertyValue: {
+                                    enabled: true,
+                                    press: '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
+                                    text: 'Test Page Action',
+                                    visible: true
+                                }
+                            }
+                        }
+                    }
+                ]
+            });
+            await lr.checkControlVisible('Test Page Action');
         }
     );
 });

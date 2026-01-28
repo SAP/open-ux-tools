@@ -4,9 +4,10 @@ import type {
     FilterBarPromptsAnswer,
     TablePromptsAnswer,
     PagePromptsAnswer,
-    RichTextEditorPromptsAnswer
+    RichTextEditorPromptsAnswer,
+    RichTextEditorButtonGroupsPromptsAnswer
 } from '@sap-ux/fe-fpm-writer';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -29,7 +30,8 @@ import {
     GET_CODE_SNIPPET,
     REQUEST_I18N,
     RESPONSE_I18N,
-    CREATE_I18N_ENTRY
+    CREATE_I18N_ENTRY,
+    SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS
 } from '../utils/types';
 import type {
     Actions,
@@ -41,8 +43,7 @@ import type {
     ResponseI18n
 } from '../utils/types';
 import type { AddonActions } from '../addons/types';
-import { handleAction as handleAddonAction } from '../addons/project';
-import { testAppPath, getApplication } from '../addons/project';
+import { handleAction as handleAddonAction, testAppPath, getApplication } from '../addons/project';
 import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/project/types';
 import type { ApplicationInformation, SetProjectPath } from '../addons/project/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
@@ -181,6 +182,14 @@ async function handleAction(action: Actions): Promise<void> {
                         questions,
                         groups,
                         initialAnswers: initialAnswers as Partial<RichTextEditorPromptsAnswer>
+                    };
+                } else if (action.value === PromptsType.RichTextEditorButtonGroups) {
+                    // Post processing
+                    responseAction = {
+                        type: SET_RICH_TEXT_EDITOR_BUTTON_GROUPS_QUESTIONS,
+                        questions,
+                        groups,
+                        initialAnswers: initialAnswers as Partial<RichTextEditorButtonGroupsPromptsAnswer>
                     };
                 }
                 if (responseAction) {

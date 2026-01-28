@@ -367,7 +367,7 @@ describe('CFServicesPrompter', () => {
             expect(mockValidateODataEndpoints).toHaveBeenCalledWith([], mockServiceKeys.serviceKeys, mockLogger);
             expect(result).toBe(true);
             expect(prompter['manifest']).toBe(mockManifest);
-            expect(prompter['serviceInstanceGuid']).toBe('test-guid');
+            expect(prompter['serviceInstanceGuid']).toBe(mockServiceKeys.serviceInstance.guid);
         });
 
         test('should return error when app is not selected', async () => {

@@ -10,7 +10,7 @@ getUI5Versions({
     .then((versions) => {
         'use strict';
         const maintenanceVersions = versions.filter((version) => version.maintained).map((version) => version.version);
-        return writeFile(join(__dirname, 'versions.json'), JSON.stringify(maintenanceVersions));
+        return writeFile(join(import.meta.dirname, 'versions.json'), JSON.stringify(maintenanceVersions));
     })
     .catch((error) => {
         'use strict';

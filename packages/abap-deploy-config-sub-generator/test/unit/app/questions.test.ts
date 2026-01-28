@@ -7,27 +7,23 @@ import { AuthenticationType } from '@sap-ux/store';
 import { DefaultLogger, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 jest.mock('@sap-ux/btp-utils', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/btp-utils') as {}),
     isAppStudio: jest.fn()
 }));
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
 jest.mock('@sap-ux/project-access', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/project-access') as {}),
     readUi5Yaml: jest.fn()
 }));
 const mockReadUi5Yaml = readUi5Yaml as jest.Mock;
 
 jest.mock('@sap-ux/abap-deploy-config-inquirer', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/abap-deploy-config-inquirer') as {}),
     getPrompts: jest.fn()
 }));
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     getHostEnvironment: jest.fn()
 }));
@@ -132,8 +128,9 @@ describe('Test getAbapQuestions', () => {
                     url: 'https://mock-url',
                     client: '100',
                     authenticationType: AuthenticationType.ReentranceTicket,
-                    scp: false
-                } as BackendSystem
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
+                }
             },
             backendConfig: undefined,
             configFile: 'ui5-deploy.yaml',

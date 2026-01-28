@@ -217,7 +217,9 @@ describe('YAML Project Functions', () => {
                                 org: 'test-org',
                                 space: 'test-space-guid',
                                 html5RepoRuntime: 'test-runtime',
-                                sapCloudService: 'test-service'
+                                sapCloudService: 'test-service',
+                                serviceInstanceName: 'test-service-instance-name',
+                                serviceInstanceGuid: 'test-service-instance-guid'
                             }
                         }
                     ]

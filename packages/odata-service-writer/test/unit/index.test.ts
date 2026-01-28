@@ -65,6 +65,99 @@ describe('generate', () => {
         });
     });
 
+    describe('external services', () => {
+        let fs: Editor;
+        const root = join(testDir);
+        beforeEach(async () => {
+            fs = create(createStorage());
+        });
+        it('write external service metadata', async () => {
+            fs.writeJSON(join(testDir, 'webapp/manifest.json'), {
+                'sap.app': {
+                    id: 'testappid'
+                }
+            });
+            fs.writeJSON(join(testDir, 'package.json'), {});
+            const ui5YamlWithOutMiddleware = (await UI5Config.newInstance('')).setConfiguration({}).toString();
+            fs.write(join(testDir, 'ui5.yaml'), ui5YamlWithOutMiddleware);
+            await generate(
+                testDir,
+                {
+                    name: 'mainService',
+                    url: 'https://localhost/updated', // Changed URL
+                    path: '/sap', // Backends are matched by path, use existing path
+                    type: ServiceType.EDMX,
+                    annotations: [
+                        {
+                            technicalName: 'SEPMRA_PROD_MAN',
+                            xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                        }
+                    ] as EdmxAnnotationsInfo[],
+                    metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                    version: OdataVersion.v4,
+                    localAnnotationsName: 'annotation',
+                    externalServices: [
+                        {
+                            type: 'value-list',
+                            metadata: 'ValueListReferences',
+                            path: '/sap/my_service',
+                            target: 'MyEntity/MyProperty'
+                        },
+                        {
+                            type: 'code-list',
+                            metadata: 'CodeListReferences',
+                            path: '/sap/my_service2',
+                            collectionPath: 'Currencies'
+                        }
+                    ]
+                },
+                fs
+            );
+            expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
+            "resources:
+              configuration: {}
+            server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost/updated
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                        resolveExternalServiceReferences: true
+                    annotations:
+                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            "
+        `);
+            // Value List references are saved
+            expect(
+                fs.read(
+                    join(
+                        testDir,
+                        'webapp',
+                        'localService',
+                        'mainService',
+                        'my_service',
+                        'MyEntity',
+                        'MyProperty',
+                        'metadata.xml'
+                    )
+                )
+            ).toBe('ValueListReferences');
+        });
+    });
+
     describe('different folder structures', () => {
         let fs: Editor;
         const root = join(testDir, 'nested');
@@ -1112,6 +1205,86 @@ describe('update', () => {
         expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+    });
+    it('Update an existing service with new value list references', async () => {
+        await update(
+            testDir,
+            {
+                name: 'mainService',
+                url: 'https://localhost/updated', // Changed URL
+                path: '/sap', // Backends are matched by path, use existing path
+                type: ServiceType.EDMX,
+                annotations: [
+                    {
+                        technicalName: 'SEPMRA_PROD_MAN',
+                        xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                    }
+                ] as EdmxAnnotationsInfo[],
+                metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                version: OdataVersion.v4,
+                localAnnotationsName: 'annotation',
+                externalServices: [
+                    {
+                        type: 'value-list',
+                        metadata: 'ValueListReferences',
+                        path: '/sap/my_service',
+                        target: 'MyEntity/MyProperty'
+                    },
+                    {
+                        type: 'code-list',
+                        metadata: 'CodeListReferences',
+                        path: '/sap/my_service2',
+                        collectionPath: 'Currencies'
+                    }
+                ]
+            },
+            fs
+        );
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost/updated
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                        resolveExternalServiceReferences: true
+                    annotations:
+                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            "
+        `);
+        // Value List references are saved
+        expect(
+            fs.read(
+                join(
+                    testDir,
+                    'webapp',
+                    'localService',
+                    'mainService',
+                    'my_service',
+                    'MyEntity',
+                    'MyProperty',
+                    'metadata.xml'
+                )
+            )
+        ).toBe('ValueListReferences');
     });
 
     it('Update an existing service without backend changes', async () => {

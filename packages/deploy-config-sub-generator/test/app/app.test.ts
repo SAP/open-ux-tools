@@ -20,9 +20,9 @@ jest.mock('fs', () => ({
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -208,7 +208,12 @@ describe('Deployment Generator', () => {
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getCFQuestionsSpy).toHaveBeenCalled();
+        expect(getCFQuestionsSpy).toHaveBeenCalledWith(
+            expect.not.objectContaining({
+                overwrite: expect.anything()
+            }),
+            expect.any(Object)
+        );
         expect(getABAPPromptsSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 appRootPath: expect.stringContaining(join('/output/mta-app/project1')),

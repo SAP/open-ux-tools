@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { Service, ServiceRetrievalOptions } from '.';
+import type { BackendServiceRetrievalOptions, Service } from '.';
 import type { DataProvider } from '../data-provider';
 import type { ServiceOptions } from '../types';
 import { SystemDataProvider } from '../data-provider/backend-system';
@@ -81,10 +81,12 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         }
         return this.dataProvider.write(entity);
     }
+
     public async delete(entity: BackendSystem): Promise<boolean> {
         return this.dataProvider.delete(entity);
     }
-    public async getAll(options: ServiceRetrievalOptions): Promise<BackendSystem[] | []> {
+
+    public async getAll(options?: BackendServiceRetrievalOptions): Promise<BackendSystem[] | []> {
         return this.dataProvider.getAll(options);
     }
 }
@@ -92,20 +94,21 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
 export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
     if (!options.baseDirectory) {
         try {
-            ensureSystemsMigrated();
-            options.baseDirectory = getSapToolsDirectory();
+            ensureSystemsJsonMigrated();
         } catch (error) {
             logger.error(text('error.systemsJsonMigrationFailed', { error: (error as Error).message }));
         }
+        options.baseDirectory = getSapToolsDirectory();
     }
     return new SystemService(logger, options);
 }
 
 /**
  * Ensure settings are migrated from .fioritools directory to the new .saptools directory.
- * If migration has already taken place, only migrate new systems that have not yet been migrated.
+ * If the migration has already taken place, we still check if new systems have been added (possibly via an older version of this module)
+ * We then migrate only these new systems.
  */
-function ensureSystemsMigrated(): void {
+function ensureSystemsJsonMigrated(): void {
     const systemFileName = getEntityFileName(Entity.BackendSystem);
     const legacySystemsPath = join(getFioriToolsDirectory(), systemFileName);
     const newSystemsPath = join(getSapToolsDirectory(), systemFileName);
@@ -118,6 +121,7 @@ function ensureSystemsMigrated(): void {
         // first time migration, move all data from legacy to new path
         mkdirSync(dirname(newSystemsPath), { recursive: true });
         writeFileSync(newSystemsPath, JSON.stringify({ systems: legacyData }, null, 2));
+        writeFileSync(migrationFlag, new Date().toISOString());
     }
 
     // overwrite legacy file entries with migrated flag to avoid re-migration
@@ -130,7 +134,6 @@ function ensureSystemsMigrated(): void {
     }
 
     writeFileSync(legacySystemsPath, JSON.stringify({ systems: { ...migratedData } }, null, 2));
-    writeFileSync(migrationFlag, new Date().toISOString());
 }
 
 /**

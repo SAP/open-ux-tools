@@ -1,8 +1,11 @@
+import type AdmZip from 'adm-zip';
+
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
+import { extractXSApp } from '../utils';
 import { getFDCApps } from '../services/api';
-import type { CfConfig, CFApp, ServiceKeys } from '../../types';
+import type { CfConfig, CFApp, ServiceKeys, XsApp } from '../../types';
 
 /**
  * Get the app host ids.
@@ -23,6 +26,73 @@ export function getAppHostIds(serviceKeys: ServiceKeys[]): string[] {
     }
 
     return [...new Set(appHostIds)];
+}
+
+/**
+ * Extracts the backend URL from service key credentials. Iterates through all endpoint keys to find the first endpoint with a URL.
+ *
+ * @param {ServiceKeys[]} serviceKeys - The credentials from service keys.
+ * @returns {string | undefined} The backend URL or undefined if not found.
+ */
+export function getBackendUrlFromServiceKeys(serviceKeys: ServiceKeys[]): string | undefined {
+    if (!serviceKeys || serviceKeys.length === 0) {
+        return undefined;
+    }
+
+    const endpoints = serviceKeys[0]?.credentials?.endpoints as Record<string, { url?: string }> | undefined;
+    if (endpoints) {
+        for (const key in endpoints) {
+            if (Object.hasOwn(endpoints, key)) {
+                const endpoint = endpoints[key] as { url?: string } | undefined;
+                if (endpoint && typeof endpoint === 'object' && endpoint.url && typeof endpoint.url === 'string') {
+                    return endpoint.url;
+                }
+            }
+        }
+    }
+
+    return undefined;
+}
+
+/**
+ * Extracts OAuth paths from xs-app.json routes that have a source property.
+ * These paths should receive OAuth Bearer tokens in the middleware.
+ *
+ * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries containing xs-app.json.
+ * @returns {string[]} Array of path patterns (from route.source) that have a source property.
+ */
+export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[] {
+    const xsApp: XsApp | undefined = extractXSApp(zipEntries);
+    if (!xsApp?.routes) {
+        return [];
+    }
+
+    const pathsSet = new Set<string>();
+    for (const route of xsApp.routes) {
+        if (route.service === 'html5-apps-repo-rt' || !route.source) {
+            continue;
+        }
+
+        let path = route.source;
+        // Remove leading ^ and trailing $
+        path = path.replace(/^\^/, '').replace(/\$$/, '');
+        // Remove capture groups like (.*) or $1
+        path = path.replace(/\([^)]*\)/g, '');
+        // Remove regex quantifiers
+        path = path.replace(/\$\d+/g, '');
+        // Clean up any remaining regex characters at the end
+        path = path.replace(/\/?\*$/, '');
+        // Normalize multiple consecutive slashes to single slash
+        while (path.includes('//')) {
+            path = path.replaceAll('//', '/');
+        }
+
+        if (path) {
+            pathsSet.add(path);
+        }
+    }
+
+    return Array.from(pathsSet);
 }
 
 /**

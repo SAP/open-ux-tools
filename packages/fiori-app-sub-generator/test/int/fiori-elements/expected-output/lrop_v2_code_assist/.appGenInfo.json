@@ -1,6 +1,6 @@
 {
   "generationParameters": {
-    "generationDate": "Tue Jun 24 2025 22:45:19 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Fri Nov 21 2025 14:53:23 GMT+0000 (Greenwich Mean Time)",
     "generatorPlatform": "CLI",
     "serviceType": "OData URL",
     "metadataFilename": "",
@@ -11,7 +11,6 @@
     "appNamespace": "testNameSpace",
     "ui5Theme": "sap_belize",
     "ui5Version": "1.68.0",
-    "enableCodeAssist": true,
     "showMockDataInfo": true,
     "generatorVersion": "0.0.0",
     "template": "List Report Page V2",

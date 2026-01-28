@@ -2,10 +2,10 @@ import { ExtensionLogger } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 
 /**
- * Logger utility for the SAP Systems extension.
+ * Logger utility for the extension.
  */
 export default class SystemsLogger {
-    private static _logger = new ExtensionLogger('SAP Systems Extension');
+    private static _logger = new ExtensionLogger('Connection Manager for SAP Systems');
 
     /**
      * Get the logger.

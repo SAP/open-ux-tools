@@ -1,20 +1,49 @@
-# SAP Saved Systems Extension
+# Connection Manager for SAP Systems 
 
-SAP Saved systems extension allows you to save the connection information for a remote system. This functionality provides faster authentication when using the system with SAP development tooling. The credentials are saved in the operating system secured storage, such as Credential Manager in Windows and Keychain in Mac.
+The connection manager for SAP systems enables you to store connection information for remote SAP systems. By saving your connection details, you can authenticate more quickly when working with SAP development tools. 
+
+Your credentials are securely stored using your operating system's native credential management, such as Credential Manager in Windows and Keychain in macOS. 
+
+> #### ℹ️ **Note**
+> The password for an ABAP On Premise system connection is saved in the operating system's secured storage and follows the respective platform’s security policies:
+>
+> **Windows**  
+> Credentials are securely stored in the **Windows Credential Manager** and are accessible to authorized processes when you are signed in.  
+> For more information, see [Credentials process in Windows authentication](https://learn.microsoft.com/en-us/windows-server/security/windows-authentication/credentials-processes-in-windows-authentication)
+>
+> **macOS**  
+> Credentials are securely stored in the **macOS Keychain** and are accessible to authorized processes you have authenticated with your account password when prompted.  
+> This prompt can be bypassed if you click **Always Allow**.  
+> For more information, see [Allow apps to access your keychain](https://support.apple.com/en-by/guide/mac-help/kychn002/mac)
+
 
 ---
 
-## Create New SAP System
-To create a new SAP system entry, you can:
+## Create New SAP System Connection
 
-Click the ➕ (Add) icon in the SAP Systems activity bar panel.
-Or open the Command Palette (Ctrl+Shift+P / Cmd+Shift+P) and select SAP: Add SAP System. You can then enter the systems details for either an ABAP On Premise or ABAP Environment (BTP) system. Once saved, the system will appear in the SAP Systems view for quick access.
+To create a new SAP system entry, perform the following steps:
+
+#### 1a. Use the SAP Systems Panel
+- Click the ➕ **Add SAP System** icon to get started.
+
+**or**
+
+#### 1b. Use the Command Palette
+- Press **CMD/CTRL + Shift + P** and search for the relevant command.
+
+#### 2. Enter System Details
+Provide the required information for one of the following:
+- **ABAP On Premise**, or  
+- **ABAP Environment** on **SAP Business Technology Platform (SAP BTP)**.
+
+#### 3. Save and Access
+After saving, the system will appear in the **SAP Systems** panel for quick access.
 
 ---
 
 ## View SAP System Details
 
-To see the stored system details, click a specific system entry in the SAP Systems panel or right-click and select **Show SAP System Details**.
+To view the stored system details, click a specific system entry in the **Connection Manager for SAP Systems** view or right-click and select **Show SAP System Details**. 
 
 ---
 
@@ -22,35 +51,36 @@ To see the stored system details, click a specific system entry in the SAP Syste
 
 To test the connection of an existing SAP system, perform the following steps:
 
-1. Open the details of a saved system.
-2. Click **Test Connection**.
-3. As a result, you’ll see if the system connection was successful and whether it supports OData V2 and/or OData V4 services.
+1. Open the details of a saved system. 
+
+2. Click **Test Connection**. 
+
+3. As a result, you’ll see if the system connection was successful and whether it supports OData V2 and/or OData V4 services. 
 
 ---
 
 ## Edit SAP System Connection
 
-To edit the connection details for an existing SAP system, perform the following steps:
+To edit the connection details for an existing SAP system, perform the following steps: 
 
-1. Right-click the saved system name you wish to edit and click the **Show SAP System Details** button.
+#### 1. Right-click the saved system name you wish to edit and click the **Show SAP System Details** button.
 
-### For ABAP On Premise, update any of the following fields:
+- #### For ABAP On Premise, update any of the following fields:
 
-* System Name
-* URL
-* Client
-* Username
-* Password (optional)
+    * System Name
+    * URL
+    * Client
+    * Username
+    * Password (optional)
 
-### For ABAP Environment on SAP Business Technology Platform, update the following fields:
+- #### For ABAP Environment on SAP Business Technology Platform, update the following fields:
 
-* **System Name:** editable
-* **URL:** editable
+    * System Name
+    * URL
 
-Then:
+#### 2. Click on **Test Connection**.
 
-1. Click on **Test Connection**.
-2. Click **Save**.
+#### 3. Click **Save**.
 
 ---
 
@@ -62,3 +92,27 @@ Then:
 
 ---
 
+## Export and Import Existing ABAP On Premise SAP System Connection 
+
+To **export** an existing system connection for an ABAP On Premise system, perform the following steps: 
+
+1. Right-click a saved system name and click **Show SAP System Details**. 
+
+2. Click **Export System**. A copy of the saved system connection is downloaded in JSON format. No sensitive credential information is included in the exported JSON file. 
+
+To **import** an ABAP On Premise system connection, perform the following steps: 
+
+1. On the activity toolbar, click the **Connection Manager for SAP Systems** icon. 
+
+2. Next to the **Connection Manager for SAP Systems** title bar, click on the Import SAP System icon. 
+
+3. Select the JSON file that you would like to import. 
+
+4. Provide your system credentials and click **Test Connection**. 
+
+5. Click **Save** to import the system connection.
+
+> #### ℹ️ **Note**
+>If you already have a saved local SAP system connection with the same name, you are asked to confirm before overwriting it. 
+>
+>You can only import and export saved SAP system connections between development environments that are using VS Code. You cannot import or export >system connections between VS Code and SAP Business Application Studio. 

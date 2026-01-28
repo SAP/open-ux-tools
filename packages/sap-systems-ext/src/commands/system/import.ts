@@ -1,5 +1,5 @@
 import type { SystemConfig, SystemCommandContext, SystemConfigFile } from '../../types/system';
-import { BackendSystem, BackendSystemKey, type SystemType } from '@sap-ux/store';
+import { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { window, workspace } from 'vscode';
 import { platform } from 'node:os';
 import { readFileSync } from 'node:fs';
@@ -21,8 +21,11 @@ import { SystemPanel } from '../../panel';
  */
 export const importSystemCommandHandler = (commandContext: SystemCommandContext) => async (): Promise<void> => {
     try {
-        const systemConfig = await getImportSystemConfig();
-        const backendSystemKey = new BackendSystemKey({ url: systemConfig.url, client: systemConfig.client });
+        const importSystemConfig = await getImportSystemConfig();
+        const backendSystemKey = new BackendSystemKey({
+            url: importSystemConfig.url,
+            client: importSystemConfig.client
+        });
         const systemService = await getBackendSystemService();
         const existingSystem = await systemService.read(backendSystemKey);
 
@@ -31,7 +34,6 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
         if (existingSystem) {
             overwrite = await confirmPrompt(ConfirmationPromptType.Overwrite, existingSystem.name);
             if (!overwrite) {
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 window.showWarningMessage(t('warn.importCancelled'));
                 return;
             }
@@ -39,14 +41,14 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
 
         if (!existingSystem || overwrite) {
             const panel = commandContext.panelManager.getOrCreateNewPanel(backendSystemKey.getId(), () =>
-                createNewPanel(commandContext, backendSystemKey.getId(), systemConfig, existingSystem?.name)
+                createNewPanel(commandContext, backendSystemKey.getId(), importSystemConfig, existingSystem)
             );
             await panel.reveal();
             logImportTelemetry(SystemActionStatus.IMPORT_SUCCESS);
         }
     } catch (err) {
         const msg = err instanceof Error ? err.message : t('error.importConfigFailed');
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
         window.showErrorMessage(msg);
         logImportTelemetry(SystemActionStatus.IMPORT_FAIL);
     }
@@ -58,26 +60,29 @@ export const importSystemCommandHandler = (commandContext: SystemCommandContext)
  * @param context - the system command context
  * @param panelKey - unique key for the panel
  * @param systemConfig - the import system configuration
- * @param existingSystemName - the name of an existing system (if any)
+ * @param existingSystem - the existing backend system
  * @returns - system panel instance
  */
 function createNewPanel(
     context: SystemCommandContext,
     panelKey: string,
     systemConfig: SystemConfig,
-    existingSystemName?: BackendSystem['name']
+    existingSystem?: BackendSystem
 ): SystemPanel {
-    const name = systemConfig?.name ?? existingSystemName ?? 'New System';
+    const name = systemConfig?.name ?? existingSystem?.name ?? 'New System';
     const backendSystem = new BackendSystem({
         name,
         url: systemConfig.url,
         client: systemConfig.client,
-        systemType: 'OnPrem' satisfies SystemType
+        systemType: 'OnPrem',
+        connectionType: 'abap_catalog',
+        username: existingSystem?.username,
+        password: existingSystem?.password
     });
 
     return new SystemPanel({
-        extensionPath: context.extContext.extensionPath,
-        systemPanelViewType: SystemPanelViewType.Import,
+        extensionPath: context.extContext.vscodeExtContext.extensionPath,
+        systemPanelViewType: existingSystem ? SystemPanelViewType.View : SystemPanelViewType.Import,
         disposeCallback: (): void => {
             context.panelManager.deleteAndDispose(panelKey);
         },

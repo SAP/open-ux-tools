@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import { existsSync } from 'fs';
+import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join } from 'path';
 import type { TestSuite, TestCase } from 'promptfoo';
 import { FOLDER_PATHS } from '../types';
@@ -42,8 +42,12 @@ interface TestConfig {
 export enum ProjectName {
     /** Nodejs based cap project - V4 */
     node = 'node-ai-created',
+    /** Java based cap project - V4 */
+    java = 'java-ai-created',
     /** List Report Object Page project - V2 */
-    lropv2 = 'lrop-v2'
+    lropv2 = 'lrop-v2',
+    /** Empty project */
+    empty = 'empty-folder'
 }
 
 /**
@@ -59,6 +63,14 @@ const TEST_PROJECTS = {
         npmInstall: true,
         skipNodeModulesDel: true
     },
+    [ProjectName.java]: {
+        type: 'CAPJava',
+        originalPath: getProjectOriginalPath(ProjectName.java),
+        path: getCopiedProjectPath(ProjectName.java),
+        appPath: join(getCopiedProjectPath(ProjectName.java), 'app', 'managetravels'),
+        npmInstall: true,
+        skipNodeModulesDel: true
+    },
     [ProjectName.lropv2]: {
         type: 'EDMX',
         originalPath: getProjectOriginalPath(ProjectName.lropv2),
@@ -66,6 +78,14 @@ const TEST_PROJECTS = {
         appPath: getCopiedProjectPath(ProjectName.lropv2),
         npmInstall: false,
         skipNodeModulesDel: false
+    },
+    [ProjectName.empty]: {
+        type: '',
+        originalPath: getProjectOriginalPath(ProjectName.empty),
+        path: getCopiedProjectPath(ProjectName.empty),
+        appPath: getCopiedProjectPath(ProjectName.empty),
+        npmInstall: false,
+        skipNodeModulesDel: true
     }
 };
 
@@ -89,10 +109,12 @@ export async function setup(hookName: string, context: HookContext): Promise<voi
     if (!projectName || !(projectName in TEST_PROJECTS) || !defaultVars) {
         return;
     }
+    const snapshotsName = context.test?.assert?.map((assertion) => assertion.config?.snapshot).filter(Boolean) || [];
     const project = TEST_PROJECTS[projectName];
     if (project) {
         defaultVars['PROJECT_PATH'] = project.path;
         defaultVars['APP_PATH'] = project.appPath;
+        defaultVars['SNAPSHOT_NAME'] = snapshotsName.join(',');
     }
     if (hookName === 'beforeEach') {
         // Prepare copy project before running test

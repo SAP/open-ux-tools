@@ -1,4 +1,4 @@
-const jestCLI = require('jest'); // eslint-disable-line import/no-extraneous-dependencies
+const jestCLI = require('jest'); // eslint-disable-line sonarjs/no-implicit-dependencies
 const UI5DOMEnvironment = require('../../src');
 describe('Custom environment', () => {
     it('Can be created', async () => {
@@ -11,7 +11,7 @@ describe('Custom environment', () => {
         expect(failed).toBe(false);
 
         // This is done centrally in the CustomEnvironment constructor but we need to call it here for the test purpose
-    }, 60000);
+    }, 120000);
 
     it('should correctly shim manifest file', () => {
         // Save original window object to restore later

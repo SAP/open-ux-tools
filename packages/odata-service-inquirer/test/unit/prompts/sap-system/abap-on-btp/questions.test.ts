@@ -29,7 +29,8 @@ const connectionValidatorMock = {
         return validateServiceInfoMock;
     }),
     connectedSystemName: undefined,
-    setConnectedSystem: jest.fn()
+    setConnectedSystem: jest.fn(),
+    resetConnectionState: jest.fn()
 };
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
     return {
@@ -66,6 +67,7 @@ describe('questions', () => {
         connectionValidatorMock.validateUrl = validateUrlMock;
         connectionValidatorMock.validateAuth = validateAuthMock;
         connectionValidatorMock.serviceProvider = serviceProviderMock;
+        connectionValidatorMock.resetConnectionState = jest.fn();
         validateServiceInfoMock = true;
     });
 
@@ -173,6 +175,27 @@ describe('questions', () => {
         const cfAbapSysPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
         expect((cfAbapSysPrompt?.when as Function)({ 'abapOnBtpAuthType': 'reentranceTicket' })).toBe(false);
         expect((cfAbapSysPrompt?.when as Function)({ 'abapOnBtpAuthType': 'cloudFoundry' })).toBe(true);
+    });
+
+    test('getAbapOnBTPSystemQuestions prompt validation should reset connection state and connected system', () => {
+        const newSystemQuestions = getAbapOnBTPSystemQuestions();
+        const authTypePrompt = newSystemQuestions.find((q) => q.name === 'abapOnBtpAuthType') as ListQuestion;
+
+        // Set up some test state that should be reset
+        connectionValidatorMock.validity = { authenticated: true, reachable: true };
+        connectionValidatorMock.validatedUrl = 'http://test-abap-on-btp.com';
+        connectionValidatorMock.resetConnectionState = jest.fn();
+        PromptState.odataService.connectedSystem = { serviceProvider: {} as any };
+
+        const resetConnectedSystemSpy = jest.spyOn(PromptState, 'resetConnectedSystem');
+        const result = (authTypePrompt.validate as Function)();
+
+        // Verify that reset methods were called
+        expect(connectionValidatorMock.resetConnectionState).toHaveBeenCalledWith(true);
+        expect(resetConnectedSystemSpy).toHaveBeenCalled();
+        expect(result).toBe(true);
+
+        resetConnectedSystemSpy.mockRestore();
     });
 
     test('system name prompt should only be shown if not hidden and there is a validated system connection', () => {
@@ -289,7 +312,9 @@ describe('questions', () => {
             newOrUpdated: true,
             serviceKeys: {
                 uaa: uaaCredsMock.credentials.uaa
-            }
+            },
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
         };
 
         const cachedConnectedSystem: ConnectedSystem = {
@@ -359,7 +384,9 @@ describe('questions', () => {
         const backendSystemReentrance: BackendSystem = {
             name: 'http://s4hc:1234',
             url: 'http:/s4hc:1234',
-            authenticationType: 'reentranceTicket'
+            authenticationType: 'reentranceTicket',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
         };
         const cachedConnectedSystem: ConnectedSystem = {
             serviceProvider: {
@@ -379,7 +406,9 @@ describe('questions', () => {
         const backendSystemReentrance: BackendSystem = {
             name: 'http://s4hc:1234',
             url: 'http:/s4hc:1234',
-            authenticationType: 'reentranceTicket'
+            authenticationType: 'reentranceTicket',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
         };
         jest.spyOn(utils, 'isBackendSystemKeyExisting').mockReturnValue(backendSystemReentrance);
 

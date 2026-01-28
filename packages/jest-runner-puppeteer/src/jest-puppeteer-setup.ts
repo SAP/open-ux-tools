@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
-import mkdirp from 'mkdirp';
 import os from 'node:os';
 import path from 'node:path';
 import { findChrome } from './locate-chrome';
@@ -78,6 +77,6 @@ export default async function () {
     // This global is not available inside tests but only in global teardown
     globalAny.__BROWSER_GLOBAL__ = browser;
     // Instead, we expose the connection details via file system to be used in tests
-    mkdirp.sync(DIR);
+    fs.mkdirSync(DIR, { recursive: true });
     fs.writeFileSync(path.join(DIR, 'wsEndpoint'), browser.wsEndpoint());
 }

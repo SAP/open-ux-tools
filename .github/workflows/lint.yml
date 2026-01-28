@@ -11,6 +11,8 @@ on:
       - main
 jobs:
   run-linters:
+    # Skip this job on forks since it requires secrets and push permissions
+    if: github.event.pull_request.head.repo.full_name == github.repository
     strategy:
       matrix:
         os: [ubuntu-latest]

@@ -40,7 +40,9 @@ describe('Test the show system command handler', () => {
         const mockContext = {
             panelManager,
             extContext: {
-                extensionPath: '/mock/extension/path'
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
             }
         } as SystemCommandContext;
 
@@ -57,7 +59,9 @@ describe('Test the show system command handler', () => {
         const mockContext = {
             panelManager,
             extContext: {
-                extensionPath: '/mock/extension/path'
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
             }
         } as SystemCommandContext;
         const showErrorMessageSpy = jest.spyOn(vsCodeWindow, 'showErrorMessage');
@@ -77,7 +81,9 @@ describe('Test the show system command handler', () => {
         const mockContext = {
             panelManager,
             extContext: {
-                extensionPath: '/mock/extension/path'
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
             }
         } as SystemCommandContext;
         const showErrorMessageSpy = jest.spyOn(vsCodeWindow, 'showErrorMessage');
@@ -97,7 +103,9 @@ describe('Test the show system command handler', () => {
         const mockContext = {
             panelManager,
             extContext: {
-                extensionPath: '/mock/extension/path'
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
             }
         } as SystemCommandContext;
         const testSystem = { ...backendSystem, name: 'Test System' };
@@ -120,7 +128,9 @@ describe('Test the show system command handler', () => {
         const mockContext = {
             panelManager,
             extContext: {
-                extensionPath: '/mock/extension/path'
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
             }
         } as SystemCommandContext;
         const showQuickPickSpy = jest.spyOn(vsCodeWindow, 'showQuickPick');

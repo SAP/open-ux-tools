@@ -11,7 +11,7 @@ import { GUIDED_ANSWERS_EXTENSION_ID } from '@sap-ux/guided-answers-helper';
 import SystemsLogger from '../../utils/logger';
 
 /**
- * Class representing a system panel in the SAP Systems extension.
+ * Class representing a system panel in the extension.
  */
 export class SystemPanel implements Disposable {
     private panel?: WebviewPanel;
@@ -22,6 +22,16 @@ export class SystemPanel implements Disposable {
     readonly isGuidedAnswersEnabled: boolean = !!extensions.getExtension(GUIDED_ANSWERS_EXTENSION_ID);
     readonly disposeCallback?: DisposeCallback;
 
+    /**
+     * Creates a new SystemPanel instance.
+     *
+     * @param options - Configuration options for the system panel
+     * @param options.extensionPath - The absolute path to the extension directory
+     * @param options.systemPanelViewType - The type of system panel view to display
+     * @param options.disposeCallback - Callback function to be invoked when the panel is disposed
+     * @param options.backendSystem - Optional backend system configuration
+     * @param options.systemStatusMessage - Optional status message to display in the system panel
+     */
     constructor({
         extensionPath,
         systemPanelViewType,

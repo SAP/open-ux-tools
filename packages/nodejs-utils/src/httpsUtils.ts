@@ -1,4 +1,4 @@
-import https from 'https';
+import https from 'node:https';
 
 /**
  * Set the rejectUnauthorized option of the global https agent.

@@ -27,7 +27,7 @@ export async function archiveProject({
     targetFileName
 }: ArchiveProjectOptions): Promise<{ path: string; size: string }> {
     if (!existsSync(projectRoot)) {
-        return Promise.reject(new Error(t('error.noProjectRoot', { projectRoot })));
+        throw new Error(t('error.noProjectRoot', { projectRoot }));
     }
     const fileList = await getFileList(projectRoot);
     return new Promise((resolve, reject) => {

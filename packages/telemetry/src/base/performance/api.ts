@@ -8,7 +8,7 @@ import performanceNow = require('performance-now');
  */
 class PerformanceMeasurementAPI extends PerformanceMeasurement {
     public static initTiming: number;
-    private static now: () => number = performanceNow;
+    private static readonly now: () => number = performanceNow;
     public static entries: EntriesArray = [];
 
     // reported time is relative to the time the current Node process has started (inferred from process.uptime())

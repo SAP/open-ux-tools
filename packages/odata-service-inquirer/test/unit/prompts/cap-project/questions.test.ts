@@ -1,10 +1,11 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { CapCustomPaths } from '@sap-ux/project-access';
-import { getCapCustomPaths, type CdsVersionInfo } from '@sap-ux/project-access';
-import type { PathLike } from 'node:fs';
-import * as fsPromises from 'fs/promises';
+import { searchChoices } from '@sap-ux/inquirer-common';
+import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
+import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { ListQuestion } from 'inquirer';
+import type { PathLike } from 'node:fs';
+import * as fsPromises from 'node:fs/promises';
 import os from 'node:os';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import {
@@ -36,7 +37,9 @@ const mockCapCustomPaths: CapCustomPaths = {
 
 jest.mock('@sap-ux/project-access', () => ({
     ...jest.requireActual('@sap-ux/project-access'),
-    getCapCustomPaths: jest.fn().mockImplementation(async () => mockCapCustomPaths)
+    getCapCustomPaths: jest.fn().mockImplementation(async () => mockCapCustomPaths),
+    findCapProjectRoot: jest.fn(),
+    isCapProject: jest.fn()
 }));
 
 const mockCdsVersionInfo: CdsVersionInfo = {
@@ -81,6 +84,16 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
     getCapEdmx: jest.fn().mockImplementation(async () => mockEdmx),
     getCapProjectPaths: jest.fn().mockImplementation(() => mockCapWorkspaceFolders),
     getCapProjectChoices: jest.fn().mockImplementation(async () => mockCapProjectChoices)
+}));
+
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
+
+jest.mock('@sap-ux/inquirer-common', () => ({
+    ...jest.requireActual('@sap-ux/inquirer-common'),
+    searchChoices: jest.fn()
 }));
 
 describe('getLocalCapProjectPrompts', () => {
@@ -161,6 +174,67 @@ describe('getLocalCapProjectPrompts', () => {
         expect(((capProjectPrompt as ListQuestion).choices as Function)().length).toEqual(3);
         expect(((capProjectPrompt as ListQuestion).choices as Function)()).toEqual(mockCapProjectChoices);
         expect((capProjectPrompt!.default as Function)()).toEqual(1);
+    });
+
+    test('prompt: capProject - type is autocomplete with source function for filtering', async () => {
+        mockCapProjectChoices = [
+            {
+                name: 'project1',
+                value: { path: '/project1', folderName: 'project1', app: 'app/', srv: 'srv/', db: 'db/' }
+            },
+            {
+                name: 'project2',
+                value: { path: '/project2', folderName: 'project2', app: 'app/', srv: 'srv/', db: 'db/' }
+            },
+            { name: 'Manually select CAP project folder path', value: enterCapPathChoiceValue }
+        ];
+
+        const prompts = getLocalCapProjectPrompts({
+            [promptNames.capProject]: {
+                useAutoComplete: true,
+                capSearchPaths: ['/workspace']
+            }
+        });
+
+        const capProjectPrompt = prompts.find((p) => p.name === promptNames.capProject) as any;
+        expect(capProjectPrompt).toBeDefined();
+        expect(capProjectPrompt.type).toBe('autocomplete');
+        expect(typeof capProjectPrompt.source).toBe('function');
+    });
+
+    test('prompt: capProject - source function calls searchChoices', async () => {
+        (searchChoices as jest.Mock).mockReturnValue([]);
+        mockCapProjectChoices = [{ name: 'test', value: 'test' }];
+
+        const prompts = getLocalCapProjectPrompts({
+            [promptNames.capProject]: { useAutoComplete: true, capSearchPaths: [] }
+        });
+        const prompt = prompts.find((p) => p.name === promptNames.capProject) as any;
+        await prompt.when();
+
+        prompt.source({}, 'input');
+        expect(searchChoices).toHaveBeenCalledWith('input', mockCapProjectChoices);
+    });
+
+    test('prompt: capProject - type is list without useAutoComplete option', async () => {
+        mockCapProjectChoices = [
+            {
+                name: 'project1',
+                value: { path: '/project1', folderName: 'project1', app: 'app/', srv: 'srv/', db: 'db/' }
+            },
+            { name: 'Manually select CAP project folder path', value: enterCapPathChoiceValue }
+        ];
+
+        const prompts = getLocalCapProjectPrompts({
+            [promptNames.capProject]: {
+                useAutoComplete: false,
+                capSearchPaths: ['/workspace']
+            }
+        });
+
+        const capProjectPrompt = prompts.find((p) => p.name === promptNames.capProject);
+        expect(capProjectPrompt).toBeDefined();
+        expect(capProjectPrompt!.type).toBe('list');
     });
 
     test('prompt: capProjectPath', async () => {

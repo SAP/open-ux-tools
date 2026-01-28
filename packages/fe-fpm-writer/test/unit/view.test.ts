@@ -7,7 +7,7 @@ import type { CustomView } from '../../src/view/types';
 import * as manifest from './sample/view/webapp/manifest.json';
 import type { Views, EventHandlerConfiguration } from '../../src/common/types';
 import type { Manifest } from '@sap-ux/project-access';
-import { detectTabSpacing } from '../../src/common/file';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/view');
@@ -42,6 +42,7 @@ describe('CustomView', () => {
     });
 
     test('only mandatory properties', async () => {
+        const copyTplSpy = jest.spyOn(fs, 'copyTpl');
         //sut
         await generateCustomView(testDir, customView, fs);
         updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
@@ -49,6 +50,7 @@ describe('CustomView', () => {
         expect(extension).not.toBeDefined();
         expect(views).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+        expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
     });
 
     test('with control `true` (sample table fragment)', async () => {

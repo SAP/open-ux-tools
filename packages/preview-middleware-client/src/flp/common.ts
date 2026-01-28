@@ -1,4 +1,4 @@
-import { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
+import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 
 export interface FlexChange {
     [key: string]: string | object | undefined;
@@ -20,7 +20,7 @@ export const CHANGES_API_PATH = '/preview/api/changes';
 export function getFlexSettings(): FlexSettings | undefined {
     let result: FlexSettings | undefined;
     const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
-    const flexSetting = bootstrapConfig?.getAttribute('data-open-ux-preview-flex-settings');
+    const flexSetting = bootstrapConfig?.dataset.openUxPreviewFlexSettings;
     if (flexSetting) {
         result = JSON.parse(flexSetting) as FlexSettings;
     }

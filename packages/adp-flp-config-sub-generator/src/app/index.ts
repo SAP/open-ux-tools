@@ -34,7 +34,7 @@ import {
     sendTelemetry,
     isCli,
     type ILogWrapper,
-    type YeomanEnvironment
+    setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName, getAppType } from '@sap-ux/project-access';
@@ -104,9 +104,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         await initI18n();
 
         // Force the generator to overwrite existing files without additional prompting
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
 
         this._setupFLPConfigPage();
 
@@ -249,6 +247,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             );
 
             const errorHelp = this._getErrorHandlerMessage(error);
+
             if (errorHelp) {
                 this._abortExecution(
                     typeof errorHelp === 'string'
@@ -373,10 +372,15 @@ export default class AdpFlpConfigGenerator extends Generator {
     /**
      * Retrieves the error handler message for the provided error.
      *
-     * @param {Error | AxiosError} error - The error to handle.
+     * @param {AxiosError} error - The error to handle.
      * @returns {ValidationLink | string | undefined} The validation link or error message.
      */
-    private _getErrorHandlerMessage(error: Error | AxiosError): ValidationLink | string | undefined {
+    private _getErrorHandlerMessage(error: AxiosError): ValidationLink | string | undefined {
+        // If `system_info` endpoint returns 404, the system is not cloud ready
+        // `system_info` endpoint needs to be called before `isAbapCloud`, because `isAbapCloud` silently catches the errors
+        if (error.status === 404) {
+            return t('error.projectNotCloudReady');
+        }
         const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/adp-flp-config');
         return errorHandler.getValidationErrorHelp(error);
     }

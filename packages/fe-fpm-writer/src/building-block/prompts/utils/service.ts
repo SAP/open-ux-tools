@@ -190,11 +190,7 @@ function getAnnotationPathQualifiersForEntityType(
         addAnnotationPathQualifierToResult(entityType, '', annotationTerms, result, useNamespace);
     } else if (bindingContext.type === 'relative') {
         entityType.navigationProperties.forEach((navigationProperty) => {
-            if (
-                navigationProperty.targetType &&
-                navigationProperty.targetType._type === 'EntityType' &&
-                navigationProperty.name !== 'SiblingEntity'
-            ) {
+            if (navigationProperty.targetType?._type === 'EntityType' && navigationProperty.name !== 'SiblingEntity') {
                 if (!bindingContext.isCollection || (bindingContext.isCollection && navigationProperty.isCollection)) {
                     addAnnotationPathQualifierToResult(
                         navigationProperty.targetType,

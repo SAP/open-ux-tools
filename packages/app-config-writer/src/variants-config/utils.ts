@@ -1,5 +1,5 @@
 import { MiddlewareConfigs } from '../types';
-import { stringify } from 'querystring';
+import { stringify } from 'node:querystring';
 import type { Package } from '@sap-ux/project-access';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions } from '../types';

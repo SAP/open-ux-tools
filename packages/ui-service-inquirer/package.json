@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui-service-inquirer",
     "description": "Generator for creating UI Service",
-    "version": "0.2.50",
+    "version": "0.2.102",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -14,8 +14,8 @@
         "build": "tsc --build",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "watch": "tsc --watch",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
@@ -40,7 +40,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/odata-service-inquirer": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
-        "i18next": "25.3.0",
+        "i18next": "25.8.0",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {

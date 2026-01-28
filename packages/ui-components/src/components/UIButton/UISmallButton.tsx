@@ -6,7 +6,7 @@ import { DefaultButton } from '@fluentui/react';
  *
  */
 export class UISmallButton extends React.Component<IButtonProps, {}> {
-    private buttonSecondaryForeground = '--vscode-button-secondaryForeground';
+    private readonly buttonSecondaryForeground = '--vscode-button-secondaryForeground';
 
     /**
      * Initializes component properties.

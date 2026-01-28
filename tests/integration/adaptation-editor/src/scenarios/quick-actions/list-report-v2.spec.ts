@@ -3,7 +3,7 @@ import { lt, satisfies } from 'semver';
 
 import { test } from '../../fixture';
 import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from './test-utils';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
@@ -92,6 +92,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
 
             await editor.reloadCompleted();
 
+            await expect(editor.quickActions.showPageController).toBeVisible();
             await editor.quickActions.showPageController.click();
 
             await expect(
@@ -153,12 +154,9 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
                     }
                 ],
                 fragments: {
-                    'table-action.fragment.xml': `<!-- Use stable and unique IDs!-->
-<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
-    <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
-</core:FragmentDefinition>
-`
+                    'table-action.fragment.xml': new RegExp(
+                        `<!-- Use stable and unique IDs!-->\\s*<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*<!-- viewName: sap.suite.ui.generic.template.ListReport.view.ListReport -->\\s*<!-- controlType: sap.m.OverflowToolbar -->\\s*<!-- targetAggregation: content -->\\s*<!--\\s*add your xml here -->\\s*<Button text="New Button"  id="btn-[a-z0-9]+"><\\/Button>\\s*<\\/core:FragmentDefinition>`
+                    )
                 }
             });
         }
@@ -178,7 +176,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
             if (await editor.quickActions.addCustomTableColumn.isDisabled()) {
                 await editor.toolbar.navigationModeButton.click();
-                await lr.clickOnGoButton();
+                await lr.clickOnButton();
                 await editor.toolbar.uiAdaptationModeButton.click();
             }
 
@@ -212,25 +210,34 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
                     }
                 ],
                 fragments: {
-                    'table-cell.fragment.xml': `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
-    <Text id="cell-text-[a-z0-9]+" text="Sample data" />
-</core:FragmentDefinition>`,
-                    'table-column.fragment.xml': `<!-- Use stable and unique IDs!-->
-<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
-     <Column id="column-[a-z0-9]+"
-        width="12em"
-        hAlign="Left"
-        vAlign="Middle">
-        <Text id="column-title-[a-z0-9]+" text="New column" />
-
-        <customData>
-            <core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"
-                value='\\\\{"columnKey": "column-[a-z0-9]+", "columnIndex": "3"}' />
-        </customData>
-    </Column>
-</core:FragmentDefinition>`
+                    'table-cell.fragment.xml': new RegExp(
+                        `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
+                            `<!-- viewName: sap.suite.ui.generic.template.ListReport.view.ListReport -->\\s*` +
+                            `<!-- controlType: sap.m.Table -->\\s*` +
+                            `<!-- targetAggregation: cells -->\\s*` +
+                            `<!--\\s*add your xml here -->\\s*` +
+                            `<Text id="cell-text-[a-z0-9]+" text="Sample data" \/>\\s*` +
+                            `<\\/core:FragmentDefinition>`
+                    ),
+                    'table-column.fragment.xml': new RegExp(
+                        `<!-- Use stable and unique IDs!-->\\s*` +
+                            `<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
+                            `<!-- viewName: sap.suite.ui.generic.template.ListReport.view.ListReport -->\\s*` +
+                            `<!-- controlType: sap.m.Table -->\\s*` +
+                            `<!-- targetAggregation: columns -->\\s*` +
+                            `<!--\\s*add your xml here -->\\s*` +
+                            `<Column id="column-[a-z0-9]+"\\s*` +
+                            `width="12em"\\s*` +
+                            `hAlign="Left"\\s*` +
+                            `vAlign="Middle">\\s*` +
+                            `<Text id="column-title-[a-z0-9]+" text="New column" \/>\\s*` +
+                            `<customData>\\s*` +
+                            `<core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"\\s*` +
+                            `value='.*"columnKey": "column-[a-z0-9]+", "columnIndex": "3".*' \/>\\s*` +
+                            `<\\/customData>\\s*` +
+                            `<\\/Column>\\s*` +
+                            `<\\/core:FragmentDefinition>`
+                    )
                 }
             });
             await expect(lr.goButton).toBeVisible();
@@ -238,7 +245,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await editor.reloadCompleted();
 
             await editor.toolbar.navigationModeButton.click();
-            await lr.clickOnGoButton();
+            await lr.clickOnButton();
             await expect(
                 previewFrame.getByRole('columnheader', { name: 'New column' }).locator('div'),
                 `Check Column Name is \`New Column\``

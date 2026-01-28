@@ -1,5 +1,5 @@
 import type { OdataService } from '@sap-ux/odata-service-writer';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { readFileSync } from 'node:fs';
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -13,10 +13,9 @@ import {
     type WorklistSettings,
     TemplateType
 } from '../src/types';
-import { promisify } from 'util';
-import { exec as execCP } from 'child_process';
+import { promisify } from 'node:util';
+import { exec as execCP } from 'node:child_process';
 const exec = promisify(execCP);
-import { ServiceType } from '@sap-ux/odata-service-writer';
 import { type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
 export const testOutputDir = join(__dirname, 'test-output');

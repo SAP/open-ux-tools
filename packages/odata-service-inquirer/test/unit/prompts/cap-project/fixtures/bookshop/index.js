@@ -1,1 +1,1 @@
-exports.CatalogService = require('./srv/cat-service')
+exports.CatalogService = require('./srv/cat-service');

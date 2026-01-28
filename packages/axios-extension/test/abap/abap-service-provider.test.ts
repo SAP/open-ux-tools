@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import nock from 'nock';
+import type { AbapServiceProvider } from '../../src';
 import {
     createForAbap,
     V2CatalogService,
@@ -57,6 +58,7 @@ describe('AbapServiceProvider', () => {
                 .get(AdtServices.DISCOVERY)
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'));
             expect(await provider.getAtoInfo()).toBe(ato);
+            expect(provider.defaults.headers.common).toMatchObject({});
         });
 
         test('AtoInfo - Invalid XML response', async () => {
@@ -69,6 +71,9 @@ describe('AbapServiceProvider', () => {
                 .get(AdtServices.ATO_SETTINGS)
                 .reply(200, 'Some error message');
             expect(await provider.getAtoInfo()).toStrictEqual({});
+            expect(provider.defaults.headers.common).toMatchObject({
+                'Cookie': ''
+            });
         });
     });
 
@@ -270,6 +275,116 @@ describe('AbapServiceProvider', () => {
             await expect(provider.getODataServiceGenerator(packageName)).rejects.toThrow(
                 'RAP Generator are not support on this system'
             );
+        });
+    });
+    describe('fetchValueListReferenceServices', () => {
+        let provider: AbapServiceProvider;
+
+        beforeEach(() => {
+            provider = createForAbap({
+                baseURL: 'https://server.example',
+                auth: { username: 'USER', password: 'SECRET' }
+            });
+        });
+
+        test('should return value list data', async () => {
+            const metadataSpy = jest.fn().mockResolvedValue('metadata');
+            const serviceSpy = jest.spyOn(provider, 'service').mockReturnValue({
+                metadata: metadataSpy
+            } as any);
+            const result = await provider.fetchExternalServices([
+                {
+                    type: 'value-list',
+                    target: 'target',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    value: '../../srv_f4/$metadata'
+                }
+            ]);
+
+            expect(result).toMatchSnapshot();
+            expect(serviceSpy).toHaveBeenCalledWith('/sap/opu/odata/srv_f4');
+            expect(metadataSpy).toHaveBeenCalled();
+        });
+
+        test('should return code list data', async () => {
+            const metadataSpy = jest.fn().mockResolvedValue('metadata');
+            const serviceSpy = jest.spyOn(provider, 'service').mockReturnValue({
+                metadata: metadataSpy
+            } as any);
+            const result = await provider.fetchExternalServices([
+                {
+                    type: 'code-list',
+                    collectionPath: 'Currencies',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    value: '../../srv_f4/$metadata'
+                }
+            ]);
+
+            expect(result).toMatchSnapshot();
+            expect(serviceSpy).toHaveBeenCalledWith('/sap/opu/odata/srv_f4');
+            expect(metadataSpy).toHaveBeenCalled();
+        });
+
+        test('should not crash if promise rejects', async () => {
+            const metadataSpy = jest.fn().mockResolvedValue('metadata');
+            jest.spyOn(provider, 'service').mockImplementation((path) => {
+                if (path === '/sap/opu/odata/srv_f4/one') {
+                    throw new Error('Error creating service');
+                }
+                return {
+                    metadata: metadataSpy
+                } as any;
+            });
+            const result = await provider.fetchExternalServices([
+                {
+                    type: 'value-list',
+                    target: 'target',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    value: '../../srv_f4/one/$metadata'
+                },
+                {
+                    type: 'value-list',
+                    target: 'target',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    value: '../../srv_f4/two/$metadata'
+                }
+            ]);
+
+            expect(result).toMatchSnapshot();
+        });
+        test('should log if metadata loading fails', async () => {
+            const metadataSpy = jest.fn().mockResolvedValue('metadata');
+            const logSpy = jest.spyOn(provider.log, 'warn');
+            const serviceSpy = jest.spyOn(provider, 'service').mockImplementation((path) => {
+                if (path === '/sap/opu/odata/srv_f4/one') {
+                    return {
+                        metadata: jest.fn().mockRejectedValue(new Error('Server error'))
+                    } as any;
+                }
+                return {
+                    metadata: metadataSpy
+                } as any;
+            });
+            const result = await provider.fetchExternalServices([
+                {
+                    type: 'value-list',
+                    target: 'target',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    value: '../../srv_f4/one/$metadata'
+                },
+                {
+                    type: 'value-list',
+                    target: 'target',
+                    serviceRootPath: '/sap/opu/odata/sap/ZMY_SERVICE_SRV/',
+                    value: '../../srv_f4/two/$metadata'
+                }
+            ]);
+
+            expect(result).toMatchSnapshot();
+            expect(logSpy).toHaveBeenCalledWith(
+                'Could not fetch value list reference metadata from /sap/opu/odata/srv_f4/one, Server error'
+            );
+            expect(serviceSpy).toHaveBeenCalledWith('/sap/opu/odata/srv_f4/one');
         });
     });
 });

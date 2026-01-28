@@ -4,6 +4,9 @@ export { generateCustomPage, generateObjectPage, generateListReport } from './pa
 export { CustomAction, TargetControl } from './action/types';
 export { generateCustomAction } from './action';
 
+export { ActionMenu, TargetControl as ActionMenuTargetControl } from './action-menu/types';
+export { generateActionMenu } from './action-menu';
+
 export { CustomTableColumn } from './column/types';
 export { generateCustomColumn } from './column';
 
@@ -30,7 +33,9 @@ export {
     BuildingBlockConfig,
     Page,
     CustomColumn,
-    RichTextEditor
+    CustomFilterField,
+    RichTextEditor,
+    ButtonGroupConfig
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
@@ -39,6 +44,7 @@ export {
     TablePromptsAnswer,
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer,
+    RichTextEditorButtonGroupsPromptsAnswer,
     BuildingBlockTypePromptsAnswer
 } from './building-block/prompts/questions';
 export {
