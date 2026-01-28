@@ -62,7 +62,12 @@ export function SystemInfo({
                 />
             )}
             {systemType === 'AbapCloud' && (
-                <CloudSystem systemInfo={systemInfo} setUrl={setUrl} setIsDetailsUpdated={setIsDetailsUpdated} />
+                <CloudSystem
+                    systemInfo={systemInfo}
+                    setUrl={setUrl}
+                    setIsDetailsUpdated={setIsDetailsUpdated}
+                    setIsDetailsValid={setIsDetailsValid}
+                />
             )}
         </div>
     );
