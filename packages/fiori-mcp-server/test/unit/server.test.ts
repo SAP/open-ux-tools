@@ -495,6 +495,184 @@ describe('FioriFunctionalityServer', () => {
         });
     });
 
+    describe('functionalityId telemetry', () => {
+        const sendTelemetryMock = jest.spyOn(TelemetryHelper, 'sendTelemetry').mockImplementation(jest.fn());
+
+        afterEach(() => {
+            sendTelemetryMock.mockClear();
+        });
+
+        test('functionalityId as string - should use value as-is', async () => {
+            const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
+                functionalityId: 'add-page',
+                status: 'ok',
+                message: 'Page added',
+                appPath: 'app1',
+                changes: [],
+                parameters: [],
+                timestamp: ''
+            });
+            // eslint-disable-next-line no-new
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const onRequestCB = setRequestHandlerCall[1];
+            await onRequestCB({
+                params: {
+                    name: 'execute_functionality',
+                    arguments: {
+                        appPath: 'app1',
+                        functionalityId: 'add-page',
+                        parameters: {
+                            name: 'TestPage'
+                        }
+                    }
+                }
+            });
+            expect(executeFunctionalitySpy).toHaveBeenCalledTimes(1);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'execute_functionality',
+                {
+                    tool: 'execute_functionality',
+                    functionalityId: 'add-page',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                'app1'
+            );
+            executeFunctionalitySpy.mockRestore();
+        });
+
+        test('functionalityId as array with single element - should use property-change prefix', async () => {
+            const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
+                functionalityId: ['useIconTabBar'],
+                status: 'ok',
+                message: 'Property changed',
+                appPath: 'app1',
+                changes: [],
+                parameters: [],
+                timestamp: ''
+            });
+            // eslint-disable-next-line no-new
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const onRequestCB = setRequestHandlerCall[1];
+            await onRequestCB({
+                params: {
+                    name: 'execute_functionality',
+                    arguments: {
+                        appPath: 'app1',
+                        functionalityId: ['useIconTabBar'],
+                        parameters: {
+                            value: true
+                        }
+                    }
+                }
+            });
+            expect(executeFunctionalitySpy).toHaveBeenCalledTimes(1);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'execute_functionality',
+                {
+                    tool: 'execute_functionality',
+                    functionalityId: 'property-change:useIconTabBar',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                'app1'
+            );
+            executeFunctionalitySpy.mockRestore();
+        });
+
+        test('functionalityId as array with multiple elements - should use last element with property-change prefix', async () => {
+            const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
+                functionalityId: [
+                    'TravelObjectPage',
+                    'sections',
+                    '_Booking::@com.sap.vocabularies.UI.v1.LineItem',
+                    'table',
+                    'creationMode'
+                ],
+                status: 'ok',
+                message: 'Property changed',
+                appPath: 'app1',
+                changes: [],
+                parameters: [],
+                timestamp: ''
+            });
+            // eslint-disable-next-line no-new
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const onRequestCB = setRequestHandlerCall[1];
+            await onRequestCB({
+                params: {
+                    name: 'execute_functionality',
+                    arguments: {
+                        appPath: 'app1',
+                        functionalityId: [
+                            'TravelObjectPage',
+                            'sections',
+                            '_Booking::@com.sap.vocabularies.UI.v1.LineItem',
+                            'table',
+                            'creationMode'
+                        ],
+                        parameters: {
+                            value: 'NewRow'
+                        }
+                    }
+                }
+            });
+            expect(executeFunctionalitySpy).toHaveBeenCalledTimes(1);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'execute_functionality',
+                {
+                    tool: 'execute_functionality',
+                    functionalityId: 'property-change:creationMode',
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                'app1'
+            );
+            executeFunctionalitySpy.mockRestore();
+        });
+
+        test('functionalityId as empty array - should not set functionalityId', async () => {
+            const executeFunctionalitySpy = jest.spyOn(tools, 'executeFunctionality').mockResolvedValue({
+                functionalityId: [],
+                status: 'ok',
+                message: 'Done',
+                appPath: 'app1',
+                changes: [],
+                parameters: [],
+                timestamp: ''
+            });
+            // eslint-disable-next-line no-new
+            new FioriFunctionalityServer();
+            const setRequestHandlerCall = setRequestHandlerMock.mock.calls[2];
+            const onRequestCB = setRequestHandlerCall[1];
+            await onRequestCB({
+                params: {
+                    name: 'execute_functionality',
+                    arguments: {
+                        appPath: 'app1',
+                        functionalityId: [],
+                        parameters: {}
+                    }
+                }
+            });
+            expect(executeFunctionalitySpy).toHaveBeenCalledTimes(1);
+            expect(sendTelemetryMock).toHaveBeenLastCalledWith(
+                'execute_functionality',
+                {
+                    tool: 'execute_functionality',
+                    functionalityId: [],
+                    mcpClientName: 'unknown-client',
+                    mcpClientVersion: 'unknown-version'
+                },
+                'app1'
+            );
+            executeFunctionalitySpy.mockRestore();
+        });
+    });
+
     describe('Run', () => {
         test('execute_functionality', async () => {
             const server = new FioriFunctionalityServer();

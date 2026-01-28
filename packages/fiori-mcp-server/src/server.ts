@@ -123,7 +123,14 @@ export class FioriFunctionalityServer {
                     mcpClientVersion: this.mcpClientVersion
                 };
                 if ('functionalityId' in args) {
-                    telemetryProperties.functionalityId = args.functionalityId as string;
+                    const { functionalityId } = args;
+                    const shouldPrefixWithPropertyChange =
+                        Array.isArray(functionalityId) && functionalityId.length >= 1;
+                    if (shouldPrefixWithPropertyChange) {
+                        telemetryProperties.functionalityId = `property-change:${functionalityId.at(-1)}`;
+                    } else {
+                        telemetryProperties.functionalityId = functionalityId as string;
+                    }
                 }
 
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
