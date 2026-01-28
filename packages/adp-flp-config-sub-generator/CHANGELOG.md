@@ -1,5 +1,11 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.158
+
+### Patch Changes
+
+- 6d1c7ff: fix: Improve error message for Adaptation Project FLP Config generator on older systems
+
 ## 0.1.157
 
 ### Patch Changes
