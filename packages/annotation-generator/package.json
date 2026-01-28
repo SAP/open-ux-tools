@@ -29,12 +29,12 @@
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/vocabularies-types": "0.14.5",
-        "mem-fs-editor": "9.4.0"
+        "mem-fs-editor": "9.7.0"
     },
     "devDependencies": {
-        "mem-fs": "2.1.0",
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
+        "mem-fs": "2.3.0",
+        "@types/mem-fs": "1.1.5",
+        "@types/mem-fs-editor": "7.0.7",
         "npm-run-all2": "5.0.0"
     },
     "files": [
