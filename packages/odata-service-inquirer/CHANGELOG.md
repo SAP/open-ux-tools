@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.16.0
+
+### Minor Changes
+
+- 92244b8: Improve entity validation in Generator.
+
+## 2.15.0
+
+### Minor Changes
+
+- 1d3e398: Improve the error message for service input.
+
 ## 2.14.19
 
 ### Patch Changes
