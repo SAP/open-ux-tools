@@ -119,10 +119,10 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         }
         this.variant = await getVariant(this.projectPath);
         const yamlPath = path.join(this.projectPath, 'ui5.yaml');
-        const { target, ignoreCertErrors = false } = (await getAdpConfig(
+        const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(
             this.projectPath,
             yamlPath
-        )) as AdpPreviewConfigWithTarget;
+        );
         const provider = await createAbapServiceProvider(
             target,
             { ...requestOptions, ignoreCertErrors },
