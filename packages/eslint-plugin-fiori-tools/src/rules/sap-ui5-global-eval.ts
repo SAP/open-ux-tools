@@ -2,7 +2,7 @@
 // Rule Disablement
 // ------------------------------------------------------------------------------
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ import { type ASTNode } from '../utils/helpers';
  * @returns True if the node is of the specified type
  */
 function isType(node: ASTNode | undefined, type: string): boolean {
-    return node?.type === type;
+    return !!(node && typeof node === 'object' && node !== null && 'type' in node && node.type === type);
 }
 
 /**
@@ -51,7 +51,7 @@ function isMember(node: ASTNode | undefined): boolean {
     return isType(node, 'MemberExpression');
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -64,7 +64,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const INTERESTING_METHODS_JQUERY = ['globalEval'];
 
         // --------------------------------------------------------------------------
@@ -78,11 +78,11 @@ const rule: Rule.RuleModule = {
          * @returns True if the node represents an interesting eval-related call
          */
         function isInteresting(node: ASTNode): boolean {
-            const callNode = node as unknown as { callee: ASTNode };
+            const callNode = node as { callee: ASTNode };
             const callee = callNode.callee;
             if (isMember(callee)) {
-                const memberNode = callee as unknown as { property: ASTNode };
-                const identifierProp = memberNode.property as unknown as { name: string };
+                const memberNode = callee as { property: ASTNode };
+                const identifierProp = memberNode.property as { name: string };
                 if (isIdentifier(memberNode.property) && contains(INTERESTING_METHODS_JQUERY, identifierProp.name)) {
                     return true;
                 }
