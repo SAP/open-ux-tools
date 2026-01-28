@@ -129,13 +129,30 @@ export function getEntitySelectionQuestions(
         name: EntityPromptNames.mainEntity,
         message: t('prompts.mainEntitySelection.message'),
         guiOptions: {
-            breadcrumb: true
+            breadcrumb: true,
+            mandatory: true
         },
         choices: entityChoices.choices,
         source: (prevAnswers: unknown, input: string) =>
             searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
         default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
-        validate: () => validateEntityChoices(entityChoices.choices, templateType, odataVersion, isCapService),
+        validate: (value: EntityAnswer | null | undefined) => {
+            // Check if there are valid entity choices (this validates the service has relevant entities)
+            const entityChoicesValidation = validateEntityChoices(
+                entityChoices.choices,
+                templateType,
+                odataVersion,
+                isCapService
+            );
+            if (entityChoicesValidation !== true) {
+                return entityChoicesValidation;
+            }
+            // Then check if a value is selected (user hasn't deleted/cleared the field)
+            if (!value) {
+                return t('prompts.mainEntitySelection.requiredError');
+            }
+            return true;
+        },
         additionalMessages: (
             mainEntityValue: EntityAnswer | null | undefined,
             _previousAnswers?: EntitySelectionAnswers
@@ -179,12 +196,19 @@ export function getEntitySelectionQuestions(
             message: t('prompts.navigationEntitySelection.message'),
             guiOptions: {
                 applyDefaultWhenDirty: true, // Selected nav entity may no longer be present if main entity changes
-                breadcrumb: true
+                breadcrumb: true,
+                mandatory: true
             },
             choices: () => navigationEntityChoices,
             source: (preAnswers: EntitySelectionAnswers, input: string) =>
                 searchChoices(input, navigationEntityChoices as ListChoiceOptions[]),
-            default: 0
+            default: 0,
+            validate: (value: NavigationEntityAnswer | null | undefined) => {
+                if (!value) {
+                    return t('prompts.navigationEntitySelection.requiredError');
+                }
+                return true;
+            }
         } as ListQuestion<EntitySelectionAnswers>);
     }
 
@@ -287,7 +311,14 @@ function getTableLayoutQuestions(
             guiOptions: {
                 hint: t('prompts.tableType.hint'),
                 breadcrumb: true,
+                mandatory: true,
                 applyDefaultWhenDirty: true // set table type on entity selection change
+            },
+            validate: (value: TableType | null | undefined) => {
+                if (!value) {
+                    return t('prompts.tableType.requiredError');
+                }
+                return true;
             },
             choices: tableTypeChoices,
             default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {

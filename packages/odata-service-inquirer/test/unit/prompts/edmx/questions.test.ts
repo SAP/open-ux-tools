@@ -152,9 +152,15 @@ describe('Test entity prompts', () => {
             message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
             severity: Severity.warning
         });
-        // validate is currently used to warn about no entities, although perhaps we shoudld be using additionalMessages
-        const validateResult = (mainEntityPrompt.validate as Function)();
+        // validate is currently used to warn about no entities, although perhaps we should be using additionalMessages
+        // Pass a mock entity value to test entity choices validation
+        const mockEntity = { entitySetName: 'TestEntity', entitySetType: 'TestType' } as EntityAnswer;
+        const validateResult = (mainEntityPrompt.validate as Function)(mockEntity);
         expect(validateResult).toBe(true);
+
+        // Test validation when no value is provided (user deleted the field)
+        const validateResultNull = (mainEntityPrompt.validate as Function)(null);
+        expect(validateResultNull).toBe(t('prompts.mainEntitySelection.requiredError'));
 
         const navEntityPrompt = questions.find(
             (question) => question.name === EntityPromptNames.navigationEntity
