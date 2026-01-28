@@ -47,10 +47,10 @@
             "message": "Do you want to continue generation with the untrusted certificate?"
         },
         "serviceUsername": {
-            "message": "Service username"
+            "message": "Service Username"
         },
         "servicePassword": {
-            "message": "Service password"
+            "message": "Service Password"
         },
         "validationMessages": {
             "odataVersionMismatch": "The template you have chosen supports V{{requiredOdataVersion}} OData services only. The provided version is V{{providedOdataVersion}}.",
@@ -85,7 +85,7 @@
             "message": "Password"
         },
         "storeSystemCredentials": {
-            "message": "Do you want to store the system credentials?",
+            "message": "Store Credentials",
             "breadcrumb": "Store Credentials"
         },
         "systemService": {
@@ -101,8 +101,8 @@
             "notYetImplementedWarningMessage": "The selected system type: {{ systemType }} is not yet implemented."
         },
         "systemName": {
-            "message": "System name",
-            "hint": "Entering a system name will save the connection for re-use.",
+            "message": "System Name",
+            "hint": "Entering a system name saves the connection for re-use.",
             "systemNameExistsWarning": "A system with that name already exists in the secure storage. Please try a different name.",
             "reservedSystemNameWarning": "'{{ systemName }}' is a reserved system name. Please try a different name.",
             "emptySystemNameWarning": "System name cannot be empty."
@@ -111,7 +111,7 @@
             "newSystemChoiceLabel": "New System",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "$t(texts.authenticationFailed). Please try updating the credentials."
+            "authenticationFailedUpdateCredentials": "$t(texts.authenticationFailed). Ensure your credentials are correct and try again."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
@@ -151,7 +151,7 @@
             "noEntitiesError": "$t(errors.noRelevantEntities)"
         },
         "pageBuildingBlock": {
-            "message": "Add a Page Building Block to the Application?",
+            "message": "Add a Page Building Block",
             "tooltip": "The Page building block is supported from SAPUI5 version 1.136. By choosing this option, you will be restricting the minimum SAPUI5 versions available for the application to be 1.136 and above.",
             "warning": "The Page building block is supported with SAPUI5 version 1.136 and above.",
             "titleMessage": "Page Title"
@@ -178,10 +178,10 @@
             "breadcrumb": "Generate Annotations"
         },
         "addLineItemAnnotations": {
-            "message": "Automatically add table columns to the list page and a section to the object page if none already exists?",
+            "message": "Add Table Columns to the List Report Page and a Section to the Object Page",
             "hint": "Choose the annotation generation method.",
             "breadcrumb": "Generate Annotations",
-            "valueHelpsAnnotationsInfoMessage": "Basic value helps will also be created."
+            "valueHelpsAnnotationsInfoMessage": "Basic value help is also be created."
         },
         "presentationQualifier": {
             "message": "Qualifier",
@@ -208,7 +208,7 @@
             "hint": "Enables page level variant."
         },
         "valueHelpDownload": {
-            "message": "The service contains references to value help services. Do you want to download the associated metadata during generation? This may increase generation time.",
+            "message": "Download Associated Metadata",
             "hint": "Download metadata for value help to improve the user experience with dropdowns and search."
         }
     },
@@ -246,7 +246,7 @@
         "unparseableOdataVersion": "Unable to parse the OData version from the metadata.",
         "unparseableXML": "Unparseable XML was specified: {{-error}}.",
         "noRelevantEntities": "The template and service selected have no relevant entities that you can use.",
-        "cfInstanceCredentialsNotReturned": "Cannot not retrieve credentials to access: {{serviceInstanceName}}.",
+        "cfInstanceCredentialsNotReturned": "Cannot retrieve credentials to access: {{serviceInstanceName}}.",
         "v2CatalogServiceNoAnnotations": "An error occurred when creating an OData V2 catalog service object. Annotations will not be available: {{-error}}",
         "backendSystemRetrieval": "An error occurred when retrieving the backend systems from the store: {{-error}}"
     },
