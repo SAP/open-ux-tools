@@ -1,0 +1,16 @@
+{
+    "name": "test-project",
+    "version": "0.0.1",
+    "private": true,
+    "devDependencies": {
+        "@sap-ux/ui5-middleware-fe-mockserver": "2.3.19",
+        "@sap-ux/ui5-proxy-middleware": "1.6.4",
+        "@ui5/cli": "4"
+    },
+    "scripts": {
+        "build": "cd ../../.. && pnpm build",
+        "serve": "ui5 serve",
+        "start": "ui5 serve --open /my/custom/path/preview.html#app-preview",
+        "rta": "ui5 serve --open /my/custom/path/preview.html?fiori-tools-rta-mode=true#app-preview"
+    }
+}

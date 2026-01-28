@@ -47,6 +47,15 @@ class FlpSandbox extends FlpSandboxUnderTest {
     declare public readonly flpConfig: FlpConfig;
 }
 
+const mockUtils = {
+    getProject() {
+        return {
+            getSourcePath: () => tmpdir(),
+            getType: () => 'application'
+        };
+    }
+} as unknown as MiddlewareUtils;
+
 describe('FlpSandbox', () => {
     const mockProject = {
         byPath: jest.fn().mockResolvedValue(undefined),
@@ -64,13 +73,6 @@ describe('FlpSandbox', () => {
             )
         )
     } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
-    const mockUtils = {
-        getProject() {
-            return {
-                getSourcePath: () => tmpdir()
-            };
-        }
-    } as unknown as MiddlewareUtils;
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as Logger & {
         warn: jest.Mock;
         info: jest.Mock;
@@ -1292,6 +1294,129 @@ describe('FlpSandbox', () => {
         });
     });
 
+    describe('router with ui5 yaml type component', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                enhancedHomePage: false,
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/custom/integration/opaTests.qunit.html',
+                    init: '/custom/integration/opaTests.qunit.js'
+                }
+            ],
+            editors: {
+                cardGenerator: {
+                    path: 'custom/flpCardGeneratorSandbox.html'
+                },
+                rta: {
+                    layer: 'CUSTOMER_BASE',
+                    endpoints: [
+                        {
+                            path: '/my/rta.html'
+                        },
+                        {
+                            path: 'without/slash/rta.html'
+                        },
+                        {
+                            path: '/my/editor.html',
+                            developerMode: true
+                        },
+                        {
+                            path: '/with/plugin.html',
+                            developerMode: true,
+                            pluginScript: 'open/ux/tools/plugin'
+                        },
+                        {
+                            path: '/my/editorWithConfig.html',
+                            generator: 'test-generator'
+                        }
+                    ]
+                }
+            }
+        } satisfies MiddlewareConfig;
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
+            const mockUtilsWithComponentType = {
+                getProject() {
+                    return {
+                        getType: () => 'component',
+                        getNamespace: () => 'test/fe/v2/app'
+                    };
+                }
+            } as unknown as MiddlewareUtils;
+            const flp = new FlpSandbox(mockConfig, mockProject, mockUtilsWithComponentType, logger);
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-component/src/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = supertest(app);
+        };
+
+        beforeAll(() => setupMiddleware(mockConfig as MiddlewareConfig));
+
+        test('GET FLP sandbox path', async () => {
+            const response = await server.get(`/test-resources/test/fe/v2/app/flp.html?sap-ui-xx-viewCache=false`);
+            expect(response.status).toBe(200);
+            expect(response.type).toBe('text/html');
+        });
+
+        test('GET OPA5 paths', async () => {
+            let response = await server.get(`/test-resources/test/fe/v2/app/custom/integration/opaTests.qunit.html`);
+            expect(response.status).toBe(200);
+            expect(response.type).toBe('text/html');
+            response = await server.get(`/test-resources/test/fe/v2/app/custom/integration/opaTests.qunit.js`);
+            expect(response.status).toBe(404);
+        });
+
+        test('GET QUnit paths', async () => {
+            let response = await server.get(`/test-resources/test/fe/v2/app/unitTests.qunit.html`);
+            expect(response.status).toBe(200);
+            expect(response.type).toBe('text/html');
+            response = await server.get(`/test-resources/test/fe/v2/app/unitTests.qunit.js`);
+            expect(response.status).toBe(200);
+            expect(response.type).toBe('application/javascript');
+        });
+
+        test('GET rta editor paths', async () => {
+            let response = await server.get(`/test-resources/test/fe/v2/app/my/rta.html`);
+            expect(response.status).toBe(302);
+            response = await server.get(`/test-resources/test/fe/v2/app/without/slash/rta.html`);
+            expect(response.status).toBe(302);
+            response = await server.get(`/test-resources/test/fe/v2/app/my/editorWithConfig.html`);
+            expect(response.status).toBe(302);
+            response = await server.get(`/test-resources/test/fe/v2/app/my/editor.html`);
+            expect(response.status).toBe(200);
+            response = await server.get(`/test-resources/test/fe/v2/app/with/plugin.html`);
+            expect(response.status).toBe(200);
+        });
+
+        test('GET cards generator paths', async () => {
+            const response = await server.get(
+                `/test-resources/test/fe/v2/app/custom/flpCardGeneratorSandbox.html?sap-ui-xx-viewCache=false`
+            );
+            expect(response.status).toBe(200);
+            expect(response.type).toBe('text/html');
+        });
+    });
+
     describe('cds-plugin-ui5', () => {
         let server!: SuperTest<Test>;
         const baseUrl = '/ui5.patched.router.base';
@@ -1447,9 +1572,9 @@ describe('initAdp', () => {
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as ToolsLogger;
 
     test('initAdp: throw an error if no adp project', async () => {
-        const flp = new FlpSandbox({}, mockNonAdpProject, {} as MiddlewareUtils, logger);
+        const flp = new FlpSandbox({}, mockNonAdpProject, mockUtils, logger);
         try {
-            await flp.initAdp({} as AdpPreviewConfig);
+            await flp.initAdp({} as AdpPreviewConfig, mockUtils);
         } catch (error) {
             expect(error).toBeDefined();
         }
@@ -1457,11 +1582,11 @@ describe('initAdp', () => {
 
     test('initAdp', async () => {
         const config = { adp: { target: { url } } };
-        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, mockUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await flp.initAdp(config.adp);
+        await flp.initAdp(config.adp, mockUtils);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
     });
@@ -1492,11 +1617,11 @@ describe('initAdp', () => {
             adp: { target: { url } },
             rta: { options: {}, editors: [] }
         } as unknown as Partial<MiddlewareConfig>;
-        const flp = new FlpSandbox(config, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flp = new FlpSandbox(config, mockAdpProject, mockUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await flp.initAdp(config.adp as AdpPreviewConfig);
+        await flp.initAdp(config.adp as AdpPreviewConfig, mockUtils);
         expect(adpToolingMock).toHaveBeenCalled();
         expect(flpInitMock).toHaveBeenCalled();
         expect(flp.rta?.options?.isCloud).toBe(true);
@@ -1545,12 +1670,12 @@ describe('initAdp', () => {
             adp: config,
             rta: { options: {}, editors: [] }
         } as unknown as Partial<MiddlewareConfig>;
-        const flp = new FlpSandbox(flpConfig, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flp = new FlpSandbox(flpConfig, mockAdpProject, mockUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
 
-        await flp.initAdp(config);
+        await flp.initAdp(config, mockUtils);
 
         expect(readManifestFromBuildPathMock).toHaveBeenCalledWith(cfBuildPath);
         expect(adpToolingMock).toHaveBeenCalled();

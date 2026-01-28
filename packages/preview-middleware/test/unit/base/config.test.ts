@@ -12,6 +12,9 @@ import { mergeTestConfigDefaults } from '../../../src/base/test';
 import type { MiddlewareConfig } from '../../../src';
 import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
+import { tmpdir } from 'node:os';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareUtils } from '@ui5/server';
 
 describe('config', () => {
     const manifest = {
@@ -19,9 +22,17 @@ describe('config', () => {
             id: 'my.app'
         }
     } as Manifest;
+    const mockUtils = {
+        getProject() {
+            return {
+                getSourcePath: () => tmpdir(),
+                getType: () => 'application'
+            };
+        }
+    } as unknown as MiddlewareUtils;
     describe('getFlpConfigWithDefaults', () => {
         test('minimum settings', () => {
-            const flpConfig = getFlpConfigWithDefaults({});
+            const flpConfig = getFlpConfigWithDefaults({}, mockUtils);
             expect(flpConfig).toMatchObject({
                 path: DEFAULT_PATH,
                 intent: DEFAULT_INTENT
@@ -30,20 +41,20 @@ describe('config', () => {
         test('user configured path', () => {
             const path = '/test/flpSandbox.html';
             const intent = { object: 'myapp', action: 'myaction' };
-            const flpConfig = getFlpConfigWithDefaults({ path, intent });
+            const flpConfig = getFlpConfigWithDefaults({ path, intent }, mockUtils);
             expect(flpConfig).toMatchObject({ path, intent });
         });
     });
 
     describe('createFlpTemplateConfig', () => {
         test('minimum settings', () => {
-            const flpConfig = getFlpConfigWithDefaults({});
+            const flpConfig = getFlpConfigWithDefaults({}, mockUtils);
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest);
             expect(templateConfig).toMatchSnapshot();
         });
 
         test('minimum settings with one reuse lib', () => {
-            const flpConfig = getFlpConfigWithDefaults({});
+            const flpConfig = getFlpConfigWithDefaults({}, mockUtils);
             const resources = { 'my.reuse.lib': '/custom/path/my.reuse.lib' };
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest, resources);
             expect(templateConfig).toMatchSnapshot();
@@ -52,7 +63,7 @@ describe('config', () => {
 
     describe('createTestTemplateConfig', () => {
         test('minimum settings', () => {
-            const config = mergeTestConfigDefaults({ framework: 'OPA5' });
+            const config = mergeTestConfigDefaults({ framework: 'OPA5' }, mockUtils);
             const templateConfig = createTestTemplateConfig(config, manifest['sap.app'].id, 'sap_horizon');
             expect(templateConfig).toMatchObject({
                 basePath: '..',
@@ -66,7 +77,7 @@ describe('config', () => {
 
     describe('getPreviewPaths', () => {
         test('minimum settings', async () => {
-            const paths = getPreviewPaths({});
+            const paths = getPreviewPaths({}, mockUtils);
             expect(paths).toHaveLength(1);
             expect(paths[0]).toMatchObject({
                 path: `${DEFAULT_PATH}#${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`,
@@ -91,7 +102,7 @@ describe('config', () => {
                 },
                 test: [{ framework: 'OPA5' }]
             } as MiddlewareConfig;
-            const previews = getPreviewPaths(config);
+            const previews = getPreviewPaths(config, mockUtils);
             expect(previews).toHaveLength(4);
             expect(
                 previews.find(
@@ -155,6 +166,27 @@ describe('config', () => {
                         }
                     ]
                 }
+            } satisfies MiddlewareConfig;
+            const fs = await generatePreviewFiles(basePath, config);
+            expect(fs.dump(basePath)).toMatchSnapshot();
+        });
+
+        test('test runners with custom test paths', async () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
+            const config = {
+                test: [
+                    { framework: 'QUnit', path: '/test/unit/unitTests.html' },
+                    { framework: 'OPA5', path: '/test/integration/opaTests.html' }
+                ]
+            } satisfies MiddlewareConfig;
+            const fs = await generatePreviewFiles(basePath, config);
+            expect(fs.dump(basePath)).toMatchSnapshot();
+        });
+
+        test('test runners with paths not starting with /test/', async () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
+            const config = {
+                test: [{ framework: 'QUnit', path: '/custom/path/unitTests.html' }]
             } satisfies MiddlewareConfig;
             const fs = await generatePreviewFiles(basePath, config);
             expect(fs.dump(basePath)).toMatchSnapshot();
