@@ -25,7 +25,7 @@
   "devDependencies": {
     "rimraf": "3.0.0",
     "@ui5/logger": "3.0.0",
-    "@ui5/cli": "3.11.0",
+    "@ui5/cli": "4.0.41",
     "@sap/ux-ui5-tooling": "1.14.0"
   }
 }
