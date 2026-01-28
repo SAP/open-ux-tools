@@ -648,6 +648,10 @@
     "fiori-showcase": {
       "path": "fiori-showcase.md",
       "documentCount": 1
+    },
+    "tools-suite": {
+      "path": "tools-suite.md",
+      "documentCount": 1
     }
   }
 }
