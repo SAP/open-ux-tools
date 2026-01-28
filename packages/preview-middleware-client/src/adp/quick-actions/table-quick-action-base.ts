@@ -26,6 +26,7 @@ import {
     TREE_TABLE_TYPE
 } from './control-types';
 import { isVariantManagementEnabledOPPage } from './fe-v2/utils';
+import TableAPI from 'sap/fe/macros/table/TableAPI';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
@@ -59,6 +60,7 @@ export type TableQuickActionsOptions = {
     includeServiceAction?: boolean;
     areTableRowsRequired?: boolean;
     validatePageVariantManagement?: boolean;
+    validateTableColumns?: boolean;
 };
 
 /**
@@ -130,6 +132,43 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
     }
 
     /**
+     * Builds a map of custom tab keys to their associated table building blocks.
+     *
+     * @param iconTabBarFilterMap - A map of icon tab bar filter keys to their labels.
+     * @returns A map where each key is a combination of contextPath and metaPath, and the value is the corresponding custom tab key.
+     */
+    private getCustomViewTableBuildingBlocksMap(iconTabBarFilterMap: { [key: string]: string }): {
+        [key: string]: string;
+    } {
+        const customTabTableBuildingBlockMap: { [key: string]: string } = {};
+
+        const customTabs = Object.keys(iconTabBarFilterMap).filter((key) => /^fe::CustomTab::\d+$/.test(key));
+        for (const key of customTabs) {
+            const filterItem = this.iconTabBar
+                ?.getItems()
+                .find(
+                    (item) =>
+                        isManagedObject(item) &&
+                        isA<IconTabFilter>('sap.m.IconTabFilter', item) &&
+                        item.getKey() === key
+                ) as IconTabFilter | undefined;
+            if (filterItem) {
+                filterItem.getContent().forEach((content) => {
+                    if (isA<TableAPI>('sap.fe.macros.Table', content)) {
+                        const { metaPath, contextPath } = content as TableAPI & {
+                            metaPath: string;
+                            contextPath: string;
+                        };
+                        const path = metaPath.startsWith(contextPath) ? metaPath : `${contextPath}${metaPath}`; 
+                        customTabTableBuildingBlockMap[path] = key;
+                    }
+                });
+            }
+        }
+        return customTabTableBuildingBlockMap;
+    }
+
+    /**
      * Initializes action object instance
      */
     async initialize(): Promise<void> {
@@ -139,20 +178,21 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             this.isApplicable = false;
             return;
         }
-        const iconTabBarfilterMap = this.buildIconTabBarFilterMap();
+        const iconTabBarFilterMap = this.buildIconTabBarFilterMap();
+        const customViewTableBuildingBlockMap = this.getCustomViewTableBuildingBlocksMap(iconTabBarFilterMap);
         for (const table of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
             this.controlTypes
         )) {
-            const tabKey = Object.keys(iconTabBarfilterMap).find((key) => table.getId().endsWith(key));
+            const tabKey = Object.keys(iconTabBarFilterMap).find((key) => table.getId().endsWith(key));
             const section = getParentContainer<ObjectPageSection>(table, 'sap.uxap.ObjectPageSection');
             if (section) {
                 await this.collectChildrenInSection(section, table);
             } else if (this.iconTabBar && tabKey) {
-                const label = `'${iconTabBarfilterMap[tabKey]}' table`;
+                const label = `'${iconTabBarFilterMap[tabKey]}' table`;
                 const tableMapKey = this.children.length.toString();
-                const child = this.createChild(label, table, tableMapKey);
+                const child = this.createChild(label, table, tableMapKey, customViewTableBuildingBlockMap);
                 this.children.push(child);
                 this.tableMap[tableMapKey] = {
                     table,
@@ -351,13 +391,35 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
         };
     }
 
-    createChild(label: string, table: UI5Element, path: string): NestedQuickActionChild {
+    createChild(
+        label: string,
+        table: UI5Element,
+        path: string,
+        customViewTableBuildingBlockMap?: {
+            [key: string]: string;
+        }
+    ): NestedQuickActionChild {
         const child: NestedQuickActionChild = {
             path,
             label,
             enabled: true,
             children: []
         };
+        if (this.options.validateTableColumns && isA<MdcTable>(MDC_TABLE_TYPE, table)) {
+            const macroTable = table.getParent() as TableAPI & {
+                metaPath: string;
+                contextPath: string;
+            };
+            const { metaPath, contextPath } = macroTable;
+            const finalPath = metaPath.startsWith(contextPath) ? metaPath : `${contextPath}${metaPath}`; 
+            if (customViewTableBuildingBlockMap?.[finalPath]) {
+                child.enabled = false;
+                child.tooltip = this.context.resourceBundle.getText(
+                    'CUSTOM_COLUMNS_NOT_SUPPORTED'
+                );  
+                return child;
+            }
+        }
         if (this.options.validatePageVariantManagement) {
             const variantEnabledV2 = isVariantManagementEnabledOPPage(this.context, table);
             if (variantEnabledV2 === false) {
