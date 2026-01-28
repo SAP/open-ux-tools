@@ -136,14 +136,18 @@ export function getEntitySelectionQuestions(
             searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
         default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
         validate: () => validateEntityChoices(entityChoices.choices, templateType, odataVersion, isCapService),
-        additionalMessages: (answers: EntitySelectionAnswers) => {
+        additionalMessages: (
+            mainEntityValue: EntityAnswer | null | undefined,
+            _previousAnswers?: EntitySelectionAnswers
+        ) => {
             if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
                 return {
                     message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
                     severity: Severity.warning
                 };
             }
-            if (answers.mainEntity?.mainEntityParameterName) {
+            // Only check mainEntityValue properties if it exists (handle null/undefined from user deleting the field)
+            if (mainEntityValue?.mainEntityParameterName) {
                 // display a warning if the main entity has a mainEntityParameterName
                 return {
                     message: t('prompts.mainEntitySelection.mainEntityParameterFoundInfo'),
