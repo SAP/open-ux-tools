@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.23.102
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.46
+- @sap-ux/system-access@0.6.44
+
+## 0.23.101
+
+### Patch Changes
+
+- af8d6b8: fix: change table action creation for v4 from addXML to app descriptor change
+
 ## 0.23.100
 
 ### Patch Changes
