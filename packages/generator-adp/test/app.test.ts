@@ -32,6 +32,7 @@ import {
     isLoggedInCf,
     loadApps,
     loadCfConfig,
+    storeCredentials,
     validateUI5VersionExists
 } from '@sap-ux/adp-tooling';
 import {
@@ -46,6 +47,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
+import { getService, BackendSystem, BackendSystemKey } from '@sap-ux/store';
 
 import type { AdpGeneratorOptions } from '../src/app';
 import adpGenerator from '../src/app';
@@ -97,6 +99,21 @@ jest.mock('@sap-ux/system-access', () => ({
     getCredentialsFromStore: jest.fn()
 }));
 
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
+    getService: jest.fn(),
+    BackendSystem: class {
+        constructor(public data: any) {}
+    },
+    BackendSystemKey: class {
+        constructor(public data: any) {}
+    },
+    SystemType: {
+        AbapOnPrem: 'OnPrem',
+        AbapCloudReady: 'Cloud'
+    }
+}));
+
 jest.mock('child_process', () => ({
     ...jest.requireActual('child_process'),
     exec: jest.fn()
@@ -117,7 +134,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getModuleNames: jest.fn(),
     getApprouterType: jest.fn(),
     hasApprouter: jest.fn(),
-    createServices: jest.fn()
+    createServices: jest.fn(),
+    storeCredentials: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -323,6 +341,12 @@ const mockIsInternalFeaturesSettingEnabled = isInternalFeaturesSettingEnabled as
     typeof isInternalFeaturesSettingEnabled
 >;
 const mockIsFeatureEnabled = isFeatureEnabled as jest.MockedFunction<typeof isFeatureEnabled>;
+const getServiceMock = getService as jest.Mock;
+const storeCredentialsMock = storeCredentials as jest.MockedFunction<typeof storeCredentials>;
+const mockSystemService = {
+    read: jest.fn(),
+    write: jest.fn()
+};
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -349,6 +373,11 @@ describe('Adaptation Project Generator Integration Test', () => {
             validateUI5VersionExistsMock.mockReturnValue(true);
             jest.spyOn(SystemLookup.prototype, 'getSystems').mockResolvedValue(endpoints);
             jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
+            jest.spyOn(SystemLookup.prototype, 'getSystemByName').mockResolvedValue({
+                Name: 'SystemA',
+                Client: '010',
+                Url: 'urlA'
+            });
             getConfiguredProviderMock.mockResolvedValue(dummyProvider);
             execMock.mockImplementation((_: string, callback: Function) => {
                 callback(null, { stdout: 'ok', stderr: '' });
@@ -360,6 +389,10 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             getDefaultProjectNameMock.mockReturnValue('app.variant1');
             getCredentialsFromStoreMock.mockResolvedValue(undefined);
+
+            getServiceMock.mockResolvedValue(mockSystemService);
+            mockSystemService.read.mockResolvedValue(null);
+            mockSystemService.write.mockResolvedValue(undefined);
 
             isCfInstalledMock.mockResolvedValue(false);
             loadCfConfigMock.mockReturnValue({} as CfConfig);
@@ -516,6 +549,7 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         it('should generate an onPremise adaptation project successfully', async () => {
             mockIsAppStudio.mockReturnValue(false);
+            storeCredentialsMock.mockResolvedValue(undefined);
 
             const runContext = yeomanTest
                 .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
@@ -525,6 +559,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             await expect(runContext.run()).resolves.not.toThrow();
 
             expect(executeCommandSpy).toHaveBeenCalledTimes(1);
+            expect(storeCredentialsMock).not.toHaveBeenCalled();
 
             const generatedDirs = fs.readdirSync(testOutputDir);
             expect(generatedDirs).toContain(answers.projectName);
