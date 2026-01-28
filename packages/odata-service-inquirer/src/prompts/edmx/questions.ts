@@ -154,10 +154,7 @@ export function getEntitySelectionQuestions(
             }
             return true;
         },
-        additionalMessages: (
-            mainEntityValue: EntityAnswer | null | undefined,
-            _previousAnswers?: EntitySelectionAnswers
-        ) => {
+        additionalMessages: (mainEntityValue: EntityAnswer | null | undefined) => {
             if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
                 return {
                     message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
