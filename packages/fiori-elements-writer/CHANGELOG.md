@@ -1,5 +1,57 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.48
+
+### Patch Changes
+
+- Updated dependencies [be6ea11]
+    - @sap-ux/ui5-application-writer@1.7.3
+    - @sap-ux/ui5-test-writer@0.7.56
+    - @sap-ux/fiori-generator-shared@0.13.58
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/cap-config-writer@0.12.49
+
+## 2.8.47
+
+### Patch Changes
+
+- 4368c00: fix order of test file creation
+
+## 2.8.46
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.57
+- @sap-ux/cap-config-writer@0.12.48
+
+## 2.8.45
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/cap-config-writer@0.12.47
+    - @sap-ux/fe-fpm-writer@0.41.1
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/odata-service-writer@0.29.9
+    - @sap-ux/annotation-generator@0.4.11
+    - @sap-ux/ui5-application-writer@1.7.2
+
+## 2.8.44
+
+### Patch Changes
+
+- Updated dependencies [924e26f]
+    - @sap-ux/ui5-test-writer@0.7.55
+
+## 2.8.43
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.55
+- @sap-ux/ui5-config@0.29.13
+- @sap-ux/cap-config-writer@0.12.46
+
 ## 2.8.42
 
 ### Patch Changes

@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, KeyUserChangeContent } from '@sap-ux/axios-extension';
 
 import type {
     AdpWriterConfig,
@@ -68,6 +68,10 @@ export interface ConfigOptions {
      * The tools ID.
      */
     toolsId: string;
+    /**
+     * Optional: Key-user changes to be written to the project.
+     */
+    keyUserChanges?: KeyUserChangeContent[];
 }
 
 /**
@@ -94,7 +98,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         publicVersions,
         systemVersion,
         manifest,
-        toolsId
+        toolsId,
+        keyUserChanges
     } = options;
 
     const ato = await provider.getAtoInfo();
@@ -155,7 +160,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         options: {
             fioriTools: true,
             enableTypeScript
-        }
+        },
+        keyUserChanges
     };
 }
 

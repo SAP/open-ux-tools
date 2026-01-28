@@ -1,5 +1,17 @@
 # @sap-ux/store
 
+## 1.5.2
+
+### Patch Changes
+
+- be6ea11: fix(deps): update dependency i18next to v25.8.0
+
+## 1.5.1
+
+### Patch Changes
+
+- 32f8644: add support for filtering on system info property
+
 ## 1.5.0
 
 ### Minor Changes

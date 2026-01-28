@@ -18,7 +18,7 @@ import { OutlineService } from '../../../../src/cpe/outline/service';
 import { FeatureService } from '../../../../src/cpe/feature-service';
 
 import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v4/registry';
-import { sapCoreMock, fetchMock } from 'mock/window';
+import { sapCoreMock, fetchMock, sapMock } from 'mock/window';
 import NavContainer from 'mock/sap/m/NavContainer';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
 import ComponentContainer from 'mock/sap/ui/core/ComponentContainer';
@@ -51,6 +51,8 @@ import * as adpUtils from '../../../../src/adp/utils';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
 import * as appUtils from '../../../../src/utils/application';
 import * as apiHandler from '../../../../src/adp/api-handler';
+import * as fev4QAUtils from '../../../../src/adp/quick-actions/fe-v4/utils';
+import * as MacroTableHelper from 'mock/sap/fe/macros/table/designtime/Table.designtime.helper';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -310,6 +312,467 @@ describe('FE V4 quick actions', () => {
                 await setupContext();
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-add-page-action', kind: 'simple' })
+                );
+
+                // Get the actual validateActionId function from the call
+                const callArgs = (DialogFactory.createDialog as jest.Mock).mock.calls[0][4];
+                const validateActionId = callArgs.validateActionId;
+
+                // Test validation
+                expect(typeof validateActionId).toBe('function');
+                expect(validateActionId('newUniqueId')).toBe(true);
+                expect(validateActionId('existingAction')).toBe(false);
+            });
+        });
+
+        describe('create table action', () => {
+            let appComponent: AppComponentMock;
+            let rtaMock: RuntimeAuthoring;
+            mockTelemetryEventIdentifier();
+
+            beforeAll(() => {
+                appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
+                rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                jest.spyOn(rtaMock, 'getFlexSettings').mockImplementation(() => {
+                    return {
+                        projectId: 'dummyProjectId'
+                    } as FlexSettings;
+                });
+            });
+            afterEach(() => {
+                jest.restoreAllMocks();
+            });
+
+            async function setupContext(actionFilter: 'CustomAction' | 'DataFieldForAction' | 'both' = 'both') {
+                const pageView = new XMLView();
+                pageView.getLocalId.mockImplementation((id: string) => id.split('dummyProjectId--')[1]);
+                pageView.getViewData.mockImplementation(() => ({
+                    stableId: 'dummyProjectIdppId::ProductsList'
+                }));
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(false);
+                const appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
+                const mockAction1 = {
+                    getId: () => 'ActionToolbarAction1',
+                    getAction: jest.fn().mockReturnValue({
+                        getId: () => 'dummyProjectId--ProductsList::CustomAction::existingAction'
+                    })
+                };
+                const mockAction2 = {
+                    getId: () => 'ActionToolbarAction2',
+                    getAction: jest.fn().mockReturnValue({
+                        getId: () => 'dummyProjectId--ProductsList::DataFieldForAction::newAction'
+                    })
+                };
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'Table') {
+                        return {
+                            isA: (type: string) => type === 'sap.ui.mdc.Table',
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getBusy: () => false,
+                            getActions: jest.fn().mockReturnValue(
+                                [mockAction1, mockAction2].filter((action) => {
+                                    if (actionFilter === 'both') {
+                                        return true;
+                                    }
+                                    return action.getAction().getId().includes(actionFilter);
+                                })
+                            ),
+                            getDomRef: () => ({}),
+                            getParent: () => ({
+                                isA: (type: string) => type === 'sap.fe.macros.table.TableAPI',
+                                getId: () => 'TableAPI',
+                                getMetadata: () => ({
+                                    getName: () => 'sap.fe.macros.table.TableAPI'
+                                }),
+                                getParent: () => pageView,
+                                metaPath: '/ProductsList/@com.sap.vocabularies.UI.v1.LineItem',
+                                getProperty: () => '/ProductsList/'
+                            })
+                        };
+                    }
+
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new TemplateComponentMock();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getId.mockReturnValue('dummyProjectId--ProductsList');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
+                        const componentContainer = new ComponentContainer();
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component as unknown as ComponentMock;
+                            }
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return componentContainer;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
+
+                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                    'sap.ui5': {
+                        routing: {
+                            targets: [
+                                {
+                                    name: 'sap.fe.templates.'
+                                }
+                            ]
+                        }
+                    }
+                });
+                const registry = new FEV4QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getAllPendingConfigPropertyPath: jest.fn().mockReturnValue(new Set())
+                    } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.ui.mdc.Table': [
+                        {
+                            controlId: 'Table'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+                jest.spyOn(apiHandler, 'getExistingController').mockResolvedValue({
+                    controllerPathFromRoot: 'adp/v4/test.js',
+                    controllerExists: true,
+                    isRunningInBAS: false,
+                    controllerPath: 'webapp/adp/v4/test.js',
+                    isTsSupported: false
+                });
+                jest.spyOn(fev4QAUtils, 'getActionsPropertyPath').mockReturnValue(
+                    '@com.sap.vocabularies.UI.v1.LineItem/actions/'
+                );
+            }
+            test('not available on UI5 version prior 1.120', async () => {
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.119.0' }]
+                });
+                await setupContext();
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-change-table-actions',
+                                    enabled: true,
+                                    title: 'Change Table Actions',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: false,
+                                            children: [],
+                                            tooltip:
+                                                'This option is disabled because the table toolbar is not available.'
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-change-table-columns',
+                                    enabled: true,
+                                    title: 'Change Table Columns',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: false,
+                                            tooltip:
+                                                'This action has been disabled because variant management is disabled. Enable variant management and try again.',
+                                            children: []
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-create-table-custom-column',
+                                    enabled: true,
+                                    title: 'Add Custom Table Column',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: true,
+                                            children: []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ])
+                );
+            });
+
+            test('available since UI5 version 1.120', async () => {
+                sapMock.ui.require.mockImplementation(() => MacroTableHelper);
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
+                });
+                await setupContext();
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-change-table-actions',
+                                    enabled: true,
+                                    title: 'Change Table Actions',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: false,
+                                            children: [],
+                                            tooltip:
+                                                'This option is disabled because the table toolbar is not available.'
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-change-table-columns',
+                                    enabled: true,
+                                    title: 'Change Table Columns',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: false,
+                                            tooltip:
+                                                'This action has been disabled because variant management is disabled. Enable variant management and try again.',
+                                            children: []
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    enabled: true,
+                                    title: 'Add Custom Table Action',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: true,
+                                            children: []
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-create-table-custom-column',
+                                    enabled: true,
+                                    title: 'Add Custom Table Column',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: true,
+                                            children: []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
+                );
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddAction',
+                    undefined,
+                    expect.objectContaining({
+                        appDescriptor: expect.objectContaining({
+                            appType: 'fe-v4',
+                            pageId: 'ProductsList',
+                            projectId: 'dummyProjectId'
+                        }),
+                        actionType: 'tableAction',
+                        controllerReference: '.extension.adp.v4.test.<methodName>',
+                        propertyPath: '@com.sap.vocabularies.UI.v1.LineItem/actions/',
+                        position: expect.objectContaining({
+                            placement: 'Before',
+                            anchor: 'existingAction'
+                        }),
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                    }),
+                    expect.objectContaining({ actionName: 'create-table-action' })
+                );
+            });
+
+            test('available since UI5 version 1.120 - calculate position for datafield action', async () => {
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
+                });
+                await setupContext('DataFieldForAction');
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-change-table-actions',
+                                    enabled: true,
+                                    title: 'Change Table Actions',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: false,
+                                            children: [],
+                                            tooltip:
+                                                'This option is disabled because the table toolbar is not available.'
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-change-table-columns',
+                                    enabled: true,
+                                    title: 'Change Table Columns',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: false,
+                                            tooltip:
+                                                'This action has been disabled because variant management is disabled. Enable variant management and try again.',
+                                            children: []
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    enabled: true,
+                                    title: 'Add Custom Table Action',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: true,
+                                            children: []
+                                        }
+                                    ]
+                                },
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-create-table-custom-column',
+                                    enabled: true,
+                                    title: 'Add Custom Table Column',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: "'MyTable' table",
+                                            enabled: true,
+                                            children: []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
+                );
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddAction',
+                    undefined,
+                    expect.objectContaining({
+                        appDescriptor: expect.objectContaining({
+                            appType: 'fe-v4',
+                            pageId: 'ProductsList',
+                            projectId: 'dummyProjectId'
+                        }),
+                        actionType: 'tableAction',
+                        controllerReference: '.extension.adp.v4.test.<methodName>',
+                        propertyPath: '@com.sap.vocabularies.UI.v1.LineItem/actions/',
+                        position: expect.objectContaining({
+                            placement: 'Before',
+                            anchor: 'DataFieldForAction::newAction'
+                        }),
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                    }),
+                    expect.objectContaining({ actionName: 'create-table-action' })
+                );
+            });
+
+            test('available since UI5 version 1.120 - validate function works correctly', async () => {
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: '1.120.1' }]
+                });
+                await setupContext();
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
 
                 // Get the actual validateActionId function from the call
@@ -897,134 +1360,6 @@ describe('FE V4 quick actions', () => {
                     return;
                 }
                 expect(execute).toHaveBeenCalledWith('Table', 'CTX_SETTINGS0');
-            });
-        });
-
-        describe('create table action', () => {
-            test('initialize and execute action', async () => {
-                const pageView = new XMLView();
-                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(false);
-                const scrollIntoView = jest.fn();
-                const appComponent = new AppComponentMock();
-                const component = new TemplateComponentMock();
-                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
-                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
-                    return component as unknown as UIComponent;
-                });
-                sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'Table') {
-                        return {
-                            isA: (type: string) => type === 'sap.ui.mdc.Table',
-                            getHeader: () => 'MyTable',
-                            getId: () => id,
-                            getDomRef: () => ({
-                                scrollIntoView
-                            }),
-                            getParent: () => pageView,
-                            getBusy: () => false
-                        };
-                    }
-
-                    if (id == 'NavContainer') {
-                        const container = new NavContainer();
-                        const component = new TemplateComponentMock();
-                        pageView.getDomRef.mockImplementation(() => {
-                            return {
-                                contains: () => true
-                            };
-                        });
-                        pageView.getId.mockReturnValue('test.app::ProductsList');
-                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
-                        const componentContainer = new ComponentContainer();
-                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
-                            return 'component-id';
-                        });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-                            if (id === 'component-id') {
-                                return component as unknown as ComponentMock;
-                            }
-                        });
-                        container.getCurrentPage.mockImplementation(() => {
-                            return componentContainer;
-                        });
-                        component.getRootControl.mockImplementation(() => {
-                            return pageView;
-                        });
-                        return container;
-                    }
-                });
-
-                const execute = jest.fn();
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName: string): any => {
-                    if (serviceName === 'action') {
-                        return {
-                            get: (controlId: string) => {
-                                if (controlId === 'Table') {
-                                    return [{ id: 'CTX_SETTINGS0' }];
-                                }
-                            },
-                            execute
-                        };
-                    }
-                });
-                const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(
-                    rtaMock,
-                    new OutlineService(rtaMock, mockChangeService),
-                    [registry],
-                    { onStackChange: jest.fn() } as any
-                );
-                await service.init(sendActionMock, subscribeMock);
-
-                await service.reloadQuickActions({
-                    'sap.ui.mdc.Table': [
-                        {
-                            controlId: 'Table'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ]
-                });
-
-                // filter out irrelevant actions
-                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
-                for (let i = actions.length - 1; i >= 0; i--) {
-                    if (actions[i].title !== 'Add Custom Table Action') {
-                        actions.splice(i, 1);
-                    }
-                }
-
-                expect(sendActionMock).toHaveBeenCalledWith(
-                    quickActionListChanged([
-                        {
-                            title: 'LIST REPORT',
-                            actions: [
-                                {
-                                    'kind': 'nested',
-                                    id: 'listReport0-create-table-action',
-                                    title: 'Add Custom Table Action',
-                                    enabled: true,
-                                    children: [
-                                        {
-                                            path: '0',
-                                            children: [],
-                                            enabled: true,
-                                            label: `'MyTable' table`
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ])
-                );
-
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
-                );
             });
         });
 
@@ -1688,9 +2023,9 @@ describe('FE V4 quick actions', () => {
                 let enabled = true;
                 if (testCase.varianManagmentValue === 'Control') {
                     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                    (tooltip =
+                    ((tooltip =
                         'This option has been disabled because variant management is already enabled for tables and charts'),
-                        (enabled = false);
+                        (enabled = false));
                 }
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
@@ -2607,9 +2942,9 @@ describe('FE V4 quick actions', () => {
                     let enabled = true;
                     if (testCase.varianManagmentValue === 'Control') {
                         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                        (tooltip =
+                        ((tooltip =
                             'This option has been disabled because variant management is already enabled for tables and charts'),
-                            (enabled = false);
+                            (enabled = false));
                     }
                     const baseActions = [
                         {
