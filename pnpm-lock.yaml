@@ -3231,9 +3231,6 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
-      '@sap-ux/vocabularies-types':
-        specifier: 0.14.5
-        version: 0.14.5
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -3259,6 +3256,9 @@ importers:
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
+      '@sap-ux/vocabularies-types':
+        specifier: 0.14.5
+        version: 0.14.5
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
