@@ -2,7 +2,7 @@
  * @file Detect some warning for usages of (window.)document APIs
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isMember, isWindow, contains } from '../utils/helpers';
 
@@ -44,7 +44,7 @@ function isValid(node: ASTNode): boolean {
     );
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -57,7 +57,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const WINDOW_OBJECTS: string[] = [];
         // --------------------------------------------------------------------------
         // Helpers

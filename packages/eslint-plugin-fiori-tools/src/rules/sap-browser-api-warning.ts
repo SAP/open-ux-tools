@@ -2,7 +2,7 @@
  * @file Detect some warning for usages of (window.)document APIs
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     isType,
     isIdentifier,
@@ -25,7 +25,14 @@ import {
  * @returns True if the node represents the window object
  */
 function isWindow(node: ASTNode | undefined): boolean {
-    return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
+    return !!(
+        isIdentifier(node) &&
+        node &&
+        typeof node === 'object' &&
+        node !== null &&
+        'name' in node &&
+        (node as any).name === 'window'
+    );
 }
 
 /**
@@ -59,7 +66,7 @@ function isDirectBodyAccess(calleePathNonCmpt: string, speciousObjectNonCmpt: st
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -76,7 +83,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const FORBIDDEN_DOM_ACCESS = [
                 'getElementById',
                 'getElementsByClassName',
@@ -144,8 +151,11 @@ const rule: Rule.RuleModule = {
          * @returns True if the node represents history object access
          */
         function isHistory(node: ASTNode | undefined, justHistory: boolean): boolean {
-            if (node && isIdentifier(node) && 'name' in node) {
-                return node.name === 'history' || (!justHistory && FORBIDDEN_HISTORY_OBJECT.includes(node.name));
+            if (node && isIdentifier(node) && typeof node === 'object' && node !== null && 'name' in node) {
+                return (
+                    (node as any).name === 'history' ||
+                    (!justHistory && FORBIDDEN_HISTORY_OBJECT.includes((node as any).name))
+                );
             } else if (node && isMember(node)) {
                 return (
                     isWindow((node as any).object) &&
@@ -241,7 +251,7 @@ const rule: Rule.RuleModule = {
             // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
             // (true?history.back():''); || if(true) history.back(); || if(true){history.back();} || if(true){}else{history.back();}
             if (maxDepth > 0) {
-                const parent = node.parent;
+                const parent = (node as any).parent;
                 if (!parent) {
                     return false;
                 }
@@ -433,10 +443,11 @@ const rule: Rule.RuleModule = {
          * @param node The member expression node
          */
         function handleCallExpressionMember(node: ASTNode): void {
-            if (!node.parent) {
+            const n = node as any;
+            if (!n.parent) {
                 return;
             }
-            const methodName = getRightestMethodName(node.parent);
+            const methodName = getRightestMethodName(n.parent);
             if (typeof methodName !== 'string') {
                 return;
             }

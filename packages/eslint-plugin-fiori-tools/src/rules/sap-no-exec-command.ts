@@ -2,7 +2,7 @@
  * @file Detect usage of execCommand
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     isIdentifier,
     isLiteral,
@@ -23,7 +23,7 @@ import {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -36,7 +36,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const WINDOW_OBJECTS: string[] = [];
         const DOCUMENT_OBJECTS: string[] = [];
 

@@ -2,7 +2,7 @@
  * @file        Check "sap-no-encode-file-service" should detect the usage of "/sap/bc/ui2/encode_file".
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -32,7 +32,7 @@ function startsWith(base: string, sub: string): boolean {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -45,7 +45,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         // --------------------------------------------------------------------------
         // Public
         // --------------------------------------------------------------------------

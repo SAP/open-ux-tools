@@ -2,7 +2,7 @@
  * @file Detect direct DOM insertion
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ import { type ASTNode } from '../utils/helpers';
  * @returns True if the node is of the specified type
  */
 function isType(node: ASTNode | undefined, type: string): boolean {
-    return node?.type === type;
+    return !!(node && typeof node === 'object' && node !== null && 'type' in node && (node as any).type === type);
 }
 
 /**
@@ -43,7 +43,7 @@ function isMember(node: ASTNode | undefined): boolean {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -56,7 +56,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const FORBIDDEN_DOM_INSERTION = ['insertBefore', 'appendChild', 'replaceChild'],
             FORBIDDEN_DOM_JQUERY_INSERTION = [
                 'after',

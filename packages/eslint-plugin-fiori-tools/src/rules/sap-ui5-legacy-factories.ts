@@ -2,14 +2,14 @@
 // Rule Disablement
 // ------------------------------------------------------------------------------
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode, contains, isIdentifier, isMember } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -23,7 +23,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext): Rule.NodeListener {
+    create(context: RuleContext) {
         const INTERESTING_METHODS = [
             'jsview',
             'component',
@@ -107,8 +107,8 @@ const rule: Rule.RuleModule = {
         }
 
         return {
-            'CallExpression': function (node): void {
-                if (isInteresting(node)) {
+            'CallExpression': function (node: unknown): void {
+                if (isInteresting(node as ASTNode)) {
                     context.report({ node: node, messageId: 'legacyFactories' });
                 }
             }

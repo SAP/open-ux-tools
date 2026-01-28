@@ -2,13 +2,13 @@
  * @file Detect the usage of document.queryCommandSupported with 'insertBrOnReturn' argument
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode, isIdentifier, isCall, isLiteral, createDocumentBasedRuleVisitors } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -22,7 +22,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const createVisitors = createDocumentBasedRuleVisitors({
             isInteresting: (node: ASTNode, isDocumentObject: (node: unknown) => boolean): boolean => {
                 return (

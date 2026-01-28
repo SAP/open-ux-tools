@@ -2,7 +2,7 @@
  * @file Rule to ensure the correct usage ot the auto refresh interval options for sap.ushell.ui.footerbar.AddBookmarkButton.
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import type { ASTNode } from '../utils/helpers';
 import { isIdentifier, isLiteral, isProperty, isMember, isObject, contains } from '../utils/helpers';
 
@@ -23,7 +23,7 @@ function isNumber(i: unknown): i is number {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -37,7 +37,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const MIN = 0;
         const MAX = 300;
         const INTERESTING_KEY = 'serviceRefreshInterval';

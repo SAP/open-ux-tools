@@ -4,7 +4,9 @@
  *               namespaces
  */
 
-import type { Rule, SourceCode } from 'eslint';
+// import type { Rule, SourceCode } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+
 import { contains } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -57,7 +59,7 @@ function calculateObjectName(memberExpressionObject: any): string {
  * @param ancestors The array of ancestor nodes to check
  * @returns The position of the NewExpression or -1 if not found
  */
-function checkIfAncestorsContainsNewExpression(ancestors: ReturnType<SourceCode['getAncestors']>): number {
+function checkIfAncestorsContainsNewExpression(ancestors: any[]): number {
     const ancestorsLength = ancestors.length;
     for (let i = 0; i < ancestorsLength; i++) {
         if (ancestors[i].type === 'NewExpression') {
@@ -67,7 +69,7 @@ function checkIfAncestorsContainsNewExpression(ancestors: ReturnType<SourceCode[
     return -1;
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -95,9 +97,9 @@ const rule: Rule.RuleModule = {
         ],
         defaultOptions: [{}]
     },
-    create(context: Rule.RuleContext) {
-        const sourceCode = context.sourceCode ?? context.getSourceCode();
-        const customNS = context.options[0]?.ns ? context.options[0].ns : [];
+    create(context: RuleContext) {
+        const sourceCode = context.sourceCode;
+        const customNS = (context.options[0] as any)?.ns ? (context.options[0] as any).ns : [];
         const configuration = {
             'ns': uniquifyArray(
                 [
@@ -189,7 +191,8 @@ const rule: Rule.RuleModule = {
         function processMemberExpression(node: any): void {
             if (node.object.type === 'Identifier') {
                 let namespace = node.object.name + '.' + node.property.name;
-                const ancestors = sourceCode.getAncestors(node);
+
+                const ancestors = (sourceCode as any).getAncestors(node) as any[];
 
                 ancestors.reverse();
                 const newExpressionPosition = checkIfAncestorsContainsNewExpression(ancestors);

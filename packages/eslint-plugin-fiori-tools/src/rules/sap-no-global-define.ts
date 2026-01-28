@@ -2,7 +2,7 @@
  * @file Detect the definition of global properties in the window object
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -64,7 +64,7 @@ function isWindow(node: any): boolean {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -77,7 +77,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const WINDOW_OBJECTS: string[] = [];
 
         // --------------------------------------------------------------------------
