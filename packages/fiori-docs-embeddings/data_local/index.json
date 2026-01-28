@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "generatedAt": "2026-01-21T11:01:47.945Z",
-  "totalDocuments": 215,
+  "totalDocuments": 216,
   "categories": [
     {
       "id": "fiori-samples",
@@ -251,6 +251,10 @@
     },
     "fiori-showcase": {
       "path": "fiori-showcase.md",
+      "documentCount": 1
+    },
+    "tools-suite": {
+      "path": "tools-suite.md",
       "documentCount": 1
     }
   }
