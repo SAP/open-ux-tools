@@ -136,8 +136,9 @@ export function getEntitySelectionQuestions(
         source: (prevAnswers: unknown, input: string) =>
             searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
         default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
+        // Workaround for YUI bug: Despite mandatory=true, YUI allows users to clear/delete list selections.
         validate: (value: EntityAnswer | null | undefined) => {
-            // Check if there are valid entity choices (this validates the service has relevant entities)
+            // First check if there are valid entity choices (handles edge case of no entities in service)
             const entityChoicesValidation = validateEntityChoices(
                 entityChoices.choices,
                 templateType,
@@ -196,19 +197,12 @@ export function getEntitySelectionQuestions(
             message: t('prompts.navigationEntitySelection.message'),
             guiOptions: {
                 applyDefaultWhenDirty: true, // Selected nav entity may no longer be present if main entity changes
-                breadcrumb: true,
-                mandatory: true
+                breadcrumb: true
             },
             choices: () => navigationEntityChoices,
             source: (preAnswers: EntitySelectionAnswers, input: string) =>
                 searchChoices(input, navigationEntityChoices as ListChoiceOptions[]),
-            default: 0,
-            validate: (value: NavigationEntityAnswer | null | undefined) => {
-                if (!value) {
-                    return t('prompts.navigationEntitySelection.requiredError');
-                }
-                return true;
-            }
+            default: 0
         } as ListQuestion<EntitySelectionAnswers>);
     }
 
@@ -314,6 +308,7 @@ function getTableLayoutQuestions(
                 mandatory: true,
                 applyDefaultWhenDirty: true // set table type on entity selection change
             },
+            // Workaround for YUI bug: Despite mandatory=true, YUI allows clearing mandatory list selections
             validate: (value: TableType | null | undefined) => {
                 if (!value) {
                     return t('prompts.tableType.requiredError');

@@ -394,6 +394,18 @@ describe('Test entity prompts', () => {
             severity: Severity.information
         });
 
+        // Test tableType validation with valid value
+        const tableTypeValidateResult = (tableType.validate as Function)('ResponsiveTable');
+        expect(tableTypeValidateResult).toBe(true);
+
+        // Test tableType validation when no value is provided (user deleted the field)
+        const tableTypeValidateResultNull = (tableType.validate as Function)(null);
+        expect(tableTypeValidateResultNull).toBe(t('prompts.tableType.requiredError'));
+
+        // Test with undefined
+        const tableTypeValidateResultUndefined = (tableType.validate as Function)(undefined);
+        expect(tableTypeValidateResultUndefined).toBe(t('prompts.tableType.requiredError'));
+
         // If the user has already selected a table type for the same entity, return it
         // First call establishes the entity
         (tableType.default as Function)({

@@ -198,13 +198,11 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
-      "mandatory": true,
     },
     "message": "Navigation Entity",
     "name": "navigationEntity",
     "source": [Function],
     "type": "list",
-    "validate": [Function],
     "when": [Function],
   },
   {

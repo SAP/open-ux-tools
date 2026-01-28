@@ -145,8 +145,7 @@
         },
         "navigationEntitySelection": {
             "message": "Navigation Entity",
-            "choiceNone": "$t(texts.choiceNameNone)",
-            "requiredError": "Please select a navigation entity to continue."
+            "choiceNone": "$t(texts.choiceNameNone)"
         },
         "filterEntitySet": {
             "message": "Filter Entity",
