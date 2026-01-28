@@ -325,7 +325,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.96.0'
+                description: '<1.120.0'
             }
         },
         async ({ page, previewFrame, ui5Version, projectCopy }) => {
