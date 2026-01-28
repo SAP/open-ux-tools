@@ -84,7 +84,7 @@ const loggerMock: ToolsLogger = {
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('FLPConfigGenerator Integration Tests', () => {
-    jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValue(false);
+    jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValue(false);
     jest.spyOn(sysAccess, 'createAbapServiceProvider').mockResolvedValue({
         isAbapCloud: jest.fn().mockReturnValue(true)
     } as unknown as AbapServiceProvider);
@@ -630,7 +630,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('Should result in an error message if the project is a CF project', async () => {
-        jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValueOnce(true);
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'
@@ -662,7 +662,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('Should result in an error message if the project is a CF project and use the logger in case of CLI', async () => {
-        jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValueOnce(true);
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'

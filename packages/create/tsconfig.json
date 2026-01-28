@@ -37,6 +37,9 @@
       "path": "../mockserver-config-writer"
     },
     {
+      "path": "../nodejs-utils"
+    },
+    {
       "path": "../odata-service-writer"
     },
     {

@@ -19,7 +19,8 @@ import {
     readUi5Config,
     extractCfBuildTask,
     readManifestFromBuildPath,
-    loadAppVariant
+    loadAppVariant,
+    getBaseAppId
 } from '../../../src/base/helper';
 import { readUi5Yaml } from '@sap-ux/project-access';
 
@@ -484,6 +485,41 @@ describe('helper', () => {
             );
             expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
             expect(mockResource.getString).toHaveBeenCalled();
+        });
+    });
+
+    describe('getBaseAppId', () => {
+        const mockVariantContent: DescriptorVariant = {
+            id: 'customer.test.variant',
+            reference: 'base.app.id',
+            namespace: 'apps/my.test.app/appVariants',
+            layer: 'CUSTOMER_BASE',
+            content: []
+        };
+
+        test('should return base app id from variant', async () => {
+            readFileSyncMock.mockReturnValue(JSON.stringify(mockVariantContent));
+
+            const result = await getBaseAppId(basePath);
+
+            expect(result).toBe('base.app.id');
+        });
+
+        test('should throw error when reference is missing', async () => {
+            const variantWithoutRef = { ...mockVariantContent, reference: undefined };
+            readFileSyncMock.mockReturnValue(JSON.stringify(variantWithoutRef));
+
+            await expect(getBaseAppId(basePath)).rejects.toThrow(
+                'Failed to get app ID: No reference found in manifest.appdescr_variant'
+            );
+        });
+
+        test('should throw error when variant cannot be read', async () => {
+            readFileSyncMock.mockImplementation(() => {
+                throw new Error('File not found');
+            });
+
+            await expect(getBaseAppId(basePath)).rejects.toThrow('Failed to get app ID: File not found');
         });
     });
 });

@@ -74,6 +74,10 @@ export async function requestCfApi<T = unknown>(url: string): Promise<T> {
     try {
         const response = await Cli.execute(['curl', url], ENV);
         if (response.exitCode === 0) {
+            // Check for empty response which typically indicates authentication issues
+            if (!response.stdout || response.stdout.trim() === '') {
+                throw new Error(t('error.emptyCFAPIResponse'));
+            }
             try {
                 return JSON.parse(response.stdout);
             } catch (e) {
