@@ -90,7 +90,7 @@ export type MacroTable = TableAPI & {
  * @param table - table control
  * @returns LineItem annotation string
  */
-function getLineItemAnnotation(table: MacroTable): string | undefined {
+export function getLineItemAnnotation(table: UI5Element): string | undefined {
     try {
         const helper = sap.ui.require('sap/fe/macros/table/designtime/Table.designtime.helper');
         if (helper && typeof helper.getLineItemAnnotation === 'function') {
@@ -108,7 +108,7 @@ function getLineItemAnnotation(table: MacroTable): string | undefined {
  * @param table - table control
  * @returns string
  */
-export function getActionsPropertyPath(table: UI5Element): string | undefined {
+export function getPropertyPath(table: UI5Element, property: 'actions' | 'columns' = 'actions'): string | undefined {
     const macroTable = table.getParent();
     const configPath = '';
     if (macroTable && isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable)) {
@@ -123,7 +123,7 @@ export function getActionsPropertyPath(table: UI5Element): string | undefined {
                 'controlConfiguration/',
                 navigationPath.split('@')[0],
                 lineItemAnnotation,
-                '/actions/'
+                `/${property}/`
             );
         } else {
             let contextString = macroTable.metaPath;
@@ -135,7 +135,14 @@ export function getActionsPropertyPath(table: UI5Element): string | undefined {
             if (secondSlash >= 0) {
                 contextString = contextString.substring(0, secondSlash);
             }
-            return configPath.concat('controlConfiguration/', '/', contextString, '/', lineItemAnnotation, '/actions/');
+            return configPath.concat(
+                'controlConfiguration/',
+                '/',
+                contextString,
+                '/',
+                lineItemAnnotation,
+                `/${property}/`
+            );
         }
     }
     return undefined;
@@ -147,23 +154,25 @@ export function getActionsPropertyPath(table: UI5Element): string | undefined {
  * @param table - The table control
  * @returns The line item annotation used to define the table
  */
-function getLineItemAnnotationForTable(table: MacroTable): string | undefined {
-    const presentation = table.getModel()?.getMetaModel()?.getObject(table.metaPath);
-
+function getLineItemAnnotationForTable(macroTable: UI5Element): string | undefined {
     let lineItemAnnotation: string | undefined = '';
-    // default line item annotation
-    if (!presentation.Visualizations && !presentation.PresentationVariant) {
-        lineItemAnnotation = table.metaPath.split('/').pop();
-    } else if (presentation.Visualizations) {
-        lineItemAnnotation = presentation.Visualizations[0].$AnnotationPath;
-    } else if (presentation.PresentationVariant) {
-        if (presentation.PresentationVariant.Visualizations) {
-            lineItemAnnotation = presentation.PresentationVariant.Visualizations[0].$AnnotationPath;
-        } else {
-            const contextPath = table.metaPath.startsWith('/') ? table.metaPath.split('@')[0] : table.contextPath;
-            const pathForLineItems = contextPath + presentation.PresentationVariant.$Path;
-            const presentationVariantType = table.getModel()?.getMetaModel()?.getObject(pathForLineItems);
-            lineItemAnnotation = presentationVariantType.Visualizations[0].$AnnotationPath;
+    if (macroTable && isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable)) {
+        const presentation = macroTable.getModel()?.getMetaModel()?.getObject(macroTable.metaPath);
+
+        // default line item annotation
+        if (!presentation.Visualizations && !presentation.PresentationVariant) {
+            lineItemAnnotation = macroTable.metaPath.split('/').pop();
+        } else if (presentation.Visualizations) {
+            lineItemAnnotation = presentation.Visualizations[0].$AnnotationPath;
+        } else if (presentation.PresentationVariant) {
+            if (presentation.PresentationVariant.Visualizations) {
+                lineItemAnnotation = presentation.PresentationVariant.Visualizations[0].$AnnotationPath;
+            } else {
+                const contextPath = macroTable.metaPath.startsWith('/') ? macroTable.metaPath.split('@')[0] : macroTable.contextPath;
+                const pathForLineItems = contextPath + presentation.PresentationVariant.$Path;
+                const presentationVariantType = macroTable.getModel()?.getMetaModel()?.getObject(pathForLineItems);
+                lineItemAnnotation = presentationVariantType.Visualizations[0].$AnnotationPath;
+            }
         }
     }
     return lineItemAnnotation;
