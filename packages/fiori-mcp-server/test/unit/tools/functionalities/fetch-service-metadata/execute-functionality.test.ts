@@ -23,7 +23,11 @@ describe('execute-functionality', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         (serviceMetadata.findSapSystem as jest.Mock).mockResolvedValue(mockSapSystem);
-        (serviceMetadata.getServiceMetadata as jest.Mock).mockResolvedValue(mockMetadata);
+        (serviceMetadata.getServiceMetadata as jest.Mock).mockResolvedValue({
+            metadata: mockMetadata,
+            EntitySets: [],
+            navEntities: []
+        });
         (fs.writeFileSync as jest.Mock).mockImplementation(() => {});
     });
 
@@ -175,7 +179,10 @@ describe('execute-functionality', () => {
             }
         };
 
-        await expect(executeFunctionality(params)).rejects.toThrow('Metadata fetch failed');
+        await expect(executeFunctionality(params)).resolves.toMatchObject({
+            status: 'Error',
+            message: 'Failed to fetch service metadata: Metadata fetch failed'
+        });
         expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
 
