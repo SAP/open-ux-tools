@@ -13,7 +13,7 @@ import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { promptYUIQuestions } from '../../common';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
-import { AdaptationProjectType } from '../../../../axios-extension/src';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Add the "add deploy config" command to a passed command.

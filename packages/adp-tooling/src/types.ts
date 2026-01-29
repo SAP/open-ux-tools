@@ -1,7 +1,7 @@
 import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { AxiosRequestConfig, KeyUserChangeContent, OperationsType } from '@sap-ux/axios-extension';
+import type { AdaptationProjectType, AxiosRequestConfig, KeyUserChangeContent, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
@@ -768,6 +768,7 @@ export interface CustomConfig {
     adp: {
         environment: OperationsType;
         support: ToolsSupport;
+        projectType?: AdaptationProjectType;
     };
 }
 
