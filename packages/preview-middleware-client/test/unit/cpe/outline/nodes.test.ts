@@ -312,5 +312,65 @@ describe('outline nodes', () => {
                 }
             ]);
         });
+
+        test('element with extension point as direct child', async () => {
+            expect(
+                await transformNodes(
+                    [
+                        {
+                            id: 'container-element',
+                            technicalName: 'sap.m.VBox',
+                            editable: false,
+                            type: 'element',
+                            visible: true,
+                            elements: [
+                                {
+                                    id: 'extension-point-1',
+                                    technicalName: 'sap.ui.extensionpoint',
+                                    name: 'CustomExtensionPoint',
+                                    editable: false,
+                                    type: 'extensionPoint',
+                                    visible: true,
+                                    extensionPointInfo: {
+                                        createdControls: ['control-1'],
+                                        defaultContent: []
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    'ADAPTATION_PROJECT'
+                )
+            ).toStrictEqual([
+                {
+                    controlId: 'container-element',
+                    controlType: 'sap.m.VBox',
+                    editable: false,
+                    name: 'VBox',
+                    visible: true,
+                    children: [
+                        {
+                            controlId: 'extension-point-1--CustomExtensionPoint',
+                            controlType: 'sap.ui.extensionpoint',
+                            editable: false,
+                            hasDefaultContent: false,
+                            name: 'CustomExtensionPoint',
+                            visible: true,
+                            children: [
+                                {
+                                    controlId: 'control-1',
+                                    controlType: 'some-name',
+                                    editable: false,
+                                    hasDefaultContent: false,
+                                    name: 'control-1',
+                                    visible: true,
+                                    children: []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]);
+        });
     });
 });
