@@ -5,6 +5,12 @@ import type { PromptContext } from '../../../src/prompts/types';
 import * as promptHelpers from '../../../src/building-block/prompts/utils/prompt-helpers';
 import { i18nNamespaces, translate } from '../../../src/i18n';
 const t = translate(i18nNamespaces.buildingBlock, 'prompts.');
+import { getExistingButtonGroups } from '../../../src/building-block/prompts/utils/xml';
+import { BUTTON_GROUP_CONFIGS } from '../../../src/building-block/processor';
+
+jest.mock('../../../src/building-block/prompts/utils/xml', () => ({
+    getExistingButtonGroups: jest.fn()
+}));
 
 import { getEntitySets } from '../../../src/building-block/prompts/utils/service';
 jest.mock('../../../src/building-block/prompts/utils/service', () => ({
@@ -250,5 +256,84 @@ describe('resolveBindingContextTypeChoices', () => {
             { name: t('common.bindingContextType.option.absolute'), value: bindingContextAbsolute },
             { name: t('common.bindingContextType.option.relative'), value: bindingContextRelative }
         ]);
+    });
+
+    describe('getButtonGroupsChoices', () => {
+        const mockContext = {
+            project: { projectType: 'mockProject' },
+            appPath: '/test/app',
+            fs: {} as any
+        } as unknown as PromptContext;
+
+        const mockAnswers = {
+            viewOrFragmentPath: 'webapp/ext/fragment/Test.fragment.xml',
+            aggregationPath: 'content'
+        };
+
+        beforeEach(() => {
+            (getExistingButtonGroups as jest.Mock).mockClear();
+        });
+
+        it('returns empty array when project is not present', async () => {
+            const result = await promptHelpers.getButtonGroupsChoices(
+                { ...mockContext, project: undefined } as any,
+                mockAnswers
+            );
+            expect(result).toEqual([]);
+        });
+
+        it('returns all button groups with checked=false when no existing button groups found', async () => {
+            (getExistingButtonGroups as jest.Mock).mockResolvedValue(new Set<string>());
+
+            const result = await promptHelpers.getButtonGroupsChoices(mockContext, mockAnswers);
+
+            expect(getExistingButtonGroups).toHaveBeenCalledWith(
+                '/test/app/webapp/ext/fragment/Test.fragment.xml',
+                'content',
+                mockContext.fs
+            );
+
+            expect(result).toHaveLength(BUTTON_GROUP_CONFIGS.length);
+            result.forEach((choice) => {
+                expect(choice.checked).toBe(false);
+                expect(choice.hidden).toBe(false);
+            });
+        });
+
+        it('returns button groups with checked=true and hidden=true for existing groups', async () => {
+            const existingGroups = new Set(['textStyle', 'textAlign']);
+            (getExistingButtonGroups as jest.Mock).mockResolvedValue(existingGroups);
+
+            const result = await promptHelpers.getButtonGroupsChoices(mockContext, mockAnswers);
+
+            expect(result).toHaveLength(BUTTON_GROUP_CONFIGS.length);
+
+            result.forEach((choice) => {
+                if (existingGroups.has(choice.value)) {
+                    expect(choice.checked).toBe(true);
+                    expect(choice.hidden).toBe(true);
+                } else {
+                    expect(choice.checked).toBe(false);
+                    expect(choice.hidden).toBe(false);
+                }
+            });
+        });
+
+        it('handles empty existingButtonGroups set correctly', async () => {
+            (getExistingButtonGroups as jest.Mock).mockResolvedValue(new Set());
+
+            const result = await promptHelpers.getButtonGroupsChoices(mockContext, mockAnswers);
+
+            expect(result.every((choice) => !choice.checked && !choice.hidden)).toBe(true);
+        });
+
+        it('handles all button groups being existing', async () => {
+            const allGroups = new Set(BUTTON_GROUP_CONFIGS.map((config) => config.name));
+            (getExistingButtonGroups as jest.Mock).mockResolvedValue(allGroups);
+
+            const result = await promptHelpers.getButtonGroupsChoices(mockContext, mockAnswers);
+
+            expect(result.every((choice) => choice.checked && choice.hidden)).toBe(true);
+        });
     });
 });
