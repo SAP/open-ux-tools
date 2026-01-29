@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.41.2
+
+### Patch Changes
+
+- 22fbaef: Add titles to RTE button groups options
+
 ## 0.41.1
 
 ### Patch Changes
