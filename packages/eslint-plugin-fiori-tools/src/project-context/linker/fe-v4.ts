@@ -1,6 +1,6 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
-import type { LinkerContext } from './types';
+import type { LinkerContext, ConfigurationBase } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectTables, collectSections } from './annotations';
@@ -41,35 +41,6 @@ export interface AnnotationBasedNode<T extends AnnotationNode, Configuration ext
     children: Children[];
 }
 
-/**
- * Configuration property with values, actual value, and manifest path.
- */
-export type ConfigurationProperty<T> = {
-    /**
-     * All possible supported configuration values. Empty means dynamic value resolved by framework at runtime.
-     */
-    values: T[];
-    /**
-     * Actual value as defined in the manifest file.
-     */
-    valueInFile?: T;
-    /**
-     * Absolute path in manifest where this configuration is defined.
-     */
-    configurationPath: string[];
-};
-
-export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
-    type: T;
-    annotation?: unknown;
-    configuration: {
-        [K in keyof Configuration]: Configuration[K] extends object
-            ? {
-                  [NK in keyof Configuration[K]]: ConfigurationProperty<Configuration[K][NK]>;
-              }
-            : ConfigurationProperty<Configuration[K]>;
-    };
-}
 export type OrphanSection = ConfigurationBase<'orphan-section', {}>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
 export type Section = TableSection | OrphanSection;
@@ -537,7 +508,6 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
 /**
  * Links application-level settings from manifest configuration for Fiori Elements V4.
  *
- * @param config - The manifest application settings
  * @param context - Linker context containing parsed application data
  * @returns A linked Fiori Elements V4 application object
  */
