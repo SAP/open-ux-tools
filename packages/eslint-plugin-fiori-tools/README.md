@@ -157,7 +157,7 @@ module.exports = [
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |
 | [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Validates that `statePreservationMode` is correctly configured in the `manifest.json` file for SAP Fiori Elements for OData V2 applications to ensure optimal application state handling and user experience. | | ✅ |
-
-</div>
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensure small tables have `widthIncludingColumnHeader` set to `true`. | | ✅ |
 | [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensure valid `statePreservationMode` configuration for Fiori Elements V2. | | ✅ |
+
+</div>
