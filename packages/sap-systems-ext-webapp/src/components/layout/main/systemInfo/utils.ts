@@ -19,8 +19,9 @@ export const getUrlErrorMessage = (
         if (url.pathname && url.pathname !== '/') {
             setIsDetailsValid(false);
             urlMessage = t('validations.systemUrlOriginOnlyWarning');
+        } else {
+            setIsDetailsValid(true);
         }
-        setIsDetailsValid(true);
     } catch {
         // ignore
     }
