@@ -74,6 +74,7 @@
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
+        "@sap-ux/adp-tooling": "workspace:*",
         "i18next": "25.8.0",
         "os-name": "4.0.1",
         "zod": "4.1.13",
