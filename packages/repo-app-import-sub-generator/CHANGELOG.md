@@ -1,5 +1,23 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.224
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/ui5-info@0.13.9
+    - @sap-ux/fiori-elements-writer@2.8.50
+    - @sap-ux/inquirer-common@0.10.19
+    - @sap-ux/odata-service-inquirer@2.16.1
+    - @sap-ux/abap-deploy-config-writer@0.2.60
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/fiori-generator-shared@0.13.59
+    - @sap-ux/launch-config@0.10.54
+    - @sap-ux/project-input-validator@0.6.47
+    - @sap-ux/system-access@0.6.44
+
 ## 0.3.223
 
 ### Patch Changes
