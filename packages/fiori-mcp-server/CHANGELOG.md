@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.17
+
+### Patch Changes
+
+- 529408b: refactor: adjust telemetry functionalityId reporting
+
 ## 0.6.16
 
 ### Patch Changes
