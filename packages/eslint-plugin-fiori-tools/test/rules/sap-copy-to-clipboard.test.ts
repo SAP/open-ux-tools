@@ -79,7 +79,6 @@ const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
 ruleTester.run(TEST_NAME, copyToClipboardRule, {
     valid: [
-        // V2
         createValidTest(
             {
                 name: 'V2 - copy missing',
@@ -113,7 +112,6 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
             },
             [FACETSV2]
         ),
-        // V4
         createValidTest(
             {
                 name: 'V4 - disableCopyToClipboard missing',
@@ -177,7 +175,24 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                         line: 154,
                         column: 23
                     }
-                ]
+                ],
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'pages',
+                            'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'sections',
+                            '',
+                            'tableSettings'
+                        ],
+                        value: {}
+                    }
+                ])
             },
             [FACETSV2]
         ),
@@ -208,7 +223,26 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                         line: 127,
                         column: 21
                     }
-                ]
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings'
+                        ],
+                        value: {
+                            type: 'ResponsiveTable',
+                            selectionMode: 'Auto'
+                        }
+                    }
+                ])
             },
             [FACETSV4]
         )
