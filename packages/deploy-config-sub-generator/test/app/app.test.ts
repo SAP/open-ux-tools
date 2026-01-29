@@ -12,6 +12,7 @@ import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
 import * as projectAccess from '@sap-ux/project-access';
 import Generator from 'yeoman-generator';
 import type fs from 'node:fs';
+import HeadlessGenerator from '../../src/headless';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -121,7 +122,7 @@ describe('Deployment Generator', () => {
     it('Validate deployment generator is loaded as root generator', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
-        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
+        const composeWithSpy = jest.spyOn(DeployGenerator.prototype as any, 'composeWith').mockResolvedValue(undefined);
 
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
         const getABAPPromptsSpy = jest.spyOn(abapDeploySubGen, 'getAbapQuestions');
