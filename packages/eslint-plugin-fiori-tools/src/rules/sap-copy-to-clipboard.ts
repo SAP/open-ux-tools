@@ -5,6 +5,7 @@ import type { MemberNode } from '@humanwhocodes/momoa';
 import type { FeV2PageType } from '../project-context/linker/fe-v2';
 import type { ParsedApp } from '../project-context/parser';
 import type { FeV4PageType } from '../project-context/linker/fe-v4';
+import { createJsonFixer } from '../language/rule-fixer';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: COPY_TO_CLIPBOARD,
@@ -43,12 +44,17 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
         return problems;
     },
-    createJsonVisitorHandler: (context) =>
+    createJsonVisitorHandler: (context, diagnostic, deepestPathResult) =>
         function report(node: MemberNode): void {
             context.report({
                 node,
-                messageId: COPY_TO_CLIPBOARD
-                // fix: remove set value
+                messageId: COPY_TO_CLIPBOARD,
+                fix: createJsonFixer({
+                    context,
+                    deepestPathResult,
+                    node,
+                    operation: 'delete'
+                })
             });
         }
 });
