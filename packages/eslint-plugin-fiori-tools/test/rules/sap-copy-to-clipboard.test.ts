@@ -9,8 +9,6 @@ import {
     V4_ANNOTATIONS_PATH,
     V4_MANIFEST,
     V4_MANIFEST_PATH,
-    V2_ANNOTATIONS,
-    V2_ANNOTATIONS_PATH,
     V2_MANIFEST,
     V2_MANIFEST_PATH
 } from '../test-helper';
@@ -54,26 +52,6 @@ const FACETSV4 = {
     )
 };
 
-const FACETSV2 = {
-    filename: V2_ANNOTATIONS_PATH,
-    code: getAnnotationsAsXmlCode(
-        V2_ANNOTATIONS,
-        `
-            <Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
-                 <Annotation Term="UI.Facets" >
-                 <Collection>
-                        <Record Type="UI.ReferenceFacet">
-                            <PropertyValue Property="ID" String="Products"/>
-                            <PropertyValue Property="Label" String="TableFacet"/>
-                            <PropertyValue Property="Target" AnnotationPath="@UI.LineItem"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-            `
-    )
-};
-
 const TEST_NAME = 'sap-copy-to-clipboard';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
@@ -102,7 +80,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                             'component',
                             'settings',
                             'sections',
-                            '',
+                            'Products',
                             'tableSettings',
                             'copy'
                         ],
@@ -110,7 +88,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                     }
                 ])
             },
-            [FACETSV2]
+            []
         ),
         createValidTest(
             {
@@ -162,7 +140,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                             'component',
                             'settings',
                             'sections',
-                            '',
+                            'Products',
                             'tableSettings',
                             'copy'
                         ],
@@ -187,14 +165,14 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                             'component',
                             'settings',
                             'sections',
-                            '',
+                            'Products',
                             'tableSettings'
                         ],
                         value: {}
                     }
                 ])
             },
-            [FACETSV2]
+            []
         ),
         createInvalidTest(
             {
