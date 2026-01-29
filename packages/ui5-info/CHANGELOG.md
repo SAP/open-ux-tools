@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.13.9
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
 ## 0.13.8
 
 ### Patch Changes

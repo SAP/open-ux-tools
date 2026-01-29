@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.14
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
 ## 0.18.13
 
 ### Patch Changes
