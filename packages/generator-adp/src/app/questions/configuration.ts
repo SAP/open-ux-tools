@@ -881,6 +881,8 @@ export class ConfigPrompter {
                 this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
                 return;
             }
+
+            throw error;
         }
     }
 
