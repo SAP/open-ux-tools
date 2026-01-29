@@ -2,7 +2,7 @@
  * @file Rule to flag use of sap ui5base prop
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
@@ -20,7 +20,7 @@ function contains(a: unknown[], obj: unknown) {
     return a.includes(obj);
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -33,7 +33,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         // variables should be defined here
         const ODATA_MODEL_V2_MEMBERS = ['oData'];
 

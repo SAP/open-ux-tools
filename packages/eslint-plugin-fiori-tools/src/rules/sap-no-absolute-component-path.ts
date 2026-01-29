@@ -2,7 +2,7 @@
  * @file Rule to detect absolute path to component
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ function endsWith(string: string, suffix: string): boolean {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -36,7 +36,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const T_MEMBER = 'MemberExpression';
         const T_ARRAY = 'ArrayExpression';
         const T_IDENTIFIER = 'Identifier';
@@ -52,11 +52,12 @@ const rule: Rule.RuleModule = {
          * @returns The name extracted from the literal or identifier node
          */
         function getLiteralOrIdentifiertName(node: ASTNode): string {
+            const n = node as any;
             let result = '';
-            if (node.type === T_IDENTIFIER) {
-                result = (node as any).name;
+            if (n && typeof n === 'object' && n.type === T_IDENTIFIER) {
+                result = n.name;
             } else {
-                result = (node as any).value;
+                result = n.value;
             }
             return result;
         }
@@ -68,13 +69,17 @@ const rule: Rule.RuleModule = {
          * @returns The identifier path extracted from the node
          */
         function getIdentifierPath(node: ASTNode): string {
+            const n = node as any;
             let result = '';
-            switch (node.type) {
+            if (!n || typeof n !== 'object') {
+                return result;
+            }
+            switch (n.type) {
                 case T_IDENTIFIER:
-                    result = (node as any).name;
+                    result = n.name;
                     break;
                 case T_MEMBER:
-                    result = `${getIdentifierPath((node as any).object)}.${getLiteralOrIdentifiertName((node as any).property)}`;
+                    result = `${getIdentifierPath(n.object)}.${getLiteralOrIdentifiertName(n.property)}`;
                     break;
                 default:
             }
@@ -90,7 +95,13 @@ const rule: Rule.RuleModule = {
          */
         function getPropertyFromObjectExpression(node: ASTNode | undefined, propertyName: string): ASTNode | undefined {
             // Check if node is of type object expression
-            if (node?.type === T_OBJECT) {
+            if (
+                node &&
+                typeof node === 'object' &&
+                node !== null &&
+                'type' in node &&
+                (node as any).type === T_OBJECT
+            ) {
                 // Get property list from object expression
                 const propertyList = (node as any).properties;
                 // Go through the properties
@@ -125,7 +136,13 @@ const rule: Rule.RuleModule = {
                 // Get includes data
                 const includes = getPropertyFromObjectExpression(metadata, P_INCLUDES);
                 // Check if includes type is array expression
-                if (includes?.type === T_ARRAY) {
+                if (
+                    includes &&
+                    typeof includes === 'object' &&
+                    includes !== null &&
+                    'type' in includes &&
+                    (includes as any).type === T_ARRAY
+                ) {
                     // Get array elements
                     const includesElements = (includes as any).elements;
                     let element;

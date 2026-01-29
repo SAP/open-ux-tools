@@ -2,7 +2,7 @@
  * @file Rule to flag use of a private member from UI5 Event
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 // THIS RULE IS DEPRECATED --> sap-no-ui5base-prop
 
@@ -25,7 +25,7 @@ function contains(a: string[], obj: string): boolean {
 // Rule Definition
 // ------------------------------------------------------------------------------
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -38,7 +38,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const PRIVATE_MEMBERS = ['oSource', 'mParameters', 'sId'];
 
         // --------------------------------------------------------------------------

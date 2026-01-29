@@ -2,13 +2,13 @@
  * @file Detect some warning for usages of (window.)document APIs
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode, isIdentifier, contains, createDocumentBasedRuleVisitors } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -21,7 +21,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const FORBIDDEN_DOCUMENT_METHODS = [
             'getElementById',
             'getElementsByClassName',
@@ -31,7 +31,8 @@ const rule: Rule.RuleModule = {
 
         const createVisitors = createDocumentBasedRuleVisitors({
             isInteresting: (node: ASTNode, isDocumentObject: (node: unknown) => boolean): boolean => {
-                return node && isDocumentObject((node as any).object);
+                const n = node as any;
+                return !!(n && isDocumentObject(n.object));
             },
             isValid: (node: ASTNode): boolean => {
                 return !(
