@@ -102,6 +102,8 @@ module.exports = [
 
 ## Rules
 
+<div style="overflow-x: auto;">
+
 | Rule | Description | Recommended | Recommended for S/4HANA |
 |------|-------------|:-----------:|:-----------------------:|
 | [sap-bookmark-performance](docs/rules/sap-bookmark-performance.md) | Ensure the correct usage of the auto-refresh interval options for `sap.ushell.ui.footerbar.AddBookmarkButton`. | ✅ | ✅ |
@@ -150,9 +152,12 @@ module.exports = [
 | [sap-ui5-global-eval](docs/rules/sap-ui5-global-eval.md) | Detect the usage of `globalEval()` and `eval()`. | ✅ | ✅ |
 | [sap-ui5-legacy-factories](docs/rules/sap-ui5-legacy-factories.md) | Detect legacy UI5 factories that lead to synchronous loading. | ✅ | ✅ |
 | [sap-ui5-legacy-jquerysap-usage](docs/rules/sap-ui5-legacy-jquerysap-usage.md) | Detect legacy `jQuery.sap` usage. | ✅ | ✅ |
-| [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect the usage of private properties and functions of UI5 elements. | | |
-| [sap-usage-basemastercontroller](docs/rules/sap-usage-basemastercontroller.md) | Detect the usage of the deprecated `BaseMasterController`. | ✅ | ✅ |
-| [sap-creation-mode-for-table](docs/rules/sap-creation-mode-for-table.md) | Validates that the table creation mode (`createMode` in OData V2 and `creationMode` in OData V4) is correctly configured to ensure an optimal user experience when creating new table entries. | | ✅ |
+| [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect tValidates that the table creation mode (`createMode` in OData V2 and `creationMode` in OData V4) is correctly configured to ensure an optimal user experience when creating new table entries. | | ✅ |
 | [sap-disable-copy-to-clipboard](docs/rules/sap-disable-copy-to-clipboard.md) | Ensures that the `disableCopyToClipboard` property in all tables is set to `false` or ommited from `tableSettings` in the `manifest.json` file for OData V4 applications. The default value is `false`. | | ✅ |
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |
+| [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Validates that `statePreservationMode` is correctly configured in the `manifest.json` file for SAP Fiori Elements for OData V2 applications to ensure optimal application state handling and user experience. | | ✅ |
+
+</div>
+| [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensure small tables have `widthIncludingColumnHeader` set to `true`. | | ✅ |
+| [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensure valid `statePreservationMode` configuration for Fiori Elements V2. | | ✅ |

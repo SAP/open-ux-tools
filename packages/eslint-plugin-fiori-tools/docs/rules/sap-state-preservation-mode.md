@@ -1,4 +1,4 @@
-# Enforce Valid `statePreservationMode` Configuration in SAP Fiori Elements for OData V2 (`sap-state-preservation-mode`)
+# Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements (`sap-state-preservation-mode`)
 
 Validates that `statePreservationMode` is correctly configured in the `manifest.json` file for SAP Fiori Elements for OData V2 applications to ensure optimal application state handling and user experience.
 
