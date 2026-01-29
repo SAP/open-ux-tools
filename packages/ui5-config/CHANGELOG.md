@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.13
+
+### Patch Changes
+
+- be67fc4: feat: adjust type definitions
+
 ## 0.29.12
 
 ### Patch Changes

@@ -1,5 +1,55 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.74
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.19
+
+## 0.5.73
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.18
+
+## 0.5.72
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.17
+
+## 0.5.71
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/inquirer-common@0.10.16
+
+## 0.5.70
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.15
+
+## 0.5.69
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.14
+
+## 0.5.68
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.13
+
+## 0.5.67
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.12
+
 ## 0.5.66
 
 ### Patch Changes
