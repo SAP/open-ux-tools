@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.18
+
+### Patch Changes
+
+- 5d50232: feat: add telemetry tracking for MCP server sessions and handlers
+
 ## 0.6.17
 
 ### Patch Changes
