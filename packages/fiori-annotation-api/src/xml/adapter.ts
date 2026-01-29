@@ -178,6 +178,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
      *
      * @param uri
      * @param data
+     * @param localFilePath
      */
     public syncExternalService(uri: string, data: string, localFilePath: string): void {
         const { ast: metadataDocument, comments: metadataComments } = parseWithoutCache(data, true);

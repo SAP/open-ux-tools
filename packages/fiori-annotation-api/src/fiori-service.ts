@@ -258,6 +258,8 @@ export class FioriAnnotationService {
 
     /**
      * Refreshes file content from the file system.
+     *
+     * @param files
      */
     public syncExternalServices(files: Map<string, { data: string; localFilePath: string }>): void {
         for (const [, value] of this.adapter.getValueListReferences().entries()) {
@@ -315,7 +317,7 @@ export class FioriAnnotationService {
      * @returns Service metadata in AVT format.
      */
     public getExternalServiceSchema(): (RawMetadata & { localFileUri: string })[] {
-        return this.adapter.getExternalServices().map(({ compiledService, metadataService, uri, localFilePath }) => {
+        return this.adapter.getExternalServices().map(({ compiledService, metadataService, uri, localFileUri }) => {
             using ms = metadataService.useService(uri);
             const rawMetadata: RawMetadata = {
                 version: metadataService.ODataVersion,
@@ -333,7 +335,7 @@ export class FioriAnnotationService {
                 },
                 this.adapter.splitAnnotationSupport
             );
-            return { ...rawMetadata, localFileUri: localFilePath };
+            return { ...rawMetadata, localFileUri };
         });
     }
 
