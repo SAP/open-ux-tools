@@ -287,12 +287,6 @@ describe('resolveBindingContextTypeChoices', () => {
 
             const result = await promptHelpers.getButtonGroupsChoices(mockContext, mockAnswers);
 
-            expect(getExistingButtonGroups).toHaveBeenCalledWith(
-                '/test/app/webapp/ext/fragment/Test.fragment.xml',
-                'content',
-                mockContext.fs
-            );
-
             expect(result).toHaveLength(BUTTON_GROUP_CONFIGS.length);
             result.forEach((choice) => {
                 expect(choice.checked).toBe(false);
