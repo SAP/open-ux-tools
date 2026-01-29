@@ -32,7 +32,7 @@ const CLOUD_ONLY_APPS_FILTER: UI5AppFilter = {
     fields: APP_FIELDS,
     'sap.ui/technology': 'UI5',
     'sap.app/type': 'application',
-    'cloudDevAdaptationStatus': 'released'
+    'sap.fiori/cloudDevAdaptationStatus': 'released'
 };
 
 /**
