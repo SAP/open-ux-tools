@@ -20,6 +20,7 @@ import type {
     CustomConfig
 } from '../types';
 import { UI5_CDN_URL } from '../base/constants';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -63,7 +64,7 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
         ]);
     }
 
-    if (config.customConfig?.adp?.environment === 'C') {
+    if (config.customConfig?.adp?.projectType === AdaptationProjectType.CLOUD_READY) {
         const tasks = getAdpCloudCustomTasks(config);
         ui5Config.addCustomTasks(tasks);
     }

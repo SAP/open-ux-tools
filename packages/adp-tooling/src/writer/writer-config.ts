@@ -161,7 +161,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
                     id: packageJson.name ?? '',
                     version: packageJson.version ?? '',
                     toolsId
-                }
+                },
+                projectType
             }
         },
         target,
