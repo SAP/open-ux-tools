@@ -32,7 +32,7 @@ ruleTester.run(TEST_NAME, rule, {
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
-                        path: ['sap.ui5', 'routing', 'config', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
+                        path: ['sap.ui.generic.app', 'settings', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
                         value: 'TwoColumnsBeginExpanded'
                     },
                     {
@@ -79,9 +79,15 @@ ruleTester.run(TEST_NAME, rule, {
                         value: 'invalidMode'
                     }
                 ]),
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
+                        value: 'discovery'
+                    }
+                ]),
                 errors: [
                     {
-                        messageId: 'invalidMode'
+                        message: 'Invalid value "invalidMode" for statePreservationMode. "discovery" is recommended.'
                     }
                 ]
             },
@@ -94,7 +100,7 @@ ruleTester.run(TEST_NAME, rule, {
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     {
-                        path: ['sap.ui5', 'routing', 'config', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
+                        path: ['sap.ui.generic.app', 'settings', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
                         value: 'TwoColumnsBeginExpanded'
                     },
                     {
@@ -102,9 +108,20 @@ ruleTester.run(TEST_NAME, rule, {
                         value: 'discovery'
                     }
                 ]),
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: ['sap.ui.generic.app', 'settings', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
+                        value: 'TwoColumnsBeginExpanded'
+                    },
+                    {
+                        path: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
+                        value: 'persistence'
+                    }
+                ]),
                 errors: [
                     {
-                        messageId: 'recommendPersistenceForFCL'
+                        message:
+                            'Consider using "persistence". For applications using Flexible Column Layout (FCL), "persistence" mode is recommended.'
                     }
                 ]
             },
@@ -121,9 +138,16 @@ ruleTester.run(TEST_NAME, rule, {
                         value: 'persistence'
                     }
                 ]),
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
+                        value: 'discovery'
+                    }
+                ]),
                 errors: [
                     {
-                        messageId: 'recommendDiscoveryForNonFCL'
+                        message:
+                            'Consider using "discovery". For applications not using Flexible Column Layout, "discovery" mode is recommended.'
                     }
                 ]
             },

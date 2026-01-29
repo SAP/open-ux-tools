@@ -5,15 +5,8 @@ import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectTables, collectSections } from './annotations';
 
-export interface FlexibleColumnLayoutSettings {
-    defaultTwoColumnLayoutType: string;
-    defaultThreeColumnLayoutType: string;
-}
-
 export interface ApplicationSetting {
     createMode: string;
-    statePreservationMode: string;
-    flexibleColumnLayout: FlexibleColumnLayoutSettings;
 }
 
 export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
@@ -96,13 +89,6 @@ interface ManifestApplicationSettings {
             defaultCreationMode?: string;
         };
     };
-    settings?: {
-        statePreservationMode?: string;
-    };
-}
-
-interface ManifestFCL {
-    flexibleColumnLayout?: FlexibleColumnLayoutSettings;
 }
 
 const tableTypeValues = ['ResponsiveTable', 'GridTable', 'AnalyticalTable', 'TreeTable'];
@@ -553,14 +539,11 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
  *
  * @param config - The manifest application settings
  * @param context - Linker context containing parsed application data
+ * @returns A linked Fiori Elements V4 application object
  */
 function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
     const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
-    const routingConfig = (context.app.manifestObject['sap.ui5']?.routing?.config as ManifestFCL) ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
-    const statePreservationMode = config.settings?.statePreservationMode;
-    const twoColumnLayoutValue = routingConfig?.flexibleColumnLayout?.defaultTwoColumnLayoutType;
-    const threeColumnLayoutValue = routingConfig?.flexibleColumnLayout?.defaultThreeColumnLayoutType;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
         pages: [],
@@ -569,23 +552,6 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
                 values: ['InlineCreationRows', 'NewPage'],
                 configurationPath: ['sap.fe', 'macros', 'table', 'defaultCreationMode'],
                 valueInFile: createMode
-            },
-            statePreservationMode: {
-                values: ['persistence'], // Discovery mode isn't applicable to SAP Fiori elements for OData V4.
-                configurationPath: ['sap.fe', 'settings', 'statePreservationMode'],
-                valueInFile: statePreservationMode
-            },
-            flexibleColumnLayout: {
-                defaultTwoColumnLayoutType: {
-                    values: ['TwoColumnsBeginExpanded', 'TwoColumnsMidExpanded', 'MidColumnFullScreen'],
-                    configurationPath: ['sap.fe', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
-                    valueInFile: twoColumnLayoutValue
-                },
-                defaultThreeColumnLayoutType: {
-                    values: ['ThreeColumnsMidExpanded', 'ThreeColumnsEndExpanded', 'MidAndEndColumnsFullScreen'],
-                    configurationPath: ['sap.fe', 'flexibleColumnLayout', 'defaultThreeColumnLayoutType'],
-                    valueInFile: threeColumnLayoutValue
-                }
             }
         }
     };

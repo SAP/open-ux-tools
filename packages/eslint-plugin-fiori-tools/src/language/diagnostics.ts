@@ -53,7 +53,6 @@ export interface DisableCopyToClipboard {
 
 export type StatePreservationModeMessageId =
     | 'invalidMode'
-    | 'discoveryNotSupportedV4'
     | 'recommendPersistenceForFCL'
     | 'recommendDiscoveryForNonFCL';
 
@@ -61,8 +60,8 @@ export interface StatePreservationMode {
     type: typeof STATE_PRESERVATION_MODE;
     manifest: ManifestPropertyDiagnosticData;
     messageId: StatePreservationModeMessageId;
-    validValues: string[];
     recommendedValue?: string;
+    value?: string;
 }
 
 export type Diagnostic =

@@ -306,12 +306,9 @@ interface ManifestApplicationSettings {
     settings?: {
         tableSettings?: TableSettings;
         statePreservationMode?: string;
+        flexibleColumnLayout?: FlexibleColumnLayoutSettings;
     };
 }
-interface ManifestFCL {
-    flexibleColumnLayout?: FlexibleColumnLayoutSettings;
-}
-
 /**
  * Links a list report page
  *
@@ -580,11 +577,10 @@ function linkObjectPageSections(
  */
 function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
     const config: ManifestApplicationSettings = context.app.manifestObject['sap.ui.generic.app'] ?? {};
-    const routingConfig = (context.app.manifestObject['sap.ui5']?.routing?.config as ManifestFCL) ?? {};
     const createMode = config.settings?.tableSettings?.createMode;
     const statePreservationMode = config.settings?.statePreservationMode;
-    const twoColumnLayoutValue = routingConfig?.flexibleColumnLayout?.defaultTwoColumnLayoutType;
-    const threeColumnLayoutValue = routingConfig?.flexibleColumnLayout?.defaultThreeColumnLayoutType;
+    const twoColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultTwoColumnLayoutType;
+    const threeColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultThreeColumnLayoutType;
     const linkedApp: LinkedFeV2App = {
         type: 'fe-v2',
         pages: [],
@@ -601,13 +597,13 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
             },
             flexibleColumnLayout: {
                 defaultTwoColumnLayoutType: {
-                    values: ['TwoColumnsBeginExpanded', 'TwoColumnsMidExpanded', 'MidColumnFullScreen'],
-                    configurationPath: ['sap.fe', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
+                    values: ['TwoColumnsBeginExpanded', 'TwoColumnsMidExpanded'],
+                    configurationPath: ['sap.ui.generic.app', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
                     valueInFile: twoColumnLayoutValue
                 },
                 defaultThreeColumnLayoutType: {
-                    values: ['ThreeColumnsMidExpanded', 'ThreeColumnsEndExpanded', 'MidAndEndColumnsFullScreen'],
-                    configurationPath: ['sap.fe', 'flexibleColumnLayout', 'defaultThreeColumnLayoutType'],
+                    values: ['ThreeColumnsMidExpanded', 'ThreeColumnsEndExpanded'],
+                    configurationPath: ['sap.ui.generic.app', 'flexibleColumnLayout', 'defaultThreeColumnLayoutType'],
                     valueInFile: threeColumnLayoutValue
                 }
             }
