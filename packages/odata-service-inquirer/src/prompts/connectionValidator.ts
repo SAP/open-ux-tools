@@ -50,13 +50,13 @@ interface Validity {
 }
 
 // Cert errors that may be ignored by the ignore cert errors prompt and NODE_TLS_REJECT_UNAUTHORIZED=0 setting
-const ignorableCertErrors = [
+const ignorableCertErrors = new Set([
     ERROR_TYPE.CERT_SELF_SIGNED,
     ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN,
     ERROR_TYPE.CERT_EXPIRED,
     ERROR_TYPE.CERT_UKNOWN_OR_INVALID,
     ERROR_TYPE.INVALID_SSL_CERTIFICATE
-];
+]);
 
 // Makes AxiosRequestConfig url properties required
 interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
@@ -469,7 +469,7 @@ export class ConnectionValidator {
                 await abapProvider.catalog(odataVerCatalog).listServices();
             } catch (error) {
                 const errorType = ErrorHandler.getErrorType(error?.response?.status ?? error?.code);
-                if (error?.isAxiosError && ignorableCertErrors.includes(errorType)) {
+                if (error?.isAxiosError && ignorableCertErrors.has(errorType)) {
                     LoggerHelper.logger.warn(
                         t('warnings.certificateErrors', { url: axiosConfig?.baseURL, error: errorType })
                     );
@@ -827,11 +827,14 @@ export class ConnectionValidator {
             if (url.origin === 'null') {
                 return t('errors.invalidUrl', { input: serviceUrl });
             }
-            // Dont allow non origin URLs in for re-entrance tickets as the error handling would become complex to analyize.
+            // Dont allow non origin URLs in for re-entrance tickets and system URL's as the error handling would become complex to analyize.
             // The connection may succeed but later we will get auth errors since axios-extension does not validate this.
-            // The new system name would also include the additional paths which would not make sense either.
-            if (this.systemAuthType === 'reentranceTicket' && !(url.pathname.length === 0 || url.pathname === '/')) {
-                return t('prompts.validationMessages.reentranceTicketSystemHostOnly');
+            // The new system name would also include the additional paths which would not make sense and would cause the issue when storing the system.
+            if (
+                (this.systemAuthType === 'reentranceTicket' || isSystem) &&
+                !(url.pathname.length === 0 || url.pathname === '/')
+            ) {
+                return t('prompts.validationMessages.systemUrlOriginOnlyWarning');
             }
         } catch (error) {
             return t('errors.invalidUrl', { input: serviceUrl });
@@ -883,7 +886,7 @@ export class ConnectionValidator {
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
         } else if (ErrorHandler.isCertError(status)) {
             this.validity.reachable = true;
-            this.validity.canSkipCertError = ignorableCertErrors.includes(ErrorHandler.getErrorType(status));
+            this.validity.canSkipCertError = ignorableCertErrors.has(ErrorHandler.getErrorType(status));
             this.validity.authenticated = false;
             return errorHandler.getValidationErrorHelp(status, false) ?? false;
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {

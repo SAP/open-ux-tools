@@ -1,5 +1,202 @@
 # @sap-ux/preview-middleware
 
+## 0.23.102
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.46
+- @sap-ux/system-access@0.6.44
+
+## 0.23.101
+
+### Patch Changes
+
+- af8d6b8: fix: change table action creation for v4 from addXML to app descriptor change
+
+## 0.23.100
+
+### Patch Changes
+
+- c061595: fix: support rta and cpe for CAP node w/o mockserver
+
+## 0.23.99
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/adp-tooling@0.18.45
+    - @sap-ux/system-access@0.6.43
+
+## 0.23.98
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+- Updated dependencies [c707af1]
+    - @sap-ux/adp-tooling@0.18.44
+
+## 0.23.97
+
+### Patch Changes
+
+- Updated dependencies [d11943d]
+    - @sap-ux/adp-tooling@0.18.43
+
+## 0.23.96
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.42
+- @sap-ux/system-access@0.6.42
+
+## 0.23.95
+
+### Patch Changes
+
+- 1970178: Fix: Switch Page Action creation for OData V4 from addXML to appDescriptor based
+
+## 0.23.94
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.41
+
+## 0.23.93
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/adp-tooling@0.18.40
+    - @sap-ux/system-access@0.6.41
+
+## 0.23.92
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.39
+- @sap-ux/system-access@0.6.41
+
+## 0.23.91
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/adp-tooling@0.18.38
+    - @sap-ux/system-access@0.6.40
+
+## 0.23.90
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/adp-tooling@0.18.37
+    - @sap-ux/system-access@0.6.40
+
+## 0.23.89
+
+### Patch Changes
+
+- ce4b29c: Upgrade qs/body-parser/express
+- Updated dependencies [ce4b29c]
+    - @sap-ux/adp-tooling@0.18.36
+
+## 0.23.88
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/adp-tooling@0.18.35
+    - @sap-ux/system-access@0.6.40
+
+## 0.23.87
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/project-access@1.33.1
+    - @sap-ux/adp-tooling@0.18.34
+    - @sap-ux/system-access@0.6.40
+
+## 0.23.86
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.33
+- @sap-ux/system-access@0.6.39
+
+## 0.23.85
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.32
+- @sap-ux/system-access@0.6.38
+
+## 0.23.84
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.31
+
+## 0.23.83
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.30
+
+## 0.23.82
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.29
+
+## 0.23.81
+
+### Patch Changes
+
+- e81640f: fix: custom init
+
+## 0.23.80
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.28
+- @sap-ux/system-access@0.6.37
+
+## 0.23.79
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/adp-tooling@0.18.27
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/system-access@0.6.36
+
+## 0.23.78
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/system-access@0.6.35
+    - @sap-ux/adp-tooling@0.18.26
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/i18n@0.3.7
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.23.77
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.25
+
 ## 0.23.76
 
 ### Patch Changes

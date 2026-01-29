@@ -35,7 +35,9 @@ describe('Test the delete system command handler', () => {
     const mockContext = {
         panelManager,
         extContext: {
-            extensionPath: '/mock/extension/path'
+            vscodeExtContext: {
+                extensionPath: '/mock/extension/path'
+            }
         }
     } as SystemCommandContext;
 
@@ -59,7 +61,9 @@ describe('Test the delete system command handler', () => {
         const mockContext = {
             panelManager,
             extContext: {
-                extensionPath: '/mock/extension/path'
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
             }
         } as SystemCommandContext;
 
@@ -82,7 +86,9 @@ describe('Test the delete system command handler', () => {
         const mockContext = {
             panelManager,
             extContext: {
-                extensionPath: '/mock/extension/path'
+                vscodeExtContext: {
+                    extensionPath: '/mock/extension/path'
+                }
             }
         } as SystemCommandContext;
 

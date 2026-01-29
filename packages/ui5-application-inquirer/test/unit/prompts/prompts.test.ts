@@ -7,7 +7,7 @@ import type { UI5ApplicationPromptOptions } from '../../../src/types';
 import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
+import { defaultVersion, ui5ThemeIds } from '@sap-ux/ui5-info';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { inc } from 'semver';
 import os from 'node:os';
@@ -524,28 +524,6 @@ describe('getQuestions', () => {
         });
         enableEslintQuestion = questions.find((question) => question.name === promptNames.enableEslint);
         expect(enableEslintQuestion?.default).toEqual(true);
-    });
-
-    test('getQuestions, prompt: `enableCodeAssist`', async () => {
-        let questions = await getQuestions([]);
-        let enableCodeAssistQuestion = questions.find((question) => question.name === promptNames.enableCodeAssist);
-        // defaults
-        expect(enableCodeAssistQuestion?.default).toEqual(false);
-        questions = await getQuestions([], {
-            enableCodeAssist: {
-                default: true
-            }
-        });
-        enableCodeAssistQuestion = questions.find((question) => question.name === promptNames.enableCodeAssist);
-        expect(enableCodeAssistQuestion?.default).toEqual(true);
-
-        // when condition, test that the ui5Version answer supports code assist
-        let ui5Version = '1.64.0';
-        expect((enableCodeAssistQuestion?.when as Function)({ [promptNames.ui5Version]: ui5Version })).toEqual(false);
-        ui5Version = inc(minUi5VersionSupportingCodeAssist, 'patch')!;
-        expect((enableCodeAssistQuestion?.when as Function)({ [promptNames.ui5Version]: ui5Version })).toEqual(true);
-        // No ui5 version should default to latest and therefore return true
-        expect((enableCodeAssistQuestion?.when as Function)({})).toEqual(true);
     });
 
     test('getQuestions, prompt: `skipAnnotations`', async () => {

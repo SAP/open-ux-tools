@@ -1,5 +1,35 @@
 # @sap-ux/ui-components
 
+## 1.27.2
+
+### Patch Changes
+
+- 26dde65: UIComboBox: Fixed an issue where hidden options became visible after search.
+
+## 1.27.1
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 1.27.0
+
+### Minor Changes
+
+- f9f119d: Added icon StarBig which is a 24x24 start icon
+
+## 1.26.19
+
+### Patch Changes
+
+- 87a6696: UIIconButton. Issue on MacOS(in VSCode) - tooltips does not appear on icon buttons
+
+## 1.26.18
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 1.26.17
 
 ### Patch Changes

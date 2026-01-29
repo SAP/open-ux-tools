@@ -12,6 +12,7 @@ export class BackendSystem {
     @serializable public readonly connectionType: ConnectionType;
     @serializable public readonly authenticationType?: AuthenticationType;
     @serializable public readonly hasSensitiveData?: boolean;
+    @serializable public readonly systemInfo?: { systemId: string; client: string };
     @sensitiveData public readonly serviceKeys?: unknown;
     @sensitiveData public readonly refreshToken?: string;
     @sensitiveData public readonly username?: string;
@@ -28,7 +29,8 @@ export class BackendSystem {
         password,
         userDisplayName,
         authenticationType,
-        connectionType
+        connectionType,
+        systemInfo
     }: {
         name: string;
         url: string;
@@ -41,6 +43,7 @@ export class BackendSystem {
         password?: string;
         userDisplayName?: string;
         authenticationType?: AuthenticationType;
+        systemInfo?: { systemId: string; client: string };
     }) {
         this.name = name;
         this.url = url;
@@ -55,12 +58,13 @@ export class BackendSystem {
         this.connectionType = connectionType;
         const sensitiveProps = getSensitiveDataProperties<BackendSystem>(this);
         this.hasSensitiveData = hasAnyValue(this, sensitiveProps);
+        this.systemInfo = systemInfo;
     }
 }
 
 export class BackendSystemKey implements EntityKey {
-    private url: string;
-    private client?: string;
+    private readonly url: string;
+    private readonly client?: string;
 
     public static from(system: BackendSystem): BackendSystemKey {
         return new BackendSystemKey({ url: system.url, client: system.client });

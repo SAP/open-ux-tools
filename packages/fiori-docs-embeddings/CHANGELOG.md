@@ -1,5 +1,35 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.11
+
+### Patch Changes
+
+- a686522: feat: add Fiori Tools commands and update total document count
+
+## 0.4.10
+
+### Patch Changes
+
+- c99758e: chore - Update embeddings docs from original sources for mcp server
+
+## 0.4.9
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
+## 0.4.8
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 0.4.7
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
 ## 0.4.6
 
 ### Patch Changes

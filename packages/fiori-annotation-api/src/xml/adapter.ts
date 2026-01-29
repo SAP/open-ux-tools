@@ -71,22 +71,27 @@ import { collectUsedNamespaces } from './references';
 import { collectComments } from './comments';
 import { getNodeFromPointer } from './pointer';
 import type { ValueListReference } from '../types/adapter';
+import { pathToFileURL } from 'url';
 
 /**
- *
+ * XML Annotation Service Adapter.
+ * Provides annotation editing capabilities for XML-based OData annotation files.
  */
 export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     public metadataService = new MetadataService();
     public splitAnnotationSupport = false;
     public fileCache: Map<string, string>;
 
-    private documents = new Map<string, Document>();
-    private externalServices = new Map<string, { annotations: AnnotationFile; metadata: MetadataElement[] }>();
+    private externalServices = new Map<
+        string,
+        { annotations: AnnotationFile; metadata: MetadataElement[]; localFilePath: string }
+    >();
 
     /**
      * Mapping from targets to value list references
      */
     private valueListReferences = new Map<string, ValueListReference[]>();
+    private readonly documents = new Map<string, Document>();
     private metadata: MetadataElement[] = [];
 
     private setFileCache(fileCache: Map<string, string>) {
@@ -95,6 +100,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
 
     private _compiledService: CompiledService | undefined;
     /**
+     * Gets the compiled XML service.
      *
      * @returns Compiled XML service.
      */
@@ -109,17 +115,18 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }
 
     /**
+     * Creates an instance of XMLAnnotationServiceAdapter.
      *
      * @param service - Service structure.
      * @param vocabularyService - Vocabulary API.
-     * @param project - Project structure.
+     * @param project - Project information.
      * @param appName - Name of the application.
      */
     constructor(
-        private service: LocalEDMXService,
-        private vocabularyService: VocabularyService,
-        private project: Project,
-        private appName: string
+        private readonly service: LocalEDMXService,
+        private readonly vocabularyService: VocabularyService,
+        private readonly project: Project,
+        private readonly appName: string
     ) {
         this.fileCache = new Map();
     }
@@ -172,7 +179,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
      * @param uri
      * @param data
      */
-    public syncExternalService(uri: string, data: string): void {
+    public syncExternalService(uri: string, data: string, localFilePath: string): void {
         const { ast: metadataDocument, comments: metadataComments } = parseWithoutCache(data, true);
         const metadataAnnotations = convertDocument(uri, metadataDocument);
         this.documents.set(uri, {
@@ -184,16 +191,11 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         });
 
         const metadata = convertMetadataDocument(uri, metadataDocument);
-        this.externalServices.set(uri, { annotations: metadataAnnotations, metadata });
+        this.externalServices.set(uri, { annotations: metadataAnnotations, metadata, localFilePath });
         // TODO: avoid call stack issues with larger metadata
         // TODO: this probably is not needed as we do not want to mix data from external
-        const combinedMetadata = [
-            ...this.metadata,
-            ...Array.from(this.externalServices.values())
-                .map(({ metadata }) => metadata)
-                .flat()
-        ];
-        this.metadataService.import(combinedMetadata, this.service.metadataFile.uri);
+
+        this.metadataService.importServiceMetadata(metadata, uri, uri);
     }
 
     /**
@@ -201,19 +203,22 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
      */
     public getExternalServices(): {
         uri: string;
-        metadata: MetadataService;
+        metadataService: MetadataService;
         compiledService: CompiledService;
+        localFileUri: string;
     }[] {
-        return Array.from(this.externalServices.entries()).map(([uri, { annotations, metadata }]) => {
+        return Array.from(this.externalServices.entries()).map(([uri, { annotations, metadata, localFilePath }]) => {
             // Assume same OData version as main service
-            const metadataService = new MetadataService({
-                ODataVersion: this.service.odataVersion,
-                isCds: false
-            });
-            metadataService.import(metadata, uri);
+            // const metadataService = new MetadataService({
+            //     ODataVersion: this.service.odataVersion,
+            //     isCds: false
+            // });
+            // metadataService.import(metadata, uri);
+
             return {
                 uri,
-                metadata: metadataService,
+                localFileUri: pathToFileURL(localFilePath).toString(),
+                metadataService: this.metadataService,
                 compiledService: {
                     odataVersion: this.service.odataVersion,
                     metadata,
@@ -221,6 +226,19 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 }
             };
         });
+    }
+
+    /**
+     * Get annotation documents.
+     *
+     * @returns Annotation documents.
+     */
+    public getDocuments(): Record<string, AnnotationFile> {
+        const annotationFiles: Record<string, AnnotationFile> = {};
+        for (const [uri, document] of this.documents.entries()) {
+            annotationFiles[uri] = document.annotationFile;
+        }
+        return annotationFiles;
     }
 
     /**
@@ -888,7 +906,7 @@ function convertPointerSegment(
         // convert attribute segment to index based one
         // we assume that keys in the object are added in the order they are in file,
         // which in general should be true
-        elementIndex = Object.keys(currentNode).findIndex((key) => key === segment);
+        elementIndex = Object.keys(currentNode).indexOf(segment);
     }
     const mappedSegment = elementIndex !== -1 ? elementIndex.toString() : segment;
     return { mappedSegment, nextNode };

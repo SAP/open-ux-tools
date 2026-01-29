@@ -98,7 +98,7 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
     }
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
-    return Object.assign({}, ui5, merged) as UI5;
+    return { ...ui5, ...merged } as UI5;
 }
 
 /**

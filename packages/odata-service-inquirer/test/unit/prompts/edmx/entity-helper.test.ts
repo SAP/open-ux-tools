@@ -4,7 +4,7 @@ import {
     getDefaultTableType
 } from '../../../../src/prompts/edmx/entity-helper';
 import { getRecursiveHierarchyQualifier } from '@sap-ux/inquirer-common';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import { OdataVersion } from '@sap-ux/odata-service-writer';

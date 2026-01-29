@@ -96,7 +96,7 @@ function openSystemPanel(
         panelKey,
         () =>
             new SystemPanel({
-                extensionPath: extContext.extensionPath,
+                extensionPath: extContext.vscodeExtContext.extensionPath,
                 systemPanelViewType: SystemPanelViewType.View,
                 backendSystem,
                 disposeCallback: () => panelManager.deleteAndDispose(panelKey),

@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec } from 'node:child_process';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import { rimraf } from 'rimraf';
@@ -34,7 +34,11 @@ import {
     loadCfConfig,
     validateUI5VersionExists
 } from '@sap-ux/adp-tooling';
-import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
+import {
+    type AbapServiceProvider,
+    AdaptationProjectType,
+    type LayeredRepositoryService
+} from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { isCli, isExtensionInstalled, sendTelemetry } from '@sap-ux/fiori-generator-shared';
@@ -46,6 +50,7 @@ import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { AdpGeneratorOptions } from '../src/app';
 import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
+import { KeyUserImportPrompter } from '../src/app/questions/key-user';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 import { TargetEnv, type JsonInput, type TargetEnvAnswers } from '../src/app/types';
 import { EventName } from '../src/telemetry';
@@ -438,8 +443,8 @@ describe('Adaptation Project Generator Integration Test', () => {
             jest.spyOn(ConfigPrompter.prototype, 'baseAppInbounds', 'get').mockReturnValue(inbounds);
             jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
 
-            const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockReturnValue();
-            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockReturnValue();
+            const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockResolvedValue();
+            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockResolvedValue();
 
             const runContext = yeomanTest
                 .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
@@ -548,6 +553,69 @@ describe('Adaptation Project Generator Integration Test', () => {
                 }),
                 projectFolder
             );
+        });
+
+        it('should generate adaptation project with key user changes', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+
+            const mockAdaptations = [{ id: 'DEFAULT', title: '', type: 'DEFAULT' }];
+            const mockKeyUserChange = {
+                content: {
+                    fileName: 'id_1767885281745_1726_renameLabel',
+                    changeType: 'renameLabel',
+                    reference: apps[0].id,
+                    layer: 'CUSTOMER',
+                    namespace: `apps/${apps[0].id}/changes/`,
+                    projectId: apps[0].id,
+                    fileType: 'annotation_change',
+                    content: {
+                        annotationPath: '/category_ID@com.vocabularies.Common.v1.Label'
+                    },
+                    selector: {
+                        serviceUrl: '/odata/test/service'
+                    }
+                },
+                texts: {
+                    annotationText: {
+                        value: 'Category ID',
+                        type: 'XFLD'
+                    }
+                }
+            };
+
+            jest.spyOn(KeyUserImportPrompter.prototype, 'changes', 'get').mockReturnValue([mockKeyUserChange]);
+
+            const keyUserAnswers = {
+                ...answers,
+                importKeyUserChanges: true,
+                keyUserSystem: 'urlA',
+                keyUserAdaptation: mockAdaptations[0]
+            };
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+                .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+                .withPrompts(keyUserAnswers);
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            const generatedDirs = fs.readdirSync(testOutputDir);
+            expect(generatedDirs).toContain(answers.projectName);
+            const projectFolder = join(testOutputDir, answers.projectName);
+
+            // Verify key user change file was written
+            const changesDir = join(projectFolder, 'webapp', 'changes');
+            expect(fs.existsSync(changesDir)).toBe(true);
+
+            const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.change'));
+            expect(changeFiles.length).toBeGreaterThan(0);
+
+            // Verify the change file content
+            const changeFilePath = join(changesDir, changeFiles[0]);
+            expect(fs.existsSync(changeFilePath)).toBe(true);
+
+            const changeContent = JSON.parse(fs.readFileSync(changeFilePath, 'utf8'));
+            expect(changeContent).toMatchSnapshot();
         });
 
         it('should create adaptation project from json correctly', async () => {

@@ -10,8 +10,7 @@ import { ChangeTableColumnsQuickAction } from './change-table-columns';
 import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import { AddCustomSectionQuickAction } from './op-add-custom-section';
 import { AddTableCustomColumnQuickAction } from './create-table-custom-column';
-import { AddPageActionQuickAction } from '../common/create-page-action';
-import { AddTableActionQuickAction } from './create-table-action';
+import { AddPageActionQuickAction } from './create-page-action';
 import { EnableTableFilteringQuickAction } from './lr-enable-table-filtering';
 import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
 import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode';
@@ -19,6 +18,7 @@ import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
 import { EnableVariantManagementQuickAction } from './enable-variant-management';
 import { AddNewSubpage } from '../fe-v4/add-new-subpage';
 import { ChangeTableActionsQuickAction } from '../fe-v4/change-table-actions';
+import { AddTableActionQuickAction } from './create-table-action-config-change';
 
 type PageName = 'listReport' | 'objectPage';
 

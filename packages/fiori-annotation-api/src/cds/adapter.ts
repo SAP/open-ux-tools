@@ -33,7 +33,7 @@ import type {
 
 import { MetadataService } from '@sap-ux/odata-entity-model';
 import type { Project } from '@sap-ux/project-access';
-import type { Record } from '@sap-ux/cds-annotation-parser';
+import type { Record as RecordNode } from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
     ANNOTATION_GROUP_TYPE,
@@ -132,8 +132,8 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
     public metadataService = new MetadataService();
     public splitAnnotationSupport = true;
     private fileCache: Map<string, string>;
-    private documents = new Map<string, Document>();
-    private metadata: MetadataElement[] = [];
+    private readonly documents = new Map<string, Document>();
+    private readonly metadata: MetadataElement[] = [];
     private missingReferences: { [uri: string]: Set<string> } = {};
     /**
      *
@@ -145,12 +145,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
      * @param ignoreChangedFileInitialContent Flag indicating if to be changed files can be treated as empty.
      */
     constructor(
-        private service: CDSService,
-        private project: Project,
-        private vocabularyService: VocabularyService,
-        private appName: string,
-        private writeSapAnnotations: boolean,
-        private ignoreChangedFileInitialContent: boolean
+        private readonly service: CDSService,
+        private readonly project: Project,
+        private readonly vocabularyService: VocabularyService,
+        private readonly appName: string,
+        private readonly writeSapAnnotations: boolean,
+        private readonly ignoreChangedFileInitialContent: boolean
     ) {
         this.fileCache = new Map();
         this._fileSequence = service.serviceFiles;
@@ -247,6 +247,18 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         this.metadataService = new MetadataService({ uriMap: facade?.getUriMap() || new Map() });
         this.metadataService.import(metadataElements, 'DummyMetadataFileUri');
         return new Map();
+    }
+    /**
+     * Get annotation documents.
+     *
+     * @returns Annotation documents.
+     */
+    public getDocuments(): Record<string, AnnotationFile> {
+        const annotationFiles: Record<string, AnnotationFile> = {};
+        for (const [uri, document] of this.documents.entries()) {
+            annotationFiles[uri] = document.annotationFile;
+        }
+        return annotationFiles;
     }
 
     /**
@@ -348,8 +360,9 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
      */
     getExternalServices(): {
         uri: string;
-        metadata: MetadataService;
+        metadataService: MetadataService;
         compiledService: CompiledService;
+        localFileUri: string;
     }[] {
         return [];
     }
@@ -750,7 +763,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
 
-    private insertRecord(writer: CDSWriter, change: InsertElement, pointer: string, record: Record): void {
+    private insertRecord(writer: CDSWriter, change: InsertElement, pointer: string, record: RecordNode): void {
         if (change.element.name === Edm.PropertyValue) {
             const index = adaptRecordPropertyIndex(record, change.index);
             const modifiedPointer = [...pointer.split('/'), 'properties'].join('/'); // pointer is record
@@ -1034,7 +1047,7 @@ function buildElement(node: Element): Element {
     return result;
 }
 
-function adaptRecordPropertyIndex(record: Record, currentIndex?: number): number | undefined {
+function adaptRecordPropertyIndex(record: RecordNode, currentIndex?: number): number | undefined {
     if (currentIndex === undefined) {
         return currentIndex;
     }

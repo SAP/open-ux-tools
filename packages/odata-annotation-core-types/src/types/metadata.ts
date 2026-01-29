@@ -176,6 +176,17 @@ export interface IMetadataService {
     import(rootNodes: MetadataElement[], fileUri: string): void;
 
     /**
+     * Import metadata without clearing existing metadata for other services.
+     *
+     * @param rootNodes Metadata elements.
+     * @param fileUri Metadata file URI.
+     * @param serviceId Service identifier.
+     *
+     * The metadata is cached and invalidated (on file change) based on file level
+     */
+    importServiceMetadata(rootNodes: MetadataElement[], fileUri: string, serviceId: string): void;
+
+    /**
      * Traverses all metadata elements and calls visitor function for each element.
      *
      * @param visitElement
@@ -219,4 +230,33 @@ export interface IMetadataService {
      * @returns Locations for the metadata element
      */
     getMetadataElementLocations(path: string): Location[];
+
+    /**
+     * Set the current service to be used.
+     *
+     * Note: This method sets the current service context for the MetadataService instance.
+     * Subsequent calls to methods that depend on the service context will operate
+     * on the metadata associated with the specified serviceId.
+     * Should be called before invoking such methods to ensure correct behavior.
+     * Recommended to use it in the following way:
+     * {
+     *   using mdService = metadataService.useService(serviceId);
+     *   // Specific service context starts here
+     *   mdService.getMetadataElement(...);
+     * }
+     * // Specific service context ends here
+     *
+     * In that case service context is reset to the main service after leaving the using block (dispose method is called automatically).
+     *
+     * @param serviceId - service identifier
+     * @returns The current instance of MetadataService with the updated service context.
+     */
+    useService(serviceId: string): IMetadataService;
+
+    /**
+     * Reset the current service context to the default main service.
+     *
+     * This method is typically called automatically when using the `useService` method within a using block.
+     */
+    [Symbol.dispose](): void;
 }

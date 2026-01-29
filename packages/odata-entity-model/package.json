@@ -1,7 +1,12 @@
 {
     "name": "@sap-ux/odata-entity-model",
-    "version": "0.3.3",
+    "version": "0.3.4",
     "description": "OData model representation without annotations",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/odata-entity-model"
+    },
     "main": "dist/index.js",
     "author": "SAP SE",
     "license": "Apache-2.0",

@@ -342,6 +342,14 @@ describe('Test findCapProjects()', () => {
         ].sort();
         expect(capProjects).toEqual(expectedProjects);
     });
+    test('Find CAP projects, noTraversal: true', async () => {
+        const capProjects = await findCapProjects({
+            wsFolders: [join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix/app')],
+            noTraversal: true
+        });
+
+        expect(capProjects).toEqual([]);
+    });
 });
 
 describe('Test findRootsForPath() with cache', () => {

@@ -1,5 +1,78 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.45
+
+### Patch Changes
+
+- be6ea11: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/ui5-config@0.29.13
+
+## 0.6.44
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/project-access@1.34.2
+
+## 0.6.43
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+
+## 0.6.42
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+
+## 0.6.41
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+
+## 0.6.40
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/project-access@1.33.1
+
+## 0.6.39
+
+### Patch Changes
+
+- d24f36d: refactor: update ESLint configuration to remove unnecessary `defineConfig` usage
+
+## 0.6.38
+
+### Patch Changes
+
+- dad2bd7: Write Eslint 9 flat config for new project. Replace eslint-plugin-fiori-custom with @sap-ux/eslint-plugin-fiori-tools
+
+## 0.6.37
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/project-access@1.33.0
+    - @sap-ux/ui5-config@0.29.12
+
+## 0.6.36
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/project-access@1.32.17
+    - @sap-ux/ui5-config@0.29.12
+
 ## 0.6.35
 
 ### Patch Changes

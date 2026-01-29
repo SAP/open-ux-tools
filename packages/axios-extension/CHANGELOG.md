@@ -1,5 +1,52 @@
 # @sap-ux/axios-extension
 
+## 1.25.7
+
+### Patch Changes
+
+- 0492325: feat(generator-adp): Developer taking over Key-User changes
+
+## 1.25.6
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
+## 1.25.5
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+
+## 1.25.4
+
+### Patch Changes
+
+- 4e0f204: update dependency qs to v6.14.1 [security]
+
+## 1.25.3
+
+### Patch Changes
+
+- 14a1bc2: Refactor generateServiceConfig to use Object.assign
+
+## 1.25.2
+
+### Patch Changes
+
+- Updated dependencies [c7f9a60]
+    - @sap-ux/logger@0.8.0
+    - @sap-ux/btp-utils@1.1.6
+
+## 1.25.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/logger@0.7.3
+    - @sap-ux/btp-utils@1.1.6
+
 ## 1.25.0
 
 ### Minor Changes

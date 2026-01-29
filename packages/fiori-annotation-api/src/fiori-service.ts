@@ -6,7 +6,7 @@ import { create as createEditor } from 'mem-fs-editor';
 
 import type { RawMetadata } from '@sap-ux/vocabularies-types';
 import type { Project } from '@sap-ux/project-access';
-import { VocabularyService } from '@sap-ux/odata-vocabularies';
+import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type {
     AliasInformation,
     CompilerMessage,
@@ -22,8 +22,8 @@ import type { MetadataService } from '@sap-ux/odata-entity-model';
 import type { AnnotationListWithOrigins } from './avt';
 import { convertMetadataToAvtSchema, convertAnnotationFile, convertTargetAnnotationsToInternal } from './avt';
 
-import { XMLAnnotationServiceAdapter, getLocalEDMXService } from './xml';
-import { getCDSService, CDSAnnotationServiceAdapter } from './cds';
+import { XMLAnnotationServiceAdapter, getLocalEDMXService, XML_VOCABULARY_SERVICE } from './xml';
+import { getCDSService, CDSAnnotationServiceAdapter, CDS_VOCABULARY_SERVICE } from './cds';
 import { addAllVocabulariesToAliasInformation } from './vocabularies';
 
 import type {
@@ -41,7 +41,7 @@ import { ChangeConverter } from './change-converter';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { logger } from './logger';
-import { ValueListReference } from './types/adapter';
+import { type ValueListReference } from './types/adapter';
 
 export interface FioriAnnotationServiceConstructor<T> {
     new (
@@ -125,7 +125,7 @@ export class FioriAnnotationService {
         protected changeConverter: ChangeConverter,
         protected fs: Editor,
         protected options: FioriAnnotationServiceOptions,
-        private project: Project,
+        private readonly project: Project,
         protected serviceName: string,
         appName: string
     ) {
@@ -155,9 +155,10 @@ export class FioriAnnotationService {
         fs?: Editor,
         options: Partial<FioriAnnotationServiceOptions> = {}
     ): Promise<T> {
-        const vocabularyAPI = new VocabularyService(
+        const vocabularyAPI =
             project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs'
-        );
+                ? CDS_VOCABULARY_SERVICE
+                : XML_VOCABULARY_SERVICE;
         const finalOptions = getOptionsWithDefaults(options);
         const service = await getService(project, serviceName, appName, fs, finalOptions.clearFileResolutionCache);
         const adapter = createAdapter(
@@ -258,15 +259,15 @@ export class FioriAnnotationService {
     /**
      * Refreshes file content from the file system.
      */
-    public syncExternalServices(files: Map<string, string>): void {
+    public syncExternalServices(files: Map<string, { data: string; localFilePath: string }>): void {
         for (const [, value] of this.adapter.getValueListReferences().entries()) {
             for (const entry of value) {
                 for (const uri of entry.uris) {
                     // TODO: make this parallel
                     const resource = files.get(uri);
-                    if (resource) {
+                    if (resource?.data) {
                         // TODO: check uri
-                        this.adapter.syncExternalService(uri, resource);
+                        this.adapter.syncExternalService(uri, resource.data, resource.localFilePath);
                     }
                 }
             }
@@ -313,12 +314,13 @@ export class FioriAnnotationService {
      *
      * @returns Service metadata in AVT format.
      */
-    public getExternalServiceSchema(): RawMetadata[] {
-        return this.adapter.getExternalServices().map(({ compiledService, metadata }) => {
+    public getExternalServiceSchema(): (RawMetadata & { localFileUri: string })[] {
+        return this.adapter.getExternalServices().map(({ compiledService, metadataService, uri, localFilePath }) => {
+            using ms = metadataService.useService(uri);
             const rawMetadata: RawMetadata = {
-                version: metadata.ODataVersion,
+                version: metadataService.ODataVersion,
                 identification: 'metadataFile',
-                schema: convertMetadataToAvtSchema(metadata),
+                schema: convertMetadataToAvtSchema(ms),
                 references: []
             };
 
@@ -331,7 +333,7 @@ export class FioriAnnotationService {
                 },
                 this.adapter.splitAnnotationSupport
             );
-            return rawMetadata;
+            return { ...rawMetadata, localFileUri: localFilePath };
         });
     }
 

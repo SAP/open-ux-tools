@@ -92,9 +92,6 @@ describe('prompting.ts', () => {
                   "addFlpConfig": {
                     "validatorCallback": [Function],
                   },
-                  "enableCodeAssist": {
-                    "hide": true,
-                  },
                   "enableEslint": {
                     "advancedOption": true,
                     "default": false,
@@ -471,7 +468,6 @@ describe('prompting.ts', () => {
                 {
                     addDeployConfig: { validatorCallback: expect.toBeFunction() },
                     addFlpConfig: { validatorCallback: expect.toBeFunction() },
-                    enableCodeAssist: { hide: true },
                     enableEslint: { advancedOption: true, default: false },
                     enableTypeScript: { default: false },
                     enableVirtualEndpoints: { hide: false },
@@ -580,7 +576,8 @@ describe('prompting.ts', () => {
                 expect.objectContaining({
                     [odataServiceInqPromptNames.capProject]: {
                         capSearchPaths: [],
-                        defaultChoice: undefined
+                        defaultChoice: undefined,
+                        useAutoComplete: false
                     },
                     [odataServiceInqPromptNames.capService]: { defaultChoice: undefined },
                     [odataServiceInqPromptNames.datasourceType]: {
@@ -680,7 +677,8 @@ describe('prompting.ts', () => {
                 expect.objectContaining({
                     [odataServiceInqPromptNames.capProject]: {
                         capSearchPaths: ['/some/workspace/folder'],
-                        defaultChoice: '/some/cap/project/path'
+                        defaultChoice: '/some/cap/project/path',
+                        useAutoComplete: true
                     },
                     [odataServiceInqPromptNames.capService]: {
                         defaultChoice: {

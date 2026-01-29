@@ -12,7 +12,8 @@ import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-pr
 import os from 'node:os';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { PathLike } from 'node:fs';
-import * as fsPromises from 'fs/promises';
+import * as fsPromises from 'node:fs/promises';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 const initMockCapModelAndServices = {
     model: {},
@@ -76,6 +77,11 @@ jest.mock('fs/promises', () => ({
     ...jest.requireActual('fs/promises')
 }));
 
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
+
 describe('cap-helper', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
@@ -86,6 +92,7 @@ describe('cap-helper', () => {
         // Ensure each test is isolated, reset mocked function return values to initial states
         mockEdmx = initialMockEdmx;
         currentMockCapModelAndServices = initMockCapModelAndServices;
+        jest.clearAllMocks();
     });
 
     test('getCapProjectChoices', async () => {
@@ -148,6 +155,33 @@ describe('cap-helper', () => {
             ]
         `);
         expect(findCapProjectsSpy).toHaveBeenCalledWith({ 'wsFolders': ['/test/mock/'] });
+    });
+    test('getCapProjectChoices: Searches parent directories in CLI when no projects found', async () => {
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects');
+
+        // First call returns empty, second call returns project from parent
+        findCapProjectsSpy.mockResolvedValueOnce([]).mockResolvedValueOnce(['/parent/cap-project']);
+
+        const choices = await getCapProjectChoices(['/parent/cap-project/app/my-app']);
+
+        // Verify parent search was called with noTraversal flag
+        expect(findCapProjectsSpy).toHaveBeenCalledTimes(2);
+        expect(findCapProjectsSpy).toHaveBeenNthCalledWith(2, {
+            wsFolders: expect.any(Array),
+            noTraversal: true
+        });
+        expect(choices.length).toBeGreaterThan(1);
+    });
+
+    test('getCapProjectChoices: Does not search parent directories in YUI environment', async () => {
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects').mockResolvedValueOnce([]);
+
+        await getCapProjectChoices(['/some/path']);
+
+        // Should only be called once (no parent search)
+        expect(findCapProjectsSpy).toHaveBeenCalledTimes(1);
     });
 
     if (os.platform() === 'win32') {

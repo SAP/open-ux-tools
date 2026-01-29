@@ -1,8 +1,9 @@
 import type {
-    AnnotationFile,
-    CompilerMessage,
     Element,
     Location,
+    AliasInformation,
+    AnnotationFile,
+    CompilerMessage,
     Target,
     WorkspaceEdit
 } from '@sap-ux/odata-annotation-core-types';
@@ -44,12 +45,17 @@ export interface AnnotationServiceAdapter {
      * @param uri
      * @param data
      */
-    syncExternalService(uri: string, data: string): void;
+    syncExternalService(uri: string, data: string, localFilePath: string): void;
     getExternalServices(): {
         uri: string;
-        metadata: MetadataService;
+        metadataService: MetadataService;
         compiledService: CompiledService;
+        localFileUri: string;
     }[];
+    /**
+     *
+     */
+    getDocuments(): Record<string, AnnotationFile>;
     /**
      *
      */
@@ -77,4 +83,12 @@ export interface AnnotationServiceAdapter {
 
 export interface AnnotationServiceConstructor<T extends Service> {
     new (service: T): AnnotationServiceAdapter;
+}
+
+export interface ServiceArtifacts {
+    path: string;
+    metadataService: MetadataService;
+    aliasInfo: Record<string, AliasInformation>;
+    annotationFiles: Record<string, AnnotationFile>;
+    fileSequence: string[];
 }

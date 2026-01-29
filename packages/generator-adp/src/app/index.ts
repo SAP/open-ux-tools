@@ -28,12 +28,12 @@ import {
     isCli,
     isExtensionInstalled,
     sendTelemetry,
+    setYeomanEnvConflicterForce,
     TelemetryHelper
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
@@ -50,7 +50,8 @@ import {
     getWizardPages,
     updateCfWizardSteps,
     updateFlpWizardSteps,
-    updateWizardSteps
+    updateWizardSteps,
+    getKeyUserImportPage
 } from '../utils/steps';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getTemplatesOverwritePath } from '../utils/templates';
@@ -70,6 +71,7 @@ import {
 } from './types';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
 import type { AdpTelemetryData } from '../types';
+import { KeyUserImportPrompter } from './questions/key-user';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -186,6 +188,10 @@ export default class extends Generator {
      * Telemetry collector instance.
      */
     private telemetryCollector: TelemetryCollector;
+    /**
+     * Key-user import prompter instance.
+     */
+    private keyUserPrompter?: KeyUserImportPrompter;
 
     /**
      * Creates an instance of the generator.
@@ -228,9 +234,7 @@ export default class extends Generator {
 
     async initializing(): Promise<void> {
         // Force the generator to overwrite existing files without additional prompting
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
 
         await initI18n();
         this.isCli = isCli();
@@ -300,7 +304,8 @@ export default class extends Generator {
                     hasBaseAppInbounds: !!this.prompter.baseAppInbounds,
                     hide: this.shouldCreateExtProject
                 },
-                addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase }
+                addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase },
+                importKeyUserChanges: { hide: this.shouldCreateExtProject }
             };
             const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
             this.attributeAnswers = await this.prompt(attributesQuestions);
@@ -308,10 +313,24 @@ export default class extends Generator {
             // Steps need to be updated here to be available after back navigation in Yeoman UI.
             this._updateWizardStepsAfterNavigation();
 
+            if (this.attributeAnswers.importKeyUserChanges) {
+                this.keyUserPrompter = new KeyUserImportPrompter(
+                    this.systemLookup,
+                    this.configAnswers.application.id,
+                    this.prompter.provider,
+                    this.configAnswers.system,
+                    this.logger
+                );
+                const keyUserQuestions = this.keyUserPrompter.getPrompts({
+                    keyUserSystem: { default: this.configAnswers.system }
+                });
+                await this.prompt(keyUserQuestions);
+            }
+
             this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
             if (this.attributeAnswers.addDeployConfig) {
                 const system = await this.systemLookup.getSystemByName(this.configAnswers.system);
-                addDeployGen(
+                await addDeployGen(
                     {
                         projectName: this.attributeAnswers.projectName,
                         projectPath: this.attributeAnswers.targetFolder,
@@ -325,7 +344,7 @@ export default class extends Generator {
             }
 
             if (this.attributeAnswers?.addFlpConfig) {
-                addFlpGen(
+                await addFlpGen(
                     {
                         vscode: this.vscode,
                         projectRootPath: this._getProjectPath(),
@@ -384,7 +403,8 @@ export default class extends Generator {
                 layer: this.layer,
                 packageJson,
                 logger: this.toolsLogger,
-                toolsId: this.toolsId
+                toolsId: this.toolsId,
+                keyUserChanges: this.keyUserPrompter?.changes
             });
 
             if (config.options) {
@@ -539,7 +559,8 @@ export default class extends Generator {
             ui5ValidationCli: { hide: true },
             enableTypeScript: { hide: true },
             addFlpConfig: { hide: true },
-            addDeployConfig: { hide: true }
+            addDeployConfig: { hide: true },
+            importKeyUserChanges: { hide: true }
         };
 
         const projectPath = this.destinationPath();
@@ -732,6 +753,13 @@ export default class extends Generator {
                 this.attributeAnswers.addDeployConfig
             );
         }
+
+        updateWizardSteps(
+            this.prompts,
+            getKeyUserImportPage(),
+            t('yuiNavSteps.projectAttributesName'),
+            !!this.attributeAnswers.importKeyUserChanges
+        );
 
         if (!flpPagesExist) {
             updateFlpWizardSteps(

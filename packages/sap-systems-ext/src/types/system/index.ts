@@ -1,8 +1,14 @@
 import type { ExtensionContext } from 'vscode';
 import type { PanelManager, SystemPanel } from '../../panel';
+import type { SapSystemsProvider } from '../../providers';
+
+export interface SapSystemsExtContext {
+    vscodeExtContext: ExtensionContext;
+    systemsTreeDataProvider?: SapSystemsProvider;
+}
 
 export interface SystemCommandContext {
-    extContext: ExtensionContext;
+    extContext: SapSystemsExtContext;
     panelManager: PanelManager<SystemPanel>;
 }
 
