@@ -1,5 +1,5 @@
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
-import { FlexLayer, SystemLookup, getConfiguredProvider } from '@sap-ux/adp-tooling';
+import { SystemLookup, getConfiguredProvider } from '@sap-ux/adp-tooling';
 import { loadApps } from '@sap-ux/adp-tooling/src/source/applications';
 import { ToolsLogger } from '@sap-ux/logger';
 import { logger } from '../../../utils';
@@ -13,9 +13,7 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
  * @returns Applications list execution output.
  */
 export default async function (params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
-    const internal = isInternalFeaturesSettingEnabled();
-    const layer = internal ? FlexLayer.VENDOR : FlexLayer.CUSTOMER_BASE;
-    const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+    const isInternalUsage = isInternalFeaturesSettingEnabled();
     const { system } = params.parameters as {
         system: string;
     };
@@ -58,7 +56,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
             toolsLogger
         );
 
-        const applications = await loadApps(provider, isCustomerBase);
+        const applications = await loadApps(provider, !isInternalUsage);
         const applicationsList = applications.map((app) => ({
             id: app.id,
             title: app.title,

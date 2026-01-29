@@ -18,10 +18,6 @@ export default {
             system: {
                 type: 'string',
                 description: 'The name of the SAP system (obtained from list-adp-systems)'
-            },
-            isCustomerBase: {
-                type: 'boolean',
-                description: 'Optional: Whether to search for customer base applications. Defaults to false (VENDOR layer).'
             }
         },
         required: ['system']
