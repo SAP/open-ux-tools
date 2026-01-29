@@ -199,7 +199,7 @@ importers:
         version: link:../../packages/system-access
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+        version: 5.10.0
     devDependencies:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
@@ -487,8 +487,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -861,8 +861,8 @@ importers:
         specifier: 7.0.5
         version: 7.0.5
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       open:
         specifier: 7.0.3
         version: 7.0.3
@@ -1554,7 +1554,7 @@ importers:
         version: 25.8.0(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+        version: 5.10.0
     devDependencies:
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -1854,8 +1854,8 @@ importers:
         specifier: 16.5.0
         version: 16.5.0
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       requireindex:
         specifier: ^1.2.0
         version: 1.2.0
@@ -2106,8 +2106,8 @@ importers:
         specifier: 8.2.7
         version: 8.2.7(@types/node@18.19.130)
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -2254,8 +2254,8 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -2327,8 +2327,8 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -2583,8 +2583,8 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
@@ -2669,8 +2669,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -2868,8 +2868,8 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       os-name:
         specifier: 4.0.1
         version: 4.0.1
@@ -2998,8 +2998,8 @@ importers:
         specifier: 4.1.2
         version: 4.1.2
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       winston:
         specifier: 3.11.0
         version: 3.11.0
@@ -3278,8 +3278,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
 
   packages/odata-vocabularies:
     dependencies:
@@ -3705,8 +3705,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7)
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -4443,8 +4443,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7)
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -4486,8 +4486,8 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -4541,8 +4541,8 @@ importers:
         specifier: 4.1.1
         version: 4.1.1
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -4806,8 +4806,8 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -4975,8 +4975,8 @@ importers:
   packages/yaml:
     dependencies:
       lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+        specifier: 4.17.23
+        version: 4.17.23
       yaml:
         specifier: 2.2.2
         version: 2.2.2
@@ -5106,7 +5106,7 @@ packages:
       crypto-js: 4.2.0
       dotenv: 16.6.1
       env-paths: 3.0.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       lru-cache: 11.2.2
       proxy-agent: 6.5.0
       uuid: 10.0.0
@@ -11757,7 +11757,7 @@ packages:
     resolution: {integrity: sha512-TfRP53RqunNe2HBobVBJ0VLhK1HbfvBYeTC1ahnN64PWvyYyGebmMiPkuwvD9fpw2ZbkoPb8Q7mwy0aR8Z9rvw==}
     engines: {node: '>=v12.0.0'}
     dependencies:
-      lodash: 4.17.21
+      lodash: 4.17.23
     dev: true
 
   /@kwsites/file-exists@1.1.1:
@@ -15018,7 +15018,7 @@ packages:
   /@storybook/csf@0.0.1:
     resolution: {integrity: sha512-USTLkZze5gkel8MYCujSRBVIrUQ3YPBrLOx7GNk/0wttvVtlzWXAq9eLbQ4p/NicGxP+3T7KPEMVV//g+yubpw==}
     dependencies:
-      lodash: 4.17.21
+      lodash: 4.17.23
     dev: true
 
   /@storybook/csf@0.1.11:
@@ -15043,7 +15043,7 @@ packages:
       '@storybook/theming': 7.6.20(react-dom@16.14.0)(react@16.14.0)
       '@storybook/types': 7.6.20
       dequal: 2.0.3
-      lodash: 4.17.21
+      lodash: 4.17.23
       memoizerific: 1.11.3
       store2: 2.14.4
       telejson: 7.2.0
@@ -15109,7 +15109,7 @@ packages:
       '@storybook/types': 7.6.20
       '@types/qs': 6.9.7
       dequal: 2.0.3
-      lodash: 4.17.21
+      lodash: 4.17.23
       memoizerific: 1.11.3
       qs: 6.14.1
       synchronous-promise: 2.0.17
@@ -15353,7 +15353,7 @@ packages:
       chalk: 3.0.0
       css.escape: 1.5.1
       dom-accessibility-api: 0.5.14
-      lodash: 4.17.21
+      lodash: 4.17.23
       redent: 3.0.0
     dev: true
 
@@ -15407,7 +15407,7 @@ packages:
       chalk: 4.1.2
       debug: 4.4.3
       js-yaml: 3.14.2
-      lodash: 4.17.21
+      lodash: 4.17.23
       pluralize: 2.0.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
@@ -16627,6 +16627,7 @@ packages:
   /@typespec/ts-http-runtime@0.3.1:
     resolution: {integrity: sha512-SnbaqayTVFEA6/tYumdF0UmybY0KHyKwGPBXnyckFlrrKdhWFrL3a2HIPXHjht5ZOElKGcXfD2D63P36btb+ww==}
     engines: {node: '>=20.0.0'}
+    requiresBuild: true
     dependencies:
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.5
@@ -17716,7 +17717,7 @@ packages:
       graceful-fs: 4.2.11
       is-stream: 2.0.1
       lazystream: 1.0.1
-      lodash: 4.17.21
+      lodash: 4.17.23
       normalize-path: 3.0.0
       readable-stream: 4.7.0
     dev: false
@@ -17999,7 +18000,7 @@ packages:
   /async@2.6.4:
     resolution: {integrity: sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA==}
     dependencies:
-      lodash: 4.17.21
+      lodash: 4.17.23
 
   /async@3.2.3:
     resolution: {integrity: sha512-spZRyzKL5l5BZQrr/6m/SqFdBN0q3OCI0f9rjfBzCMBIP4p75P620rR3gTmaksNOhmzgdxcaxdNfMy6anrbM0g==}
@@ -18906,7 +18907,7 @@ packages:
     resolution: {integrity: sha512-prMTQVpcns/tzFgFVkVp6ak6RykZyWb3gu8ckUpd6YkTlacOd3DXGJjIpD4Q6zJirizvaiAjSSHlOsA+6sNh2A==}
     engines: {node: '>= 10'}
     dependencies:
-      lodash: 4.17.21
+      lodash: 4.17.23
     dev: true
 
   /chainsaw@0.1.0:
@@ -23135,7 +23136,7 @@ packages:
     dependencies:
       '@types/html-minifier-terser': 6.1.0
       html-minifier-terser: 6.1.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       pretty-error: 4.0.0
       tapable: 2.2.1
       webpack: 5.96.1(esbuild@0.25.11)
@@ -25564,6 +25565,9 @@ packages:
 
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+
+  /lodash@4.17.23:
+    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
 
   /log-symbols@4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
@@ -28380,7 +28384,7 @@ packages:
   /pretty-error@4.0.0:
     resolution: {integrity: sha512-AoJ5YMAcXKYxKhuJGdcvse+Voc6v1RgnsR3nWcYU7q4t6z0Q6T86sv5Zq8VIRbOWWFpvdGE83LtdSMNd+6Y0xw==}
     dependencies:
-      lodash: 4.17.21
+      lodash: 4.17.23
       renderkid: 3.0.0
     dev: true
 
@@ -29530,7 +29534,7 @@ packages:
   /redux@3.7.2:
     resolution: {integrity: sha512-pNqnf9q1hI5HHZRBkj3bAngGZW/JMCmexDlOxw4XagXY2o1327nHH54LoTjiPJ0gizoqPDRqWyX/00g0hD6w+A==}
     dependencies:
-      lodash: 4.17.21
+      lodash: 4.17.23
       lodash-es: 4.17.21
       loose-envify: 1.4.0
       symbol-observable: 1.2.0
@@ -29701,7 +29705,7 @@ packages:
       css-select: 4.3.0
       dom-converter: 0.2.0
       htmlparser2: 6.1.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       strip-ansi: 6.0.1
     dev: true
 
@@ -29754,7 +29758,7 @@ packages:
   /requizzle@0.2.4:
     resolution: {integrity: sha512-JRrFk1D4OQ4SqovXOgdav+K8EAhSB/LJZqCz8tbX0KObcdeM15Ss59ozWMBWmmINMagCwmqn4ZNryUGpBsl6Jw==}
     dependencies:
-      lodash: 4.17.21
+      lodash: 4.17.23
     dev: true
 
   /reselect@4.1.8:
@@ -32958,7 +32962,7 @@ packages:
     dependencies:
       axios: 1.12.2(debug@4.4.3)
       joi: 17.11.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       minimist: 1.2.8
       rxjs: 7.8.2
     transitivePeerDependencies:
@@ -32971,7 +32975,7 @@ packages:
     dependencies:
       axios: 1.12.2(debug@4.4.3)
       joi: 17.13.3
-      lodash: 4.17.21
+      lodash: 4.17.23
       minimist: 1.2.8
       rxjs: 7.8.2
     transitivePeerDependencies:
@@ -33717,7 +33721,7 @@ packages:
       inquirer: 8.2.7(@types/node@18.19.130)
       is-scoped: 2.1.0
       isbinaryfile: 4.0.10
-      lodash: 4.17.21
+      lodash: 4.17.23
       log-symbols: 4.1.0
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
@@ -33740,7 +33744,7 @@ packages:
       - bluebird
       - supports-color
 
-  /yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3):
+  /yeoman-generator@5.10.0:
     resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
     engines: {node: '>=12.10.0'}
     peerDependencies:
@@ -33755,6 +33759,37 @@ packages:
       execa: 5.1.1
       github-username: 6.0.0
       lodash: 4.17.21
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+      minimist: 1.2.8
+      pacote: 15.2.0
+      read-pkg-up: 7.0.1
+      run-async: 2.4.1
+      semver: 7.6.3
+      shelljs: 0.8.5
+      sort-keys: 4.2.0
+      text-table: 0.2.0
+    transitivePeerDependencies:
+      - bluebird
+      - encoding
+      - mem-fs
+      - supports-color
+    dev: false
+
+  /yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3):
+    resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
+    engines: {node: '>=12.10.0'}
+    peerDependencies:
+      yeoman-environment: ^3.2.0
+    peerDependenciesMeta:
+      yeoman-environment:
+        optional: true
+    dependencies:
+      chalk: 4.1.2
+      dargs: 7.0.0
+      debug: 4.3.7
+      execa: 5.1.1
+      github-username: 6.0.0
+      lodash: 4.17.23
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
       minimist: 1.2.8
       pacote: 15.2.0

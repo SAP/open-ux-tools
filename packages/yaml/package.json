@@ -30,7 +30,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "lodash": "4.17.21",
+        "lodash": "4.17.23",
         "yaml": "2.2.2"
     },
     "devDependencies": {
