@@ -53,17 +53,66 @@ describe('add/cards-generator', () => {
         expect(traceSpy).not.toHaveBeenCalled();
     });
 
-    test('add cards-generator CAP', async () => {
+    test('add cards-generator CAP with --app option', async () => {
         jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+        // Test execution
+        const command = new Command('add');
+        addCardsEditorConfigCommand(command);
+        await command.parseAsync(testArgv(['--app', 'app/travel']));
+
+        // Flow check - CAP projects with --app option should use the specified app path
+        expect(enableCardGeneratorConfigMock).toHaveBeenCalledWith(
+            expect.stringContaining('app/travel'),
+            expect.any(String),
+            expect.anything()
+        );
+        expect(traceSpy).not.toHaveBeenCalled();
+    });
+
+    test('add cards-generator CAP auto-detect app', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+        jest.spyOn(projectAccess, 'findFioriArtifacts').mockImplementation(() =>
+            Promise.resolve({
+                applications: [
+                    {
+                        appRoot: join(appRoot, 'app/travel'),
+                        projectRoot: appRoot,
+                        manifestPath: join(appRoot, 'app/travel/webapp/manifest.json'),
+                        manifest: { 'sap.app': { id: 'test.app' } } as any
+                    }
+                ]
+            })
+        );
+
         // Test execution
         const command = new Command('add');
         addCardsEditorConfigCommand(command);
         await command.parseAsync(testArgv([]));
 
-        // Flow check - CAP projects are now supported
-
-        expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
+        // Flow check - CAP projects should auto-detect the app
+        expect(enableCardGeneratorConfigMock).toHaveBeenCalledWith(
+            expect.stringContaining('app/travel'),
+            expect.any(String),
+            expect.anything()
+        );
         expect(traceSpy).not.toHaveBeenCalled();
+    });
+
+    test('add cards-generator CAP no apps found', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+        jest.spyOn(projectAccess, 'findFioriArtifacts').mockImplementation(() =>
+            Promise.resolve({
+                applications: []
+            })
+        );
+
+        // Test execution
+        const command = new Command('add');
+        addCardsEditorConfigCommand(command);
+        await command.parseAsync(testArgv([]));
+
+        // Flow check - CAP projects with no apps should not call enableCardGeneratorConfig
+        expect(enableCardGeneratorConfigMock).not.toHaveBeenCalled();
     });
 
     test('add cards-generator --simulate', async () => {
