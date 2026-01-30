@@ -39,7 +39,6 @@ const defaultAnswers = {
  * @returns Prompt with questions for form.
  */
 export async function getFormBuildingBlockPrompts(context: PromptContext): Promise<Prompts<FormPromptsAnswer>> {
-    console.log('[getFormBuildingBlockPrompts] Called with context:', context);
     const { project } = context;
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.form.');
     const groups: PromptsGroup[] = [
@@ -50,7 +49,6 @@ export async function getFormBuildingBlockPrompts(context: PromptContext): Promi
         },
         MANIFEST_LIBRARIES_GROUP
     ];
-    console.log('[getFormBuildingBlockPrompts] Groups created:', groups.length);
 
     const questionsArray = [
         getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
@@ -138,10 +136,7 @@ export async function getFormBuildingBlockPrompts(context: PromptContext): Promi
         }
     ];
 
-    console.log('[getFormBuildingBlockPrompts] Questions array created, length:', questionsArray.length);
-    console.log('[getFormBuildingBlockPrompts] Question names:', questionsArray.map((q) => q.name).join(', '));
-
-    const result = {
+    return {
         groups,
         questions: questionsArray,
         initialAnswers: {
@@ -150,7 +145,4 @@ export async function getFormBuildingBlockPrompts(context: PromptContext): Promi
             }
         }
     } as Prompts<FormPromptsAnswer>;
-
-    console.log('[getFormBuildingBlockPrompts] Returning result with questions:', result.questions.length);
-    return result;
 }
