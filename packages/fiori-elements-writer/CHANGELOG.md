@@ -1,5 +1,21 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.52
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/odata-service-writer@0.29.11
+    - @sap-ux/ui5-application-writer@1.7.5
+    - @sap-ux/ui5-config@0.29.14
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/cap-config-writer@0.12.51
+    - @sap-ux/fe-fpm-writer@0.41.5
+    - @sap-ux/ui5-test-writer@0.7.58
+    - @sap-ux/annotation-generator@0.4.13
+
 ## 2.8.51
 
 ### Patch Changes
