@@ -50,13 +50,7 @@ jest.mock('@sap-ux/store', () => ({
     getService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue(backendSystems),
         read: jest.fn().mockImplementation((key) => {
-            // Mock read to return systems with credentials - match by getId() for proper key comparison
-            const keyId = key.getId();
-            const system = backendSystems.find((s) => {
-                const systemUrl = s.url.trim().replace(/\/$/, '');
-                const systemId = systemUrl + (s.client ? '/' + s.client : '');
-                return systemId === keyId;
-            });
+            const system = backendSystems.find((s) => s.url === key.url);
             return Promise.resolve(system);
         }),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
