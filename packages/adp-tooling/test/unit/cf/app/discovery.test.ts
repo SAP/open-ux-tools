@@ -1,6 +1,7 @@
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
 
 import { initI18n, t } from '../../../../src/i18n';
 import { getFDCApps } from '../../../../src/cf/services/api';
@@ -454,7 +455,10 @@ describe('CF App Discovery', () => {
                 ]
             };
 
-            mockExistsSync.mockImplementation((path: any) => path.includes('.adp/reuse'));
+            mockExistsSync.mockImplementation((path: any) => {
+                const pathStr = String(path);
+                return pathStr.includes(join('.adp', 'reuse'));
+            });
             mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
 
             const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
@@ -483,7 +487,10 @@ describe('CF App Discovery', () => {
                 routes: [{ source: '/sap/opu/odata', destination: 'backend-dest' }]
             };
 
-            mockExistsSync.mockImplementation((path: any) => !path.includes('.adp/reuse'));
+            mockExistsSync.mockImplementation((path: any) => {
+                const pathStr = String(path);
+                return !pathStr.includes(join('.adp', 'reuse'));
+            });
             mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
 
             const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
