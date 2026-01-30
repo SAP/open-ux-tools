@@ -156,7 +156,11 @@ export function getPropertyPath(table: UI5Element, property: 'actions' | 'column
  */
 function getLineItemAnnotationForTable(macroTable: UI5Element): string | undefined {
     let lineItemAnnotation: string | undefined = '';
-    if (macroTable && isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable)) {
+    if (
+        macroTable &&
+        (isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable) ||
+            isA<MacroTable>('sap.fe.macros.Table', macroTable))
+    ) {
         const presentation = macroTable.getModel()?.getMetaModel()?.getObject(macroTable.metaPath);
 
         // default line item annotation
@@ -168,7 +172,9 @@ function getLineItemAnnotationForTable(macroTable: UI5Element): string | undefin
             if (presentation.PresentationVariant.Visualizations) {
                 lineItemAnnotation = presentation.PresentationVariant.Visualizations[0].$AnnotationPath;
             } else {
-                const contextPath = macroTable.metaPath.startsWith('/') ? macroTable.metaPath.split('@')[0] : macroTable.contextPath;
+                const contextPath = macroTable.metaPath.startsWith('/')
+                    ? macroTable.metaPath.split('@')[0]
+                    : macroTable.contextPath;
                 const pathForLineItems = contextPath + presentation.PresentationVariant.$Path;
                 const presentationVariantType = macroTable.getModel()?.getMetaModel()?.getObject(pathForLineItems);
                 lineItemAnnotation = presentationVariantType.Visualizations[0].$AnnotationPath;
