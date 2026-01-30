@@ -69,6 +69,8 @@ export interface TableSettings {
     tableType: string;
     widthIncludingColumnHeader: boolean;
     disableCopyToClipboard: boolean;
+    enableExport: boolean;
+    enablePaste: boolean;
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
@@ -128,6 +130,30 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                     configurationKey,
                     'tableSettings',
                     'disableCopyToClipboard'
+                ],
+                values: [true, false]
+            },
+            enableExport: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'enableExport'
+                ],
+                values: [true, false]
+            },
+            enablePaste: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'enablePaste'
                 ],
                 values: [true, false]
             },
@@ -246,6 +272,8 @@ interface TableConfiguration {
         type?: string;
         widthIncludingColumnHeader?: boolean;
         disableCopyToClipboard?: boolean;
+        enableExport?: boolean;
+        enablePaste?: boolean;
         creationMode?: {
             name?: string;
         };
@@ -329,8 +357,12 @@ function linkListReportTable(
                 tableControl.configuration.tableType.valueInFile = tableType;
                 const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
                 tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
-                const value = controlConfiguration.tableSettings?.disableCopyToClipboard;
-                tableControl.configuration.disableCopyToClipboard.valueInFile = value;
+                const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
+                tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+                const enableExportValue = controlConfiguration.tableSettings?.enableExport;
+                tableControl.configuration.enableExport.valueInFile = enableExportValue;
+                const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
+                tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
                 const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
                 tableControl.configuration.creationMode.valueInFile = creationModeValue;
                 tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
@@ -420,6 +452,10 @@ function linkObjectPageSections(
             tableControl.configuration.widthIncludingColumnHeader.valueInFile = value;
             const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
             tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+            const enableExportValue = controlConfiguration.tableSettings?.enableExport;
+            tableControl.configuration.enableExport.valueInFile = enableExportValue;
+            const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
+            tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
             const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
             tableControl.configuration.creationMode.valueInFile = creationModeValue;
             tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
