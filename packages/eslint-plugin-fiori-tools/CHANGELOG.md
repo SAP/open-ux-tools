@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.3.1
+
+### Patch Changes
+
+- ecc305d: Add statePreservationMode rule for OData V2 application.
+
 ## 9.3.0
 
 ### Minor Changes
