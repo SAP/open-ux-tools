@@ -10,9 +10,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import * as cfInquirer from '@sap-ux/cf-deploy-config-inquirer';
 import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
 import * as projectAccess from '@sap-ux/project-access';
-import Generator from 'yeoman-generator';
 import type fs from 'node:fs';
-import HeadlessGenerator from '../../src/headless';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
