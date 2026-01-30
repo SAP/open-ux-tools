@@ -6,6 +6,7 @@ export const COPY_TO_CLIPBOARD = 'sap-copy-to-clipboard';
 export const ENABLE_EXPORT = 'sap-enable-export';
 export const ENABLE_PASTE = 'sap-enable-paste';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
+export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -64,10 +65,24 @@ export interface EnablePaste {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export type StatePreservationModeMessageId =
+    | 'invalidMode'
+    | 'recommendPersistenceForFCL'
+    | 'recommendDiscoveryForNonFCL';
+
+export interface StatePreservationMode {
+    type: typeof STATE_PRESERVATION_MODE;
+    manifest: ManifestPropertyDiagnosticData;
+    messageId: StatePreservationModeMessageId;
+    recommendedValue?: string;
+    value?: string;
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | FlexEnabled
     | CopyToClipboard
     | CreationModeForTable
     | EnableExport
-    | EnablePaste;
+    | EnablePaste
+    | StatePreservationMode;

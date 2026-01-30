@@ -102,6 +102,8 @@ module.exports = [
 
 ## Rules
 
+<div style="overflow-x: auto;">
+
 | Rule | Description | Recommended | Recommended for S/4HANA |
 |------|-------------|:-----------:|:-----------------------:|
 | [sap-bookmark-performance](docs/rules/sap-bookmark-performance.md) | Ensure the correct usage of the auto-refresh interval options for `sap.ushell.ui.footerbar.AddBookmarkButton`. | ✅ | ✅ |
@@ -158,3 +160,5 @@ module.exports = [
 | [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality in any OData V4 applications tables is available | | ✅ |
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |
+| [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements | | ✅ |
+</div>
