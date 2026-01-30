@@ -29,11 +29,11 @@
         "@sap-ux/btp-utils": "workspace:*",
         "fast-glob": "3.3.1",
         "read-pkg-up": "7.0.1",
-        "semver": "7.5.4"
+        "semver": "7.7.3"
     },
     "devDependencies": {
         "@sap-ux/logger": "workspace:*",
-        "@types/semver": "7.5.2",
+        "@types/semver": "7.7.1",
         "@types/vscode": "1.73.1",
         "mock-spawn": "0.2.6"
     },
