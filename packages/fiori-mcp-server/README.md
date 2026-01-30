@@ -16,12 +16,6 @@ The server helps AI models create or modify SAP Fiori applications based on prom
 
 For the best experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
 
-> ⚠️ Caution
->
-> This is an experimental feature and may change at any time without notice.
-> It is not intended for productive use.
-> Please back up your data before using it.
-
 ## [Usage](#usage)
 
 ### Method 1: npx

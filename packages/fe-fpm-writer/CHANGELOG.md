@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.41.4
+
+### Patch Changes
+
+- 1c6288d: Edit i18n text titles for RTE Button Groups
+
 ## 0.41.3
 
 ### Patch Changes
