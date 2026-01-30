@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.3.2
+
+### Patch Changes
+
+- c77df15: Exclude page name when reporting issue on application level for table creation mode
+
 ## 9.3.1
 
 ### Patch Changes
