@@ -2,6 +2,7 @@ import { enableCardGeneratorConfig } from '../../../src/cards-config';
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import * as projectAccess from '@sap-ux/project-access';
 
 function createTestFs(basePath: string) {
     const fs = create(createStorage());
@@ -94,5 +95,61 @@ describe('enableCardGenerator', () => {
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(basePath, 'ui5-with-deprecated-config-and-cards-generator.yaml'))).toMatchSnapshot();
+    });
+
+    test('CAP project - should skip script generation', async () => {
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
+        const fs = createTestFs(basePath);
+
+        // Mock getProjectType to return CAPNodejs
+        const getProjectTypeSpy = jest.spyOn(projectAccess, 'getProjectType').mockResolvedValue('CAPNodejs');
+
+        const mockLogger = {
+            info: jest.fn(),
+            debug: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn()
+        };
+
+        await enableCardGeneratorConfig(basePath, join(basePath, 'ui5.yaml'), mockLogger as any, fs);
+
+        // Verify that the logger was called with the CAP project message
+        expect(mockLogger.info).toHaveBeenCalledWith(
+            expect.stringContaining('Skipping script generation for CAP project')
+        );
+
+        // Verify that the package.json does not have the start-cards-generator script
+        const packageJson = JSON.parse(fs.read(join(basePath, 'package.json')));
+        expect(packageJson.scripts?.['start-cards-generator']).toBeUndefined();
+
+        getProjectTypeSpy.mockRestore();
+    });
+
+    test('CAP Java project - should skip script generation', async () => {
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
+        const fs = createTestFs(basePath);
+
+        // Mock getProjectType to return CAPJava
+        const getProjectTypeSpy = jest.spyOn(projectAccess, 'getProjectType').mockResolvedValue('CAPJava');
+
+        const mockLogger = {
+            info: jest.fn(),
+            debug: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn()
+        };
+
+        await enableCardGeneratorConfig(basePath, join(basePath, 'ui5.yaml'), mockLogger as any, fs);
+
+        // Verify that the logger was called with the CAP project message
+        expect(mockLogger.info).toHaveBeenCalledWith(
+            expect.stringContaining('Skipping script generation for CAP project')
+        );
+
+        // Verify that the package.json does not have the start-cards-generator script
+        const packageJson = JSON.parse(fs.read(join(basePath, 'package.json')));
+        expect(packageJson.scripts?.['start-cards-generator']).toBeUndefined();
+
+        getProjectTypeSpy.mockRestore();
     });
 });

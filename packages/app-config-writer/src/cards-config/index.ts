@@ -5,7 +5,7 @@ import { create } from 'mem-fs-editor';
 import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, type Package, readUi5Yaml, getProjectType } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
@@ -63,17 +63,45 @@ async function updateMiddlewareConfigWithGeneratorPath(
 /**
  * Updates the `package.json` file to include a script for starting the card generator.
  * Removes the `@sap-ux/cards-editor-middleware` dependency if it exists in `devDependencies`.
+ * For CAP projects, script generation is skipped as the CAP server handles the preview.
  *
  * @param {string} basePath - The path to the project root where the `package.json` file is located.
  * @param {Editor} fs - The `mem-fs-editor` instance used to read and write files.
  * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file for retrieving middleware configurations.
  * @param {ToolsLogger} [logger] - Optional logger instance for logging debug information.
+ * @param {string} [appPath] - Optional path to the app folder for CAP projects.
  * @returns {Promise<void>} A promise that resolves when the `package.json` file has been successfully updated.
  */
-async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string, logger?: ToolsLogger): Promise<void> {
+async function updatePackageJson(
+    basePath: string,
+    fs: Editor,
+    yamlPath?: string,
+    logger?: ToolsLogger,
+    appPath?: string
+): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     if (!fs.exists(packageJsonPath)) {
         throw new Error('package.json not found');
+    }
+
+    // Check if this is a CAP project
+    const projectType = await getProjectType(basePath);
+    const isCapProject = projectType === 'CAPJava' || projectType === 'CAPNodejs';
+
+    if (isCapProject) {
+        logger?.info(
+            `Skipping script generation for CAP project. Use 'cds watch' to start the server and navigate to the card generator sandbox.`
+        );
+        // For CAP projects, we still need to remove the old dependency if it exists
+        const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
+        if (packageJson.devDependencies?.[DEPENDENCY_NAME]) {
+            delete packageJson.devDependencies[DEPENDENCY_NAME];
+            logger?.info(
+                `Removed devDependency ${DEPENDENCY_NAME} from package.json. It is no longer needed because this feature has been integrated into fiori-tools-preview / preview-middleware.`
+            );
+            fs.writeJSON(packageJsonPath, packageJson);
+        }
+        return;
     }
 
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
