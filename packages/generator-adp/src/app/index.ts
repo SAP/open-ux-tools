@@ -39,7 +39,6 @@ import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
-import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
 
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';

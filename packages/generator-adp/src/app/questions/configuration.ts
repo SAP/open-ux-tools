@@ -746,10 +746,10 @@ export class ConfigPrompter {
                 return validationResult;
             }
 
-                this.telemetryCollector.startTiming('applicationListLoadingTime');
+            this.telemetryCollector.startTiming('applicationListLoadingTime');
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
-                this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
-                this.telemetryCollector.endTiming('applicationListLoadingTime');
+            this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
+            this.telemetryCollector.endTiming('applicationListLoadingTime');
 
             return true;
         } catch (e) {

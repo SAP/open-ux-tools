@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
-import { type AbapServiceProvider, AdaptationProjectType, KeyUserChangeContent } from '@sap-ux/axios-extension';
+import { type AbapServiceProvider, AdaptationProjectType, type KeyUserChangeContent } from '@sap-ux/axios-extension';
 
 import type {
     AdpWriterConfig,
