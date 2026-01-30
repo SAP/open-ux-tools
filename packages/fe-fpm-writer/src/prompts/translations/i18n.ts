@@ -233,11 +233,11 @@ const ns1 = {
                 'clipboard': 'Clipboard (Cut, Copy, and Paste)',
                 'structure': 'List Structure (Bullets, Numbers, and Indentation)',
                 'undo': 'Undo/Redo',
-                'insert': 'Insert Elements (Image, and Emoticons)',
-                'link': 'Link Management (Add, and Remove Links)',
+                'insert': 'Insert (Image, and Emoticons)',
+                'link': 'Link (Add, and Remove Links)',
                 'text-align': 'Text Alignment (Left, Center, Right, and Justify)',
-                'table': 'Table Operations',
-                'styleselect': 'Style Selection'
+                'table': 'Table',
+                'styleselect': 'Style Select'
             },
             'viewOrFragmentPath': {
                 'message': 'View or Fragment File',
