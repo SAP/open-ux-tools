@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.15
+
+### Patch Changes
+
+- 644a779: fix home page crashes from UI5 v1.142.2 and above
+
 ## 0.18.14
 
 ### Patch Changes

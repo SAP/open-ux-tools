@@ -3,7 +3,7 @@ import type { FioriXMLRuleDefinition } from '../language/xml/types';
 import {
     FLEX_ENABLED,
     WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-    DISABLE_COPY_TO_CLIPBOARD,
+    COPY_TO_CLIPBOARD,
     CREATION_MODE_FOR_TABLE
 } from '../language/diagnostics';
 
@@ -60,7 +60,7 @@ import sapUsageBasemastercontroller from './sap-usage-basemastercontroller';
 import flexEnabledRule from './sap-flex-enabled';
 import requireWidthIncludingColumnHeader from './sap-width-including-column-header';
 import creationModeForTable from './sap-creation-mode-for-table';
-import disableCopyToClipboard from './sap-disable-copy-to-clipboard';
+import copyToClipboard from './sap-copy-to-clipboard';
 
 import type { Rule } from 'eslint';
 
@@ -115,6 +115,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-usage-basemastercontroller': sapUsageBasemastercontroller,
     [FLEX_ENABLED]: flexEnabledRule,
     [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
-    [DISABLE_COPY_TO_CLIPBOARD]: disableCopyToClipboard,
+    [COPY_TO_CLIPBOARD]: copyToClipboard,
     [CREATION_MODE_FOR_TABLE]: creationModeForTable
 };
