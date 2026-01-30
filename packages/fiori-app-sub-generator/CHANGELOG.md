@@ -1,5 +1,39 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.44
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.51
+- @sap-ux/odata-service-inquirer@2.16.1
+
+## 0.11.43
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+- Updated dependencies [6d71400]
+    - @sap-ux/odata-service-writer@0.29.10
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/ui5-info@0.13.9
+    - @sap-ux/annotation-generator@0.4.12
+    - @sap-ux/fiori-elements-writer@2.8.50
+    - @sap-ux/fiori-freestyle-writer@2.5.35
+    - @sap-ux/odata-service-inquirer@2.16.1
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/cap-config-writer@0.12.50
+    - @sap-ux/fiori-generator-shared@0.13.59
+    - @sap-ux/launch-config@0.10.54
+    - @sap-ux/telemetry@0.6.60
+    - @sap-ux/ui5-application-inquirer@0.16.14
+
+## 0.11.42
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.49
+- @sap-ux/odata-service-inquirer@2.16.0
+
 ## 0.11.41
 
 ### Patch Changes

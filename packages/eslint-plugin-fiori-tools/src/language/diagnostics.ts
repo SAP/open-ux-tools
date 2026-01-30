@@ -2,8 +2,9 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const FLEX_ENABLED = 'sap-flex-enabled';
-export const DISABLE_COPY_TO_CLIPBOARD = 'sap-disable-copy-to-clipboard';
+export const COPY_TO_CLIPBOARD = 'sap-copy-to-clipboard';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
+export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -44,14 +45,28 @@ export interface CreationModeForTable {
     recommendedValue?: string;
 }
 
-export interface DisableCopyToClipboard {
-    type: typeof DISABLE_COPY_TO_CLIPBOARD;
+export interface CopyToClipboard {
+    type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;
+}
+
+export type StatePreservationModeMessageId =
+    | 'invalidMode'
+    | 'recommendPersistenceForFCL'
+    | 'recommendDiscoveryForNonFCL';
+
+export interface StatePreservationMode {
+    type: typeof STATE_PRESERVATION_MODE;
+    manifest: ManifestPropertyDiagnosticData;
+    messageId: StatePreservationModeMessageId;
+    recommendedValue?: string;
+    value?: string;
 }
 
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | FlexEnabled
-    | DisableCopyToClipboard
-    | CreationModeForTable;
+    | CopyToClipboard
+    | CreationModeForTable
+    | StatePreservationMode;

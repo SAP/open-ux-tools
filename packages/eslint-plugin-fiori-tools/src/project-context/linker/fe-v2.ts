@@ -1,17 +1,41 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
-import type { LinkerContext } from './types';
+import type { LinkerContext, ConfigurationBase } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { ParsedService } from '../parser';
 
 import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectSections, collectTables } from './annotations';
 
+export interface FlexibleColumnLayoutSettings {
+    defaultTwoColumnLayoutType: string;
+    defaultThreeColumnLayoutType: string;
+}
 export interface ApplicationSetting {
     createMode: string;
+    statePreservationMode: string;
+    flexibleColumnLayout: FlexibleColumnLayoutSettings;
 }
 export interface PageSetting {
     createMode: string;
 }
+
+export type OrphanSection = ConfigurationBase<'orphan-section', TableSettings>;
+export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
+export type Section = TableSection | OrphanSection;
+
+export interface TableSettings {
+    createMode: string;
+    tableType: string;
+    copy: boolean;
+}
+
+export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
+export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+
+export type Node = Section | Table | OrphanTable;
+export type NodeLookup<T extends Node> = {
+    [K in T['type']]?: Extract<T, { type: K }>[];
+};
 
 export interface LinkedFeV2App extends ConfigurationBase<'fe-v2', ApplicationSetting> {
     pages: FeV2PageType[];
@@ -46,6 +70,7 @@ export interface AnnotationBasedNode<T extends AnnotationNode, Configuration ext
 
 const createModeValues = ['creationRows', 'creationRowsHiddenInEditMode', 'newPage'];
 const tableTypeValues = ['Table', 'ResponsiveTable', 'AnalyticalTable', 'GridTable'];
+const statePreservationModeValues = ['persistence', 'discovery'];
 
 /**
  * Creates a configuration key from an annotation path
@@ -65,8 +90,14 @@ function getConfigurationKey(annotationPath: string): string {
  * @param pathToPage
  * @param createMode
  * @param tableType
+ * @param copy
  */
-function createTableConfiguration(pathToPage: string[], createMode: string | undefined, tableType: string | undefined) {
+function createTableConfiguration(
+    pathToPage: string[],
+    createMode: string | undefined,
+    tableType: string | undefined,
+    copy: boolean | undefined
+) {
     return {
         createMode: {
             values: createModeValues,
@@ -77,6 +108,11 @@ function createTableConfiguration(pathToPage: string[], createMode: string | und
             values: tableTypeValues,
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'type'],
             valueInFile: tableType
+        },
+        copy: {
+            values: [true, false],
+            configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'copy'],
+            valueInFile: copy
         }
     };
 }
@@ -88,12 +124,14 @@ function createTableConfiguration(pathToPage: string[], createMode: string | und
  * @param sectionKey
  * @param createMode
  * @param tableType
+ * @param copy
  */
 function createSectionTableConfiguration(
     pathToPage: string[],
     sectionKey: string,
     createMode: string | undefined,
-    tableType: string | undefined
+    tableType: string | undefined,
+    copy: boolean | undefined
 ) {
     return {
         createMode: {
@@ -113,6 +151,19 @@ function createSectionTableConfiguration(
                 'type'
             ],
             valueInFile: tableType
+        },
+        copy: {
+            values: [true, false],
+            configurationPath: [
+                ...pathToPage,
+                'component',
+                'settings',
+                'sections',
+                sectionKey,
+                'tableSettings',
+                'copy'
+            ],
+            valueInFile: copy
         }
     };
 }
@@ -126,10 +177,12 @@ function findSectionSettings(configuration: ManifestPageSettings): {
     sectionKey: string;
     createMode?: string;
     tableType?: string;
+    copy?: boolean;
 } {
     let sectionEntityKey = '';
     let createMode: string | undefined;
     let tableType: string | undefined;
+    let copy: boolean | undefined;
 
     for (const [key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
         if (value.createMode !== undefined) {
@@ -140,9 +193,13 @@ function findSectionSettings(configuration: ManifestPageSettings): {
             sectionEntityKey = key;
             tableType = value.tableSettings.type;
         }
+        if (value.tableSettings?.copy !== undefined) {
+            sectionEntityKey = key;
+            copy = value.tableSettings.copy;
+        }
     }
 
-    return { sectionKey: sectionEntityKey, createMode, tableType };
+    return { sectionKey: sectionEntityKey, createMode, tableType, copy };
 }
 
 /**
@@ -154,11 +211,12 @@ function findSectionSettings(configuration: ManifestPageSettings): {
  * @param sectionSettings.sectionKey
  * @param sectionSettings.createMode
  * @param sectionSettings.tableType
+ * @param sectionSettings.copy
  */
 function createLinkedTableForSection(
     table: TableNode,
     pathToPage: string[],
-    sectionSettings: { sectionKey: string; createMode?: string; tableType?: string }
+    sectionSettings: { sectionKey: string; createMode?: string; tableType?: string; copy?: boolean }
 ): Table {
     return {
         type: table.type,
@@ -167,7 +225,8 @@ function createLinkedTableForSection(
             pathToPage,
             sectionSettings.sectionKey,
             sectionSettings.createMode,
-            sectionSettings.tableType
+            sectionSettings.tableType,
+            sectionSettings.copy
         ),
         children: []
     };
@@ -202,44 +261,6 @@ function createPageConfiguration(path: string[], name: string, createMode: strin
     };
 }
 
-export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
-    type: T;
-    annotation?: unknown;
-    configuration: {
-        [K in keyof Configuration]: {
-            /**
-             * All possible supported configuration values. Empty means dynamic value resolved by framework at runtime.
-             */
-            values: Configuration[K][];
-            /**
-             * Actual value as defined in the manifest file.
-             */
-            valueInFile?: Configuration[K];
-            /**
-             * Absolute path in manifest where this configuration is defined.
-             */
-            configurationPath: string[];
-        };
-    };
-}
-
-export type OrphanSection = ConfigurationBase<'orphan-section', TableSettings>;
-export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
-export type Section = TableSection | OrphanSection;
-
-export interface TableSettings {
-    createMode: string;
-    tableType: string;
-}
-
-export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
-export type Table = AnnotationBasedNode<TableNode, TableSettings>;
-
-export type Node = Section | Table | OrphanTable;
-export type NodeLookup<T extends Node> = {
-    [K in T['type']]?: Extract<T, { type: K }>[];
-};
-
 /**
  * Links Fiori Elements v2 application structure.
  * Processes application settings and pages to create a linked model.
@@ -250,7 +271,7 @@ export type NodeLookup<T extends Node> = {
 export function runFeV2Linker(context: LinkerContext): LinkedFeV2App {
     const manifest = context.app.manifestObject;
     const config = manifest['sap.ui.generic.app'];
-    const linkedApp = linkApplicationSettings(config ?? {});
+    const linkedApp = linkApplicationSettings(context);
     const service = getParsedServiceByName(context.app);
     if (!service) {
         return linkedApp;
@@ -273,12 +294,14 @@ interface ManifestPageSettings {
             tableSettings?: {
                 createMode?: string;
                 type?: string;
+                copy?: boolean;
             };
             sections?: {
                 [sectionKey: string]: {
                     createMode?: string;
                     tableSettings?: {
                         type?: string;
+                        copy?: boolean;
                     };
                 };
             };
@@ -290,9 +313,10 @@ interface ManifestPageSettings {
 interface ManifestApplicationSettings {
     settings?: {
         tableSettings?: TableSettings;
+        statePreservationMode?: string;
+        flexibleColumnLayout?: FlexibleColumnLayoutSettings;
     };
 }
-
 /**
  * Links a list report page
  *
@@ -452,11 +476,12 @@ function linkListReportTable(
         const tableSettingsConfig = configuration.component?.settings?.tableSettings ?? {};
         const createMode = tableSettingsConfig.createMode;
         const tableType = tableSettingsConfig.type;
+        const copy = tableSettingsConfig.copy;
 
         const linkedTable: Table = {
             type: table.type,
             annotation: table,
-            configuration: createTableConfiguration(pathToPage, createMode, tableType),
+            configuration: createTableConfiguration(pathToPage, createMode, tableType, copy),
             children: []
         };
 
@@ -468,10 +493,11 @@ function linkListReportTable(
         const tableControl = controls[`table|${sectionKey}`];
         const createMode = sectionConfig.createMode;
         const tableType = sectionConfig.tableSettings?.type;
+        const copy = sectionConfig.tableSettings?.copy;
         if (!tableControl) {
             const orphanedSection: OrphanTable = {
                 type: 'orphan-table',
-                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType)
+                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy)
             };
             controls[`${orphanedSection.type}|${sectionKey}`] = orphanedSection;
         }
@@ -535,10 +561,11 @@ function linkObjectPageSections(
         if (!sectionControl) {
             const createMode = sectionConfig.createMode;
             const tableType = sectionConfig.tableSettings?.type;
+            const copy = sectionConfig.tableSettings?.copy;
 
             const orphanedSection: OrphanSection = {
                 type: 'orphan-section',
-                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType)
+                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy)
             };
             controls[`${orphanedSection.type}|${sectionKey}|`] = orphanedSection;
         }
@@ -556,10 +583,15 @@ function linkObjectPageSections(
 /**
  * Links application-level settings from manifest configuration for Fiori Elements V2.
  *
- * @param config - The manifest application settings
+ * @param context - Linker context containing parsed application data
+ * @returns A linked Fiori Elements V2 application object
  */
-function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV2App {
+function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
+    const config: ManifestApplicationSettings = context.app.manifestObject['sap.ui.generic.app'] ?? {};
     const createMode = config.settings?.tableSettings?.createMode;
+    const statePreservationMode = config.settings?.statePreservationMode;
+    const twoColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultTwoColumnLayoutType;
+    const threeColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultThreeColumnLayoutType;
     const linkedApp: LinkedFeV2App = {
         type: 'fe-v2',
         pages: [],
@@ -568,6 +600,23 @@ function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV
                 values: createModeValues,
                 configurationPath: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
                 valueInFile: createMode
+            },
+            statePreservationMode: {
+                values: statePreservationModeValues,
+                configurationPath: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
+                valueInFile: statePreservationMode
+            },
+            flexibleColumnLayout: {
+                defaultTwoColumnLayoutType: {
+                    values: ['TwoColumnsBeginExpanded', 'TwoColumnsMidExpanded'],
+                    configurationPath: ['sap.ui.generic.app', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
+                    valueInFile: twoColumnLayoutValue
+                },
+                defaultThreeColumnLayoutType: {
+                    values: ['ThreeColumnsMidExpanded', 'ThreeColumnsEndExpanded'],
+                    configurationPath: ['sap.ui.generic.app', 'flexibleColumnLayout', 'defaultThreeColumnLayoutType'],
+                    valueInFile: threeColumnLayoutValue
+                }
             }
         }
     };

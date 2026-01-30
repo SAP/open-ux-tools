@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.4
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
 ## 1.7.3
 
 ### Patch Changes
