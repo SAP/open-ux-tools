@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.2.3
+
+### Patch Changes
+
+- 8f56f6b: Restrict the input of non-origin URLs for ABAP on Cloud systems
+
 ## 0.2.2
 
 ### Patch Changes
