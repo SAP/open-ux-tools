@@ -718,12 +718,12 @@ describe('YAML Project Functions', () => {
                         paths: [
                             {
                                 path: '/resources/my/reusable/lib',
-                                src: './.reuse/myreusablelib',
+                                src: './.adp/reuse/myreusablelib',
                                 fallthrough: false
                             },
                             {
                                 path: '/resources/another/lib',
-                                src: './.reuse/anotherlib',
+                                src: './.adp/reuse/anotherlib',
                                 fallthrough: false
                             }
                         ]

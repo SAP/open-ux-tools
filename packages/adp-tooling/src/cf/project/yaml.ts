@@ -512,7 +512,7 @@ export async function addServeStaticMiddleware(
 
             return {
                 path: resourcePath,
-                src: `./.reuse/${html5AppName}`,
+                src: `./.adp/reuse/${html5AppName}`,
                 fallthrough: false
             };
         });

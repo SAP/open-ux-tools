@@ -432,7 +432,7 @@ describe('CF App Discovery', () => {
             jest.clearAllMocks();
         });
 
-        test('should map URLs to paths from .reuse folder', () => {
+        test('should map URLs to paths from .adp/reuse folder', () => {
             const serviceKeys: ServiceKeys[] = [
                 {
                     credentials: {
@@ -454,7 +454,7 @@ describe('CF App Discovery', () => {
                 ]
             };
 
-            mockExistsSync.mockImplementation((path: any) => path.includes('.reuse'));
+            mockExistsSync.mockImplementation((path: any) => path.includes('.adp/reuse'));
             mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
 
             const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
@@ -465,7 +465,7 @@ describe('CF App Discovery', () => {
             ]);
         });
 
-        test('should use dist folder when .reuse does not exist', () => {
+        test('should use dist folder when .adp/reuse does not exist', () => {
             const serviceKeys: ServiceKeys[] = [
                 {
                     credentials: {
@@ -483,7 +483,7 @@ describe('CF App Discovery', () => {
                 routes: [{ source: '/sap/opu/odata', destination: 'backend-dest' }]
             };
 
-            mockExistsSync.mockImplementation((path: any) => !path.includes('.reuse'));
+            mockExistsSync.mockImplementation((path: any) => !path.includes('.adp/reuse'));
             mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
 
             const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');

@@ -156,7 +156,7 @@ function extractDestinationToPathsMap(xsAppPath: string): Map<string, Set<string
  * between xs-app.json routes and credentials.json endpoints.
  *
  * @param {ServiceKeys[]} serviceKeys - The service keys containing endpoints with destinations.
- * @param {string} basePath - Path to the .reuse folder containing xs-app.json files.
+ * @param {string} basePath - Path to the .adp/reuse folder containing xs-app.json files.
  * @returns {Array<{ url: string; paths: string[] }>} Array of URL-to-paths mappings.
  */
 export function getBackendUrlsWithPaths(
@@ -165,7 +165,7 @@ export function getBackendUrlsWithPaths(
 ): Array<{ url: string; paths: string[] }> {
     const destinationToUrl = extractDestinationToUrlMap(serviceKeys);
 
-    const reuseXsAppPath = join(basePath, '.reuse', 'xs-app.json');
+    const reuseXsAppPath = join(basePath, '.adp', 'reuse', 'xs-app.json');
     const distXsAppPath = join(basePath, 'dist', 'xs-app.json');
 
     let xsAppPath: string;
