@@ -98,15 +98,11 @@ export function applyXmlAnnotationsChange(current: string, change: string): stri
     return current.replace('</Schema>', change + '</Schema>');
 }
 
-let id = 0;
 export function getManifestAsCode(manifest: any, changes: ManifestChange[]): string {
     const clone = structuredClone(manifest);
     for (const change of changes) {
         applyManifestChange(clone, change);
     }
-    // force eslint to treat each manifest as unique test case
-    id++;
-    clone['__test_id'] = `test-id-${id}`;
     return JSON.stringify(clone, undefined, 2);
 }
 

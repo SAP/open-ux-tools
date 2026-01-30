@@ -1,5 +1,40 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.3.0
+
+### Minor Changes
+
+- 416428c: Add copy to clipboard property rule for OData V2 application tables.
+
+## 9.2.4
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/fiori-annotation-api@0.9.5
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/odata-annotation-core@0.2.13
+    - @sap-ux/odata-entity-model@0.3.4
+    - @sap-ux/odata-vocabularies@0.4.22
+
+## 9.2.3
+
+### Patch Changes
+
+- 98a5947: fix: add auto fix for creation mode for table
+
+## 9.2.2
+
+### Patch Changes
+
+- 40b2423: fix: revised text
+
+## 9.2.1
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.4
+
 ## 9.2.0
 
 ### Minor Changes

@@ -48,8 +48,8 @@ function shouldTableHaveWidthIncludingColumnHeader(table: Table, aliasInfo: Alia
  * Checks tables in a page for widthIncludingColumnHeader configuration issues.
  * Adds diagnostic problems for tables that should have this property set.
  *
- * @param page - FE v4 page to check (Object Page or List Report)
- * @param parsedApp - Parsed application containing manifest data
+ * @param page - SAP Fiori elements for OData V4 page to check (object page or list report)
+ * @param parsedApp - Parsed application containing manifest.json file data
  * @param parsedService - Parsed service containing metadata and annotations
  * @param problems - Array to collect diagnostic problems
  */
@@ -96,9 +96,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             ['width-including-column-header-manifest']:
-                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for better column width calculation. Add it to the control configuration for "{{table}}" table.',
+                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration for "{{table}}" table.',
             ['width-including-column-header']:
-                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for better column width calculation.'
+                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.'
         }
     },
     check(context) {

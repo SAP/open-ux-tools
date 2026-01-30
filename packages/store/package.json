@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/store",
-    "version": "1.5.0",
+    "version": "1.5.2",
     "description": "NPM module for storing persistent data",
     "repository": {
         "type": "git",
@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "i18next": "25.3.0",
+        "i18next": "25.8.0",
         "pluralize": "8.0.0",
         "reflect-metadata": "0.1.13"
     },
