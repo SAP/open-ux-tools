@@ -1488,7 +1488,7 @@ describe('router with enableCardGenerator for CAP projects', () => {
 
     test('addRootLevelCardRoutes registers FlpSandbox in global registry for CAP projects', async () => {
         // The FlpSandbox should be registered in the global registry
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const registry = (global as any).__flpSandboxRegistry;
         expect(registry).toBeDefined();
         expect(Object.keys(registry).length).toBeGreaterThan(0);

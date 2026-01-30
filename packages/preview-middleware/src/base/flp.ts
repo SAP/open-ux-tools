@@ -1254,7 +1254,7 @@ export class FlpSandbox {
                 // Helper to find the correct FlpSandbox instance based on referer
                 const findFlpSandbox = (req: Request): FlpSandbox | undefined => {
                     const referer = req.headers.referer || '';
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
                     const registry = (global as any).__flpSandboxRegistry as Record<string, FlpSandbox> | undefined;
                     if (!registry) {
                         return undefined;
@@ -1354,7 +1354,6 @@ export class FlpSandbox {
                     }
                 });
 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (global as any).__cardRoutesRegistered = true;
                 this.logger.info('Card generator routes registered at root level');
             }
