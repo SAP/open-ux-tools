@@ -48,6 +48,7 @@ interface SourceConfig {
     url?: string;
     category: string;
     enabled: boolean;
+    useEnvAuth?: boolean;
 }
 
 interface BuildConfig {
@@ -352,7 +353,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: 'docs',
                     category: 'fiori-tools',
-                    enabled: false
+                    enabled: true
                 },
                 {
                     id: 'sapui5',
@@ -372,7 +373,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: '',
                     category: 'fiori-samples',
-                    enabled: false
+                    enabled: true
                 },
                 {
                     id: 'fiori-showcase',
@@ -382,7 +383,7 @@ class MultiSourceDocumentationBuilder {
                     branch: 'main',
                     docsPath: '',
                     category: 'fiori-features',
-                    enabled: false
+                    enabled: true
                 },
                 {
                     id: 'ui5-api',
@@ -390,6 +391,17 @@ class MultiSourceDocumentationBuilder {
                     url: 'https://ui5.sap.com/test-resources/sap/fe/macros/designtime/apiref/api.json',
                     category: 'api-reference',
                     enabled: false
+                },
+                {
+                    id: 'tools-suite',
+                    type: 'github',
+                    owner: 'ux-engineering',
+                    repo: 'tools-suite',
+                    branch: 'master',
+                    docsPath: 'docs/product/features-commands',
+                    category: 'fiori-tools',
+                    enabled: true,
+                    useEnvAuth: true
                 }
             ]
         };
@@ -500,7 +512,16 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
     async cloneOrUpdateRepository(source: SourceConfig): Promise<string> {
         const repoName = `${source.owner}-${source.repo}`;
         const repoPath = path.join(this.gitReposPath, repoName);
-        const repoUrl = `https://github.com/${source.owner}/${source.repo}.git`;
+
+        // Use environment variables for authentication if specified
+        let repoUrl: string;
+        if (source.useEnvAuth && process.env.GITHUB_HOST && process.env.GITHUB_TOKEN) {
+            const githubHost = process.env.GITHUB_HOST.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            repoUrl = `https://${process.env.GITHUB_TOKEN}@${githubHost}/${source.owner}/${source.repo}.git`;
+            this.logger.info(`Using environment authentication for ${source.id}`);
+        } else {
+            repoUrl = `https://github.com/${source.owner}/${source.repo}.git`;
+        }
 
         // Ensure git repos directory exists
         await fs.mkdir(this.gitReposPath, { recursive: true });

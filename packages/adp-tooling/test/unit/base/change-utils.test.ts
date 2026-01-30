@@ -15,7 +15,11 @@ import {
     type PropertyValueType,
     ChangeType,
     type ManifestChangeProperties,
-    type DescriptorVariant
+    type DescriptorVariant,
+    type AdpWriterConfig,
+    type App,
+    type ToolsSupport,
+    FlexLayer
 } from '../../../src';
 import {
     findChangeWithInboundId,
@@ -23,9 +27,12 @@ import {
     getChangesByType,
     getParsedPropertyValue,
     parseStringToObject,
+    transformKeyUserChangeForAdp,
     writeAnnotationChange,
-    writeChangeToFolder
+    writeChangeToFolder,
+    writeKeyUserChanges
 } from '../../../src/base/change-utils';
+import type { KeyUserChangeContent } from '@sap-ux/axios-extension';
 import { create as createStorage } from 'mem-fs';
 
 jest.mock('fs', () => ({
@@ -520,6 +527,232 @@ describe('Change Utils', () => {
                     mockFs as unknown as Editor
                 )
             ).rejects.toThrow('Failed to render annotation file');
+        });
+    });
+
+    describe('writeKeyUserChanges', () => {
+        const projectPath = 'project';
+        const appId = 'sap.ui.demoapps.rta.freestyle';
+        const supportId = '@sap-ux/adp-tooling';
+        const writeJsonSpy = jest.fn();
+        const mockFs = { writeJSON: writeJsonSpy } as unknown as Editor;
+        const mockConfig: AdpWriterConfig = {
+            app: {
+                id: appId,
+                layer: 'CUSTOMER_BASE'
+            } as App,
+            customConfig: {
+                adp: {
+                    support: {
+                        id: supportId,
+                        version: '1.0.0'
+                    }
+                }
+            }
+        } as AdpWriterConfig;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should return early if changes is undefined', async () => {
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: [] }, mockFs);
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: undefined }, mockFs);
+            expect(writeJsonSpy).not.toHaveBeenCalled();
+        });
+
+        it('should skip entries without content', async () => {
+            const changes: KeyUserChangeContent[] = [
+                { content: { fileName: 'test.change' } },
+                {} as KeyUserChangeContent,
+                { content: { fileName: 'test2.change' } }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should skip entries without fileName', async () => {
+            const changes: KeyUserChangeContent[] = [
+                { content: { fileName: 'test.change' } },
+                { content: { changeType: 'page' } },
+                { content: { fileName: 'test2.change' } }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should add texts to change if not already present', async () => {
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_page.change',
+                        changeType: 'page'
+                    },
+                    texts: { variantName: { value: 'Test Variant', type: 'XFLD' } }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining('id_123_page.change'),
+                expect.objectContaining({
+                    fileName: 'id_123_page.change',
+                    changeType: 'page'
+                })
+            );
+        });
+
+        it('should write multiple changes', async () => {
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_page.change',
+                        changeType: 'page'
+                    }
+                },
+                {
+                    content: {
+                        fileName: 'id_456_variant.change',
+                        changeType: 'variant'
+                    }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should transform key user changes for ADP format', async () => {
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_rename.change',
+                        changeType: 'rename',
+                        reference: 'sap.ui.demoapps.rta.freestyle',
+                        layer: 'CUSTOMER',
+                        namespace: 'apps/sap.ui.demoapps.rta.freestyle/changes/',
+                        projectId: 'sap.ui.demoapps.rta.freestyle',
+                        adaptationId: 'DEFAULT',
+                        version: '1.0',
+                        context: 'someContext',
+                        versionId: 'someVersionId',
+                        support: {
+                            generator: 'sap.ui.rta.command'
+                        }
+                    }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining('id_123_rename.change'),
+                expect.objectContaining({
+                    fileName: 'id_123_rename.change',
+                    reference: appId,
+                    layer: 'CUSTOMER_BASE',
+                    namespace: `apps/${appId}/changes/`,
+                    projectId: appId,
+                    support: expect.objectContaining({
+                        generator: 'adp-key-user-converter'
+                    })
+                })
+            );
+            const writtenChange = writeJsonSpy.mock.calls[0][1];
+            expect(writtenChange).not.toHaveProperty('adaptationId');
+            expect(writtenChange).not.toHaveProperty('version');
+            expect(writtenChange).not.toHaveProperty('context');
+            expect(writtenChange).not.toHaveProperty('versionId');
+        });
+
+        it('should always set support.generator when support.id is provided', async () => {
+            const changesWithGenerator: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_with_generator.change',
+                        changeType: 'rename',
+                        support: {
+                            generator: 'sap.ui.rta.command'
+                        }
+                    }
+                }
+            ];
+
+            const changesWithoutGenerator: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_456_without_generator.change',
+                        changeType: 'rename'
+                    }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changesWithGenerator }, mockFs);
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changesWithoutGenerator }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenNthCalledWith(
+                1,
+                expect.stringContaining('id_123_with_generator.change'),
+                expect.objectContaining({
+                    support: expect.objectContaining({
+                        generator: 'adp-key-user-converter'
+                    })
+                })
+            );
+
+            const secondCallChange = writeJsonSpy.mock.calls[1][1];
+            expect(secondCallChange.support).toBeDefined();
+            expect(secondCallChange.support.generator).toBe('adp-key-user-converter');
+        });
+    });
+
+    describe('transformKeyUserChangeForAdp', () => {
+        const appId = 'sap.ui.demoapps.rta.freestyle';
+
+        it('should update support.generator when generator exists', () => {
+            const change = {
+                fileName: 'test.change',
+                changeType: 'rename',
+                support: {
+                    generator: 'sap.ui.rta.command'
+                }
+            };
+
+            const result = transformKeyUserChangeForAdp(change, appId, FlexLayer.CUSTOMER_BASE);
+
+            expect(result.support).toBeDefined();
+            expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
+        });
+
+        it('should add support.generator when generator does not exist', () => {
+            const change = {
+                fileName: 'test.change',
+                changeType: 'rename',
+                support: {}
+            };
+
+            const result = transformKeyUserChangeForAdp(change, appId, FlexLayer.CUSTOMER_BASE);
+
+            expect(result.support).toBeDefined();
+            expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
+        });
+
+        it('should create support object and add generator support property', () => {
+            const change = {
+                fileName: 'test.change',
+                changeType: 'rename'
+            };
+
+            const result = transformKeyUserChangeForAdp(change, appId, FlexLayer.CUSTOMER_BASE);
+
+            expect(result.support).toBeDefined();
+            expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
         });
     });
 });

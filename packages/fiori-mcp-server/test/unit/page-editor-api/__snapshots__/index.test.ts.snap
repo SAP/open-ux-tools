@@ -1015,6 +1015,36 @@ Object {
         },
         Object {
           "artifactType": undefined,
+          "description": "Defines the default layout options of the table popins. A separate layout options of the table popins can be set for each responsive table in the application.",
+          "displayName": "Default Popin Layout",
+          "name": "defaultPopinLayout",
+          "options": Array [
+            Object {
+              "key": "",
+              "text": "",
+            },
+            Object {
+              "key": "Block",
+              "text": "Block",
+            },
+            Object {
+              "key": "GridLarge",
+              "text": "GridLarge",
+            },
+            Object {
+              "key": "GridSmall",
+              "text": "GridSmall",
+            },
+          ],
+          "schemaPath": Array [
+            "settings",
+            "defaultPopinLayout",
+          ],
+          "type": "string",
+          "value": undefined,
+        },
+        Object {
+          "artifactType": undefined,
           "description": "Defines the title for the application.",
           "displayName": "Title",
           "name": "title",
@@ -4997,14 +5027,51 @@ Object {
                     Object {
                       "artifactType": "Manifest",
                       "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                      "displayName": "Group",
-                      "name": "group",
+                      "displayName": "Overflow Group",
+                      "name": "overflowGroup",
                       "schemaPath": Array [
                         "table",
                         "toolBar",
                         "actions",
                         "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-                        "group",
+                        "overflowGroup",
+                      ],
+                      "type": "number",
+                      "value": undefined,
+                    },
+                    Object {
+                      "artifactType": "Manifest",
+                      "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+                      "displayName": "Priority",
+                      "name": "priority",
+                      "options": Array [
+                        Object {
+                          "key": "",
+                          "text": "",
+                        },
+                        Object {
+                          "key": "AlwaysOverflow",
+                          "text": "AlwaysOverflow",
+                        },
+                        Object {
+                          "key": "High",
+                          "text": "High",
+                        },
+                        Object {
+                          "key": "Low",
+                          "text": "Low",
+                        },
+                        Object {
+                          "key": "NeverOverflow",
+                          "text": "NeverOverflow",
+                        },
+                      ],
+                      "schemaPath": Array [
+                        "table",
+                        "toolBar",
+                        "actions",
+                        "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+                        "priority",
                       ],
                       "type": "string",
                       "value": undefined,
@@ -5141,14 +5208,51 @@ Object {
                     Object {
                       "artifactType": "Manifest",
                       "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                      "displayName": "Group",
-                      "name": "group",
+                      "displayName": "Overflow Group",
+                      "name": "overflowGroup",
                       "schemaPath": Array [
                         "table",
                         "toolBar",
                         "actions",
                         "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-                        "group",
+                        "overflowGroup",
+                      ],
+                      "type": "number",
+                      "value": undefined,
+                    },
+                    Object {
+                      "artifactType": "Manifest",
+                      "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+                      "displayName": "Priority",
+                      "name": "priority",
+                      "options": Array [
+                        Object {
+                          "key": "",
+                          "text": "",
+                        },
+                        Object {
+                          "key": "AlwaysOverflow",
+                          "text": "AlwaysOverflow",
+                        },
+                        Object {
+                          "key": "High",
+                          "text": "High",
+                        },
+                        Object {
+                          "key": "Low",
+                          "text": "Low",
+                        },
+                        Object {
+                          "key": "NeverOverflow",
+                          "text": "NeverOverflow",
+                        },
+                      ],
+                      "schemaPath": Array [
+                        "table",
+                        "toolBar",
+                        "actions",
+                        "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+                        "priority",
                       ],
                       "type": "string",
                       "value": undefined,
@@ -5285,14 +5389,51 @@ Object {
                     Object {
                       "artifactType": "Manifest",
                       "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                      "displayName": "Group",
-                      "name": "group",
+                      "displayName": "Overflow Group",
+                      "name": "overflowGroup",
                       "schemaPath": Array [
                         "table",
                         "toolBar",
                         "actions",
                         "DataFieldForAction::",
-                        "group",
+                        "overflowGroup",
+                      ],
+                      "type": "number",
+                      "value": undefined,
+                    },
+                    Object {
+                      "artifactType": "Manifest",
+                      "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+                      "displayName": "Priority",
+                      "name": "priority",
+                      "options": Array [
+                        Object {
+                          "key": "",
+                          "text": "",
+                        },
+                        Object {
+                          "key": "AlwaysOverflow",
+                          "text": "AlwaysOverflow",
+                        },
+                        Object {
+                          "key": "High",
+                          "text": "High",
+                        },
+                        Object {
+                          "key": "Low",
+                          "text": "Low",
+                        },
+                        Object {
+                          "key": "NeverOverflow",
+                          "text": "NeverOverflow",
+                        },
+                      ],
+                      "schemaPath": Array [
+                        "table",
+                        "toolBar",
+                        "actions",
+                        "DataFieldForAction::",
+                        "priority",
                       ],
                       "type": "string",
                       "value": undefined,
@@ -6180,6 +6321,36 @@ Hidden: the column is neither available in the table nor in adaptation.",
           "schemaPath": Array [
             "table",
             "initialLoad",
+          ],
+          "type": "string",
+          "value": undefined,
+        },
+        Object {
+          "artifactType": "Manifest",
+          "description": "Defines the layout options of the table popins. A popin layout defined at the table level takes precedence over a popin layout defined at the application level.",
+          "displayName": "Popin Layout",
+          "name": "popinLayout",
+          "options": Array [
+            Object {
+              "key": "",
+              "text": "",
+            },
+            Object {
+              "key": "Block",
+              "text": "Block",
+            },
+            Object {
+              "key": "GridLarge",
+              "text": "GridLarge",
+            },
+            Object {
+              "key": "GridSmall",
+              "text": "GridSmall",
+            },
+          ],
+          "schemaPath": Array [
+            "table",
+            "popinLayout",
           ],
           "type": "string",
           "value": undefined,
@@ -9503,13 +9674,49 @@ Object {
                 Object {
                   "artifactType": "Manifest",
                   "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                  "displayName": "Group",
-                  "name": "group",
+                  "displayName": "Overflow Group",
+                  "name": "overflowGroup",
                   "schemaPath": Array [
                     "header",
                     "actions",
                     "EditAction",
-                    "group",
+                    "overflowGroup",
+                  ],
+                  "type": "number",
+                  "value": undefined,
+                },
+                Object {
+                  "artifactType": "Manifest",
+                  "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+                  "displayName": "Priority",
+                  "name": "priority",
+                  "options": Array [
+                    Object {
+                      "key": "",
+                      "text": "",
+                    },
+                    Object {
+                      "key": "AlwaysOverflow",
+                      "text": "AlwaysOverflow",
+                    },
+                    Object {
+                      "key": "High",
+                      "text": "High",
+                    },
+                    Object {
+                      "key": "Low",
+                      "text": "Low",
+                    },
+                    Object {
+                      "key": "NeverOverflow",
+                      "text": "NeverOverflow",
+                    },
+                  ],
+                  "schemaPath": Array [
+                    "header",
+                    "actions",
+                    "EditAction",
+                    "priority",
                   ],
                   "type": "string",
                   "value": undefined,
@@ -9539,13 +9746,49 @@ Object {
                 Object {
                   "artifactType": "Manifest",
                   "description": "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                  "displayName": "Group",
-                  "name": "group",
+                  "displayName": "Overflow Group",
+                  "name": "overflowGroup",
                   "schemaPath": Array [
                     "header",
                     "actions",
                     "DeleteAction",
-                    "group",
+                    "overflowGroup",
+                  ],
+                  "type": "number",
+                  "value": undefined,
+                },
+                Object {
+                  "artifactType": "Manifest",
+                  "description": "Defines the priority of the action. This determines ordering and whether the action is moved into overflow.",
+                  "displayName": "Priority",
+                  "name": "priority",
+                  "options": Array [
+                    Object {
+                      "key": "",
+                      "text": "",
+                    },
+                    Object {
+                      "key": "AlwaysOverflow",
+                      "text": "AlwaysOverflow",
+                    },
+                    Object {
+                      "key": "High",
+                      "text": "High",
+                    },
+                    Object {
+                      "key": "Low",
+                      "text": "Low",
+                    },
+                    Object {
+                      "key": "NeverOverflow",
+                      "text": "NeverOverflow",
+                    },
+                  ],
+                  "schemaPath": Array [
+                    "header",
+                    "actions",
+                    "DeleteAction",
+                    "priority",
                   ],
                   "type": "string",
                   "value": undefined,

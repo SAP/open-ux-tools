@@ -25,6 +25,7 @@ import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writ
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { generateAnnotations } from '@sap-ux/annotation-generator';
+import * as ui5TestWriter from '@sap-ux/ui5-test-writer';
 import { initI18n } from '../src/i18n';
 
 const TEST_NAME = 'lropTemplates';
@@ -749,6 +750,61 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
             expect(generateAnnotations).not.toHaveBeenCalled();
+        });
+
+        test('Should call generateOPAFiles after generateAnnotations', async () => {
+            const projectName = 'testOrderOfAnnotationAndOpaGeneration';
+            const config = {
+                ...Object.assign(feBaseConfig(projectName), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: {
+                            entityConfig: {
+                                mainEntityName: 'Travel',
+                                mainEntityParameterName: 'Set',
+                                navigationEntity: {
+                                    EntitySet: 'Booking',
+                                    Name: '_Booking'
+                                }
+                            },
+                            tableType: 'ResponsiveTable'
+                        }
+                    },
+                    appOptions: {
+                        ...feBaseConfig(projectName).appOptions,
+                        generateIndex: false,
+                        addAnnotations: true,
+                        addTests: true,
+                        useVirtualPreviewEndpoints: true
+                    }
+                }),
+                service: {
+                    ...v4Service,
+                    type: ServiceType.EDMX
+                },
+                ui5: {
+                    ...feBaseConfig(projectName).ui5
+                }
+            } as FioriElementsApp<LROPSettings>;
+
+            const callOrder: string[] = [];
+            (generateAnnotations as jest.Mock).mockImplementation(() => {
+                callOrder.push('writeAnnotations');
+                return Promise.resolve();
+            });
+            const generateOPAFilesSpy = jest.spyOn(ui5TestWriter, 'generateOPAFiles').mockImplementation(() => {
+                callOrder.push('generateOPAFiles');
+                return Promise.resolve(fs);
+            });
+
+            // generate the project
+            const testPath = join(curTestOutPath, projectName);
+            await generate(testPath, config);
+
+            // Verify that writeAnnotations was called before generateOPAFiles
+            expect(callOrder).toEqual(['writeAnnotations', 'generateOPAFiles']);
+            expect(generateAnnotations).toHaveBeenCalled();
+            expect(generateOPAFilesSpy).toHaveBeenCalled();
         });
     });
 });

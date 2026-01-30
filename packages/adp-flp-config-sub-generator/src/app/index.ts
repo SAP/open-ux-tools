@@ -247,6 +247,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             );
 
             const errorHelp = this._getErrorHandlerMessage(error);
+
             if (errorHelp) {
                 this._abortExecution(
                     typeof errorHelp === 'string'
@@ -371,10 +372,15 @@ export default class AdpFlpConfigGenerator extends Generator {
     /**
      * Retrieves the error handler message for the provided error.
      *
-     * @param {Error | AxiosError} error - The error to handle.
+     * @param {AxiosError} error - The error to handle.
      * @returns {ValidationLink | string | undefined} The validation link or error message.
      */
-    private _getErrorHandlerMessage(error: Error | AxiosError): ValidationLink | string | undefined {
+    private _getErrorHandlerMessage(error: AxiosError): ValidationLink | string | undefined {
+        // If `system_info` endpoint returns 404, the system is not cloud ready
+        // `system_info` endpoint needs to be called before `isAbapCloud`, because `isAbapCloud` silently catches the errors
+        if (error.status === 404) {
+            return t('error.projectNotCloudReady');
+        }
         const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/adp-flp-config');
         return errorHandler.getValidationErrorHelp(error);
     }

@@ -1,5 +1,94 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.16.1
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/inquirer-common@0.10.19
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/fiori-generator-shared@0.13.59
+    - @sap-ux/project-input-validator@0.6.47
+    - @sap-ux/telemetry@0.6.60
+
+## 2.16.0
+
+### Minor Changes
+
+- 92244b8: Improve entity validation in Generator.
+
+## 2.15.0
+
+### Minor Changes
+
+- 1d3e398: Improve the error message for service input.
+
+## 2.14.19
+
+### Patch Changes
+
+- Updated dependencies [be6ea11]
+    - @sap-ux/store@1.5.2
+    - @sap-ux/fiori-generator-shared@0.13.58
+    - @sap-ux/telemetry@0.6.59
+    - @sap-ux/inquirer-common@0.10.18
+
+## 2.14.18
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/fiori-generator-shared@0.13.57
+
+## 2.14.17
+
+### Patch Changes
+
+- Updated dependencies [c707af1]
+    - @sap-ux/telemetry@0.6.58
+    - @sap-ux/fiori-generator-shared@0.13.57
+    - @sap-ux/inquirer-common@0.10.17
+
+## 2.14.16
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/inquirer-common@0.10.16
+    - @sap-ux/project-input-validator@0.6.46
+
+## 2.14.15
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/fiori-generator-shared@0.13.55
+    - @sap-ux/telemetry@0.6.57
+    - @sap-ux/inquirer-common@0.10.15
+
+## 2.14.14
+
+### Patch Changes
+
+- e746e10: Fix for system selection where one service and answers are undefined
+
+## 2.14.13
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
+## 2.14.12
+
+### Patch Changes
+
+- f31a340: Removes `lodash` use.
+
 ## 2.14.11
 
 ### Patch Changes
