@@ -26,6 +26,7 @@ export type Section = TableSection | OrphanSection;
 export interface TableSettings {
     createMode: string;
     tableType: string;
+    copy: boolean;
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
