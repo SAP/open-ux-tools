@@ -28,6 +28,7 @@ import Input from 'sap/m/Input';
 import { ValueState } from 'sap/ui/core/library';
 import SimpleForm from 'sap/ui/layout/form';
 import Control from 'sap/ui/core/Control';
+import { getFragments } from '../api-handler';
 
 export type AddFragmentModel = JSONModel & {
     getProperty(sPath: '/title'): string;
@@ -146,6 +147,7 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
         try {
             let isCustomColumnFragment = false;
             if (this.options.type === 'tableColumn') {
+                await this.addFragmentListToModel();
                 isCustomColumnFragment = true;
             }
             this.model.setProperty('/isCustomColumnFragment', isCustomColumnFragment);
@@ -153,6 +155,21 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
             const error = getError(e);
             await sendInfoCenterMessage({
                 title: { key: this.options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE' },
+                description: error.message,
+                type: MessageBarType.error
+            });
+            throw error;
+        }
+    }
+    private async addFragmentListToModel(): Promise<void> {
+        try {
+            const { fragments } = await getFragments();
+
+            this.model.setProperty('/fragmentList', fragments);
+        } catch (e) {
+            const error = getError(e);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_ADD_FRAGMENT_FAILURE_TITLE' },
                 description: error.message,
                 type: MessageBarType.error
             });

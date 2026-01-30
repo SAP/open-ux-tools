@@ -84,7 +84,12 @@ export function addCustomFragment(basePath: string, change: AppDescriptorV4Chang
             const fullPath = join(basePath, fragmentPath);
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', config.path);
             const text = fs.read(fragmentTemplatePath);
-            const template = render(text, config.getData());
+            const template = render(text, {
+                viewName: undefined,
+                controlType: undefined,
+                targetAggregation: undefined,
+                ...config.getData()
+            });
             fs.write(fullPath, template);
             logger.info(`XML Fragment "${fragmentPath}" was created`);
         } catch (error) {
