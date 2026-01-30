@@ -1,6 +1,6 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
 import type { ParsedService } from '../parser';
-import type { LinkerContext } from './types';
+import type { LinkerContext, ConfigurationBase } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectTables, collectSections } from './annotations';
@@ -41,26 +41,6 @@ export interface AnnotationBasedNode<T extends AnnotationNode, Configuration ext
     children: Children[];
 }
 
-export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
-    type: T;
-    annotation?: unknown;
-    configuration: {
-        [K in keyof Configuration]: {
-            /**
-             * All possible supported configuration values. Empty means dynamic value resolved by framework at runtime.
-             */
-            values: Configuration[K][];
-            /**
-             * Actual value as defined in the manifest file.
-             */
-            valueInFile?: Configuration[K];
-            /**
-             * Absolute path in manifest where this configuration is defined.
-             */
-            configurationPath: string[];
-        };
-    };
-}
 export type OrphanSection = ConfigurationBase<'orphan-section', {}>;
 export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
 export type Section = TableSection | OrphanSection;
@@ -184,7 +164,7 @@ export type NodeLookup<T extends Node> = {
  * @param context - The linker context containing app and service information
  */
 export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
-    const linkedApp = linkApplicationSettings(context.app.manifestObject['sap.fe'] ?? {});
+    const linkedApp = linkApplicationSettings(context);
     const manifest = context.app.manifestObject;
     const routingTargets = manifest['sap.ui5']?.routing?.targets;
     if (!routingTargets) {
@@ -528,9 +508,11 @@ function resolveNavigationProperties(root: MetadataElement, segments: string[]):
 /**
  * Links application-level settings from manifest configuration for Fiori Elements V4.
  *
- * @param config - The manifest application settings
+ * @param context - Linker context containing parsed application data
+ * @returns A linked Fiori Elements V4 application object
  */
-function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV4App {
+function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
+    const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
