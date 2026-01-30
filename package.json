@@ -13,7 +13,7 @@
         "@types/node": "18.19.130",
         "autoprefixer": "10.4.21",
         "check-dependency-version-consistency": "5.0.1",
-        "esbuild": "0.25.11",
+        "esbuild": "0.25.7",
         "esbuild-sass-plugin": "3.3.1",
         "eslint": "9.39.1",
         "eslint-config-prettier": "10.1.1",

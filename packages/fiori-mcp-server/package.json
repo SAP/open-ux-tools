@@ -52,8 +52,8 @@
     },
     "devDependencies": {
         "npm-run-all2": "8.0.4",
-        "esbuild": "0.25.6",
-        "@modelcontextprotocol/sdk": "1.25.2",
+        "esbuild": "0.25.7",
+        "@modelcontextprotocol/sdk": "1.25.3",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap/ux-specification": "1.142.0",
         "@sap-ux/project-access": "workspace:*",
