@@ -2464,6 +2464,9 @@ importers:
       '@sap-ai-sdk/langchain':
         specifier: 2.3.0
         version: 2.3.0
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/annotation-converter':
         specifier: 0.10.19
         version: 0.10.19
