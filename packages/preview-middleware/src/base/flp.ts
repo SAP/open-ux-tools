@@ -8,7 +8,7 @@ import type http from 'node:http';
 import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
-import path, { dirname, join, posix } from 'node:path';
+import { dirname, join, posix } from 'node:path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
@@ -65,6 +65,12 @@ import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
+
+/**
+ * Global registry to track FlpSandbox instances by app ID.
+ * This is used for CAP projects where multiple apps share the same server.
+ */
+export const flpSandboxRegistry: Map<string, FlpSandbox> = new Map();
 
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
@@ -201,7 +207,13 @@ export class FlpSandbox {
             await this.addCardGeneratorMiddlewareRoute();
             await this.addStoreCardManifestRoute();
             await this.addStoreI18nKeysRoute();
+
+            // For CAP projects, register root-level routes
+            this.addRootLevelCardRoutes();
         }
+
+        // Register this instance in the global registry for CAP projects
+        flpSandboxRegistry.set(id, this);
 
         if (this.rta) {
             this.rta.options ??= {};
@@ -1012,7 +1024,7 @@ export class FlpSandbox {
      * @param {Response} res - The HTTP response object used to send the response back to the client.
      * @returns {Promise<void>} A promise that resolves when the operation is complete.
      */
-    private async storeCardManifestHandler(req: Request, res: Response): Promise<void> {
+    public async storeCardManifestHandler(req: Request, res: Response): Promise<void> {
         try {
             const {
                 floorplan,
@@ -1025,7 +1037,14 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
+            const projectSourcePath = this.utils.getProject().getSourcePath();
+            this.logger.debug(`storeCardManifestHandler: projectSourcePath = ${projectSourcePath}`);
+            // If projectSourcePath already ends with 'webapp', use it directly
+            // Otherwise, call getWebappPath to find the webapp folder
+            const webappPath = projectSourcePath.endsWith('webapp')
+                ? projectSourcePath
+                : await getWebappPath(projectSourcePath, this.fs);
+            this.logger.debug(`storeCardManifestHandler: webappPath = ${webappPath}`);
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
             const integrationCard = getIntegrationCard(manifests);
@@ -1045,12 +1064,17 @@ export class FlpSandbox {
                 }
             } satisfies ManifestNamespace.EmbedsSettings;
 
-            const appAccess = await createApplicationAccess(path.resolve(), this.fs);
+            // For createApplicationAccess, we need the project root (parent of webapp)
+            // If projectSourcePath ends with 'webapp', use its parent directory
+            const projectRoot = projectSourcePath.endsWith('webapp') ? dirname(projectSourcePath) : projectSourcePath;
+            this.logger.debug(`storeCardManifestHandler: projectRoot = ${projectRoot}`);
+            const appAccess = await createApplicationAccess(projectRoot, this.fs);
             await appAccess.updateManifestJSON(this.manifest, this.fs);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
         } catch (error) {
             this.logger.error(`Files could not be created/updated. Error: ${error}`);
-            this.sendResponse(res, 'text/plain', 500, 'Files could not be created/updated.');
+            this.logger.error(`Stack trace: ${error instanceof Error ? error.stack : 'N/A'}`);
+            this.sendResponse(res, 'text/plain', 500, `Files could not be created/updated. Error: ${error}`);
         }
     }
 
@@ -1076,9 +1100,16 @@ export class FlpSandbox {
      * @param {Response} res - The HTTP response object used to send the response back to the client.
      * @returns {Promise<void>} A promise that resolves when the operation is complete.
      */
-    private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
+    public async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
+            const projectSourcePath = this.utils.getProject().getSourcePath();
+            this.logger.debug(`storeI18nKeysHandler: projectSourcePath = ${projectSourcePath}`);
+            // If projectSourcePath already ends with 'webapp', use it directly
+            // Otherwise, call getWebappPath to find the webapp folder
+            const webappPath = projectSourcePath.endsWith('webapp')
+                ? projectSourcePath
+                : await getWebappPath(projectSourcePath, this.fs);
+            this.logger.debug(`storeI18nKeysHandler: webappPath = ${webappPath}`);
             const i18nConfig = this.manifest['sap.app'].i18n;
             let i18nPath = 'i18n/i18n.properties';
             let fallbackLocale: string | undefined;
@@ -1086,23 +1117,36 @@ export class FlpSandbox {
 
             if (typeof i18nConfig === 'string') {
                 i18nPath = i18nConfig;
-            } else if (typeof i18nConfig === 'object' && i18nConfig !== null && 'bundleUrl' in i18nConfig) {
-                const {
-                    bundleUrl: i18nPathFromConfig,
-                    supportedLocales: locales = [],
-                    fallbackLocale: fallback
-                } = i18nConfig as {
-                    bundleUrl: string;
+            } else if (typeof i18nConfig === 'object' && i18nConfig !== null) {
+                const config = i18nConfig as {
+                    bundleUrl?: string;
+                    bundleName?: string;
                     supportedLocales?: string[];
                     fallbackLocale?: string;
                 };
 
-                i18nPath = i18nPathFromConfig;
-                supportedLocales = locales;
-                fallbackLocale = fallback;
+                // bundleName takes precedence over bundleUrl (as per SAP UI5 spec)
+                if (config.bundleName) {
+                    // Convert bundleName (e.g., "sap.fe.cap.travel.i18n.i18n") to path
+                    // Remove the app ID prefix and convert dots to slashes
+                    const bundleNameParts = config.bundleName.split('.');
+                    i18nPath = `${bundleNameParts.slice(-2).join('/')}.properties`;
+                } else if (config.bundleUrl) {
+                    i18nPath = config.bundleUrl;
+                }
+
+                supportedLocales = config.supportedLocales || [];
+                fallbackLocale = config.fallbackLocale;
             }
 
-            const requestedLocale = (req.query.locale as string) ?? fallbackLocale ?? '';
+            // ALWAYS use fallbackLocale if req.query.locale is not provided
+            let requestedLocale = (req.query.locale as string) || fallbackLocale || '';
+
+            // If still empty and we have supportedLocales, use the first one
+            if (!requestedLocale && supportedLocales.length > 0) {
+                requestedLocale = supportedLocales[0];
+            }
+
             const baseFilePath = join(webappPath, i18nPath);
             const filePath = requestedLocale
                 ? baseFilePath.replace('.properties', `_${requestedLocale}.properties`)
@@ -1126,7 +1170,8 @@ export class FlpSandbox {
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
         } catch (error) {
             this.logger.error(`File could not be updated. Error: ${error}`);
-            this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');
+            this.logger.error(`Stack trace: ${error instanceof Error ? error.stack : 'N/A'}`);
+            this.sendResponse(res, 'text/plain', 500, `File could not be updated. Error: ${error}`);
         }
     }
 
@@ -1143,6 +1188,187 @@ export class FlpSandbox {
         this.router.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
             await this.storeI18nKeysHandler(req, res);
         });
+    }
+
+    /**
+     * Adds root-level card generator routes for CAP projects.
+     * This method registers routes at the CDS server's root level using cds.app.
+     * The card generator client makes requests to /cards/store and /editor/i18n at the root level,
+     * but in CAP projects the middleware is mounted under the app's mount path.
+     *
+     * @private
+     */
+    private addRootLevelCardRoutes(): void {
+        if (!this.cardGenerator?.path) {
+            return;
+        }
+
+        // Only register for CAP projects
+        if (this.projectType !== 'CAPJava' && this.projectType !== 'CAPNodejs') {
+            return;
+        }
+
+        this.logger.debug('Adding root-level card routes for CAP project');
+
+        // Store this FlpSandbox instance in a global registry keyed by app ID
+        const appId = this.manifest['sap.app']?.id ?? '';
+        const globalRegistry =
+            ((global as Record<string, unknown>).__flpSandboxRegistry as Record<string, FlpSandbox>) ?? {};
+        globalRegistry[appId] = this;
+        (global as Record<string, unknown>).__flpSandboxRegistry = globalRegistry;
+
+        // Try to access the CDS server's express app to register routes at the root level
+        let cds: {
+            app?: {
+                use: (path: string, handler: unknown) => void;
+                post: (path: string, handler: (req: Request, res: Response) => Promise<void>) => void;
+                get: (path: string, handler: (req: Request, res: Response, next: NextFunction) => void) => void;
+            };
+            on: (event: string, handler: () => void) => void;
+        };
+
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports, sonarjs/no-implicit-dependencies
+            cds = require('@sap/cds');
+        } catch {
+            // @sap/cds is not available (e.g., in non-CAP projects or test environments)
+            this.logger.debug('@sap/cds not available, skipping root-level card routes registration');
+            return;
+        }
+
+        // Only register routes once (check if already registered)
+        if ((global as Record<string, unknown>).__cardRoutesRegistered) {
+            this.logger.debug('Root-level card routes already registered, skipping');
+            return;
+        }
+
+        // Register routes at root level when the server is served
+        const registerRootRoutes = (): void => {
+            if ((global as Record<string, unknown>).__cardRoutesRegistered) {
+                return;
+            }
+
+            if (cds.app) {
+                this.logger.debug('Registering card generator routes at root level');
+
+                // Helper to find the correct FlpSandbox instance based on referer
+                const findFlpSandbox = (req: Request): FlpSandbox | undefined => {
+                    const referer = req.headers.referer || '';
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const registry = (global as any).__flpSandboxRegistry as Record<string, FlpSandbox> | undefined;
+                    if (!registry) {
+                        return undefined;
+                    }
+
+                    // Try to find the app ID from the referer URL
+                    for (const [regAppId, sandbox] of Object.entries(registry)) {
+                        // Check if the referer contains the app's namespace (e.g., sap.fe.cap.travel)
+                        const appPath = regAppId.replace(/\./g, '/');
+                        if (referer.includes(appPath) || referer.includes(regAppId)) {
+                            return sandbox;
+                        }
+                    }
+
+                    // Fallback: return the first sandbox
+                    const sandboxes = Object.values(registry);
+                    return sandboxes.length > 0 ? sandboxes[0] : undefined;
+                };
+
+                // Register /cards/store route at root level
+                cds.app.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
+                cds.app.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
+                    const sandbox = findFlpSandbox(req);
+                    if (sandbox) {
+                        await sandbox.storeCardManifestHandler(req, res);
+                    } else {
+                        res.status(500).send('No FlpSandbox instance found');
+                    }
+                });
+
+                // Register /editor/i18n route at root level
+                cds.app.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
+                cds.app.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
+                    const sandbox = findFlpSandbox(req);
+                    if (sandbox) {
+                        await sandbox.storeI18nKeysHandler(req, res);
+                    } else {
+                        res.status(500).send('No FlpSandbox instance found');
+                    }
+                });
+
+                // Register /cards/* route at root level to serve card manifest files
+                cds.app.get('/cards/*', (req: Request, res: Response, next: NextFunction) => {
+                    const sandbox = findFlpSandbox(req);
+                    if (sandbox) {
+                        const srcPath = sandbox.utils.getProject().getSourcePath();
+                        const webappPath = srcPath.endsWith('webapp') ? srcPath : srcPath;
+                        const filePath = join(webappPath, req.path);
+                        try {
+                            const content = readFileSync(filePath, 'utf-8');
+                            const contentType = req.path.endsWith('.json') ? 'application/json' : 'text/plain';
+                            res.setHeader('Content-Type', contentType);
+                            res.send(content);
+                        } catch (error) {
+                            next();
+                        }
+                    } else {
+                        next();
+                    }
+                });
+
+                // Register /manifest.json route at root level to serve the app manifest
+                cds.app.get('/manifest.json', (req: Request, res: Response, next: NextFunction) => {
+                    const sandbox = findFlpSandbox(req);
+                    if (sandbox) {
+                        const srcPath = sandbox.utils.getProject().getSourcePath();
+                        const webappPath = srcPath.endsWith('webapp') ? srcPath : srcPath;
+                        const filePath = join(webappPath, 'manifest.json');
+                        try {
+                            const content = readFileSync(filePath, 'utf-8');
+                            res.setHeader('Content-Type', 'application/json');
+                            res.send(content);
+                        } catch (error) {
+                            next();
+                        }
+                    } else {
+                        next();
+                    }
+                });
+
+                // Register /i18n/* route at root level to serve i18n files
+                cds.app.get('/i18n/*', (req: Request, res: Response, next: NextFunction) => {
+                    const sandbox = findFlpSandbox(req);
+                    if (sandbox) {
+                        const srcPath = sandbox.utils.getProject().getSourcePath();
+                        const webappPath = srcPath.endsWith('webapp') ? srcPath : srcPath;
+                        const filePath = join(webappPath, req.path);
+                        try {
+                            const content = readFileSync(filePath, 'utf-8');
+                            res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+                            res.send(content);
+                        } catch (error) {
+                            next();
+                        }
+                    } else {
+                        next();
+                    }
+                });
+
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (global as any).__cardRoutesRegistered = true;
+                this.logger.info('Card generator routes registered at root level');
+            }
+        };
+
+        // Try to register immediately if cds.app is available
+        if (cds.app) {
+            registerRootRoutes();
+        } else {
+            // Otherwise, wait for the 'served' event
+            cds.on('served', () => {
+                registerRootRoutes();
+            });
+        }
     }
 
     /**

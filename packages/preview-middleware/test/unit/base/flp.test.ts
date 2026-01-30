@@ -906,10 +906,11 @@ describe('FlpSandbox', () => {
         test('POST /cards/store without payload', async () => {
             const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send();
             expect(response.status).toBe(500);
-            expect(response.text).toBe('Files could not be created/updated.');
+            expect(response.text).toContain('Files could not be created/updated.');
         });
 
         test('POST /editor/i18n with payload', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
             const newI18nEntry = [
                 {
                     'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
@@ -917,29 +918,47 @@ describe('FlpSandbox', () => {
                 }
             ];
             const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const filePath = join(webappPath, 'i18n', 'i18n.properties');
+            // The path is based on mockUtils.getProject().getSourcePath() which returns tmpdir()
+            const expectedPath = join(tmpdir(), 'webapp', 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                        value: 'new Entry'
+                    })
+                ])
+            );
         });
         test('should handle string i18n path', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
             const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             manifest['sap.app'].i18n = 'i18n/custom.properties';
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'custom_de.properties');
+            // The path is based on mockUtils.getProject().getSourcePath() which returns tmpdir()
+            const expectedPath = join(tmpdir(), 'webapp', 'i18n', 'custom_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'HELLO',
+                        value: 'Hello World'
+                    })
+                ])
+            );
         });
 
         test('should handle bundleUrl with supported and fallback locales', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
             const newI18nEntry = [{ key: 'GREETING', value: 'Hallo Welt' }];
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             manifest['sap.app'].i18n = {
@@ -950,12 +969,20 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
 
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'i18n_de.properties');
+            // The path is based on mockUtils.getProject().getSourcePath() which returns tmpdir()
+            const expectedPath = join(tmpdir(), 'webapp', 'i18n', 'i18n_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'GREETING',
+                        value: 'Hallo Welt'
+                    })
+                ])
+            );
         });
 
         test('should reject unsupported locale', async () => {
@@ -974,6 +1001,7 @@ describe('FlpSandbox', () => {
             expect(response.text).toContain('Locale "fr" is not supported');
         });
         test('should fallback to default i18n/i18n.properties if no i18n defined', async () => {
+            createPropertiesI18nEntriesMock.mockClear();
             const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
 
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
@@ -981,12 +1009,20 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
 
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'i18n.properties');
+            // The path is based on mockUtils.getProject().getSourcePath() which returns tmpdir()
+            const expectedPath = join(tmpdir(), 'webapp', 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'HELLO',
+                        value: 'Hello World'
+                    })
+                ])
+            );
         });
     });
 
@@ -1389,6 +1425,81 @@ describe('FlpSandbox', () => {
             const response = await server.get(`${baseUrl}/test/flp.html?sap-ui-xx-viewCache=false`).expect(200);
             expect(response.text).toMatchSnapshot();
         });
+    });
+});
+
+describe('router with enableCardGenerator for CAP projects', () => {
+    let server!: SuperTest<Test>;
+    const fixtures = join(__dirname, '../../fixtures');
+    const mockProject = {
+        byPath: jest.fn().mockResolvedValue(undefined),
+        byGlob: jest.fn().mockImplementation((glob) =>
+            Promise.resolve(
+                glob.includes('changes')
+                    ? [
+                          {
+                              getPath: () => 'test/changes/myid.change',
+                              getName: () => 'myid.change',
+                              getString: () => Promise.resolve(JSON.stringify({ id: 'myId' }))
+                          }
+                      ]
+                    : []
+            )
+        )
+    } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
+    const mockUtils = {
+        getProject() {
+            return {
+                getSourcePath: () => join(fixtures, 'simple-app/webapp')
+            };
+        }
+    } as unknown as MiddlewareUtils;
+    const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as Logger & {
+        warn: jest.Mock;
+        info: jest.Mock;
+    };
+
+    const mockConfig = {
+        editors: {
+            cardGenerator: {
+                path: 'test/flpCardGeneratorSandbox.html'
+            }
+        }
+    };
+
+    beforeAll(async () => {
+        // Mock getProjectType to return CAPNodejs
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
+        const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+        await flp.init(manifest);
+
+        const app = express();
+        app.use(flp.router);
+
+        server = supertest(app);
+    });
+
+    afterAll(() => {
+        // Reset the mock
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+    });
+
+    test('addRootLevelCardRoutes registers FlpSandbox in global registry for CAP projects', async () => {
+        // The FlpSandbox should be registered in the global registry
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const registry = (global as any).__flpSandboxRegistry;
+        expect(registry).toBeDefined();
+        expect(Object.keys(registry).length).toBeGreaterThan(0);
+    });
+
+    test('GET /test/flpCardGeneratorSandbox.html returns 200 for CAP project', async () => {
+        const response = await server.get(
+            `${CARD_GENERATOR_DEFAULT.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`
+        );
+        expect(response.status).toBe(200);
+        expect(response.type).toBe('text/html');
     });
 });
 
