@@ -7,7 +7,7 @@ Object {
 dist/
 .tmp
 .env
-.reuse
+.adp
 *.zip",
     "state": "modified",
   },
@@ -26,7 +26,9 @@ dist/
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
-		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
+		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
+		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
 		\\"type\\": \\"git\\",
@@ -41,7 +43,8 @@ dist/
 		\\"@ui5/cli\\": \\"^4.0.33\\",
 		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
-		\\"rimraf\\": \\"^5.0.5\\"
+		\\"rimraf\\": \\"^5.0.5\\",
+		\\"mbt\\": \\"^1.2.34\\"
 	}
 }
 ",
@@ -147,7 +150,7 @@ test.namespace_sap.app.title=Test CF App",
 dist/
 .tmp
 .env
-.reuse
+.adp
 *.zip",
     "state": "modified",
   },
@@ -166,7 +169,9 @@ dist/
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
-		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
+		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
+		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
 		\\"type\\": \\"git\\",
@@ -181,7 +186,8 @@ dist/
 		\\"@ui5/cli\\": \\"^4.0.33\\",
 		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
-		\\"rimraf\\": \\"^5.0.5\\"
+		\\"rimraf\\": \\"^5.0.5\\",
+		\\"mbt\\": \\"^1.2.34\\"
 	}
 }
 ",
@@ -292,7 +298,7 @@ Object {
 dist/
 .tmp
 .env
-.reuse
+.adp
 *.zip",
     "state": "modified",
   },
@@ -311,7 +317,9 @@ dist/
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
-		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
+		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
+		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
 		\\"type\\": \\"git\\",
@@ -326,7 +334,8 @@ dist/
 		\\"@ui5/cli\\": \\"^4.0.33\\",
 		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
-		\\"rimraf\\": \\"^5.0.5\\"
+		\\"rimraf\\": \\"^5.0.5\\",
+		\\"mbt\\": \\"^1.2.34\\"
 	}
 }
 ",
@@ -432,7 +441,7 @@ test.namespace_sap.app.title=Test CF App",
 dist/
 .tmp
 .env
-.reuse
+.adp
 *.zip",
     "state": "modified",
   },
@@ -451,7 +460,9 @@ dist/
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
-		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
+		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
+		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
 		\\"type\\": \\"git\\",
@@ -466,7 +477,8 @@ dist/
 		\\"@ui5/cli\\": \\"^4.0.33\\",
 		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
-		\\"rimraf\\": \\"^5.0.5\\"
+		\\"rimraf\\": \\"^5.0.5\\",
+		\\"mbt\\": \\"^1.2.34\\"
 	}
 }
 ",
@@ -608,7 +620,7 @@ test.namespace_sap.app.title=Test CF App",
 dist/
 .tmp
 .env
-.reuse
+.adp
 *.zip",
     "state": "modified",
   },
@@ -627,7 +639,9 @@ dist/
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
-		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
+		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
+		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
 		\\"type\\": \\"git\\",
@@ -642,7 +656,8 @@ dist/
 		\\"@ui5/cli\\": \\"^4.0.33\\",
 		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
-		\\"rimraf\\": \\"^5.0.5\\"
+		\\"rimraf\\": \\"^5.0.5\\",
+		\\"mbt\\": \\"^1.2.34\\"
 	}
 }
 ",
@@ -753,7 +768,7 @@ Object {
 dist/
 .tmp
 .env
-.reuse
+.adp
 *.zip",
     "state": "modified",
   },
@@ -772,7 +787,9 @@ dist/
 		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
 		\\"zip\\": \\"cd dist && npx bestzip ../test-cf-project.zip *\\",
 		\\"clean\\": \\"npx rimraf test-cf-project.zip dist\\",
-		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
+		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\",
+		\\"build-mta\\": \\"rimraf resources mta_archives && mbt build --mtar archive --source ../\\",
+		\\"deploy\\": \\"cf deploy ../mta_archives/archive.mtar\\"
 	},
 	\\"repository\\": {
 		\\"type\\": \\"git\\",
@@ -787,7 +804,8 @@ dist/
 		\\"@ui5/cli\\": \\"^4.0.33\\",
 		\\"@ui5/task-adaptation\\": \\"^1.5.3\\",
 		\\"bestzip\\": \\"^2.2.1\\",
-		\\"rimraf\\": \\"^5.0.5\\"
+		\\"rimraf\\": \\"^5.0.5\\",
+		\\"mbt\\": \\"^1.2.34\\"
 	}
 }
 ",

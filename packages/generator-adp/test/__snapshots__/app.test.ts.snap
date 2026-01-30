@@ -389,7 +389,9 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",
 		"zip": "cd dist && npx bestzip ../app.variant.zip *",
 		"clean": "npx rimraf app.variant.zip dist",
-		"build-ui5": "npm explore @ui5/task-adaptation -- npm run rollup"
+		"build-ui5": "npm explore @ui5/task-adaptation -- npm run rollup",
+		"build-mta": "rimraf resources mta_archives && mbt build --mtar archive --source ../",
+		"deploy": "cf deploy ../mta_archives/archive.mtar"
 	},
 	"repository": {
 		"type": "git",
@@ -404,7 +406,8 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 		"@ui5/cli": "^4.0.33",
 		"@ui5/task-adaptation": "^1.5.3",
 		"bestzip": "^2.2.1",
-		"rimraf": "^5.0.5"
+		"rimraf": "^5.0.5",
+		"mbt": "^1.2.34"
 	}
 }
 "
