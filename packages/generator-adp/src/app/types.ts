@@ -1,5 +1,5 @@
 import type Generator from 'yeoman-generator';
-import type { AppWizard, type Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
