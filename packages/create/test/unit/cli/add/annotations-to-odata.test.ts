@@ -58,7 +58,6 @@ describe('add/annotations', () => {
             client: '100'
         }
     });
-    jest.spyOn(validations, 'validateAdpProject').mockResolvedValue(undefined);
     jest.spyOn(adp, 'getPromptsForAddAnnotationsToOData').mockImplementation(() => []);
     jest.spyOn(adp.ManifestService, 'initMergedManifest').mockResolvedValue({
         fetchBaseManifest: jest.fn(),
@@ -86,16 +85,16 @@ describe('add/annotations', () => {
         jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
         jest.spyOn(adp, 'getVariant').mockReturnValue(descriptorVariant);
         jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
+        jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
+        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValue(false);
     });
 
     test('should result in error when executed for CF projects', async () => {
-        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
-            new Error('This command is not supported for CF projects.')
-        );
+        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValueOnce(true);
 
         const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
-        await command.parseAsync(getArgv(appRoot));
+        await command.parseAsync(getArgv());
 
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for CF projects.');
@@ -115,7 +114,7 @@ describe('add/annotations', () => {
     });
 
     test('should result in error when the project is not adaptation project', async () => {
-        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
+        jest.spyOn(validations, 'validateAdpAppType').mockRejectedValueOnce(
             new Error('This command can only be used for an adaptation project')
         );
 
