@@ -50,6 +50,8 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         // Add optional parameters if provided
         if (projectName) {
             jsonInput.projectName = projectName;
+        } else {
+            jsonInput.projectName = getDefaultProjectName(finalTargetFolder);
         }
         if (namespace) {
             jsonInput.namespace = namespace;
@@ -70,7 +72,6 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         // Ensure target folder directory exists
         await FSpromises.mkdir(finalTargetFolder, { recursive: true });
 
-        // Convert to JSON string
         const jsonString = JSON.stringify(jsonInput);
 
         // Execute yo command with JSON argument
@@ -84,11 +85,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
             logger.error(stderr);
         }
 
-        // Determine the project path
-        const projectPath = projectName
-            ? join(finalTargetFolder, projectName)
-            : join(finalTargetFolder, getDefaultProjectName(finalTargetFolder));
-
+        const projectPath = join(finalTargetFolder, jsonInput.projectName);
         return {
             functionalityId: details.functionalityId,
             status: 'Success',
