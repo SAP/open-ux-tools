@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.3.0
+
+### Minor Changes
+
+- 416428c: Add copy to clipboard property rule for OData V2 application tables.
+
 ## 9.2.4
 
 ### Patch Changes
