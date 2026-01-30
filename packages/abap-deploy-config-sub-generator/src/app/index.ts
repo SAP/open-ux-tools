@@ -94,7 +94,6 @@ export default class extends DeploymentGenerator {
 
         setYeomanEnvConflicterForce(this.env, this.options.force);
 
-
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();
         }
