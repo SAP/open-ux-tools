@@ -372,5 +372,40 @@ describe('outline nodes', () => {
                 }
             ]);
         });
+
+        test('element with unprocessed child types', async () => {
+            expect(
+                await transformNodes(
+                    [
+                        {
+                            id: 'parent-element',
+                            technicalName: 'sap.m.Table',
+                            editable: false,
+                            type: 'element',
+                            visible: true,
+                            elements: [
+                                {
+                                    id: 'template-1',
+                                    technicalName: 'aggregationBindingTemplate',
+                                    editable: false,
+                                    type: 'aggregationBindingTemplate' as any,
+                                    visible: true
+                                }
+                            ]
+                        }
+                    ],
+                    'UI_ADAPTATION'
+                )
+            ).toStrictEqual([
+                {
+                    controlId: 'parent-element',
+                    controlType: 'sap.m.Table',
+                    editable: false,
+                    name: 'Table',
+                    visible: true,
+                    children: []
+                }
+            ]);
+        });
     });
 });
