@@ -1,9 +1,9 @@
 {
-  "@odata.context": "$metadata#Travel(_Booking(_BookSupplement()))",
-  "@odata.metadataEtag": "W/\"20260112210435\"",
+  "@odata.context": "$metadata#Travel(_Booking(_BookSupplement(_Travel())))",
+  "@odata.metadataEtag": "W/\"20260126204201\"",
   "value": [
     {
-      "@odata.etag": "W/\"SADL-202601151014145823360C~20260115101414.5823360\"",
+      "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
       "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
 
       },
@@ -19,25 +19,25 @@
       "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
 
       },
-      "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-      "TravelID": "245",
-      "AgencyID": "80025",
-      "AgencyName": "Global Travel Solutions Inc.",
-      "CustomerID": "1847",
-      "CustomerName": "Anderson",
+      "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+      "TravelID": "150",
+      "AgencyID": "70012",
+          "AgencyName": "Travel Agency Inc.",
+          "CustomerID": "12",
+          "CustomerName": "Customer C",
       "BeginDate": "2026-11-20",
       "EndDate": "2026-12-31",
-      "BookingFee": 1024,
-      "TotalPrice": 12003.5,
+      "BookingFee": 4,
+      "TotalPrice": 11038.5,
       "CurrencyCode": "EUR",
-      "Memo": "Business trip to conference",
+      "Memo": "test",
       "Status": "N",
       "Confirmed": false,
       "CreationDateTime": null,
       "CreationDateTimeTimezone": "",
       "TravelCode": 0,
-      "LastChangedAtTravel": "2026-01-15T10:14:14.582336Z",
-      "HasDraftEntity": true,
+      "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+      "HasDraftEntity": false,
       "DraftEntityCreationDateTime": null,
       "DraftEntityLastChangeDateTime": null,
       "HasActiveEntity": false,
@@ -67,21 +67,21 @@
           "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Prepare_Booking": {
 
           },
-          "BookingUUID": "b8e4d9f1-7c2a-4e3b-a6d5-3f9e8b2c4a1d",
-          "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-          "TravelID": "245",
+          "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba02d3b",
+          "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+          "TravelID": "150",
           "BookingID": "20",
           "BookingDate": "2025-11-20",
-          "CustomerID": "2156",
-          "CustomerName": "Martinez",
-          "AirlineID": "LH",
-          "AirlineName": "Deutsche Lufthansa AG",
+          "CustomerID": "20",
+          "CustomerName": "Customer A",
+          "AirlineID": "AA",
+          "AirlineName": "Airline Alpha",
           "ConnectionID": "400",
           "FlightDate": "2026-01-17",
           "FlightPrice": 5484,
           "CurrencyCode": "EUR",
           "LastChangedAtBooking": "2025-11-18T09:35:14.675353Z",
-          "HasDraftEntity": true,
+          "HasDraftEntity": false,
           "DraftEntityCreationDateTime": null,
           "DraftEntityLastChangeDateTime": null,
           "HasActiveEntity": false,
@@ -103,10 +103,10 @@
           "_BookSupplement": [
             {
               "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
-              "BookingSupplementUUID": "c9f5e0a2-8d3b-4f4c-b7e6-4a0f9c3d5b2e",
-              "BookingUUID": "b8e4d9f1-7c2a-4e3b-a6d5-3f9e8b2c4a1d",
-              "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-              "TravelID": "245",
+              "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba08d3b",
+              "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba02d3b",
+              "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+              "TravelID": "150",
               "BookingID": "20",
               "BookingSupplementID": "21",
               "SupplementID": "BV-0009",
@@ -114,7 +114,7 @@
               "Price": 2.3,
               "CurrencyCode": "EUR",
               "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
-              "HasDraftEntity": true,
+              "HasDraftEntity": false,
               "DraftEntityCreationDateTime": null,
               "DraftEntityLastChangeDateTime": null,
               "HasActiveEntity": false,
@@ -123,14 +123,74 @@
                 "Deletable": true,
                 "Updatable": true
               },
-              "SAP__Messages": []
+              "SAP__Messages": [],
+              "_Travel": {
+                "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+                },
+                "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+                "TravelID": "150",
+                "AgencyID": "70012",
+                "AgencyName": "Travel Agency Inc.",
+                "CustomerID": "12",
+                "CustomerName": "Customer C",
+                "BeginDate": "2026-11-20",
+                "EndDate": "2026-12-31",
+                "BookingFee": 4,
+                "TotalPrice": 11038.5,
+                "CurrencyCode": "EUR",
+                "Memo": "test",
+                "Status": "N",
+                "Confirmed": false,
+                "CreationDateTime": null,
+                "CreationDateTimeTimezone": "",
+                "TravelCode": 0,
+                "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+                "HasDraftEntity": false,
+                "DraftEntityCreationDateTime": null,
+                "DraftEntityLastChangeDateTime": null,
+                "HasActiveEntity": false,
+                "IsActiveEntity": true,
+                "__CreateByAssociationControl": {
+                  "_Booking": true
+                },
+                "__EntityControl": {
+                  "Deletable": true,
+                  "Updatable": true
+                },
+                "__FieldControl": {
+                  "BookingFee": 3
+                },
+                "__OperationControl": {
+                  "Check": true,
+                  "deductDiscount": true,
+                  "dummyAction": true,
+                  "Edit": true,
+                  "setToBooked": true,
+                  "setToNew": false
+                },
+                "SAP__Messages": []
+              }
             },
             {
               "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
-              "BookingSupplementUUID": "d0a6f1b3-9e4c-5a5d-c8f7-5b1a0d4e6c3f",
-              "BookingUUID": "b8e4d9f1-7c2a-4e3b-a6d5-3f9e8b2c4a1d",
-              "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-              "TravelID": "245",
+              "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba0ad3b",
+              "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba02d3b",
+              "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+              "TravelID": "150",
               "BookingID": "20",
               "BookingSupplementID": "22",
               "SupplementID": "BV-0009",
@@ -138,7 +198,7 @@
               "Price": 2.3,
               "CurrencyCode": "EUR",
               "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
-              "HasDraftEntity": true,
+              "HasDraftEntity": false,
               "DraftEntityCreationDateTime": null,
               "DraftEntityLastChangeDateTime": null,
               "HasActiveEntity": false,
@@ -147,14 +207,74 @@
                 "Deletable": true,
                 "Updatable": true
               },
-              "SAP__Messages": []
+              "SAP__Messages": [],
+              "_Travel": {
+                "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+                },
+                "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+                "TravelID": "150",
+                "AgencyID": "70012",
+                "AgencyName": "Travel Agency Inc.",
+                "CustomerID": "12",
+                "CustomerName": "Customer C",
+                "BeginDate": "2026-11-20",
+                "EndDate": "2026-12-31",
+                "BookingFee": 4,
+                "TotalPrice": 11038.5,
+                "CurrencyCode": "EUR",
+                "Memo": "test",
+                "Status": "N",
+                "Confirmed": false,
+                "CreationDateTime": null,
+                "CreationDateTimeTimezone": "",
+                "TravelCode": 0,
+                "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+                "HasDraftEntity": false,
+                "DraftEntityCreationDateTime": null,
+                "DraftEntityLastChangeDateTime": null,
+                "HasActiveEntity": false,
+                "IsActiveEntity": true,
+                "__CreateByAssociationControl": {
+                  "_Booking": true
+                },
+                "__EntityControl": {
+                  "Deletable": true,
+                  "Updatable": true
+                },
+                "__FieldControl": {
+                  "BookingFee": 3
+                },
+                "__OperationControl": {
+                  "Check": true,
+                  "deductDiscount": true,
+                  "dummyAction": true,
+                  "Edit": true,
+                  "setToBooked": true,
+                  "setToNew": false
+                },
+                "SAP__Messages": []
+              }
             },
             {
               "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
-              "BookingSupplementUUID": "e1b7a2c4-0f5d-6b6e-d9a8-6c2b1e5f7d4a",
-              "BookingUUID": "b8e4d9f1-7c2a-4e3b-a6d5-3f9e8b2c4a1d",
-              "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-              "TravelID": "245",
+              "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba0cd3b",
+              "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba02d3b",
+              "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+              "TravelID": "150",
               "BookingID": "20",
               "BookingSupplementID": "23",
               "SupplementID": "BV-0009",
@@ -162,7 +282,7 @@
               "Price": 2.3,
               "CurrencyCode": "EUR",
               "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
-              "HasDraftEntity": true,
+              "HasDraftEntity": false,
               "DraftEntityCreationDateTime": null,
               "DraftEntityLastChangeDateTime": null,
               "HasActiveEntity": false,
@@ -171,7 +291,67 @@
                 "Deletable": true,
                 "Updatable": true
               },
-              "SAP__Messages": []
+              "SAP__Messages": [],
+              "_Travel": {
+                "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+                },
+                "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+                "TravelID": "150",
+                "AgencyID": "70012",
+                "AgencyName": "Travel Agency Inc.",
+                "CustomerID": "12",
+                "CustomerName": "Customer C",
+                "BeginDate": "2026-11-20",
+                "EndDate": "2026-12-31",
+                "BookingFee": 4,
+                "TotalPrice": 11038.5,
+                "CurrencyCode": "EUR",
+                "Memo": "test",
+                "Status": "N",
+                "Confirmed": false,
+                "CreationDateTime": null,
+                "CreationDateTimeTimezone": "",
+                "TravelCode": 0,
+                "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+                "HasDraftEntity": false,
+                "DraftEntityCreationDateTime": null,
+                "DraftEntityLastChangeDateTime": null,
+                "HasActiveEntity": false,
+                "IsActiveEntity": true,
+                "__CreateByAssociationControl": {
+                  "_Booking": true
+                },
+                "__EntityControl": {
+                  "Deletable": true,
+                  "Updatable": true
+                },
+                "__FieldControl": {
+                  "BookingFee": 3
+                },
+                "__OperationControl": {
+                  "Check": true,
+                  "deductDiscount": true,
+                  "dummyAction": true,
+                  "Edit": true,
+                  "setToBooked": true,
+                  "setToNew": false
+                },
+                "SAP__Messages": []
+              }
             }
           ]
         },
@@ -180,21 +360,21 @@
           "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Prepare_Booking": {
 
           },
-          "BookingUUID": "f2c8b3d5-1a6e-7c7f-e0b9-7d3c2f6a8e5b",
-          "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-          "TravelID": "245",
+          "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+          "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+          "TravelID": "150",
           "BookingID": "10",
           "BookingDate": "2025-11-20",
-          "CustomerID": "1847",
-          "CustomerName": "Anderson",
-          "AirlineID": "NG",
-          "AirlineName": "AL-Naser Wings",
+          "CustomerID": "10",
+          "CustomerName": "Customer B",
+          "AirlineID": "BB",
+          "AirlineName": "Airline Beta",
           "ConnectionID": "400",
           "FlightDate": "2026-01-17",
           "FlightPrice": 5484,
           "CurrencyCode": "EUR",
           "LastChangedAtBooking": "2025-11-18T09:35:14.675353Z",
-          "HasDraftEntity": true,
+          "HasDraftEntity": false,
           "DraftEntityCreationDateTime": null,
           "DraftEntityLastChangeDateTime": null,
           "HasActiveEntity": false,
@@ -216,10 +396,10 @@
           "_BookSupplement": [
             {
               "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
-              "BookingSupplementUUID": "a3d9c4e6-2b7f-8d8a-f1c0-8e4d3a7b9f6c",
-              "BookingUUID": "f2c8b3d5-1a6e-7c7f-e0b9-7d3c2f6a8e5b",
-              "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-              "TravelID": "245",
+              "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba04d3b",
+              "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+              "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+              "TravelID": "150",
               "BookingID": "10",
               "BookingSupplementID": "11",
               "SupplementID": "BV-0009",
@@ -227,7 +407,7 @@
               "Price": 2.3,
               "CurrencyCode": "EUR",
               "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
-              "HasDraftEntity": true,
+              "HasDraftEntity": false,
               "DraftEntityCreationDateTime": null,
               "DraftEntityLastChangeDateTime": null,
               "HasActiveEntity": false,
@@ -236,14 +416,74 @@
                 "Deletable": true,
                 "Updatable": true
               },
-              "SAP__Messages": []
+              "SAP__Messages": [],
+              "_Travel": {
+                "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+                },
+                "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+                "TravelID": "150",
+                "AgencyID": "70012",
+                "AgencyName": "Travel Agency Inc.",
+                "CustomerID": "12",
+                "CustomerName": "Customer C",
+                "BeginDate": "2026-11-20",
+                "EndDate": "2026-12-31",
+                "BookingFee": 4,
+                "TotalPrice": 11038.5,
+                "CurrencyCode": "EUR",
+                "Memo": "test",
+                "Status": "N",
+                "Confirmed": false,
+                "CreationDateTime": null,
+                "CreationDateTimeTimezone": "",
+                "TravelCode": 0,
+                "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+                "HasDraftEntity": false,
+                "DraftEntityCreationDateTime": null,
+                "DraftEntityLastChangeDateTime": null,
+                "HasActiveEntity": false,
+                "IsActiveEntity": true,
+                "__CreateByAssociationControl": {
+                  "_Booking": true
+                },
+                "__EntityControl": {
+                  "Deletable": true,
+                  "Updatable": true
+                },
+                "__FieldControl": {
+                  "BookingFee": 3
+                },
+                "__OperationControl": {
+                  "Check": true,
+                  "deductDiscount": true,
+                  "dummyAction": true,
+                  "Edit": true,
+                  "setToBooked": true,
+                  "setToNew": false
+                },
+                "SAP__Messages": []
+              }
             },
             {
               "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
-              "BookingSupplementUUID": "b4e0d5f7-3c8a-9e9b-a2d1-9f5e4b8c0a7d",
-              "BookingUUID": "f2c8b3d5-1a6e-7c7f-e0b9-7d3c2f6a8e5b",
-              "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-              "TravelID": "245",
+              "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba06d3b",
+              "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+              "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+              "TravelID": "150",
               "BookingID": "10",
               "BookingSupplementID": "12",
               "SupplementID": "BV-0009",
@@ -251,7 +491,7 @@
               "Price": 2.3,
               "CurrencyCode": "EUR",
               "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
-              "HasDraftEntity": true,
+              "HasDraftEntity": false,
               "DraftEntityCreationDateTime": null,
               "DraftEntityLastChangeDateTime": null,
               "HasActiveEntity": false,
@@ -260,14 +500,74 @@
                 "Deletable": true,
                 "Updatable": true
               },
-              "SAP__Messages": []
+              "SAP__Messages": [],
+              "_Travel": {
+                "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+                },
+                "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+                "TravelID": "150",
+                "AgencyID": "70012",
+                "AgencyName": "Travel Agency Inc.",
+                "CustomerID": "12",
+                "CustomerName": "Customer C",
+                "BeginDate": "2026-11-20",
+                "EndDate": "2026-12-31",
+                "BookingFee": 4,
+                "TotalPrice": 11038.5,
+                "CurrencyCode": "EUR",
+                "Memo": "test",
+                "Status": "N",
+                "Confirmed": false,
+                "CreationDateTime": null,
+                "CreationDateTimeTimezone": "",
+                "TravelCode": 0,
+                "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+                "HasDraftEntity": false,
+                "DraftEntityCreationDateTime": null,
+                "DraftEntityLastChangeDateTime": null,
+                "HasActiveEntity": false,
+                "IsActiveEntity": true,
+                "__CreateByAssociationControl": {
+                  "_Booking": true
+                },
+                "__EntityControl": {
+                  "Deletable": true,
+                  "Updatable": true
+                },
+                "__FieldControl": {
+                  "BookingFee": 3
+                },
+                "__OperationControl": {
+                  "Check": true,
+                  "deductDiscount": true,
+                  "dummyAction": true,
+                  "Edit": true,
+                  "setToBooked": true,
+                  "setToNew": false
+                },
+                "SAP__Messages": []
+              }
             },
             {
               "@odata.etag": "W/\"SADL-202510301741410114340C~20251030174141.0114340\"",
-              "BookingSupplementUUID": "c5f1e6a8-4d9b-0f0c-b3e2-0a6f5c9d1b8e",
-              "BookingUUID": "f2c8b3d5-1a6e-7c7f-e0b9-7d3c2f6a8e5b",
-              "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-              "TravelID": "245",
+              "BookingSupplementUUID": "42010aef-83f3-1fd0-adb6-f1d1799f0228",
+              "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+              "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+              "TravelID": "150",
               "BookingID": "10",
               "BookingSupplementID": "0",
               "SupplementID": "BV-0001",
@@ -275,7 +575,7 @@
               "Price": 0,
               "CurrencyCode": "EUR",
               "LastChangedAtBookSup": "2025-10-30T17:41:41.011434Z",
-              "HasDraftEntity": true,
+              "HasDraftEntity": false,
               "DraftEntityCreationDateTime": null,
               "DraftEntityLastChangeDateTime": null,
               "HasActiveEntity": false,
@@ -284,14 +584,74 @@
                 "Deletable": true,
                 "Updatable": true
               },
-              "SAP__Messages": []
+              "SAP__Messages": [],
+              "_Travel": {
+                "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+                },
+                "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+                "TravelID": "150",
+                "AgencyID": "70012",
+                "AgencyName": "Travel Agency Inc.",
+                "CustomerID": "12",
+                "CustomerName": "Customer C",
+                "BeginDate": "2026-11-20",
+                "EndDate": "2026-12-31",
+                "BookingFee": 4,
+                "TotalPrice": 11038.5,
+                "CurrencyCode": "EUR",
+                "Memo": "test",
+                "Status": "N",
+                "Confirmed": false,
+                "CreationDateTime": null,
+                "CreationDateTimeTimezone": "",
+                "TravelCode": 0,
+                "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+                "HasDraftEntity": false,
+                "DraftEntityCreationDateTime": null,
+                "DraftEntityLastChangeDateTime": null,
+                "HasActiveEntity": false,
+                "IsActiveEntity": true,
+                "__CreateByAssociationControl": {
+                  "_Booking": true
+                },
+                "__EntityControl": {
+                  "Deletable": true,
+                  "Updatable": true
+                },
+                "__FieldControl": {
+                  "BookingFee": 3
+                },
+                "__OperationControl": {
+                  "Check": true,
+                  "deductDiscount": true,
+                  "dummyAction": true,
+                  "Edit": true,
+                  "setToBooked": true,
+                  "setToNew": false
+                },
+                "SAP__Messages": []
+              }
             },
             {
               "@odata.etag": "W/\"SADL-202510301741410114340C~20251030174141.0114340\"",
-              "BookingSupplementUUID": "d6a2f7b9-5e0c-1a1d-c4f3-1b7a6d0e2c9f",
-              "BookingUUID": "f2c8b3d5-1a6e-7c7f-e0b9-7d3c2f6a8e5b",
-              "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
-              "TravelID": "245",
+              "BookingSupplementUUID": "42010aef-83f3-1fd0-adb6-f1d1799ee228",
+              "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+              "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+              "TravelID": "150",
               "BookingID": "10",
               "BookingSupplementID": "0",
               "SupplementID": "BV-0001",
@@ -299,7 +659,7 @@
               "Price": 0,
               "CurrencyCode": "EUR",
               "LastChangedAtBookSup": "2025-10-30T17:41:41.011434Z",
-              "HasDraftEntity": true,
+              "HasDraftEntity": false,
               "DraftEntityCreationDateTime": null,
               "DraftEntityLastChangeDateTime": null,
               "HasActiveEntity": false,
@@ -308,7 +668,235 @@
                 "Deletable": true,
                 "Updatable": true
               },
-              "SAP__Messages": []
+              "SAP__Messages": [],
+              "_Travel": {
+                "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+                },
+                "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+                "TravelID": "150",
+                "AgencyID": "70012",
+                "AgencyName": "Travel Agency Inc.",
+                "CustomerID": "12",
+                "CustomerName": "Customer C",
+                "BeginDate": "2026-11-20",
+                "EndDate": "2026-12-31",
+                "BookingFee": 4,
+                "TotalPrice": 11038.5,
+                "CurrencyCode": "EUR",
+                "Memo": "test",
+                "Status": "N",
+                "Confirmed": false,
+                "CreationDateTime": null,
+                "CreationDateTimeTimezone": "",
+                "TravelCode": 0,
+                "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+                "HasDraftEntity": false,
+                "DraftEntityCreationDateTime": null,
+                "DraftEntityLastChangeDateTime": null,
+                "HasActiveEntity": false,
+                "IsActiveEntity": true,
+                "__CreateByAssociationControl": {
+                  "_Booking": true
+                },
+                "__EntityControl": {
+                  "Deletable": true,
+                  "Updatable": true
+                },
+                "__FieldControl": {
+                  "BookingFee": 3
+                },
+                "__OperationControl": {
+                  "Check": true,
+                  "deductDiscount": true,
+                  "dummyAction": true,
+                  "Edit": true,
+                  "setToBooked": true,
+                  "setToNew": false
+                },
+                "SAP__Messages": []
+              }
+            },
+            {
+              "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+              "BookingSupplementUUID": "42010aef-83ee-1fe0-bcd6-942b4dfd8d04",
+              "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+              "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+              "TravelID": "150",
+              "BookingID": "10",
+              "BookingSupplementID": "0",
+              "SupplementID": "BV-0001",
+              "SupplementDescription": "Tomato Juice",
+              "Price": 44,
+              "CurrencyCode": "",
+              "LastChangedAtBookSup": "2026-01-27T07:55:39.126448Z",
+              "HasDraftEntity": false,
+              "DraftEntityCreationDateTime": null,
+              "DraftEntityLastChangeDateTime": null,
+              "HasActiveEntity": false,
+              "IsActiveEntity": true,
+              "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+              },
+              "SAP__Messages": [],
+              "_Travel": {
+                "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+                },
+                "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+                "TravelID": "150",
+                "AgencyID": "70012",
+                "AgencyName": "Travel Agency Inc.",
+                "CustomerID": "12",
+                "CustomerName": "Customer C",
+                "BeginDate": "2026-11-20",
+                "EndDate": "2026-12-31",
+                "BookingFee": 4,
+                "TotalPrice": 11038.5,
+                "CurrencyCode": "EUR",
+                "Memo": "test",
+                "Status": "N",
+                "Confirmed": false,
+                "CreationDateTime": null,
+                "CreationDateTimeTimezone": "",
+                "TravelCode": 0,
+                "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+                "HasDraftEntity": false,
+                "DraftEntityCreationDateTime": null,
+                "DraftEntityLastChangeDateTime": null,
+                "HasActiveEntity": false,
+                "IsActiveEntity": true,
+                "__CreateByAssociationControl": {
+                  "_Booking": true
+                },
+                "__EntityControl": {
+                  "Deletable": true,
+                  "Updatable": true
+                },
+                "__FieldControl": {
+                  "BookingFee": 3
+                },
+                "__OperationControl": {
+                  "Check": true,
+                  "deductDiscount": true,
+                  "dummyAction": true,
+                  "Edit": true,
+                  "setToBooked": true,
+                  "setToNew": false
+                },
+                "SAP__Messages": []
+              }
+            },
+            {
+              "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+              "BookingSupplementUUID": "42010aef-83ee-1fe0-bcd6-92ce85900d04",
+              "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+              "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+              "TravelID": "150",
+              "BookingID": "10",
+              "BookingSupplementID": "0",
+              "SupplementID": "BV-0001",
+              "SupplementDescription": "Tomato Juice",
+              "Price": 55,
+              "CurrencyCode": "EUR",
+              "LastChangedAtBookSup": "2026-01-27T07:55:39.126448Z",
+              "HasDraftEntity": false,
+              "DraftEntityCreationDateTime": null,
+              "DraftEntityLastChangeDateTime": null,
+              "HasActiveEntity": false,
+              "IsActiveEntity": true,
+              "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+              },
+              "SAP__Messages": [],
+              "_Travel": {
+                "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+                },
+                "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+                },
+                "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+                "TravelID": "150",
+                "AgencyID": "70012",
+                "AgencyName": "Travel Agency Inc.",
+                "CustomerID": "12",
+                "CustomerName": "Customer C",
+                "BeginDate": "2026-11-20",
+                "EndDate": "2026-12-31",
+                "BookingFee": 4,
+                "TotalPrice": 11038.5,
+                "CurrencyCode": "EUR",
+                "Memo": "test",
+                "Status": "N",
+                "Confirmed": false,
+                "CreationDateTime": null,
+                "CreationDateTimeTimezone": "",
+                "TravelCode": 0,
+                "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+                "HasDraftEntity": false,
+                "DraftEntityCreationDateTime": null,
+                "DraftEntityLastChangeDateTime": null,
+                "HasActiveEntity": false,
+                "IsActiveEntity": true,
+                "__CreateByAssociationControl": {
+                  "_Booking": true
+                },
+                "__EntityControl": {
+                  "Deletable": true,
+                  "Updatable": true
+                },
+                "__FieldControl": {
+                  "BookingFee": 3
+                },
+                "__OperationControl": {
+                  "Check": true,
+                  "deductDiscount": true,
+                  "dummyAction": true,
+                  "Edit": true,
+                  "setToBooked": true,
+                  "setToNew": false
+                },
+                "SAP__Messages": []
+              }
             }
           ]
         }

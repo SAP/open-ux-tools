@@ -24,7 +24,7 @@
         "entityKey": {
             "message": "Enter values for: {{keyName}}",
             "hint": "For range selection use '-' between values. Use commas to select non-contiguous values.",
-            "validationMessage": {
+            "validation": {
                 "invalidKeyValueChars": "Invalid key value contain not allowed characters: {{chars}}",
                 "invalidRangeSpecified": "Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'",
                 "invalidBooleanValue": "Invalid boolean value entered. Please enter true or false."

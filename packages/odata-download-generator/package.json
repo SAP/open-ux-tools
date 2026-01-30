@@ -29,7 +29,8 @@
         "LICENSE",
         "generators",
         "!generators/*.map",
-        "!generators/**/*.map"
+        "!generators/**/*.map",
+        "yeoman.png"
     ],
     "dependencies": {
         "odata-query": "8.0.5",

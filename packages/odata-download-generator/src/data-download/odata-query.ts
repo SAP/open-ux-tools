@@ -13,14 +13,10 @@ export type EntitySetsFlat = { [entityPath: string]: string };
  */
 export function getExpands(entityPaths: { entityPath: string; entitySetName: string }[]): {
     expands: {};
-    entitySetsFlat: EntitySetsFlat;
 } {
-    const entitySetsFlat = {};
     const expand = entityPaths.reduce(
-        (tree, { entityPath: path, entitySetName }) => {
+        (tree, { entityPath: path }) => {
             const parts = path.split('/');
-            entitySetsFlat[parts[parts.length - 1]] = entitySetName; // Can overwrite since we will only need to know each unique entity set name later
-
             let current = tree;
 
             parts.forEach((part, index) => {
@@ -38,7 +34,7 @@ export function getExpands(entityPaths: { entityPath: string; entitySetName: str
         { expand: {} }
     );
 
-    return { expands: expand, entitySetsFlat };
+    return { expands: expand };
 }
 
 /**
@@ -53,12 +49,12 @@ export function createQueryFromEntities(
     listEntity: ReferencedEntities['listEntity'],
     selectedEntities: SelectedEntityAnswer[],
     top = 1
-): { query: string; entitySetsFlat: EntitySetsFlat } {
+): { query: string /* selectedEntitySetsFlat: EntitySetsFlat */ } {
     const selectedPaths = selectedEntities?.map((entity) => {
         return { entityPath: entity.fullPath, entitySetName: entity.entity.entitySetName };
     });
 
-    const { entitySetsFlat, expands: entitiesToExpand } = getExpands(selectedPaths);
+    const { expands: entitiesToExpand } = getExpands(selectedPaths);
 
     const mainEntity = listEntity;
     const mainEntityFilters: Filter<string>[] = [];
@@ -123,7 +119,7 @@ export function createQueryFromEntities(
     const queryString = buildQuery(queryInput);
     const query = `${mainEntity.entitySetName}${queryString}`;
     ODataDownloadGenerator.logger.info(`Query for odata: ${query}`);
-    return { query, entitySetsFlat };
+    return { query };
 }
 /**
  * todo: take a single entity list to download
@@ -139,12 +135,11 @@ export async function fetchData(
     odataService: ODataService,
     selectedEntities: SelectedEntityAnswer[],
     top?: number
-): Promise<{ odataResult: { entityData?: []; error?: string }; entitySetsFlat: EntitySetsFlat }> {
+): Promise<{ odataResult: { entityData?: []; error?: string } }> {
     const query = createQueryFromEntities(entities.listEntity, selectedEntities, top);
     const odataResult = await executeQuery(odataService, query.query);
     return {
-        odataResult,
-        entitySetsFlat: query.entitySetsFlat
+        odataResult
     };
 }
 

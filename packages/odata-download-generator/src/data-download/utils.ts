@@ -49,9 +49,12 @@ export function createEntitySetData(
                 delete resultEntry[entityPath];
             }
         });
-        //let entityData = Array.isArray(resultEntry) ? resultEntry : [resultEntry];
         if (resultDataByEntitySet[entitySetName]) {
-            resultDataByEntitySet[entitySetName].push(resultEntry);
+            // prevent duplicates, this would break the mock data server but can be returned from queries
+            const found = resultDataByEntitySet[entitySetName].find((entity) => isEqual(entity, resultEntry));
+            if (!found) {
+                resultDataByEntitySet[entitySetName].push(resultEntry);
+            }
         } else {
             resultDataByEntitySet[entitySetName] = [resultEntry];
         }

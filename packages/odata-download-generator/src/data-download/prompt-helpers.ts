@@ -31,7 +31,7 @@ export async function getData(
     odataService: Partial<OdataServiceAnswers>,
     appConfig: AppConfig,
     answers: Answers // todo: narrower type
-): Promise<{ odataQueryResult: []; entitySetsFlat: EntitySetsFlat } | string> {
+): Promise<{ odataQueryResult: [] } | string> {
     if (odataService.metadata && appConfig.appAccess && odataService.connectedSystem) {
         if (odataService.servicePath && appConfig.appAccess && appConfig.referencedEntities) {
             odataService.connectedSystem.serviceProvider.log = ODataDownloadGenerator.logger;
@@ -47,7 +47,7 @@ export async function getData(
                 const selectedEntities = selectedEntitiesAsJsonStrings.map((entityAsJSONString) => {
                     return JSON.parse(entityAsJSONString) as SelectedEntityAnswer;
                 });
-                const { odataResult, entitySetsFlat } = await fetchData(
+                const { odataResult } = await fetchData(
                     appConfig.referencedEntities,
                     odataServiceProvider!,
                     selectedEntities,
@@ -55,7 +55,7 @@ export async function getData(
                 );
                 if (odataResult.entityData) {
                     ODataDownloadGenerator.logger.debug(`Got result rows: ${odataResult.entityData.length}`);
-                    return { odataQueryResult: odataResult.entityData, entitySetsFlat };
+                    return { odataQueryResult: odataResult.entityData };
                 } else if (odataResult.error) {
                     return `${odataResult.error}`;
                 }
@@ -141,7 +141,10 @@ export function getEntitySelectionChoices(
             const fullPath = parentPath.concat(`${parentPath ? '/' : ''}${expandPath}`);
 
             if (navEntity.navPropEntities && navEntity.navPropEntities.length > 0) {
-                getEntitySelectionChoices(navEntity, fullPath, choices, poEntityPaths);
+                Object.assign(
+                    entitySetsFlat,
+                    getEntitySelectionChoices(navEntity, fullPath, choices, poEntityPaths).entitySetsFlat
+                );
             }
             // Create selection choice for each visited entity
             const entityChoice: SelectedEntityAnswer = {

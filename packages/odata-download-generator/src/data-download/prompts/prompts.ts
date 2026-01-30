@@ -132,62 +132,22 @@ export async function getODataDownloaderPrompts(): Promise<{
     );
 
     // Additional manually selected nav prop entittes
-    let relatedEntityChoices: { choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } = {
-        choices: []
+    const relatedEntityChoices: {
+        choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
+        entitySetsFlat: EntitySetsFlat;
+    } = {
+        choices: [],
+        entitySetsFlat: {}
     };
-    let previousServicePath: string | undefined;
-
-    const relatedEntityChoicesDefault: { choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } = {
-        choices: []
+    const odataQueryResult: { odata: []; entitySetsFlat: EntitySetsFlat } = {
+        odata: [],
+        entitySetsFlat: relatedEntityChoices.entitySetsFlat
     };
 
-    const toggleSelection = {
-        when: () => {
-            if (
-                systemSelectionQuestions.answers.servicePath !== previousServicePath &&
-                appConfig.referencedEntities?.listEntity
-            ) {
-                const entityChoices = createEntityChoices(
-                    appConfig.referencedEntities.listEntity,
-                    appConfig.referencedEntities.pageObjectEntities
-                );
-                if (entityChoices) {
-                    relatedEntityChoices = entityChoices;
-                    previousServicePath = systemSelectionQuestions.answers.servicePath;
-                }
-            }
-            return relatedEntityChoices.choices.length > 0;
-        },
-        name: 'toggleSelection',
-        type: 'confirm',
-        message: 'Reset selection',
-        labelTrue: 'Clear selected',
-        labelFalse: 'Restore default selection',
-        default: false,
-        validate: (reset: boolean) => {
-            if (reset) {
-                relatedEntityChoicesDefault.choices = structuredClone(relatedEntityChoices.choices);
-                relatedEntityChoices.choices.forEach((entityChoice) => {
-                    // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
-                    const entityChoiceValue = JSON.parse(entityChoice.value) as SelectedEntityAnswer;
-                    entityChoiceValue.entity.selected = false;
-                    entityChoice.value = JSON.stringify(entityChoiceValue);
-                });
-            } else if (relatedEntityChoicesDefault.choices.length > 0) {
-                relatedEntityChoices.choices = structuredClone(relatedEntityChoicesDefault.choices);
-            }
-            return true;
-        }
-    } as ConfirmQuestion;
+    const resetSelectionPrompt = getResetSelectionPrompt(appConfig, relatedEntityChoices);
 
     const relatedEntitySelectionQuestion: CheckBoxQuestion = {
         when: async () => {
-            // No selected service connection
-            /* if (!systemSelectionQuestions.answers.metadata || !appConfig.referencedEntities?.listEntity) {
-                return false;
-            }
- */
-
             return relatedEntityChoices.choices.length > 0;
         },
         name: promptNames.relatedEntitySelection,
@@ -226,17 +186,13 @@ export async function getODataDownloaderPrompts(): Promise<{
 
     // Generate the max size of key parts allowed
     keyPrompts = getKeyPrompts(5, appConfig);
-    const odataQueryResult: { odata: []; entitySetsFlat: EntitySetsFlat } = {
-        odata: [],
-        entitySetsFlat: {}
-    };
 
     selectSourceQuestions.push(
         appSelectionQuestion,
         ...(systemSelectionQuestions.prompts as Question[]),
         getUpdateMainServiceMetadataPrompt(systemSelectionQuestions.answers, appConfig),
         ...keyPrompts,
-        toggleSelection,
+        resetSelectionPrompt,
         relatedEntitySelectionQuestion,
         getConfirmDownloadPrompt(systemSelectionQuestions.answers, appConfig, odataQueryResult)
     );
@@ -244,6 +200,76 @@ export async function getODataDownloaderPrompts(): Promise<{
         questions: selectSourceQuestions,
         answers: { application: appConfig, odataQueryResult, odataServiceAnswers: systemSelectionQuestions.answers }
     };
+}
+
+/**
+ * Gets the reset selection prompt. This prompt is responsible for loading the entity choices
+ *
+ * @param appConfig
+ * @param relatedEntityChoices
+ * @param relatedEntityChoices.choices
+ * @param relatedEntityChoices.entitySetsFlat
+ * @returns
+ */
+function getResetSelectionPrompt(
+    appConfig: AppConfig,
+    relatedEntityChoices: {
+        choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
+        entitySetsFlat: EntitySetsFlat;
+    }
+): Question {
+    const relatedEntityChoicesInitial: { choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } = {
+        choices: []
+    };
+    let previousServicePath;
+    let previousReset;
+    const toggleSelectionPrompt = {
+        when: () => {
+            // todo: path is not sufficent to determine a change as another system selection may have the same service path
+            if (appConfig.servicePath !== previousServicePath && appConfig.referencedEntities?.listEntity) {
+                const entityChoices = createEntityChoices(
+                    appConfig.referencedEntities.listEntity,
+                    appConfig.referencedEntities.pageObjectEntities
+                );
+                if (entityChoices) {
+                    relatedEntityChoices.choices = entityChoices.choices;
+                    // Keep initial state for reset
+                    relatedEntityChoicesInitial.choices = [...relatedEntityChoices.choices];
+                    Object.assign(relatedEntityChoices.entitySetsFlat, entityChoices.entitySetsFlat);
+                    previousServicePath = appConfig.servicePath;
+                }
+            }
+            return relatedEntityChoices.choices.length > 0;
+        },
+        name: 'toggleSelection',
+        type: 'confirm',
+        message: 'Reset selection',
+        labelTrue: 'Clear selected',
+        labelFalse: 'Restore default selection',
+        default: false,
+        validate: (reset: boolean) => {
+            // Dont apply a reset unless the value was changed as this validate function is triggered by any earlier prompt inputs
+            if (reset !== previousReset) {
+                if (reset) {
+                    if (relatedEntityChoicesInitial.choices.length === 0) {
+                        relatedEntityChoicesInitial.choices = structuredClone(relatedEntityChoices.choices);
+                    }
+                    relatedEntityChoices.choices.forEach((entityChoice) => {
+                        // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
+                        const entityChoiceValue = JSON.parse(entityChoice.value) as SelectedEntityAnswer;
+                        entityChoiceValue.entity.selected = false;
+                        entityChoice.value = JSON.stringify(entityChoiceValue);
+                    });
+                } else if (relatedEntityChoicesInitial.choices.length > 0) {
+                    relatedEntityChoices.choices = structuredClone(relatedEntityChoicesInitial.choices);
+                }
+                previousReset = reset;
+            }
+            return true;
+        }
+    } as ConfirmQuestion;
+
+    return toggleSelectionPrompt;
 }
 
 /**
@@ -316,12 +342,11 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
  * @param appConfig
  * @param odataQueryResult
  * @param odataQueryResult.odata
- * @param odataQueryResult.entitySetsFlat
  */
 function getConfirmDownloadPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
     appConfig: AppConfig,
-    odataQueryResult: { odata: undefined | []; entitySetsFlat: EntitySetsFlat }
+    odataQueryResult: { odata: undefined | [] }
 ): Question {
     return {
         when: () => {
@@ -343,18 +368,19 @@ function getConfirmDownloadPrompt(
                     return result;
                 }
                 odataQueryResult.odata = result.odataQueryResult;
-                odataQueryResult.entitySetsFlat = result.entitySetsFlat;
+                // Log entities to be created
+                const allEntities = [
+                    ...new Set([
+                        appConfig.referencedEntities?.listEntity.entitySetName,
+                        ...((answers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswerAsJSONString[])?.map(
+                            (selEntityAnswer) => JSON.parse(selEntityAnswer).entity.entitySetName // silly workaround for YUI checkbox issue, fix is pending
+                        ) ?? [])
+                    ])
+                ];
+                ODataDownloadGenerator.logger.info(
+                    t('info.entityFilesToBeGenerated', { entities: allEntities.join(', ') })
+                );
             }
-            // Log entities to be created
-            const allEntities = [
-                appConfig.referencedEntities?.listEntity.entitySetName,
-                ...((answers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswerAsJSONString[])?.map(
-                    (selEntityAnswer) => JSON.parse(selEntityAnswer).entity.entitySetName // silly workaround for YUI checkbox issue, fix is pending
-                ) ?? [])
-            ];
-            ODataDownloadGenerator.logger.info(
-                t('info.entityFilesToBeGenerated', { entities: allEntities.join(', ') })
-            );
             return true;
         }
     } as ConfirmQuestion;

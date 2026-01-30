@@ -221,17 +221,6 @@ describe('Test odata query builder', () => {
         expect(query.query).toEqual(
             'ListEntity1?$expand=a($expand=a.1($expand=a.1.1),a.2($expand=a.2.1,a.2.2)),b,c($expand=c.1)&$top=1'
         );
-        expect(query.entitySetsFlat).toEqual({
-            'a': 'aSetName',
-            'a.1': 'a1SetName',
-            'a.1.1': 'a11SetName',
-            'a.2': 'a2SetName',
-            'a.2.1': 'a21SetName',
-            'a.2.2': 'a22SetName',
-            'b': 'bSetName',
-            'c': 'cSetName',
-            'c.1': 'c1SetName'
-        });
 
         // Full query with filter and expands
         query = createQueryFromEntities(
@@ -241,17 +230,6 @@ describe('Test odata query builder', () => {
         expect(query.query).toEqual(
             "ListEntity1?$filter=Prop1 eq 'abc123'&$expand=a($expand=a.1($expand=a.1.1),a.2($expand=a.2.1,a.2.2)),b,c($expand=c.1)&$count=true"
         );
-        expect(query.entitySetsFlat).toEqual({
-            'a': 'aSetName',
-            'a.1': 'a1SetName',
-            'a.1.1': 'a11SetName',
-            'a.2': 'a2SetName',
-            'a.2.1': 'a21SetName',
-            'a.2.2': 'a22SetName',
-            'b': 'bSetName',
-            'c': 'cSetName',
-            'c.1': 'c1SetName'
-        });
     });
 
     test('`createEntitySetData` should create an entity set data map for writing to files', async () => {
@@ -259,9 +237,9 @@ describe('Test odata query builder', () => {
             await readFile(join(__dirname, './test-data/TravelEntityModel.json'), 'utf8')
         );
         // No selected entities, only the unexpanded main/list entity is written
-        const { entitySetsFlat } = createQueryFromEntities(rootEntity, []);
+        // const { entitySetsFlat } = createQueryFromEntities(rootEntity, []);
         let odataResult = JSON.parse(await readFile(join(__dirname, './test-data/odataResult1.json'), 'utf8')).value;
-        let entitySetData = createEntitySetData(odataResult, entitySetsFlat, rootEntity.entitySetName);
+        let entitySetData = createEntitySetData(odataResult, {}, rootEntity.entitySetName);
         let expectedEntitySetData = await readFile(
             join(__dirname, './test-data/expected-output/test1/entityFileData.json'),
             'utf8'
@@ -272,7 +250,18 @@ describe('Test odata query builder', () => {
         odataResult = JSON.parse(await readFile(join(__dirname, './test-data/odataResult2.json'), 'utf8')).value;
         entitySetData = createEntitySetData(
             odataResult,
-            { _Booking: 'Booking', _BookSupplement: 'BookingSupplement' },
+            {
+                _Country: 'Country',
+                _Agency: 'TravelAgency',
+                _Booking: 'Booking',
+                _Product: 'Supplement',
+                _SupplementText: 'SupplementText',
+                _Travel: 'Travel',
+                _BookSupplement: 'BookingSupplement',
+                _Currency: 'Currency',
+                _Carrier: 'Airline',
+                _Customer: 'Passenger'
+            },
             rootEntity.entitySetName
         );
         expectedEntitySetData = await readFile(
@@ -281,4 +270,6 @@ describe('Test odata query builder', () => {
         );
         expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
     });
+
+    test('should create entity set choices', () => {});
 });
