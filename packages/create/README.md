@@ -141,8 +141,14 @@ Example:
 
 `npx --yes @sap-ux/create@latest add cards-editor`
 
+
+For CAP projects, use the --app option to specify the app folder:
+
+`npx --yes @sap-ux/create@latest add cards-editor --app app/travel`
+
 Options:
 - `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-a, --app <string>` _(required)_ - Path to the app folder (relative to project root). Required for CAP projects.
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 
