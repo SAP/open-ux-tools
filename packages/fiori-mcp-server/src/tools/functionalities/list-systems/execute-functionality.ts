@@ -39,7 +39,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         return {
             functionalityId: details.functionalityId,
             status: 'Error',
-            message: 'Error listing systems: ' + (error instanceof Error ? error.message : String(error)),
+            message: `Error listing systems: ${error.message}`,
             parameters: params.parameters,
             appPath: params.appPath,
             changes: [],

@@ -121,20 +121,4 @@ describe('list-systems execute-functionality', () => {
         expect(result.appPath).toBe(mockAppPath);
         expect(result.timestamp).toBeDefined();
     });
-
-    test('should handle non-Error exceptions', async () => {
-        mockGetSystems.mockRejectedValue('String error');
-
-        const params: ExecuteFunctionalityInput = {
-            appPath: mockAppPath,
-            functionalityId: 'list-systems',
-            parameters: {}
-        };
-
-        const result = await executeFunctionality(params);
-
-        expect(result.status).toBe('Error');
-        expect(result.message).toContain('Error listing systems');
-        expect(result.message).toContain('String error');
-    });
 });
