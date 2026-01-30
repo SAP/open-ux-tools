@@ -1,6 +1,8 @@
 import type { ConfigAnswers, FlexUICapability, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
-import { getFlexUICapability, getSupportedProject, SupportedProject } from '@sap-ux/adp-tooling';
 import {
+    getFlexUICapability,
+    getSupportedProject,
+    SupportedProject,
     checkSystemVersionPattern,
     fetchPublicVersions,
     FlexLayer,
