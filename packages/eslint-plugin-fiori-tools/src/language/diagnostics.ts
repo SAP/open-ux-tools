@@ -2,7 +2,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const FLEX_ENABLED = 'sap-flex-enabled';
-export const DISABLE_COPY_TO_CLIPBOARD = 'sap-disable-copy-to-clipboard';
+export const COPY_TO_CLIPBOARD = 'sap-copy-to-clipboard';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 
@@ -45,8 +45,8 @@ export interface CreationModeForTable {
     recommendedValue?: string;
 }
 
-export interface DisableCopyToClipboard {
-    type: typeof DISABLE_COPY_TO_CLIPBOARD;
+export interface CopyToClipboard {
+    type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;
 }
@@ -67,6 +67,6 @@ export interface StatePreservationMode {
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | FlexEnabled
-    | DisableCopyToClipboard
+    | CopyToClipboard
     | CreationModeForTable
     | StatePreservationMode;

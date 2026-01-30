@@ -89,8 +89,14 @@ function getConfigurationKey(annotationPath: string): string {
  * @param pathToPage
  * @param createMode
  * @param tableType
+ * @param copy
  */
-function createTableConfiguration(pathToPage: string[], createMode: string | undefined, tableType: string | undefined) {
+function createTableConfiguration(
+    pathToPage: string[],
+    createMode: string | undefined,
+    tableType: string | undefined,
+    copy: boolean | undefined
+) {
     return {
         createMode: {
             values: createModeValues,
@@ -101,6 +107,11 @@ function createTableConfiguration(pathToPage: string[], createMode: string | und
             values: tableTypeValues,
             configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'type'],
             valueInFile: tableType
+        },
+        copy: {
+            values: [true, false],
+            configurationPath: [...pathToPage, 'component', 'settings', 'tableSettings', 'copy'],
+            valueInFile: copy
         }
     };
 }
@@ -112,12 +123,14 @@ function createTableConfiguration(pathToPage: string[], createMode: string | und
  * @param sectionKey
  * @param createMode
  * @param tableType
+ * @param copy
  */
 function createSectionTableConfiguration(
     pathToPage: string[],
     sectionKey: string,
     createMode: string | undefined,
-    tableType: string | undefined
+    tableType: string | undefined,
+    copy: boolean | undefined
 ) {
     return {
         createMode: {
@@ -137,6 +150,19 @@ function createSectionTableConfiguration(
                 'type'
             ],
             valueInFile: tableType
+        },
+        copy: {
+            values: [true, false],
+            configurationPath: [
+                ...pathToPage,
+                'component',
+                'settings',
+                'sections',
+                sectionKey,
+                'tableSettings',
+                'copy'
+            ],
+            valueInFile: copy
         }
     };
 }
@@ -150,10 +176,12 @@ function findSectionSettings(configuration: ManifestPageSettings): {
     sectionKey: string;
     createMode?: string;
     tableType?: string;
+    copy?: boolean;
 } {
     let sectionEntityKey = '';
     let createMode: string | undefined;
     let tableType: string | undefined;
+    let copy: boolean | undefined;
 
     for (const [key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
         if (value.createMode !== undefined) {
@@ -164,9 +192,13 @@ function findSectionSettings(configuration: ManifestPageSettings): {
             sectionEntityKey = key;
             tableType = value.tableSettings.type;
         }
+        if (value.tableSettings?.copy !== undefined) {
+            sectionEntityKey = key;
+            copy = value.tableSettings.copy;
+        }
     }
 
-    return { sectionKey: sectionEntityKey, createMode, tableType };
+    return { sectionKey: sectionEntityKey, createMode, tableType, copy };
 }
 
 /**
@@ -178,11 +210,12 @@ function findSectionSettings(configuration: ManifestPageSettings): {
  * @param sectionSettings.sectionKey
  * @param sectionSettings.createMode
  * @param sectionSettings.tableType
+ * @param sectionSettings.copy
  */
 function createLinkedTableForSection(
     table: TableNode,
     pathToPage: string[],
-    sectionSettings: { sectionKey: string; createMode?: string; tableType?: string }
+    sectionSettings: { sectionKey: string; createMode?: string; tableType?: string; copy?: boolean }
 ): Table {
     return {
         type: table.type,
@@ -191,7 +224,8 @@ function createLinkedTableForSection(
             pathToPage,
             sectionSettings.sectionKey,
             sectionSettings.createMode,
-            sectionSettings.tableType
+            sectionSettings.tableType,
+            sectionSettings.copy
         ),
         children: []
     };
@@ -259,12 +293,14 @@ interface ManifestPageSettings {
             tableSettings?: {
                 createMode?: string;
                 type?: string;
+                copy?: boolean;
             };
             sections?: {
                 [sectionKey: string]: {
                     createMode?: string;
                     tableSettings?: {
                         type?: string;
+                        copy?: boolean;
                     };
                 };
             };
@@ -439,11 +475,12 @@ function linkListReportTable(
         const tableSettingsConfig = configuration.component?.settings?.tableSettings ?? {};
         const createMode = tableSettingsConfig.createMode;
         const tableType = tableSettingsConfig.type;
+        const copy = tableSettingsConfig.copy;
 
         const linkedTable: Table = {
             type: table.type,
             annotation: table,
-            configuration: createTableConfiguration(pathToPage, createMode, tableType),
+            configuration: createTableConfiguration(pathToPage, createMode, tableType, copy),
             children: []
         };
 
@@ -455,10 +492,11 @@ function linkListReportTable(
         const tableControl = controls[`table|${sectionKey}`];
         const createMode = sectionConfig.createMode;
         const tableType = sectionConfig.tableSettings?.type;
+        const copy = sectionConfig.tableSettings?.copy;
         if (!tableControl) {
             const orphanedSection: OrphanTable = {
                 type: 'orphan-table',
-                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType)
+                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy)
             };
             controls[`${orphanedSection.type}|${sectionKey}`] = orphanedSection;
         }
@@ -522,10 +560,11 @@ function linkObjectPageSections(
         if (!sectionControl) {
             const createMode = sectionConfig.createMode;
             const tableType = sectionConfig.tableSettings?.type;
+            const copy = sectionConfig.tableSettings?.copy;
 
             const orphanedSection: OrphanSection = {
                 type: 'orphan-section',
-                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType)
+                configuration: createSectionTableConfiguration(pathToPage, sectionKey, createMode, tableType, copy)
             };
             controls[`${orphanedSection.type}|${sectionKey}|`] = orphanedSection;
         }
