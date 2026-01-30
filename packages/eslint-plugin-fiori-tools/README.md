@@ -153,6 +153,6 @@ module.exports = [
 | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect the usage of private properties and functions of UI5 elements. | | |
 | [sap-usage-basemastercontroller](docs/rules/sap-usage-basemastercontroller.md) | Detect the usage of the deprecated `BaseMasterController`. | ✅ | ✅ |
 | [sap-creation-mode-for-table](docs/rules/sap-creation-mode-for-table.md) | Validates that the table creation mode (`createMode` in OData V2 and `creationMode` in OData V4) is correctly configured to ensure an optimal user experience when creating new table entries. | | ✅ |
-| [sap-disable-copy-to-clipboard](docs/rules/sap-disable-copy-to-clipboard.md) | Ensures that the `disableCopyToClipboard` property in all tables is set to `false` or ommited from `tableSettings` in the `manifest.json` file for OData V4 applications. The default value is `false`. | | ✅ |
+| [sap-copy-to-clipboard](docs/rules/sap-copy-to-clipboard.md) | Ensures that the copy functionality in any table is enabled. "Copy" button is shown by default. | | ✅ |
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |

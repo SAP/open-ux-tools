@@ -1,5 +1,19 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.37
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/adp-tooling@0.18.47
+
+## 0.0.36
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.46
+
 ## 0.0.35
 
 ### Patch Changes
