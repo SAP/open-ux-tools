@@ -1,5 +1,23 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.8
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/mockserver-config-writer@0.9.40
+
+## 0.29.7
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/mockserver-config-writer@0.9.39
+
 ## 0.29.6
 
 ### Patch Changes

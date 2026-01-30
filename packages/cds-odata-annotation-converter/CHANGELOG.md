@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+
 ## 0.7.0
 
 ### Minor Changes

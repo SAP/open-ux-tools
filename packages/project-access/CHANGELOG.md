@@ -1,5 +1,19 @@
 # @sap-ux/project-access
 
+## 1.34.2
+
+### Patch Changes
+
+- be67fc4: refactor getPathMappings and export respective type
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+
+## 1.34.1
+
+### Patch Changes
+
+- 55ac9f0: enable generation of OPA5 tests based on project spec
+
 ## 1.34.0
 
 ### Minor Changes

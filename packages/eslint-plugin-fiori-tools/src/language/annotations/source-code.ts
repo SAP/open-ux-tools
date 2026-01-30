@@ -15,6 +15,10 @@ import {
 import { AnnotationVisitNodeStep, STEP_PHASE } from './traversal-step';
 import type { ProjectContext } from '../../project-context/project-context';
 
+/**
+ * Visitor keys mapping annotation node types to their traversable child properties.
+ * Used to navigate the annotation AST during traversal.
+ */
 export const visitorKeys: {
     [K in AnyNode['type']]: (keyof Extract<AnyNode, { type: K }>)[];
 } = {
