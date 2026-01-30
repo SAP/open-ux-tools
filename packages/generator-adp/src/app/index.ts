@@ -408,7 +408,7 @@ export default class extends Generator {
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
             const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
-            const projectType = this.jsonInput ? this.projectType : this.prompter.projectType;
+            const projectType = this._getProjectType();
 
             const packageJson = getPackageInfo();
             const config = await getConfig({
@@ -517,9 +517,8 @@ export default class extends Generator {
             telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
             telemetryData.projectType = 'cf';
         } else {
-            // TODO avasilev: use projectType from json generator also here for the telemetry when the prompter is not used.
             telemetryData.projectType =
-                this.prompter.projectType === AdaptationProjectType.CLOUD_READY ? 'cloudReady' : 'onPremise';
+                this._getProjectType() === AdaptationProjectType.CLOUD_READY ? 'cloudReady' : 'onPremise';
             telemetryData.baseAppTechnicalName = this.configAnswers?.application?.id ?? '';
         }
         if (this.jsonInput) {
@@ -682,6 +681,16 @@ export default class extends Generator {
             return join(process.cwd(), this.attributeAnswers.projectName);
         }
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
+    }
+
+    /**
+     * Use this method to get the correct Adaptation project type, no matter how we start
+     * the generator - from Yeoman UI or the CLI.
+     *
+     * @returns {AdaptationProjectType | undefined} The Adaptation project type.
+     */
+    private _getProjectType(): AdaptationProjectType | undefined {
+        return this.jsonInput ? this.projectType : this.prompter.projectType;
     }
 
     /**
