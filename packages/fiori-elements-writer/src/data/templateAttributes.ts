@@ -1,4 +1,4 @@
-import { OdataVersion, TemplateType } from '../types';
+import { OdataVersion, TemplateType } from '@sap-ux/project-access';
 
 // first version with SAP Fiori 3 theme
 export const minSupportedUI5Version = '1.65.0';

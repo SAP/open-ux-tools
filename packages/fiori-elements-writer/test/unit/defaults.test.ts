@@ -1,7 +1,6 @@
-import type { LROPSettings } from '../../src';
-import { OdataVersion, TemplateType } from '../../src';
+import { OdataVersion, TemplateType, type LROPSettings, TableType } from '../../src';
 import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, Template } from '../../src/types';
-import { TableSelectionMode, TableType } from '../../src/types';
+import { TableSelectionMode } from '../../src/types';
 import { setDefaultTemplateSettings } from '../../src/data/defaults';
 import cloneDeep from 'lodash/cloneDeep';
 

@@ -2843,6 +2843,9 @@ importers:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
@@ -3500,9 +3503,18 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.19
+        version: 0.10.19
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/vocabularies-types':
+        specifier: 0.14.5
+        version: 0.14.5
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -13582,7 +13594,6 @@ packages:
     resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
     dependencies:
       xml-js: 1.6.11
-    dev: false
 
   /@sap-ux/edmx-parser@0.9.6:
     resolution: {integrity: sha512-6dj+nTRNcnA37vqSBJm+xCdJC1u3Dg+4KWTPxveqI/c+1NvvvVlZ18SbZaHEKBFDX2HJU2345IiszrfYU1P3ng==}

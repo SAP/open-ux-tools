@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { App, Package } from '@sap-ux/ui5-application-writer';
+import type { Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import {
     generate as addOdataService,
@@ -12,7 +12,6 @@ import {
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp } from './types';
-import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import {
     setAppDefaults,
@@ -20,15 +19,11 @@ import {
     getTemplateOptions,
     setVirtualEndpointDefaults
 } from './data/defaults';
-import {
-    TemplateTypeAttributes,
-    minSupportedUI5Version,
-    minSupportedUI5VersionV4,
-    escapeFLPText
-} from './data/templateAttributes';
+import { escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
+import { TemplateType } from '@sap-ux/project-access';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
@@ -105,7 +100,7 @@ function shouldAddTest(service: Partial<OdataService>, addTests?: boolean): bool
  * @param log - optional logger instance
  * @returns Reference to a mem-fs-editor
  */
-async function generate<T extends {}>(
+export async function generate<T extends {}>(
     basePath: string,
     data: FioriElementsApp<T>,
     fs?: Editor,
@@ -280,5 +275,7 @@ async function generate<T extends {}>(
     return fs;
 }
 
-export { generate, FioriElementsApp, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
 export * from './types';
+export { TableType, TemplateType } from '@sap-ux/project-access';
+export type { App } from '@sap-ux/ui5-application-writer';
+export { TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 } from './data/templateAttributes';

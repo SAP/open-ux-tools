@@ -72,3 +72,4 @@ export { execNpmCommand } from './command/npm-command';
 export * from './types';
 export * from './library';
 export { hasDependency } from './project';
+export * from './odata';
