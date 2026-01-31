@@ -64,9 +64,9 @@ import creationModeForTable from './sap-creation-mode-for-table';
 import statePreservationMode from './sap-state-preservation-mode';
 import copyToClipboard from './sap-copy-to-clipboard';
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition } from '@eslint/core';
 
-export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | FioriXMLRuleDefinition> = {
+export const rules: Record<string, RuleDefinition | FioriRuleDefinition | FioriXMLRuleDefinition> = {
     'sap-bookmark-performance': sapBookmarkPerformance,
     'sap-browser-api-error': sapBrowserApiError,
     'sap-browser-api-warning': sapBrowserApiWarning,

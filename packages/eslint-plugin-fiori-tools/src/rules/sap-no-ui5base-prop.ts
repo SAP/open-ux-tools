@@ -2,14 +2,14 @@
  * @file Rule to flag use of sap ui5base prop
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import { type ASTNode, createPropertyChecker } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -26,7 +26,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const MANAGED_OBJECT_MEMBERS = [
             'mProperties',
             'mAggregations',
