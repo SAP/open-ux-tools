@@ -20,6 +20,8 @@ import * as manifestService from '../../../src/base/abap/manifest-service';
 import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import { addXmlFragment, tryFixChange, addControllerExtension } from '../../../src/preview/change-handler';
 import { addCustomSectionFragment } from '../../../src/preview/descriptor-change-handler';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareUtils } from '@ui5/server';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -142,10 +144,13 @@ describe('AdaptationProject', () => {
                 },
                 getNamespace() {
                     return 'adp/project';
+                },
+                getType() {
+                    return 'application';
                 }
             };
         }
-    };
+    } as unknown as MiddlewareUtils;
 
     const logger = new ToolsLogger();
     describe('init', () => {

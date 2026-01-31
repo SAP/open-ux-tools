@@ -1,5 +1,5 @@
-import { join } from 'node:path';
-import { getWebappPath } from '@sap-ux/project-access';
+import { join, basename } from 'node:path';
+import { getWebappTestPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml';
@@ -22,7 +22,9 @@ const renameMessage = (filePath: string): string =>
  * @param logger logger to report info to the user
  */
 export async function renameSandbox(fs: Editor, basePath: string, path: string, logger?: ToolsLogger): Promise<void> {
-    const filePath = join(await getWebappPath(basePath), path);
+    const webappTestPath = await getWebappTestPath(basePath);
+    const fileName = basename(path);
+    const filePath = join(webappTestPath, fileName);
     if (fs.exists(filePath)) {
         fs.move(filePath, filePath.replace('.html', '_old.html'));
         logger?.info(renameMessage(path));
@@ -86,7 +88,7 @@ export async function deleteNoLongerUsedFiles(
     convertTests: boolean,
     logger?: ToolsLogger
 ): Promise<void> {
-    const webappTestPath = join(await getWebappPath(basePath, fs), 'test');
+    const webappTestPath = await getWebappTestPath(basePath, fs);
     const files = [
         join(webappTestPath, 'locate-reuse-libs.js'),
         join(webappTestPath, 'changes_loader.js'),

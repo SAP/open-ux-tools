@@ -43,6 +43,7 @@ export {
 } from './search';
 export {
     getWebappPath,
+    getWebappTestPath,
     readUi5Yaml,
     getAllUi5YamlFileNames,
     getMockServerConfig,

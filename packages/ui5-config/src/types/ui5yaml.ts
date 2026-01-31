@@ -67,6 +67,15 @@ export type Ui5Document =
           };
       })
     | (Ui5DocumentBase & {
+          type: 'component';
+          configuration?: {
+              paths?: {
+                  src: string;
+                  test: string;
+              };
+          };
+      })
+    | (Ui5DocumentBase & {
           type: 'library';
           configuration?: {
               paths?: {

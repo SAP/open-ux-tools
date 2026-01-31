@@ -28,6 +28,7 @@ type PathsFor<T extends Ui5Document['type']> =
  *
  */
 const PATH_MAPPING_DEFAULTS: { [K in Ui5Document['type']]: Required<PathsFor<K>> } = {
+    component: { src: 'src', test: 'test' },
     application: { webapp: DirName.Webapp },
     library: { src: 'src', test: 'test' },
     'theme-library': { src: 'src', test: 'test' },
@@ -54,6 +55,10 @@ async function getBaseDir(appRoot: string, memFs?: Editor): Promise<string> {
  * @returns - path to webapp folder
  */
 export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<string> {
+    //Shortcut: if webapp/manifest.json exists, return webapp path w/o reading the YAML content
+    if (await fileExists(join(appRoot, DirName.Webapp, FileName.Manifest), memFs)) {
+        return join(appRoot, DirName.Webapp);
+    }
     let pathMappings;
     try {
         pathMappings = await getPathMappings(appRoot, memFs);
@@ -65,11 +70,35 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
 }
 
 /**
+ * Get path to test.
+ *
+ * @param appRoot - root to the application
+ * @param [memFs] - optional mem-fs editor instance
+ * @returns - path to test folder
+ * @throws {Error} if ui5.yaml or 'type' cannot be read
+ * @throws {Error} if project type is not 'application', 'library', 'theme-library' or 'module'
+ */
+export async function getWebappTestPath(appRoot: string, memFs?: Editor): Promise<string> {
+    //Shortcut: if webapp/manifest.json exists, return webapp/test path w/o reading the YAML content
+    if (await fileExists(join(appRoot, DirName.Webapp, FileName.Manifest), memFs)) {
+        return join(appRoot, DirName.Webapp, 'test');
+    }
+    let pathMappings;
+    try {
+        pathMappings = await getPathMappings(appRoot, memFs);
+    } catch {
+        // For backward compatibility ignore errors and use default
+        pathMappings = {} as PathMappings;
+    }
+    return 'webapp' in pathMappings ? join(pathMappings?.webapp, 'test') : join(appRoot, DirName.Webapp, 'test');
+}
+
+/**
  * Get path mappings defined in 'ui5.yaml' depending on the project type defined in 'ui5.yaml'.
  *
  * @param appRoot - root to the application
  * @param memFs - optional mem-fs editor instance
- * @param fileName - optional name of yaml file to be read. Defaults to 'ui5.yaml'.
+ * @param fileName - optional name of the yaml file to be read. Defaults to 'ui5.yaml'.
  * @returns - path mappings
  * @throws {Error} if ui5.yaml or 'type' cannot be read
  * @throws {Error} if project type is not 'application', 'library', 'theme-library' or 'module'
@@ -98,7 +127,7 @@ export async function getPathMappings(
 
     // Use Record<string, string> to permit index access during the merge loop
     const result: Record<string, string> = {};
-    const configPaths = (configuration?.paths || {}) as Record<string, string>;
+    const configPaths = (configuration?.paths ?? {}) as Record<string, string>;
     const defaults = PATH_MAPPING_DEFAULTS[type] as Record<string, string>;
 
     for (const key in defaults) {
