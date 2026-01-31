@@ -194,7 +194,7 @@ export class FioriAnnotationService {
             serviceName,
             appName
         );
-        return fioriService;
+        return 'demo-which-break' as any;
     }
 
     /**
