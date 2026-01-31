@@ -1,5 +1,5 @@
 import UI5Element from 'sap/ui/core/Element';
-import { getActionsPropertyPath } from '../../../../src/adp/quick-actions/fe-v4/utils';
+import { getPropertyPath } from '../../../../src/adp/quick-actions/fe-v4/utils';
 import type { MacroTable } from '../../../../src/adp/quick-actions/fe-v4/utils';
 
 describe('getActionsPropertyPath', () => {
@@ -36,7 +36,7 @@ describe('getActionsPropertyPath', () => {
 
             mockMetaModel.getObject.mockReturnValue({});
 
-            const result = getActionsPropertyPath(mdcTable);
+            const result = getPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -56,7 +56,7 @@ describe('getActionsPropertyPath', () => {
                 ]
             });
 
-            const result = getActionsPropertyPath(mdcTable);
+            const result = getPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -78,7 +78,7 @@ describe('getActionsPropertyPath', () => {
                 }
             });
 
-            const result = getActionsPropertyPath(mdcTable);
+            const result = getPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -104,7 +104,7 @@ describe('getActionsPropertyPath', () => {
                     ]
                 });
 
-            const result = getActionsPropertyPath(mdcTable);
+            const result = getPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -128,7 +128,7 @@ describe('getActionsPropertyPath', () => {
                     ]
                 });
 
-            const result = getActionsPropertyPath(mdcTable);
+            const result = getPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
@@ -144,7 +144,7 @@ describe('getActionsPropertyPath', () => {
                 // No Visualizations, no PresentationVariant
             });
 
-            const result = getActionsPropertyPath(mdcTable);
+            const result = getPropertyPath(mdcTable);
 
             expect(result).toBe('controlConfiguration//NewEntity/@com.sap.vocabularies.UI.v1.LineItem/actions/');
         });
