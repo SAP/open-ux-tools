@@ -5,6 +5,9 @@ import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import { getService } from '@sap-ux/store';
 import { ToolsLogger } from '@sap-ux/logger';
 import { parse as parseEdmx } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
+import type { ConvertedMetadata, RawMetadata } from '@sap-ux/vocabularies-types';
+import { logger } from '../../../utils';
 
 /**
  * Fetches SAP backend systems.
@@ -167,16 +170,33 @@ async function getServiceFromSystem(backendSystem: BackendSystem, servicePath: s
  * @param metadata - The EDMX metadata XML as string.
  * @throws An error if the metadata is not valid.
  */
-function checkMetadata(metadata: string): void {
-    let parsedMetadata: unknown;
+function parseMetadata(metadata: string): ConvertedMetadata {
+    let parsedMetadata: RawMetadata | undefined;
+    let convertedMetadata: ConvertedMetadata = {} as ConvertedMetadata;
+
     try {
         parsedMetadata = parseEdmx(metadata);
-    } catch {
-        /* error handled below */
+        convertedMetadata = convert(parsedMetadata);
+    } catch (error) {
+        logger.debug(`Error parsing metadata: ${metadata}`);
     }
+
     if (!parsedMetadata) {
-        throw new Error('Failed to parse service metadata. The service may not be a valid OData V4 service.');
+        throw new Error(
+            `Failed to parse service metadata. The service may not be a valid OData V4 service. Metadata: ${metadata}`
+        );
+    } else {
+        return convertedMetadata;
     }
+}
+
+export interface ServiceMetadataResult {
+    metadata: string;
+    entitySets: {
+        [entitySetName: string]: {
+            navigationPropertyBinding?: { [navProperty: string]: string };
+        };
+    };
 }
 
 /**
@@ -186,9 +206,35 @@ function checkMetadata(metadata: string): void {
  * @param servicePath - The path of the service.
  * @returns A promise that resolves to a EDMX metadata XML as string.
  */
-export async function getServiceMetadata(sapSystem: BackendSystem, servicePath: string): Promise<string> {
+export async function getServiceMetadata(
+    sapSystem: BackendSystem,
+    servicePath: string
+): Promise<ServiceMetadataResult> {
     const service = await getServiceFromSystem(sapSystem, servicePath);
     const metadata = await service.metadata();
-    checkMetadata(metadata);
-    return metadata;
+    const parsedMetadata = parseMetadata(metadata);
+    const result: ServiceMetadataResult = { metadata, entitySets: {} };
+
+    for (const es of Object.values(parsedMetadata?.entitySets ?? {})) {
+        if (!result.entitySets[es.name]) {
+            result.entitySets[es.name] = {};
+        }
+        if (es.navigationPropertyBinding) {
+            result.entitySets[es.name].navigationPropertyBinding = {};
+            for (const nav of Object.keys(es.navigationPropertyBinding)) {
+                if (es.name && nav && result?.entitySets[es.name]) {
+                    result.entitySets[es.name].navigationPropertyBinding =
+                        result.entitySets[es.name].navigationPropertyBinding ?? {};
+                    if (result?.entitySets?.[es.name]?.navigationPropertyBinding) {
+                        const navTarget = es.navigationPropertyBinding[nav];
+                        const targetName = typeof navTarget === 'string' ? navTarget : navTarget?.name;
+                        if (targetName) {
+                            result.entitySets[es.name].navigationPropertyBinding![nav] = targetName;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result;
 }
