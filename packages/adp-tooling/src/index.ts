@@ -7,6 +7,7 @@ export * from './ui5';
 export * from './base/cf';
 export * from './cf';
 export * from './base/helper';
+export * from './base/credentials';
 export * from './base/constants';
 export * from './base/project-builder';
 export * from './base/abap/manifest-service';

@@ -1,4 +1,4 @@
-import { getService } from '@sap-ux/store';
+import { getService, SystemType } from '@sap-ux/store';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
@@ -30,6 +30,7 @@ export const transformBackendSystem = (system: BackendSystem): Endpoint => ({
     UserDisplayName: system.userDisplayName,
     Scp: !!system.serviceKeys,
     Authentication: system.authenticationType,
+    SystemType: system.systemType,
     Credentials: {
         username: system.username,
         password: system.password
@@ -81,7 +82,7 @@ export class SystemLookup {
                     entityName: 'system'
                 });
                 const backendSystems = await systemStore?.getAll();
-                endpoints = backendSystems.map(transformBackendSystem);
+                endpoints = backendSystems.filter((system) => system.name !== undefined).map(transformBackendSystem);
             }
             return endpoints;
         } catch (e) {
@@ -120,7 +121,12 @@ export class SystemLookup {
         if (isAppStudio()) {
             return found?.Authentication === 'NoAuthentication';
         } else {
-            return !found;
+            if (!found) {
+                return true;
+            }
+            const isOnPrem = found.SystemType === SystemType.AbapOnPrem;
+            const hasMissingCredentials = !found.Credentials?.username || !found.Credentials?.password;
+            return isOnPrem && hasMissingCredentials;
         }
     }
 }

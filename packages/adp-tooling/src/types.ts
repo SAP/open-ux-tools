@@ -122,6 +122,7 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
+    storeCredentials?: boolean;
     application: SourceApplication;
     fioriId?: string;
     ach?: string;
@@ -192,6 +193,7 @@ export interface Endpoint extends Partial<Destination> {
     Credentials?: { username?: string; password?: string };
     UserDisplayName?: string;
     Scp?: boolean;
+    SystemType?: string;
 }
 
 export interface ChangeInboundNavigation {
