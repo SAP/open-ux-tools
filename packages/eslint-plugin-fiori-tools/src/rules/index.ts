@@ -5,6 +5,8 @@ import {
     WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     COPY_TO_CLIPBOARD,
     CREATION_MODE_FOR_TABLE,
+    ENABLE_EXPORT,
+    ENABLE_PASTE,
     STATE_PRESERVATION_MODE
 } from '../language/diagnostics';
 
@@ -63,6 +65,8 @@ import requireWidthIncludingColumnHeader from './sap-width-including-column-head
 import creationModeForTable from './sap-creation-mode-for-table';
 import statePreservationMode from './sap-state-preservation-mode';
 import copyToClipboard from './sap-copy-to-clipboard';
+import enableExport from './sap-enable-export';
+import enablePaste from './sap-enable-paste';
 
 import type { Rule } from 'eslint';
 
@@ -118,6 +122,8 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [FLEX_ENABLED]: flexEnabledRule,
     [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
     [COPY_TO_CLIPBOARD]: copyToClipboard,
+    [ENABLE_EXPORT]: enableExport,
+    [ENABLE_PASTE]: enablePaste,
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
     [STATE_PRESERVATION_MODE]: statePreservationMode
 };
