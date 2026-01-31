@@ -42,6 +42,7 @@ export function getLocalEDMXService(project: Project, serviceName: string, appNa
 
     return {
         type: 'local-edmx',
+        servicePath: service.uri,
         odataVersion: service.odataVersion ?? '2.0',
         metadataFile,
         annotationFiles

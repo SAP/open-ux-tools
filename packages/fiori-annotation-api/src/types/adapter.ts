@@ -1,4 +1,6 @@
 import type {
+    Element,
+    Location,
     AliasInformation,
     AnnotationFile,
     CompilerMessage,
@@ -12,6 +14,11 @@ import type { Service, CompiledService } from './service';
 import type { TextFile } from './text-file';
 
 type ValidationResultType = Map<string, CompilerMessage> | void;
+export interface ValueListReference {
+    location: Location;
+    annotation: Element;
+    uris: string[];
+}
 
 /**
  * Defines a set of functions that needs to be implemented to provide
@@ -35,6 +42,18 @@ export interface AnnotationServiceAdapter {
     ): Promise<ValidationResultType> | ValidationResultType;
     /**
      *
+     * @param uri
+     * @param data
+     */
+    syncExternalService(uri: string, data: string, localFilePath: string): void;
+    getExternalServices(): {
+        uri: string;
+        metadataService: MetadataService;
+        compiledService: CompiledService;
+        localFileUri: string;
+    }[];
+    /**
+     *
      */
     getDocuments(): Record<string, AnnotationFile>;
     /**
@@ -55,6 +74,11 @@ export interface AnnotationServiceAdapter {
      * @param target - Content of an 'Annotations' element
      */
     serializeTarget(target: Target): string;
+
+    /**
+     * Get mapping from targets to value list references
+     */
+    getValueListReferences(): Map<string, ValueListReference[]>;
 }
 
 export interface AnnotationServiceConstructor<T extends Service> {
