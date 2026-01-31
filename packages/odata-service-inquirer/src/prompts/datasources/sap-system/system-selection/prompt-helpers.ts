@@ -64,7 +64,14 @@ export async function connectWithBackendSystem(
         }
         // Assumption: non-BAS systems are BackendSystems
         if (backendSystem.authenticationType === 'reentranceTicket') {
-            connectValResult = await connectionValidator.validateUrl(backendSystem.url, {
+            // Since we previously allowed paths in the stored backend system URLs for Cloud systems, we need to strip them (only use origin in the validator).
+            const backendSystemUrl = new URL(backendSystem.url);
+            if (backendSystemUrl.pathname !== '/') {
+                LoggerHelper.logger.warn(
+                    t('warnings.storedSystemUrlPathNotSupported', { systemUrl: backendSystem.url })
+                );
+            }
+            connectValResult = await connectionValidator.validateUrl(backendSystemUrl.origin, {
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion),
                 systemAuthType: 'reentranceTicket'
