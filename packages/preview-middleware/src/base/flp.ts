@@ -1302,7 +1302,14 @@ export class FlpSandbox {
                     if (sandbox) {
                         const srcPath = sandbox.utils.getProject().getSourcePath();
                         const webappPath = srcPath.endsWith('webapp') ? srcPath : srcPath;
-                        const filePath = join(webappPath, req.path);
+                        // Sanitize the path to prevent path traversal attacks
+                        const sanitizedPath = posix.normalize(req.path).replace(/^(\.\.[/\\])+/, '');
+                        const filePath = join(webappPath, sanitizedPath);
+                        // Ensure the resolved path is within the webapp directory
+                        if (!filePath.startsWith(webappPath)) {
+                            res.status(403).send('Access denied');
+                            return;
+                        }
                         try {
                             const content = readFileSync(filePath, 'utf-8');
                             const contentType = req.path.endsWith('.json') ? 'application/json' : 'text/plain';
@@ -1341,7 +1348,14 @@ export class FlpSandbox {
                     if (sandbox) {
                         const srcPath = sandbox.utils.getProject().getSourcePath();
                         const webappPath = srcPath.endsWith('webapp') ? srcPath : srcPath;
-                        const filePath = join(webappPath, req.path);
+                        // Sanitize the path to prevent path traversal attacks
+                        const sanitizedPath = posix.normalize(req.path).replace(/^(\.\.[/\\])+/, '');
+                        const filePath = join(webappPath, sanitizedPath);
+                        // Ensure the resolved path is within the webapp directory
+                        if (!filePath.startsWith(webappPath)) {
+                            res.status(403).send('Access denied');
+                            return;
+                        }
                         try {
                             const content = readFileSync(filePath, 'utf-8');
                             res.setHeader('Content-Type', 'text/plain; charset=utf-8');
