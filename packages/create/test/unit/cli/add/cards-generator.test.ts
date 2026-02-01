@@ -44,6 +44,12 @@ describe('add/cards-generator', () => {
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
 
     beforeEach(() => {
+        jest.clearAllMocks();
+        enableCardGeneratorConfigMock.mockClear();
+        enableCardGeneratorConfigMock.mockResolvedValue(mockFs);
+        mockFs.exists.mockReturnValue(false);
+        mockFs.readJSON.mockReturnValue({});
+        mockFs.writeJSON.mockClear();
         jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
         jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
     });
