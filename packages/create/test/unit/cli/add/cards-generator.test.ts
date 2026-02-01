@@ -19,10 +19,20 @@ jest.mock('mem-fs-editor', () => {
     };
 });
 
+const createMockFs = (existsValue = false, readJSONValue: unknown = {}) => ({
+    exists: jest.fn().mockReturnValue(existsValue),
+    readJSON: jest.fn().mockReturnValue(readJSONValue),
+    writeJSON: jest.fn(),
+    commit: jest.fn().mockImplementation((cb: () => void) => cb()),
+    dump: jest.fn().mockReturnValue({})
+});
+
+const mockFs = createMockFs();
+
 jest.mock('@sap-ux/app-config-writer', () => {
     return {
         ...jest.requireActual('@sap-ux/app-config-writer'),
-        enableCardGeneratorConfig: jest.fn()
+        enableCardGeneratorConfig: jest.fn().mockImplementation(() => Promise.resolve(mockFs))
     };
 });
 
@@ -54,6 +64,23 @@ describe('add/cards-generator', () => {
     });
 
     test('add cards-generator CAP with --app option', async () => {
+        // Setup mock fs to have root package.json and manifest
+        mockFs.exists.mockImplementation((path: string) => {
+            if (path.includes('package.json')) {
+                return true;
+            }
+            if (path.includes('manifest.json')) {
+                return true;
+            }
+            return false;
+        });
+        mockFs.readJSON.mockImplementation((path: string) => {
+            if (path.includes('manifest.json')) {
+                return { 'sap.app': { id: 'test.travel.app' } };
+            }
+            return { scripts: {} };
+        });
+
         jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
         // Test execution
         const command = new Command('add');
@@ -66,6 +93,8 @@ describe('add/cards-generator', () => {
             expect.any(String),
             expect.anything()
         );
+        // Verify that writeJSON was called to add the script to root package.json
+        expect(mockFs.writeJSON).toHaveBeenCalled();
         expect(traceSpy).not.toHaveBeenCalled();
     });
 
