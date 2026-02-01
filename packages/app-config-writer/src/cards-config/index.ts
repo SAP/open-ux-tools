@@ -69,7 +69,7 @@ async function updateMiddlewareConfigWithGeneratorPath(
  * @param {Editor} fs - The `mem-fs-editor` instance used to read and write files.
  * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file for retrieving middleware configurations.
  * @param {ToolsLogger} [logger] - Optional logger instance for logging debug information.
- * @param {string} [appPath] - Optional path to the app folder for CAP projects.
+ * @param {string} [_appPath] - Optional path to the app folder for CAP projects (reserved for future use).
  * @returns {Promise<void>} A promise that resolves when the `package.json` file has been successfully updated.
  */
 async function updatePackageJson(
@@ -77,7 +77,7 @@ async function updatePackageJson(
     fs: Editor,
     yamlPath?: string,
     logger?: ToolsLogger,
-    appPath?: string
+    _appPath?: string
 ): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     if (!fs.exists(packageJsonPath)) {

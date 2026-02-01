@@ -152,4 +152,46 @@ describe('enableCardGenerator', () => {
 
         getProjectTypeSpy.mockRestore();
     });
+
+    test('CAP project with deprecated dependency - should remove dependency', async () => {
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
+        const fs = create(createStorage());
+
+        // Create package.json with the deprecated dependency
+        fs.writeJSON(join(basePath, 'package.json'), {
+            devDependencies: {
+                '@sap-ux/cards-editor-middleware': '^1.0.0'
+            }
+        });
+        fs.write(join(basePath, 'ui5.yaml'), '');
+        fs.writeJSON(join(basePath, 'webapp/manifest.json'), {
+            'sap.app': {
+                id: 'test.id',
+                title: 'Test App'
+            }
+        });
+
+        // Mock getProjectType to return CAPNodejs
+        const getProjectTypeSpy = jest.spyOn(projectAccess, 'getProjectType').mockResolvedValue('CAPNodejs');
+
+        const mockLogger = {
+            info: jest.fn(),
+            debug: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn()
+        };
+
+        await enableCardGeneratorConfig(basePath, join(basePath, 'ui5.yaml'), mockLogger as any, fs);
+
+        // Verify that the deprecated dependency was removed
+        const packageJson = JSON.parse(fs.read(join(basePath, 'package.json')));
+        expect(packageJson.devDependencies?.['@sap-ux/cards-editor-middleware']).toBeUndefined();
+
+        // Verify that the logger was called with the removal message
+        expect(mockLogger.info).toHaveBeenCalledWith(
+            expect.stringContaining('Removed devDependency @sap-ux/cards-editor-middleware')
+        );
+
+        getProjectTypeSpy.mockRestore();
+    });
 });
