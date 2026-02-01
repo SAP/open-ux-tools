@@ -1488,7 +1488,6 @@ describe('router with enableCardGenerator for CAP projects', () => {
 
     test('addRootLevelCardRoutes registers FlpSandbox in global registry for CAP projects', async () => {
         // The FlpSandbox should be registered in the global registry
-
         const registry = (global as any).__flpSandboxRegistry;
         expect(registry).toBeDefined();
         expect(Object.keys(registry).length).toBeGreaterThan(0);
@@ -1500,6 +1499,97 @@ describe('router with enableCardGenerator for CAP projects', () => {
         );
         expect(response.status).toBe(200);
         expect(response.type).toBe('text/html');
+    });
+});
+
+describe('addRootLevelCardRoutes with mocked CDS', () => {
+    const fixtures = join(__dirname, '../../fixtures');
+    const mockProject = {
+        byPath: jest.fn().mockResolvedValue(undefined),
+        byGlob: jest.fn().mockResolvedValue([])
+    } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
+    const mockUtils = {
+        getProject() {
+            return {
+                getSourcePath: () => join(fixtures, 'simple-app/webapp')
+            };
+        }
+    } as unknown as MiddlewareUtils;
+    const loggerMock = {
+        debug: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+        info: jest.fn()
+    } as unknown as Logger;
+
+    beforeEach(() => {
+        // Clear global registry before each test
+        (global as any).__flpSandboxRegistry = undefined;
+        (global as any).__cardRoutesRegistered = undefined;
+    });
+
+    test('addRootLevelCardRoutes skips registration for non-CAP projects', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.app' } } as any;
+        await flp.init(manifest);
+
+        // For non-CAP projects, the global registry should not have __cardRoutesRegistered set
+        // because the method returns early
+        expect((global as any).__cardRoutesRegistered).toBeUndefined();
+    });
+
+    test('addRootLevelCardRoutes skips registration when cardGenerator path is not set', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox({}, mockProject, mockUtils, loggerMock);
+        const manifest = { 'sap.app': { id: 'test.app' } } as any;
+        await flp.init(manifest);
+
+        // Without cardGenerator path, the method should return early
+        expect((global as any).__cardRoutesRegistered).toBeUndefined();
+    });
+
+    test('addRootLevelCardRoutes registers sandbox in global registry for CAP projects', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.cap.app' } } as any;
+        await flp.init(manifest);
+
+        // The sandbox should be registered in the global registry
+        const registry = (global as any).__flpSandboxRegistry;
+        expect(registry).toBeDefined();
+        expect(registry['test.cap.app']).toBeDefined();
+    });
+
+    test('addRootLevelCardRoutes handles CAPJava project type', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPJava'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.java.app' } } as any;
+        await flp.init(manifest);
+
+        // The sandbox should be registered in the global registry for CAPJava too
+        const registry = (global as any).__flpSandboxRegistry;
+        expect(registry).toBeDefined();
+        expect(registry['test.java.app']).toBeDefined();
     });
 });
 
