@@ -94,8 +94,9 @@ describe('add/cards-generator', () => {
         await command.parseAsync(testArgv(['--app', 'app/travel']));
 
         // Flow check - CAP projects with --app option should use the specified app path
+        // Use regex to handle both forward and back slashes (Windows vs Unix)
         expect(enableCardGeneratorConfigMock).toHaveBeenCalledWith(
-            expect.stringContaining('app/travel'),
+            expect.stringMatching(/app[/\\]travel/),
             expect.any(String),
             expect.anything()
         );
@@ -105,8 +106,11 @@ describe('add/cards-generator', () => {
     });
 
     test('add cards-generator CAP auto-detect app', async () => {
-        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
-        jest.spyOn(projectAccess, 'findFioriArtifacts').mockImplementation(() =>
+        // Setup mocks BEFORE creating the command
+        const getProjectTypeSpy = jest
+            .spyOn(projectAccess, 'getProjectType')
+            .mockImplementation(() => Promise.resolve('CAPNodejs'));
+        const findFioriArtifactsSpy = jest.spyOn(projectAccess, 'findFioriArtifacts').mockImplementation(() =>
             Promise.resolve({
                 applications: [
                     {
@@ -124,9 +128,14 @@ describe('add/cards-generator', () => {
         addCardsEditorConfigCommand(command);
         await command.parseAsync(testArgv([]));
 
+        // Verify mocks were called
+        expect(getProjectTypeSpy).toHaveBeenCalled();
+        expect(findFioriArtifactsSpy).toHaveBeenCalled();
+
         // Flow check - CAP projects should auto-detect the app
+        // Use regex to handle both forward and back slashes (Windows vs Unix)
         expect(enableCardGeneratorConfigMock).toHaveBeenCalledWith(
-            expect.stringContaining('app/travel'),
+            expect.stringMatching(/app[/\\]travel/),
             expect.any(String),
             expect.anything()
         );
