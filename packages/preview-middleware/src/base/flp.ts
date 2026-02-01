@@ -1296,76 +1296,51 @@ export class FlpSandbox {
                     }
                 });
 
-                // Register /cards/* route at root level to serve card manifest files
-                cds.app.get('/cards/*', (req: Request, res: Response, next: NextFunction) => {
+                // Helper to serve static files with path validation
+                const serveStaticFile = (
+                    req: Request,
+                    res: Response,
+                    next: NextFunction,
+                    relativePath: string,
+                    contentType: string
+                ): void => {
                     const sandbox = findFlpSandbox(req);
-                    if (sandbox) {
-                        const srcPath = sandbox.utils.getProject().getSourcePath();
-                        const webappPath = srcPath.endsWith('webapp') ? srcPath : srcPath;
-                        // Sanitize the path to prevent path traversal attacks
-                        const sanitizedPath = posix.normalize(req.path).replace(/^(\.\.[/\\])+/, '');
-                        const filePath = join(webappPath, sanitizedPath);
-                        // Ensure the resolved path is within the webapp directory
-                        if (!filePath.startsWith(webappPath)) {
-                            res.status(403).send('Access denied');
-                            return;
-                        }
-                        try {
-                            const content = readFileSync(filePath, 'utf-8');
-                            const contentType = req.path.endsWith('.json') ? 'application/json' : 'text/plain';
-                            res.setHeader('Content-Type', contentType);
-                            res.send(content);
-                        } catch (error) {
-                            next();
-                        }
-                    } else {
+                    if (!sandbox) {
+                        next();
+                        return;
+                    }
+                    const webappPath = sandbox.utils.getProject().getSourcePath();
+                    // Sanitize the path to prevent path traversal attacks
+                    const sanitizedPath = posix.normalize(relativePath).replace(/^(\.\.[/\\])+/, '');
+                    const filePath = join(webappPath, sanitizedPath);
+                    // Ensure the resolved path is within the webapp directory
+                    if (!filePath.startsWith(webappPath)) {
+                        res.status(403).send('Access denied');
+                        return;
+                    }
+                    try {
+                        const content = readFileSync(filePath, 'utf-8');
+                        res.setHeader('Content-Type', contentType);
+                        res.send(content);
+                    } catch {
                         next();
                     }
+                };
+
+                // Register /cards/* route at root level to serve card manifest files
+                cds.app.get('/cards/*', (req: Request, res: Response, next: NextFunction) => {
+                    const contentType = req.path.endsWith('.json') ? 'application/json' : 'text/plain';
+                    serveStaticFile(req, res, next, req.path, contentType);
                 });
 
                 // Register /manifest.json route at root level to serve the app manifest
                 cds.app.get('/manifest.json', (req: Request, res: Response, next: NextFunction) => {
-                    const sandbox = findFlpSandbox(req);
-                    if (sandbox) {
-                        const srcPath = sandbox.utils.getProject().getSourcePath();
-                        const webappPath = srcPath.endsWith('webapp') ? srcPath : srcPath;
-                        const filePath = join(webappPath, 'manifest.json');
-                        try {
-                            const content = readFileSync(filePath, 'utf-8');
-                            res.setHeader('Content-Type', 'application/json');
-                            res.send(content);
-                        } catch (error) {
-                            next();
-                        }
-                    } else {
-                        next();
-                    }
+                    serveStaticFile(req, res, next, 'manifest.json', 'application/json');
                 });
 
                 // Register /i18n/* route at root level to serve i18n files
                 cds.app.get('/i18n/*', (req: Request, res: Response, next: NextFunction) => {
-                    const sandbox = findFlpSandbox(req);
-                    if (sandbox) {
-                        const srcPath = sandbox.utils.getProject().getSourcePath();
-                        const webappPath = srcPath.endsWith('webapp') ? srcPath : srcPath;
-                        // Sanitize the path to prevent path traversal attacks
-                        const sanitizedPath = posix.normalize(req.path).replace(/^(\.\.[/\\])+/, '');
-                        const filePath = join(webappPath, sanitizedPath);
-                        // Ensure the resolved path is within the webapp directory
-                        if (!filePath.startsWith(webappPath)) {
-                            res.status(403).send('Access denied');
-                            return;
-                        }
-                        try {
-                            const content = readFileSync(filePath, 'utf-8');
-                            res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-                            res.send(content);
-                        } catch (error) {
-                            next();
-                        }
-                    } else {
-                        next();
-                    }
+                    serveStaticFile(req, res, next, req.path, 'text/plain; charset=utf-8');
                 });
 
                 (global as any).__cardRoutesRegistered = true;
