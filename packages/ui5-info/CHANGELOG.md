@@ -1,5 +1,12 @@
 # @sap-ux/ui5-info
 
+## 0.13.10
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+
 ## 0.13.9
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.11
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/ui5-config@0.29.14
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/mockserver-config-writer@0.9.43
+
 ## 0.29.10
 
 ### Patch Changes
