@@ -1,11 +1,19 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`createJsonFixer DELETE operation should delete a deeply nested object property 1`] = `
+exports[`createJsonFixer DELETE operation should delete a deeply nested object property with preceding comma 1`] = `
 Array [
   Object {
     "range": Array [
-      37,
-      187,
+      82,
+      83,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+  Object {
+    "range": Array [
+      84,
+      242,
     ],
     "text": "",
     "type": "remove",
@@ -43,6 +51,83 @@ Array [
     ],
     "text": "",
     "type": "remove",
+  },
+]
+`;
+
+exports[`createJsonFixer DELETE operation should replace a single property in an object node 1`] = `
+Array [
+  Object {
+    "node": Object {
+      "loc": Object {
+        "end": Object {
+          "column": 18,
+          "line": 4,
+          "offset": 88,
+        },
+        "start": Object {
+          "column": 34,
+          "line": 2,
+          "offset": 35,
+        },
+      },
+      "members": Array [
+        Object {
+          "loc": Object {
+            "end": Object {
+              "column": 34,
+              "line": 3,
+              "offset": 70,
+            },
+            "start": Object {
+              "column": 21,
+              "line": 3,
+              "offset": 57,
+            },
+          },
+          "name": Object {
+            "loc": Object {
+              "end": Object {
+                "column": 27,
+                "line": 3,
+                "offset": 63,
+              },
+              "start": Object {
+                "column": 21,
+                "line": 3,
+                "offset": 57,
+              },
+            },
+            "type": "String",
+            "value": "copy",
+          },
+          "type": "Member",
+          "value": Object {
+            "loc": Object {
+              "end": Object {
+                "column": 34,
+                "line": 3,
+                "offset": 70,
+              },
+              "start": Object {
+                "column": 29,
+                "line": 3,
+                "offset": 65,
+              },
+            },
+            "type": "Boolean",
+            "value": false,
+          },
+        },
+      ],
+      "type": "Object",
+    },
+    "range": Array [
+      0,
+      0,
+    ],
+    "text": "{}",
+    "type": "replace",
   },
 ]
 `;
@@ -114,7 +199,7 @@ Array [
   Object {
     "range": Array [
       0,
-      17,
+      19,
     ],
     "text": "",
     "type": "remove",
