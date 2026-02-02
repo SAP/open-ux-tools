@@ -55,112 +55,131 @@ const AGGREGATION_WITH_EMPTY_TRANSFORMATIONS_ANNOTATION = {
     }
 } as const;
 
+const buildEntitySet = ({
+    entitySetAnnotations,
+    entityTypeAnnotations
+}: {
+    entitySetAnnotations?: Record<string, unknown>;
+    entityTypeAnnotations?: Record<string, unknown>;
+}): EntitySet =>
+    ({
+        ...BASE_ENTITY_SET,
+        ...(entitySetAnnotations && { annotations: { ...entitySetAnnotations } }),
+        entityType: {
+            ...BASE_ENTITY_SET.entityType,
+            ...(entityTypeAnnotations && { annotations: { ...entityTypeAnnotations } })
+        }
+    }) as unknown as EntitySet;
+
 describe('metadata', () => {
     describe('findRecursiveHierarchyKey', () => {
-        test('returns exact RecursiveHierarchy key when present', () => {
-            const entitySet = {
-                ...BASE_ENTITY_SET,
-                entityType: { ...BASE_ENTITY_SET.entityType, annotations: { ...HIERARCHY_ANNOTATION } }
-            } as unknown as EntitySet;
+        const cases: Array<{
+            name: string;
+            annotations: Record<string, unknown>;
+            expected: string | undefined;
+        }> = [
+            {
+                name: 'returns exact RecursiveHierarchy key when present',
+                annotations: HIERARCHY_ANNOTATION,
+                expected: 'RecursiveHierarchy'
+            },
+            {
+                name: 'returns qualified RecursiveHierarchy key when exact not present',
+                annotations: CUSTOM_HIERARCHY_ANNOTATION,
+                expected: 'RecursiveHierarchy#Q1'
+            },
+            {
+                name: 'returns undefined when hierarchy annotations missing',
+                annotations: AGGREGATION_ANNOTATION,
+                expected: undefined
+            }
+        ];
 
-            expect(findRecursiveHierarchyKey(entitySet)).toBe('RecursiveHierarchy');
-        });
-
-        test('returns qualified RecursiveHierarchy key when exact not present', () => {
-            const entitySet = {
-                ...BASE_ENTITY_SET,
-                entityType: { ...BASE_ENTITY_SET.entityType, annotations: { ...CUSTOM_HIERARCHY_ANNOTATION } }
-            } as unknown as EntitySet;
-
-            expect(findRecursiveHierarchyKey(entitySet)).toBe('RecursiveHierarchy#Q1');
-        });
-
-        test('returns undefined when hierarchy annotations missing', () => {
-            const entitySet = {
-                ...BASE_ENTITY_SET,
-                entityType: { ...BASE_ENTITY_SET.entityType, annotations: { ...AGGREGATION_ANNOTATION } }
-            } as unknown as EntitySet;
-
-            expect(findRecursiveHierarchyKey(entitySet)).toBeUndefined();
-        });
-    });
-
-    describe('getTableCapabilitiesByEntitySet', () => {
-        test('detects aggregate transformations from entity set annotations', () => {
-            const entitySet = {
-                ...BASE_ENTITY_SET,
-                annotations: { ...AGGREGATION_ANNOTATION }
-            } as unknown as EntitySet;
-
-            const result = getTableCapabilitiesByEntitySet(entitySet);
-            expect(result).toEqual({
-                hasAggregateTransformations: true,
-                hasAggregateTransformationsForEntitySet: true,
-                hasRecursiveHierarchyForEntitySet: false
+        test.each(cases)('$name', ({ annotations, expected }) => {
+            const entitySet = buildEntitySet({
+                entityTypeAnnotations: annotations
             });
+
+            if (expected === undefined) {
+                expect(findRecursiveHierarchyKey(entitySet)).toBeUndefined();
+            } else {
+                expect(findRecursiveHierarchyKey(entitySet)).toBe(expected);
+            }
         });
 
-        test('detects aggregate transformations from entity type annotations', () => {
-            const entitySet = {
-                ...BASE_ENTITY_SET,
-                entityType: {
-                    ...BASE_ENTITY_SET.entityType,
-                    annotations: { ...AGGREGATION_ANNOTATION }
+        describe('getTableCapabilitiesByEntitySet', () => {
+            const cases: Array<{
+                name: string;
+                entitySet: EntitySet;
+                requiredTransformations?: readonly string[];
+                expected: {
+                    hasAggregateTransformations: boolean;
+                    hasAggregateTransformationsForEntitySet: boolean;
+                    hasRecursiveHierarchyForEntitySet: boolean;
+                };
+            }> = [
+                {
+                    name: 'detects aggregate transformations from entity set annotations',
+                    entitySet: buildEntitySet({
+                        entitySetAnnotations: AGGREGATION_ANNOTATION
+                    }),
+                    expected: {
+                        hasAggregateTransformations: true,
+                        hasAggregateTransformationsForEntitySet: true,
+                        hasRecursiveHierarchyForEntitySet: false
+                    }
+                },
+                {
+                    name: 'detects aggregate transformations from entity type annotations',
+                    entitySet: buildEntitySet({
+                        entityTypeAnnotations: AGGREGATION_ANNOTATION
+                    }),
+                    requiredTransformations: ['filter'],
+                    expected: {
+                        hasAggregateTransformations: true,
+                        hasAggregateTransformationsForEntitySet: true,
+                        hasRecursiveHierarchyForEntitySet: false
+                    }
+                },
+                {
+                    name: 'returns false for required transformations when not all are present',
+                    entitySet: buildEntitySet({
+                        entityTypeAnnotations: AGGREGATION_ANNOTATION
+                    }),
+                    requiredTransformations: ['filter', 'groupby'],
+                    expected: {
+                        hasAggregateTransformations: true,
+                        hasAggregateTransformationsForEntitySet: false,
+                        hasRecursiveHierarchyForEntitySet: false
+                    }
+                },
+                {
+                    name: 'returns false when transformations are empty',
+                    entitySet: buildEntitySet({
+                        entityTypeAnnotations: AGGREGATION_WITH_EMPTY_TRANSFORMATIONS_ANNOTATION
+                    }),
+                    expected: {
+                        hasAggregateTransformations: false,
+                        hasAggregateTransformationsForEntitySet: false,
+                        hasRecursiveHierarchyForEntitySet: false
+                    }
+                },
+                {
+                    name: 'detects recursive hierarchy via qualified key (derived from real metadata)',
+                    entitySet: buildEntitySet({
+                        entityTypeAnnotations: CUSTOM_HIERARCHY_ANNOTATION
+                    }),
+                    expected: {
+                        hasAggregateTransformations: false,
+                        hasAggregateTransformationsForEntitySet: false,
+                        hasRecursiveHierarchyForEntitySet: true
+                    }
                 }
-            } as unknown as EntitySet;
+            ];
 
-            const result = getTableCapabilitiesByEntitySet(entitySet, ['filter']);
-            expect(result).toEqual({
-                hasAggregateTransformations: true,
-                hasAggregateTransformationsForEntitySet: true,
-                hasRecursiveHierarchyForEntitySet: false
-            });
-        });
-
-        test('returns false for required transformations when not all are present', () => {
-            const entitySet = {
-                ...BASE_ENTITY_SET,
-                entityType: {
-                    ...BASE_ENTITY_SET.entityType,
-                    annotations: { ...AGGREGATION_ANNOTATION }
-                }
-            } as unknown as EntitySet;
-            const result = getTableCapabilitiesByEntitySet(entitySet, ['filter', 'groupby']);
-            expect(result).toEqual({
-                hasAggregateTransformations: true,
-                hasAggregateTransformationsForEntitySet: false,
-                hasRecursiveHierarchyForEntitySet: false
-            });
-        });
-
-        test('returns false when transformations are empty', () => {
-            const entitySet = {
-                ...BASE_ENTITY_SET,
-                entityType: {
-                    ...BASE_ENTITY_SET.entityType,
-                    annotations: { ...AGGREGATION_WITH_EMPTY_TRANSFORMATIONS_ANNOTATION }
-                }
-            } as unknown as EntitySet;
-
-            const result = getTableCapabilitiesByEntitySet(entitySet);
-            expect(result).toEqual({
-                hasAggregateTransformations: false,
-                hasAggregateTransformationsForEntitySet: false,
-                hasRecursiveHierarchyForEntitySet: false
-            });
-        });
-
-        test('detects recursive hierarchy via qualified key (derived from real metadata)', () => {
-            const entitySet = {
-                ...BASE_ENTITY_SET,
-                entityType: { ...BASE_ENTITY_SET.entityType, annotations: { ...CUSTOM_HIERARCHY_ANNOTATION } }
-            } as unknown as EntitySet;
-
-            const result = getTableCapabilitiesByEntitySet(entitySet);
-            expect(result).toEqual({
-                hasAggregateTransformations: false,
-                hasAggregateTransformationsForEntitySet: false,
-                hasRecursiveHierarchyForEntitySet: true
+            test.each(cases)('$name', ({ entitySet, requiredTransformations, expected }) => {
+                const result = getTableCapabilitiesByEntitySet(entitySet, requiredTransformations);
+                expect(result).toEqual(expected);
             });
         });
     });
