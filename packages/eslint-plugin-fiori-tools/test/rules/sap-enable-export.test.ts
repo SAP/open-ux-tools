@@ -1,5 +1,5 @@
 import { RuleTester } from 'eslint';
-import disableCopyToClipboardRule from '../../src/rules/sap-disable-copy-to-clipboard';
+import enableExportRule from '../../src/rules/sap-enable-export';
 import { meta, languages } from '../../src/index';
 import {
     getAnnotationsAsXmlCode,
@@ -7,6 +7,7 @@ import {
     setup,
     V4_ANNOTATIONS,
     V4_ANNOTATIONS_PATH,
+    V4_FACETS_ANNOTATIONS,
     V4_MANIFEST,
     V4_MANIFEST_PATH
 } from '../test-helper';
@@ -16,48 +17,19 @@ const ruleTester = new RuleTester({
     language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
 });
 
-const FACETS = {
+const FACETSV4 = {
     filename: V4_ANNOTATIONS_PATH,
-    code: getAnnotationsAsXmlCode(
-        V4_ANNOTATIONS,
-        `
-            <Annotations Target="IncidentService.Incidents">
-                 <Annotation Term="UI.Facets" >
-                    <Collection>
-                        <Record Type="UI.ReferenceFacet">
-                            <PropertyValue Property="ID" String="Products"/>
-                            <PropertyValue Property="Label" String="Prducts"/>
-                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-             <Annotations Target="IncidentService.IncidentFlow">
-                 <Annotation Term="UI.LineItem">
-                    <Collection>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="processStep" />
-                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="stepStatus" />
-                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-                `
-    )
+    code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FACETS_ANNOTATIONS)
 };
 
-const TEST_NAME = 'sap-disable-copy-to-clipboard';
+const TEST_NAME = 'sap-enable-export';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
+ruleTester.run(TEST_NAME, enableExportRule, {
     valid: [
         createValidTest(
             {
-                name: 'disableCopyToClipboard missing',
+                name: 'V4 - enableExport missing',
                 filename: V4_MANIFEST_PATH,
                 code: JSON.stringify(V4_MANIFEST, undefined, 2)
             },
@@ -65,7 +37,7 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
         ),
         createValidTest(
             {
-                name: 'object page table - redundant false value',
+                name: 'V4 - object page table - enableExport is true',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
@@ -79,20 +51,20 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
                             'controlConfiguration',
                             '@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
-                            'disableCopyToClipboard'
+                            'enableExport'
                         ],
-                        value: false
+                        value: true
                     }
                 ])
             },
-            [FACETS]
+            [FACETSV4]
         )
     ],
 
     invalid: [
         createInvalidTest(
             {
-                name: 'disableCopyToClipboard is true',
+                name: 'V4 - enableExport is false',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
@@ -106,20 +78,40 @@ ruleTester.run(TEST_NAME, disableCopyToClipboardRule, {
                             'controlConfiguration',
                             '@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
-                            'disableCopyToClipboard'
+                            'enableExport'
                         ],
-                        value: true
+                        value: false
                     }
                 ]),
                 errors: [
                     {
-                        messageId: 'sap-disable-copy-to-clipboard',
+                        messageId: 'sap-enable-export',
                         line: 127,
                         column: 21
                     }
-                ]
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings'
+                        ],
+                        value: {
+                            type: 'ResponsiveTable',
+                            selectionMode: 'Auto'
+                            // enableExport property removed
+                        }
+                    }
+                ])
             },
-            []
+            [FACETSV4]
         )
     ]
 });

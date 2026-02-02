@@ -1,5 +1,28 @@
 # @sap-ux/inquirer-common
 
+## 0.10.20
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/odata-service-writer@0.29.11
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/telemetry@0.6.61
+    - @sap-ux/ui5-info@0.13.10
+
+## 0.10.19
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/odata-service-writer@0.29.10
+    - @sap-ux/ui5-info@0.13.9
+    - @sap-ux/fiori-generator-shared@0.13.59
+    - @sap-ux/telemetry@0.6.60
+
 ## 0.10.18
 
 ### Patch Changes
