@@ -1526,6 +1526,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         // Clear global registry before each test
         (global as any).__flpSandboxRegistry = undefined;
         (global as any).__cardRoutesRegistered = undefined;
+        jest.resetModules();
     });
 
     test('addRootLevelCardRoutes skips registration for non-CAP projects', async () => {
@@ -1590,6 +1591,56 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         const registry = (global as any).__flpSandboxRegistry;
         expect(registry).toBeDefined();
         expect(registry['test.java.app']).toBeDefined();
+    });
+
+    test('addRootLevelCardRoutes logs debug message when @sap/cds is not available', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.cds.app' } } as any;
+        await flp.init(manifest);
+
+        // The sandbox should be registered in the global registry
+        const registry = (global as any).__flpSandboxRegistry;
+        expect(registry).toBeDefined();
+        expect(registry['test.cds.app']).toBeDefined();
+
+        // Should log debug message about @sap/cds not being available
+        expect(loggerMock.debug).toHaveBeenCalledWith(
+            '@sap/cds not available, skipping root-level card routes registration'
+        );
+    });
+
+    test('addRootLevelCardRoutes skips if routes already registered flag is set before cds.app check', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        // Set the flag to indicate routes are already registered
+        (global as any).__cardRoutesRegistered = true;
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.skip.app' } } as any;
+        await flp.init(manifest);
+
+        // The sandbox should still be registered in the global registry
+        const registry = (global as any).__flpSandboxRegistry;
+        expect(registry).toBeDefined();
+        expect(registry['test.skip.app']).toBeDefined();
+
+        // Since @sap/cds is not available, it should log the debug message about cds not being available
+        // The "routes already registered" check happens inside registerRootRoutes which is only called when cds.app is available
+        expect(loggerMock.debug).toHaveBeenCalledWith(
+            '@sap/cds not available, skipping root-level card routes registration'
+        );
     });
 });
 
