@@ -9,5 +9,5 @@ export default {
     handlers: {
         getFunctionalityDetails: (): Promise<GetFunctionalityDetailsOutput> => Promise.resolve(details),
         executeFunctionality
-    } as FunctionalityHandlers
+    } satisfies FunctionalityHandlers
 };
