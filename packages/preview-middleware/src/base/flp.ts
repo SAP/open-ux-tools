@@ -73,6 +73,73 @@ const DEFAULT_LIVERELOAD_PORT = 35729;
 export const flpSandboxRegistry: Map<string, FlpSandbox> = new Map();
 
 /**
+ * Finds the FlpSandbox instance based on the request referer.
+ *
+ * @param req - The HTTP request
+ * @returns The FlpSandbox instance or undefined
+ */
+export function findFlpSandboxFromRequest(req: Request): FlpSandbox | undefined {
+    const referer = req.headers.referer || '';
+
+    const registry = (global as any).__flpSandboxRegistry as Record<string, FlpSandbox> | undefined;
+    if (!registry) {
+        return undefined;
+    }
+
+    // Try to find the app ID from the referer URL
+    for (const [regAppId, sandbox] of Object.entries(registry)) {
+        // Check if the referer contains the app's namespace (e.g., sap.fe.cap.travel)
+        const appPath = regAppId.replace(/\./g, '/');
+        if (referer.includes(appPath) || referer.includes(regAppId)) {
+            return sandbox;
+        }
+    }
+
+    // Fallback: return the first sandbox
+    const sandboxes = Object.values(registry);
+    return sandboxes.length > 0 ? sandboxes[0] : undefined;
+}
+
+/**
+ * Serves a static file from the webapp directory with path validation.
+ *
+ * @param req - The HTTP request
+ * @param res - The HTTP response
+ * @param next - The next middleware function
+ * @param relativePath - The relative path to the file
+ * @param contentType - The content type for the response
+ */
+export function serveStaticFileFromWebapp(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    relativePath: string,
+    contentType: string
+): void {
+    const sandbox = findFlpSandboxFromRequest(req);
+    if (!sandbox) {
+        next();
+        return;
+    }
+    const webappPath = sandbox.utils.getProject().getSourcePath();
+    // Sanitize the path to prevent path traversal attacks
+    const sanitizedPath = posix.normalize(relativePath).replace(/^(\.\.[/\\])+/, '');
+    const filePath = join(webappPath, sanitizedPath);
+    // Ensure the resolved path is within the webapp directory
+    if (!filePath.startsWith(webappPath)) {
+        res.status(403).send('Access denied');
+        return;
+    }
+    try {
+        const content = readFileSync(filePath, 'utf-8');
+        res.setHeader('Content-Type', contentType);
+        res.send(content);
+    } catch {
+        next();
+    }
+}
+
+/**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
  */
 export type EnhancedRouter = Router & {
@@ -128,7 +195,7 @@ export class FlpSandbox {
     public readonly router: EnhancedRouter;
     private readonly fs: MemFsEditor;
     private readonly logger: Logger;
-    private readonly utils: MiddlewareUtils;
+    public readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
     private projectType: ProjectType;

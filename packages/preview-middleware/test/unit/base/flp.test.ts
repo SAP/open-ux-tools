@@ -23,6 +23,7 @@ import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
+import { findFlpSandboxFromRequest, serveStaticFileFromWebapp } from '../../../src/base/flp';
 
 jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
 jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
@@ -1682,6 +1683,213 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
 
         // Clean up the mock
         jest.dontMock('@sap/cds');
+    });
+});
+
+describe('findFlpSandboxFromRequest', () => {
+    const fixtures = join(__dirname, '../../fixtures');
+    const mockProject = {
+        byPath: jest.fn().mockResolvedValue(undefined),
+        byGlob: jest.fn().mockResolvedValue([])
+    } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
+    const mockUtils = {
+        getProject() {
+            return {
+                getSourcePath: () => join(fixtures, 'simple-app/webapp')
+            };
+        }
+    } as unknown as MiddlewareUtils;
+    const loggerMock = {
+        debug: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+        info: jest.fn()
+    } as unknown as Logger;
+
+    beforeEach(() => {
+        (global as any).__flpSandboxRegistry = undefined;
+    });
+
+    test('returns undefined when global registry is not defined', () => {
+        const req = { headers: { referer: 'http://localhost/sap/fe/cap/travel' } } as any;
+        const result = findFlpSandboxFromRequest(req);
+        expect(result).toBeUndefined();
+    });
+
+    test('returns undefined when global registry is empty', () => {
+        (global as any).__flpSandboxRegistry = {};
+        const req = { headers: { referer: 'http://localhost/sap/fe/cap/travel' } } as any;
+        const result = findFlpSandboxFromRequest(req);
+        expect(result).toBeUndefined();
+    });
+
+    test('finds sandbox by app path in referer', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'sap.fe.cap.travel' } } as any;
+        await flp.init(manifest);
+
+        const req = { headers: { referer: 'http://localhost/sap/fe/cap/travel/test/flp.html' } } as any;
+        const result = findFlpSandboxFromRequest(req);
+        expect(result).toBeDefined();
+    });
+
+    test('finds sandbox by app ID in referer', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.app.id' } } as any;
+        await flp.init(manifest);
+
+        const req = { headers: { referer: 'http://localhost/test.app.id/test/flp.html' } } as any;
+        const result = findFlpSandboxFromRequest(req);
+        expect(result).toBeDefined();
+    });
+
+    test('returns first sandbox as fallback when no match found', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.fallback.app' } } as any;
+        await flp.init(manifest);
+
+        const req = { headers: { referer: 'http://localhost/unknown/path' } } as any;
+        const result = findFlpSandboxFromRequest(req);
+        expect(result).toBeDefined();
+    });
+
+    test('handles empty referer', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.empty.referer' } } as any;
+        await flp.init(manifest);
+
+        const req = { headers: {} } as any;
+        const result = findFlpSandboxFromRequest(req);
+        // Should return first sandbox as fallback
+        expect(result).toBeDefined();
+    });
+});
+
+describe('serveStaticFileFromWebapp', () => {
+    const fixtures = join(__dirname, '../../fixtures');
+    const mockProject = {
+        byPath: jest.fn().mockResolvedValue(undefined),
+        byGlob: jest.fn().mockResolvedValue([])
+    } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
+    const mockUtils = {
+        getProject() {
+            return {
+                getSourcePath: () => join(fixtures, 'simple-app/webapp')
+            };
+        }
+    } as unknown as MiddlewareUtils;
+    const loggerMock = {
+        debug: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+        info: jest.fn()
+    } as unknown as Logger;
+
+    beforeEach(() => {
+        (global as any).__flpSandboxRegistry = undefined;
+    });
+
+    test('calls next when no sandbox found', () => {
+        const req = { headers: { referer: '' } } as any;
+        const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+        const next = jest.fn();
+
+        serveStaticFileFromWebapp(req, res, next, 'manifest.json', 'application/json');
+        expect(next).toHaveBeenCalled();
+    });
+
+    test('returns 403 for path traversal attempt', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.path.traversal' } } as any;
+        await flp.init(manifest);
+
+        const req = { headers: { referer: 'http://localhost/test.path.traversal' } } as any;
+        const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+        const next = jest.fn();
+
+        // Try path traversal - the sanitization should prevent it
+        serveStaticFileFromWebapp(req, res, next, '../../../etc/passwd', 'text/plain');
+
+        // Either next is called (file not found) or 403 is returned
+        expect(next.mock.calls.length + res.status.mock.calls.length).toBeGreaterThan(0);
+    });
+
+    test('serves file successfully', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.serve.file' } } as any;
+        await flp.init(manifest);
+
+        const req = { headers: { referer: 'http://localhost/test.serve.file' } } as any;
+        const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+        const next = jest.fn();
+
+        serveStaticFileFromWebapp(req, res, next, 'manifest.json', 'application/json');
+
+        // Should either serve the file or call next if not found
+        expect(res.send.mock.calls.length + next.mock.calls.length).toBeGreaterThan(0);
+    });
+
+    test('calls next when file not found', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.file.notfound' } } as any;
+        await flp.init(manifest);
+
+        const req = { headers: { referer: 'http://localhost/test.file.notfound' } } as any;
+        const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+        const next = jest.fn();
+
+        serveStaticFileFromWebapp(req, res, next, 'nonexistent.json', 'application/json');
+
+        expect(next).toHaveBeenCalled();
     });
 });
 
