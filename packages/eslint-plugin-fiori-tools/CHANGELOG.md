@@ -1,5 +1,19 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.3.3
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+    - @sap-ux/fiori-annotation-api@0.9.6
+    - @sap-ux/project-access@1.34.4
+
+## 9.3.2
+
+### Patch Changes
+
+- c77df15: Exclude page name when reporting issue on application level for table creation mode
+
 ## 9.3.1
 
 ### Patch Changes

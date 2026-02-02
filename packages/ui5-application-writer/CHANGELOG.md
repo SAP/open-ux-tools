@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.5
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/ui5-config@0.29.14
+
 ## 1.7.4
 
 ### Patch Changes
