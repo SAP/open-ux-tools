@@ -3,6 +3,8 @@ import type { AnnotationReference } from '../project-context/parser';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const FLEX_ENABLED = 'sap-flex-enabled';
 export const COPY_TO_CLIPBOARD = 'sap-copy-to-clipboard';
+export const ENABLE_EXPORT = 'sap-enable-export';
+export const ENABLE_PASTE = 'sap-enable-paste';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 
@@ -51,6 +53,18 @@ export interface CopyToClipboard {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface EnableExport {
+    type: typeof ENABLE_EXPORT;
+    pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
+export interface EnablePaste {
+    type: typeof ENABLE_PASTE;
+    pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
 export type StatePreservationModeMessageId =
     | 'invalidMode'
     | 'recommendPersistenceForFCL'
@@ -69,4 +83,6 @@ export type Diagnostic =
     | FlexEnabled
     | CopyToClipboard
     | CreationModeForTable
+    | EnableExport
+    | EnablePaste
     | StatePreservationMode;
