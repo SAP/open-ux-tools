@@ -1533,7 +1533,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         warn: jest.fn(),
         error: jest.fn(),
         info: jest.fn()
-    } as unknown as Logger;
+    } as unknown as Logger & { debug: jest.Mock; info: jest.Mock };
 
     beforeEach(() => {
         // Clear global registry before each test
@@ -1545,6 +1545,8 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         mockCdsApp.post.mockClear();
         mockCdsApp.get.mockClear();
         mockCds.on.mockClear();
+        (loggerMock.debug as jest.Mock).mockClear();
+        (loggerMock.info as jest.Mock).mockClear();
     });
 
     test('addRootLevelCardRoutes skips registration for non-CAP projects', async () => {
