@@ -22,18 +22,12 @@ describe('list-systems index', () => {
     });
 
     test('should return details from getFunctionalityDetails', async () => {
-        const result = await listSystems.handlers.getFunctionalityDetails({
-            appPath: '',
-            functionalityId: ''
-        });
+        const result = await listSystems.handlers.getFunctionalityDetails();
         expect(result).toEqual(details);
     });
 
     test('getFunctionalityDetails should resolve to details object', async () => {
-        const result = await listSystems.handlers.getFunctionalityDetails({
-            appPath: '',
-            functionalityId: ''
-        });
+        const result = await listSystems.handlers.getFunctionalityDetails();
         expect(result).toMatchObject({
             functionalityId: 'list-systems',
             name: 'List SAP Systems'
