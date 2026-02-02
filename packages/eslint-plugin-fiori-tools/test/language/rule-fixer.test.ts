@@ -81,6 +81,7 @@ const createMockFixer = () => ({
     })),
     replaceText: jest.fn((node: unknown, text: string) => ({
         type: 'replace',
+        node,
         range: [0, 0] as [number, number],
         text
     }))
@@ -356,6 +357,37 @@ describe('createJsonFixer', () => {
             expect(result).toMatchSnapshot();
         });
 
+        it('should replace a single property in an object node', () => {
+            const sourceText = `{
+                "tableSettings": {
+                    "copy": false
+                }
+            }`;
+            const { node, ast } = createNodeFromJson(sourceText, ['tableSettings', 'copy']);
+            const mockContextWithText = {
+                sourceCode: { text: sourceText, ast: { body: ast.body } },
+                report: jest.fn()
+            } as unknown as JSONRuleContext<string, unknown[]>;
+
+            const deepestPathResult: DeepestExistingPathResult = {
+                validatedPath: ['tableSettings', 'copy'],
+                missingSegments: []
+            };
+
+            const fixer = createMockFixer();
+            const fixerFn = createJsonFixer({
+                context: mockContextWithText,
+                node,
+                deepestPathResult,
+                operation: 'delete'
+            });
+
+            const result = fixerFn!(fixer);
+
+            expect(fixer.replaceText).toHaveBeenCalled();
+            expect(result).toMatchSnapshot();
+        });
+
         it('should delete a deeply nested object property with preceding comma if this is last property', () => {
             // we should delete the preceding comma in this case
             const sourceText = `{
@@ -393,15 +425,15 @@ describe('createJsonFixer', () => {
             expect(fixer.removeRange).toHaveBeenCalled();
             expect(result).toMatchSnapshot();
         });
-        it('should delete a deeply nested object property', () => {
+        it('should delete a deeply nested object property with preceding comma', () => {
             const sourceText = `{
                 "tableSettings": {
+                    "type": "AnalyticalTable",
                     "creationMode": {
-                    "name": "InlineCreationRows",
-                    "createAtEnd": true
+                        "name": "InlineCreationRows",
+                        "createAtEnd": true
                     }
-                },
-                "type": "AnalyticalTable"
+                }
             }`;
             const { node, ast } = createNodeFromJson(sourceText, ['tableSettings', 'creationMode']);
             const mockContextWithText = {
@@ -517,7 +549,7 @@ describe('createJsonFixer', () => {
         });
 
         it('should infer DELETE when no missingSegments and value is undefined', () => {
-            const sourceText = '{"obsolete": true}';
+            const sourceText = '{"obsolete": true, "anotherNode": "test"}';
             const { node, ast } = createNodeFromJson(sourceText, ['obsolete']);
             const mockContextWithText = {
                 sourceCode: { text: sourceText, ast: { body: ast.body } },

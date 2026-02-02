@@ -1,5 +1,34 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.41.5
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/fiori-annotation-api@0.9.6
+    - @sap-ux/project-access@1.34.4
+
+## 0.41.4
+
+### Patch Changes
+
+- 1c6288d: Edit i18n text titles for RTE Button Groups
+
+## 0.41.3
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/fiori-annotation-api@0.9.5
+    - @sap-ux/project-access@1.34.3
+
+## 0.41.2
+
+### Patch Changes
+
+- 22fbaef: Add titles to RTE button groups options
+
 ## 0.41.1
 
 ### Patch Changes

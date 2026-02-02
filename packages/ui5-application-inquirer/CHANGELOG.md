@@ -1,5 +1,26 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.16.15
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/ui5-info@0.13.10
+    - @sap-ux/project-input-validator@0.6.48
+
+## 0.16.14
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/ui5-info@0.13.9
+    - @sap-ux/inquirer-common@0.10.19
+    - @sap-ux/project-input-validator@0.6.47
+
 ## 0.16.13
 
 ### Patch Changes

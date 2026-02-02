@@ -218,7 +218,7 @@ function processTableV2(
     if (!problems.some((p) => p.messageId === 'suggestAppLevel' && p.manifest.uri === parsedApp.manifest.manifestUri)) {
         reportDiagnostic(problems, {
             messageId: 'suggestAppLevel',
-            pageName: page.targetName,
+            pageName: '',
             parsedApp,
             configurationPath: appCreateMode.configurationPath,
             tableType,
