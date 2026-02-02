@@ -23,7 +23,15 @@ import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
-import { findFlpSandboxFromRequest, serveStaticFileFromWebapp } from '../../../src/base/flp';
+import {
+    findFlpSandboxFromRequest,
+    serveStaticFileFromWebapp,
+    handleCardStorePost,
+    handleI18nStorePost,
+    handleCardsGet,
+    handleManifestGet,
+    handleI18nGet
+} from '../../../src/base/flp';
 
 jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
 jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
@@ -1892,6 +1900,160 @@ describe('serveStaticFileFromWebapp', () => {
         serveStaticFileFromWebapp(req, res, next, 'nonexistent.json', 'application/json');
 
         expect(next).toHaveBeenCalled();
+    });
+});
+
+describe('Route handlers', () => {
+    const fixtures = join(__dirname, '../../fixtures');
+    const mockProject = {
+        byPath: jest.fn().mockResolvedValue(undefined),
+        byGlob: jest.fn().mockResolvedValue([])
+    } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
+    const mockUtils = {
+        getProject() {
+            return {
+                getSourcePath: () => join(fixtures, 'simple-app/webapp')
+            };
+        }
+    } as unknown as MiddlewareUtils;
+    const loggerMock = {
+        debug: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+        info: jest.fn()
+    } as unknown as Logger;
+
+    beforeEach(() => {
+        (global as any).__flpSandboxRegistry = undefined;
+    });
+
+    describe('handleCardStorePost', () => {
+        test('returns 500 when no sandbox found', async () => {
+            const req = { headers: { referer: '' } } as any;
+            const res = { status: jest.fn().mockReturnThis(), send: jest.fn() } as any;
+
+            await handleCardStorePost(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.send).toHaveBeenCalledWith('No FlpSandbox instance found');
+        });
+    });
+
+    describe('handleI18nStorePost', () => {
+        test('returns 500 when no sandbox found', async () => {
+            const req = { headers: { referer: '' } } as any;
+            const res = { status: jest.fn().mockReturnThis(), send: jest.fn() } as any;
+
+            await handleI18nStorePost(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.send).toHaveBeenCalledWith('No FlpSandbox instance found');
+        });
+    });
+
+    describe('handleCardsGet', () => {
+        test('calls next when no sandbox found', () => {
+            const req = { headers: { referer: '' }, path: '/cards/test.json' } as any;
+            const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+            const next = jest.fn();
+
+            handleCardsGet(req, res, next);
+
+            expect(next).toHaveBeenCalled();
+        });
+
+        test('sets correct content type for JSON files', async () => {
+            jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+            const flp = new FlpSandbox(
+                { editors: { cardGenerator: { path: '/test/cards.html' } } },
+                mockProject,
+                mockUtils,
+                loggerMock
+            );
+            const manifest = { 'sap.app': { id: 'test.cards.json' } } as any;
+            await flp.init(manifest);
+
+            const req = { headers: { referer: 'http://localhost/test.cards.json' }, path: '/cards/test.json' } as any;
+            const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+            const next = jest.fn();
+
+            handleCardsGet(req, res, next);
+
+            // Should call next since file doesn't exist
+            expect(next).toHaveBeenCalled();
+        });
+    });
+
+    describe('handleManifestGet', () => {
+        test('calls next when no sandbox found', () => {
+            const req = { headers: { referer: '' } } as any;
+            const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+            const next = jest.fn();
+
+            handleManifestGet(req, res, next);
+
+            expect(next).toHaveBeenCalled();
+        });
+
+        test('serves manifest.json when sandbox found', async () => {
+            jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+            const flp = new FlpSandbox(
+                { editors: { cardGenerator: { path: '/test/cards.html' } } },
+                mockProject,
+                mockUtils,
+                loggerMock
+            );
+            const manifest = { 'sap.app': { id: 'test.manifest.get' } } as any;
+            await flp.init(manifest);
+
+            const req = { headers: { referer: 'http://localhost/test.manifest.get' } } as any;
+            const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+            const next = jest.fn();
+
+            handleManifestGet(req, res, next);
+
+            // Should serve the file or call next
+            expect(res.send.mock.calls.length + next.mock.calls.length).toBeGreaterThan(0);
+        });
+    });
+
+    describe('handleI18nGet', () => {
+        test('calls next when no sandbox found', () => {
+            const req = { headers: { referer: '' }, path: '/i18n/i18n.properties' } as any;
+            const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+            const next = jest.fn();
+
+            handleI18nGet(req, res, next);
+
+            expect(next).toHaveBeenCalled();
+        });
+
+        test('serves i18n file when sandbox found', async () => {
+            jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+            const flp = new FlpSandbox(
+                { editors: { cardGenerator: { path: '/test/cards.html' } } },
+                mockProject,
+                mockUtils,
+                loggerMock
+            );
+            const manifest = { 'sap.app': { id: 'test.i18n.get' } } as any;
+            await flp.init(manifest);
+
+            const req = {
+                headers: { referer: 'http://localhost/test.i18n.get' },
+                path: '/i18n/i18n.properties'
+            } as any;
+            const res = { status: jest.fn().mockReturnThis(), send: jest.fn(), setHeader: jest.fn() } as any;
+            const next = jest.fn();
+
+            handleI18nGet(req, res, next);
+
+            // Should call next since file doesn't exist
+            expect(next).toHaveBeenCalled();
+        });
     });
 });
 

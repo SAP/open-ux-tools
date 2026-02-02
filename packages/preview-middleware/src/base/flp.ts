@@ -140,6 +140,70 @@ export function serveStaticFileFromWebapp(
 }
 
 /**
+ * Handler for POST requests to store card manifests at root level.
+ *
+ * @param req - The HTTP request
+ * @param res - The HTTP response
+ */
+export async function handleCardStorePost(req: Request, res: Response): Promise<void> {
+    const sandbox = findFlpSandboxFromRequest(req);
+    if (sandbox) {
+        await sandbox.storeCardManifestHandler(req, res);
+    } else {
+        res.status(500).send('No FlpSandbox instance found');
+    }
+}
+
+/**
+ * Handler for POST requests to store i18n keys at root level.
+ *
+ * @param req - The HTTP request
+ * @param res - The HTTP response
+ */
+export async function handleI18nStorePost(req: Request, res: Response): Promise<void> {
+    const sandbox = findFlpSandboxFromRequest(req);
+    if (sandbox) {
+        await sandbox.storeI18nKeysHandler(req, res);
+    } else {
+        res.status(500).send('No FlpSandbox instance found');
+    }
+}
+
+/**
+ * Handler for GET requests to serve card files at root level.
+ *
+ * @param req - The HTTP request
+ * @param res - The HTTP response
+ * @param next - The next middleware function
+ */
+export function handleCardsGet(req: Request, res: Response, next: NextFunction): void {
+    const contentType = req.path.endsWith('.json') ? 'application/json' : 'text/plain';
+    serveStaticFileFromWebapp(req, res, next, req.path, contentType);
+}
+
+/**
+ * Handler for GET requests to serve manifest.json at root level.
+ *
+ * @param req - The HTTP request
+ * @param res - The HTTP response
+ * @param next - The next middleware function
+ */
+export function handleManifestGet(req: Request, res: Response, next: NextFunction): void {
+    serveStaticFileFromWebapp(req, res, next, 'manifest.json', 'application/json');
+}
+
+/**
+ * Handler for GET requests to serve i18n files at root level.
+ *
+ * @param req - The HTTP request
+ * @param res - The HTTP response
+ * @param next - The next middleware function
+ */
+export function handleI18nGet(req: Request, res: Response, next: NextFunction): void {
+    serveStaticFileFromWebapp(req, res, next, req.path, 'text/plain; charset=utf-8');
+}
+
+/**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
  */
 export type EnhancedRouter = Router & {
@@ -1320,41 +1384,20 @@ export class FlpSandbox {
 
                 // Register /cards/store route at root level
                 cds.app.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
-                cds.app.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
-                    const sandbox = findFlpSandboxFromRequest(req);
-                    if (sandbox) {
-                        await sandbox.storeCardManifestHandler(req, res);
-                    } else {
-                        res.status(500).send('No FlpSandbox instance found');
-                    }
-                });
+                cds.app.post(CARD_GENERATOR_DEFAULT.cardsStore, handleCardStorePost);
 
                 // Register /editor/i18n route at root level
                 cds.app.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
-                cds.app.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
-                    const sandbox = findFlpSandboxFromRequest(req);
-                    if (sandbox) {
-                        await sandbox.storeI18nKeysHandler(req, res);
-                    } else {
-                        res.status(500).send('No FlpSandbox instance found');
-                    }
-                });
+                cds.app.post(CARD_GENERATOR_DEFAULT.i18nStore, handleI18nStorePost);
 
                 // Register /cards/* route at root level to serve card manifest files
-                cds.app.get('/cards/*', (req: Request, res: Response, next: NextFunction) => {
-                    const contentType = req.path.endsWith('.json') ? 'application/json' : 'text/plain';
-                    serveStaticFileFromWebapp(req, res, next, req.path, contentType);
-                });
+                cds.app.get('/cards/*', handleCardsGet);
 
                 // Register /manifest.json route at root level to serve the app manifest
-                cds.app.get('/manifest.json', (req: Request, res: Response, next: NextFunction) => {
-                    serveStaticFileFromWebapp(req, res, next, 'manifest.json', 'application/json');
-                });
+                cds.app.get('/manifest.json', handleManifestGet);
 
                 // Register /i18n/* route at root level to serve i18n files
-                cds.app.get('/i18n/*', (req: Request, res: Response, next: NextFunction) => {
-                    serveStaticFileFromWebapp(req, res, next, req.path, 'text/plain; charset=utf-8');
-                });
+                cds.app.get('/i18n/*', handleI18nGet);
 
                 (global as any).__cardRoutesRegistered = true;
                 this.logger.info('Card generator routes registered at root level');
