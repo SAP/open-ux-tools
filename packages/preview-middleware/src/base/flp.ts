@@ -1318,33 +1318,10 @@ export class FlpSandbox {
             if (cds.app) {
                 this.logger.debug('Registering card generator routes at root level');
 
-                // Helper to find the correct FlpSandbox instance based on referer
-                const findFlpSandbox = (req: Request): FlpSandbox | undefined => {
-                    const referer = req.headers.referer || '';
-
-                    const registry = (global as any).__flpSandboxRegistry as Record<string, FlpSandbox> | undefined;
-                    if (!registry) {
-                        return undefined;
-                    }
-
-                    // Try to find the app ID from the referer URL
-                    for (const [regAppId, sandbox] of Object.entries(registry)) {
-                        // Check if the referer contains the app's namespace (e.g., sap.fe.cap.travel)
-                        const appPath = regAppId.replace(/\./g, '/');
-                        if (referer.includes(appPath) || referer.includes(regAppId)) {
-                            return sandbox;
-                        }
-                    }
-
-                    // Fallback: return the first sandbox
-                    const sandboxes = Object.values(registry);
-                    return sandboxes.length > 0 ? sandboxes[0] : undefined;
-                };
-
                 // Register /cards/store route at root level
                 cds.app.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
                 cds.app.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
-                    const sandbox = findFlpSandbox(req);
+                    const sandbox = findFlpSandboxFromRequest(req);
                     if (sandbox) {
                         await sandbox.storeCardManifestHandler(req, res);
                     } else {
@@ -1355,7 +1332,7 @@ export class FlpSandbox {
                 // Register /editor/i18n route at root level
                 cds.app.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
                 cds.app.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
-                    const sandbox = findFlpSandbox(req);
+                    const sandbox = findFlpSandboxFromRequest(req);
                     if (sandbox) {
                         await sandbox.storeI18nKeysHandler(req, res);
                     } else {
@@ -1363,51 +1340,20 @@ export class FlpSandbox {
                     }
                 });
 
-                // Helper to serve static files with path validation
-                const serveStaticFile = (
-                    req: Request,
-                    res: Response,
-                    next: NextFunction,
-                    relativePath: string,
-                    contentType: string
-                ): void => {
-                    const sandbox = findFlpSandbox(req);
-                    if (!sandbox) {
-                        next();
-                        return;
-                    }
-                    const webappPath = sandbox.utils.getProject().getSourcePath();
-                    // Sanitize the path to prevent path traversal attacks
-                    const sanitizedPath = posix.normalize(relativePath).replace(/^(\.\.[/\\])+/, '');
-                    const filePath = join(webappPath, sanitizedPath);
-                    // Ensure the resolved path is within the webapp directory
-                    if (!filePath.startsWith(webappPath)) {
-                        res.status(403).send('Access denied');
-                        return;
-                    }
-                    try {
-                        const content = readFileSync(filePath, 'utf-8');
-                        res.setHeader('Content-Type', contentType);
-                        res.send(content);
-                    } catch {
-                        next();
-                    }
-                };
-
                 // Register /cards/* route at root level to serve card manifest files
                 cds.app.get('/cards/*', (req: Request, res: Response, next: NextFunction) => {
                     const contentType = req.path.endsWith('.json') ? 'application/json' : 'text/plain';
-                    serveStaticFile(req, res, next, req.path, contentType);
+                    serveStaticFileFromWebapp(req, res, next, req.path, contentType);
                 });
 
                 // Register /manifest.json route at root level to serve the app manifest
                 cds.app.get('/manifest.json', (req: Request, res: Response, next: NextFunction) => {
-                    serveStaticFile(req, res, next, 'manifest.json', 'application/json');
+                    serveStaticFileFromWebapp(req, res, next, 'manifest.json', 'application/json');
                 });
 
                 // Register /i18n/* route at root level to serve i18n files
                 cds.app.get('/i18n/*', (req: Request, res: Response, next: NextFunction) => {
-                    serveStaticFile(req, res, next, req.path, 'text/plain; charset=utf-8');
+                    serveStaticFileFromWebapp(req, res, next, req.path, 'text/plain; charset=utf-8');
                 });
 
                 (global as any).__cardRoutesRegistered = true;
