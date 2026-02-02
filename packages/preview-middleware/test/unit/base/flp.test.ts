@@ -1502,6 +1502,18 @@ describe('router with enableCardGenerator for CAP projects', () => {
     });
 });
 
+// Mock for @sap/cds
+const mockCdsApp = {
+    use: jest.fn(),
+    post: jest.fn(),
+    get: jest.fn()
+};
+
+const mockCds = {
+    app: mockCdsApp,
+    on: jest.fn()
+};
+
 describe('addRootLevelCardRoutes with mocked CDS', () => {
     const fixtures = join(__dirname, '../../fixtures');
     const mockProject = {
@@ -1527,6 +1539,11 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         (global as any).__flpSandboxRegistry = undefined;
         (global as any).__cardRoutesRegistered = undefined;
         jest.resetModules();
+        // Reset mock functions
+        mockCdsApp.use.mockClear();
+        mockCdsApp.post.mockClear();
+        mockCdsApp.get.mockClear();
+        mockCds.on.mockClear();
     });
 
     test('addRootLevelCardRoutes skips registration for non-CAP projects', async () => {
@@ -1641,6 +1658,30 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         expect(loggerMock.debug).toHaveBeenCalledWith(
             '@sap/cds not available, skipping root-level card routes registration'
         );
+    });
+
+    test('addRootLevelCardRoutes registers routes when cds.app is available', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+
+        // Mock @sap/cds module
+        jest.doMock('@sap/cds', () => mockCds, { virtual: true });
+
+        const flp = new FlpSandbox(
+            { editors: { cardGenerator: { path: '/test/cards.html' } } },
+            mockProject,
+            mockUtils,
+            loggerMock
+        );
+        const manifest = { 'sap.app': { id: 'test.cds.routes.app' } } as any;
+        await flp.init(manifest);
+
+        // The sandbox should be registered in the global registry
+        const registry = (global as any).__flpSandboxRegistry;
+        expect(registry).toBeDefined();
+        expect(registry['test.cds.routes.app']).toBeDefined();
+
+        // Clean up the mock
+        jest.dontMock('@sap/cds');
     });
 });
 
