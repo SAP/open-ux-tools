@@ -152,7 +152,7 @@ const ns1 = {
             'formBuildingBlockPropertiesDescription': [
                 'Select the `View or Fragment File` where you want to insert the form building block and provide a `Building Block ID` to identify the form.',
                 'Select an `Entity Set`, and a `Field Group Annotation` you want to use for the Form building block.',
-                'Select an `Aggregation Path` to determine where you would like the form to appear on the page.',
+                'Select an `Aggregation Path` to determine where you want the form to appear on the page.',
                 'Provide a `Form Title` to be displayed.'
             ],
             'id': {
