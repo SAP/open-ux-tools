@@ -382,10 +382,11 @@ export class ConfigPrompter {
         return {
             type: 'confirm',
             name: configPromptNames.storeCredentials,
-            message: t('prompts.storeCredentialsLabel'),
+            message: t('prompts.storeCredentialsLabelBreadcrumb'),
             default: false,
             guiOptions: {
-                breadcrumb: t('prompts.storeCredentialsBreadcrumb')
+                breadcrumb: t('prompts.storeCredentialsLabelBreadcrumb'),
+                hint: t('prompts.storeCredentialsTooltip')
             },
             when: (answers: ConfigAnswers) =>
                 showStoreCredentialsQuestion(answers, this.isLoginSuccessful, this.isAuthRequired),
