@@ -1,5 +1,23 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.58
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/ui5-application-writer@1.7.5
+    - @sap-ux/project-access@1.34.4
+
+## 0.7.57
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+- Updated dependencies [6d71400]
+    - @sap-ux/ui5-application-writer@1.7.4
+    - @sap-ux/project-access@1.34.3
+
 ## 0.7.56
 
 ### Patch Changes

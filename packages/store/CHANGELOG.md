@@ -1,5 +1,12 @@
 # @sap-ux/store
 
+## 1.5.3
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+
 ## 1.5.2
 
 ### Patch Changes
