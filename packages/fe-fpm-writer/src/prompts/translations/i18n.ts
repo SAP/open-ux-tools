@@ -155,6 +155,8 @@ const ns1 = {
                 'Select an `Aggregation Path` to determine where you want the form to appear on the page.',
                 'Provide a `Form Title` to be displayed.'
             ],
+            'formVisualizationPropertiesTitle': 'Form Visualization Properties',
+            'formVisualizationPropertiesDescription': ['Configure your form using the properties below.'],
             'id': {
                 'message': 'Building Block ID',
                 'validation': 'An ID is required to generate the Form building block.'
