@@ -120,11 +120,17 @@ This functionality processes AI-generated controller extensions and fragments fo
 - Writes controller extension files, fragments, and other code files
 - Does NOT write change files (.change) - these are handled separately
 
+CRITICAL WORKFLOW:
+1. The AI (caller) MUST first generate the code following the rules above
+2. Format the code with markdown code blocks, each preceded by "**Path:** fullFilePath" on its own line
+3. Pass the generated code in the "aiResponse" parameter
+4. Without "aiResponse", this tool ONLY validates the project and does NOT create any files
+
 Parameters:
 - prompt: Natural language description of what to create
-- aiResponse (optional): Pre-generated AI response with code blocks
-- viewId (optional): Target view identifier
-- controllerName (optional): Desired controller extension name`,
+- aiResponse: Pre-generated AI response with code blocks
+- controllerName: Desired controller extension name
+- viewId (optional): Target view identifier`,
     parameters: convertToSchema(AdpControllerExtensionSchema)
 };
 

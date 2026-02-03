@@ -1,9 +1,7 @@
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
 import { promises as FSpromises } from 'node:fs';
 import { join, dirname, relative, isAbsolute, resolve, sep } from 'node:path';
-import { validateWithSchema } from '../../../utils';
 import { logger } from '../../../utils/logger';
-import { AdpControllerExtensionSchema } from './schema';
 import {
     extractFilesFromResponse,
     isChangeFile,
@@ -22,19 +20,42 @@ import {
 export default async function executeFunctionality(
     input: ExecuteFunctionalityInput
 ): Promise<ExecuteFunctionalityOutput> {
-    const { parameters, appPath } = input;
+    // Safely extract parameters - handle case where parameters might be undefined or null
+    const parameters = input?.parameters ?? {};
+    const { appPath, functionalityId } = input;
 
-    // Validate input parameters
-    const validatedParams = validateWithSchema(AdpControllerExtensionSchema, parameters);
-    const { prompt, aiResponse, viewId: _viewId, controllerName: _controllerName } = validatedParams;
+    // Extract parameters directly without strict validation
+    const prompt = parameters?.prompt;
+    const aiResponse = parameters?.aiResponse;
 
-    logger.info(`Executing ADP controller extension functionality for: ${prompt}`);
+    if (!prompt || !aiResponse) {
+        return {
+            functionalityId,
+            status: 'error',
+            message: 'No prompt or aiResponse provided',
+            parameters: input,
+            appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
+    }
+
+    logger.info(`Executing ADP controller extension functionality for: ${prompt ?? 'unknown'}`);
 
     // 1. Validate adaptation project
     if (!isAdaptationProject(appPath)) {
-        throw new Error(
-            'This functionality is only available for adaptation projects. Please ensure manifest.appdescr_variant exists in the webapp folder.'
-        );
+        const errorMessage =
+            'This functionality is only available for adaptation projects. Please ensure manifest.appdescr_variant exists in the webapp folder.';
+        logger.error(errorMessage);
+        return {
+            functionalityId,
+            status: 'error',
+            message: errorMessage,
+            parameters,
+            appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
     }
 
     // 2. Read manifest.appdescr_variant
@@ -43,7 +64,17 @@ export default async function executeFunctionality(
         variant = await readManifestVariant(appPath);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        throw new Error(`Failed to read manifest.appdescr_variant: ${errorMessage}`);
+        const fullErrorMessage = `Failed to read manifest.appdescr_variant: ${errorMessage}`;
+        logger.error(fullErrorMessage);
+        return {
+            functionalityId,
+            status: 'error',
+            message: fullErrorMessage,
+            parameters,
+            appPath,
+            changes: [],
+            timestamp: new Date().toISOString()
+        };
     }
 
     const layer = variant.layer ?? '';
@@ -57,7 +88,7 @@ export default async function executeFunctionality(
     const changes: string[] = [];
 
     // 4. Process AI response if provided
-    if (aiResponse && typeof aiResponse === 'string') {
+    if (aiResponse && typeof aiResponse === 'string' && aiResponse.trim().length > 0) {
         logger.info('Processing AI response to extract files');
         const extractedFiles = extractFilesFromResponse(aiResponse);
         logger.info(`Extracted ${extractedFiles.length} files from AI response`);
@@ -81,8 +112,17 @@ export default async function executeFunctionality(
                     logger.debug(`Converted absolute path ${resolvedFilePath} to relative: ${normalizedPath}`);
                 } else {
                     // Absolute path outside appPath - this is an error
-                    logger.error(`File path ${normalizedPath} is outside app path ${appPath}`);
-                    throw new Error(`File path ${normalizedPath} is outside the application path ${appPath}`);
+                    const errorMessage = `File path ${normalizedPath} is outside the application path ${appPath}`;
+                    logger.error(errorMessage);
+                    return {
+                        functionalityId,
+                        status: 'error',
+                        message: errorMessage,
+                        parameters,
+                        appPath,
+                        changes: [],
+                        timestamp: new Date().toISOString()
+                    };
                 }
             }
 
@@ -102,31 +142,59 @@ export default async function executeFunctionality(
 
                 // Write file
                 await FSpromises.writeFile(fullPath, file.code, 'utf-8');
+                logger.info(`Created file: ${normalizedPath}`);
+
                 changes.push(`Created ${normalizedPath}`);
-                logger.info(`Created file: ${normalizedPath} at ${fullPath}`);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : String(error);
-                logger.error(`Failed to write file ${normalizedPath}: ${errorMessage}`);
-                throw new Error(`Failed to write file ${normalizedPath}: ${errorMessage}`);
+                const fullErrorMessage = `Failed to write file ${normalizedPath}: ${errorMessage}`;
+                logger.error(fullErrorMessage);
+                return {
+                    functionalityId,
+                    status: 'error',
+                    message: fullErrorMessage,
+                    parameters,
+                    appPath,
+                    changes,
+                    timestamp: new Date().toISOString()
+                };
             }
         }
     } else {
-        // If no AI response provided, just validate the project setup
-        logger.info('No AI response provided, validating adaptation project setup only');
-        changes.push('Adaptation project validated successfully');
+        // If no AI response provided, return an error
+        return {
+            functionalityId,
+            status: 'error',
+            message:
+                'No aiResponse provided or aiResponse is empty. Please provide aiResponse parameter with code blocks containing **Path:** markers.',
+            parameters,
+            appPath,
+            changes: ['Adaptation project validated successfully'],
+            timestamp: new Date().toISOString()
+        };
     }
 
-    const status = changes.length > 0 ? 'success' : 'skipped';
-    const message =
-        changes.length > 0
-            ? `Successfully processed ${changes.length} file(s) for ADP controller extension`
-            : 'No files were processed. Provide aiResponse parameter with code blocks to generate files.';
+    // Count actual file creations (exclude validation message)
+    const fileCreations = changes.filter((c) => c.startsWith('Created '));
+    let status: string;
+    let message: string;
+    if (fileCreations.length > 0) {
+        status = 'success';
+        message = `Successfully processed ${fileCreations.length} file(s) for ADP controller extension`;
+    } else if (changes.length > 0) {
+        status = 'success';
+        message =
+            'Adaptation project validated successfully, but no files were created. Provide aiResponse parameter with code blocks to generate files.';
+    } else {
+        status = 'skipped';
+        message = 'No files were processed. Provide aiResponse parameter with code blocks to generate files.';
+    }
 
     return {
         functionalityId: input.functionalityId,
         status,
         message,
-        parameters: parameters,
+        parameters: input?.parameters ?? parameters,
         appPath: appPath,
         changes,
         timestamp: new Date().toISOString()
