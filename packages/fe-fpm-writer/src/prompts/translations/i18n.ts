@@ -163,7 +163,7 @@ const ns1 = {
             'qualifierPlaceholder': 'Select a FieldGroup annotation path',
             'viewOrFragmentPath': {
                 'message': 'View or Fragment File',
-                'validate': 'A View or Fragment is required to generate the form building block'
+                'validate': 'A View or Fragment is required to generate the Form building block.'
             },
             'service': 'Service',
             'title': {
