@@ -148,7 +148,7 @@ const ns1 = {
             'aggregation': 'Aggregation Path',
             'bindingContextType': 'Binding Context',
             'entity': 'Entity',
-            'formBuildingBlockPropertiesTitle': 'Form Building Block Properties',
+            'formBuildingBlockPropertiesTitle': 'Properties of the Form Building Block',
             'formBuildingBlockPropertiesDescription': [
                 'Select the `View or Fragment File` where you would like to insert the form building block and provide a `Building Block ID` to identify the form.',
                 'Select an `Entity Set`, and a `Field Group Annotation` you would like to use for the form building block.',
