@@ -185,7 +185,9 @@ export async function getExistingAdpProjectType(basePath: string): Promise<Adapt
         const yamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Config(basePath, yamlPath);
         return ui5Config.hasBuilderKey() ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
-    } catch (error) {
+    } catch {
+        // Expected: Project may not be an ADP project or configuration files may be missing/invalid
+        // Returning undefined allows callers to handle non-ADP projects gracefully
         return undefined;
     }
 }

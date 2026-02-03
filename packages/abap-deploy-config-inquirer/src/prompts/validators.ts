@@ -868,7 +868,7 @@ async function getSystemInfo(
     backendTarget?: BackendTarget,
     credentials?: Credentials
 ): Promise<SystemInfo> {
-    // TODO avasilev: The provider instance here actualy does not point always the
+    // NOTE avasilev: The provider instance here actualy does not point always the
     // backendTarget but the system with destination: PromptState.abapDeployConfig.destination
     // which is actualy the system selected from the destination prompt which is ok for the consumers of this method.
     // From a developer experience point of view the AbapServiceProviderManager.buildAbapTarget()
