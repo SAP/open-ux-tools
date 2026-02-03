@@ -1,5 +1,14 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.12
+
+### Patch Changes
+
+- 89175fe: fix(deps): update dependency fast-xml-parser to v5 [security]
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/mockserver-config-writer@0.9.44
+
 ## 0.29.11
 
 ### Patch Changes
