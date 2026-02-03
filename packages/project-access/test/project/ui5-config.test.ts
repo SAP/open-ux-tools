@@ -8,6 +8,7 @@ import {
     getMockServerConfig,
     getPathMappings,
     getWebappPath,
+    getWebappTestPath,
     readUi5Yaml
 } from '../../src';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -96,6 +97,58 @@ describe('Test getWebappPath()', () => {
         );
         memFs.writeJSON(join(samplesRoot, 'package.json'), {});
         expect(await getWebappPath(join(samplesRoot, 'app/app1'), memFs)).toEqual(join(samplesRoot, 'app/app1/webapp'));
+    });
+});
+
+describe('Test getWebappTestPath()', () => {
+    const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
+
+    test('Get webapp test path from default app', async () => {
+        expect(await getWebappTestPath(join(samplesRoot, 'default-webapp-path'))).toEqual(
+            join(samplesRoot, 'default-webapp-path', 'webapp', 'test')
+        );
+    });
+
+    test('Get webapp test path from default app with ui5.yaml that does not contain a custom mapping', async () => {
+        expect(await getWebappTestPath(join(samplesRoot, 'default-with-ui5-yaml'))).toEqual(
+            join(samplesRoot, 'default-with-ui5-yaml', 'webapp', 'test')
+        );
+    });
+
+    test('Get webapp test path from app with custom webapp mapping', async () => {
+        expect(await getWebappTestPath(join(samplesRoot, 'custom-webapp-path'))).toEqual(
+            join(samplesRoot, 'custom-webapp-path', 'src', 'webapp', 'test')
+        );
+    });
+
+    test('Get webapp test path from app with custom webapp mapping in multi document yaml', async () => {
+        expect(await getWebappTestPath(join(samplesRoot, 'custom-webapp-path-multi-yaml'))).toEqual(
+            join(samplesRoot, 'custom-webapp-path-multi-yaml', 'src', 'webapp', 'test')
+        );
+    });
+
+    test('Get custom webapp test path from mem-fs editor instance', async () => {
+        const memFs = create(createStorage());
+        memFs.write(
+            join(samplesRoot, 'custom-webapp-path/ui5.yaml'),
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: new/webapp/path'
+        );
+        memFs.writeJSON(join(samplesRoot, 'custom-webapp-path/package.json'), {});
+        expect(await getWebappTestPath(join(samplesRoot, 'custom-webapp-path'), memFs)).toEqual(
+            join(samplesRoot, 'custom-webapp-path/new/webapp/path/test')
+        );
+    });
+
+    test('Get custom webapp test path from mem-fs editor instance with custom webapp mapping in ui5.yaml', async () => {
+        const memFs = create(createStorage());
+        memFs.write(
+            join(samplesRoot, 'app/app1/ui5.yaml'),
+            'type: application\nresources:\n  configuration:\n    paths:\n      webapp: app/app1/webapp'
+        );
+        memFs.writeJSON(join(samplesRoot, 'package.json'), {});
+        expect(await getWebappTestPath(join(samplesRoot, 'app/app1'), memFs)).toEqual(
+            join(samplesRoot, 'app/app1/webapp/test')
+        );
     });
 });
 

@@ -1,5 +1,5 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
-import type { Options } from 'http-proxy-middleware';
+import type { Filter, Options } from 'http-proxy-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
@@ -15,9 +15,13 @@ import {
 } from './constants';
 import type { Url } from 'node:url';
 import { t } from '../i18n';
+import type { Socket } from 'node:net';
+import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
+import { posix } from 'node:path';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
-import type { Socket } from 'node:net';
+//eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareParameters } from '@ui5/server';
 
 /**
  * Handler for the proxy response event.
@@ -298,6 +302,29 @@ export const filterCompressedHtmlFiles = (_pathname: string, req: IncomingMessag
     }
     return true;
 };
+
+/**
+ * Filter to exclude internal paths from being proxied.
+ *
+ * @param utils middleware utilities
+ * @returns true if the path should be proxied, false otherwise
+ */
+export function filterExcludeComponentNamespace(
+    utils?: MiddlewareParameters<UI5ProxyConfig>['middlewareUtil']
+): Extract<Filter<IncomingMessage>, Function> | undefined {
+    if (typeof utils !== 'object' || utils.getProject?.()?.getType?.() !== 'component') {
+        return undefined;
+    }
+    const prefixTypes = ['/test-resources', '/resources'] as const;
+    const excludedPaths: string[] = [];
+    for (const prefixType of prefixTypes) {
+        excludedPaths.push(posix.join(`${prefixType}`, utils.getProject().getNamespace()));
+    }
+
+    return (pathname: string, _req: IncomingMessage): boolean => {
+        return !excludedPaths.some((excluded) => pathname.startsWith(excluded));
+    };
+}
 
 /**
  * Specifically handling errors due to undefined and empty errors.

@@ -8,17 +8,27 @@ import type {
     CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
-    TestConfig
+    TestConfig,
+    CardGeneratorConfig
 } from '../types';
 import { render } from 'ejs';
 import { resolve, join, posix } from 'node:path';
-import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+import {
+    createProjectAccess,
+    getWebappPath,
+    getWebappTestPath,
+    type Manifest,
+    type UI5FlexLayer
+} from '@sap-ux/project-access';
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test';
+import { getTestResourcesPathPrefix, adjustPathForSandbox, getResourcesPathPrefix } from './utils/project';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareUtils } from '@ui5/server';
 
 export interface CustomConnector {
     applyConnector: string;
@@ -49,7 +59,25 @@ export type PreviewUrls = {
  * Internal structure used to fill the sandbox.html template
  */
 export interface TemplateConfig {
-    basePath: string;
+    /**
+     * Base path to the app root
+     * Example:
+     * - UI5 project type 'application': relative '..' (depending on the nesting level of the HTML file)
+     * - UI5 project type 'component': absolute '/resources/the/app/id'
+     * todo 1: check if we can use absolute paths for both project types
+     */
+    appBasePath: string;
+    /**
+     * Base path to the server root. Path is relative depending on the nesting level of the HTML file when the project is served.
+     * Example:
+     * - http://localhost:8080/test/flp.html -> '..'
+     * - http://localhost:8080/test-resources/my/app/id/flp.html -> '../../../../..'
+     */
+    rootBasePath: string;
+    /**
+     * Base url from ui5-patched-router
+     * todo
+     */
     baseUrl: string;
     apps: Record<
         string,
@@ -183,22 +211,74 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
  * Default configuration for the FLP.
  *
  * @param config partial configuration
+ * @param utils middleware utils
  * @returns a full configuration with default values
  */
-export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpConfig {
-    const flpConfig = {
-        path: config.path ?? DEFAULT_PATH,
+export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}, utils?: MiddlewareUtils): FlpConfig {
+    const sandboxPathPrefix = getTestResourcesPathPrefix(utils);
+    const defaultPath = adjustPathForSandbox(DEFAULT_PATH, sandboxPathPrefix);
+
+    return {
+        path: posix.join(sandboxPathPrefix ?? '/', config.path ?? defaultPath),
         intent: config.intent ?? DEFAULT_INTENT,
         apps: config.apps ?? [],
         libs: config.libs,
         theme: config.theme,
-        init: config.init,
+        init: config.init ? posix.join(sandboxPathPrefix ?? '/', config.init) : undefined,
         enhancedHomePage: config.enhancedHomePage === true
     } satisfies FlpConfig;
-    if (!flpConfig.path.startsWith('/')) {
-        flpConfig.path = `/${flpConfig.path}`;
+}
+
+/**
+ * Adjust RTA editor paths for component projects.
+ *
+ * @param rta RTA configuration
+ * @param utils middleware utils
+ * @returns RTA configuration with adjusted paths
+ */
+export function adjustRtaConfigPaths(rta: RtaConfig | undefined, utils?: MiddlewareUtils): RtaConfig | undefined {
+    if (!rta) {
+        return undefined;
     }
-    return flpConfig;
+    return structuredClone({
+        ...rta,
+        endpoints: rta.endpoints.map((endpoint) => {
+            return {
+                ...endpoint,
+                path: posix.join(getTestResourcesPathPrefix(utils) ?? '/', endpoint.path)
+            };
+        })
+    });
+}
+
+/**
+ * Adjust card generator path for component projects and set default if needed.
+ *
+ * @param cardGenerator card generator configuration
+ * @param utils middleware utils
+ * @returns card generator configuration with adjusted path
+ */
+export function adjustCardGeneratorPath(
+    cardGenerator: CardGeneratorConfig | undefined,
+    utils?: MiddlewareUtils
+): { path: string } | undefined {
+    const sandboxPathPrefix = getTestResourcesPathPrefix(utils);
+    const defaultPath = CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
+    if (!cardGenerator) {
+        if (!sandboxPathPrefix) {
+            return { path: defaultPath };
+        }
+        const adjustedPath = adjustPathForSandbox(defaultPath, sandboxPathPrefix);
+        return { path: posix.join(sandboxPathPrefix, adjustedPath) };
+    }
+
+    const basePath = cardGenerator.path ?? defaultPath;
+
+    return {
+        path: sandboxPathPrefix
+            ? posix.join(sandboxPathPrefix, adjustPathForSandbox(basePath, sandboxPathPrefix))
+            : posix.join('/', basePath)
+    };
 }
 
 /**
@@ -364,36 +444,33 @@ async function getI18nTextFromProperty(
  * @param config FLP configuration
  * @param manifest application manifest
  * @param resources additional resources
+ * @param utils middleware utils
  * @returns configuration object for the sandbox.html template
  */
 export function createFlpTemplateConfig(
     config: FlpConfig,
     manifest: Partial<Manifest>,
-    resources: Record<string, string> = {}
+    resources: Record<string, string> = {},
+    utils?: MiddlewareUtils | undefined
 ): TemplateConfig {
     const flex = getFlexSettings();
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
-    const id = manifest['sap.app']?.id ?? '';
-    const ns = id.replace(/\./g, '/');
-    const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
-    let initPath: string | undefined;
-    if (config.init) {
-        const separator = config.init.startsWith('/') ? '' : '/';
-        initPath = `${ns}${separator}${config.init}`;
-    }
+    const rootBasePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
+    const appBasePath = getResourcesPathPrefix(utils) ?? rootBasePath;
     return {
-        basePath: basePath,
+        appBasePath: appBasePath,
+        rootBasePath: rootBasePath,
         baseUrl: '',
         apps: {},
-        init: initPath,
+        init: config.init,
         ui5: {
             libs: getUI5Libs(manifest),
             theme: ui5Theme,
             flex,
             resources: {
                 ...resources,
-                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.getUrl(basePath)
+                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.getUrl(getResourcesPathPrefix(utils) ?? appBasePath)
             },
             bootstrapOptions: ''
         },
@@ -425,15 +502,20 @@ export function createTestTemplateConfig(config: CompleteTestConfig, id: string,
  * Returns the preview paths.
  *
  * @param config configuration from the ui5.yaml
+ * @param utils middleware utils
  * @param logger logger instance
  * @returns an array of preview paths
  */
-export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = new ToolsLogger()): PreviewUrls[] {
+export function getPreviewPaths(
+    config: MiddlewareConfig,
+    utils: MiddlewareUtils,
+    logger: ToolsLogger = new ToolsLogger()
+): PreviewUrls[] {
     const urls: PreviewUrls[] = [];
     // remove incorrect configurations
     sanitizeConfig(config, logger);
     // add flp preview url
-    const flpConfig = getFlpConfigWithDefaults(config.flp);
+    const flpConfig = getFlpConfigWithDefaults(config.flp, utils);
     urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
     if (config.editors?.rta) {
@@ -444,7 +526,7 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     // add test urls if configured
     if (config.test) {
         config.test.forEach((test) => {
-            const testConfig = mergeTestConfigDefaults(test);
+            const testConfig = mergeTestConfigDefaults(test, utils);
             urls.push({ path: testConfig.path, type: 'test' });
         });
     }
@@ -459,16 +541,20 @@ const TEMPLATE_PATH = join(__dirname, '../../templates');
  * @param configs array of test configurations
  * @param manifest application manifest
  * @param fs mem fs editor instance
- * @param webappPath webapp path
+ * @param webappTestPath webapp test path
  * @param flpTemplConfig FLP configuration
  */
 function generateTestRunners(
     configs: TestConfig[] | undefined,
     manifest: Manifest,
     fs: Editor,
-    webappPath: string,
+    webappTestPath: string,
     flpTemplConfig: TemplateConfig
 ): void {
+    // Strip trailing 'test' or '/test' from webappTestPath to avoid duplication
+    // since testConfig.path typically starts with '/test/'
+    const basePath = webappTestPath.replace(/[/\\]test$/, '');
+
     for (const test of configs ?? []) {
         const testConfig = mergeTestConfigDefaults(test);
         if (['QUnit', 'OPA5'].includes(test.framework)) {
@@ -478,14 +564,14 @@ function generateTestRunners(
                 manifest['sap.app'].id,
                 flpTemplConfig.ui5.theme
             );
-            fs.write(join(webappPath, testConfig.path), render(testTemplate, testTemplateConfig));
+            fs.write(join(basePath, testConfig.path), render(testTemplate, testTemplateConfig));
         } else if (test.framework === 'Testsuite') {
             const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.ejs'), 'utf-8');
             const testTemplateConfig = {
-                basePath: flpTemplConfig.basePath,
+                basePath: flpTemplConfig.appBasePath,
                 initPath: testConfig.init
             };
-            fs.write(join(webappPath, testConfig.path), render(testTemplate, testTemplateConfig));
+            fs.write(join(basePath, testConfig.path), render(testTemplate, testTemplateConfig));
         }
     }
 }
@@ -516,6 +602,7 @@ export async function generatePreviewFiles(
     const flpConfig = getFlpConfigWithDefaults(config.flp);
 
     const webappPath = await getWebappPath(basePath, fs);
+    const webappTestPath = await getWebappTestPath(basePath, fs);
     let manifest: Manifest | undefined;
     if (fs.exists(join(webappPath, 'manifest.json'))) {
         manifest = (await fs.readJSON(join(webappPath, 'manifest.json'))) as unknown as Manifest;
@@ -530,13 +617,13 @@ export async function generatePreviewFiles(
             flpTemplConfig,
             manifest,
             {
-                target: flpTemplConfig.basePath,
+                target: flpTemplConfig.appBasePath,
                 local: '.',
                 intent: flpConfig.intent
             },
             logger
         );
-        generateTestRunners(config.test, manifest, fs, webappPath, flpTemplConfig);
+        generateTestRunners(config.test, manifest, fs, webappTestPath, flpTemplConfig);
     } else {
         flpTemplConfig = createFlpTemplateConfig(flpConfig, {});
         flpPath = join(basePath, flpConfig.path);

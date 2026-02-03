@@ -53,7 +53,13 @@ async function getRouter(fixture?: string, configuration: Partial<MiddlewareConf
                 }
             }
         },
-        middlewareUtil: {}
+        middlewareUtil: {
+            getProject() {
+                return {
+                    getType: () => 'application'
+                };
+            }
+        }
     });
 }
 

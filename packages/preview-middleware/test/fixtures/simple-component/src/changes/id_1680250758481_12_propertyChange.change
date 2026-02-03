@@ -1,0 +1,41 @@
+{
+    "fileName": "id_1680250758481_12_propertyChange",
+    "fileType": "change",
+    "changeType": "propertyChange",
+    "moduleName": "",
+    "reference": "test.fe.v2.app",
+    "packageName": "",
+    "content": {
+        "property": "width",
+        "newValue": "200px"
+    },
+    "selector": {
+        "id": "test.fe.v2.app::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--listReport-ProductPictureURL",
+        "idIsLocal": false,
+        "type": "sap.m.Column"
+    },
+    "layer": "CUSTOMER_BASE",
+    "texts": {},
+    "namespace": "apps/test.fe.v2.app/changes/",
+    "projectId": "",
+    "creation": 1680250758481,
+    "originalLanguage": "",
+    "support": {
+        "generator": "changeUtils: SAPFioriTools",
+        "service": "",
+        "user": "",
+        "sapui5Version": "1.111.1",
+        "sourceChangeFileName": "",
+        "compositeCommand": ""
+    },
+    "oDataInformation": {},
+    "dependentSelector": {},
+    "validAppVersions": {
+        "from": "0.0.1",
+        "to": "0.0.1",
+        "creation": "0.0.1"
+    },
+    "jsOnly": false,
+    "variantReference": "",
+    "appDescriptorChange": false
+}

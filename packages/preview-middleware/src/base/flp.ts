@@ -35,7 +35,7 @@ import {
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
-import { generateImportList, mergeTestConfigDefaults } from './test';
+import { generateImportList, mergeTestConfigDefaults, isDefaultInitPath } from './test';
 import type {
     RtaEditor,
     FlpConfig,
@@ -57,12 +57,15 @@ import {
     addApp,
     getAppName,
     sanitizeRtaConfig,
+    adjustRtaConfigPaths,
+    adjustCardGeneratorPath,
     CARD_GENERATOR_DEFAULT
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
+import { getResourcesPathPrefix, getTestResourcesPathPrefix } from './utils/project';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -118,13 +121,13 @@ export class FlpSandbox {
     protected templateConfig: TemplateConfig;
     public readonly flpConfig: FlpConfig;
     public readonly rta?: RtaConfig;
-    public readonly test?: TestConfig[];
+    public readonly test?: CompleteTestConfig[];
     public readonly router: EnhancedRouter;
     private readonly fs: MemFsEditor;
     private readonly logger: Logger;
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
-    private readonly cardGenerator?: CardGeneratorConfig;
+    private readonly cardGenerator?: Required<CardGeneratorConfig>;
     private projectType: ProjectType;
 
     /**
@@ -140,12 +143,18 @@ export class FlpSandbox {
         this.logger = logger;
         this.project = project;
         this.utils = utils;
-        this.flpConfig = getFlpConfigWithDefaults(config.flp);
-        this.test = config.test;
-        this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
+
+        // Do path adjustments for all configs
+        this.flpConfig = getFlpConfigWithDefaults(config.flp, this.utils);
+        this.test = config.test?.map((testConfig) => mergeTestConfigDefaults(testConfig, this.utils));
+        this.rta = adjustRtaConfigPaths(
+            config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger), //NOSONAR
+            this.utils
+        );
+        this.cardGenerator = adjustCardGeneratorPath(config.editors?.cardGenerator, this.utils);
+
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
-        this.cardGenerator = config.editors?.cardGenerator;
     }
 
     /**
@@ -176,7 +185,7 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
+        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources, this.utils);
         this.adp = adp;
         this.manifest = manifest;
 
@@ -185,7 +194,7 @@ export class FlpSandbox {
             manifest,
             {
                 componentId,
-                target: resources[componentId ?? id] ?? this.templateConfig.basePath,
+                target: resources[componentId ?? id] ?? this.templateConfig.appBasePath,
                 local: '.',
                 intent: this.flpConfig.intent
             },
@@ -194,10 +203,6 @@ export class FlpSandbox {
         this.addStandardRoutes();
 
         if (this.cardGenerator?.path) {
-            this.cardGenerator.path = this.cardGenerator.path.startsWith('/')
-                ? this.cardGenerator.path
-                : `/${this.cardGenerator.path}`;
-
             await this.addCardGeneratorMiddlewareRoute();
             await this.addStoreCardManifestRoute();
             await this.addStoreI18nKeysRoute();
@@ -438,12 +443,16 @@ export class FlpSandbox {
      * @param rta runtime authoring configuration
      */
     private addEditorRoutes(rta: RtaConfig): void {
+        //todo: do we need to have a more specific path for open/ux/preview/client/* for project type component?
+        // multiple apps can run in parallel so one central route might cause conflicts
+        // or is the UI5 resourceroots mapping enough, e.g. {"open.ux.preview.client":"/resources/com/sap/cap/fe/ts/sample/preview/client"}
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.endpoints) {
-            let previewUrl = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
+            let previewUrl = editor.path;
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
+                this.logger.debug(`Add route for ${editor.path}`);
                 this.router.get(editor.path, async (req: EnhancedRequest, res: Response) => {
                     await this.editorGetHandlerDeveloperMode(req, res, rta, previewUrl);
                 });
@@ -453,7 +462,7 @@ export class FlpSandbox {
                 }
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
-
+            this.logger.debug(`Add route for ${previewUrl}`);
             this.router.get(previewUrl, async (req: Request, res: Response) => {
                 await this.editorGetHandler(req, res, rta, previewUrl, editor);
             });
@@ -514,7 +523,13 @@ export class FlpSandbox {
      */
     private addStandardRoutes(): void {
         // register static client sources
-        this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
+        this.router.use(
+            //todo: endpoint at /test-resources or /resources? use getTestResourcesPathPrefix instead?
+            posix.join(getResourcesPathPrefix(this.utils) ?? '/', PREVIEW_URL.client.path),
+            serveStatic(PREVIEW_URL.client.local)
+        );
+
+        this.logger.debug(`Add route for ${this.flpConfig.path}`);
 
         // add route for the sandbox html
         this.router.get(
@@ -538,10 +553,12 @@ export class FlpSandbox {
      * @private
      */
     private async addCardGeneratorMiddlewareRoute(): Promise<void> {
-        const previewGeneratorPath = this.cardGenerator?.path ?? CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
-        this.logger.debug(`Add route for ${previewGeneratorPath}`);
+        if (!this.cardGenerator) {
+            return;
+        }
+        this.logger.debug(`Add route for ${this.cardGenerator.path}`);
         this.router.get(
-            previewGeneratorPath,
+            this.cardGenerator.path,
             async (
                 req: EnhancedRequest | connect.IncomingMessage,
                 res: Response | http.ServerResponse,
@@ -790,9 +807,9 @@ export class FlpSandbox {
     ): Promise<void> {
         this.logger.debug(`Serving test route: ${config.path}`);
         const templateConfig = {
-            basePath: this.templateConfig.basePath,
+            basePath: this.templateConfig.appBasePath,
             initPath: config.init
-        };
+        }; //todo: create type
         const html = render(testsuite, templateConfig);
         this.sendResponse(res, 'text/html', 200, html);
     }
@@ -834,7 +851,7 @@ export class FlpSandbox {
      * @param configs test configurations
      * @private
      */
-    private createTestSuite(configs: TestConfig[]): void {
+    private createTestSuite(configs: CompleteTestConfig[]): void {
         const testsuiteConfig = configs.find((config) => config.framework === 'Testsuite');
         if (!testsuiteConfig) {
             //silent skip: create a testsuite only if it is explicitly part of the test configuration
@@ -845,16 +862,17 @@ export class FlpSandbox {
             return;
         }
         const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.ejs'), 'utf-8');
-        const config = mergeTestConfigDefaults(testsuiteConfig);
-        this.logger.debug(`Add route for ${config.path}`);
+        // Config is already merged with defaults in constructor
+        this.logger.debug(`Add route for ${testsuiteConfig.path}`);
         this.router.get(
-            config.path,
+            testsuiteConfig.path,
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
-                await this.testSuiteHtmlGetHandler(res, testsuite, config);
+                await this.testSuiteHtmlGetHandler(res, testsuite, testsuiteConfig);
             }
         );
 
-        if (testsuiteConfig.init !== undefined) {
+        // Skip generating init route if user provided a custom init script
+        if (!isDefaultInitPath('Testsuite', testsuiteConfig.init, this.utils)) {
             this.logger.debug(
                 `Skip serving testsuite init script in favor of provided script: ${testsuiteConfig.init}`
             );
@@ -866,20 +884,20 @@ export class FlpSandbox {
             if (testConfig.framework === 'Testsuite') {
                 continue;
             }
-            const mergedConfig = mergeTestConfigDefaults(testConfig);
-            testPaths.push(posix.relative(posix.dirname(config.path), mergedConfig.path));
+            // Configs are already merged with defaults in constructor
+            testPaths.push(posix.relative(posix.dirname(testsuiteConfig.path), testConfig.path));
         }
 
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
-        this.logger.debug(`Add route for ${config.init}`);
+        this.logger.debug(`Add route for ${testsuiteConfig.init}`);
         this.router.get(
-            config.init,
+            testsuiteConfig.init,
             async (
                 _req: EnhancedRequest | connect.IncomingMessage,
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                await this.testSuiteJsGetHandler(res, next, config, initTemplate, testPaths);
+                await this.testSuiteJsGetHandler(res, next, testsuiteConfig, initTemplate, testPaths);
             }
         );
     }
@@ -968,11 +986,11 @@ export class FlpSandbox {
      * @param configs test configurations
      * @param id application id from manifest
      */
-    private addTestRoutes(configs: TestConfig[], id: string): void {
+    private addTestRoutes(configs: CompleteTestConfig[], id: string): void {
         const ns = id.replace(/\./g, '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
-        for (const testConfig of configs) {
-            const config = mergeTestConfigDefaults(testConfig);
+        for (const config of configs) {
+            // Config is already merged with defaults in constructor
             this.logger.debug(`Add route for ${config.path}`);
             // add route for the *.qunit.html
             this.router.get(
@@ -985,10 +1003,13 @@ export class FlpSandbox {
                     await this.testRunnerHtmlGetHandler(res, next, config, htmlTemplate, id);
                 }
             );
-            if (testConfig.init !== undefined) {
-                this.logger.debug(`Skip serving test init script in favor of provided script: ${testConfig.init}`);
+
+            // Skip generating init route if user provided a custom init script
+            if (!isDefaultInitPath(config.framework, config.init, this.utils)) {
+                this.logger.debug(`Skip serving test init script in favor of provided script: ${config.init}`);
                 continue;
             }
+
             // add route for the init file
             const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
             this.logger.debug(`Add route for ${config.init}`);
@@ -1061,8 +1082,13 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
-        this.router.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
-        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.cardsStore}`);
+        //todo: endpoint at /test-resources or /resources? use getResourcesPathPrefix instead?
+        const storeCardManifestPath = posix.join(
+            getTestResourcesPathPrefix(this.utils) ?? '/',
+            CARD_GENERATOR_DEFAULT.cardsStore
+        );
+        this.router.use(storeCardManifestPath, json());
+        this.logger.debug(`Add route for ${storeCardManifestPath}`);
 
         this.router.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
             await this.storeCardManifestHandler(req, res);
@@ -1137,8 +1163,13 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
-        this.router.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
-        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.i18nStore}`);
+        //todo: endpoint at /test-resources or /resources? use getResourcesPathPrefix instead?
+        const storeI18nKeysPath = posix.join(
+            getTestResourcesPathPrefix(this.utils) ?? '/',
+            CARD_GENERATOR_DEFAULT.i18nStore
+        );
+        this.router.use(storeI18nKeysPath, json());
+        this.logger.debug(`Add route for ${storeI18nKeysPath}`);
 
         this.router.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
             await this.storeI18nKeysHandler(req, res);
@@ -1149,10 +1180,11 @@ export class FlpSandbox {
      * Initialize the preview for an adaptation project.
      *
      * @param config configuration from the ui5.yaml
+     * @param utils middleware utils
      * @throws Error in case no manifest.appdescr_variant found
      */
-    async initAdp(config: AdpPreviewConfig): Promise<void> {
-        const variant = await loadAppVariant(this.project);
+    async initAdp(config: AdpPreviewConfig, utils: MiddlewareUtils): Promise<void> {
+        const variant = await loadAppVariant(this.project, utils);
         const adp = new AdpPreview(config, this.project, this.utils, this.logger as ToolsLogger);
         const layer = await adp.init(variant);
 

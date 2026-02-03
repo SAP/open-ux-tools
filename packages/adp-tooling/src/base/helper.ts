@@ -1,13 +1,15 @@
 import type { Editor } from 'mem-fs-editor';
 import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { join, isAbsolute, relative, basename, dirname } from 'node:path';
+import { join, isAbsolute, relative, basename, dirname, posix } from 'node:path';
 
 import type { UI5Config } from '@sap-ux/ui5-config';
 import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
 import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace, type Manifest } from '@sap-ux/project-access';
 
 import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
+import type { MiddlewareUtils } from '@ui5/server';
 
 /**
  * Get the app descriptor variant.
@@ -120,10 +122,18 @@ export function readManifestFromBuildPath(cfBuildPath: string): Manifest {
  * Load and parse the app variant descriptor.
  *
  * @param {ReaderCollection} rootProject - The root project.
+ * @param {MiddlewareUtils} utils - The middleware utils.
  * @returns {Promise<DescriptorVariant>} The parsed descriptor variant.
  */
-export async function loadAppVariant(rootProject: ReaderCollection): Promise<DescriptorVariant> {
-    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
+export async function loadAppVariant(
+    rootProject: ReaderCollection,
+    utils: MiddlewareUtils
+): Promise<DescriptorVariant> {
+    const pathPrefix =
+        utils.getProject?.()?.getType?.() === 'component'
+            ? posix.join('/resources', utils.getProject().getNamespace())
+            : '';
+    const appVariant = await rootProject.byPath(`${pathPrefix}/manifest.appdescr_variant`);
     if (!appVariant) {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }
