@@ -3,6 +3,7 @@ import { TABLE_COLUMN_VERTICAL_ALIGNMENT } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer';
+import { isLowerThanMinimalUi5Version } from '../utils/version';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: TABLE_COLUMN_VERTICAL_ALIGNMENT,
@@ -25,6 +26,13 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (app.type !== 'fe-v2') {
                 continue;
             }
+            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
+            if (
+                !parsedApp.manifest.minUI5Version ||
+                isLowerThanMinimalUi5Version(parsedApp.manifest.minUI5Version, { major: 1, minor: 75 })
+            ) {
+                continue;
+            }
             const columnVerticalAlignment = app.configuration.tableColumnVerticalAlignment?.valueInFile;
             if (!columnVerticalAlignment || columnVerticalAlignment === 'Middle') {
                 continue;
@@ -37,7 +45,6 @@ const rule: FioriRuleDefinition = createFioriRule({
             if (!responsiveTable) {
                 continue;
             }
-            const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
             return [
                 {
                     type: TABLE_COLUMN_VERTICAL_ALIGNMENT,
