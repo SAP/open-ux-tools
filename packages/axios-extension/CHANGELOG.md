@@ -1,5 +1,20 @@
 # @sap-ux/axios-extension
 
+## 1.25.8
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/btp-utils@1.1.6
+
+## 1.25.7
+
+### Patch Changes
+
+- 0492325: feat(generator-adp): Developer taking over Key-User changes
+
 ## 1.25.6
 
 ### Patch Changes

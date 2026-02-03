@@ -62,7 +62,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         },
       },
     ],
-    "default": -1,
+    "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Select a system configuration.",

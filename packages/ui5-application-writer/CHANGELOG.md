@@ -1,5 +1,33 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.5
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/ui5-config@0.29.14
+
+## 1.7.4
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
+## 1.7.3
+
+### Patch Changes
+
+- be6ea11: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/ui5-config@0.29.13
+
+## 1.7.2
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+
 ## 1.7.1
 
 ### Patch Changes

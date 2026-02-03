@@ -1,5 +1,19 @@
 # @sap-ux/ui5-config
 
+## 0.29.14
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/yaml@0.17.4
+
+## 0.29.13
+
+### Patch Changes
+
+- be67fc4: feat: adjust type definitions
+
 ## 0.29.12
 
 ### Patch Changes

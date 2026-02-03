@@ -1,5 +1,37 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.47
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/ui5-config@0.29.14
+    - @sap-ux/project-access@1.34.4
+
+## 0.6.46
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+
+## 0.6.45
+
+### Patch Changes
+
+- be6ea11: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/ui5-config@0.29.13
+
+## 0.6.44
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/project-access@1.34.2
+
 ## 0.6.43
 
 ### Patch Changes

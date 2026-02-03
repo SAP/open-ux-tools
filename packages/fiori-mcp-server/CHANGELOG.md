@@ -1,5 +1,100 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.21
+
+### Patch Changes
+
+- 6b659e7: feat: add tool annotations for better AI guidance
+
+## 0.6.20
+
+### Patch Changes
+
+- @sap-ux/fiori-docs-embeddings@0.4.12
+- @sap-ux/store@1.5.3
+
+## 0.6.19
+
+### Patch Changes
+
+- Updated dependencies [4eac0a7]
+    - @sap-ux/fiori-docs-embeddings@0.4.12
+
+## 0.6.18
+
+### Patch Changes
+
+- 5d50232: feat: add telemetry tracking for MCP server sessions and handlers
+
+## 0.6.17
+
+### Patch Changes
+
+- 529408b: refactor: adjust telemetry functionalityId reporting
+
+## 0.6.16
+
+### Patch Changes
+
+- Updated dependencies [a686522]
+    - @sap-ux/fiori-docs-embeddings@0.4.11
+
+## 0.6.15
+
+### Patch Changes
+
+- Updated dependencies [be6ea11]
+    - @sap-ux/store@1.5.2
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.14
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.13
+
+### Patch Changes
+
+- Updated dependencies [c99758e]
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.12
+
+### Patch Changes
+
+- 924e26f: fix(deps): update dependency @sap/ux-specification to v1.142.0
+
+## 0.6.11
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/fiori-docs-embeddings@0.4.9
+
+## 0.6.10
+
+### Patch Changes
+
+- f4cf1d2: Update readme to contain description of latest features
+
+## 0.6.9
+
+### Patch Changes
+
+- 5652318: fix(server): downgrade MCP protocol version to '2024-11-05' to better backward compatibility
+
+## 0.6.8
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+    - @sap-ux/fiori-docs-embeddings@0.4.9
+
 ## 0.6.7
 
 ### Patch Changes

@@ -1,5 +1,27 @@
 # @sap-ux/odata-cli
 
+## 0.17.34
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/axios-extension@1.25.8
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.17.33
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/axios-extension@1.25.7
+
+## 0.17.32
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+
 ## 0.17.31
 
 ### Patch Changes

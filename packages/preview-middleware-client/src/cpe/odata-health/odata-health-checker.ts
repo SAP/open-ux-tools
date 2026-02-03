@@ -11,7 +11,7 @@ type DataSource = ManifestNamespace.DataSource;
 /**
  * The OData version type.
  */
-type ODataVersion = 'v2' | 'v4' | '2.0' | '4.0';
+type ODataVersion = 'v2' | 'v4' | '2.0' | '4.0' | '4.01';
 
 /**
  * Describes an OData service instance.
@@ -104,6 +104,7 @@ export class ODataHealthChecker {
                 return this.getServiceV2Metadata(serviceUrl);
             case 'v4':
             case '4.0':
+            case '4.01':
                 return this.getServiceV4Metadata(serviceUrl);
         }
     }

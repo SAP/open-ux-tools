@@ -223,15 +223,30 @@ const ns1 = {
             'valueSource': 'Value Source',
             'entitySet': 'Entity',
             'targetProperty': 'Target Property',
+            'aggregation': 'Aggregation Path'
+        },
+        'richTextEditorButtonGroups': {
+            'message': 'Buttons',
+            'choices': {
+                'font-style': 'Font Style (Bold, Italic, Underline, and Strikethrough)',
+                'font': 'Font Settings (Family, Size, and Colors)',
+                'clipboard': 'Clipboard (Cut, Copy, and Paste)',
+                'structure': 'List Structure (Bullets, Numbers, and Indentation)',
+                'undo': 'Undo/Redo',
+                'insert': 'Insert (Image, and Emoticons)',
+                'link': 'Link (Add, and Remove Links)',
+                'text-align': 'Text Alignment (Left, Center, Right, and Justify)',
+                'table': 'Table',
+                'styleselect': 'Style Select'
+            },
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validation':
+                    'A view or fragment is required to generate the Rich Text Editor Button Groups building block.'
+            },
             'aggregation': 'Aggregation Path',
-            'buttonGroup': {
-                'name': 'Button Group Name',
-                'buttons': 'Buttons',
-                'visible': 'Visible',
-                'priority': 'Priority',
-                'customToolbarPriority': 'Custom Toolbar Priority',
-                'row': 'Row'
-            }
+            'replaceDefaultButtonGroupsHint':
+                'Adding button groups replaces the default button groups in the Rich Text Editor with your chosen configuration.'
         },
         'page': {
             'id': {

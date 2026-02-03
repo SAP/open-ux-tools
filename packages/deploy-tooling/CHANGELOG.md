@@ -1,5 +1,91 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.39
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/axios-extension@1.25.8
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/ui5-config@0.29.14
+    - @sap-ux/system-access@0.6.45
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/project-input-validator@0.6.48
+
+## 0.17.38
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.19
+- @sap-ux/axios-extension@1.25.7
+- @sap-ux/project-input-validator@0.6.47
+- @sap-ux/system-access@0.6.44
+
+## 0.17.37
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.44
+- @sap-ux/ui5-config@0.29.13
+- @sap-ux/inquirer-common@0.10.18
+
+## 0.17.36
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/system-access@0.6.43
+
+## 0.17.35
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+    - @sap-ux/inquirer-common@0.10.17
+
+## 0.17.34
+
+### Patch Changes
+
+- Updated dependencies [d11943d]
+    - @sap-ux/inquirer-common@0.10.16
+    - @sap-ux/project-input-validator@0.6.46
+
+## 0.17.33
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.42
+- @sap-ux/ui5-config@0.29.13
+- @sap-ux/inquirer-common@0.10.15
+
+## 0.17.32
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.14
+
+## 0.17.31
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/project-input-validator@0.6.45
+    - @sap-ux/system-access@0.6.41
+    - @sap-ux/inquirer-common@0.10.13
+
+## 0.17.30
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.41
+- @sap-ux/ui5-config@0.29.12
+- @sap-ux/inquirer-common@0.10.12
+
 ## 0.17.29
 
 ### Patch Changes
