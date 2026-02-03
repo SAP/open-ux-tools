@@ -157,7 +157,7 @@ const ns1 = {
             ],
             'id': {
                 'message': 'Building Block ID',
-                'validation': 'An ID is required to generate the form building block'
+                'validation': 'An ID is required to generate the Form building block.'
             },
             'qualifier': 'FieldGroup Annotation Path',
             'qualifierPlaceholder': 'Select a FieldGroup annotation path',
