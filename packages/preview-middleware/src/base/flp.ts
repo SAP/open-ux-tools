@@ -81,7 +81,9 @@ export const flpSandboxRegistry: Map<string, FlpSandbox> = new Map();
 export function findFlpSandboxFromRequest(req: Request): FlpSandbox | undefined {
     const referer = req.headers.referer || '';
 
-    const registry = (global as any).__flpSandboxRegistry as Record<string, FlpSandbox> | undefined;
+    const registry = (globalThis as Record<string, unknown>).__flpSandboxRegistry as
+        | Record<string, FlpSandbox>
+        | undefined;
     if (!registry) {
         return undefined;
     }
@@ -89,7 +91,7 @@ export function findFlpSandboxFromRequest(req: Request): FlpSandbox | undefined 
     // Try to find the app ID from the referer URL
     for (const [regAppId, sandbox] of Object.entries(registry)) {
         // Check if the referer contains the app's namespace (e.g., sap.fe.cap.travel)
-        const appPath = regAppId.replace(/\./g, '/');
+        const appPath = regAppId.replaceAll('.', '/');
         if (referer.includes(appPath) || referer.includes(regAppId)) {
             return sandbox;
         }
@@ -1112,7 +1114,7 @@ export class FlpSandbox {
      * @param id application id from manifest
      */
     private addTestRoutes(configs: TestConfig[], id: string): void {
-        const ns = id.replace(/\./g, '/');
+        const ns = id.replaceAll('.', '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const testConfig of configs) {
             const config = mergeTestConfigDefaults(testConfig);
@@ -1344,9 +1346,9 @@ export class FlpSandbox {
         // Store this FlpSandbox instance in a global registry keyed by app ID
         const appId = this.manifest['sap.app']?.id ?? '';
         const globalRegistry =
-            ((global as Record<string, unknown>).__flpSandboxRegistry as Record<string, FlpSandbox>) ?? {};
+            ((globalThis as Record<string, unknown>).__flpSandboxRegistry as Record<string, FlpSandbox>) ?? {};
         globalRegistry[appId] = this;
-        (global as Record<string, unknown>).__flpSandboxRegistry = globalRegistry;
+        (globalThis as Record<string, unknown>).__flpSandboxRegistry = globalRegistry;
 
         // Try to access the CDS server's express app to register routes at the root level
         let cds: {
@@ -1368,14 +1370,14 @@ export class FlpSandbox {
         }
 
         // Only register routes once (check if already registered)
-        if ((global as Record<string, unknown>).__cardRoutesRegistered) {
+        if ((globalThis as Record<string, unknown>).__cardRoutesRegistered) {
             this.logger.debug('Root-level card routes already registered, skipping');
             return;
         }
 
         // Register routes at root level when the server is served
         const registerRootRoutes = (): void => {
-            if ((global as Record<string, unknown>).__cardRoutesRegistered) {
+            if ((globalThis as Record<string, unknown>).__cardRoutesRegistered) {
                 return;
             }
 
@@ -1399,7 +1401,7 @@ export class FlpSandbox {
                 // Register /i18n/* route at root level to serve i18n files
                 cds.app.get('/i18n/*', handleI18nGet);
 
-                (global as any).__cardRoutesRegistered = true;
+                (globalThis as Record<string, unknown>).__cardRoutesRegistered = true;
                 this.logger.info('Card generator routes registered at root level');
             }
         };

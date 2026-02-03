@@ -1497,7 +1497,7 @@ describe('router with enableCardGenerator for CAP projects', () => {
 
     test('addRootLevelCardRoutes registers FlpSandbox in global registry for CAP projects', async () => {
         // The FlpSandbox should be registered in the global registry
-        const registry = (global as any).__flpSandboxRegistry;
+        const registry = (globalThis as Record<string, unknown>).__flpSandboxRegistry as Record<string, unknown>;
         expect(registry).toBeDefined();
         expect(Object.keys(registry).length).toBeGreaterThan(0);
     });
@@ -1545,8 +1545,8 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
 
     beforeEach(() => {
         // Clear global registry before each test
-        (global as any).__flpSandboxRegistry = undefined;
-        (global as any).__cardRoutesRegistered = undefined;
+        (globalThis as Record<string, unknown>).__flpSandboxRegistry = undefined;
+        (globalThis as Record<string, unknown>).__cardRoutesRegistered = undefined;
         jest.resetModules();
         // Reset mock functions
         mockCdsApp.use.mockClear();
@@ -1571,7 +1571,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
 
         // For non-CAP projects, the global registry should not have __cardRoutesRegistered set
         // because the method returns early
-        expect((global as any).__cardRoutesRegistered).toBeUndefined();
+        expect((globalThis as Record<string, unknown>).__cardRoutesRegistered).toBeUndefined();
     });
 
     test('addRootLevelCardRoutes skips registration when cardGenerator path is not set', async () => {
@@ -1582,7 +1582,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         await flp.init(manifest);
 
         // Without cardGenerator path, the method should return early
-        expect((global as any).__cardRoutesRegistered).toBeUndefined();
+        expect((globalThis as Record<string, unknown>).__cardRoutesRegistered).toBeUndefined();
     });
 
     test('addRootLevelCardRoutes registers sandbox in global registry for CAP projects', async () => {
@@ -1598,7 +1598,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         await flp.init(manifest);
 
         // The sandbox should be registered in the global registry
-        const registry = (global as any).__flpSandboxRegistry;
+        const registry = (globalThis as Record<string, unknown>).__flpSandboxRegistry as Record<string, unknown>;
         expect(registry).toBeDefined();
         expect(registry['test.cap.app']).toBeDefined();
     });
@@ -1616,7 +1616,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         await flp.init(manifest);
 
         // The sandbox should be registered in the global registry for CAPJava too
-        const registry = (global as any).__flpSandboxRegistry;
+        const registry = (globalThis as Record<string, unknown>).__flpSandboxRegistry as Record<string, unknown>;
         expect(registry).toBeDefined();
         expect(registry['test.java.app']).toBeDefined();
     });
@@ -1634,7 +1634,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         await flp.init(manifest);
 
         // The sandbox should be registered in the global registry
-        const registry = (global as any).__flpSandboxRegistry;
+        const registry = (globalThis as Record<string, unknown>).__flpSandboxRegistry as Record<string, unknown>;
         expect(registry).toBeDefined();
         expect(registry['test.cds.app']).toBeDefined();
 
@@ -1648,7 +1648,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
 
         // Set the flag to indicate routes are already registered
-        (global as any).__cardRoutesRegistered = true;
+        (globalThis as Record<string, unknown>).__cardRoutesRegistered = true;
 
         const flp = new FlpSandbox(
             { editors: { cardGenerator: { path: '/test/cards.html' } } },
@@ -1660,7 +1660,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         await flp.init(manifest);
 
         // The sandbox should still be registered in the global registry
-        const registry = (global as any).__flpSandboxRegistry;
+        const registry = (globalThis as Record<string, unknown>).__flpSandboxRegistry as Record<string, unknown>;
         expect(registry).toBeDefined();
         expect(registry['test.skip.app']).toBeDefined();
 
@@ -1687,7 +1687,7 @@ describe('addRootLevelCardRoutes with mocked CDS', () => {
         await flp.init(manifest);
 
         // The sandbox should be registered in the global registry
-        const registry = (global as any).__flpSandboxRegistry;
+        const registry = (globalThis as Record<string, unknown>).__flpSandboxRegistry as Record<string, unknown>;
         expect(registry).toBeDefined();
         expect(registry['test.cds.routes.app']).toBeDefined();
 
@@ -1717,7 +1717,7 @@ describe('findFlpSandboxFromRequest', () => {
     } as unknown as Logger;
 
     beforeEach(() => {
-        (global as any).__flpSandboxRegistry = undefined;
+        (globalThis as Record<string, unknown>).__flpSandboxRegistry = undefined;
     });
 
     test('returns undefined when global registry is not defined', () => {
@@ -1727,7 +1727,7 @@ describe('findFlpSandboxFromRequest', () => {
     });
 
     test('returns undefined when global registry is empty', () => {
-        (global as any).__flpSandboxRegistry = {};
+        (globalThis as Record<string, unknown>).__flpSandboxRegistry = {};
         const req = { headers: { referer: 'http://localhost/sap/fe/cap/travel' } } as any;
         const result = findFlpSandboxFromRequest(req);
         expect(result).toBeUndefined();
@@ -1824,7 +1824,7 @@ describe('serveStaticFileFromWebapp', () => {
     } as unknown as Logger;
 
     beforeEach(() => {
-        (global as any).__flpSandboxRegistry = undefined;
+        (globalThis as Record<string, unknown>).__flpSandboxRegistry = undefined;
     });
 
     test('calls next when no sandbox found', () => {
@@ -1924,7 +1924,7 @@ describe('Route handlers', () => {
     } as unknown as Logger;
 
     beforeEach(() => {
-        (global as any).__flpSandboxRegistry = undefined;
+        (globalThis as Record<string, unknown>).__flpSandboxRegistry = undefined;
     });
 
     describe('handleCardStorePost', () => {
