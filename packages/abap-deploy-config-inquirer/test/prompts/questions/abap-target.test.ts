@@ -194,12 +194,7 @@ describe('getAbapTargetPrompts', () => {
                     destination: 'mockDest1'
                 })
             ).toBe(false);
-            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith(
-                'mockDest1',
-                mockDestinations,
-                undefined,
-                undefined
-            );
+            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations);
         } else {
             throw new Error('Destination setter prompt not found');
         }
@@ -211,7 +206,6 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: mockTargetSystems
         });
-        jest.spyOn(validators, 'validateTargetSystem').mockResolvedValueOnce(true);
 
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const targetSystemPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.targetSystem);

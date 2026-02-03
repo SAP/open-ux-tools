@@ -76,6 +76,7 @@ import {
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env';
 import type { AdpTelemetryData } from '../types';
 import { KeyUserImportPrompter } from './questions/key-user';
+import { initTelemetrySettings } from '@sap-ux/telemetry';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -255,7 +256,7 @@ export default class extends Generator {
         this.logger.info(`isCfInstalled: ${this.cfInstalled}`);
 
         const isInternalUsage = isInternalFeaturesSettingEnabled();
-        await TelemetryHelper.initTelemetrySettings({
+        await initTelemetrySettings({
             consumerModule: {
                 name: '@sap/generator-fiori:generator-adp',
                 version: this.rootGeneratorVersion()

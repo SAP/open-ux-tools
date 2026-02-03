@@ -1,5 +1,5 @@
 import { AppRouterType } from '@sap-ux/adp-tooling';
-import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, type AdaptationDescriptor } from '@sap-ux/axios-extension';
 import type { CFApp, Endpoint, SourceApplication } from '@sap-ux/adp-tooling';
 
 import {
@@ -7,8 +7,16 @@ import {
     getCFAppChoices,
     getAppRouterChoices,
     getAdaptationChoices,
-    getKeyUserSystemChoices
+    getKeyUserSystemChoices,
+    getProjectTypeChoices
 } from '../../../../src/app/questions/helper/choices';
+import { t } from '../../../../src/utils/i18n';
+
+// Jest cannot exit if we use the actual translation function.
+jest.mock('../../../../src/utils/i18n', () => ({
+    t: jest.fn((key: string) => key), // Returns the key itself
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
 
 describe('Choices Helper Functions', () => {
     beforeEach(() => {
@@ -23,7 +31,8 @@ describe('Choices Helper Functions', () => {
             ach: 'ACH456',
             fileType: 'application',
             bspUrl: '/test.bsp.com',
-            bspName: 'test-bsp'
+            bspName: 'test-bsp',
+            cloudDevAdaptationStatus: ''
         };
 
         const mockSourceAppWithoutTitle: SourceApplication = {
@@ -33,7 +42,8 @@ describe('Choices Helper Functions', () => {
             ach: 'ACH789',
             fileType: 'application',
             bspUrl: '/test2.bsp.com',
-            bspName: 'test-bsp-2'
+            bspName: 'test-bsp-2',
+            cloudDevAdaptationStatus: ''
         };
 
         test('should create choices from applications with title', () => {
@@ -230,6 +240,15 @@ describe('Choices Helper Functions', () => {
         test('should handle empty array', () => {
             const result = getKeyUserSystemChoices([], 'SystemA');
             expect(result).toHaveLength(0);
+        });
+    });
+
+    describe('getProjectTypeChoices', () => {
+        it('should return cloudReady as first and onPrem as a second choice', () => {
+            expect(getProjectTypeChoices()).toEqual([
+                { name: t('prompts.projectTypeCloudReadyName'), value: AdaptationProjectType.CLOUD_READY },
+                { name: t('prompts.projectTypeOnPremName'), value: AdaptationProjectType.ON_PREMISE }
+            ]);
         });
     });
 });

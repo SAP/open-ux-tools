@@ -74,7 +74,8 @@ const baseConfig: ConfigOptions = {
     logger: {} as ToolsLogger,
     manifest,
     toolsId: 'test-tools-id',
-    keyUserChanges: []
+    keyUserChanges: [],
+    projectType: AdaptationProjectType.CLOUD_READY
 };
 
 describe('getConfig', () => {
@@ -82,7 +83,7 @@ describe('getConfig', () => {
         getProviderConfigMock.mockResolvedValue(systemDetails);
     });
 
-    it('returns the correct config with provided parameters when system is cloud ready', async () => {
+    it('returns the correct config with provided parameters when system and the project type are cloud ready', async () => {
         isAbapCloudMock.mockResolvedValue(true);
         const config = await getConfig(baseConfig);
 
@@ -103,7 +104,8 @@ describe('getConfig', () => {
                         id: '@sap-ux/generator-adp',
                         toolsId: 'test-tools-id',
                         version: '0.0.1'
-                    }
+                    },
+                    projectType: AdaptationProjectType.CLOUD_READY
                 }
             },
             target: {

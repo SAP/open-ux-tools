@@ -43,7 +43,7 @@ const CLOUD_ONLY_APPS_FILTER: UI5AppFilter = {
  * @param {SourceApplication} appB - The second application to compare.
  * @returns {number} A number indicating the sort order.
  */
-export const compareByTitleOrId = (appA: SourceApplication, appB: SourceApplication): number => {
+const compareByTitleOrId = (appA: SourceApplication, appB: SourceApplication): number => {
     let titleA = appA.title.toUpperCase();
     let titleB = appB.title.toUpperCase();
 
@@ -69,7 +69,7 @@ export const compareByTitleOrId = (appA: SourceApplication, appB: SourceApplicat
  * @param {Partial<App>} app - The raw application data, possibly incomplete.
  * @returns {SourceApplication} A structured application object with defined properties, even if some may be empty.
  */
-export const toSourceApplication = (app: Partial<App>): SourceApplication => ({
+const toSourceApplication = (app: Partial<App>): SourceApplication => ({
     id: app['sap.app/id'] ?? '',
     title: app['sap.app/title'] ?? '',
     ach: app['sap.app/ach'] ?? '',
