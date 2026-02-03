@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.4.0
+
+### Minor Changes
+
+- 6a5469b: Added eslint rules to enable paste and export in OData V4 application tables.
+
 ## 9.3.3
 
 ### Patch Changes
