@@ -156,6 +156,8 @@ module.exports = [
 | [sap-usage-basemastercontroller](docs/rules/sap-usage-basemastercontroller.md) | Detect the usage of the deprecated `BaseMasterController`. | ✅ | ✅ |
 | [sap-creation-mode-for-table](docs/rules/sap-creation-mode-for-table.md) | Validates that the table creation mode (`createMode` in OData V2 and `creationMode` in OData V4) is correctly configured to ensure an optimal user experience when creating new table entries. | | ✅ |
 | [sap-copy-to-clipboard](docs/rules/sap-copy-to-clipboard.md) | Ensures that the copy functionality in any table is enabled. "Copy" button is shown by default. | | ✅ |
+| [sap-enable-paste](docs/rules/sap-enable-paste.md) | Ensures that the paste functionality in any OData V4 applications tables is available | | ✅ |
+| [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality in any OData V4 applications tables is available | | ✅ |
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |
 | [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements | | ✅ |

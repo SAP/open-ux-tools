@@ -10,7 +10,8 @@ import {
     V4_MANIFEST,
     V4_MANIFEST_PATH,
     V2_MANIFEST,
-    V2_MANIFEST_PATH
+    V2_MANIFEST_PATH,
+    V4_FACETS_ANNOTATIONS
 } from '../test-helper';
 
 const ruleTester = new RuleTester({
@@ -20,36 +21,7 @@ const ruleTester = new RuleTester({
 
 const FACETSV4 = {
     filename: V4_ANNOTATIONS_PATH,
-    code: getAnnotationsAsXmlCode(
-        V4_ANNOTATIONS,
-        `
-            <Annotations Target="IncidentService.Incidents">
-                 <Annotation Term="UI.Facets" >
-                    <Collection>
-                        <Record Type="UI.ReferenceFacet">
-                            <PropertyValue Property="ID" String="Products"/>
-                            <PropertyValue Property="Label" String="Prducts"/>
-                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-             <Annotations Target="IncidentService.IncidentFlow">
-                 <Annotation Term="UI.LineItem">
-                    <Collection>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="processStep" />
-                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
-                        </Record>
-                        <Record Type="UI.DataField">
-                            <PropertyValue Property="Value" Path="stepStatus" />
-                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
-                        </Record>
-                    </Collection>
-                </Annotation>
-            </Annotations>
-                `
-    )
+    code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FACETS_ANNOTATIONS)
 };
 
 const TEST_NAME = 'sap-copy-to-clipboard';

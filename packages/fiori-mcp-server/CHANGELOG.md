@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.21
+
+### Patch Changes
+
+- 6b659e7: feat: add tool annotations for better AI guidance
+
 ## 0.6.20
 
 ### Patch Changes
