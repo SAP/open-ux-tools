@@ -16,10 +16,7 @@ export const AdpControllerExtensionSchema: zod.ZodObject<{
         .describe(
             'Optional AI-generated response containing code blocks with Path markers. If not provided, the functionality will only validate the adaptation project.'
         ),
-    viewId: zod
-        .string()
-        .optional()
-        .describe('Optional target view identifier for the controller extension'),
+    viewId: zod.string().optional().describe('Optional target view identifier for the controller extension'),
     controllerName: zod
         .string()
         .optional()

@@ -10,6 +10,7 @@ export interface ExtractedFile {
 
 /**
  * Extract files from AI response containing markdown code blocks with Path markers
+ *
  * @param content - The AI response content with markdown code blocks
  * @returns Array of extracted files with path and code
  */
@@ -60,6 +61,7 @@ export function extractFilesFromResponse(content: string): ExtractedFile[] {
 
 /**
  * Check if the file path represents a controller extension
+ *
  * @param filePath - The file path to check
  * @returns True if the file is a controller extension
  */
@@ -67,13 +69,10 @@ export function isControllerExtensionFile(filePath: string): boolean {
     const normalizedPath = filePath.toLowerCase();
 
     // Primary check: files in changes/coding folder (proper adaptation project structure)
-    const isInChangesFolder =
-        normalizedPath.includes('changes/coding') || normalizedPath.includes('changes\\coding');
+    const isInChangesFolder = normalizedPath.includes('changes/coding') || normalizedPath.includes('changes\\coding');
     const isJsOrTs = normalizedPath.endsWith('.js') || normalizedPath.endsWith('.ts');
     const hasControllerKeywords =
-        normalizedPath.includes('controller') ||
-        normalizedPath.includes('extension') ||
-        normalizedPath.includes('ext');
+        normalizedPath.includes('controller') || normalizedPath.includes('extension') || normalizedPath.includes('ext');
 
     const isPrimaryMatch = isInChangesFolder && isJsOrTs && hasControllerKeywords;
 
@@ -98,6 +97,7 @@ export function isControllerExtensionFile(filePath: string): boolean {
 
 /**
  * Check if the file content looks like a controller extension
+ *
  * @param content - The file content to check
  * @returns True if the content is a controller extension
  */
@@ -111,6 +111,7 @@ export function isControllerExtensionContent(content: string): boolean {
 
 /**
  * Check if the file path is a change file
+ *
  * @param filePath - The file path to check
  * @returns True if the file is a change file
  */
@@ -121,6 +122,7 @@ export function isChangeFile(filePath: string): boolean {
 
 /**
  * Get project folder name from app path
+ *
  * @param appPath - The application path
  * @returns The project folder name
  */
@@ -132,6 +134,7 @@ export function getProjectFolderName(appPath: string): string {
 
 /**
  * Generate controller extension namespace based on layer and project folder
+ *
  * @param projectFolderName - The project folder name
  * @param controllerExtName - The controller extension name
  * @param layer - The FlexLayer from manifest.appdescr_variant
@@ -151,6 +154,7 @@ export function generateControllerExtensionNamespace(
 
 /**
  * Generate fragment event handler namespace for XML fragments
+ *
  * @param projectFolderName - The project folder name
  * @param controllerExtName - The controller extension name
  * @param methodName - The method name
@@ -172,6 +176,7 @@ export function generateFragmentEventHandlerNamespace(
 
 /**
  * Read manifest.appdescr_variant file
+ *
  * @param appPath - The application path
  * @returns The DescriptorVariant object
  */
@@ -181,6 +186,7 @@ export async function readManifestVariant(appPath: string): Promise<DescriptorVa
 
 /**
  * Check if the project is an adaptation project by checking for manifest.appdescr_variant
+ *
  * @param appPath - The application path
  * @returns True if it's an adaptation project
  */
