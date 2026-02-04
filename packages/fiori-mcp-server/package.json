@@ -53,7 +53,7 @@
     "devDependencies": {
         "npm-run-all2": "8.0.4",
         "esbuild": "0.27.2",
-        "@modelcontextprotocol/sdk": "1.25.2",
+        "@modelcontextprotocol/sdk": "1.25.3",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap/ux-specification": "1.142.0",
         "@sap-ux/project-access": "workspace:*",
@@ -81,7 +81,7 @@
         "zod": "4.1.13",
         "@sap-ai-sdk/foundation-models": "2.3.0",
         "@sap-ai-sdk/langchain": "2.3.0",
-        "promptfoo": "0.119.14",
+        "promptfoo": "0.120.21",
         "@langchain/mcp-adapters": "1.0.2",
         "@langchain/core": "1.1.8"
     },
