@@ -98,7 +98,7 @@ const rule: RuleDefinition = {
                 // Get property list from object expression
                 const propertyList = objectExpr.properties as unknown[];
                 // Go through the properties
-                let property: any;
+                let property: unknown;
                 for (const key in propertyList) {
                     // Check if element is of type we are looking for
                     // all in one if-statement to reach code coverage
