@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.23
+
+### Patch Changes
+
+- bd48387: Update readme for Self-Signed SSL Certificates
+
 ## 0.6.22
 
 ### Patch Changes
