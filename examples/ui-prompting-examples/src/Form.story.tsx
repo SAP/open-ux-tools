@@ -38,7 +38,9 @@ export const WithContextPath = (): JSX.Element => {
                     id: 'CustomerDetailsForm',
                     title: 'Customer Details',
                     contextPath: '/Customer',
-                    metaPath: '@com.sap.vocabularies.UI.v1.FieldGroup#Details'
+                    metaPath: {
+                        qualifier: '@com.sap.vocabularies.UI.v1.FieldGroup#Details'
+                    }
                 }
             }}
         />
