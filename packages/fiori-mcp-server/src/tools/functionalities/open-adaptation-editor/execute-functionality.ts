@@ -143,7 +143,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
             };
         }
 
-        if (!packageJson.scripts || !packageJson.scripts['start-editor']) {
+        if (!packageJson.scripts?.['start-editor']) {
             return {
                 functionalityId: details.functionalityId,
                 status: 'Error',
