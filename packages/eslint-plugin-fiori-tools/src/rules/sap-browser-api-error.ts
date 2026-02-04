@@ -176,8 +176,7 @@ const rule: RuleDefinition = {
                 context.report({ node: node, messageId: 'domManipulation' });
             } else if (
                 contains(FORBIDDEN_DOCUMENT_USAGE, methodName) &&
-                parent &&
-                parent.arguments.length !== 0 &&
+                parent?.arguments?.length !== 0 &&
                 asLiteral(parent.arguments[0])?.value === 'insertBrOnReturn'
             ) {
                 context.report({ node: node, messageId: 'forbiddenDocumentUsage' });
