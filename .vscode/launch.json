@@ -181,19 +181,6 @@
             "type": "node",
             "request": "launch",
             "name": "fiori-mcp-server: Launch inspector",
-            "runtimeExecutable": "${workspaceFolder}/packages/fiori-mcp-server/node_modules/.bin/mcp-inspector",
-            "runtimeArgs": ["node", "dist/index.js"],
-            "console": "integratedTerminal",
-            "skipFiles": ["<node_internals>/**"],
-            "cwd": "${workspaceFolder}/packages/fiori-mcp-server",
-            "env":{
-                "LOG_LEVEL": "debug"
-            }
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "fiori-mcp-server: Launch inspector",
             "runtimeExecutable": "npx",
             "runtimeArgs": ["@modelcontextprotocol/inspector", "node", "dist/index.js"],
             "console": "integratedTerminal",
