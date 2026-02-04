@@ -121,7 +121,7 @@ export async function getSystemSelectionQuestions(
                     connectValidator,
                     systemSelectionPromptNamespace,
                     promptOptions?.serviceSelection,
-                    !promptOptions?.valueHelpDownload?.hide
+                    promptOptions?.valueHelpDownload?.hide
                 ) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
             )
@@ -139,7 +139,7 @@ export async function getSystemSelectionQuestions(
     } else {
         questions.push(
             ...withCondition(
-                getCfAbapBASQuestions(promptOptions?.serviceSelection) as Question[],
+                getCfAbapBASQuestions(promptOptions) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
             )
         );

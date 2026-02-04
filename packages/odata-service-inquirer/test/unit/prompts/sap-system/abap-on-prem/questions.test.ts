@@ -157,13 +157,6 @@ describe('questions', () => {
                 "name": "abapOnPrem:cliServiceSelection",
                 "when": [Function],
               },
-              {
-                "message": "The service contains references to value help services. Do you want to download the associated metadata during generation? This may increase generation time.",
-                "name": "abapOnPrem:valueHelpDownload",
-                "type": "confirm",
-                "validate": [Function],
-                "when": [Function],
-              },
             ]
         `);
     });
@@ -299,5 +292,24 @@ describe('questions', () => {
             message: t('warnings.certErrorIgnoredByNodeSetting'),
             severity: Severity.warning
         });
+    });
+
+    test('Should include value help download prompt when promptOptions.valueHelpDownload.hide is false', () => {
+        const questions = getAbapOnPremQuestions({ valueHelpDownload: { hide: false } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'abapOnPrem:valueHelpDownload');
+        expect(valueHelpPrompt).toBeDefined();
+        expect(valueHelpPrompt?.type).toBe('confirm');
+    });
+
+    test('Should not include value help download prompt when promptOptions.valueHelpDownload.hide is true', () => {
+        const questions = getAbapOnPremQuestions({ valueHelpDownload: { hide: true } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'abapOnPrem:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
+    });
+
+    test('Should not include value help download prompt by default when promptOptions is not provided', () => {
+        const questions = getAbapOnPremQuestions();
+        const valueHelpPrompt = questions.find((question) => question.name === 'abapOnPrem:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
     });
 });
