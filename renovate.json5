@@ -23,6 +23,14 @@
     branchPrefix: 'chore/renovate/',
     platformCommit: true,
 
+    // Reduce memory usage for large monorepos
+    rangeStrategy: 'update-lockfile',
+    postUpdateOptions: ['pnpmDedupe'],
+    
+    // Limit concurrent operations to reduce memory pressure
+    prConcurrentLimit: 5,
+    branchConcurrentLimit: 5,
+    
     major: {
         dependencyDashboardApproval: true
     },
@@ -33,6 +41,8 @@
     assigneesFromCodeOwners: true,
 
     ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/test/fixtures/**', '**/test/fixture/**', '**/test/test-data/**', '**/expected-output/**' ],
+
+    ignoreDeps: ['@sap-ux-private/playwright'],
 
     packageRules: [
         {

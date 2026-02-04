@@ -185,7 +185,10 @@
             "runtimeArgs": ["@modelcontextprotocol/inspector", "node", "dist/index.js"],
             "console": "integratedTerminal",
             "skipFiles": ["<node_internals>/**"],
-            "cwd": "${workspaceFolder}/packages/fiori-mcp-server"
+            "cwd": "${workspaceFolder}/packages/fiori-mcp-server",
+            "env":{
+                "LOG_LEVEL": "debug"
+            }
         },
         {
             "type": "node",
