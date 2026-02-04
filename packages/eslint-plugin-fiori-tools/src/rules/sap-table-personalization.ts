@@ -3,18 +3,35 @@ import {
     TABLE_PERSONALIZATION_COLUMN,
     TABLE_PERSONALIZATION_FILTER,
     TABLE_PERSONALIZATION_SORT,
+    TABLE_PERSONALIZATION_GROUP,
     TABLE_PERSONALIZATION,
     type TablePersonalization
 } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer';
+import type { PersonalizationProperty } from '../project-context/linker/fe-v4';
 
-type MessageIds =
+enum PersonalizationProperties {
+    column = 'column',
+    filter = 'filter',
+    group = 'group',
+    sort = 'sort'
+}
+
+type MessageId =
     | typeof TABLE_PERSONALIZATION
     | typeof TABLE_PERSONALIZATION_COLUMN
     | typeof TABLE_PERSONALIZATION_FILTER
-    | typeof TABLE_PERSONALIZATION_SORT;
+    | typeof TABLE_PERSONALIZATION_SORT
+    | typeof TABLE_PERSONALIZATION_GROUP;
+
+enum MessageIdByProperty {
+    column = TABLE_PERSONALIZATION_COLUMN,
+    filter = TABLE_PERSONALIZATION_FILTER,
+    sort = TABLE_PERSONALIZATION_SORT,
+    group = TABLE_PERSONALIZATION_GROUP
+}
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: TABLE_PERSONALIZATION,
@@ -22,7 +39,8 @@ const rule: FioriRuleDefinition = createFioriRule({
         type: 'suggestion',
         docs: {
             recommended: true,
-            description: '',
+            description:
+                'You can use table personalization to modify the settings of a table. By default, the table personalization provides options for adding or removing columns, filtering, sorting, and grouping.',
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-table-personalization.md'
         },
         messages: {
@@ -30,7 +48,9 @@ const rule: FioriRuleDefinition = createFioriRule({
                 'Table personalization should be enabled. Currently every table personalization setting is disabled.',
             [TABLE_PERSONALIZATION_COLUMN]: 'Adding or removing table columns should be enabled.',
             [TABLE_PERSONALIZATION_FILTER]: 'Table data filtering should be enabled.',
-            [TABLE_PERSONALIZATION_SORT]: 'Table data sorting should be enabled.'
+            [TABLE_PERSONALIZATION_SORT]: 'Table data sorting should be enabled.',
+            [TABLE_PERSONALIZATION_GROUP]:
+                'Table data grouping should be enabled for analytical and responsive type tables.'
         },
         fixable: 'code'
     },
@@ -50,12 +70,13 @@ const rule: FioriRuleDefinition = createFioriRule({
 
             for (const page of app.pages) {
                 for (const table of page.lookup['table'] ?? []) {
+                    const personalization = table.configuration.personalization.valueInFile;
                     // Check if boolean value
-                    if (table.configuration.personalization.valueInFile === true) {
+                    if (personalization === true || personalization === undefined) {
                         // Every table personalization setting is enabled
                         continue;
                     }
-                    if (table.configuration.personalization.valueInFile === false) {
+                    if (personalization === false) {
                         // Every table personalization setting is disabled
                         problems.push({
                             type: TABLE_PERSONALIZATION,
@@ -67,42 +88,31 @@ const rule: FioriRuleDefinition = createFioriRule({
                             }
                         });
                     } else {
-                        // check object properties
-                        if (table.configuration.personalizationColumn.valueInFile === false) {
-                            problems.push({
-                                type: TABLE_PERSONALIZATION,
-                                pageName: page.targetName,
-                                property: 'column',
-                                manifest: {
-                                    uri: parsedApp.manifest.manifestUri,
-                                    object: parsedApp.manifestObject,
-                                    propertyPath: table.configuration.personalizationColumn.configurationPath
+                        // Check object properties
+                        const tableType = table.configuration.tableType.valueInFile;
+                        for (const key in PersonalizationProperties) {
+                            const property = key as PersonalizationProperty;
+                            if (personalization[property] === false) {
+                                if (
+                                    property !== 'group' ||
+                                    tableType === 'AnalyticalTable' ||
+                                    tableType === 'ResponsiveTable'
+                                ) {
+                                    problems.push({
+                                        type: TABLE_PERSONALIZATION,
+                                        pageName: page.targetName,
+                                        property,
+                                        manifest: {
+                                            uri: parsedApp.manifest.manifestUri,
+                                            object: parsedApp.manifestObject,
+                                            propertyPath: [
+                                                ...table.configuration.personalization.configurationPath,
+                                                property
+                                            ]
+                                        }
+                                    });
                                 }
-                            });
-                        }
-                        if (table.configuration.personalizationFilter.valueInFile === false) {
-                            problems.push({
-                                type: TABLE_PERSONALIZATION,
-                                pageName: page.targetName,
-                                property: 'filter',
-                                manifest: {
-                                    uri: parsedApp.manifest.manifestUri,
-                                    object: parsedApp.manifestObject,
-                                    propertyPath: table.configuration.personalizationFilter.configurationPath
-                                }
-                            });
-                        }
-                        if (table.configuration.personalizationSort.valueInFile === false) {
-                            problems.push({
-                                type: TABLE_PERSONALIZATION,
-                                pageName: page.targetName,
-                                property: 'sort',
-                                manifest: {
-                                    uri: parsedApp.manifest.manifestUri,
-                                    object: parsedApp.manifestObject,
-                                    propertyPath: table.configuration.personalizationSort.configurationPath
-                                }
-                            });
+                            }
                         }
                     }
                 }
@@ -111,13 +121,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         return problems;
     },
     createJsonVisitorHandler: (context, diagnostic, deepestPathResult) => {
-        let messageId: MessageIds = TABLE_PERSONALIZATION;
-        if (diagnostic.property === 'column') {
-            messageId = TABLE_PERSONALIZATION_COLUMN;
-        } else if (diagnostic.property === 'filter') {
-            messageId = TABLE_PERSONALIZATION_FILTER;
-        } else if (diagnostic.property === 'sort') {
-            messageId = TABLE_PERSONALIZATION_SORT;
+        let messageId: MessageId = TABLE_PERSONALIZATION;
+        if (diagnostic.property) {
+            messageId = MessageIdByProperty[diagnostic.property];
         }
         return function report(node: MemberNode): void {
             context.report({
