@@ -166,7 +166,7 @@ function isInterestingAssignment(node: ASTNode | undefined): boolean {
  */
 function isValid(node: ASTNode): boolean {
     const callNode = node as { arguments?: unknown[] };
-    if (callNode.arguments?.length && callNode.arguments.length > 0) {
+    if ( callNode.arguments.length > 0) {
         const target = getProperty(callNode.arguments[0], 'target');
         if (target) {
             // get property target from first argument, get property shellHash from property target
