@@ -54,6 +54,7 @@ import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { KeyUserImportPrompter } from '../src/app/questions/key-user';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
+import { showStoreCredentialsQuestion } from '../src/app/questions/helper/conditions';
 import { TargetEnv, type JsonInput, type TargetEnvAnswers } from '../src/app/types';
 import { EventName } from '../src/telemetry';
 import { initI18n, t } from '../src/utils/i18n';
@@ -91,7 +92,8 @@ jest.mock('../src/app/questions/helper/conditions', () => ({
     ...jest.requireActual('../src/app/questions/helper/conditions'),
     showApplicationQuestion: jest.fn().mockReturnValue(true),
     showExtensionProjectQuestion: jest.fn().mockReturnValue(true),
-    shouldShowBaseAppPrompt: jest.fn().mockReturnValue(true)
+    shouldShowBaseAppPrompt: jest.fn().mockReturnValue(true),
+    showStoreCredentialsQuestion: jest.fn().mockReturnValue(false)
 }));
 
 jest.mock('@sap-ux/system-access', () => ({
@@ -588,6 +590,29 @@ describe('Adaptation Project Generator Integration Test', () => {
                 }),
                 projectFolder
             );
+        });
+
+        it('should store credentials when storeCredentials flag is true', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            storeCredentialsMock.mockResolvedValue(undefined);
+            // Mock the condition to return true for store credentials question
+            (showStoreCredentialsQuestion as jest.Mock).mockReturnValue(true);
+
+            const answersWithStoreCredentials = { ...answers, storeCredentials: true };
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+                .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+                .withPrompts(answersWithStoreCredentials);
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(storeCredentialsMock).toHaveBeenCalledTimes(1);
+
+            const [configAnswers, systemLookup, logger] = storeCredentialsMock.mock.calls[0];
+            expect(configAnswers.storeCredentials).toBe(true);
+            expect(systemLookup).toBeDefined();
+            expect(logger).toBeDefined();
         });
 
         it('should generate adaptation project with key user changes', async () => {

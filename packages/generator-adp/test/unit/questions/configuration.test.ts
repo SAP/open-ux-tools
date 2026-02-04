@@ -444,6 +444,31 @@ describe('ConfigPrompter Integration Tests', () => {
         });
     });
 
+    describe('Store Credentials Prompt', () => {
+        it('storeCredentials prompt additionalMessages should return warning when input is true', () => {
+            const prompts = configPrompter.getPrompts();
+            const storeCredentialsPrompt = prompts.find((p) => p.name === configPromptNames.storeCredentials);
+            expect(storeCredentialsPrompt).toBeDefined();
+
+            const additionalMessages = storeCredentialsPrompt?.additionalMessages?.(true);
+
+            expect(additionalMessages).toEqual({
+                message: t('warnings.passwordStoreWarning'),
+                severity: Severity.warning
+            });
+        });
+
+        it('storeCredentials prompt additionalMessages should return undefined when input is false', () => {
+            const prompts = configPrompter.getPrompts();
+            const storeCredentialsPrompt = prompts.find((p) => p.name === configPromptNames.storeCredentials);
+            expect(storeCredentialsPrompt).toBeDefined();
+
+            const additionalMessages = storeCredentialsPrompt?.additionalMessages?.(false);
+
+            expect(additionalMessages).toBeUndefined();
+        });
+    });
+
     describe('Application Prompt', () => {
         let getManifestSpy: jest.SpyInstance;
         const mockManifest = { 'sap.ui5': { flexEnabled: true } } as Manifest;
