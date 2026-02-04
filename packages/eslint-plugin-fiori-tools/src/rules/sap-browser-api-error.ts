@@ -165,9 +165,7 @@ const rule: RuleDefinition = {
                 if (
                     !(
                         methodName === 'createElement' &&
-                        parent &&
-                        parent.arguments &&
-                        parent.arguments.length > 0 &&
+                        parent?.arguments?.length > 0 &&
                         isLiteral(parent.arguments[0]) &&
                         asLiteral(parent.arguments[0])?.value === 'a'
                     )
