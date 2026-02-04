@@ -5,7 +5,8 @@ import type {
     TablePromptsAnswer,
     PagePromptsAnswer,
     RichTextEditorPromptsAnswer,
-    RichTextEditorButtonGroupsPromptsAnswer
+    RichTextEditorButtonGroupsPromptsAnswer,
+    FormPromptsAnswer
 } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
@@ -198,7 +199,7 @@ async function handleAction(action: Actions): Promise<void> {
                         type: SET_FORM_QUESTIONS,
                         questions,
                         groups,
-                        initialAnswers: initialAnswers as Partial<RichTextEditorButtonGroupsPromptsAnswer>
+                        initialAnswers: initialAnswers as Partial<FormPromptsAnswer>
                     };
                 }
                 if (responseAction) {
