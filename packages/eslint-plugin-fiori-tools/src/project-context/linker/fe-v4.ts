@@ -9,8 +9,6 @@ export interface ApplicationSetting {
     createMode: string;
 }
 
-export type PersonalizationProperty = 'column' | 'filter' | 'sort' | 'group';
-
 export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
     type: 'fe-v4';
     pages: FeV4PageType[];

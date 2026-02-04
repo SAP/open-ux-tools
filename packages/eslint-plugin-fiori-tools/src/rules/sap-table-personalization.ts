@@ -1,16 +1,12 @@
 import type { FioriRuleDefinition } from '../types';
 import {
-    TABLE_PERSONALIZATION_COLUMN,
-    TABLE_PERSONALIZATION_FILTER,
-    TABLE_PERSONALIZATION_SORT,
-    TABLE_PERSONALIZATION_GROUP,
+    type PersonalizationProperty,
     TABLE_PERSONALIZATION,
     type TablePersonalization
 } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer';
-import type { PersonalizationProperty } from '../project-context/linker/fe-v4';
 
 enum PersonalizationProperties {
     column = 'column',
@@ -18,6 +14,11 @@ enum PersonalizationProperties {
     group = 'group',
     sort = 'sort'
 }
+
+const TABLE_PERSONALIZATION_COLUMN = 'sap-table-personalization-column';
+const TABLE_PERSONALIZATION_FILTER = 'sap-table-personalization-filter';
+const TABLE_PERSONALIZATION_SORT = 'sap-table-personalization-sort';
+const TABLE_PERSONALIZATION_GROUP = 'sap-table-personalization-group';
 
 type MessageId =
     | typeof TABLE_PERSONALIZATION
