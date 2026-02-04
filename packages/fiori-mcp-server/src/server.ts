@@ -178,8 +178,27 @@ export class FioriFunctionalityServer {
                 return convertedResult;
             } catch (error) {
                 logger.error(`Error executing tool ${name}: ${error}`);
-                logger.debug(error);
+                if (error instanceof Error) {
+                    logger.error(`Error stack: ${error.stack}`);
+                }
+                logger.debug(`Error details: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`);
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+
+                // For execute_functionality, return structured error matching ExecuteFunctionalityOutput schema
+                if (name === 'execute_functionality') {
+                    const executeInput = args as ExecuteFunctionalityInput;
+                    const structuredError = {
+                        functionalityId: executeInput?.functionalityId || 'unknown',
+                        status: 'Error',
+                        message: `Error executing functionality: ${errorMessage}`,
+                        parameters: executeInput?.parameters || {},
+                        appPath: executeInput?.appPath || '',
+                        changes: [],
+                        timestamp: new Date().toISOString()
+                    };
+                    return this.convertResultToCallToolResult(structuredError);
+                }
+
                 return {
                     content: [
                         {
