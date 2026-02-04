@@ -32,7 +32,8 @@ export default {
             },
             targetFolder: {
                 type: 'string',
-                description: 'Optional: The absolute path to the target folder where the project will be generated. If not provided, the project will be created in the current directory (appPath).'
+                description:
+                    'Optional: The absolute path to the target folder where the project will be generated. If not provided, the project will be created in the current directory (appPath).'
             },
             projectName: {
                 type: 'string',
