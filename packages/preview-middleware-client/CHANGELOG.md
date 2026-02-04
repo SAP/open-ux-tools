@@ -1,5 +1,47 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.15
+
+### Patch Changes
+
+- 644a779: fix home page crashes from UI5 v1.142.2 and above
+
+## 0.18.14
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
+## 0.18.13
+
+### Patch Changes
+
+- af8d6b8: fix: change table action creation for v4 from addXML to app descriptor change
+
+## 0.18.12
+
+### Patch Changes
+
+- c061595: fix: support rta and cpe for CAP node w/o mockserver
+
+## 0.18.11
+
+### Patch Changes
+
+- 1970178: Fix: Switch Page Action creation for OData V4 from addXML to appDescriptor based
+
+## 0.18.10
+
+### Patch Changes
+
+- be67fc4: adjust eslint config
+
+## 0.18.9
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 0.18.8
 
 ### Patch Changes

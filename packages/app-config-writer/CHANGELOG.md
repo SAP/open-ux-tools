@@ -1,5 +1,112 @@
 # @sap-ux/app-config-writer
 
+## 0.6.87
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/axios-extension@1.25.9
+    - @sap-ux/project-access@1.34.5
+
+## 0.6.86
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/axios-extension@1.25.8
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/ui5-config@0.29.14
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/store@1.5.3
+
+## 0.6.85
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/axios-extension@1.25.7
+
+## 0.6.84
+
+### Patch Changes
+
+- Updated dependencies [be6ea11]
+    - @sap-ux/store@1.5.2
+    - @sap-ux/ui5-config@0.29.13
+
+## 0.6.83
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/axios-extension@1.25.7
+
+## 0.6.82
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+
+## 0.6.81
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/ui5-config@0.29.13
+
+## 0.6.80
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/axios-extension@1.25.6
+
+## 0.6.79
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+    - @sap-ux/ui5-config@0.29.12
+
+## 0.6.78
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/axios-extension@1.25.6
+
+## 0.6.77
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/axios-extension@1.25.6
+
+## 0.6.76
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/axios-extension@1.25.6
+
+## 0.6.75
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/project-access@1.33.1
+
 ## 0.6.74
 
 ### Patch Changes

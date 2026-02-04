@@ -1,5 +1,98 @@
 # @sap-ux/telemetry
 
+## 0.6.62
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+
+## 0.6.61
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/ui5-config@0.29.14
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/nodejs-utils@0.2.11
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/store@1.5.3
+
+## 0.6.60
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+
+## 0.6.59
+
+### Patch Changes
+
+- Updated dependencies [be6ea11]
+    - @sap-ux/store@1.5.2
+    - @sap-ux/ui5-config@0.29.13
+
+## 0.6.58
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+
+## 0.6.57
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/ui5-config@0.29.13
+
+## 0.6.56
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+    - @sap-ux/project-access@1.34.2
+
+## 0.6.55
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+    - @sap-ux/ui5-config@0.29.12
+
+## 0.6.54
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+
+## 0.6.53
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+
+## 0.6.52
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+
+## 0.6.51
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/project-access@1.33.1
+
 ## 0.6.50
 
 ### Patch Changes

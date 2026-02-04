@@ -1,5 +1,56 @@
 # @sap-ux/project-access
 
+## 1.34.5
+
+### Patch Changes
+
+- 89175fe: fix(deps): update dependency fast-xml-parser to v5 [security]
+
+## 1.34.4
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/ui5-config@0.29.14
+
+## 1.34.3
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
+## 1.34.2
+
+### Patch Changes
+
+- be67fc4: refactor getPathMappings and export respective type
+- Updated dependencies [be67fc4]
+    - @sap-ux/ui5-config@0.29.13
+
+## 1.34.1
+
+### Patch Changes
+
+- 55ac9f0: enable generation of OPA5 tests based on project spec
+
+## 1.34.0
+
+### Minor Changes
+
+- b132944: feat: add consistency rules `sap-flex-enabled`, `sap-disable-copy-to-clipboard` and `sap-width-including-column-header`.
+
+## 1.33.2
+
+### Patch Changes
+
+- f13d1c2: CAP project selection now searches parent directories and supports autocomplete in CLI
+
+## 1.33.1
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+
 ## 1.33.0
 
 ### Minor Changes

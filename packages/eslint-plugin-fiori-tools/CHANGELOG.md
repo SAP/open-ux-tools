@@ -1,5 +1,124 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.4.1
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-annotation-api@0.9.7
+
+## 9.4.0
+
+### Minor Changes
+
+- 6a5469b: Added eslint rules to enable paste and export in OData V4 application tables.
+
+## 9.3.3
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+    - @sap-ux/fiori-annotation-api@0.9.6
+    - @sap-ux/project-access@1.34.4
+
+## 9.3.2
+
+### Patch Changes
+
+- c77df15: Exclude page name when reporting issue on application level for table creation mode
+
+## 9.3.1
+
+### Patch Changes
+
+- ecc305d: Add statePreservationMode rule for OData V2 application.
+
+## 9.3.0
+
+### Minor Changes
+
+- 416428c: Add copy to clipboard property rule for OData V2 application tables.
+
+## 9.2.4
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/fiori-annotation-api@0.9.5
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/odata-annotation-core@0.2.13
+    - @sap-ux/odata-entity-model@0.3.4
+    - @sap-ux/odata-vocabularies@0.4.22
+
+## 9.2.3
+
+### Patch Changes
+
+- 98a5947: fix: add auto fix for creation mode for table
+
+## 9.2.2
+
+### Patch Changes
+
+- 40b2423: fix: revised text
+
+## 9.2.1
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.4
+
+## 9.2.0
+
+### Minor Changes
+
+- cd27778: Fix plugin integration issue when working with multiple projects: create new ProjectContext and cache diagnostics by file uri and ruleId.
+
+## 9.1.3
+
+### Patch Changes
+
+- be67fc4: fix: fix path mappings and also lint custom mockserver extensions
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/fiori-annotation-api@0.9.3
+
+## 9.1.2
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/fiori-annotation-api@0.9.2
+
+## 9.1.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+- Updated dependencies [4d6695f]
+    - @sap-ux/fiori-annotation-api@0.9.1
+
+## 9.1.0
+
+### Minor Changes
+
+- b132944: feat: add consistency rules `sap-flex-enabled`, `sap-disable-copy-to-clipboard` and `sap-width-including-column-header`.
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/fiori-annotation-api@0.9.0
+
+## 9.0.5
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
 ## 9.0.4
 
 ### Patch Changes

@@ -193,11 +193,13 @@ function matchesFilters(destination: Destination, filters?: Partial<DestinationF
  *
  * @param destinationFilters the filters to apply to the destination choices
  * @param includeCloudFoundryAbapEnvChoice whether to include the Cloud Foundry ABAP environment choice in the list
+ * @param hideNewSystem - if true it will prevent adding the 'New System' option to the list
  * @returns a list of choices for the system selection prompt
  */
 export async function createSystemChoices(
     destinationFilters?: Partial<DestinationFilters>,
-    includeCloudFoundryAbapEnvChoice = false
+    includeCloudFoundryAbapEnvChoice = false,
+    hideNewSystem = false
 ): Promise<ListChoiceOptions<SystemSelectionAnswerType>[]> {
     let systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[] = [];
     let newSystemChoice: ListChoiceOptions<SystemSelectionAnswerType> | undefined;
@@ -251,10 +253,12 @@ export async function createSystemChoices(
                 } as SystemSelectionAnswerType
             };
         });
-        newSystemChoice = {
-            name: t('prompts.systemSelection.newSystemChoiceLabel'),
-            value: { type: 'newSystemChoice', system: NewSystemChoice } as SystemSelectionAnswerType
-        };
+        if (!hideNewSystem) {
+            newSystemChoice = {
+                name: t('prompts.systemSelection.newSystemChoiceLabel'),
+                value: { type: 'newSystemChoice', system: NewSystemChoice } as SystemSelectionAnswerType
+            };
+        }
     }
     systemChoices.sort(({ name: nameA }, { name: nameB }) =>
         nameA!.localeCompare(nameB!, undefined, { numeric: true, caseFirst: 'lower' })
@@ -274,24 +278,25 @@ export async function createSystemChoices(
  */
 export function findDefaultSystemSelectionIndex(
     systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[],
-    defaultChoice: string | undefined
+    defaultChoice: string | { value?: string } | undefined
 ): number {
-    if (!defaultChoice) {
+    const choice = typeof defaultChoice === 'string' ? defaultChoice : defaultChoice?.value;
+    if (!choice) {
         return -1;
     }
-    const defaultChoiceIndex = systemChoices.findIndex((choice) => {
-        const { type: systemType, system } = choice.value as SystemSelectionAnswerType;
+    const defaultChoiceIndex = systemChoices.findIndex((systemChoice) => {
+        const { type: systemType, system } = systemChoice.value as SystemSelectionAnswerType;
         if (systemType === 'destination') {
-            return (system as Destination).Name === defaultChoice;
+            return (system as Destination).Name === choice;
         }
         if (systemType === 'backendSystem') {
-            return (system as BackendSystem).name === defaultChoice;
+            return (system as BackendSystem).name === choice;
         }
         if (systemType === 'newSystemChoice') {
-            return defaultChoice === NewSystemChoice;
+            return choice === NewSystemChoice;
         }
         if (systemType === 'cfAbapEnvService') {
-            return defaultChoice === CfAbapEnvServiceChoice;
+            return choice === CfAbapEnvServiceChoice;
         }
     });
     return defaultChoiceIndex;

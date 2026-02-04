@@ -14,6 +14,7 @@ import type { Destination } from '@sap-ux/btp-utils';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { getTelemPropertyDestinationType, sendTelemetryEvent } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import { PromptState } from '../../../../utils';
@@ -21,9 +22,8 @@ import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import { validateODataVersion } from '../../../validators';
-import type { ServiceAnswer } from './types';
 import { showCollabDraftWarning } from '../../service-helpers/service-helpers';
-import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import type { ServiceAnswer } from './types';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON'];
@@ -82,9 +82,9 @@ function logServiceCatalogErrorsForHelp(
     requestErrors: Record<ODataVersion, Error | number | string> | {},
     numOfRequests: number
 ): void {
-    const catalogRequesErrors = Object.values(requestErrors);
-    catalogRequesErrors.forEach((error) => {
-        errorHandler.logErrorMsgs(error); // Log and process the error -> error type
+    const catalogRequesErrors = Object.entries(requestErrors);
+    catalogRequesErrors.forEach(([odataVersion, error]) => {
+        errorHandler.logErrorMsgs(error, t('warnings.missingServices', { odataVersion })); // Error state is set for later processing
     });
     // If all requests failed, log a generic message, this will be stored in the error handler
     if (numOfRequests === catalogRequesErrors.length) {
@@ -149,12 +149,15 @@ export async function getServiceChoices(
     let flatServices = listServicesRequests?.flat() ?? [];
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
 
-    if (flatServices.length === 0) {
+    // If no services or any catalog errors log the message to the error handler for later processing
+    if (flatServices.length === 0 || Object.keys(requestErrors).length > 0) {
         logServiceCatalogErrorsForHelp(requestErrors, catalogs.length);
     }
 
     if (serviceFilter) {
-        flatServices = flatServices.filter((service) => serviceFilter.includes(service.id));
+        flatServices = flatServices.filter(
+            (service) => serviceFilter.includes(service.id) || serviceFilter.includes(service.path)
+        );
     }
     return createServiceChoices(flatServices);
 }
@@ -240,9 +243,10 @@ async function getServiceMetadataAndValidate(
             convertedMetadata
         };
     } catch (error) {
-        LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, error }));
+        const errorText = errorHandler.getErrorMsg(error);
+        LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, errorText }));
         return {
-            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath })
+            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText })
         };
     }
 }
@@ -372,23 +376,37 @@ type ShowCollabDraftWarnOptions = {
  * @param options.hasAnnotations used to determine whether to show a warning message that annotations could not be retrieved
  * @param options.showCollabDraftWarnOptions to show the collaborative draft warning, the option `showCollabDraftWarning` must be true
  *  and the edmx metadata must be provided
+ * @param options.serviceFilter if a service filter has been specified this may alter the user messages when no services are listed
  * @returns the service selection prompt additional message
  */
 export async function getSelectedServiceMessage(
     serviceChoices: ListChoiceOptions<ServiceAnswer>[],
-    selectedService: ServiceAnswer,
+    selectedService: ServiceAnswer | undefined,
     connectValidator: ConnectionValidator,
     {
         requiredOdataVersion,
         hasAnnotations = true,
-        showCollabDraftWarnOptions
+        showCollabDraftWarnOptions,
+        serviceFilter
     }: {
         requiredOdataVersion?: OdataVersion;
         hasAnnotations?: boolean;
         showCollabDraftWarnOptions?: ShowCollabDraftWarnOptions;
+        serviceFilter?: string[];
     }
 ): Promise<IMessageSeverity | undefined> {
+    // Note that the order of these conditions is critical
     if (serviceChoices?.length === 0) {
+        if (serviceFilter && serviceFilter.length > 0) {
+            return {
+                message: t('warnings.specifiedServicesNotAvailable', {
+                    odataVersion: requiredOdataVersion ? `V${requiredOdataVersion} ` : undefined,
+                    service: serviceFilter[0],
+                    count: serviceFilter.length
+                }),
+                severity: Severity.warning
+            };
+        }
         if (requiredOdataVersion) {
             return {
                 message: t('warnings.noServicesAvailableForOdataVersion', {
@@ -436,5 +454,12 @@ export async function getSelectedServiceMessage(
                 severity: Severity.warning
             };
         }
+    }
+    // If any catalog request errors, show an info message. We know this is a catalog error since there is no service selected.
+    if (errorHandler.getErrorMsg()) {
+        return {
+            message: `${errorHandler.getErrorMsg()} ${t('texts.seeLogForDetails')}`,
+            severity: Severity.information
+        };
     }
 }

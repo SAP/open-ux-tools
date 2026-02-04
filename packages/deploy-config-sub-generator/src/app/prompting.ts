@@ -77,7 +77,7 @@ export async function promptDeployConfigQuestions(
         );
         const subGenAnswers = await prompt(questions);
         Object.assign(answers, subGenAnswers, abapAnswers);
-        answers.overwrite = subGenAnswers.overwriteAbapConfig || subGenAnswers.overwriteCfConfig || false;
+        answers.overwrite = subGenAnswers.overwriteAbapConfig ?? subGenAnswers.overwriteCfConfig;
     } else {
         answers = await prompt(getDeployTargetQuestion([...supportedTargets], options.projectRoot));
     }

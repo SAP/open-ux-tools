@@ -1,7 +1,7 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Thu Dec 04 2025 17:05:22 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Mon Jan 26 2026 11:19:11 GMT+0000 (Greenwich Mean Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|
@@ -12,7 +12,7 @@
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
 |**Namespace**<br>testnamepsace|
 |**UI5 Theme**<br>sap_horizon|
-|**UI5 Version**<br>1.142.0|
+|**UI5 Version**<br>1.144.0|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
 |**Main Entity**<br>Travel|

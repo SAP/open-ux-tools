@@ -1,5 +1,100 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.61
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/telemetry@0.6.62
+
+## 0.13.60
+
+### Patch Changes
+
+- @sap-ux/btp-utils@1.1.6
+- @sap-ux/project-access@1.34.4
+- @sap-ux/telemetry@0.6.61
+
+## 0.13.59
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/telemetry@0.6.60
+
+## 0.13.58
+
+### Patch Changes
+
+- @sap-ux/telemetry@0.6.59
+
+## 0.13.57
+
+### Patch Changes
+
+- Updated dependencies [c707af1]
+    - @sap-ux/telemetry@0.6.58
+
+## 0.13.56
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+
+## 0.13.55
+
+### Patch Changes
+
+- @sap-ux/telemetry@0.6.57
+
+## 0.13.54
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/telemetry@0.6.56
+
+## 0.13.53
+
+### Patch Changes
+
+- @sap-ux/telemetry@0.6.55
+
+## 0.13.52
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/telemetry@0.6.54
+
+## 0.13.51
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/telemetry@0.6.53
+
+## 0.13.50
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/telemetry@0.6.52
+
+## 0.13.49
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/project-access@1.33.1
+    - @sap-ux/telemetry@0.6.51
+
 ## 0.13.48
 
 ### Patch Changes

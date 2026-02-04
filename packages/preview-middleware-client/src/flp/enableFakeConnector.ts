@@ -3,7 +3,7 @@ import FakeLrepConnector from 'sap/ui/fl/FakeLrepConnector';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
 import type { FlexChange } from './common';
-import { CHANGES_API_PATH, getFlexSettings } from './common';
+import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common';
 
 interface FetchedChanges {
     [key: string]: FlexChange;
@@ -22,6 +22,9 @@ interface LoadChangesResult {
     loadModules: boolean;
     messagebundle: string | undefined;
 }
+
+const baseUrl = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ?? '';
+const changesApiPath = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
 
 /**
  * Processes an array of FlexChange objects.
@@ -55,7 +58,7 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
             };
 
 
-            return fetch(CHANGES_API_PATH, {
+            return fetch(changesApiPath, {
                 method: 'POST',
                 body: JSON.stringify(body, null, 2),
                 headers: {
@@ -75,7 +78,7 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
 export async function loadChanges(...args: []): Promise<LoadChangesResult> {
     const lrep = new LrepConnector();
 
-    const response = await fetch(CHANGES_API_PATH, {
+    const response = await fetch(changesApiPath, {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
@@ -94,12 +97,13 @@ export async function loadChanges(...args: []): Promise<LoadChangesResult> {
  * If the minor version of the SAP UI5 is less than 72, this function extends
  * the FakeLrepConnector's prototype with specific methods and enables the fake connector.
  *
- * Assumes the existence of a global 'sap' object with a 'ui.version' property,
+ * Assumes the existence of a global 'sap' object with an 'ui.version' property,
  * and global jQuery object with 'extend' method.
  *
  * @returns {void}
  */
 export default function (): void {
+    // eslint-disable-next-line no-undef
     jQuery.extend(FakeLrepConnector.prototype, {
         create,
         loadChanges,

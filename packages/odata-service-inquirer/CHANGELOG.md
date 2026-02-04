@@ -1,5 +1,240 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.16.3
+
+### Patch Changes
+
+- 89175fe: fix(deps): update dependency fast-xml-parser to v5 [security]
+- Updated dependencies [89175fe]
+    - @sap-ux/axios-extension@1.25.9
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/inquirer-common@0.10.21
+    - @sap-ux/project-input-validator@0.6.49
+    - @sap-ux/telemetry@0.6.62
+
+## 2.16.2
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/axios-extension@1.25.8
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/nodejs-utils@0.2.11
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/store@1.5.3
+    - @sap-ux/telemetry@0.6.61
+    - @sap-ux/project-input-validator@0.6.48
+
+## 2.16.1
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/inquirer-common@0.10.19
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/fiori-generator-shared@0.13.59
+    - @sap-ux/project-input-validator@0.6.47
+    - @sap-ux/telemetry@0.6.60
+
+## 2.16.0
+
+### Minor Changes
+
+- 92244b8: Improve entity validation in Generator.
+
+## 2.15.0
+
+### Minor Changes
+
+- 1d3e398: Improve the error message for service input.
+
+## 2.14.19
+
+### Patch Changes
+
+- Updated dependencies [be6ea11]
+    - @sap-ux/store@1.5.2
+    - @sap-ux/fiori-generator-shared@0.13.58
+    - @sap-ux/telemetry@0.6.59
+    - @sap-ux/inquirer-common@0.10.18
+
+## 2.14.18
+
+### Patch Changes
+
+- Updated dependencies [0492325]
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/fiori-generator-shared@0.13.57
+
+## 2.14.17
+
+### Patch Changes
+
+- Updated dependencies [c707af1]
+    - @sap-ux/telemetry@0.6.58
+    - @sap-ux/fiori-generator-shared@0.13.57
+    - @sap-ux/inquirer-common@0.10.17
+
+## 2.14.16
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/inquirer-common@0.10.16
+    - @sap-ux/project-input-validator@0.6.46
+
+## 2.14.15
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/fiori-generator-shared@0.13.55
+    - @sap-ux/telemetry@0.6.57
+    - @sap-ux/inquirer-common@0.10.15
+
+## 2.14.14
+
+### Patch Changes
+
+- e746e10: Fix for system selection where one service and answers are undefined
+
+## 2.14.13
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
+## 2.14.12
+
+### Patch Changes
+
+- f31a340: Removes `lodash` use.
+
+## 2.14.11
+
+### Patch Changes
+
+- 43a86e2: ServiceFilter mutation should retrigger service choice filtering
+
+## 2.14.10
+
+### Patch Changes
+
+- 33d92e4: Adds new options for system and service selection.
+
+## 2.14.9
+
+### Patch Changes
+
+- 090cdec: Fix for odata version restriction not applied for Abap-on-prem credentials prompts
+
+## 2.14.8
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.14
+
+## 2.14.7
+
+### Patch Changes
+
+- 7597059: add new promp option to hide 'New System' from system selection list
+
+## 2.14.6
+
+### Patch Changes
+
+- Updated dependencies [be67fc4]
+    - @sap-ux/project-access@1.34.2
+    - @sap-ux/telemetry@0.6.56
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.54
+    - @sap-ux/project-input-validator@0.6.45
+    - @sap-ux/inquirer-common@0.10.13
+
+## 2.14.5
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+    - @sap-ux/fiori-generator-shared@0.13.53
+    - @sap-ux/telemetry@0.6.55
+    - @sap-ux/inquirer-common@0.10.12
+
+## 2.14.4
+
+### Patch Changes
+
+- 4ec10e4: reset stale connection when switching system auth type
+
+## 2.14.3
+
+### Patch Changes
+
+- Updated dependencies [55ac9f0]
+    - @sap-ux/project-access@1.34.1
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.52
+    - @sap-ux/project-input-validator@0.6.44
+    - @sap-ux/telemetry@0.6.54
+    - @sap-ux/inquirer-common@0.10.11
+
+## 2.14.2
+
+### Patch Changes
+
+- Updated dependencies [b132944]
+    - @sap-ux/project-access@1.34.0
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.51
+    - @sap-ux/project-input-validator@0.6.43
+    - @sap-ux/telemetry@0.6.53
+    - @sap-ux/inquirer-common@0.10.10
+
+## 2.14.1
+
+### Patch Changes
+
+- 5d2a018: Adds services unavailable info message if with catalog request fails
+
+## 2.14.0
+
+### Minor Changes
+
+- f13d1c2: CAP project selection now searches parent directories and supports autocomplete in CLI
+
+### Patch Changes
+
+- Updated dependencies [f13d1c2]
+    - @sap-ux/project-access@1.33.2
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/fiori-generator-shared@0.13.50
+    - @sap-ux/project-input-validator@0.6.42
+    - @sap-ux/telemetry@0.6.52
+    - @sap-ux/inquirer-common@0.10.9
+
+## 2.13.10
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/axios-extension@1.25.6
+    - @sap-ux/inquirer-common@0.10.8
+    - @sap-ux/project-access@1.33.1
+    - @sap-ux/fiori-generator-shared@0.13.49
+    - @sap-ux/project-input-validator@0.6.41
+    - @sap-ux/telemetry@0.6.51
+
 ## 2.13.9
 
 ### Patch Changes

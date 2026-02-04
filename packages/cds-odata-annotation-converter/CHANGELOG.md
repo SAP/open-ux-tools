@@ -1,5 +1,47 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.3
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.2.13
+- @sap-ux/odata-vocabularies@0.4.22
+- @sap-ux/cds-annotation-parser@0.2.27
+
+## 0.7.2
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+
+## 0.7.1
+
+### Patch Changes
+
+- 4d6695f: fix: add missing JSDoc
+
+## 0.7.0
+
+### Minor Changes
+
+- b132944: feat: add consistency rules `sap-flex-enabled`, `sap-disable-copy-to-clipboard` and `sap-width-including-column-header`.
+
+## 0.6.19
+
+### Patch Changes
+
+- @sap-ux/cds-annotation-parser@0.2.26
+- @sap-ux/odata-annotation-core@0.2.12
+
+## 0.6.18
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+- Updated dependencies [e111d0d]
+    - @sap-ux/cds-annotation-parser@0.2.25
+    - @sap-ux/odata-annotation-core@0.2.12
+
 ## 0.6.17
 
 ### Patch Changes

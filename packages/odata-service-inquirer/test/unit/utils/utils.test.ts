@@ -2,7 +2,12 @@ import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { originToRelative, parseOdataVersion, removeCircularFromServiceProvider } from '../../../src/utils';
+import {
+    areArraysEquivalent,
+    originToRelative,
+    parseOdataVersion,
+    removeCircularFromServiceProvider
+} from '../../../src/utils';
 
 describe('Utils', () => {
     test('parseOdataVersion - should return the odata version of metadata', async () => {
@@ -117,6 +122,71 @@ describe('Utils', () => {
                     }
                 }
             }
+        });
+    });
+
+    // AI generated test
+    describe('areArraysEquivalent', () => {
+        test('should return true when both arrays are undefined', () => {
+            expect(areArraysEquivalent(undefined, undefined)).toBe(true);
+        });
+
+        test('should return true when both arrays are empty', () => {
+            expect(areArraysEquivalent([], [])).toBe(true);
+        });
+
+        test('should return true when both arrays are the same reference', () => {
+            const array = ['a', 'b', 'c'];
+            expect(areArraysEquivalent(array, array)).toBe(true);
+        });
+
+        test('should return true when arrays have same elements in same order', () => {
+            expect(areArraysEquivalent(['a', 'b', 'c'], ['a', 'b', 'c'])).toBe(true);
+        });
+
+        test('should return true when arrays have same elements in different order', () => {
+            expect(areArraysEquivalent(['a', 'b', 'c'], ['c', 'b', 'a'])).toBe(true);
+            expect(areArraysEquivalent(['x', 'y', 'z'], ['z', 'x', 'y'])).toBe(true);
+        });
+
+        test('should return true when arrays have duplicate elements in different order', () => {
+            expect(areArraysEquivalent(['a', 'b', 'a', 'c'], ['c', 'a', 'b', 'a'])).toBe(true);
+        });
+
+        test('should return false when one array is undefined and the other is not', () => {
+            expect(areArraysEquivalent(undefined, ['a'])).toBe(false);
+            expect(areArraysEquivalent(['a'], undefined)).toBe(false);
+        });
+
+        test('should return false when one array is empty and the other is not', () => {
+            expect(areArraysEquivalent([], ['a'])).toBe(false);
+            expect(areArraysEquivalent(['a'], [])).toBe(false);
+        });
+
+        test('should return false when arrays have different lengths', () => {
+            expect(areArraysEquivalent(['a', 'b'], ['a', 'b', 'c'])).toBe(false);
+            expect(areArraysEquivalent(['a', 'b', 'c'], ['a', 'b'])).toBe(false);
+        });
+
+        test('should return false when arrays have different elements', () => {
+            expect(areArraysEquivalent(['a', 'b', 'c'], ['a', 'b', 'd'])).toBe(false);
+            expect(areArraysEquivalent(['x', 'y'], ['a', 'b'])).toBe(false);
+        });
+
+        test('should return false when arrays have same elements but different counts', () => {
+            expect(areArraysEquivalent(['a', 'a', 'b'], ['a', 'b', 'b'])).toBe(false);
+            expect(areArraysEquivalent(['x', 'y', 'y'], ['x', 'x', 'y'])).toBe(false);
+        });
+
+        test('should handle arrays with single element', () => {
+            expect(areArraysEquivalent(['a'], ['a'])).toBe(true);
+            expect(areArraysEquivalent(['a'], ['b'])).toBe(false);
+        });
+
+        test('should handle arrays with special characters and numbers as strings', () => {
+            expect(areArraysEquivalent(['1', '2', '3'], ['3', '1', '2'])).toBe(true);
+            expect(areArraysEquivalent(['!', '@', '#'], ['#', '!', '@'])).toBe(true);
+            expect(areArraysEquivalent(['a-b', 'c_d'], ['c_d', 'a-b'])).toBe(true);
         });
     });
 });

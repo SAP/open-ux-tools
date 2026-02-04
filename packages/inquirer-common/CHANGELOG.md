@@ -1,5 +1,123 @@
 # @sap-ux/inquirer-common
 
+## 0.10.21
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/odata-service-writer@0.29.12
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/telemetry@0.6.62
+
+## 0.10.20
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/odata-service-writer@0.29.11
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/telemetry@0.6.61
+    - @sap-ux/ui5-info@0.13.10
+
+## 0.10.19
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/odata-service-writer@0.29.10
+    - @sap-ux/ui5-info@0.13.9
+    - @sap-ux/fiori-generator-shared@0.13.59
+    - @sap-ux/telemetry@0.6.60
+
+## 0.10.18
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.58
+- @sap-ux/telemetry@0.6.59
+
+## 0.10.17
+
+### Patch Changes
+
+- Updated dependencies [c707af1]
+    - @sap-ux/telemetry@0.6.58
+    - @sap-ux/fiori-generator-shared@0.13.57
+
+## 0.10.16
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/fiori-generator-shared@0.13.56
+    - @sap-ux/odata-service-writer@0.29.9
+
+## 0.10.15
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.55
+- @sap-ux/telemetry@0.6.57
+
+## 0.10.14
+
+### Patch Changes
+
+- Updated dependencies [9aad34c]
+    - @sap-ux/ui5-info@0.13.8
+
+## 0.10.13
+
+### Patch Changes
+
+- @sap-ux/odata-service-writer@0.29.8
+- @sap-ux/telemetry@0.6.56
+- @sap-ux/fiori-generator-shared@0.13.54
+
+## 0.10.12
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.53
+- @sap-ux/telemetry@0.6.55
+
+## 0.10.11
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.52
+- @sap-ux/odata-service-writer@0.29.7
+- @sap-ux/telemetry@0.6.54
+
+## 0.10.10
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.51
+- @sap-ux/odata-service-writer@0.29.6
+- @sap-ux/telemetry@0.6.53
+
+## 0.10.9
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.50
+- @sap-ux/odata-service-writer@0.29.5
+- @sap-ux/telemetry@0.6.52
+
+## 0.10.8
+
+### Patch Changes
+
+- e111d0d: fix sonar issues
+    - @sap-ux/fiori-generator-shared@0.13.49
+    - @sap-ux/odata-service-writer@0.29.4
+    - @sap-ux/telemetry@0.6.51
+
 ## 0.10.7
 
 ### Patch Changes

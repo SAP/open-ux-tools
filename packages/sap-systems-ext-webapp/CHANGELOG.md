@@ -1,5 +1,35 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.0.11
+
+### Patch Changes
+
+- 8f56f6b: Restrict the input of non-origin URLs for ABAP on Cloud systems
+
+## 0.0.10
+
+### Patch Changes
+
+- 3ffe28e: fix input background styling when Chrome autofill is applied
+
+## 0.0.9
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
+## 0.0.8
+
+### Patch Changes
+
+- fc67b03: reword the readme
+
+## 0.0.7
+
+### Patch Changes
+
+- d667a5e: fix: add repository field to package.json
+
 ## 0.0.6
 
 ### Patch Changes
