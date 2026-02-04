@@ -29,7 +29,7 @@ export type SelectedEntityAnswer = {
     entity: {
         entityPath: string;
         entitySetName: string;
-        selected?: boolean;
+        defaultSelected?: boolean;
     };
 };
 
@@ -130,14 +130,13 @@ export async function getODataDownloaderPrompts(): Promise<{
     };
 }
 
-
 /**
  * Gets the app selection prompt.
- * 
- * @param appConfig 
- * @param servicePaths 
- * @param keyPrompts 
- * @returns 
+ *
+ * @param appConfig
+ * @param servicePaths
+ * @param keyPrompts
+ * @returns
  */
 function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], keyPrompts: InputQuestion<Answers>[]) {
     return {
@@ -182,10 +181,12 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], key
 }
 
 /**
- * Gets the entity selection prompt. 
- * 
- * @param relatedEntityChoices 
- * @returns 
+ * Gets the entity selection prompt.
+ *
+ * @param relatedEntityChoices
+ * @param relatedEntityChoices.choices
+ * @param relatedEntityChoices.entitySetsFlat
+ * @returns
  */
 function getEntitySelectionPrompt(relatedEntityChoices: {
     choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
@@ -198,31 +199,18 @@ function getEntitySelectionPrompt(relatedEntityChoices: {
         name: promptNames.relatedEntitySelection,
         type: 'checkbox',
         guiOptions: {
-            applyDefaultWhenDirty: true
+            applyDefaultWhenDirty: true // Required to update when reset of selection is triggered
         },
         message: t('prompts.relatedEntitySelection.message'),
         choices: () => relatedEntityChoices.choices,
-        default: () => {
-            const defaults: SelectedEntityAnswer[] = [];
-            relatedEntityChoices.choices.forEach((entityChoice) => {
-                // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
-                if ((JSON.parse(entityChoice.value) as SelectedEntityAnswer).entity.selected) {
-                    defaults.push(entityChoice.value);
-                }
-            });
-            return defaults;
-        },
         validate: (selectedEntities) => {
+            // Set `checked` to avoid deselection when re-running `default`.
             selectedEntities.forEach((selectedEntity) => {
                 const selectedEntityChoice = relatedEntityChoices.choices.find(
-                    (entityChoice) => JSON.parse(entityChoice.value).fullPath === JSON.parse(selectedEntity).fullPath
+                    (entityChoice) => entityChoice.value.fullPath === selectedEntity.fullPath
                 );
                 if (selectedEntityChoice) {
-                    // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
-                    const choiceValue = JSON.parse(selectedEntityChoice.value) as SelectedEntityAnswer;
-                    choiceValue.entity.selected = true;
-                    // Hack for https://github.com/SAP/inquirer-gui/issues/787
-                    selectedEntityChoice.value = JSON.stringify(choiceValue);
+                    selectedEntityChoice.checked = true;
                 }
             });
             return true;
@@ -246,9 +234,9 @@ function getResetSelectionPrompt(
         entitySetsFlat: EntitySetsFlat;
     }
 ): Question {
-    const relatedEntityChoicesInitial: { choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } = {
-        choices: []
-    };
+    // const relatedEntityChoicesInitial: { choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } = {
+    //     choices: []
+    // };
     let previousServicePath;
     let previousReset;
     const toggleSelectionPrompt = {
@@ -262,7 +250,7 @@ function getResetSelectionPrompt(
                 if (entityChoices) {
                     relatedEntityChoices.choices = entityChoices.choices;
                     // Keep initial state for reset
-                    relatedEntityChoicesInitial.choices = [...relatedEntityChoices.choices];
+                    // relatedEntityChoicesInitial.choices = [...relatedEntityChoices.choices];
                     Object.assign(relatedEntityChoices.entitySetsFlat, entityChoices.entitySetsFlat);
                     previousServicePath = appConfig.servicePath;
                 }
@@ -278,19 +266,13 @@ function getResetSelectionPrompt(
         validate: (reset: boolean) => {
             // Dont apply a reset unless the value was changed as this validate function is triggered by any earlier prompt inputs
             if (reset !== previousReset) {
-                if (reset) {
-                    if (relatedEntityChoicesInitial.choices.length === 0) {
-                        relatedEntityChoicesInitial.choices = structuredClone(relatedEntityChoices.choices);
-                    }
-                    relatedEntityChoices.choices.forEach((entityChoice) => {
-                        // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
-                        const entityChoiceValue = JSON.parse(entityChoice.value) as SelectedEntityAnswer;
-                        entityChoiceValue.entity.selected = false;
-                        entityChoice.value = JSON.stringify(entityChoiceValue);
-                    });
-                } else if (relatedEntityChoicesInitial.choices.length > 0) {
-                    relatedEntityChoices.choices = structuredClone(relatedEntityChoicesInitial.choices);
-                }
+                relatedEntityChoices.choices.forEach((entityChoice) => {
+                    // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
+                    // const entityChoiceValue = JSON.parse(entityChoice.value) as SelectedEntityAnswer;
+                    const entityChoiceValue = entityChoice.value as SelectedEntityAnswer;
+                    entityChoice.checked = reset === false ? entityChoiceValue.entity.defaultSelected : false; // Restore default selection
+                    entityChoice.value = entityChoiceValue;
+                });
                 previousReset = reset;
             }
             return true;
@@ -302,7 +284,7 @@ function getResetSelectionPrompt(
 
 /**
  * Get the prompt for keys
- * 
+ *
  * @param size
  * @param appConfig
  */
@@ -426,9 +408,9 @@ function getUpdateMainServiceMetadataPrompt(
 ): ConfirmQuestion {
     const question: ConfirmQuestion = {
         when: async () => {
-            // Use this when condition to load the entity data
+            // Use this when condition to load the entity data //todo: Why is this here? Should be additional validator for sevice selection?
             if (appConfig.appAccess && odataServiceAnswers.metadata) {
-                Object.assign(appConfig, await getEntityModel(appConfig.appAccess, odataServiceAnswers.metadata));
+                appConfig.referencedEntities = await getEntityModel(appConfig.appAccess, odataServiceAnswers.metadata);
                 return true;
             }
             return false;

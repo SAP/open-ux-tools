@@ -270,6 +270,4 @@ describe('Test odata query builder', () => {
         );
         expect(entitySetData).toEqual(JSON.parse(expectedEntitySetData));
     });
-
-    test('should create entity set choices', () => {});
 });

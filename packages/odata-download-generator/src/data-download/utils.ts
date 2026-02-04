@@ -1,16 +1,16 @@
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey, getService } from '@sap-ux/store';
 import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
-import type { AppConfig, Entity, ReferencedEntities, SemanticKeyFilter } from './types';
-import { navPropNameExclusions } from './types';
 import { FioriElementsVersion, PageTypeV4, type Specification } from '@sap/ux-specification/dist/types/src';
 import type { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
 import { isEqual, mergeWith, uniqWith } from 'lodash';
-import type { EntitySetsFlat } from './odata-query';
 import { ODataDownloadGenerator } from './odata-download-generator';
-import { parse } from '@sap-ux/edmx-parser';
-import { convert } from '@sap-ux/annotation-converter';
+import type { EntitySetsFlat } from './odata-query';
+import type { Entity, ReferencedEntities, SemanticKeyFilter } from './types';
+import { navPropNameExclusions } from './types';
 
 /**
  * Merge array properties by removing dups and concating
@@ -182,15 +182,16 @@ function getNavPropsForExpansion(
 }
 
 /**
+ *  Load the entity model for processing to determine the odata queries that are relevant for the application.
  *
- * @param appAccess
- * @param remoteMetadata the service metadata used to build the query model
+ * @param appAccess application access reference
+ * @param remoteMetadata the backend service metadata, as distinct to the local metadata
  * @returns
  */
 export async function getEntityModel(
     appAccess: ApplicationAccess,
     remoteMetadata: string
-): Promise<AppConfig | undefined> {
+): Promise<ReferencedEntities | undefined> {
     let entities: ReferencedEntities | undefined;
     const mainService = appAccess.app.services['mainService'];
 
@@ -260,7 +261,5 @@ export async function getEntityModel(
             entities.pageObjectEntities = pageObjectEntities;
         }
     }
-    return {
-        referencedEntities: entities
-    };
+    return entities;
 }

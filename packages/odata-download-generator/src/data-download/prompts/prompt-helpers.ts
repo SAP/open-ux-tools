@@ -40,12 +40,11 @@ export async function getData(
 
             if (answers[promptNames.confirmDownload] === true) {
                 // this.state.appEntities = appConfig.referencedEntities;
-                const selectedEntitiesAsJsonStrings = answers[
-                    promptNames.relatedEntitySelection
-                ] as SelectedEntityAnswerAsJSONString[];
-                const selectedEntities = selectedEntitiesAsJsonStrings.map((entityAsJSONString) => {
-                    return JSON.parse(entityAsJSONString) as SelectedEntityAnswer;
-                });
+                const selectedEntities = answers[promptNames.relatedEntitySelection] as SelectedEntityAnswer[];
+                // const selectedEntities = selectedEntitiesAsJsonStrings.map((entityAsJSONString) => {
+                //     //return JSON.parse(entityAsJSONString) as SelectedEntityAnswer;
+                //     return entityAsJSONString as SelectedEntityAnswer;
+                // });
                 const { odataResult } = await fetchData(
                     appConfig.referencedEntities,
                     odataServiceProvider!,
@@ -122,7 +121,7 @@ export type Expands = {
  * @param poEntityPaths
  * @returns
  */
-export function getEntitySelectionChoices(
+function getEntitySelectionChoices(
     rootEntity: Entity,
     parentPath: string = '',
     choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] = [],
@@ -151,7 +150,8 @@ export function getEntitySelectionChoices(
                 entity: {
                     entityPath: navEntity.entityPath,
                     entitySetName: navEntity.entitySetName,
-                    selected: defaultSelectionPaths.includes(navEntity.entityPath) || poEntityPaths?.includes(fullPath)
+                    defaultSelected:
+                        defaultSelectionPaths.includes(navEntity.entityPath) || poEntityPaths?.includes(fullPath)
                 }
             };
             const choiceId = `${fullPath}`;
@@ -160,7 +160,8 @@ export function getEntitySelectionChoices(
             }
             choices.push({
                 name: choiceId,
-                value: JSON.stringify(entityChoice)
+                value: entityChoice, //JSON.stringify(entityChoice),
+                checked: entityChoice.entity.defaultSelected
             });
             entitySetsFlat[expandPath] = navEntity.entitySetName; // Can overwrite since we will only need to know each unique entity set name later
         }

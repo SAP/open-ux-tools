@@ -1,0 +1,260 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Test propt-helpers should create entity set choices 1`] = `
+{
+  "choices": [
+    {
+      "checked": false,
+      "name": "_Agency",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Agency",
+          "entitySetName": "TravelAgency",
+        },
+        "fullPath": "_Agency",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Agency/_Country",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Country",
+          "entitySetName": "Country",
+        },
+        "fullPath": "_Agency/_Country",
+      },
+    },
+    {
+      "checked": true,
+      "name": "_Booking",
+      "value": {
+        "entity": {
+          "defaultSelected": true,
+          "entityPath": "_Booking",
+          "entitySetName": "Booking",
+        },
+        "fullPath": "_Booking",
+      },
+    },
+    {
+      "checked": true,
+      "name": "_Booking/_BookSupplement",
+      "value": {
+        "entity": {
+          "defaultSelected": true,
+          "entityPath": "_BookSupplement",
+          "entitySetName": "BookingSupplement",
+        },
+        "fullPath": "_Booking/_BookSupplement",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_BookSupplement/_Booking",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Booking",
+          "entitySetName": "Booking",
+        },
+        "fullPath": "_Booking/_BookSupplement/_Booking",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_BookSupplement/_Product",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Product",
+          "entitySetName": "Supplement",
+        },
+        "fullPath": "_Booking/_BookSupplement/_Product",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_BookSupplement/_SupplementText",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_SupplementText",
+          "entitySetName": "SupplementText",
+        },
+        "fullPath": "_Booking/_BookSupplement/_SupplementText",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_BookSupplement/_Travel",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Travel",
+          "entitySetName": "Travel",
+        },
+        "fullPath": "_Booking/_BookSupplement/_Travel",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_Carrier",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Carrier",
+          "entitySetName": "Airline",
+        },
+        "fullPath": "_Booking/_Carrier",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_Carrier/_Currency",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Currency",
+          "entitySetName": "Currency",
+        },
+        "fullPath": "_Booking/_Carrier/_Currency",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_Customer",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Customer",
+          "entitySetName": "Passenger",
+        },
+        "fullPath": "_Booking/_Customer",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_Customer/_Country",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Country",
+          "entitySetName": "Country",
+        },
+        "fullPath": "_Booking/_Customer/_Country",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_Travel",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Travel",
+          "entitySetName": "Travel",
+        },
+        "fullPath": "_Booking/_Travel",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_Travel/_Agency",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Agency",
+          "entitySetName": "TravelAgency",
+        },
+        "fullPath": "_Booking/_Travel/_Agency",
+      },
+    },
+    {
+      "checked": true,
+      "name": "_Booking/_Travel/_Booking",
+      "value": {
+        "entity": {
+          "defaultSelected": true,
+          "entityPath": "_Booking",
+          "entitySetName": "Booking",
+        },
+        "fullPath": "_Booking/_Travel/_Booking",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_Travel/_Currency",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Currency",
+          "entitySetName": "Currency",
+        },
+        "fullPath": "_Booking/_Travel/_Currency",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Booking/_Travel/_Customer",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Customer",
+          "entitySetName": "Passenger",
+        },
+        "fullPath": "_Booking/_Travel/_Customer",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Currency",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Currency",
+          "entitySetName": "Currency",
+        },
+        "fullPath": "_Currency",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Customer",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Customer",
+          "entitySetName": "Passenger",
+        },
+        "fullPath": "_Customer",
+      },
+    },
+    {
+      "checked": false,
+      "name": "_Customer/_Country",
+      "value": {
+        "entity": {
+          "defaultSelected": false,
+          "entityPath": "_Country",
+          "entitySetName": "Country",
+        },
+        "fullPath": "_Customer/_Country",
+      },
+    },
+  ],
+  "entitySetsFlat": {
+    "_Agency": "TravelAgency",
+    "_BookSupplement": "BookingSupplement",
+    "_Booking": "Booking",
+    "_Carrier": "Airline",
+    "_Country": "Country",
+    "_Currency": "Currency",
+    "_Customer": "Passenger",
+    "_Product": "Supplement",
+    "_SupplementText": "SupplementText",
+    "_Travel": "Travel",
+  },
+}
+`;
