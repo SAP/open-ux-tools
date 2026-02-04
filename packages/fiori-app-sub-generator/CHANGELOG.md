@@ -1,5 +1,23 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.49
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/odata-service-inquirer@2.16.4
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/ui5-application-inquirer@0.16.17
+    - @sap-ux/fiori-elements-writer@2.8.56
+    - @sap-ux/fiori-freestyle-writer@2.5.39
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-generator-shared@0.13.62
+    - @sap-ux/telemetry@0.6.63
+    - @sap-ux/odata-service-writer@0.29.12
+    - @sap-ux/cap-config-writer@0.12.53
+
 ## 0.11.48
 
 ### Patch Changes
