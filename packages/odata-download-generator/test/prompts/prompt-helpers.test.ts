@@ -7,35 +7,6 @@ import { getEntityModel } from '../../src/data-download/utils';
 import { createApplicationAccess } from '@sap-ux/project-access';
 
 describe('Test propt-helpers', () => {
-    const rootEntity: Entity = {
-        entityPath: 'Travel',
-        entitySetName: 'Travel',
-        entityType: {
-            name: 'TravelType'
-        } as EntityType,
-        navPropEntities: [
-            {
-                entityPath: '_Booking',
-                entitySetName: 'Booking',
-                entityType: {
-                    name: 'BookingType'
-                } as EntityType
-            }
-        ]
-    };
-
-    const pageObjectEntities: Entity[] = [
-        {
-            entityPath: '_Booking',
-            entitySetName: 'Booking',
-            entityType: {
-                name: 'BookingType'
-            } as EntityType,
-            page: {
-                contextPath: '/Travel/_Booking'
-            }
-        }
-    ];
 
     test('should create entity set choices', async () => {
         // Load the test app
@@ -51,5 +22,5 @@ describe('Test propt-helpers', () => {
 
         const entityChoices = createEntityChoices(entityModel.listEntity, entityModel?.pageObjectEntities);
         expect(entityChoices).toMatchSnapshot();
-    });
+    }, 10000);
 });

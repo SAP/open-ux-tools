@@ -71,7 +71,7 @@ export function createQueryFromEntities(
         })
         .filter((item): item is string => item !== undefined);
     ODataDownloadGenerator.logger.info(
-        t('info.entityFilesToBeGenerated', { entities: Object.keys(entitySetNames).join(', ') })
+        t('info.entityFilesToBeGenerated', { entities: entitySetNames.join(', ') })
     );
 
     const mainEntity = listEntity;
