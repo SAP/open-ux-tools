@@ -11,14 +11,13 @@ import { readFile } from 'fs/promises';
 import type { CheckboxChoiceOptions } from 'inquirer';
 import { join } from 'path';
 import type { Answers } from 'yeoman-generator';
-import { t } from '../utils/i18n';
-import type { EntitySetsFlat } from './odata-query';
-import { fetchData } from './odata-query';
-import { ODataDownloadGenerator } from './odataDownloadGenerator';
-import type { SelectedEntityAnswer, SelectedEntityAnswerAsJSONString } from './prompts/prompts';
-import { promptNames } from './prompts/prompts';
-import type { AppConfig, Entity } from './types';
-import { getSystemNameFromStore } from './utils';
+import { t } from '../../utils/i18n';
+import { fetchData, type EntitySetsFlat } from '../odata-query';
+import { ODataDownloadGenerator } from '../odata-download-generator';
+import type { SelectedEntityAnswer, SelectedEntityAnswerAsJSONString } from './prompts';
+import { promptNames } from './prompts';
+import type { AppConfig, Entity } from '../types';
+import { getSystemNameFromStore } from '../utils';
 
 // todo: Create type for gen specific answers
 /**

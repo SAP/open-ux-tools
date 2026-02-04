@@ -190,6 +190,9 @@ export class ODataDownloadGenerator extends Generator {
                     this.state.entityOData.entitySetsFlat,
                     this.state.appEntities.listEntity.entitySetName
                 );
+                ODataDownloadGenerator.logger.info(
+                    t('info.entityFilesToBeGenerated', { entities: Object.keys(entityFileData).join(', ') })
+                );
 
                 Object.entries(entityFileData).forEach(([entityName, entityData]) => {
                     // Writes relative to destination root path

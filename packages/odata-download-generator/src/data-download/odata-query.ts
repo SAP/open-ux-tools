@@ -1,7 +1,7 @@
 import type { ODataService } from '@sap-ux/axios-extension';
 import buildQuery, { type Filter } from 'odata-query';
 import { t } from '../utils/i18n';
-import { ODataDownloadGenerator } from './odataDownloadGenerator';
+import { ODataDownloadGenerator } from './odata-download-generator';
 import { type SelectedEntityAnswer } from './prompts/prompts';
 import type { ReferencedEntities } from './types';
 
@@ -13,7 +13,9 @@ export type EntitySetsFlat = { [entityPath: string]: string };
  */
 export function getExpands(entityPaths: { entityPath: string; entitySetName: string }[]): {
     expands: {};
+    entityPathParts: string[]
 } {
+    const entityPathParts: string[] = [];
     const expand = entityPaths.reduce(
         (tree, { entityPath: path }) => {
             const parts = path.split('/');
@@ -27,6 +29,9 @@ export function getExpands(entityPaths: { entityPath: string; entitySetName: str
                     current.expand[part] = index === parts.length - 1 ? {} : { expand: {} };
                 }
                 current = current.expand[part];
+                if (!entityPathParts.includes(part)) {
+                    entityPathParts.push(part);
+                }
             });
 
             return tree;
@@ -34,7 +39,7 @@ export function getExpands(entityPaths: { entityPath: string; entitySetName: str
         { expand: {} }
     );
 
-    return { expands: expand };
+    return { expands: expand, entityPathParts };
 }
 
 /**
@@ -49,12 +54,23 @@ export function createQueryFromEntities(
     listEntity: ReferencedEntities['listEntity'],
     selectedEntities: SelectedEntityAnswer[],
     top = 1
-): { query: string /* selectedEntitySetsFlat: EntitySetsFlat */ } {
+): { query: string } {
     const selectedPaths = selectedEntities?.map((entity) => {
         return { entityPath: entity.fullPath, entitySetName: entity.entity.entitySetName };
     });
 
-    const { expands: entitiesToExpand } = getExpands(selectedPaths);
+    const { expands: entitiesToExpand, entityPathParts } = getExpands(selectedPaths);
+
+    // To provide feedback about which entity set files would be created by this query
+    const entitySetNames = entityPathParts.map((path) => {
+        const found = selectedEntities.find((selectedEntity) => {
+            return path === selectedEntity.entity.entityPath ? selectedEntity.entity.entitySetName : undefined
+        })
+        return found?.entity.entitySetName;
+    }).filter((item): item is string => item !== undefined);;
+    ODataDownloadGenerator.logger.info(
+        t('info.entityFilesToBeGenerated', { entities: Object.keys(entitySetNames).join(', ') })
+    );
 
     const mainEntity = listEntity;
     const mainEntityFilters: Filter<string>[] = [];
@@ -131,7 +147,7 @@ export function createQueryFromEntities(
  * @returns
  */
 export async function fetchData(
-    entities: ReferencedEntities,
+    entities: ReferencedEntities, // todo: Only pass root/listy entity
     odataService: ODataService,
     selectedEntities: SelectedEntityAnswer[],
     top?: number

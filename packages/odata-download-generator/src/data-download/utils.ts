@@ -8,7 +8,7 @@ import { FioriElementsVersion, PageTypeV4, type Specification } from '@sap/ux-sp
 import type { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
 import { isEqual, mergeWith, uniqWith } from 'lodash';
 import type { EntitySetsFlat } from './odata-query';
-import { ODataDownloadGenerator } from './odataDownloadGenerator';
+import { ODataDownloadGenerator } from './odata-download-generator';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 

@@ -7,10 +7,11 @@ import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
 import { t } from '../../utils/i18n';
 import type { EntitySetsFlat } from '../odata-query';
-import { ODataDownloadGenerator } from '../odataDownloadGenerator';
-import { createEntityChoices, getData, getServiceDetails } from '../prompt-helpers';
+import { ODataDownloadGenerator } from '../odata-download-generator';
+import { createEntityChoices, getData, getServiceDetails } from './prompt-helpers';
 import type { AppConfig } from '../types';
 import { getEntityModel } from '../utils';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 export const promptNames = {
     relatedEntitySelection: 'relatedEntitySelection',
@@ -73,7 +74,73 @@ export async function getODataDownloaderPrompts(): Promise<{
     const servicePaths: string[] = [];
     let keyPrompts: InputQuestion[] = [];
 
-    const appSelectionQuestion = {
+    const appSelectionQuestion = getAppSelectionPrompt(appConfig, servicePaths, keyPrompts);
+
+    const systemSelectionQuestions = await getSystemSelectionQuestions(
+        {
+            datasourceType: {
+                includeNone: false
+            },
+            systemSelection: {
+                includeCloudFoundryAbapEnvChoice: false,
+                defaultChoice: appConfig.systemName, // todo: Destination test BAS
+                hideNewSystem: true
+            },
+            serviceSelection: {
+                serviceFilter: servicePaths,
+                requiredOdataVersion: OdataVersion.v4
+            }
+        },
+        getHostEnvironment() !== hostEnvironment.cli,
+        ODataDownloadGenerator.logger as Logger
+    );
+
+    // Additional manually selected nav prop entittes
+    const relatedEntityChoices: {
+        choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
+        entitySetsFlat: EntitySetsFlat;
+    } = {
+        choices: [],
+        entitySetsFlat: {}
+    };
+    const odataQueryResult: { odata: []; entitySetsFlat: EntitySetsFlat } = {
+        odata: [],
+        entitySetsFlat: relatedEntityChoices.entitySetsFlat
+    };
+
+    const resetSelectionPrompt = getResetSelectionPrompt(appConfig, relatedEntityChoices);
+
+    const relatedEntitySelectionQuestion: CheckBoxQuestion = getEntitySelectionPrompt(relatedEntityChoices);
+
+    // Generate the max size of key parts allowed
+    keyPrompts = getKeyPrompts(5, appConfig);
+
+    selectSourceQuestions.push(
+        appSelectionQuestion,
+        ...(systemSelectionQuestions.prompts as Question[]),
+        getUpdateMainServiceMetadataPrompt(systemSelectionQuestions.answers, appConfig),
+        ...keyPrompts,
+        resetSelectionPrompt,
+        relatedEntitySelectionQuestion,
+        getConfirmDownloadPrompt(systemSelectionQuestions.answers, appConfig, odataQueryResult)
+    );
+    return {
+        questions: selectSourceQuestions,
+        answers: { application: appConfig, odataQueryResult, odataServiceAnswers: systemSelectionQuestions.answers }
+    };
+}
+
+
+/**
+ * Gets the app selection prompt.
+ * 
+ * @param appConfig 
+ * @param servicePaths 
+ * @param keyPrompts 
+ * @returns 
+ */
+function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], keyPrompts: InputQuestion<Answers>[]) {
+    return {
         type: 'input',
         guiType: 'folder-browser',
         name: 'appSelection',
@@ -112,41 +179,19 @@ export async function getODataDownloaderPrompts(): Promise<{
             return true;
         }
     } as InputQuestion;
-    const systemSelectionQuestions = await getSystemSelectionQuestions(
-        {
-            datasourceType: {
-                includeNone: false
-            },
-            systemSelection: {
-                includeCloudFoundryAbapEnvChoice: false,
-                defaultChoice: appConfig.systemName, // todo: Destination test BAS
-                hideNewSystem: true
-            },
-            serviceSelection: {
-                serviceFilter: servicePaths,
-                requiredOdataVersion: OdataVersion.v4
-            }
-        },
-        getHostEnvironment() !== hostEnvironment.cli,
-        ODataDownloadGenerator.logger as Logger
-    );
+}
 
-    // Additional manually selected nav prop entittes
-    const relatedEntityChoices: {
-        choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
-        entitySetsFlat: EntitySetsFlat;
-    } = {
-        choices: [],
-        entitySetsFlat: {}
-    };
-    const odataQueryResult: { odata: []; entitySetsFlat: EntitySetsFlat } = {
-        odata: [],
-        entitySetsFlat: relatedEntityChoices.entitySetsFlat
-    };
-
-    const resetSelectionPrompt = getResetSelectionPrompt(appConfig, relatedEntityChoices);
-
-    const relatedEntitySelectionQuestion: CheckBoxQuestion = {
+/**
+ * Gets the entity selection prompt. 
+ * 
+ * @param relatedEntityChoices 
+ * @returns 
+ */
+function getEntitySelectionPrompt(relatedEntityChoices: {
+    choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
+    entitySetsFlat: EntitySetsFlat;
+}): CheckBoxQuestion<Answers> {
+    return {
         when: async () => {
             return relatedEntityChoices.choices.length > 0;
         },
@@ -170,7 +215,7 @@ export async function getODataDownloaderPrompts(): Promise<{
         validate: (selectedEntities) => {
             selectedEntities.forEach((selectedEntity) => {
                 const selectedEntityChoice = relatedEntityChoices.choices.find(
-                    (entityChoice) => entityChoice.value === selectedEntity
+                    (entityChoice) => JSON.parse(entityChoice.value).fullPath === JSON.parse(selectedEntity).fullPath
                 );
                 if (selectedEntityChoice) {
                     // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
@@ -183,27 +228,10 @@ export async function getODataDownloaderPrompts(): Promise<{
             return true;
         }
     };
-
-    // Generate the max size of key parts allowed
-    keyPrompts = getKeyPrompts(5, appConfig);
-
-    selectSourceQuestions.push(
-        appSelectionQuestion,
-        ...(systemSelectionQuestions.prompts as Question[]),
-        getUpdateMainServiceMetadataPrompt(systemSelectionQuestions.answers, appConfig),
-        ...keyPrompts,
-        resetSelectionPrompt,
-        relatedEntitySelectionQuestion,
-        getConfirmDownloadPrompt(systemSelectionQuestions.answers, appConfig, odataQueryResult)
-    );
-    return {
-        questions: selectSourceQuestions,
-        answers: { application: appConfig, odataQueryResult, odataServiceAnswers: systemSelectionQuestions.answers }
-    };
 }
 
 /**
- * Gets the reset selection prompt. This prompt is responsible for loading the entity choices
+ * Gets the reset selection prompt. This prompt is responsible for loading the entity choices.
  *
  * @param appConfig
  * @param relatedEntityChoices
@@ -273,7 +301,8 @@ function getResetSelectionPrompt(
 }
 
 /**
- *
+ * Get the prompt for keys
+ * 
  * @param size
  * @param appConfig
  */
@@ -348,6 +377,7 @@ function getConfirmDownloadPrompt(
     appConfig: AppConfig,
     odataQueryResult: { odata: undefined | [] }
 ): Question {
+    let result: { odataQueryResult: [] } | string;
     return {
         when: () => {
             return !!odataServiceAnswers.metadata;
@@ -363,25 +393,23 @@ function getConfirmDownloadPrompt(
         },
         validate: async (download, answers: Answers) => {
             if (download) {
-                const result = await getData(odataServiceAnswers, appConfig, answers);
+                result = await getData(odataServiceAnswers, appConfig, answers);
                 if (typeof result === 'string') {
                     return result;
                 }
                 odataQueryResult.odata = result.odataQueryResult;
-                // Log entities to be created
-                const allEntities = [
-                    ...new Set([
-                        appConfig.referencedEntities?.listEntity.entitySetName,
-                        ...((answers?.[promptNames.relatedEntitySelection] as SelectedEntityAnswerAsJSONString[])?.map(
-                            (selEntityAnswer) => JSON.parse(selEntityAnswer).entity.entitySetName // silly workaround for YUI checkbox issue, fix is pending
-                        ) ?? [])
-                    ])
-                ];
-                ODataDownloadGenerator.logger.info(
-                    t('info.entityFilesToBeGenerated', { entities: allEntities.join(', ') })
-                );
             }
             return true;
+        },
+        additionalMessages: (runQuery: boolean) => {
+            if (runQuery && result && typeof result !== 'string') {
+                return {
+                    message: t('prompts.confirmDownload.querySuccess', {
+                        rowsReturned: result.odataQueryResult.length
+                    }),
+                    severity: Severity.information
+                };
+            }
         }
     } as ConfirmQuestion;
 }

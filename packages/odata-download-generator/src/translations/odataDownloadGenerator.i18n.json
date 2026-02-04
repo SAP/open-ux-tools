@@ -33,11 +33,11 @@
         "confirmDownload": {
             "message": "Confirm entity files to be generated",
             "labelTrue": "Run odata query (files will be generated on finish)",
-            "labelFalse": "Dont generate files"
+            "labelFalse": "Dont generate files",
+            "querySuccess": "OData query success. $t(texts.seeLogForDetails)"
         },
         "updateMainServiceMetadata": {
-            "message": "Update local metadata file from backend (remote service metadata is always used for data download):",
-            "additionalMessage": "The local metadata file will be updated from the backend"
+            "message": "Update local metadata file from backend (remote service metadata is always used for data download):"
         },
         "valueHelpSelection": {
             "message": "Select Value Help data"

@@ -1,1 +1,1 @@
-export * from './odataDownloadGenerator';
+export * from './odata-download-generator';
