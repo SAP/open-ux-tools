@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": [
+        "scripts"
+    ],
+    "compilerOptions": {
+        "rootDir": "scripts",
+        "outDir": "dist"
+    },
+    "references": [
+        {
+            "path": "../preview-middleware"
+        }
+    ]
+}

@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/SAP/ui5-tooling/gh-pages/schema/ui5.yaml.json"
+        },
+        {
+            "properties": {
+                "server": {
+                    "properties": {
+                        "customMiddleware": {
+                            "type": "array",
+                            "items": {
+                                "anyOf": [
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "preview-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "middleware-config-schema.json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "fiori-tools-preview"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "middleware-config-schema.json"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
