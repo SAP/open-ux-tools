@@ -54,7 +54,7 @@ const rule: RuleDefinition = {
                 if (scope.type === 'global' || scope.type === 'module') {
                     const varDecl = asVariableDeclaration(node);
                     if (varDecl) {
-                        varDecl.declarations.forEach((declaration: any) => {
+                        varDecl.declarations.forEach((declaration: unknown) => {
                             if (declaration.id?.type === 'Identifier') {
                                 const name = declaration.id.name;
                                 if (!contains(ALLOWED_VARIABLES, name)) {
