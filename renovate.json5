@@ -32,7 +32,7 @@
 
     assigneesFromCodeOwners: true,
 
-    ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/fixtures/**', '**/test/fixture/**', '**/test/test-data/**', '**/expected-output/**', '**/test/sample/**', '**/test/data/**', '**/test/samples/**', '**/test/fixtures/**', '**/test/fixture/**', '**/test/test-data/**', '**/expected-output/**', '**/test/sample/**', '**/test-inputs/**', '**/test-outputs/**', '**/test/inputs/**', '**/test/outputs/**', '**/__tests__/fixtures/**', '**/__tests__/fixture/**', '**/__tests__/test-data/**', '**/__tests__/expected-output/**', '**/__tests__/sample/**'],
+    ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/fixtures/**', '**/test/fixture/**', '**/test/test-data/**', '**/expected-output/**', '**/test/sample/**', '**/test/data/**', '**/test/samples/**', '**/test/fixtures/**', '**/test/fixture/**', '**/test/test-data/**', '**/expected-output/**', '**/test/sample/**', '**/test-inputs/**', '**/test-outputs/**', '**/test/inputs/**', '**/test/outputs/**', '**/__tests__/fixtures/**', '**/__tests__/fixture/**', '**/__tests__/test-data/**', '**/__tests__/expected-output/**', '**/__tests__/sample/**', '**/__tests__/inputs/**', '**/test/sample-workspace/**' ],
 
     packageRules: [
         {
