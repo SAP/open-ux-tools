@@ -127,6 +127,13 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "message": "The service contains references to value help services. Do you want to download the associated metadata during generation? This may increase generation time.",
+                "name": "abapOnPrem:valueHelpDownload",
+                "type": "confirm",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
                 "choices": [
                   {
                     "name": "Discover a Cloud Foundry Service",
