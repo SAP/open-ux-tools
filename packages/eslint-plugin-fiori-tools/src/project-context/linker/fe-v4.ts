@@ -51,6 +51,10 @@ export interface TableSettings {
     disableCopyToClipboard: boolean;
     enableExport: boolean;
     enablePaste: boolean;
+    personalization: boolean | { column?: boolean; filter?: boolean; sort?: boolean };
+    personalizationColumn: boolean;
+    personalizationFilter: boolean;
+    personalizationSort: boolean;
 }
 
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
@@ -149,6 +153,65 @@ function createTable(configurationKey: string, pathToPage: string[], table?: Tab
                     'name'
                 ],
                 values: getCreationModeValues()
+            },
+            personalization: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'personalization'
+                ],
+                values: [
+                    true,
+                    false,
+                    {
+                        column: true,
+                        filter: true,
+                        sort: true
+                    }
+                ]
+            },
+            personalizationColumn: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'personalization',
+                    'column'
+                ],
+                values: [true, false]
+            },
+            personalizationFilter: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'personalization',
+                    'filter'
+                ],
+                values: [true, false]
+            },
+            personalizationSort: {
+                configurationPath: [
+                    ...pathToPage,
+                    'options',
+                    'settings',
+                    'controlConfiguration',
+                    configurationKey,
+                    'tableSettings',
+                    'personalization',
+                    'sort'
+                ],
+                values: [true, false]
             }
         }
     };
@@ -257,6 +320,13 @@ interface TableConfiguration {
         creationMode?: {
             name?: string;
         };
+        personalization?:
+            | boolean
+            | {
+                  column?: boolean;
+                  filter?: boolean;
+                  sort?: boolean;
+              };
     };
 }
 
@@ -346,6 +416,16 @@ function linkListReportTable(
                 const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
                 tableControl.configuration.creationMode.valueInFile = creationModeValue;
                 tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+                const personalization = controlConfiguration.tableSettings?.personalization;
+                tableControl.configuration.personalization.valueInFile = personalization;
+                if (typeof personalization === 'object') {
+                    const personalizationColumnValue = personalization.column;
+                    const personalizationFilterValue = personalization.filter;
+                    const personalizationSortValue = personalization.sort;
+                    tableControl.configuration.personalizationColumn.valueInFile = personalizationColumnValue;
+                    tableControl.configuration.personalizationFilter.valueInFile = personalizationFilterValue;
+                    tableControl.configuration.personalizationSort.valueInFile = personalizationSortValue;
+                }
             }
         } else {
             // no annotation definition found for this table, but configuration exists
@@ -439,6 +519,16 @@ function linkObjectPageSections(
             const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
             tableControl.configuration.creationMode.valueInFile = creationModeValue;
             tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+            const personalization = controlConfiguration.tableSettings?.personalization;
+            tableControl.configuration.personalization.valueInFile = personalization;
+            if (typeof personalization === 'object') {
+                const personalizationColumnValue = personalization.column;
+                const personalizationFilterValue = personalization.filter;
+                const personalizationSortValue = personalization.sort;
+                tableControl.configuration.personalizationColumn.valueInFile = personalizationColumnValue;
+                tableControl.configuration.personalizationFilter.valueInFile = personalizationFilterValue;
+                tableControl.configuration.personalizationSort.valueInFile = personalizationSortValue;
+            }
         } else {
             // no annotation definition found for this section, but configuration exists
             const orphanedSection: OrphanSection = {
