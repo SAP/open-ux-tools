@@ -70,7 +70,7 @@ function isValid(node: ASTNode): boolean {
     if (callExpr.arguments && isArray(callExpr.arguments[0])) {
         const arrayExpr = asArrayExpression(callExpr.arguments[0]);
         if (arrayExpr) {
-            const importList = arrayExpr.elements as any[];
+            const importList = arrayExpr.elements as unknown[];
             return !hasCommonsImport(importList);
         }
     }
