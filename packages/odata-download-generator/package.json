@@ -34,7 +34,7 @@
     ],
     "dependencies": {
         "odata-query": "8.0.5",
-        "@sap/ux-specification": "1.139.2",
+        "@sap/ux-specification": "1.142.1",
         "@sap-ux/annotation-converter": "0.10.19",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
@@ -50,9 +50,9 @@
         "@sap-ux/vocabularies-types": "0.14.5",
         "@vscode-logging/logger": "2.0.0",
         "@sap-devx/yeoman-ui-types": "1.16.9",
-        "i18next": "25.3.0",
+        "i18next": "25.8.0",
         "inquirer": "8.2.7",
-        "lodash": "4.17.21",
+        "lodash": "4.17.23",
         "prettify-xml": "1.2.0",
         "yeoman-generator": "5.10.0"
     },
