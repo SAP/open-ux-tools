@@ -42,7 +42,7 @@ describe('Test propt-helpers', () => {
         const appPath = join(__dirname, '../test-data/test-apps/travel');
         const appAccess = await createApplicationAccess(appPath);
         // Usually loaded from backend, use local copy for testing
-        const metadata = await readFile(join(appPath, '/webapp/localService/metadata.xml'), 'utf8');
+        const metadata = await readFile(join(appPath, '/webapp/localService/mainService/metadata.xml'), 'utf8');
         // Load the full entity model
         const entityModel = await getEntityModel(appAccess, metadata);
         if (!entityModel) {
