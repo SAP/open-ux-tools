@@ -13,7 +13,8 @@ import {
     GENERATE_FIORI_UI_APPLICATION_CAP_ID,
     LIST_ADP_APPLICATIONS_ID,
     GENERATE_ADAPTATION_PROJECT_ID,
-    LIST_SYSTEMS_ID
+    LIST_SYSTEMS_ID,
+    OPEN_ADAPTATION_EDITOR_ID
 } from '../../constant';
 
 import generateFioriUIApplication from './generate-fiori-ui-application';
@@ -22,6 +23,7 @@ import listAdpApplications from './list-adp-applications';
 import generateAdaptationProject from './generate-adaptation-project';
 import adpControllerExtension from './adp-controller-extension';
 import listSystems from './list-systems';
+import openAdaptationEditor from './open-adaptation-editor';
 
 export const FUNCTIONALITIES_DETAILS = [
     ADD_PAGE_FUNCTIONALITY,
@@ -33,7 +35,8 @@ export const FUNCTIONALITIES_DETAILS = [
     listSystems.details,
     listAdpApplications.details,
     generateAdaptationProject.details,
-    adpControllerExtension.details
+    adpControllerExtension.details,
+    openAdaptationEditor.details
 ];
 
 export const FUNCTIONALITIES_HANDLERS: Map<string, FunctionalityHandlers> = new Map([
@@ -46,5 +49,6 @@ export const FUNCTIONALITIES_HANDLERS: Map<string, FunctionalityHandlers> = new 
     [LIST_SYSTEMS_ID, listSystems.handlers],
     [LIST_ADP_APPLICATIONS_ID, listAdpApplications.handlers],
     [GENERATE_ADAPTATION_PROJECT_ID, generateAdaptationProject.handlers],
-    [ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID, adpControllerExtension.handlers]
+    [ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID, adpControllerExtension.handlers],
+    [OPEN_ADAPTATION_EDITOR_ID, openAdaptationEditor.handlers]
 ]);

@@ -7,6 +7,7 @@ export const LIST_SYSTEMS_ID = 'list-systems';
 export const LIST_ADP_APPLICATIONS_ID = 'list-adp-applications';
 export const GENERATE_ADAPTATION_PROJECT_ID = 'generate-adaptation-project';
 export const ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID = 'adp-controller-extension';
+export const OPEN_ADAPTATION_EDITOR_ID = 'open-adaptation-editor';
 export const EXTENSION_FILE_NAME_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 
 // Telemetry event names
