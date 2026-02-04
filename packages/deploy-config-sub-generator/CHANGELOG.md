@@ -1,5 +1,35 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.60
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/odata-service-inquirer@2.16.3
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/deploy-config-generator-shared@0.1.80
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/inquirer-common@0.10.21
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.136
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.119
+
+## 0.5.59
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/ui5-config@0.29.14
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.135
+    - @sap-ux/deploy-config-generator-shared@0.1.79
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/odata-service-inquirer@2.16.2
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.118
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/store@1.5.3
+
 ## 0.5.58
 
 ### Patch Changes

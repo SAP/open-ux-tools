@@ -1,5 +1,45 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.46
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/axios-extension@1.25.9
+    - @sap-ux/odata-service-inquirer@2.16.3
+    - @sap-ux/odata-service-writer@0.29.12
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/fiori-elements-writer@2.8.53
+    - @sap-ux/fiori-freestyle-writer@2.5.37
+    - @sap-ux/annotation-generator@0.4.14
+    - @sap-ux/cap-config-writer@0.12.52
+    - @sap-ux/launch-config@0.10.56
+    - @sap-ux/telemetry@0.6.62
+    - @sap-ux/ui5-application-inquirer@0.16.16
+
+## 0.11.45
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/axios-extension@1.25.8
+    - @sap-ux/fiori-elements-writer@2.8.52
+    - @sap-ux/fiori-freestyle-writer@2.5.36
+    - @sap-ux/odata-service-writer@0.29.11
+    - @sap-ux/ui5-application-inquirer@0.16.15
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/odata-service-inquirer@2.16.2
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/cap-config-writer@0.12.51
+    - @sap-ux/launch-config@0.10.55
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/store@1.5.3
+    - @sap-ux/telemetry@0.6.61
+    - @sap-ux/ui5-info@0.13.10
+    - @sap-ux/annotation-generator@0.4.13
+
 ## 0.11.44
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.13
+
+### Patch Changes
+
+- c3a1e07: fix: add documentation sources
+
 ## 0.4.12
 
 ### Patch Changes

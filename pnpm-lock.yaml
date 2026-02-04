@@ -174,8 +174,8 @@ importers:
         specifier: 16.6.1
         version: 16.6.1
       fast-xml-parser:
-        specifier: 4.5.3
-        version: 4.5.3
+        specifier: 5.3.4
+        version: 5.3.4
 
   examples/simple-generator:
     dependencies:
@@ -852,8 +852,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       fast-xml-parser:
-        specifier: 4.5.3
-        version: 4.5.3
+        specifier: 5.3.4
+        version: 5.3.4
       http-proxy-agent:
         specifier: 7.0.2
         version: 7.0.2
@@ -3253,8 +3253,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       fast-xml-parser:
-        specifier: 4.5.3
-        version: 4.5.3
+        specifier: 5.3.4
+        version: 5.3.4
       i18next:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
@@ -3317,8 +3317,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       fast-xml-parser:
-        specifier: 4.5.3
-        version: 4.5.3
+        specifier: 5.3.4
+        version: 5.3.4
       i18next:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
@@ -3391,7 +3391,7 @@ importers:
         specifier: 1.56.1
         version: 1.56.1
       '@sap-ux/logger':
-        specifier: 0.8.0
+        specifier: 0.8.1
         version: link:../logger
       '@types/folder-hash':
         specifier: 4.0.4
@@ -3461,7 +3461,7 @@ importers:
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
       '@sap-ux-private/playwright':
-        specifier: 0.2.5
+        specifier: 0.2.6
         version: link:../playwright
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -3564,8 +3564,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       fast-xml-parser:
-        specifier: 4.5.3
-        version: 4.5.3
+        specifier: 5.3.4
+        version: 5.3.4
       findit2:
         specifier: 2.2.3
         version: 2.2.3
@@ -6310,7 +6310,7 @@ packages:
     engines: {node: '>=20.0.0'}
     requiresBuild: true
     dependencies:
-      fast-xml-parser: 5.3.2
+      fast-xml-parser: 5.3.4
       tslib: 2.8.1
     dev: true
     optional: true
@@ -21982,13 +21982,6 @@ packages:
     dependencies:
       strnum: 1.0.5
 
-  /fast-xml-parser@4.5.3:
-    resolution: {integrity: sha512-RKihhV+SHsIUGXObeVy9AXiBbFwkVk7Syp8XgwN5U3JV416+Gwp/GO9i0JYKmikykgz/UHRrrV4ROuZEo/T0ig==}
-    hasBin: true
-    dependencies:
-      strnum: 1.1.2
-    dev: false
-
   /fast-xml-parser@5.2.5:
     resolution: {integrity: sha512-pfX9uG9Ki0yekDHx2SiuRIyFdyAr1kMIMitPvb0YBo8SUfKvia7w7FIyd/l6av85pFYRhZscS75MwMnbvY+hcQ==}
     hasBin: true
@@ -21998,12 +21991,11 @@ packages:
     dev: true
     optional: true
 
-  /fast-xml-parser@5.3.2:
-    resolution: {integrity: sha512-n8v8b6p4Z1sMgqRmqLJm3awW4NX7NkaKPfb3uJIBTSH7Pdvufi3PQ3/lJLQrvxcMYl7JI2jnDO90siPEpD8JBA==}
+  /fast-xml-parser@5.3.4:
+    resolution: {integrity: sha512-EFd6afGmXlCx8H8WTZHhAoDaWaGyuIBoZJ2mknrNxug+aZKjkp0a0dlars9Izl+jF+7Gu1/5f/2h68cQpe0IiA==}
     hasBin: true
     dependencies:
       strnum: 2.1.1
-    dev: true
 
   /fastest-levenshtein@1.0.16:
     resolution: {integrity: sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==}
@@ -28630,7 +28622,7 @@ packages:
       express: 5.1.0
       fast-deep-equal: 3.1.3
       fast-safe-stringify: 2.1.1
-      fast-xml-parser: 5.3.2
+      fast-xml-parser: 5.3.4
       fastest-levenshtein: 1.0.16
       gcp-metadata: 8.1.2
       glob: 13.0.0
@@ -31544,13 +31536,8 @@ packages:
   /strnum@1.0.5:
     resolution: {integrity: sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA==}
 
-  /strnum@1.1.2:
-    resolution: {integrity: sha512-vrN+B7DBIoTTZjnPNewwhx6cBA/H+IS7rfW68n7XxC1y7uoiGQBxaKzqucGUgavX15dJgiGztLJ8vxuEzwqBdA==}
-    dev: false
-
   /strnum@2.1.1:
     resolution: {integrity: sha512-7ZvoFTiCnGxBtDqJ//Cu6fWtZtc7Y3x+QOirG15wztbdngGSkht27o2pyGWrVy0b4WAy3jbKmnoK6g5VlVNUUw==}
-    dev: true
 
   /strtok3@6.3.0:
     resolution: {integrity: sha512-fZtbhtvI9I48xDSywd/somNqgUHl2L2cstmXCCif0itOf96jeW18MBSyrLuNicYQVkvpOxkZtkzujiTJ9LW5Jw==}
@@ -32450,7 +32437,7 @@ packages:
       chokidar: 4.0.3
       comment-json: 4.2.5
       estree-walker: 3.0.3
-      fast-xml-parser: 5.3.2
+      fast-xml-parser: 5.3.4
       handlebars: 4.7.8
       ignore-walk: 7.0.0
       js-yaml: 4.1.1

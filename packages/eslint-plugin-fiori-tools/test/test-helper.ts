@@ -29,6 +29,33 @@ export const V4_ANNOTATIONS_PATH = join(
 );
 export const V4_METADATA_PATH = join(ROOT, 'test', 'data', 'v4-xml-start', 'webapp', 'localService', 'metadata.xml');
 export const V4_ANNOTATIONS = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
+export const V4_FACETS_ANNOTATIONS = `
+            <Annotations Target="IncidentService.Incidents">
+                 <Annotation Term="UI.Facets" >
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="Products"/>
+                            <PropertyValue Property="Label" String="Prducts"/>
+                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+             <Annotations Target="IncidentService.IncidentFlow">
+                 <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="processStep" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="stepStatus" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            `;
 export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
 export const V2_MANIFEST_PATH = join(ROOT, 'test', 'data', 'v2-xml-start', 'webapp', 'manifest.json');
