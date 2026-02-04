@@ -109,7 +109,7 @@ function isGetServiceCall(node: ASTNode | undefined): boolean {
     if (callExpr) {
         if (callExpr.arguments?.length === 1) {
             const firstArg = asLiteral(callExpr.arguments[0]);
-            if (firstArg && firstArg.value === 'CrossApplicationNavigation') {
+            if (firstArg?.value === 'CrossApplicationNavigation') {
                 return true;
             }
         }
