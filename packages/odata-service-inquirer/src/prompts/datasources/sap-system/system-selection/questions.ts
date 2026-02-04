@@ -121,7 +121,7 @@ export async function getSystemSelectionQuestions(
                     connectValidator,
                     systemSelectionPromptNamespace,
                     promptOptions?.serviceSelection,
-                    true // Show value help download prompt
+                    !promptOptions?.valueHelpDownload?.hide
                 ) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
             )
