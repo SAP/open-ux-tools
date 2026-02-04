@@ -34,6 +34,8 @@
 
     ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/test/fixtures/**', '**/test/fixture/**', '**/test/test-data/**', '**/expected-output/**' ],
 
+    ignoreDeps: ['@sap-ux-private/playwright'],
+
     packageRules: [
         {
             matchPackagePrefixes: ['react', 'react-dom', '@types/react', '@types/react-dom'],
