@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.34.5
+
+### Patch Changes
+
+- 89175fe: fix(deps): update dependency fast-xml-parser to v5 [security]
+
 ## 1.34.4
 
 ### Patch Changes

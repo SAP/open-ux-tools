@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.9
+
+### Patch Changes
+
+- 89175fe: fix(deps): update dependency fast-xml-parser to v5 [security]
+
 ## 1.25.8
 
 ### Patch Changes
