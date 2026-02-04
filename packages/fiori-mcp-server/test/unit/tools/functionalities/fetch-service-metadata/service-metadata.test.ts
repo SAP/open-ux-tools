@@ -165,7 +165,7 @@ describe('service-metadata', () => {
             expect(mockServiceProvider.catalog).toHaveBeenCalledWith(ODataVersion.v4);
             expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
             expect(mockService.metadata).toHaveBeenCalled();
-            expect(result).toBe(mockMetadata);
+            expect(result).toEqual({ metadata: mockMetadata, entitySets: {} });
         });
 
         test('should fetch service metadata without auth credentials', async () => {
@@ -184,7 +184,7 @@ describe('service-metadata', () => {
                     'sap-client': '100'
                 }
             });
-            expect(result).toBe(mockMetadata);
+            expect(result).toEqual({ metadata: mockMetadata, entitySets: {} });
         });
 
         test('should handle exact service path match', async () => {
@@ -228,7 +228,7 @@ describe('service-metadata', () => {
             const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
 
             expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
-            expect(result).toBe(mockMetadata);
+            expect(result).toEqual({ metadata: mockMetadata, entitySets: {} });
         });
 
         test('should handle when no services found in catalog', async () => {
@@ -246,7 +246,7 @@ describe('service-metadata', () => {
             const result = await getServiceMetadata(sapSystem, '/sap/opu/odata4/service1');
 
             expect(mockServiceProvider.service).toHaveBeenCalledWith('/sap/opu/odata4/service1');
-            expect(result).toBe(mockMetadata);
+            expect(result).toEqual({ metadata: mockMetadata, entitySets: {} });
         });
 
         test('should throw error when multiple services match path', async () => {
@@ -405,7 +405,7 @@ describe('service-metadata', () => {
 
             // Verify parseEdmx was called to validate metadata
             expect(parseEdmx).toHaveBeenCalledWith(mockMetadata);
-            expect(result).toBe(mockMetadata);
+            expect(result).toEqual({ metadata: mockMetadata, entitySets: {} });
         });
 
         test('should handle service fetch directly when path has query parameters', async () => {
