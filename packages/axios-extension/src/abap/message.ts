@@ -59,7 +59,7 @@ function logLevel(severity: string, msg: string, log: Logger, error = false): vo
             log[severity](msg);
         }
     } else {
-        error ? log.error(msg) : log.info(msg);
+        log[error ? 'error' : 'info'](msg);
     }
 }
 
@@ -170,7 +170,7 @@ export function prettyPrintError(
  * @returns user friendly string
  */
 export const prettyPrintTimeInMs = (ms: number): string => {
-    const min = (ms / 60 / 1000) | 0;
+    const min = Math.trunc(ms / 60 / 1000);
     if (min > 1) {
         return `${min} minutes`;
     } else if (min === 1) {

@@ -1,4 +1,4 @@
-import { format } from 'util';
+import { format } from 'node:util';
 import { dirname, join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { render } from 'ejs';

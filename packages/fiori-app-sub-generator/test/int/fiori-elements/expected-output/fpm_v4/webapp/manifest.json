@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:fpm",
-      "version": "2.1.8",
-      "toolsId": "5d8b8283-0a27-411a-8fb6-1acf5873db8c"
+      "version": "2.8.16",
+      "toolsId": "cf6e40ba-6f97-4efe-9eaa-d1d42c5f9874"
     },
     "dataSources": {
       "annotation": {
@@ -114,6 +114,11 @@
           }
         }
       }
+    }
+  },
+  "sap.fe": {
+    "app": {
+      "enableLazyLoading": true
     }
   }
 }

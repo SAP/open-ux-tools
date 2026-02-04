@@ -75,12 +75,11 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
             const targetEntitySet = entityContainer.entitySet.find((item) => item.entityType === associationEnd.type);
             await this.addNavigationOptionIfAvailable(metaModel, targetEntitySet?.name, navProp.name);
         }
-        return Promise.resolve();
     }
 
     async initialize(): Promise<void> {
         if (!(await areManifestChangesSupported(this.context.manifest))) {
-            return Promise.resolve();
+            return;
         }
         this.appComponent = getV2AppComponent(this.context.view);
         return super.initialize();

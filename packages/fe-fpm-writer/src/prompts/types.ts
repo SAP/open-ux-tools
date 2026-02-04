@@ -17,7 +17,8 @@ export enum PromptsType {
     Table = 'table',
     Page = 'page',
     BuildingBlocks = 'building-blocks',
-    RichTextEditor = 'rich-text-editor'
+    RichTextEditor = 'rich-text-editor',
+    RichTextEditorButtonGroups = 'rich-text-editor-button-groups'
 }
 
 export interface Prompts<T extends Answers = Answers> {
@@ -47,10 +48,10 @@ export type Subset<K> = {
     [attr in keyof K]?: K[attr] extends object
         ? Subset<K[attr]>
         : K[attr] extends object | null
-        ? Subset<K[attr]> | null
-        : K[attr] extends object | null | undefined
-        ? Subset<K[attr]> | null | undefined
-        : K[attr];
+          ? Subset<K[attr]> | null
+          : K[attr] extends object | null | undefined
+            ? Subset<K[attr]> | null | undefined
+            : K[attr];
 };
 
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };

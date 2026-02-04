@@ -54,6 +54,7 @@ const paramTest: GeneratorConfigCAPWithAPI = {
         sapux: true
     },
     service: {
+        servicePath: 'odata/v4/cat-service/',
         capService: {
             projectPath: 'zzzapp1',
             serviceName: 'app1',
@@ -122,6 +123,7 @@ describe('executeFunctionality', () => {
                         sapux: true
                     },
                     service: {
+                        servicePath: 'odata/v4/cat-service/',
                         capService: {
                             serviceName: 'app1',
                             'capType': 'Node.js',
@@ -165,6 +167,7 @@ describe('executeFunctionality', () => {
                 'ui5Version': '1.136.7'
             },
             'service': {
+                'servicePath': 'odata/v4/cat-service/',
                 'capService': {
                     'capType': 'Node.js',
                     'projectPath': 'zzzapp1',

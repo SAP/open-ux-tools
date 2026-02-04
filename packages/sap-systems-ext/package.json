@@ -1,6 +1,6 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.1.0",
+    "version": "0.2.3",
     "displayName": "Connection Manager for SAP Systems",
     "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
@@ -32,7 +32,8 @@
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
         "check-types": "tsc --noEmit",
-        "lint": "eslint . --ext .ts",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "cross-env SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true jest --ci --forceExit --detectOpenHandles --colors --silent",
         "ide-ext:package": "vsce package"
     },
@@ -61,7 +62,7 @@
         "@zowe/secrets-for-zowe-sdk": "8.1.2",
         "cross-env": "7.0.3",
         "fast-glob": "3.3.1",
-        "i18next": "25.3.0",
+        "i18next": "25.8.0",
         "jsonc-parser": "3.2.0",
         "normalize-path": "3.0.0",
         "npm-run-all2": "8.0.4",

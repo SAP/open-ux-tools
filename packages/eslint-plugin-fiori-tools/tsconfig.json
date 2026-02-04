@@ -1,13 +1,25 @@
 {
     "extends": "../../tsconfig.json",
-    "include": [
-        "src"
-    ],
+    "include": ["src/**/*.ts"],
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "lib"
     },
     "references": [
-    
+        {
+            "path": "../fiori-annotation-api"
+        },
+        {
+            "path": "../odata-annotation-core"
+        },
+        {
+            "path": "../odata-entity-model"
+        },
+        {
+            "path": "../odata-vocabularies"
+        },
+        {
+            "path": "../project-access"
+        }
     ]
 }

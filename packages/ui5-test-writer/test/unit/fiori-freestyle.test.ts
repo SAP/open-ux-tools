@@ -7,7 +7,7 @@ import { t } from '../../src/i18n';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import * as fileSystem from 'node:fs';
 import { rimraf } from 'rimraf';
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 
 expect.extend({ toMatchFolder });
 
@@ -153,7 +153,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
             removeSpaces(`
             /* global window, parent, location */
     
-            // eslint-disable-next-line fiori-custom/sap-no-global-define,@typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-global-define,@typescript-eslint/ban-ts-comment
             // @ts-nocheck
             window.suite = function() {
                 // eslint-disable-next-line
@@ -390,7 +390,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
             removeSpaces(`
             /* global window, parent, location */
 
-            // eslint-disable-next-line fiori-custom/sap-no-global-define
+            // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-global-define
             window.suite = function() {
                 "use strict";
 

@@ -23,18 +23,9 @@
     "start-mock": "fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html#xmlstart-tile'"
   },
   "devDependencies": {
-    "@ui5/cli": "^2.11.1",
-    "@ui5/fs": "^2.0.6",
-    "@ui5/logger": "^2.0.1",
+    "@ui5/cli": "^4.0.0",
     "@sap/ux-ui5-tooling": "1",
     "rimraf": "3.0.2",
-    "@sap/ux-specification": "^1.102.4",
     "@sap-ux/ui5-middleware-fe-mockserver": "2"
-  },
-  "ui5": {
-    "dependencies": [
-      "@sap/ux-ui5-tooling",
-      "@sap-ux/ui5-middleware-fe-mockserver"
-    ]
   }
 }

@@ -2,7 +2,7 @@ import type { SystemConfigFile } from '../../../../../src/types';
 import { exportSystem } from '../../../../../src/panel/system/actions/exportSystem';
 import { initI18n } from '../../../../../src/utils';
 import * as vscodeMod from 'vscode';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import * as panelActionUtils from '../../../../../src/panel/system/utils';
 
 const systemServiceReadMock = jest.fn();
@@ -47,7 +47,15 @@ describe('Test the export system action', () => {
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
-            payload: { system: { name: 'Test System', url: 'https://example.com', client: '100' } }
+            payload: {
+                system: {
+                    name: 'Test System',
+                    url: 'https://example.com',
+                    client: '100',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                }
+            }
         });
 
         expect(showSaveDialogSpy).toHaveBeenCalled();
@@ -82,7 +90,15 @@ describe('Test the export system action', () => {
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
-            payload: { system: { name: 'Test System', url: 'https://example.com', client: '100' } }
+            payload: {
+                system: {
+                    name: 'Test System',
+                    url: 'https://example.com',
+                    client: '100',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                }
+            }
         });
 
         expect(showSaveDialogSpy).toHaveBeenCalled();

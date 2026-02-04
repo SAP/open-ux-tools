@@ -349,7 +349,7 @@ export async function addAnnotationFile(
             logger as unknown as ToolsLogger
         );
         const metadata = await manifestService.getDataSourceMetadata(dataSourceId);
-        const datasoruces = await manifestService.getManifestDataSources();
+        const dataSources = manifestService.getManifestDataSources();
         const namespaces = getAnnotationNamespaces({ metadata });
         await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
             projectRoot,
@@ -358,7 +358,7 @@ export async function addAnnotationFile(
                 annotation: {
                     dataSource: dataSourceId,
                     namespaces,
-                    serviceUrl: datasoruces[dataSourceId].uri,
+                    serviceUrl: dataSources[dataSourceId].uri,
                     fileName: basename(dataSource[annotationDataSourceKey].uri)
                 },
                 variant: await getVariant(projectRoot),

@@ -82,7 +82,7 @@ export async function addOptionsForEmbeddedBSP(bspPath: string, proxyOptions: Op
             const protocol =
                 'protocol' in req
                     ? req.protocol
-                    : req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http';
+                    : (req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http');
             return protocol + '://' + req.headers.host;
         } else {
             return undefined;

@@ -1,7 +1,13 @@
-import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import {
+    ODataService,
+    ODataVersion,
+    ServiceProvider,
+    type AbapServiceProvider,
+    type ODataServiceInfo,
+    type AxiosRequestConfig
+} from '@sap-ux/axios-extension';
 import { createForAbap } from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
-import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
     GUIDED_ANSWERS_ICON,
@@ -110,6 +116,23 @@ describe('ConnectionValidator', () => {
             reachable: true,
             urlFormat: true
         });
+    });
+
+    test('should validate and return error message on non origin urls for isSystem URL and reentrance tickets', async () => {
+        const serviceUrl = 'https://example.com/service/path';
+        const validator = new ConnectionValidator();
+
+        // isSystem URL case
+        const result = await validator.validateUrl(serviceUrl, { isSystem: true });
+        expect(result).toBe(t('prompts.validationMessages.systemUrlOriginOnlyWarning'));
+        expect(validator.validity).toEqual({});
+
+        // Reentrance ticket case
+        const validatorReentrance = new ConnectionValidator();
+        validatorReentrance.systemAuthType = 'reentranceTicket';
+        const resultReentrance = await validatorReentrance.validateUrl(serviceUrl);
+        expect(resultReentrance).toBe(t('prompts.validationMessages.systemUrlOriginOnlyWarning'));
+        expect(validatorReentrance.validity).toEqual({});
     });
 
     test('should handle url not found error', async () => {
@@ -902,7 +925,9 @@ describe('ConnectionValidator', () => {
                 url: 'https://system1:12345/',
                 authenticationType: 'reentranceTicket',
                 userDisplayName: 'user1',
-                client: '001'
+                client: '001',
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             }
         };
         connectValidator.setConnectedSystem(cachedConnectedSystem);
@@ -938,10 +963,12 @@ describe('ConnectionValidator', () => {
             backendSystem: {
                 name: 'system2',
                 url: 'https://system2:1234554321/',
-                authenticationType: '',
+                authenticationType: 'oauth2',
                 serviceKeys: {
                     url: 'https://system2:54321/'
-                }
+                },
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             }
         };
 

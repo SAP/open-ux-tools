@@ -1,7 +1,6 @@
 export * from './ui5/middleware';
 export {
     FlpSandbox,
-    initAdp,
     generatePreviewFiles,
     getPreviewPaths,
     sanitizeRtaConfig,

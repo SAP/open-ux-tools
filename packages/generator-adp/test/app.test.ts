@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec } from 'node:child_process';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import { rimraf } from 'rimraf';
@@ -34,7 +34,11 @@ import {
     loadCfConfig,
     validateUI5VersionExists
 } from '@sap-ux/adp-tooling';
-import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
+import {
+    type AbapServiceProvider,
+    AdaptationProjectType,
+    type LayeredRepositoryService
+} from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled, isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { isCli, isExtensionInstalled, sendTelemetry } from '@sap-ux/fiori-generator-shared';
@@ -46,9 +50,10 @@ import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { AdpGeneratorOptions } from '../src/app';
 import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
+import { KeyUserImportPrompter } from '../src/app/questions/key-user';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 import { TargetEnv, type JsonInput, type TargetEnvAnswers } from '../src/app/types';
-import { EventName } from '../src/telemetryEvents';
+import { EventName } from '../src/telemetry';
 import { initI18n, t } from '../src/utils/i18n';
 import * as subgenHelpers from '../src/utils/subgenHelpers';
 import {
@@ -126,7 +131,6 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
     sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
     TelemetryHelper: {
-        initTelemetrySettings: jest.fn(),
         createTelemetryData: jest.fn().mockReturnValue({
             OperatingSystem: 'testOS',
             Platform: 'testPlatform'
@@ -136,6 +140,11 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: jest.fn(),
     isCli: jest.fn(),
     getDefaultTargetFolder: jest.fn().mockReturnValue(undefined)
+}));
+
+jest.mock('@sap-ux/telemetry', () => ({
+    ...jest.requireActual('@sap-ux/telemetry'),
+    initTelemetrySettings: jest.fn().mockResolvedValue(undefined)
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -415,7 +424,14 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect.any(Object),
                 expect.any(Object)
             );
-            expect(sendTelemetryMock).toHaveBeenCalledTimes(0);
+            expect(sendTelemetryMock).toHaveBeenCalledWith(
+                EventName.ADAPTATION_PROJECT_CREATED,
+                expect.objectContaining({
+                    OperatingSystem: 'testOS',
+                    Platform: 'testPlatform'
+                }),
+                expect.any(String)
+            );
             expect(executeCommandSpy).toHaveBeenCalledTimes(0);
             expect(showWorkspaceFolderWarningMock).toHaveBeenCalledTimes(0);
         });
@@ -427,8 +443,8 @@ describe('Adaptation Project Generator Integration Test', () => {
             jest.spyOn(ConfigPrompter.prototype, 'baseAppInbounds', 'get').mockReturnValue(inbounds);
             jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
 
-            const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockReturnValue();
-            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockReturnValue();
+            const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockResolvedValue();
+            const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockResolvedValue();
 
             const runContext = yeomanTest
                 .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
@@ -539,6 +555,69 @@ describe('Adaptation Project Generator Integration Test', () => {
             );
         });
 
+        it('should generate adaptation project with key user changes', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+
+            const mockAdaptations = [{ id: 'DEFAULT', title: '', type: 'DEFAULT' }];
+            const mockKeyUserChange = {
+                content: {
+                    fileName: 'id_1767885281745_1726_renameLabel',
+                    changeType: 'renameLabel',
+                    reference: apps[0].id,
+                    layer: 'CUSTOMER',
+                    namespace: `apps/${apps[0].id}/changes/`,
+                    projectId: apps[0].id,
+                    fileType: 'annotation_change',
+                    content: {
+                        annotationPath: '/category_ID@com.vocabularies.Common.v1.Label'
+                    },
+                    selector: {
+                        serviceUrl: '/odata/test/service'
+                    }
+                },
+                texts: {
+                    annotationText: {
+                        value: 'Category ID',
+                        type: 'XFLD'
+                    }
+                }
+            };
+
+            jest.spyOn(KeyUserImportPrompter.prototype, 'changes', 'get').mockReturnValue([mockKeyUserChange]);
+
+            const keyUserAnswers = {
+                ...answers,
+                importKeyUserChanges: true,
+                keyUserSystem: 'urlA',
+                keyUserAdaptation: mockAdaptations[0]
+            };
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+                .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+                .withPrompts(keyUserAnswers);
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            const generatedDirs = fs.readdirSync(testOutputDir);
+            expect(generatedDirs).toContain(answers.projectName);
+            const projectFolder = join(testOutputDir, answers.projectName);
+
+            // Verify key user change file was written
+            const changesDir = join(projectFolder, 'webapp', 'changes');
+            expect(fs.existsSync(changesDir)).toBe(true);
+
+            const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.change'));
+            expect(changeFiles.length).toBeGreaterThan(0);
+
+            // Verify the change file content
+            const changeFilePath = join(changesDir, changeFiles[0]);
+            expect(fs.existsSync(changeFilePath)).toBe(true);
+
+            const changeContent = JSON.parse(fs.readFileSync(changeFilePath, 'utf8'));
+            expect(changeContent).toMatchSnapshot();
+        });
+
         it('should create adaptation project from json correctly', async () => {
             // NOTE: This test uses .withArguments() which bypasses the normal yeoman prompting lifecycle and goes directly to the writing phase.
             // This can cause race conditions with other tests that use the same output directory, as the generator doesn't go through the standard prompting -> writing flow.
@@ -642,37 +721,40 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             await expect(runContext.run()).resolves.not.toThrow();
 
-            expect(executeCommandSpy).not.toHaveBeenCalled();
-            expect(sendTelemetryMock).not.toHaveBeenCalled();
-
             const generatedDirs = fs.readdirSync(cfTestOutputDir);
             expect(generatedDirs).toContain(answers.projectName);
             const projectFolder = join(cfTestOutputDir, answers.projectName);
 
+            expect(sendTelemetryMock).toHaveBeenCalledWith(
+                EventName.ADAPTATION_PROJECT_CREATED,
+                expect.objectContaining({
+                    OperatingSystem: 'testOS',
+                    Platform: 'testPlatform'
+                }),
+                projectFolder
+            );
+            expect(executeCommandSpy).not.toHaveBeenCalled();
+
             const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
             const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');
             const ui5Yaml = join(projectFolder, 'ui5.yaml');
-            const ui5BuildYaml = join(projectFolder, 'ui5-build.yaml');
             const mtaYaml = join(cfTestOutputDir, 'mta.yaml');
             const packageJson = join(projectFolder, 'package.json');
 
             expect(fs.existsSync(manifestPath)).toBe(true);
             expect(fs.existsSync(i18nPath)).toBe(true);
             expect(fs.existsSync(ui5Yaml)).toBe(true);
-            expect(fs.existsSync(ui5BuildYaml)).toBe(true);
             expect(fs.existsSync(mtaYaml)).toBe(true);
             expect(fs.existsSync(packageJson)).toBe(true);
 
             const manifestContent = fs.readFileSync(manifestPath, 'utf8');
             const i18nContent = fs.readFileSync(i18nPath, 'utf8');
             const ui5Content = fs.readFileSync(ui5Yaml, 'utf8');
-            const ui5BuildContent = fs.readFileSync(ui5BuildYaml, 'utf8');
             const mtaContent = fs.readFileSync(mtaYaml, 'utf8');
             const packageJsonContent = fs.readFileSync(packageJson, 'utf8');
             expect(manifestContent).toMatchSnapshot();
             expect(i18nContent).toMatchSnapshot();
             expect(ui5Content).toMatchSnapshot();
-            expect(ui5BuildContent).toMatchSnapshot();
             expect(mtaContent).toMatchSnapshot();
             expect(packageJsonContent).toMatchSnapshot();
         });

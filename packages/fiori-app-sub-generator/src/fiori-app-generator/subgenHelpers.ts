@@ -21,7 +21,7 @@ import type { DeployConfigSubGenPromptOptions } from '@sap-ux/deploy-config-sub-
  * @param appWizard - instance of the AppWizard
  * @param promptSettings - prompt settings for the deployment generator
  */
-export function addDeployGen(
+export async function addDeployGen(
     {
         service,
         projectName,
@@ -37,8 +37,8 @@ export function addDeployGen(
     logger: ILogWrapper,
     appWizard?: AppWizard,
     promptSettings?: DeployConfigSubGenPromptOptions
-): void {
-    composeWith('@sap/fiori:deploy-config', {
+): Promise<void> {
+    await composeWith('@sap/fiori:deploy-config', {
         launchDeployConfigAsSubGenerator: true,
         appGenServiceHost: service.host,
         appGenServicePath: service.servicePath,
@@ -70,7 +70,7 @@ export function addDeployGen(
  * @param vscode
  * @param promptSettings - prompt settings for the flp generator used in the inquirer
  */
-export function addFlpGen(
+export async function addFlpGen(
     {
         projectName,
         targetFolder,
@@ -87,7 +87,7 @@ export function addFlpGen(
     appWizard?: AppWizard,
     vscode?: any,
     promptSettings?: FLPConfigPromptOptions
-): void {
+): Promise<void> {
     let flpConfigOptions = {
         launchFlpConfigAsSubGenerator: true,
         appWizard,
@@ -108,5 +108,5 @@ export function addFlpGen(
             }
         };
     }
-    composeWith('@sap/fiori:flp-config', flpConfigOptions);
+    await composeWith('@sap/fiori:flp-config', flpConfigOptions);
 }

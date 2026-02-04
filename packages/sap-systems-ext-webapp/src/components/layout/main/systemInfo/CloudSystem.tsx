@@ -1,16 +1,18 @@
 import React from 'react';
-import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import type { ReactElement } from 'react';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import '../../../../styles/SystemMain.scss';
 import { ServiceKey } from './ServiceKey';
+import { getUrlErrorMessage } from './utils';
 
 interface CloudSystemProps {
     systemInfo?: BackendSystem;
     setUrl: (url: string | undefined) => void;
     setIsDetailsUpdated: (isUpdated: boolean) => void;
+    setIsDetailsValid: (isValid: boolean) => void;
 }
 
 /**
@@ -20,16 +22,20 @@ interface CloudSystemProps {
  * @param props.systemInfo - the system information
  * @param props.setUrl - function to set the URL
  * @param props.setIsDetailsUpdated - function to set the details updated flag
+ * @param props.setIsDetailsValid - function to set the details valid flag
  * @returns - the cloud system JSX element
  */
-export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonly<CloudSystemProps>): ReactElement {
+export function CloudSystem({
+    systemInfo,
+    setUrl,
+    setIsDetailsUpdated,
+    setIsDetailsValid
+}: Readonly<CloudSystemProps>): ReactElement {
     const { t } = useTranslation();
-
-    const authType = systemInfo?.authenticationType as AuthenticationType;
 
     let cloudComponent = <div></div>;
 
-    if (authType === 'reentranceTicket') {
+    if (systemInfo?.authenticationType === 'reentranceTicket') {
         cloudComponent = (
             <div>
                 <div className="store-text-field">
@@ -46,6 +52,7 @@ export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonl
                             }
                             setIsDetailsUpdated(true);
                         }}
+                        onGetErrorMessage={(value) => getUrlErrorMessage(value, t, setIsDetailsValid)}
                     />
                 </div>
             </div>

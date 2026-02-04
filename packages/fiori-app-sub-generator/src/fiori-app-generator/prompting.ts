@@ -118,9 +118,8 @@ export async function promptUI5ApplicationAnswers(
 ): Promise<{ ui5AppAnswers: UI5ApplicationAnswers; localUI5Version: string | undefined }> {
     let inquirerAdapter;
     // type `any` will be replaced when we can import ESM modules
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     if ((adapter as any)?.actualAdapter) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         inquirerAdapter = (adapter as any).actualAdapter;
     } else {
         inquirerAdapter = adapter;
@@ -171,9 +170,8 @@ export async function promptOdataServiceAnswers(
 ): Promise<Service> {
     let inquirerAdapter;
     // type `any` will be replaced when we can import ESM modules
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     if ((adapter as any)?.actualAdapter) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         inquirerAdapter = (adapter as any).actualAdapter;
     } else {
         inquirerAdapter = adapter;
@@ -197,6 +195,7 @@ export async function promptOdataServiceAnswers(
         serviceId: answers.serviceId,
         edmx: answers.metadata,
         annotations: answers.annotations,
+        valueListMetadata: answers.valueListMetadata,
         version: answers.odataVersion,
         capService: answers.capService,
         source: answers.datasourceType,
@@ -305,9 +304,6 @@ export async function createUI5ApplicationPromptOptions(
         [ui5AppInquirerPromptNames.enableTypeScript]: {
             default: defaultPromptValues[ui5AppInquirerPromptNames.enableTypeScript]
         },
-        [ui5AppInquirerPromptNames.enableCodeAssist]: {
-            hide: true
-        },
         [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
             hide: service.capService?.capType === 'Java'
         }
@@ -409,6 +405,7 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
         [odataServiceInquirerPromptNames.capProject]: {
             capSearchPaths: options.workspaceFolders ?? [],
             defaultChoice: options.capService?.projectPath,
+            useAutoComplete: getHostEnvironment() === hostEnvironment.cli,
             ...options.promptOptions?.capProject
         },
         [odataServiceInquirerPromptNames.capService]: {
@@ -438,6 +435,10 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
             useAutoComplete: !isYUI,
             includeCloudFoundryAbapEnvChoice: true,
             ...options.promptOptions?.systemSelection
+        },
+        [odataServiceInquirerPromptNames.valueHelpDownload]: {
+            hide: true,
+            ...options.promptOptions?.valueHelpDownload
         }
     };
 }

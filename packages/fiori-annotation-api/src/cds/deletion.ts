@@ -31,7 +31,7 @@ export const enum DeletionRangeKind {
     TARGET_FROM_WITH = 'TargetFromWith' // deletion starts from 'with' keyword, i.e. "with @Core.Description: 'description'"
 }
 
-const cdsKeywords = [
+const cdsKeywords = new Set([
     'ABSTRACT',
     'ACTION',
     'ANNOTATE',
@@ -47,7 +47,7 @@ const cdsKeywords = [
     'TYPE',
     'USING',
     'VIEW'
-];
+]);
 
 const separatorForKind: {
     [kind: string]: string;
@@ -258,7 +258,7 @@ function mergeDeletionRanges(tokens: CompilerToken[], deletionRanges: DeletionRa
         do {
             doMerge = false;
             const next = rangeIndex + 1 < deletionRanges.length ? deletionRanges[rangeIndex + 1] : null;
-            if (next && current.termRange.end + 1 === next.termRange.start) {
+            if (current.termRange.end + 1 === next?.termRange?.start) {
                 // merge possible if at most a single separator token is between deletion ranges
                 const nonCommentTokenIndexes: number[] = [];
                 let nextIndex = current.tokenRange.end;
@@ -819,7 +819,7 @@ function getClosingTokenIndex(tokens: CompilerToken[], startIndex: number): numb
             //    (this is not possible: element/parameter list could be followed by annotations of entity/action)
             // only include trailing comments if they are followed by a semicolon
             closingTokenIndex = token.text !== ';' && commentStartIndex > 0 ? commentStartIndex : index;
-        } else if (cdsKeywords.includes((token.text || '').toUpperCase())) {
+        } else if (cdsKeywords.has((token.text || '').toUpperCase())) {
             // start of next CDS statement
             closingTokenIndex = commentStartIndex > 0 ? commentStartIndex : index;
         } else if (['(', '{'].includes(token.text)) {
@@ -922,7 +922,7 @@ function includeSiblingSeparator(
     const nextToken = tokens[nextTokenIndex];
     let siblingSeparatorFound = false;
     let previousSeparatorIncluded = false;
-    if (nextToken && nextToken.text === separator) {
+    if (nextToken?.text === separator) {
         // extend deletion range to include separator
         deletionRange.tokenRange.end = nextTokenIndex;
         siblingSeparatorFound = true;

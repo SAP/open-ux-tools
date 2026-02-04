@@ -1,10 +1,14 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { ApplicationType, getApplicationType } from '../../../utils/application';
+import type { ApplicationType } from '../../../utils/application';
+import { getApplicationType } from '../../../utils/application';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 

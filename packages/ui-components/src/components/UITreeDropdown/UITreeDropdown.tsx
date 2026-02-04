@@ -102,7 +102,7 @@ const KEYBOARD_KEYS = {
 export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeDropdownState> {
     private readonly UITreeDropdownRef = React.createRef<{ props: UITreeDropdownProps }>();
     private readonly UITreeDropdownFocusZoneRef = React.createRef<FocusZone>();
-    private inputRef = React.createRef<ITextField>();
+    private readonly inputRef = React.createRef<ITextField>();
 
     private submenuRefs: { [key: string]: React.RefObject<{ props: UITreeDropdownProps }> } = {};
     private defaultSubmenuFocus?: TreeItemInfo;

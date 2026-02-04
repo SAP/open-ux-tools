@@ -10,7 +10,6 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import * as cfInquirer from '@sap-ux/cf-deploy-config-inquirer';
 import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
 import * as projectAccess from '@sap-ux/project-access';
-import Generator from 'yeoman-generator';
 import type fs from 'node:fs';
 
 jest.mock('fs', () => ({
@@ -20,9 +19,9 @@ jest.mock('fs', () => ({
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -121,7 +120,7 @@ describe('Deployment Generator', () => {
     it('Validate deployment generator is loaded as root generator', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
-        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
+        const composeWithSpy = jest.spyOn(DeployGenerator.prototype as any, 'composeWith').mockResolvedValue(undefined);
 
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
         const getABAPPromptsSpy = jest.spyOn(abapDeploySubGen, 'getAbapQuestions');
@@ -208,7 +207,12 @@ describe('Deployment Generator', () => {
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getCFQuestionsSpy).toHaveBeenCalled();
+        expect(getCFQuestionsSpy).toHaveBeenCalledWith(
+            expect.not.objectContaining({
+                overwrite: expect.anything()
+            }),
+            expect.any(Object)
+        );
         expect(getABAPPromptsSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 appRootPath: expect.stringContaining(join('/output/mta-app/project1')),

@@ -1,7 +1,10 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import FilterBar from 'sap/ui/mdc/FilterBar';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FilterBar from 'sap/ui/mdc/FilterBar';
 
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
 import { executeToggleAction } from './utils';

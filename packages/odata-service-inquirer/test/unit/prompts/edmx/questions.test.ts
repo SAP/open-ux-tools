@@ -3,7 +3,7 @@ import { TableType } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
@@ -152,9 +152,15 @@ describe('Test entity prompts', () => {
             message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
             severity: Severity.warning
         });
-        // validate is currently used to warn about no entities, although perhaps we shoudld be using additionalMessages
-        const validateResult = (mainEntityPrompt.validate as Function)();
+        // validate is currently used to warn about no entities, although perhaps we should be using additionalMessages
+        // Pass a mock entity value to test entity choices validation
+        const mockEntity = { entitySetName: 'TestEntity', entitySetType: 'TestType' } as EntityAnswer;
+        const validateResult = (mainEntityPrompt.validate as Function)(mockEntity);
         expect(validateResult).toBe(true);
+
+        // Test validation when no value is provided (user deleted the field)
+        const validateResultNull = (mainEntityPrompt.validate as Function)(null);
+        expect(validateResultNull).toBe(t('prompts.mainEntitySelection.requiredError'));
 
         const navEntityPrompt = questions.find(
             (question) => question.name === EntityPromptNames.navigationEntity
@@ -387,6 +393,18 @@ describe('Test entity prompts', () => {
             message: t('prompts.tableType.treeTableDefault'),
             severity: Severity.information
         });
+
+        // Test tableType validation with valid value
+        const tableTypeValidateResult = (tableType.validate as Function)('ResponsiveTable');
+        expect(tableTypeValidateResult).toBe(true);
+
+        // Test tableType validation when no value is provided (user deleted the field)
+        const tableTypeValidateResultNull = (tableType.validate as Function)(null);
+        expect(tableTypeValidateResultNull).toBe(t('prompts.tableType.requiredError'));
+
+        // Test with undefined
+        const tableTypeValidateResultUndefined = (tableType.validate as Function)(undefined);
+        expect(tableTypeValidateResultUndefined).toBe(t('prompts.tableType.requiredError'));
 
         // If the user has already selected a table type for the same entity, return it
         // First call establishes the entity

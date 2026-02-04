@@ -12,7 +12,7 @@ export function useTheme(): [ThemeName, React.Dispatch<ThemeName>] {
     const [theme, setTheme] = useLocalStorage<ThemeName>('theme', 'dark modern');
 
     useEffect(() => {
-        document.getElementsByTagName('HTML')[0].setAttribute('data-theme', theme);
+        document.documentElement.dataset.theme = theme;
     }, [theme]);
 
     return [theme, setTheme];

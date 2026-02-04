@@ -5,7 +5,7 @@ import winston, { format } from 'winston';
 import { toWinstonLogLevel, toWinstonTransport } from './adapter';
 import type WinstonTransport from 'winston-transport';
 import { nextColor } from './utils';
-import { inspect } from 'util';
+import { inspect } from 'node:util';
 
 const defaultLoggerOptions: LoggerOptions = {
     transports: [new ConsoleTransport()]
@@ -85,6 +85,7 @@ class BaseWinstonLogger implements Logger {
         }
         return undefined;
     }
+
     add(transport: Transport) {
         const winstonTransport = this.addToMap(this.transportMap, transport);
 
@@ -106,6 +107,7 @@ class BaseWinstonLogger implements Logger {
     transports(): Transport[] {
         return Array.from(this.transportMap.keys());
     }
+
     child({ logPrefix }: ChildLoggerOptions): Logger {
         const childLogPrefix = `${this.logPrefix}.${logPrefix}`;
         const metadataOverride = { label: childLogPrefix, labelColor: nextColor() };

@@ -29,7 +29,7 @@ import { fioriToolsProxy, serveStatic } from './constants';
 import Ajv, { type ValidateFunction } from 'ajv';
 import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
 import { join, posix, relative, sep } from 'node:path';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import yaml from 'js-yaml';
 
 /**
@@ -104,7 +104,7 @@ export class UI5Config {
         let resources: Resources;
         try {
             resources = this.document.getMap({ path: 'resources' }).toJSON();
-        } catch (error) {
+        } catch {
             resources = {};
         }
         return resources.configuration ?? {};
@@ -142,7 +142,6 @@ export class UI5Config {
      * Get the type in the yaml file.
      *
      * @returns {Ui5Document['type']} the type
-     * @memberof Ui5Document['type']
      */
     public getType(): Ui5Document['type'] {
         const type = this.document.getNode({ path: 'type' });
@@ -172,7 +171,7 @@ export class UI5Config {
         try {
             const configNode = this.document.getMap({ path: 'customConfiguration' });
             configNode.setIn([key], value);
-        } catch (_error) {
+        } catch {
             this.document.setIn({
                 path: 'customConfiguration',
                 value: {
