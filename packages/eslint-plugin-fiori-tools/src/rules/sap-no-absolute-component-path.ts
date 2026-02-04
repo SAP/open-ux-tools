@@ -96,7 +96,7 @@ const rule: RuleDefinition = {
             const objectExpr = asObjectExpression(node);
             if (objectExpr) {
                 // Get property list from object expression
-                const propertyList = objectExpr.properties as any[];
+                const propertyList = objectExpr.properties as unknown[];
                 // Go through the properties
                 let property: any;
                 for (const key in propertyList) {
