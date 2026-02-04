@@ -46,7 +46,8 @@ export async function storeCredentials(
             username: configAnswers.username,
             password: configAnswers.password,
             systemType: (systemEndpoint.SystemType as SystemType) || SystemType.AbapOnPrem,
-            connectionType: 'abap_catalog'
+            connectionType: 'abap_catalog',
+            userDisplayName: configAnswers.username
         });
 
         await systemService.write(backendSystem, { force: !!existingSystem });
