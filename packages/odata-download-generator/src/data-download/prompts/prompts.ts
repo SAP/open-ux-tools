@@ -130,14 +130,13 @@ export async function getODataDownloaderPrompts(): Promise<{
     };
 }
 
-
 /**
  * Gets the app selection prompt.
- * 
- * @param appConfig 
- * @param servicePaths 
- * @param keyPrompts 
- * @returns 
+ *
+ * @param appConfig
+ * @param servicePaths
+ * @param keyPrompts
+ * @returns
  */
 function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], keyPrompts: InputQuestion<Answers>[]) {
     return {
@@ -182,10 +181,12 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], key
 }
 
 /**
- * Gets the entity selection prompt. 
- * 
- * @param relatedEntityChoices 
- * @returns 
+ * Gets the entity selection prompt.
+ *
+ * @param relatedEntityChoices
+ * @param relatedEntityChoices.choices
+ * @param relatedEntityChoices.entitySetsFlat
+ * @returns
  */
 function getEntitySelectionPrompt(relatedEntityChoices: {
     choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
@@ -302,7 +303,7 @@ function getResetSelectionPrompt(
 
 /**
  * Get the prompt for keys
- * 
+ *
  * @param size
  * @param appConfig
  */

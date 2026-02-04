@@ -13,7 +13,7 @@ export type EntitySetsFlat = { [entityPath: string]: string };
  */
 export function getExpands(entityPaths: { entityPath: string; entitySetName: string }[]): {
     expands: {};
-    entityPathParts: string[]
+    entityPathParts: string[];
 } {
     const entityPathParts: string[] = [];
     const expand = entityPaths.reduce(
@@ -62,12 +62,14 @@ export function createQueryFromEntities(
     const { expands: entitiesToExpand, entityPathParts } = getExpands(selectedPaths);
 
     // To provide feedback about which entity set files would be created by this query
-    const entitySetNames = entityPathParts.map((path) => {
-        const found = selectedEntities.find((selectedEntity) => {
-            return path === selectedEntity.entity.entityPath ? selectedEntity.entity.entitySetName : undefined
+    const entitySetNames = entityPathParts
+        .map((path) => {
+            const found = selectedEntities.find((selectedEntity) => {
+                return path === selectedEntity.entity.entityPath ? selectedEntity.entity.entitySetName : undefined;
+            });
+            return found?.entity.entitySetName;
         })
-        return found?.entity.entitySetName;
-    }).filter((item): item is string => item !== undefined);;
+        .filter((item): item is string => item !== undefined);
     ODataDownloadGenerator.logger.info(
         t('info.entityFilesToBeGenerated', { entities: Object.keys(entitySetNames).join(', ') })
     );
