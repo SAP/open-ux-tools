@@ -13,6 +13,7 @@ import type {
 
 export enum PromptsType {
     FilterBar = 'filter-bar',
+    Form = 'form',
     Chart = 'chart',
     Table = 'table',
     Page = 'page',
