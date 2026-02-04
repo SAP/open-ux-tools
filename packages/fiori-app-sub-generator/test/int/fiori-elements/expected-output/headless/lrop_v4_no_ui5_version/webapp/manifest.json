@@ -1,5 +1,5 @@
 {
-  "_version": "1.80.0",
+  "_version": "1.82.0",
   "sap.app": {
     "id": "testnamepsace.lropv4noui5version",
     "type": "application",
@@ -31,7 +31,7 @@
             "annotation"
           ],
           "localUri": "localService/mainService/metadata.xml",
-          "odataVersion": "4.0"
+          "odataVersion": "4.01"
         }
       }
     }
@@ -55,7 +55,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.142.0",
+      "minUI5Version": "1.144.0",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
