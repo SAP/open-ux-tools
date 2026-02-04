@@ -2,8 +2,8 @@
  * @file Rule to detect absolute path to component
  */
 
-import type { Rule } from 'eslint';
-import { type ASTNode } from '../utils/helpers';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+import { type ASTNode, asCallExpression, asObjectExpression, asArrayExpression } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -23,7 +23,7 @@ function endsWith(string: string, suffix: string): boolean {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -36,11 +36,9 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const T_MEMBER = 'MemberExpression';
-        const T_ARRAY = 'ArrayExpression';
         const T_IDENTIFIER = 'Identifier';
-        const T_OBJECT = 'ObjectExpression';
         const T_PROPERTY = 'Property';
         const P_METADATA = 'metadata';
         const P_INCLUDES = 'includes';
@@ -52,11 +50,12 @@ const rule: Rule.RuleModule = {
          * @returns The name extracted from the literal or identifier node
          */
         function getLiteralOrIdentifiertName(node: ASTNode): string {
+            const n = node as { type: string; name?: string; value?: string };
             let result = '';
-            if (node.type === T_IDENTIFIER) {
-                result = (node as any).name;
+            if (n && typeof n === 'object' && n.type === T_IDENTIFIER) {
+                result = n.name ?? '';
             } else {
-                result = (node as any).value;
+                result = n.value ?? '';
             }
             return result;
         }
@@ -68,13 +67,17 @@ const rule: Rule.RuleModule = {
          * @returns The identifier path extracted from the node
          */
         function getIdentifierPath(node: ASTNode): string {
+            const n = node as { type?: string; name?: string; object?: any; property?: any };
             let result = '';
-            switch (node.type) {
+            if (!n || typeof n !== 'object') {
+                return result;
+            }
+            switch (n.type) {
                 case T_IDENTIFIER:
-                    result = (node as any).name;
+                    result = n.name ?? '';
                     break;
                 case T_MEMBER:
-                    result = `${getIdentifierPath((node as any).object)}.${getLiteralOrIdentifiertName((node as any).property)}`;
+                    result = `${getIdentifierPath(n.object)}.${getLiteralOrIdentifiertName(n.property)}`;
                     break;
                 default:
             }
@@ -90,11 +93,12 @@ const rule: Rule.RuleModule = {
          */
         function getPropertyFromObjectExpression(node: ASTNode | undefined, propertyName: string): ASTNode | undefined {
             // Check if node is of type object expression
-            if (node?.type === T_OBJECT) {
+            const objectExpr = asObjectExpression(node);
+            if (objectExpr) {
                 // Get property list from object expression
-                const propertyList = (node as any).properties;
+                const propertyList = objectExpr.properties as unknown[];
                 // Go through the properties
-                let property;
+                let property: unknown;
                 for (const key in propertyList) {
                     // Check if element is of type we are looking for
                     // all in one if-statement to reach code coverage
@@ -117,27 +121,30 @@ const rule: Rule.RuleModule = {
          * @param node The function call node to validate
          */
         function validateFunctionOptions(node: ASTNode): void {
-            if ((node as any).arguments.length > 1) {
-                // get options parameter (2nd)
-                const options = (node as any).arguments[1];
-                // Get metadata data
-                const metadata = getPropertyFromObjectExpression(options, P_METADATA);
-                // Get includes data
-                const includes = getPropertyFromObjectExpression(metadata, P_INCLUDES);
-                // Check if includes type is array expression
-                if (includes?.type === T_ARRAY) {
-                    // Get array elements
-                    const includesElements = (includes as any).elements;
-                    let element;
-                    for (const key in includesElements) {
-                        // all in one if-statement to reach code coverage
-                        if (
-                            includesElements.hasOwnProperty(key) &&
-                            (element = includesElements[key]) &&
-                            getLiteralOrIdentifiertName(element).startsWith('/')
-                        ) {
-                            context.report({ node: node, messageId: 'absolutePath' });
-                        }
+            const callExpr = asCallExpression(node);
+            if (!callExpr || callExpr.arguments.length <= 1) {
+                return;
+            }
+            // get options parameter (2nd)
+            const options = callExpr.arguments[1];
+            // Get metadata data
+            const metadata = getPropertyFromObjectExpression(options, P_METADATA);
+            // Get includes data
+            const includes = getPropertyFromObjectExpression(metadata, P_INCLUDES);
+            // Check if includes type is array expression
+            const arrayExpr = asArrayExpression(includes);
+            if (arrayExpr) {
+                // Get array elements
+                const includesElements = arrayExpr.elements;
+                let element;
+                for (const key in includesElements) {
+                    // all in one if-statement to reach code coverage
+                    if (
+                        includesElements.hasOwnProperty(key) &&
+                        (element = includesElements[key]) &&
+                        getLiteralOrIdentifiertName(element).startsWith('/')
+                    ) {
+                        context.report({ node: node, messageId: 'absolutePath' });
                     }
                 }
             }
@@ -149,7 +156,11 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to process
          */
         function processCallExpression(node: ASTNode): void {
-            const path = getIdentifierPath((node as any).callee);
+            const callExpr = asCallExpression(node);
+            if (!callExpr) {
+                return;
+            }
+            const path = getIdentifierPath(callExpr.callee);
             if (endsWith(path, `.${'extend'}`)) {
                 validateFunctionOptions(node);
             }

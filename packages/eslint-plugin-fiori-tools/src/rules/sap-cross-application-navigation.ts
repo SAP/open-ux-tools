@@ -2,8 +2,17 @@
  * @file Rule
  */
 
-import type { Rule } from 'eslint';
-import { type ASTNode } from '../utils/helpers';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+import {
+    type ASTNode,
+    getLiteralOrIdentifierName,
+    asCallExpression,
+    asLiteral,
+    asMemberExpression,
+    asObjectExpression,
+    asIdentifier,
+    asProperty
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -32,26 +41,6 @@ function endsWith(string: string, suffix: string): boolean {
 }
 
 /**
- * Check if a node is an ObjectExpression.
- *
- * @param node The AST node to check
- * @returns True if the node is an ObjectExpression
- */
-function isObject(node: ASTNode | undefined): boolean {
-    return isType(node, 'ObjectExpression');
-}
-
-/**
- * Check if a node is a MemberExpression.
- *
- * @param node The AST node to check
- * @returns True if the node is a MemberExpression
- */
-function isMember(node: ASTNode | undefined): boolean {
-    return isType(node, 'MemberExpression');
-}
-
-/**
  * Check if a node is an Identifier.
  *
  * @param node The AST node to check
@@ -59,16 +48,6 @@ function isMember(node: ASTNode | undefined): boolean {
  */
 function isIdentifier(node: ASTNode | undefined): boolean {
     return isType(node, 'Identifier');
-}
-
-/**
- * Check if a node is a CallExpression.
- *
- * @param node The AST node to check
- * @returns True if the node is a CallExpression
- */
-function isCall(node: ASTNode | undefined): boolean {
-    return isType(node, 'CallExpression');
 }
 
 /**
@@ -82,26 +61,6 @@ function isLogical(node: ASTNode | undefined): boolean {
 }
 
 /**
- * Check if a node is a Literal.
- *
- * @param node The AST node to check
- * @returns True if the node is a Literal
- */
-function isLiteral(node: ASTNode | undefined): boolean {
-    return isType(node, 'Literal');
-}
-
-/**
- * Check if a node is a Property.
- *
- * @param node The AST node to check
- * @returns True if the node is a Property
- */
-function isProperty(node: ASTNode | undefined): boolean {
-    return isType(node, 'Property');
-}
-
-/**
  * Get the identifier path from a node.
  *
  * @param node The AST node to extract path from
@@ -109,14 +68,17 @@ function isProperty(node: ASTNode | undefined): boolean {
  */
 function getIdentifierPath(node: ASTNode): string {
     if (isIdentifier(node)) {
-        return (node as any).name;
-    } else if (isLiteral(node)) {
-        return (node as any).value;
-    } else if (isMember(node)) {
-        return `${getIdentifierPath((node as any).object)}.${getIdentifierPath((node as any).property)}`;
-    } else {
-        return '';
+        return getLiteralOrIdentifierName(node);
     }
+    const literal = asLiteral(node);
+    if (literal && typeof literal.value === 'string') {
+        return literal.value;
+    }
+    const member = asMemberExpression(node);
+    if (member) {
+        return `${getIdentifierPath(member.object)}.${getIdentifierPath(member.property)}`;
+    }
+    return '';
 }
 
 /**
@@ -127,9 +89,11 @@ function getIdentifierPath(node: ASTNode): string {
  */
 function getName(node: ASTNode): string | null {
     if (isIdentifier(node)) {
-        return (node as any).name;
-    } else if (isLiteral(node)) {
-        return (node as any).value;
+        return getLiteralOrIdentifierName(node);
+    }
+    const literal = asLiteral(node);
+    if (literal && typeof literal.value === 'string') {
+        return literal.value;
     }
     return null;
 }
@@ -141,13 +105,13 @@ function getName(node: ASTNode): string | null {
  * @returns True if the node is a getService call with CrossApplicationNavigation
  */
 function isGetServiceCall(node: ASTNode | undefined): boolean {
-    if (isCall(node)) {
-        if (
-            (node as any).arguments?.length === 1 &&
-            isLiteral((node as any).arguments[0]) &&
-            (node as any).arguments[0].value === 'CrossApplicationNavigation'
-        ) {
-            return true;
+    const callExpr = asCallExpression(node);
+    if (callExpr) {
+        if (callExpr.arguments?.length === 1) {
+            const firstArg = asLiteral(callExpr.arguments[0]);
+            if (firstArg?.value === 'CrossApplicationNavigation') {
+                return true;
+            }
         }
     }
     return false;
@@ -162,11 +126,13 @@ function isGetServiceCall(node: ASTNode | undefined): boolean {
  */
 function getProperty(node: ASTNode, key: string): ASTNode | null {
     // check if node is an object, only objects have properties
-    if (isObject(node)) {
+    const objectExpr = asObjectExpression(node);
+    if (objectExpr) {
         // iterate properties
-        for (const property of (node as any).properties) {
+        for (const prop of objectExpr.properties) {
+            const property = asProperty(prop);
             // return property value if property key matches given key
-            if (isProperty(property) && getName(property.key) === key) {
+            if (property && getName(property.key) === key) {
                 return property.value;
             }
         }
@@ -181,11 +147,15 @@ function getProperty(node: ASTNode, key: string): ASTNode | null {
  * @returns True if the assignment contains interesting nodes
  */
 function isInterestingAssignment(node: ASTNode | undefined): boolean {
-    return (
-        isGetServiceCall(node) ||
-        (isLogical(node) &&
-            (isInterestingAssignment((node as any).left) || isInterestingAssignment((node as any).right)))
-    );
+    if (isGetServiceCall(node)) {
+        return true;
+    }
+    if (isLogical(node) && node && typeof node === 'object') {
+        const leftNode = 'left' in node ? node.left : undefined;
+        const rightNode = 'right' in node ? node.right : undefined;
+        return isInterestingAssignment(leftNode) || isInterestingAssignment(rightNode);
+    }
+    return false;
 }
 
 /**
@@ -195,8 +165,9 @@ function isInterestingAssignment(node: ASTNode | undefined): boolean {
  * @returns True if the navigation has valid target configuration
  */
 function isValid(node: ASTNode): boolean {
-    if ((node as any).arguments?.length > 0) {
-        const target = getProperty((node as any).arguments[0], 'target');
+    const callNode = node as { arguments?: unknown[] };
+    if ( callNode.arguments.length > 0) {
+        const target = getProperty(callNode.arguments[0], 'target');
         if (target) {
             // get property target from first argument, get property shellHash from property target
             const shellHash = getProperty(target, 'shellHash');
@@ -222,7 +193,7 @@ function isValid(node: ASTNode): boolean {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -235,7 +206,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const VARIABLES: Record<string, boolean> = {};
 
         /**
@@ -245,12 +216,20 @@ const rule: Rule.RuleModule = {
          * @returns True if the call expression is interesting for cross-application navigation
          */
         function isInterestingCall(node: ASTNode): boolean {
-            const path = getIdentifierPath((node as any).callee);
-            if (isCall(node) && endsWith(path, 'toExternal')) {
-                const callee = (node as any).callee;
-                if (isMember(callee)) {
-                    const object = callee.object;
-                    if (isGetServiceCall(object) || (isIdentifier(object) && VARIABLES[object.name])) {
+            const callExpr = asCallExpression(node);
+            if (!callExpr) {
+                return false;
+            }
+            const path = getIdentifierPath(callExpr.callee);
+            if (endsWith(path, 'toExternal')) {
+                const memberCallee = asMemberExpression(callExpr.callee);
+                if (memberCallee) {
+                    const object = memberCallee.object;
+                    if (isGetServiceCall(object)) {
+                        return true;
+                    }
+                    const identObject = asIdentifier(object);
+                    if (identObject && VARIABLES[identObject.name]) {
                         return true;
                     }
                 }

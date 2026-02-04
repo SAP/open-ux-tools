@@ -2,7 +2,7 @@
  * @file Rule to flag use of alert
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -12,7 +12,7 @@ import type { Rule } from 'eslint';
 // Rule Definition
 // ------------------------------------------------------------------------------
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -26,7 +26,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         return {
             'CallExpression': function (node): void {
                 if (node.callee.type === 'MemberExpression' && node.callee.property.type === 'Identifier') {

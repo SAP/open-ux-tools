@@ -2,13 +2,11 @@
  * Common AST helper functions for ESLint rules
  */
 
-import type { Rule } from 'eslint';
-
 // Type aliases for better readability
-export type ASTNode = Rule.Node;
+export type ASTNode = unknown;
 
 // ESLint AST node type interfaces - using intersections instead of extensions
-interface BaseNode {
+export interface BaseNode {
     type: string;
     parent?: ASTNode;
     range?: [number, number];
@@ -17,6 +15,26 @@ interface BaseNode {
         end: { line: number; column: number };
     };
 }
+
+export type CallExpressionNode = BaseNode & {
+    type: 'CallExpression';
+    callee: unknown;
+    arguments: unknown[];
+    optional?: boolean;
+};
+
+export type AssignmentExpressionNode = BaseNode & {
+    type: 'AssignmentExpression';
+    operator: string;
+    left: unknown;
+    right: unknown;
+};
+
+export type VariableDeclaratorNode = BaseNode & {
+    type: 'VariableDeclarator';
+    id: unknown;
+    init?: unknown;
+};
 
 export type IdentifierNode = BaseNode & {
     type: 'Identifier';
@@ -35,6 +53,39 @@ export type LiteralNode = BaseNode & {
     type: 'Literal';
     value: string | number | boolean | null | RegExp;
     raw: string;
+};
+
+export type ObjectExpressionNode = BaseNode & {
+    type: 'ObjectExpression';
+    properties: unknown[];
+};
+
+export type PropertyNode = BaseNode & {
+    type: 'Property';
+    key: unknown;
+    value: unknown;
+    kind: 'init' | 'get' | 'set';
+    method: boolean;
+    shorthand: boolean;
+    computed: boolean;
+};
+
+export type ArrayExpressionNode = BaseNode & {
+    type: 'ArrayExpression';
+    elements: unknown[];
+};
+
+export type UnaryExpressionNode = BaseNode & {
+    type: 'UnaryExpression';
+    operator: string;
+    prefix: boolean;
+    argument: unknown;
+};
+
+export type VariableDeclarationNode = BaseNode & {
+    type: 'VariableDeclaration';
+    declarations: unknown[];
+    kind: 'var' | 'let' | 'const';
 };
 
 // ------------------------------------------------------------------------------
@@ -213,7 +264,7 @@ export function createRememberWindow(
     isWindowObject: (node: unknown) => boolean
 ): (left: unknown, right: unknown) => boolean {
     return function rememberWindow(left: unknown, right: unknown): boolean {
-        if (isWindowObject(right as ASTNode) && isIdentifier(left as ASTNode)) {
+        if (isWindowObject(right) && isIdentifier(left)) {
             windowObjects.push((left as IdentifierNode).name);
             return true;
         }
@@ -238,7 +289,7 @@ export function createIsDocument(isWindowObject: (node: unknown) => boolean): (n
                 return (node as IdentifierNode).name === 'document';
             } else if (isMember(node)) {
                 const memberNode = node as MemberExpressionNode;
-                return isWindowObject(memberNode.object as ASTNode) && isDocument(memberNode.property as ASTNode);
+                return isWindowObject(memberNode.object) && isDocument(memberNode.property);
             }
         }
         return false;
@@ -276,7 +327,7 @@ export function createRememberDocument(
     isDocumentObject: (node: unknown) => boolean
 ): (left: unknown, right: unknown) => boolean {
     return function rememberDocument(left: unknown, right: unknown): boolean {
-        if (isDocumentObject(right as ASTNode) && isIdentifier(left as ASTNode)) {
+        if (isDocumentObject(right) && isIdentifier(left)) {
             documentObjects.push((left as IdentifierNode).name);
             return true;
         }
@@ -341,7 +392,7 @@ export function createIsHistory(isWindowObject: (node: unknown) => boolean): (no
                 return (node as IdentifierNode).name === 'history';
             } else if (isMember(node)) {
                 const memberNode = node as MemberExpressionNode;
-                return isWindowObject(memberNode.object as ASTNode) && isHistory(memberNode.property as ASTNode);
+                return isWindowObject(memberNode.object) && isHistory(memberNode.property);
             }
         }
         return false;
@@ -378,7 +429,7 @@ export function createRememberHistory(
     isHistoryObject: (node: unknown) => boolean
 ): (left: unknown, right: unknown) => boolean {
     return function rememberHistory(left: unknown, right: unknown): boolean {
-        if (isHistoryObject(right as ASTNode) && isIdentifier(left as ASTNode)) {
+        if (isHistoryObject(right) && isIdentifier(left)) {
             historyObjects.push((left as IdentifierNode).name);
             return true;
         }
@@ -403,7 +454,7 @@ export function createIsLocation(isWindowObject: (node: unknown) => boolean): (n
                 return (node as IdentifierNode).name === 'location';
             } else if (isMember(node)) {
                 const memberNode = node as MemberExpressionNode;
-                return isWindowObject(memberNode.object as ASTNode) && isLocation(memberNode.property as ASTNode);
+                return isWindowObject(memberNode.object) && isLocation(memberNode.property);
             }
         }
         return false;
@@ -441,7 +492,7 @@ export function createRememberLocation(
     isLocationObject: (node: unknown) => boolean
 ): (left: unknown, right: unknown) => boolean {
     return function rememberLocation(left: unknown, right: unknown): boolean {
-        if (isLocationObject(right as ASTNode) && isIdentifier(left as ASTNode)) {
+        if (isLocationObject(right) && isIdentifier(left)) {
             locationObjects.push((left as IdentifierNode).name);
             return true;
         }
@@ -479,7 +530,7 @@ export function getIdentifierPath(node: unknown): string {
         return '';
     }
 
-    const astNode = node as ASTNode;
+    const astNode = node as BaseNode;
     switch (astNode.type) {
         case 'Identifier':
             return (node as IdentifierNode).name;
@@ -639,7 +690,7 @@ export function createStorageRuleHelpers(
          * @param forbiddenStorageObjects Array to store forbidden storage object references
          */
         processVariableDeclarator(node: ASTNode, forbiddenStorageObjects: string[]): void {
-            const declaratorNode = node as { init?: ASTNode; id: IdentifierNode };
+            const declaratorNode = node as { init?: BaseNode; id: IdentifierNode };
             if (declaratorNode.init) {
                 if (declaratorNode.init.type === 'MemberExpression') {
                     const memberInit = declaratorNode.init as MemberExpressionNode;
@@ -783,6 +834,7 @@ export function findDeepestExistingPath(
     startObject: any,
     pathSegments: string[]
 ): DeepestExistingPathResult | undefined {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     let current: any = startObject;
     for (let i = 0; i < pathSegments.length; i++) {
         const segment = pathSegments[i];
@@ -792,6 +844,7 @@ export function findDeepestExistingPath(
                 missingSegments: pathSegments.slice(i)
             };
         }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         current = current[segment];
     }
 
@@ -799,4 +852,185 @@ export function findDeepestExistingPath(
         validatedPath: pathSegments,
         missingSegments: []
     };
+}
+
+// ------------------------------------------------------------------------------
+// Type-safe AST Node Property Accessors
+// ------------------------------------------------------------------------------
+
+/**
+ * Safely cast a node to MemberExpressionNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as MemberExpressionNode or undefined
+ */
+export function asMemberExpression(node: unknown): MemberExpressionNode | undefined {
+    if (isMember(node)) {
+        return node as MemberExpressionNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to CallExpressionNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as CallExpressionNode or undefined
+ */
+export function asCallExpression(node: unknown): CallExpressionNode | undefined {
+    if (isCall(node)) {
+        return node as CallExpressionNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to IdentifierNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as IdentifierNode or undefined
+ */
+export function asIdentifier(node: unknown): IdentifierNode | undefined {
+    if (isIdentifier(node)) {
+        return node as IdentifierNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to LiteralNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as LiteralNode or undefined
+ */
+export function asLiteral(node: unknown): LiteralNode | undefined {
+    if (isLiteral(node)) {
+        return node as LiteralNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to ObjectExpressionNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as ObjectExpressionNode or undefined
+ */
+export function asObjectExpression(node: unknown): ObjectExpressionNode | undefined {
+    if (isObject(node)) {
+        return node as ObjectExpressionNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to ArrayExpressionNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as ArrayExpressionNode or undefined
+ */
+export function asArrayExpression(node: unknown): ArrayExpressionNode | undefined {
+    if (isArray(node)) {
+        return node as ArrayExpressionNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to PropertyNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as PropertyNode or undefined
+ */
+export function asProperty(node: unknown): PropertyNode | undefined {
+    if (isProperty(node)) {
+        return node as PropertyNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to AssignmentExpressionNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as AssignmentExpressionNode or undefined
+ */
+export function asAssignmentExpression(node: unknown): AssignmentExpressionNode | undefined {
+    if (isType(node, 'AssignmentExpression')) {
+        return node as AssignmentExpressionNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to VariableDeclaratorNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as VariableDeclaratorNode or undefined
+ */
+export function asVariableDeclarator(node: unknown): VariableDeclaratorNode | undefined {
+    if (isType(node, 'VariableDeclarator')) {
+        return node as VariableDeclaratorNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to UnaryExpressionNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as UnaryExpressionNode or undefined
+ */
+export function asUnaryExpression(node: unknown): UnaryExpressionNode | undefined {
+    if (isType(node, 'UnaryExpression')) {
+        return node as UnaryExpressionNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely cast a node to VariableDeclarationNode and access its properties.
+ *
+ * @param node The AST node to cast
+ * @returns The node as VariableDeclarationNode or undefined
+ */
+export function asVariableDeclaration(node: unknown): VariableDeclarationNode | undefined {
+    if (isType(node, 'VariableDeclaration')) {
+        return node as VariableDeclarationNode;
+    }
+    return undefined;
+}
+
+/**
+ * Safely get the parent node as a specific type.
+ *
+ * @param node The AST node
+ * @returns The parent node as BaseNode or undefined
+ */
+export function getParent(node: unknown): BaseNode | undefined {
+    const baseNode = node as BaseNode;
+    if (baseNode?.parent) {
+        return baseNode.parent as BaseNode;
+    }
+    return undefined;
+}
+
+/**
+ * Get the name from an Identifier or Literal node property.
+ *
+ * @param property The property node (Identifier or Literal)
+ * @returns The name/value as a string, or undefined
+ */
+export function getPropertyName(property: unknown): string | undefined {
+    const identifier = asIdentifier(property);
+    if (identifier) {
+        return identifier.name;
+    }
+
+    const literal = asLiteral(property);
+    if (literal && typeof literal.value === 'string') {
+        return literal.value;
+    }
+
+    return undefined;
 }

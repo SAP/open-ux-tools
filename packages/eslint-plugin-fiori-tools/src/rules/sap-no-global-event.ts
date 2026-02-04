@@ -2,33 +2,21 @@
  * @file Detect some warning for usages of (window.)document APIs
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+import {
+    type ASTNode,
+    isMember,
+    contains,
+    asIdentifier,
+    asMemberExpression,
+    asVariableDeclarator,
+    asAssignmentExpression,
+    getParent
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
 // ------------------------------------------------------------------------------
-
-/**
- * Check if a node is of a specific type.
- *
- * @param node The AST node to check
- * @param type The type to check for
- * @returns True if the node is of the specified type
- */
-function isType(node: any, type: any): boolean {
-    return node?.type === type;
-}
-
-/**
- * Check if an array contains a specific object.
- *
- * @param a The array to search in
- * @param obj The object to search for
- * @returns True if the array contains the object
- */
-function contains(a: any[], obj: any): boolean {
-    return a.includes(obj);
-}
 
 /**
  * Check if a node is the target of an assignment expression.
@@ -36,28 +24,10 @@ function contains(a: any[], obj: any): boolean {
  * @param node The AST node to check
  * @returns True if the node is the target of an assignment expression
  */
-function isAssignTarget(node: any): boolean {
-    return node?.parent.type === 'AssignmentExpression' && node.parent.left === node;
-}
-
-/**
- * Check if a node is an Identifier.
- *
- * @param node The AST node to check
- * @returns True if the node is an Identifier
- */
-function isIdentifier(node: any): boolean {
-    return isType(node, 'Identifier');
-}
-
-/**
- * Check if a node is a MemberExpression.
- *
- * @param node The AST node to check
- * @returns True if the node is a MemberExpression
- */
-function isMember(node: any): boolean {
-    return isType(node, 'MemberExpression');
+function isAssignTarget(node: ASTNode): boolean {
+    const parent = getParent(node);
+    const assignmentParent = asAssignmentExpression(parent);
+    return !!assignmentParent && assignmentParent.left === node;
 }
 
 /**
@@ -66,15 +36,15 @@ function isMember(node: any): boolean {
  * @param node The AST node to check
  * @returns True if the node represents the global window object
  */
-function isWindow(node: any): boolean {
-    // true if node is the global variable 'window'
-    return isIdentifier(node) && node.name === 'window';
+function isWindow(node: unknown): boolean {
+    const identifier = asIdentifier(node);
+    return !!identifier && identifier.name === 'window';
 }
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -87,9 +57,9 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
-        const WINDOW_OBJECTS: any[] = [];
-        const EVENT_OBJECTS: any[] = [];
+    create(context: RuleContext) {
+        const WINDOW_OBJECTS: string[] = [];
+        const EVENT_OBJECTS: string[] = [];
         const FORBIDDEN_GLOBAL_EVENT = [
             'onload',
             'onunload',
@@ -124,9 +94,9 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the window object or a reference to it
          */
-        function isWindowObject(node: any): boolean {
-            // true if node is the global variable 'window' or a reference to it
-            return isWindow(node) || (node && isIdentifier(node) && contains(WINDOW_OBJECTS, node.name));
+        function isWindowObject(node: unknown): boolean {
+            const identifier = asIdentifier(node);
+            return isWindow(node) || (!!identifier && contains(WINDOW_OBJECTS, identifier.name));
         }
 
         /**
@@ -135,13 +105,18 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the window.event object
          */
-        function isEvent(node: any): boolean {
+        function isEvent(node: unknown): boolean {
+            const memberNode = asMemberExpression(node);
+            if (!memberNode) {
+                return false;
+            }
+            const propertyId = asIdentifier(memberNode.property);
             return (
-                node &&
+                !!memberNode &&
                 isMember(node) &&
-                isWindowObject(node.object) &&
-                isIdentifier(node.property) &&
-                node.property.name === 'event'
+                isWindowObject(memberNode.object) &&
+                !!propertyId &&
+                propertyId.name === 'event'
             );
         }
 
@@ -151,8 +126,9 @@ const rule: Rule.RuleModule = {
          * @param node The AST node to check
          * @returns True if the node represents the event object or a reference to it
          */
-        function isEventObject(node: any): boolean {
-            return isEvent(node) || (node && isIdentifier(node) && contains(EVENT_OBJECTS, node.name));
+        function isEventObject(node: unknown): boolean {
+            const identifier = asIdentifier(node);
+            return isEvent(node) || (!!identifier && contains(EVENT_OBJECTS, identifier.name));
         }
 
         // --------------------------------------------------------------------------
@@ -164,15 +140,23 @@ const rule: Rule.RuleModule = {
          *
          * @param node The AST node to check
          */
-        function processMemberExpression(node: any): void {
-            if (isAssignTarget(node) && isIdentifier(node.property)) {
-                if (
-                    (isWindowObject(node.object) && contains(FORBIDDEN_GLOBAL_EVENT, node.property.name)) ||
-                    (isEventObject(node.object) &&
-                        (node.property.name === 'returnValue' || node.property.name === 'cancelBubble'))
-                ) {
-                    context.report({ node: node, messageId: 'globalEvent' });
-                }
+        function processMemberExpression(node: ASTNode): void {
+            const memberNode = asMemberExpression(node);
+            if (!memberNode) {
+                return;
+            }
+
+            const propertyId = asIdentifier(memberNode.property);
+            if (!isAssignTarget(node) || !propertyId) {
+                return;
+            }
+
+            if (
+                (isWindowObject(memberNode.object) && contains(FORBIDDEN_GLOBAL_EVENT, propertyId.name)) ||
+                (isEventObject(memberNode.object) &&
+                    (propertyId.name === 'returnValue' || propertyId.name === 'cancelBubble'))
+            ) {
+                context.report({ node: node, messageId: 'globalEvent' });
             }
         }
 
@@ -183,9 +167,10 @@ const rule: Rule.RuleModule = {
          * @param right The right-hand side of the assignment
          * @returns True if window object was remembered, false otherwise
          */
-        function rememberWindow(left: any, right: any): boolean {
-            if (isWindowObject(right) && isIdentifier(left)) {
-                WINDOW_OBJECTS.push(left.name);
+        function rememberWindow(left: unknown, right: unknown): boolean {
+            const leftId = asIdentifier(left);
+            if (isWindowObject(right) && leftId) {
+                WINDOW_OBJECTS.push(leftId.name);
                 return true;
             }
             return false;
@@ -198,9 +183,10 @@ const rule: Rule.RuleModule = {
          * @param right The right-hand side of the assignment
          * @returns True if event object was remembered, false otherwise
          */
-        function rememberEvent(left: any, right: any): boolean {
-            if (isEventObject(right) && isIdentifier(left)) {
-                EVENT_OBJECTS.push(left.name);
+        function rememberEvent(left: unknown, right: unknown): boolean {
+            const leftId = asIdentifier(left);
+            if (isEventObject(right) && leftId) {
+                EVENT_OBJECTS.push(leftId.name);
                 return true;
             }
             return false;
@@ -210,11 +196,22 @@ const rule: Rule.RuleModule = {
         // Public
         // --------------------------------------------------------------------------
         return {
-            'VariableDeclarator': function (node): boolean {
-                return rememberWindow(node.id, node.init) || rememberEvent(node.id, node.init);
+            'VariableDeclarator': function (node: ASTNode): boolean {
+                const declarator = asVariableDeclarator(node);
+                if (!declarator) {
+                    return false;
+                }
+                return rememberWindow(declarator.id, declarator.init) || rememberEvent(declarator.id, declarator.init);
             },
-            'AssignmentExpression': function (node): boolean {
-                return rememberWindow(node.left, node.right) || rememberEvent(node.left, node.right);
+            'AssignmentExpression': function (node: ASTNode): boolean {
+                const assignment = asAssignmentExpression(node);
+                if (!assignment) {
+                    return false;
+                }
+                return (
+                    rememberWindow(assignment.left, assignment.right) ||
+                    rememberEvent(assignment.left, assignment.right)
+                );
             },
             'MemberExpression': processMemberExpression
         };

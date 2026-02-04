@@ -4,8 +4,9 @@
  *               namespaces
  */
 
-import type { Rule, SourceCode } from 'eslint';
-import { contains } from '../utils/helpers';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+
+import { contains, type ASTNode } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -44,8 +45,10 @@ function uniquifyArray<T>(array: T[]): T[] {
 function calculateObjectName(memberExpressionObject: any): string {
     let objectName = '';
     if (memberExpressionObject.type === 'MemberExpression') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         objectName = memberExpressionObject.property.name;
     } else if (memberExpressionObject.type === 'Identifier') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         objectName = memberExpressionObject.name;
     }
     return objectName;
@@ -57,7 +60,7 @@ function calculateObjectName(memberExpressionObject: any): string {
  * @param ancestors The array of ancestor nodes to check
  * @returns The position of the NewExpression or -1 if not found
  */
-function checkIfAncestorsContainsNewExpression(ancestors: ReturnType<SourceCode['getAncestors']>): number {
+function checkIfAncestorsContainsNewExpression(ancestors: any[]): number {
     const ancestorsLength = ancestors.length;
     for (let i = 0; i < ancestorsLength; i++) {
         if (ancestors[i].type === 'NewExpression') {
@@ -67,7 +70,7 @@ function checkIfAncestorsContainsNewExpression(ancestors: ReturnType<SourceCode[
     return -1;
 }
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -95,9 +98,10 @@ const rule: Rule.RuleModule = {
         ],
         defaultOptions: [{}]
     },
-    create(context: Rule.RuleContext) {
-        const sourceCode = context.sourceCode ?? context.getSourceCode();
-        const customNS = context.options[0]?.ns ? context.options[0].ns : [];
+    create(context: RuleContext) {
+        const sourceCode = context.sourceCode;
+
+        const customNS = ((context.options[0] as any)?.ns as string[] | undefined) ?? [];
         const configuration = {
             'ns': uniquifyArray(
                 [
@@ -189,7 +193,8 @@ const rule: Rule.RuleModule = {
         function processMemberExpression(node: any): void {
             if (node.object.type === 'Identifier') {
                 let namespace = node.object.name + '.' + node.property.name;
-                const ancestors = sourceCode.getAncestors(node);
+
+                const ancestors = (sourceCode as any).getAncestors(node) as ASTNode[];
 
                 ancestors.reverse();
                 const newExpressionPosition = checkIfAncestorsContainsNewExpression(ancestors);
@@ -224,9 +229,12 @@ const rule: Rule.RuleModule = {
          */
         function checkAssignmentAgainstOverride(node: any): void {
             if (node.left.type === 'MemberExpression' && node.right.type === 'FunctionExpression') {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const memberExpression = node.left,
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     objectProperty = memberExpression.property.name;
                 let objectNameToCheck;
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const memberExpressionObject = memberExpression.object;
 
                 if (checkIfNotAllowedMethod(objectProperty)) {

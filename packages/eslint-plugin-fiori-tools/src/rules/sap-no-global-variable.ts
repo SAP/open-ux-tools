@@ -1,9 +1,8 @@
 /**
  * @file flag global variable declaration
  */
-
-import type { Rule, Scope } from 'eslint';
-import { type ASTNode } from '../utils/helpers';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
+import { type ASTNode, asVariableDeclaration } from '../utils/helpers';
 
 //------------------------------------------------------------------------------
 // Helper Functions
@@ -24,7 +23,7 @@ function contains(array: string[], item: string): boolean {
 // Rule Definition
 //------------------------------------------------------------------------------
 
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -39,7 +38,7 @@ const rule: Rule.RuleModule = {
         }
     },
 
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const ALLOWED_VARIABLES = ['undefined', 'NaN', 'arguments', 'PDFJS', 'console', 'Infinity'];
 
         //--------------------------------------------------------------------------
@@ -48,25 +47,26 @@ const rule: Rule.RuleModule = {
 
         return {
             VariableDeclaration(node: ASTNode) {
-                const sourceCode = context.sourceCode ?? context.getSourceCode();
-                const scope: Scope.Scope = sourceCode.getScope
-                    ? sourceCode.getScope(node)
-                    : (context as any).getScope();
+                const sourceCode = context.sourceCode;
+                const scope = (sourceCode as any).getScope(node);
 
                 // Check if this is a global/module scope variable declaration
                 if (scope.type === 'global' || scope.type === 'module') {
-                    (node as any).declarations.forEach((declaration: any) => {
-                        if (declaration.id?.type === 'Identifier') {
-                            const name = declaration.id.name;
-                            if (!contains(ALLOWED_VARIABLES, name)) {
-                                context.report({
-                                    node: declaration.id,
-                                    messageId: 'globalVariableNotAllowed',
-                                    data: { name }
-                                });
+                    const varDecl = asVariableDeclaration(node);
+                    if (varDecl) {
+                        varDecl.declarations.forEach((declaration: unknown) => {
+                            if (declaration.id?.type === 'Identifier') {
+                                const name = declaration.id.name;
+                                if (!contains(ALLOWED_VARIABLES, name)) {
+                                    context.report({
+                                        node: declaration.id,
+                                        messageId: 'globalVariableNotAllowed',
+                                        data: { name }
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             }
         };

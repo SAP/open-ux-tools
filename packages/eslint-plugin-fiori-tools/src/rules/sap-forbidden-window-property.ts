@@ -2,9 +2,15 @@
  * @file Detect the definition of global properties in the window object
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import type { ASTNode } from '../utils/helpers';
-import { isIdentifier, isMember, isLiteral } from '../utils/helpers';
+import {
+    isIdentifier,
+    getLiteralOrIdentifierName,
+    asIdentifier,
+    asMemberExpression,
+    getPropertyName
+} from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -18,13 +24,20 @@ import { isIdentifier, isMember, isLiteral } from '../utils/helpers';
  */
 function isWindow(node: ASTNode | undefined): boolean {
     // true if node is the global variable 'window'
-    return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
+    return !!(
+        isIdentifier(node) &&
+        node &&
+        typeof node === 'object' &&
+        node !== null &&
+        'name' in node &&
+        getLiteralOrIdentifierName(node) === 'window'
+    );
 }
 
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -37,7 +50,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const WINDOW_OBJECTS: string[] = [];
         const FORBIDDEN_PROPERTIES = new Set(['top', 'addEventListener']);
 
@@ -55,7 +68,12 @@ const rule: Rule.RuleModule = {
             // true if node is the global variable 'window' or a reference to it
             return !!(
                 isWindow(node) ||
-                (node && isIdentifier(node) && 'name' in node && WINDOW_OBJECTS.includes(node.name))
+                (node &&
+                    isIdentifier(node) &&
+                    typeof node === 'object' &&
+                    node !== null &&
+                    'name' in node &&
+                    WINDOW_OBJECTS.includes(getLiteralOrIdentifierName(node)))
             );
         }
 
@@ -70,8 +88,9 @@ const rule: Rule.RuleModule = {
          * @returns True if window object was remembered, false otherwise
          */
         function rememberWindow(left: ASTNode, right: ASTNode): boolean {
-            if (isWindowObject(right) && isIdentifier(left) && 'name' in left) {
-                WINDOW_OBJECTS.push(left.name);
+            const leftId = asIdentifier(left);
+            if (isWindowObject(right) && leftId) {
+                WINDOW_OBJECTS.push(leftId.name);
                 return true;
             }
             return false;
@@ -84,7 +103,8 @@ const rule: Rule.RuleModule = {
          * @returns True if the node represents an interesting window property access
          */
         function isInteresting(node: ASTNode): boolean {
-            return isMember(node) && isWindowObject((node as any).object);
+            const memberNode = asMemberExpression(node);
+            return !!memberNode && isWindowObject(memberNode.object);
         }
 
         /**
@@ -94,16 +114,13 @@ const rule: Rule.RuleModule = {
          * @returns True if the window property access is valid
          */
         function isValid(node: ASTNode): boolean {
-            let method = '';
-
-            if (isIdentifier((node as any).property) && 'name' in (node as any).property) {
-                method = (node as any).property.name;
+            const memberNode = asMemberExpression(node);
+            if (!memberNode) {
+                return true;
             }
 
-            if (isLiteral((node as any).property) && 'value' in (node as any).property) {
-                method = (node as any).property.value;
-            }
-            return !FORBIDDEN_PROPERTIES.has(method);
+            const method = getPropertyName(memberNode.property);
+            return !method || !FORBIDDEN_PROPERTIES.has(method);
         }
 
         // --------------------------------------------------------------------------

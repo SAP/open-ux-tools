@@ -2,16 +2,24 @@
  * @file Detect some warning for usages of (window.)document APIs
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     isType,
     isIdentifier,
     isMember,
     isCall,
-    isLiteral,
     buildCalleePath,
     isForbiddenObviousApi,
-    type ASTNode
+    type ASTNode,
+    getLiteralOrIdentifierName,
+    asCallExpression,
+    asMemberExpression,
+    asIdentifier,
+    asLiteral,
+    asVariableDeclarator,
+    asUnaryExpression,
+    getParent,
+    getPropertyName
 } from '../utils/helpers';
 
 // ------------------------------------------------------------------------------
@@ -25,7 +33,14 @@ import {
  * @returns True if the node represents the window object
  */
 function isWindow(node: ASTNode | undefined): boolean {
-    return !!(isIdentifier(node) && node && 'name' in node && node.name === 'window');
+    return !!(
+        isIdentifier(node) &&
+        node &&
+        typeof node === 'object' &&
+        node !== null &&
+        'name' in node &&
+        getLiteralOrIdentifierName(node) === 'window'
+    );
 }
 
 /**
@@ -35,11 +50,16 @@ function isWindow(node: ASTNode | undefined): boolean {
  * @returns The rightmost method name
  */
 function getRightestMethodName(node: ASTNode): string {
-    if (isMember((node as any).callee)) {
-        return (node as any).callee.property.name;
-    } else {
-        return (node as any).callee.name;
+    const callExpr = asCallExpression(node);
+    if (!callExpr) {
+        return '';
     }
+    const memberCallee = asMemberExpression(callExpr.callee);
+    if (memberCallee) {
+        return getPropertyName(memberCallee.property) ?? '';
+    }
+    const identCallee = asIdentifier(callExpr.callee);
+    return identCallee?.name ?? '';
 }
 
 /**
@@ -56,10 +76,25 @@ function isDirectBodyAccess(calleePathNonCmpt: string, speciousObjectNonCmpt: st
     );
 }
 
+/**
+ * Check if a node represents the value -1.
+ *
+ * @param node The node to check
+ * @returns True if the node represents the value -1
+ */
+function isMinusOne(node: ASTNode): boolean {
+    const unaryExpr = asUnaryExpression(node);
+    if (!unaryExpr) {
+        return false;
+    }
+    const literalArg = asLiteral(unaryExpr.argument);
+    return unaryExpr.operator === '-' && literalArg?.value === 1;
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -76,7 +111,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const FORBIDDEN_DOM_ACCESS = [
                 'getElementById',
                 'getElementsByClassName',
@@ -92,8 +127,7 @@ const rule: Rule.RuleModule = {
             FORBIDDEN_HISTORY_OBJECT: string[] = [];
 
         const IF_CONDITION = 'IfStatement',
-            CONDITION_EXP = 'ConditionalExpression',
-            UNARY = 'UnaryExpression';
+            CONDITION_EXP = 'ConditionalExpression';
         // --------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------
@@ -105,15 +139,6 @@ const rule: Rule.RuleModule = {
          */
         function isCondition(node: ASTNode | undefined): boolean {
             return isType(node, IF_CONDITION) || isType(node, CONDITION_EXP);
-        }
-        /**
-         * Check if a node represents a unary expression.
-         *
-         * @param node The node to check
-         * @returns True if the node represents a unary expression
-         */
-        function isUnary(node: ASTNode | undefined): boolean {
-            return isType(node, UNARY);
         }
 
         /**
@@ -144,14 +169,16 @@ const rule: Rule.RuleModule = {
          * @returns True if the node represents history object access
          */
         function isHistory(node: ASTNode | undefined, justHistory: boolean): boolean {
-            if (node && isIdentifier(node) && 'name' in node) {
-                return node.name === 'history' || (!justHistory && FORBIDDEN_HISTORY_OBJECT.includes(node.name));
-            } else if (node && isMember(node)) {
+            if (node && isIdentifier(node) && typeof node === 'object' && node !== null && 'name' in node) {
                 return (
-                    isWindow((node as any).object) &&
-                    isIdentifier((node as any).property) &&
-                    isHistory((node as any).property, true)
+                    getLiteralOrIdentifierName(node) === 'history' ||
+                    (!justHistory && FORBIDDEN_HISTORY_OBJECT.includes(getLiteralOrIdentifierName(node)))
                 );
+            }
+            const memberNode = asMemberExpression(node);
+            if (memberNode) {
+                const identProp = asIdentifier(memberNode.property);
+                return isWindow(memberNode.object) && identProp !== undefined && isHistory(memberNode.property, true);
             }
             return false;
         }
@@ -209,6 +236,8 @@ const rule: Rule.RuleModule = {
                 case 'history':
                     FORBIDDEN_HISTORY_OBJECT.push(varName);
                     break;
+                default:
+                // No action needed for other identifiers
             }
         }
 
@@ -218,7 +247,11 @@ const rule: Rule.RuleModule = {
          * @param node The variable declarator node to process
          */
         function processVariableDeclarator(node: ASTNode): void {
-            const init = (node as any).init;
+            const declarator = asVariableDeclarator(node);
+            if (!declarator) {
+                return;
+            }
+            const init = declarator.init;
             if (!init) {
                 return;
             }
@@ -241,28 +274,13 @@ const rule: Rule.RuleModule = {
             // we check the depth here because the call might be nested in a block statement and in an expression statement (http://jointjs.com/demos/javascript-ast)
             // (true?history.back():''); || if(true) history.back(); || if(true){history.back();} || if(true){}else{history.back();}
             if (maxDepth > 0) {
-                const parent = node.parent;
+                const parent = getParent(node);
                 if (!parent) {
                     return false;
                 }
                 return isCondition(parent) || isInCondition(parent, maxDepth - 1);
             }
             return false;
-        }
-
-        /**
-         * Check if a node represents the value -1.
-         *
-         * @param node The node to check
-         * @returns True if the node represents the value -1
-         */
-        function isMinusOne(node: ASTNode): boolean {
-            return (
-                isUnary(node) &&
-                (node as any).operator === '-' &&
-                isLiteral((node as any).argument) &&
-                (node as any).argument.value === 1
-            );
         }
 
         /**
@@ -291,7 +309,11 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node
          */
         function handleHistoryGo(node: ASTNode): void {
-            const args = (node as any).arguments;
+            const callExpr = asCallExpression(node);
+            if (!callExpr) {
+                return;
+            }
+            const args = callExpr.arguments;
             if (args.length === 1 && isMinusOne(args[0])) {
                 if (!isInCondition(node, 3)) {
                     context.report({ node: node, messageId: 'historyUsages' });
@@ -329,13 +351,18 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to process
          */
         function processHistory(node: ASTNode): void {
-            const callee = (node as any).callee;
-            if (!isMember(callee)) {
+            const callExpr = asCallExpression(node);
+            if (!callExpr) {
+                return;
+            }
+            const memberCallee = asMemberExpression(callExpr.callee);
+            if (!memberCallee) {
                 return;
             }
 
-            if (isHistory(callee.object, false) && isIdentifier(callee.property) && 'name' in callee.property) {
-                processHistoryMethod(node, callee.property.name);
+            const identProp = asIdentifier(memberCallee.property);
+            if (isHistory(memberCallee.object, false) && identProp) {
+                processHistoryMethod(node, identProp.name);
             }
         }
 
@@ -433,10 +460,11 @@ const rule: Rule.RuleModule = {
          * @param node The member expression node
          */
         function handleCallExpressionMember(node: ASTNode): void {
-            if (!node.parent) {
+            const parent = getParent(node);
+            if (!parent) {
                 return;
             }
-            const methodName = getRightestMethodName(node.parent);
+            const methodName = getRightestMethodName(parent);
             if (typeof methodName !== 'string') {
                 return;
             }
@@ -489,11 +517,10 @@ const rule: Rule.RuleModule = {
             const speciousObjectNonCmpt = isForbiddenObviousApi(calleePathNonCmpt);
 
             // Handle window property access
+            const memberNode = asMemberExpression(node);
+            const propertyName = memberNode ? getPropertyName(memberNode.property) : undefined;
             if (
-                (calleePathNonCmpt === 'window' &&
-                    (node as any).property &&
-                    'name' in (node as any).property &&
-                    isWindowUsage((node as any).property.name)) ||
+                (calleePathNonCmpt === 'window' && propertyName && isWindowUsage(propertyName)) ||
                 isScreenAccess(calleePathNonCmpt)
             ) {
                 context.report({ node: node, messageId: 'windowUsages' });
@@ -520,7 +547,8 @@ const rule: Rule.RuleModule = {
                 processHistory(node);
             },
             'MemberExpression': function (node): void {
-                if (isCall(node.parent) && !node.computed) {
+                const parent = getParent(node);
+                if (isCall(parent) && !node.computed) {
                     handleCallExpressionMember(node);
                 } else {
                     handleNonCallExpressionMember(node);

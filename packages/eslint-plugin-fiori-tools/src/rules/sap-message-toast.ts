@@ -3,14 +3,16 @@
  *               sap.m.MessageToast.show
  */
 
-import type { Rule } from 'eslint';
+import type { RuleDefinition, RuleContext } from '@eslint/core';
 import {
     getIdentifierPath,
     resolveIdentifierPath,
     createVariableDeclaratorProcessor,
     isInteger,
     endsWith,
-    type ASTNode
+    type ASTNode,
+    asCallExpression,
+    asObjectExpression
 } from '../utils/helpers';
 
 const INTERESTING_PATH = {
@@ -43,7 +45,7 @@ function getEMValue(value: string): number {
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
-const rule: Rule.RuleModule = {
+const rule: RuleDefinition = {
     meta: {
         type: 'problem',
         docs: {
@@ -58,7 +60,7 @@ const rule: Rule.RuleModule = {
         },
         schema: []
     },
-    create(context: Rule.RuleContext) {
+    create(context: RuleContext) {
         const X_UNARY = 'UnaryExpression';
         const VARIABLES: Record<string, string[]> = {};
 
@@ -176,11 +178,17 @@ const rule: Rule.RuleModule = {
          * @param node The function call node to validate
          */
         function validateFunctionOptions(node: ASTNode): void {
-            if ((node as any).arguments.length !== 2) {
+            const callExpr = asCallExpression(node);
+            if (!callExpr || callExpr.arguments.length !== 2) {
                 return;
             }
 
-            const optionList = (node as any).arguments[1].properties;
+            const optionsObj = asObjectExpression(callExpr.arguments[1]);
+            if (!optionsObj) {
+                return;
+            }
+
+            const optionList = optionsObj.properties as any[];
             for (const key in optionList) {
                 if (optionList.hasOwnProperty(key) && optionList[key].type === 'Property') {
                     validateProperty(node, optionList[key]);
@@ -194,7 +202,11 @@ const rule: Rule.RuleModule = {
          * @param node The call expression node to process
          */
         function processCallExpression(node: ASTNode): void {
-            let path = getIdentifierPath((node as any).callee);
+            const callExpr = asCallExpression(node);
+            if (!callExpr) {
+                return;
+            }
+            let path = getIdentifierPath(callExpr.callee);
             path = resolveIdentifierPath(path, VARIABLES);
 
             if (isInterestingPath(path)) {
