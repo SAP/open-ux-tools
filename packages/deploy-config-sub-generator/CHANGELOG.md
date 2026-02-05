@@ -1,5 +1,47 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.63
+
+### Patch Changes
+
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.139
+    - @sap-ux/deploy-config-generator-shared@0.1.83
+    - @sap-ux/fiori-generator-shared@0.13.64
+    - @sap-ux/odata-service-inquirer@2.16.6
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/inquirer-common@0.10.24
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.122
+
+## 0.5.62
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.138
+    - @sap-ux/odata-service-inquirer@2.16.5
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.121
+    - @sap-ux/deploy-config-generator-shared@0.1.82
+
+## 0.5.61
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.120
+    - @sap-ux/odata-service-inquirer@2.16.4
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/deploy-config-generator-shared@0.1.81
+    - @sap-ux/abap-deploy-config-sub-generator@0.1.137
+    - @sap-ux/fiori-generator-shared@0.13.62
+
 ## 0.5.60
 
 ### Patch Changes

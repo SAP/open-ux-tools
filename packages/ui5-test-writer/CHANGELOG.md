@@ -1,5 +1,19 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.62
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-application-writer@1.7.6
+
+## 0.7.61
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+
 ## 0.7.60
 
 ### Patch Changes

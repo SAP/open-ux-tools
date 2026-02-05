@@ -1,5 +1,14 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.49
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-config@0.29.15
+
 ## 0.6.48
 
 ### Patch Changes
