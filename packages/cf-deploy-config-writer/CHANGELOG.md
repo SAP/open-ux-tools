@@ -1,5 +1,15 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.59
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/nodejs-utils@0.2.13
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-config@0.29.15
+
 ## 0.3.58
 
 ### Patch Changes

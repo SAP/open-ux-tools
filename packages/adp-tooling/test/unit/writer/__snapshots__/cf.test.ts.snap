@@ -28,12 +28,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - test-cf-project.zip
+          name: test-cf-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: test-cf-project
     type: html5
-    path: my.test.cf.app
+    path: test-cf-project
     build-parameters:
       builder: custom
       commands:
@@ -104,7 +104,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -258,12 +258,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - test-cf-project.zip
+          name: test-cf-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: test-cf-project
     type: html5
-    path: my.test.cf.app
+    path: test-cf-project
     build-parameters:
       builder: custom
       commands:
@@ -333,7 +333,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -492,12 +492,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - test-cf-project.zip
+          name: test-cf-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: test-cf-project
     type: html5
-    path: my.test.cf.app
+    path: test-cf-project
     build-parameters:
       builder: custom
       commands:
@@ -567,7 +567,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -694,12 +694,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - test-cf-project.zip
+          name: test-cf-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: test-cf-project
     type: html5
-    path: my.test.cf.app
+    path: test-cf-project
     build-parameters:
       builder: custom
       commands:
@@ -770,7 +770,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -924,12 +924,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - test-cf-project.zip
+          name: test-cf-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: test-cf-project
     type: html5
-    path: my.test.cf.app
+    path: test-cf-project
     build-parameters:
       builder: custom
       commands:
@@ -978,7 +978,7 @@ description: Test MTA Project for CF Writer Tests
 		\\"node\\": \\"^10.0.0\\"
 	},
 	\\"dependencies\\": {
-		\\"@sap/approuter\\": \\"^7.0.0\\"
+		\\"@sap/approuter\\": \\"^20.8.0\\"
 	},
 	\\"scripts\\": {
 		\\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
@@ -1035,7 +1035,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -1167,12 +1167,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - my.test.cf.app.zip
-          name: my.test.cf.app
+            - test-cf-project.zip
+          name: test-cf-project
           target-path: resources/
-  - name: my.test.cf.app
+  - name: test-cf-project
     type: html5
-    path: my.test.cf.app
+    path: test-cf-project
     build-parameters:
       builder: custom
       commands:
@@ -1243,7 +1243,7 @@ dist/
 	},
 	\\"devDependencies\\": {
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"^0.0.1\\",
+		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
