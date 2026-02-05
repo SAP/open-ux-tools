@@ -8,6 +8,7 @@ export const ENABLE_PASTE = 'sap-enable-paste';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 export const TABLE_PERSONALIZATION = 'sap-table-personalization';
+export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -84,6 +85,10 @@ export interface TablePersonalization {
     type: typeof TABLE_PERSONALIZATION;
     property?: PersonalizationProperty;
     pageName: string;
+}
+
+export interface TableColumnVerticalAlignment {
+    type: typeof TABLE_COLUMN_VERTICAL_ALIGNMENT;
     manifest: ManifestPropertyDiagnosticData;
 }
 
@@ -95,4 +100,5 @@ export type Diagnostic =
     | EnableExport
     | EnablePaste
     | StatePreservationMode
-    | TablePersonalization;
+    | TablePersonalization
+    | TableColumnVerticalAlignment;
