@@ -113,6 +113,12 @@ function ensureSystemsJsonMigrated(): void {
     const legacySystemsPath = join(getFioriToolsDirectory(), systemFileName);
     const newSystemsPath = join(getSapToolsDirectory(), systemFileName);
     const migrationFlag = join(getSapToolsDirectory(), '.systemsMigrated');
+
+    if (!existsSync(legacySystemsPath)) {
+        // No legacy file exists, nothing to migrate
+        return;
+    }
+
     const legacyData = JSON.parse(readFileSync(legacySystemsPath, 'utf-8')).systems as Record<string, BackendSystem>;
 
     if (existsSync(migrationFlag)) {

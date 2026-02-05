@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.5.4
+
+### Patch Changes
+
+- 83e3b70: check for presence of legacy systems.json file
+
 ## 1.5.3
 
 ### Patch Changes
