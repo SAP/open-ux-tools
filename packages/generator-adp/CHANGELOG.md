@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.8.10
+
+### Patch Changes
+
+- df61c3a: feat: Prompt for credentials when not available in VSCode for adp generator
+- Updated dependencies [df61c3a]
+    - @sap-ux/adp-tooling@0.18.55
+
 ## 0.8.9
 
 ### Patch Changes
