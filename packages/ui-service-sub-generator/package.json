@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui-service-sub-generator",
     "description": "Generator for creating UI Service",
-    "version": "0.1.163",
+    "version": "0.1.170",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -57,7 +57,7 @@
         "jest-extended": "6.0.0",
         "mem-fs": "4.1.2",
         "mem-fs-editor": "11.1.4",
-        "rimraf": "6.0.1",
+        "rimraf": "6.1.2",
         "yeoman-environment": "3.19.3",
         "yeoman-test": "6.3.0"
     },

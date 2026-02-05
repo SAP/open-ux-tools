@@ -146,14 +146,14 @@ export async function loadAppVariant(rootProject: ReaderCollection): Promise<Des
  * @param yamlPath  Relative or absolute path to the ui5.yaml file
  * @returns The `AdpPreviewConfig` object if found, otherwise throws an error.
  */
-export async function getAdpConfig(basePath: string, yamlPath: string): Promise<AdpPreviewConfig> {
+export async function getAdpConfig<T = AdpPreviewConfig>(basePath: string, yamlPath: string): Promise<T> {
     try {
         const ui5Conf = await readUi5Config(basePath, yamlPath);
         const adp = extractAdpConfig(ui5Conf);
         if (!adp) {
             throw new Error('Could not extract ADP configuration from ui5.yaml');
         }
-        return adp;
+        return adp as T;
     } catch (error) {
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         throw new Error(`No system configuration found in ${basename(ui5ConfigPath)}`);

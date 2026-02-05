@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/flp-config-sub-generator",
     "description": "Generator for creating Fiori Launcpad configuration",
-    "version": "0.3.109",
+    "version": "0.3.115",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -46,6 +46,7 @@
     "devDependencies": {
         "@jest/types": "30.0.1",
         "@types/inquirer": "8.2.6",
+        "@types/lodash": "4.14.202",
         "@types/mem-fs": "2.2.0",
         "@types/mem-fs-editor": "10.0.1",
         "@types/yeoman-generator": "5.2.11",
@@ -53,11 +54,10 @@
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@vscode-logging/logger": "2.0.0",
+        "lodash": "4.17.23",
         "memfs": "3.4.13",
         "mem-fs-editor": "11.1.4",
-        "lodash": "4.17.21",
-        "@types/lodash": "4.14.202",
-        "rimraf": "6.0.1",
+        "rimraf": "6.1.2",
         "unionfs": "4.4.0",
         "yeoman-test": "6.3.0"
     },

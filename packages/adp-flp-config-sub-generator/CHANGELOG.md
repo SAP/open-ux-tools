@@ -1,5 +1,90 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.164
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/flp-config-inquirer@0.4.111
+    - @sap-ux/adp-tooling@0.18.52
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/system-access@0.6.47
+
+## 0.1.163
+
+### Patch Changes
+
+- f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
+- Updated dependencies [f1e6ed6]
+    - @sap-ux/adp-tooling@0.18.51
+    - @sap-ux/flp-config-inquirer@0.4.110
+
+## 0.1.162
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/system-access@0.6.47
+    - @sap-ux/adp-tooling@0.18.50
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/flp-config-inquirer@0.4.109
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-generator-shared@0.13.62
+
+## 0.1.161
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/axios-extension@1.25.9
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/adp-tooling@0.18.49
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/flp-config-inquirer@0.4.108
+    - @sap-ux/system-access@0.6.46
+    - @sap-ux/inquirer-common@0.10.21
+
+## 0.1.160
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/axios-extension@1.25.8
+    - @sap-ux/flp-config-inquirer@0.4.107
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/adp-tooling@0.18.48
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/system-access@0.6.45
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/store@1.5.3
+
+## 0.1.159
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/adp-tooling@0.18.47
+    - @sap-ux/inquirer-common@0.10.19
+    - @sap-ux/axios-extension@1.25.7
+    - @sap-ux/fiori-generator-shared@0.13.59
+    - @sap-ux/flp-config-inquirer@0.4.106
+    - @sap-ux/system-access@0.6.44
+
+## 0.1.158
+
+### Patch Changes
+
+- 6d1c7ff: fix: Improve error message for Adaptation Project FLP Config generator on older systems
+
 ## 0.1.157
 
 ### Patch Changes

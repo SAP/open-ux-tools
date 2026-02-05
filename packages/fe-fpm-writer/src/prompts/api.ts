@@ -69,6 +69,7 @@ export class PromptsAPI {
         }
         await initI18n();
         const project = projectPath ? await getProject(projectPath) : undefined;
+
         return new PromptsAPI(fs, project, appId, options);
     }
 
@@ -83,6 +84,7 @@ export class PromptsAPI {
     ): Promise<Prompts<NarrowPrompt<typeof type>['answers']>> {
         const method = type in PromptsQuestionsMap ? PromptsQuestionsMap[type] : unsupportedPrompts;
         const prompt = await (method(this.context) as Promise<Prompts<NarrowPrompt<typeof type>['answers']>>);
+
         // Update cache
         this.cache = {
             ...this.cache,

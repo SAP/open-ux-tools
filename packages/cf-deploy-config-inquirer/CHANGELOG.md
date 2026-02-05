@@ -1,5 +1,42 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.78
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/inquirer-common@0.10.23
+
+## 0.5.77
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/btp-utils@1.1.7
+
+## 0.5.76
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.21
+
+## 0.5.75
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.5.74
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.19
+
 ## 0.5.73
 
 ### Patch Changes

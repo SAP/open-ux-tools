@@ -1160,7 +1160,7 @@ export class FlpSandbox {
         const layer = await adp.init(variant);
 
         // CF ADP build path mode: serve built resources directly from build output
-        if (config.cfBuildPath) {
+        if ('cfBuildPath' in config) {
             const manifest = this.setupCfBuildMode(config.cfBuildPath);
             configureRta(this.rta, layer, variant.id, false);
             await this.init(manifest, variant.reference);
