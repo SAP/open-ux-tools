@@ -5,7 +5,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey, getService } from '@sap-ux/store';
 import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
 import { FioriElementsVersion, PageTypeV4, type Specification } from '@sap/ux-specification/dist/types/src';
-import { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
+import type { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
 import { isEqual, mergeWith, uniqWith } from 'lodash';
 import { ODataDownloadGenerator } from './odata-download-generator';
 import type { EntitySetsFlat } from './odata-query';
