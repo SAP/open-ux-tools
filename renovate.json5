@@ -41,6 +41,7 @@
         '**/test/test-data/**',
         '**/expected-output/**',
         '**/test/sample/**',
+        '**/test/unit/sample/**',
         '**/test/data/**',
         '**/test/samples/**',
         '**/test/fixtures/**',
