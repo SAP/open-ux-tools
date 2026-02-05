@@ -422,7 +422,7 @@ async function updateManifest(cfConfig: CFConfig, fs: Editor): Promise<void> {
  */
 async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<void> {
     let deployArgs: string[] = [];
-    if (fileExists(fs, join(cfConfig.appPath, FileName.MtaExtYaml))) {
+    if (await fileExists(join(cfConfig.appPath, FileName.MtaExtYaml), fs)) {
         deployArgs = ['-e', FileName.MtaExtYaml];
     }
     // Added for all flows

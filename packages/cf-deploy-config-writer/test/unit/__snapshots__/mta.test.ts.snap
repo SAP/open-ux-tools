@@ -302,8 +302,10 @@ resources:
   - name: standaloneBasic-uaa
     type: org.cloudfoundry.managed-service
     parameters:
-      service-plan: application
       service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      service-name: standaloneBasic-xsuaa-service
       config:
         xsappname: 'standaloneBasic-\${space-guid}'
         tenant-mode: dedicated

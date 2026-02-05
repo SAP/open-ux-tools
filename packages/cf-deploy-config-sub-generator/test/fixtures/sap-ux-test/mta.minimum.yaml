@@ -25,7 +25,9 @@ resources:
           config:
               tenant-mode: dedicated
               xsappname: sap-ux-test-${space-guid}
+          path: ./xs-security.json
           service: xsuaa
+          service-name: sap-ux-test-xsuaa-service
           service-plan: application
     - name: sap-ux-test-html5-repo-runtime
       type: org.cloudfoundry.managed-service
