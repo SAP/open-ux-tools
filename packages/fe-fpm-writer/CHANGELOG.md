@@ -1,5 +1,14 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.42.1
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/fiori-annotation-api@0.9.8
+
 ## 0.42.0
 
 ### Minor Changes

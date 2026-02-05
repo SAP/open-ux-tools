@@ -1,5 +1,14 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.5.1
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/fiori-annotation-api@0.9.8
+
 ## 9.5.0
 
 ### Minor Changes

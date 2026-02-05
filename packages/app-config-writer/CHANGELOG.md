@@ -1,5 +1,23 @@
 # @sap-ux/app-config-writer
 
+## 0.6.90
+
+### Patch Changes
+
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/ui5-config@0.29.15
+
+## 0.6.89
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/axios-extension@1.25.10
+
 ## 0.6.88
 
 ### Patch Changes

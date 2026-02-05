@@ -1,5 +1,26 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.41
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.64
+- @sap-ux/ui5-config@0.29.15
+- @sap-ux/cap-config-writer@0.12.55
+
+## 2.5.40
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/cap-config-writer@0.12.54
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/odata-service-writer@0.29.13
+    - @sap-ux/ui5-application-writer@1.7.6
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/ui5-test-writer@0.7.62
+
 ## 2.5.39
 
 ### Patch Changes

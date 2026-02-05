@@ -1,5 +1,23 @@
 # @sap-ux/inquirer-common
 
+## 0.10.24
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.64
+- @sap-ux/telemetry@0.6.65
+
+## 0.10.23
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/odata-service-writer@0.29.13
+    - @sap-ux/ui5-info@0.13.11
+    - @sap-ux/telemetry@0.6.64
+
 ## 0.10.22
 
 ### Patch Changes
