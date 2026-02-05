@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.13
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+
 ## 0.2.12
 
 ### Patch Changes
