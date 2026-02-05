@@ -1,5 +1,36 @@
 # @sap-ux/adp-tooling
 
+## 0.18.51
+
+### Patch Changes
+
+- f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
+
+## 0.18.50
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/system-access@0.6.47
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/nodejs-utils@0.2.12
+    - @sap-ux/odata-service-writer@0.29.12
+
+## 0.18.49
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/axios-extension@1.25.9
+    - @sap-ux/odata-service-writer@0.29.12
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/system-access@0.6.46
+    - @sap-ux/inquirer-common@0.10.21
+    - @sap-ux/project-input-validator@0.6.49
+
 ## 0.18.48
 
 ### Patch Changes

@@ -1,5 +1,48 @@
 # @sap-ux/create
 
+## 0.14.49
+
+### Patch Changes
+
+- f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
+- Updated dependencies [f1e6ed6]
+    - @sap-ux/adp-tooling@0.18.51
+    - @sap-ux/preview-middleware@0.23.107
+    - @sap-ux/flp-config-inquirer@0.4.110
+    - @sap-ux/app-config-writer@0.6.88
+
+## 0.14.48
+
+### Patch Changes
+
+- Updated dependencies [9f11dd2]
+    - @sap-ux/preview-middleware@0.23.106
+    - @sap-ux/system-access@0.6.47
+    - @sap-ux/adp-tooling@0.18.50
+    - @sap-ux/app-config-writer@0.6.88
+    - @sap-ux/abap-deploy-config-inquirer@1.6.88
+    - @sap-ux/flp-config-inquirer@0.4.109
+    - @sap-ux/abap-deploy-config-writer@0.2.63
+    - @sap-ux/odata-service-writer@0.29.12
+    - @sap-ux/cap-config-writer@0.12.53
+
+## 0.14.47
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/odata-service-writer@0.29.12
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/abap-deploy-config-inquirer@1.6.87
+    - @sap-ux/adp-tooling@0.18.49
+    - @sap-ux/app-config-writer@0.6.87
+    - @sap-ux/flp-config-inquirer@0.4.108
+    - @sap-ux/preview-middleware@0.23.105
+    - @sap-ux/system-access@0.6.46
+    - @sap-ux/abap-deploy-config-writer@0.2.62
+    - @sap-ux/cap-config-writer@0.12.52
+    - @sap-ux/mockserver-config-writer@0.9.44
+
 ## 0.14.46
 
 ### Patch Changes

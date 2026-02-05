@@ -1,5 +1,19 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.42.0
+
+### Minor Changes
+
+- 8064811: feat(fpm-writer): Form building block
+
+## 0.41.6
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-annotation-api@0.9.7
+
 ## 0.41.5
 
 ### Patch Changes
