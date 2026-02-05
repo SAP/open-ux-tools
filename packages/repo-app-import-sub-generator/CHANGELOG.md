@@ -1,5 +1,35 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.230
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/odata-service-inquirer@2.16.4
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/system-access@0.6.47
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/fiori-elements-writer@2.8.56
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/abap-deploy-config-writer@0.2.63
+    - @sap-ux/fiori-generator-shared@0.13.62
+
+## 0.3.229
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.55
+- @sap-ux/odata-service-inquirer@2.16.3
+
+## 0.3.228
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.54
+- @sap-ux/odata-service-inquirer@2.16.3
+
 ## 0.3.227
 
 ### Patch Changes

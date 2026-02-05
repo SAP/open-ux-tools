@@ -322,12 +322,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - test-app-id.zip
-          name: test-app-id
+            - app.variant.zip
+          name: app.variant
           target-path: resources/
-  - name: test-app-id
+  - name: app.variant
     type: html5
-    path: test-app-id
+    path: app.variant
     build-parameters:
       builder: custom
       commands:
@@ -389,7 +389,7 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 	},
 	"devDependencies": {
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
-		"@sap-ux/backend-proxy-middleware-cf": "^0.0.1",
+		"@sap-ux/backend-proxy-middleware-cf": "0",
 		"@sapui5/ts-types": "^1.141.2",
 		"@sap/ux-ui5-tooling": "1",
 		"@ui5/cli": "^4.0.33",
