@@ -201,6 +201,23 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
             {}
         );
         expect(serviceMsgResult).toBeUndefined();
+
+        // No errors
+        jest.spyOn(errorHandler, 'getErrorMsg').mockReturnValue(undefined);
+        serviceMsgResult = await getSelectedServiceMessage(
+            [
+                {
+                    name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V2'
+                }
+            ],
+            {
+                serviceODataVersion: ODataVersion.v4,
+                servicePath: 'some/path'
+            },
+            connectionValidatorMock as ConnectionValidator,
+            {}
+        );
+        expect(serviceMsgResult).toBeUndefined();
     });
 
     test('should return warning if a service filter was specified and the service is not found', async () => {
