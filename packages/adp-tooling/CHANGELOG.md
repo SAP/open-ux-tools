@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.53
+
+### Patch Changes
+
+- 8a56942: update "@sap/approuter": "^20.8.0" in cf template
+
 ## 0.18.52
 
 ### Patch Changes
