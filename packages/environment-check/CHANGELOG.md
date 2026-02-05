@@ -1,5 +1,14 @@
 # @sap-ux/environment-check
 
+## 0.18.79
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/axios-extension@1.25.10
+
 ## 0.18.78
 
 ### Patch Changes

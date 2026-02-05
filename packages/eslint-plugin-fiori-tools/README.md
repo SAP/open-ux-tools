@@ -161,4 +161,5 @@ module.exports = [
 | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |
 | [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements | | ✅ |
+| [sap-table-column-vertical-alignment](docs/rules/sap-table-column-vertical-alignment.md) | Ensures `tableColumnVerticalAlignment` Configuration for Responsive Type Tables in SAP Fiori Elements applications | | ✅ |
 </div>
