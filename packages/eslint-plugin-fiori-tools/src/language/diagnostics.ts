@@ -85,6 +85,7 @@ export interface TablePersonalization {
     type: typeof TABLE_PERSONALIZATION;
     property?: PersonalizationProperty;
     pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
 }
 
 export interface TableColumnVerticalAlignment {
