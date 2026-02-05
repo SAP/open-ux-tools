@@ -48,6 +48,7 @@ interface SourceConfig {
     url?: string;
     category: string;
     enabled: boolean;
+    useEnvAuth?: boolean;
 }
 
 interface BuildConfig {
@@ -390,6 +391,17 @@ class MultiSourceDocumentationBuilder {
                     url: 'https://ui5.sap.com/test-resources/sap/fe/macros/designtime/apiref/api.json',
                     category: 'api-reference',
                     enabled: false
+                },
+                {
+                    id: 'tools-suite',
+                    type: 'github',
+                    owner: 'ux-engineering',
+                    repo: 'tools-suite',
+                    branch: 'master',
+                    docsPath: 'docs/product/features-commands',
+                    category: 'fiori-tools',
+                    enabled: true,
+                    useEnvAuth: true
                 }
             ]
         };
@@ -416,8 +428,8 @@ You are given a documentation snippet and you need to optimize it for AI agents 
 The output will be used by AI code generation tools, so focus on making the content clear, concise, and code-focused.
 
 Your task:
-1. Extract and enhance code examples with proper context
-2. Improve descriptions to be action-oriented for code generation
+1. Extract code examples with proper context. you MUST keep code snippets intact.
+2. Improve and enhance descriptions to be action-oriented for code generation
 3. Combine related information that belongs together
 4. Preserve all technical details, file paths, and code snippets
 5. Format the output as markdown following this structure:
@@ -500,7 +512,16 @@ Return ONLY the formatted markdown. Do not add any explanations or meta-commenta
     async cloneOrUpdateRepository(source: SourceConfig): Promise<string> {
         const repoName = `${source.owner}-${source.repo}`;
         const repoPath = path.join(this.gitReposPath, repoName);
-        const repoUrl = `https://github.com/${source.owner}/${source.repo}.git`;
+
+        // Use environment variables for authentication if specified
+        let repoUrl: string;
+        if (source.useEnvAuth && process.env.GITHUB_HOST && process.env.GITHUB_TOKEN) {
+            const githubHost = process.env.GITHUB_HOST.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            repoUrl = `https://${process.env.GITHUB_TOKEN}@${githubHost}/${source.owner}/${source.repo}.git`;
+            this.logger.info(`Using environment authentication for ${source.id}`);
+        } else {
+            repoUrl = `https://github.com/${source.owner}/${source.repo}.git`;
+        }
 
         // Ensure git repos directory exists
         await fs.mkdir(this.gitReposPath, { recursive: true });

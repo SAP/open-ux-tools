@@ -111,3 +111,19 @@ export function showBusinessSolutionNameQuestion(
 export function shouldShowBaseAppPrompt(answers: CfServicesAnswers, isCFLoggedIn: boolean, apps: CFApp[]): boolean {
     return isCFLoggedIn && !!answers.businessService && !!apps.length;
 }
+
+/**
+ * Determines if the store credentials question should be shown.
+ *
+ * @param {ConfigAnswers} answers - The user-provided answers containing credentials.
+ * @param {boolean} isLoginSuccessful - A flag indicating that system login was successful.
+ * @param {boolean} isAuthRequired - A flag indicating whether system authentication is needed.
+ * @returns {boolean} True if the store credentials question should be shown.
+ */
+export function showStoreCredentialsQuestion(
+    answers: ConfigAnswers,
+    isLoginSuccessful: boolean,
+    isAuthRequired: boolean
+): boolean {
+    return !isAppStudio() && showCredentialQuestion(answers, isAuthRequired) && isLoginSuccessful && !!answers.password;
+}
