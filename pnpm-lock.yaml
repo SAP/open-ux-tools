@@ -20167,7 +20167,7 @@ packages:
       postcss-modules-scope: 3.0.0(postcss@8.4.31)
       postcss-modules-values: 4.0.0(postcss@8.4.31)
       postcss-value-parser: 4.2.0
-      semver: 7.7.3
+      semver: 7.5.4
       webpack: 5.96.1(esbuild@0.27.2)
     dev: true
 
