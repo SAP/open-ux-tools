@@ -123,6 +123,76 @@ The following log levels are supported: `off`, `error`, `warn`, `info`, `debug`,
 
 The logs are stored in the file system at `~/.fioritools/fiori-mcp-server.log`
 
+
+## [Handling Self-Signed SSL Certificates](#handling-self-signed-ssl-certificates)
+
+If you need the MCP server to connect to an OData server using a self-signed SSL certificate, you can use one of the following methods.
+
+This is useful when encountering errors such as: `unable to get local issuer certificate`
+
+### Option 1: Add Custom CA Certificate (Recommended)
+
+Set the `NODE_EXTRA_CA_CERTS` environment variable to the path of your CA certificate file. Node.js supports multiple file extensions (`.pem`, `.crt`, `.cer`, `.cert`).
+
+**Example Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
+      "env": {
+        "NODE_EXTRA_CA_CERTS": "/path/to/your/certificate.crt"
+      }
+    }
+  }
+}
+```
+
+**Windows Example:**
+```json
+"env": {
+  "NODE_EXTRA_CA_CERTS": "C:\\temp\\certs\\CustomCA.crt"
+}
+```
+
+**macOS/Linux Example:**
+```json
+"env": {
+  "NODE_EXTRA_CA_CERTS": "/Users/username/certs/Custom_CA.crt"
+}
+```
+
+### Option 2: Bypass SSL Validation (Not Recommended)
+
+> ⚠️ **Security Warning**: Setting `NODE_TLS_REJECT_UNAUTHORIZED=0` disables all SSL certificate validation and poses a significant security risk. Only use this in non-production environments.
+
+```json
+{
+  "mcpServers": {
+    "fiori-mcp": {
+      "type": "stdio",
+      "timeout": 600,
+      "command": "npx",
+      "args": ["--yes", "@sap-ux/fiori-mcp-server@latest", "fiori-mcp"],
+      "env": {
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
+```
+
+### Additional Resources
+
+- [Node.js Documentation - NODE_EXTRA_CA_CERTS](https://nodejs.org/api/cli.html#node_extra_ca_certsfile)
+- [SAP Fiori tools - SSL Certificate Handling](https://github.com/SAP-samples/fiori-tools-samples/tree/main/misc/sslcerts)
+
+
+
 ## [Telemetry](#telemetry)
 
 You can enable and disable the collection of analytics. By default, non-personally identifiable information is used to help understand how you use the product to improve the Fiori MCP Server. In case you want to opt-out there exist two ways to disable the telemetry.

@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.5.0
+
+### Minor Changes
+
+- 5c8b645: Add tableColumnVerticalAlignment setting rule for Responsive tables in OData V2 applications.
+
 ## 9.4.1
 
 ### Patch Changes

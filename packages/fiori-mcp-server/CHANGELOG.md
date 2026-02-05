@@ -1,5 +1,18 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.24
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.23
+
+### Patch Changes
+
+- bd48387: Update readme for Self-Signed SSL Certificates
+
 ## 0.6.22
 
 ### Patch Changes

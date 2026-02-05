@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.42.0
+
+### Minor Changes
+
+- 8064811: feat(fpm-writer): Form building block
+
 ## 0.41.6
 
 ### Patch Changes
