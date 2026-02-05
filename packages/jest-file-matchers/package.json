@@ -34,6 +34,9 @@
         "jest-diff": "30.2.0",
         "minimatch": "3.0.5"
     },
+    "engines": {
+        "node": ">=20.x"
+    },
     "eslint-formatter-multiple": {
         "formatters": [
             {

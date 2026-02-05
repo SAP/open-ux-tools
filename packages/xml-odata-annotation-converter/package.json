@@ -42,6 +42,9 @@
         "chevrotain": "7.1.1",
         "npm-run-all2": "6.2.0"
     },
+    "engines": {
+        "node": ">=20.x"
+    },
     "eslint-formatter-multiple": {
         "formatters": [
             {
