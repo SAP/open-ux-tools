@@ -23,7 +23,8 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
+        "unlink": "pnpm unlink --global",
+        "tgz:package": "pnpm pack"
     },
     "files": [
         "LICENSE",
