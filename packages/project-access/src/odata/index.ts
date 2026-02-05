@@ -1,1 +1,1 @@
-export * from './metadata';
+export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './metadata';
