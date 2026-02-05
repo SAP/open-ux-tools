@@ -95,9 +95,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         messages: {
             invalidMode: 'Invalid value "{{value}}" for statePreservationMode. "{{recommended}}" is recommended.',
             recommendPersistenceForFCL:
-                'Consider using "persistence". For applications using Flexible Column Layout (FCL), "persistence" mode is recommended.',
+                'Consider using default. For applications using Flexible Column Layout (FCL), default is "persistence" mode.',
             recommendDiscoveryForNonFCL:
-                'Consider using "discovery". For applications not using Flexible Column Layout, "discovery" mode is recommended.'
+                'Consider using default. For applications not using Flexible Column Layout, default is "discovery" mode.'
         },
         fixable: 'code'
     },
@@ -145,7 +145,13 @@ const rule: FioriRuleDefinition = createFioriRule({
                     value: diagnostic.value,
                     recommended: diagnostic.recommendedValue
                 },
-                fix: createJsonFixer({ context, node, deepestPathResult: paths, value: diagnostic.recommendedValue })
+                fix: createJsonFixer({
+                    context,
+                    node,
+                    deepestPathResult: paths,
+                    value: diagnostic.recommendedValue,
+                    operation: 'delete'
+                })
             });
         }
 });

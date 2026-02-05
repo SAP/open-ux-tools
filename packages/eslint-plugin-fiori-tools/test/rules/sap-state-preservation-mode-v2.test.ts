@@ -79,12 +79,7 @@ ruleTester.run(TEST_NAME, rule, {
                         value: 'invalidMode'
                     }
                 ]),
-                output: getManifestAsCode(V2_MANIFEST, [
-                    {
-                        path: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
-                        value: 'discovery'
-                    }
-                ]),
+                output: getManifestAsCode(V2_MANIFEST, []),
                 errors: [
                     {
                         message: 'Invalid value "invalidMode" for statePreservationMode. "discovery" is recommended.'
@@ -112,10 +107,6 @@ ruleTester.run(TEST_NAME, rule, {
                     {
                         path: ['sap.ui.generic.app', 'settings', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
                         value: 'TwoColumnsBeginExpanded'
-                    },
-                    {
-                        path: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
-                        value: 'persistence'
                     }
                 ]),
                 errors: [
@@ -138,12 +129,7 @@ ruleTester.run(TEST_NAME, rule, {
                         value: 'persistence'
                     }
                 ]),
-                output: getManifestAsCode(V2_MANIFEST, [
-                    {
-                        path: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
-                        value: 'discovery'
-                    }
-                ]),
+                output: getManifestAsCode(V2_MANIFEST, []),
                 errors: [
                     {
                         message:
