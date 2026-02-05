@@ -210,10 +210,7 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
                     name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V2'
                 }
             ],
-            {
-                serviceODataVersion: ODataVersion.v4,
-                servicePath: 'some/path'
-            },
+            undefined,
             connectionValidatorMock as ConnectionValidator,
             {}
         );
