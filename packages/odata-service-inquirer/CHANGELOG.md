@@ -1,5 +1,16 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.16.7
+
+### Patch Changes
+
+- 9a96150: Unhide value helps download during generation.
+- Updated dependencies [38e215e]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/fiori-generator-shared@0.13.65
+    - @sap-ux/telemetry@0.6.66
+    - @sap-ux/inquirer-common@0.10.25
+
 ## 2.16.6
 
 ### Patch Changes
