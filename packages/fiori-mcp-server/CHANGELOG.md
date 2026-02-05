@@ -1,5 +1,12 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.25
+
+### Patch Changes
+
+- 32a9147: chore(deps): update dependency @langchain/mcp-adapters to v1.1.2
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
 ## 0.6.24
 
 ### Patch Changes
