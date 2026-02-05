@@ -1,5 +1,81 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.116
+
+### Patch Changes
+
+- @sap-ux/flp-config-inquirer@0.4.112
+- @sap-ux/app-config-writer@0.6.89
+
+## 0.3.115
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/app-config-writer@0.6.89
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/deploy-config-generator-shared@0.1.82
+    - @sap-ux/flp-config-inquirer@0.4.111
+
+## 0.3.114
+
+### Patch Changes
+
+- @sap-ux/flp-config-inquirer@0.4.110
+- @sap-ux/app-config-writer@0.6.88
+
+## 0.3.113
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/app-config-writer@0.6.88
+    - @sap-ux/deploy-config-generator-shared@0.1.81
+    - @sap-ux/flp-config-inquirer@0.4.109
+    - @sap-ux/fiori-generator-shared@0.13.62
+
+## 0.3.112
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/app-config-writer@0.6.87
+    - @sap-ux/deploy-config-generator-shared@0.1.80
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/flp-config-inquirer@0.4.108
+    - @sap-ux/inquirer-common@0.10.21
+
+## 0.3.111
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/flp-config-inquirer@0.4.107
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/app-config-writer@0.6.86
+    - @sap-ux/deploy-config-generator-shared@0.1.79
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/project-access@1.34.4
+
+## 0.3.110
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/inquirer-common@0.10.19
+    - @sap-ux/app-config-writer@0.6.85
+    - @sap-ux/fiori-generator-shared@0.13.59
+    - @sap-ux/flp-config-inquirer@0.4.106
+    - @sap-ux/deploy-config-generator-shared@0.1.78
+
 ## 0.3.109
 
 ### Patch Changes

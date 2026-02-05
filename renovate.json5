@@ -5,7 +5,7 @@
     $schema: 'https://docs.renovatebot.com/renovate-schema.json',
 
     extends: [
-        'config:base',
+        'config:recommended',
         ':automergeDisabled',
         ':combinePatchMinorReleases',
         ':enableVulnerabilityAlerts',
@@ -21,7 +21,7 @@
 
     enabledManagers: ['npm', 'github-actions'],
     branchPrefix: 'chore/renovate/',
-    platformCommit: true,
+    platformCommit: 'enabled',
 
     major: {
         dependencyDashboardApproval: true
@@ -32,25 +32,54 @@
 
     assigneesFromCodeOwners: true,
 
-    ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/test/fixtures/**', '**/test/fixture/**', '**/test/test-data/**', '**/expected-output/**' ],
+    ignorePaths: [
+        '**/templates/**',
+        '**/test-input/**',
+        '**/test-output/**',
+        '**/fixtures/**',
+        '**/test/fixture/**',
+        '**/test/test-data/**',
+        '**/expected-output/**',
+        '**/test/sample/**',
+        '**/test/data/**',
+        '**/test/samples/**',
+        '**/test/fixtures/**',
+        '**/test/fixture/**',
+        '**/test/test-data/**',
+        '**/expected-output/**',
+        '**/test/sample/**',
+        '**/test-inputs/**',
+        '**/test-outputs/**',
+        '**/test/inputs/**',
+        '**/test/outputs/**',
+        '**/__tests__/fixtures/**',
+        '**/__tests__/fixture/**',
+        '**/__tests__/test-data/**',
+        '**/__tests__/expected-output/**',
+        '**/__tests__/sample/**',
+        '**/__tests__/inputs/**',
+        '**/test/sample-workspace/**'
+    ],
+
+    ignoreDeps: ['@sap-ux-private/playwright'],
 
     packageRules: [
         {
-            matchPackagePrefixes: ['react', 'react-dom', '@types/react', '@types/react-dom'],
+            matchPackageNames: ['react{/,}**', 'react-dom{/,}**', '@types/react{/,}**', '@types/react-dom{/,}**'],
             groupName: 'dependencies [react]',
             allowedVersions: '<17.0.0'
         },
         {
-            matchPackagePrefixes: ['@fluentui/'],
+            matchPackageNames: ['@fluentui/{/,}**'],
             groupName: 'dependencies [fluentui]'
         },
         {
-            matchPackagePrefixes: ['@testing-library/', '@types/testing-library'],
+            matchPackageNames: ['@testing-library/{/,}**', '@types/testing-library{/,}**'],
             groupName: 'dependencies [testing-library]',
             matchDepTypes: ['devDependencies']
         },
         {
-            matchPackagePrefixes: ['eslint', '@typescript-eslint/', 'lint-staged'],
+            matchPackageNames: ['eslint{/,}**', '@typescript-eslint/{/,}**', 'lint-staged{/,}**'],
             groupName: 'dev dependencies [eslint]',
             matchDepTypes: ['devDependencies']
         },
@@ -60,47 +89,54 @@
             matchDepTypes: ['devDependencies']
         },
         {
-            matchPackagePrefixes: ['i18next'],
+            matchPackageNames: ['i18next{/,}**'],
             groupName: 'dependencies [i18next]'
         },
         {
-            matchPackagePrefixes: ['mem-fs', '@types/mem-fs'],
+            matchPackageNames: ['mem-fs{/,}**', '@types/mem-fs{/,}**'],
             groupName: 'dependencies [mem-fs]'
         },
         {
-            matchPackagePrefixes: ['enzyme', '@types/enzyme'],
+            matchPackageNames: ['enzyme{/,}**', '@types/enzyme{/,}**'],
             groupName: 'dev dependencies [enzyme]',
             matchDepTypes: ['devDependencies']
         },
         {
-            matchPackagePrefixes: ['lodash', '@types/lodash'],
+            matchPackageNames: ['lodash{/,}**', '@types/lodash{/,}**'],
             groupName: 'dependencies [lodash]'
         },
         {
-            matchPackagePrefixes: ['jest', '@​types/jest', '@jest/​types', 'jest-*', '*-jest', '@​types/*jest*' ],
+            matchPackageNames: [
+                'jest{/,}**',
+                '@​types/jest{/,}**',
+                '@jest/​types{/,}**',
+                'jest-*{/,}**',
+                '*-jest{/,}**',
+                '@​types/*jest*{/,}**'
+            ],
             groupName: 'dev dependencies [jest]',
             matchDepTypes: ['devDependencies']
         },
         {
-            matchPackagePrefixes: ['nx', '@​nrwl/nx-cloud'],
+            matchPackageNames: ['nx{/,}**', '@​nrwl/nx-cloud{/,}**'],
             groupName: 'dev dependencies [nx]',
             matchDepTypes: ['devDependencies']
         },
         {
-            matchPackagePrefixes: ['@types/vscode'],
+            matchPackageNames: ['@types/vscode{/,}**'],
             allowedVersions: '1.73.1'
         },
         {
-            matchPackagePrefixes: [
-                'webpack',
-                'ts-loader',
-                'style-loader',
-                'sass-loader',
-                'sass',
-                'css-loader',
-                '@storybook/manager-webpack5',
-                '@storybook/builder-webpack5',
-                'storybook-addon-turbo-build'
+            matchPackageNames: [
+                'webpack{/,}**',
+                'ts-loader{/,}**',
+                'style-loader{/,}**',
+                'sass-loader{/,}**',
+                'sass{/,}**',
+                'css-loader{/,}**',
+                '@storybook/manager-webpack5{/,}**',
+                '@storybook/builder-webpack5{/,}**',
+                'storybook-addon-turbo-build{/,}**'
             ],
             groupName: 'dev dependencies [webpack]',
             matchDepTypes: ['devDependencies']

@@ -1,5 +1,17 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.13
+
+### Patch Changes
+
+- c3a1e07: fix: add documentation sources
+
+## 0.4.12
+
+### Patch Changes
+
+- 4eac0a7: Improve chunk creation to ensure code samples are not modified.
+
 ## 0.4.11
 
 ### Patch Changes
