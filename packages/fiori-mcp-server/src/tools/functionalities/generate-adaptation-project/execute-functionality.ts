@@ -74,10 +74,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
 
         const jsonString = JSON.stringify(jsonInput);
 
-        // Execute yo command with JSON argument
-        // Using single quotes to wrap the JSON string to avoid shell escaping issues
-        // Run from current working directory - the generator uses absolute paths from the JSON
-        const command = `npx -y yo@4 @sap-ux/adp '${jsonString}' --force --skipInstall`;
+        const command = `npx -y yo@4 @sap-ux/adp '${jsonString}' --force`;
         const { stdout, stderr } = await runCmd(command, { cwd: process.cwd() });
 
         logger.info(stdout);
@@ -89,7 +86,7 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
         return {
             functionalityId: details.functionalityId,
             status: 'Success',
-            message: `Adaptation project generated successfully at ${projectPath}. You may need to run \`npm install\` in the project directory.`,
+            message: `Adaptation project generated successfully at ${projectPath}.`,
             parameters: params.parameters,
             appPath: projectPath,
             changes: [],
