@@ -15,7 +15,7 @@ import type { EntitySetsFlat } from './odata-query';
 import { getODataDownloaderPrompts, promptNames } from './prompts/prompts';
 import { type ReferencedEntities } from './types';
 import { createEntitySetData } from './utils';
-import { getValueHelpSelectionPrompt } from './value-help-prompts';
+import { getValueHelpSelectionPrompt } from './prompts/value-help-prompts';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 

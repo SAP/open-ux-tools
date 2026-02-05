@@ -12,9 +12,9 @@ import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
 import type { CheckboxChoiceOptions } from 'inquirer';
 import merge from 'lodash/merge';
 import { join } from 'path';
-import { t } from '../utils/i18n';
-import { PromptState } from './prompt-state';
-import { entityTypeExclusions } from './types';
+import { t } from '../../utils/i18n';
+import { PromptState } from '../prompt-state';
+import { entityTypeExclusions } from '../types';
 
 /**
  *
