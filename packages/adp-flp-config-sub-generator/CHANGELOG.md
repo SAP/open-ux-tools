@@ -1,5 +1,14 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.163
+
+### Patch Changes
+
+- f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
+- Updated dependencies [f1e6ed6]
+    - @sap-ux/adp-tooling@0.18.51
+    - @sap-ux/flp-config-inquirer@0.4.110
+
 ## 0.1.162
 
 ### Patch Changes
