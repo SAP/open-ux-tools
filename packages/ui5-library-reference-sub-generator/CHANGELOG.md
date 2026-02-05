@@ -1,5 +1,27 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.105
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-library-reference-inquirer@0.4.105
+    - @sap-ux/telemetry@0.6.64
+    - @sap-ux/ui5-library-reference-writer@0.2.43
+
+## 0.1.104
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/ui5-library-reference-inquirer@0.4.104
+    - @sap-ux/fiori-generator-shared@0.13.62
+    - @sap-ux/telemetry@0.6.63
+
 ## 0.1.103
 
 ### Patch Changes

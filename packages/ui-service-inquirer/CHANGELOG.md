@@ -1,5 +1,29 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.107
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/odata-service-inquirer@2.16.5
+    - @sap-ux/abap-deploy-config-inquirer@1.6.89
+    - @sap-ux/telemetry@0.6.64
+    - @sap-ux/axios-extension@1.25.10
+
+## 0.2.106
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/odata-service-inquirer@2.16.4
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/abap-deploy-config-inquirer@1.6.88
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/telemetry@0.6.63
+
 ## 0.2.105
 
 ### Patch Changes

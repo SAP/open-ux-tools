@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.6
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/ui5-config@0.29.15
+
 ## 1.7.5
 
 ### Patch Changes

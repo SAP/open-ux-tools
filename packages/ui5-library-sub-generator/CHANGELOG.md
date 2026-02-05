@@ -1,5 +1,25 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.115
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/nodejs-utils@0.2.13
+    - @sap-ux/ui5-info@0.13.11
+    - @sap-ux/ui5-library-writer@0.6.49
+    - @sap-ux/ui5-library-inquirer@0.6.55
+
+## 0.1.114
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+    - @sap-ux/ui5-library-inquirer@0.6.54
+    - @sap-ux/fiori-generator-shared@0.13.62
+    - @sap-ux/nodejs-utils@0.2.12
+
 ## 0.1.113
 
 ### Patch Changes
