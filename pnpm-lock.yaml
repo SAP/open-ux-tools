@@ -3774,8 +3774,8 @@ importers:
         specifier: 3.6.0
         version: 3.6.0
       '@zowe/secrets-for-zowe-sdk':
-        specifier: 8.1.2
-        version: 8.1.2
+        specifier: 8.29.4
+        version: 8.29.4
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -3914,8 +3914,8 @@ importers:
         version: 0.1.13
     optionalDependencies:
       '@zowe/secrets-for-zowe-sdk':
-        specifier: 8.1.2
-        version: 8.1.2
+        specifier: 8.29.4
+        version: 8.29.4
     devDependencies:
       '@types/pluralize':
         specifier: 0.0.30
@@ -18079,6 +18079,13 @@ packages:
 
   /@zowe/secrets-for-zowe-sdk@8.1.2:
     resolution: {integrity: sha512-cE8rlBADL48wmiQr+fdQdxczW4wLsmv5BQa03QepKiydBBE7TLrG2Anx/F4uZ+sVIZQuN95SHvwkt8VZaTzuyw==}
+    engines: {node: '>=14'}
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@zowe/secrets-for-zowe-sdk@8.29.4:
+    resolution: {integrity: sha512-fiRfuEuFNapwhVbN3LJIA2ZgVajNB+QNFN7O7ES/fIYGM612PKcXuvbZUJSlU69IZ8eUF8SP+9OnveK4s+GLgw==}
     engines: {node: '>=14'}
     requiresBuild: true
 
