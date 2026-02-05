@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.8.6
+
+### Patch Changes
+
+- f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
+- Updated dependencies [f1e6ed6]
+    - @sap-ux/adp-tooling@0.18.51
+
 ## 0.8.5
 
 ### Patch Changes

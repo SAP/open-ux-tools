@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.23.107
+
+### Patch Changes
+
+- f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
+- Updated dependencies [f1e6ed6]
+    - @sap-ux/adp-tooling@0.18.51
+
 ## 0.23.106
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.51
+
+### Patch Changes
+
+- f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
+
 ## 0.18.50
 
 ### Patch Changes
