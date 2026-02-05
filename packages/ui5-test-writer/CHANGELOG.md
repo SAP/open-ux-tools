@@ -1,5 +1,25 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.61
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+
+## 0.7.60
+
+### Patch Changes
+
+- 185a8cf: Align @sap/ux-specification version
+
+## 0.7.59
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/ui5-application-writer@1.7.5
+
 ## 0.7.58
 
 ### Patch Changes

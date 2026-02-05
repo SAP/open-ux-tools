@@ -1,5 +1,22 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.114
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+    - @sap-ux/ui5-library-inquirer@0.6.54
+    - @sap-ux/fiori-generator-shared@0.13.62
+    - @sap-ux/nodejs-utils@0.2.12
+
+## 0.1.113
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.61
+- @sap-ux/ui5-library-writer@0.6.48
+- @sap-ux/ui5-library-inquirer@0.6.53
+
 ## 0.1.112
 
 ### Patch Changes

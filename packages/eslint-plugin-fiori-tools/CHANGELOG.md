@@ -1,5 +1,25 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.5.0
+
+### Minor Changes
+
+- 5c8b645: Add tableColumnVerticalAlignment setting rule for Responsive tables in OData V2 applications.
+
+## 9.4.1
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-annotation-api@0.9.7
+
+## 9.4.0
+
+### Minor Changes
+
+- 6a5469b: Added eslint rules to enable paste and export in OData V4 application tables.
+
 ## 9.3.3
 
 ### Patch Changes

@@ -1,5 +1,32 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.169
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/ui-service-inquirer@0.2.106
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/system-access@0.6.47
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-generator-shared@0.13.62
+    - @sap-ux/telemetry@0.6.63
+
+## 0.1.168
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/axios-extension@1.25.9
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/system-access@0.6.46
+    - @sap-ux/ui-service-inquirer@0.2.105
+    - @sap-ux/inquirer-common@0.10.21
+    - @sap-ux/telemetry@0.6.62
+
 ## 0.1.167
 
 ### Patch Changes

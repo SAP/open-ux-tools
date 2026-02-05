@@ -1,5 +1,25 @@
 # @sap-ux/preview-middleware
 
+## 0.23.106
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/system-access@0.6.47
+    - @sap-ux/adp-tooling@0.18.50
+    - @sap-ux/btp-utils@1.1.7
+
+## 0.23.105
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/adp-tooling@0.18.49
+    - @sap-ux/system-access@0.6.46
+
 ## 0.23.104
 
 ### Patch Changes

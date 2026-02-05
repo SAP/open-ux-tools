@@ -1,5 +1,26 @@
 # @sap-ux/inquirer-common
 
+## 0.10.22
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/fiori-generator-shared@0.13.62
+    - @sap-ux/telemetry@0.6.63
+    - @sap-ux/odata-service-writer@0.29.12
+
+## 0.10.21
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/odata-service-writer@0.29.12
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/telemetry@0.6.62
+
 ## 0.10.20
 
 ### Patch Changes

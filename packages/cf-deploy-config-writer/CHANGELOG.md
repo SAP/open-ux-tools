@@ -1,5 +1,21 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.58
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/nodejs-utils@0.2.12
+
+## 0.3.57
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+
 ## 0.3.56
 
 ### Patch Changes
