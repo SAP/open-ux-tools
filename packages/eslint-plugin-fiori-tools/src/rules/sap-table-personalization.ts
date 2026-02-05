@@ -7,6 +7,8 @@ import {
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer';
+import type { FeV4PageType, Table } from '../project-context/linker/fe-v4';
+import type { ParsedApp } from '../project-context/parser';
 
 enum PersonalizationProperties {
     column = 'column',
@@ -33,6 +35,50 @@ enum MessageIdByProperty {
     sort = TABLE_PERSONALIZATION_SORT,
     group = TABLE_PERSONALIZATION_GROUP
 }
+
+const checkPersonalizationValue = (table: Table, page: FeV4PageType, parsedApp: ParsedApp): TablePersonalization[] => {
+    const problems: TablePersonalization[] = [];
+
+    const personalization = table.configuration.personalization.valueInFile;
+    // Check if boolean value
+    if (personalization === true || personalization === undefined) {
+        // Every table personalization setting is enabled
+        return [];
+    }
+    if (personalization === false) {
+        // Every table personalization setting is disabled
+        problems.push({
+            type: TABLE_PERSONALIZATION,
+            pageName: page.targetName,
+            manifest: {
+                uri: parsedApp.manifest.manifestUri,
+                object: parsedApp.manifestObject,
+                propertyPath: table.configuration.personalization.configurationPath // not a property in Page Editor
+            }
+        });
+    } else {
+        // Check personalization object properties
+        const tableType = table.configuration.tableType.valueInFile;
+        for (const key in PersonalizationProperties) {
+            const property = key as PersonalizationProperty;
+            if (personalization[property] === false) {
+                if (property !== 'group' || tableType === 'AnalyticalTable' || tableType === 'ResponsiveTable') {
+                    problems.push({
+                        type: TABLE_PERSONALIZATION,
+                        pageName: page.targetName,
+                        property,
+                        manifest: {
+                            uri: parsedApp.manifest.manifestUri,
+                            object: parsedApp.manifestObject,
+                            propertyPath: [...table.configuration.personalization.configurationPath, property]
+                        }
+                    });
+                }
+            }
+        }
+    }
+    return problems;
+};
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: TABLE_PERSONALIZATION,
@@ -71,51 +117,8 @@ const rule: FioriRuleDefinition = createFioriRule({
 
             for (const page of app.pages) {
                 for (const table of page.lookup['table'] ?? []) {
-                    const personalization = table.configuration.personalization.valueInFile;
-                    // Check if boolean value
-                    if (personalization === true || personalization === undefined) {
-                        // Every table personalization setting is enabled
-                        continue;
-                    }
-                    if (personalization === false) {
-                        // Every table personalization setting is disabled
-                        problems.push({
-                            type: TABLE_PERSONALIZATION,
-                            pageName: page.targetName,
-                            manifest: {
-                                uri: parsedApp.manifest.manifestUri,
-                                object: parsedApp.manifestObject,
-                                propertyPath: table.configuration.personalization.configurationPath // not a property in Page Editor
-                            }
-                        });
-                    } else {
-                        // Check object properties
-                        const tableType = table.configuration.tableType.valueInFile;
-                        for (const key in PersonalizationProperties) {
-                            const property = key as PersonalizationProperty;
-                            if (personalization[property] === false) {
-                                if (
-                                    property !== 'group' ||
-                                    tableType === 'AnalyticalTable' ||
-                                    tableType === 'ResponsiveTable'
-                                ) {
-                                    problems.push({
-                                        type: TABLE_PERSONALIZATION,
-                                        pageName: page.targetName,
-                                        property,
-                                        manifest: {
-                                            uri: parsedApp.manifest.manifestUri,
-                                            object: parsedApp.manifestObject,
-                                            propertyPath: [
-                                                ...table.configuration.personalization.configurationPath,
-                                                property
-                                            ]
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
+                    const tableProblems = checkPersonalizationValue(table, page, parsedApp);
+                    problems.push(...tableProblems);
                 }
             }
         }
