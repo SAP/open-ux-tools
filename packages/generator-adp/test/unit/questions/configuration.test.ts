@@ -148,7 +148,7 @@ describe('ConfigPrompter Integration Tests', () => {
         it('should return four prompts with correct names', () => {
             const prompts = configPrompter.getPrompts();
 
-            expect(prompts).toHaveLength(9);
+            expect(prompts).toHaveLength(10);
             const names = prompts.map((p) => p.name);
 
             names.map((name) => {
@@ -441,6 +441,31 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(additionalMessages).toEqual(systemAdditionalMessage);
             expect(getSystemAdditionalMessagesMock).toHaveBeenCalled();
             expect(configPrompter['systemAdditionalMessage']).toEqual(systemAdditionalMessage);
+        });
+    });
+
+    describe('Store Credentials Prompt', () => {
+        it('storeCredentials prompt additionalMessages should return warning when input is true', () => {
+            const prompts = configPrompter.getPrompts();
+            const storeCredentialsPrompt = prompts.find((p) => p.name === configPromptNames.storeCredentials);
+            expect(storeCredentialsPrompt).toBeDefined();
+
+            const additionalMessages = storeCredentialsPrompt?.additionalMessages?.(true);
+
+            expect(additionalMessages).toEqual({
+                message: t('warnings.passwordStoreWarning'),
+                severity: Severity.warning
+            });
+        });
+
+        it('storeCredentials prompt additionalMessages should return undefined when input is false', () => {
+            const prompts = configPrompter.getPrompts();
+            const storeCredentialsPrompt = prompts.find((p) => p.name === configPromptNames.storeCredentials);
+            expect(storeCredentialsPrompt).toBeDefined();
+
+            const additionalMessages = storeCredentialsPrompt?.additionalMessages?.(false);
+
+            expect(additionalMessages).toBeUndefined();
         });
     });
 

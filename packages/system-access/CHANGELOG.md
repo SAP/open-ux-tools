@@ -1,5 +1,21 @@
 # @sap-ux/system-access
 
+## 0.6.48
+
+### Patch Changes
+
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+
+## 0.6.47
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/btp-utils@1.1.7
+    - @sap-ux/axios-extension@1.25.10
+
 ## 0.6.46
 
 ### Patch Changes

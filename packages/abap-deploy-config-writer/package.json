@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-writer"
     },
-    "version": "0.2.62",
+    "version": "0.2.65",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -38,14 +38,14 @@
         "lodash": "4.17.23",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "semver": "7.5.4"
+        "semver": "7.7.3"
     },
     "devDependencies": {
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.202",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
-        "@types/semver": "7.5.2",
+        "@types/semver": "7.7.1",
         "fs-extra": "10.0.0"
     }
 }
