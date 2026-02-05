@@ -149,7 +149,6 @@ const rule: FioriRuleDefinition = createFioriRule({
                     context,
                     node,
                     deepestPathResult: paths,
-                    value: diagnostic.recommendedValue,
                     operation: 'delete'
                 })
             });

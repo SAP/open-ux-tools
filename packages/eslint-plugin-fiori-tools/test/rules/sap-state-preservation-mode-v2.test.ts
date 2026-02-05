@@ -112,7 +112,7 @@ ruleTester.run(TEST_NAME, rule, {
                 errors: [
                     {
                         message:
-                            'Consider using "persistence". For applications using Flexible Column Layout (FCL), "persistence" mode is recommended.'
+                            'Consider using default. For applications using Flexible Column Layout (FCL), default is "persistence" mode.'
                     }
                 ]
             },
@@ -133,7 +133,7 @@ ruleTester.run(TEST_NAME, rule, {
                 errors: [
                     {
                         message:
-                            'Consider using "discovery". For applications not using Flexible Column Layout, "discovery" mode is recommended.'
+                            'Consider using default. For applications not using Flexible Column Layout, default is "discovery" mode.'
                     }
                 ]
             },
