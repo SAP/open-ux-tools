@@ -1,5 +1,5 @@
 import { adtSourceTemplateId } from './constants';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { type Manifest } from '@sap-ux/project-access';
 import { t } from './i18n';
 import RepoAppDownloadLogger from './logger';
@@ -15,7 +15,7 @@ export function makeValidJson(filePath: string, fs: Editor): QfaJsonConfig {
     try {
         // Read the file contents
         const fileContents = fs.read(filePath);
-        const validJson: QfaJsonConfig = JSON.parse(fileContents);
+        const validJson: QfaJsonConfig = JSON.parse(fileContents as string);
         return validJson;
     } catch (error) {
         throw new Error(t('error.errorProcessingJsonFile', { error }));

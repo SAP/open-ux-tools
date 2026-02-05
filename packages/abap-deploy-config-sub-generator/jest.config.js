@@ -1,2 +1,5 @@
 const config = require('../../jest.base');
-module.exports = config;
+module.exports = {
+    ...config,
+    transform: 'dist-test'
+};

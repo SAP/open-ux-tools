@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { addAddVariantsConfigCommand } from '../../../../src/cli/add/variants-config';
 import * as appConfigWriter from '@sap-ux/app-config-writer';

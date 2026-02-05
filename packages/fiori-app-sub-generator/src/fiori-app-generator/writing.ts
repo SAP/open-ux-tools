@@ -1,6 +1,6 @@
 import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 import { generateAppGenInfo, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import type { ApiHubConfig, State } from '../types';
 import { DEFAULT_CAP_HOST } from '../types';

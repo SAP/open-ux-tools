@@ -1,5 +1,5 @@
 import { validateAndUpdateManifestUI5Version, replaceWebappFiles } from '../../src/utils/updates';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { t } from '../../src/utils/i18n';
 import { getUI5Versions } from '@sap-ux/ui5-info';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';

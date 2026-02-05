@@ -31,11 +31,10 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "i18next": "25.8.0",
-        "mem-fs": "4.1.2",
-        "mem-fs-editor": "11.1.4"
+        "mem-fs": "3.0.0",
+        "mem-fs-editor": "10.0.3"
     },
     "devDependencies": {
-        "@types/mem-fs": "2.2.0",
         "@types/mem-fs-editor": "10.0.1",
         "@types/prompts": "2.4.4",
         "prompts": "2.4.2"

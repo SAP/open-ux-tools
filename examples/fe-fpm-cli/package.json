@@ -17,12 +17,11 @@
     "dependencies": {
         "@sap-ux/fe-fpm-writer": "workspace:*",
         "inquirer": "^8.0.0",
-        "mem-fs": "4.1.2",
-        "mem-fs-editor": "11.1.4"
+        "mem-fs": "3.0.0",
+        "mem-fs-editor": "10.0.3"
     },
     "devDependencies": {
         "@types/inquirer": "^8.0.0",
-        "@types/mem-fs": "2.2.0",
         "@types/mem-fs-editor": "10.0.1",
         "@types/vinyl": "2.0.7",
         "typescript-eslint": "^8.46.2"

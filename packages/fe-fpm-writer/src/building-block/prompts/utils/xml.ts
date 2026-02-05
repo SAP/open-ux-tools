@@ -45,7 +45,7 @@ export function getXPathStringsForXmlFile(
     const result: Record<string, string> = {};
     let pageMacroDefinition: string | undefined;
     try {
-        const xmlContent = fs.read(xmlFilePath);
+        const xmlContent = fs.read(xmlFilePath) as string | undefined;
         const errorHandler = (level: string, message: string) => {
             throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
         };
@@ -141,7 +141,10 @@ export async function getExistingButtonGroups(
     const existingButtonGroups = new Set<string>();
 
     try {
-        const xmlContent = fs.read(xmlFilePath);
+        const xmlContent = fs.read(xmlFilePath) as string | undefined;
+        if (!xmlContent) {
+            throw new Error(`Unable to read the xml view file.`);
+        }
         const errorHandler = (level: string, message: string): void => {
             throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
         };

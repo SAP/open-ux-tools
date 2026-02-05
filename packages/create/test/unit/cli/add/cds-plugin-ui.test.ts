@@ -1,5 +1,5 @@
 import * as childProcess from 'node:child_process';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as capConfigWriterMock from '@sap-ux/cap-config-writer';

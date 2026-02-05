@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { create as createStore } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getProject } from '@sap-ux/project-access';
 import type { AnnotationServiceParameters, GenerateAnnotationsOptions } from '../../src';

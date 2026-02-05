@@ -53,8 +53,8 @@
         "i18next": "25.8.0",
         "inquirer": "8.2.7",
         "lodash": "4.17.23",
-        "mem-fs": "4.1.2",
-        "mem-fs-editor": "11.1.4",
+        "mem-fs": "3.0.0",
+        "mem-fs-editor": "10.0.3",
         "uuid": "11.0.5",
         "yeoman-generator": "5.10.0"
     },
@@ -67,7 +67,6 @@
         "@sap-ux/logger": "workspace:*",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
-        "@types/mem-fs": "2.2.0",
         "@types/mem-fs-editor": "10.0.1",
         "@types/vscode": "1.73.1",
         "@types/yeoman-environment": "2.10.11",

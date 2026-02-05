@@ -33,13 +33,12 @@
     "dependencies": {
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "mem-fs": "4.1.2",
-        "mem-fs-editor": "11.1.4"
+        "mem-fs": "3.0.0",
+        "mem-fs-editor": "10.0.3"
     },
     "devDependencies": {
         "@types/fs-extra": "9.0.13",
         "@types/mem-fs-editor": "10.0.1",
-        "@types/mem-fs": "2.2.0",
         "fs-extra": "10.0.0"
     }
 }

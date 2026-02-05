@@ -73,7 +73,7 @@ export async function getEditor(forceUpdate = false): Promise<Editor> {
         fsEditor.copy([join(sampleAppPath)], join(testAppPath));
     }
 
-    await promisify(fsEditor.commit).call(fsEditor);
+    await promisify(fsEditor.commit).call(fsEditor, []);
     return fsEditor;
 }
 
@@ -225,7 +225,7 @@ async function handleAction(action: Actions): Promise<void> {
             case APPLY_ANSWERS: {
                 const { answers, buildingBlockType } = action;
                 const _fs = await promptsAPI.submitAnswers(buildingBlockType, answers);
-                await promisify(_fs.commit).call(_fs);
+                await promisify(_fs.commit).call(_fs, []);
                 const responseAction: ResetAnswers = {
                     type: RESET_ANSWERS,
                     buildingBlockType

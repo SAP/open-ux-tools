@@ -49,8 +49,8 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "ejs": "3.1.10",
-        "mem-fs": "4.1.2",
-        "mem-fs-editor": "11.1.4",
+        "mem-fs": "3.0.0",
+        "mem-fs-editor": "10.0.3",
         "qrcode": "1.5.4",
         "@sap/bas-sdk": "3.13.2"
     },
@@ -64,7 +64,6 @@
         "@types/qrcode": "1.5.5",
         "@types/ejs": "3.1.2",
         "@types/express": "4.17.21",
-        "@types/mem-fs": "2.2.0",
         "@types/mem-fs-editor": "10.0.1",
         "@types/prompts": "2.4.4",
         "@types/supertest": "2.0.12",

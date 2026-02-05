@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';

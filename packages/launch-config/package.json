@@ -36,13 +36,12 @@
         "@sap-ux/ui5-info": "workspace:*",
         "i18next": "25.8.0",
         "jsonc-parser": "3.2.0",
-        "mem-fs": "4.1.2",
-        "mem-fs-editor": "11.1.4",
+        "mem-fs": "3.0.0",
+        "mem-fs-editor": "10.0.3",
         "yargs-parser": "21.1.1"
     },
     "devDependencies": {
         "@sap-ux/logger": "workspace:*",
-        "@types/mem-fs": "2.2.0",
         "@types/mem-fs-editor": "10.0.1",
         "@types/yargs-parser": "21.0.3"
     }

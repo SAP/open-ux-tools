@@ -5,7 +5,7 @@ import { create } from 'mem-fs-editor';
 import { createLaunchConfig, LAUNCH_JSON_FILE, updateLaunchConfig } from '../../src';
 import { TestPaths } from '../test-data/utils';
 import { parse } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 function checkJSONComments(launchJsonString: string) {
     expect(launchJsonString).toMatch('// test json with comments - comment 1');

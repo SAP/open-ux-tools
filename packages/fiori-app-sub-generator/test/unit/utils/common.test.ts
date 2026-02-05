@@ -6,7 +6,7 @@ import { createLaunchConfig } from '@sap-ux/launch-config';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import memFs from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
 import { join } from 'node:path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types';

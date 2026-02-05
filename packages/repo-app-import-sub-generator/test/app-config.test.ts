@@ -1,6 +1,6 @@
 import { getAppConfig, getAbapDeployConfig } from '../src/app/app-config';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { getUI5Versions } from '@sap-ux/ui5-info';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { PromptState } from '../src/prompts/prompt-state';

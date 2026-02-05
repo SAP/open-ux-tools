@@ -4,7 +4,7 @@ import type { ApiHubConfig, CfDeployConfigAnswers } from '@sap-ux/cf-deploy-conf
 import type { Answers } from 'inquirer';
 import type { Target, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { GeneratorOptions } from 'yeoman-generator';
 
 /**

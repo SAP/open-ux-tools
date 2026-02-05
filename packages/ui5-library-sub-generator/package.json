@@ -49,7 +49,7 @@
         "@types/yeoman-test": "4.0.6",
         "@vscode-logging/logger": "2.0.0",
         "jest-extended": "6.0.0",
-        "mem-fs-editor": "11.1.4",
+        "mem-fs-editor": "10.0.3",
         "rimraf": "6.1.2",
         "yeoman-test": "6.3.0"
     },

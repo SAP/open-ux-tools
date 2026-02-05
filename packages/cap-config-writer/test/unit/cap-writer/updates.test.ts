@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { applyCAPUpdates } from '../../../src/cap-writer';
 import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { YamlDocument } from '@sap-ux/yaml';
 import type { Package } from '@sap-ux/project-access';
 

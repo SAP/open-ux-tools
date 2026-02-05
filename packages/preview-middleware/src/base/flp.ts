@@ -120,7 +120,7 @@ export class FlpSandbox {
     public readonly rta?: RtaConfig;
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
-    private readonly fs: MemFsEditor;
+    private readonly fs: Editor;
     private readonly logger: Logger;
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;

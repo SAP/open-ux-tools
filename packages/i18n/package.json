@@ -42,10 +42,9 @@
     "devDependencies": {
         "npm-run-all2": "6.2.0",
         "@types/mem-fs-editor": "10.0.1",
-        "@types/mem-fs": "2.2.0",
         "ts-node": "10.9.2",
-        "mem-fs": "4.1.2",
-        "mem-fs-editor": "11.1.4"
+        "mem-fs": "3.0.0",
+        "mem-fs-editor": "10.0.3"
     },
     "files": [
         "dist",

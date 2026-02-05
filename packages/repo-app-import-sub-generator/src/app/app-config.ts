@@ -1,7 +1,7 @@
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import { t } from '../utils/i18n';
 import type { AppInfo, QfaJsonConfig } from '../app/types';

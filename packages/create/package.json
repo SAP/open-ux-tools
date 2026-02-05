@@ -49,8 +49,8 @@
         "chalk": "4.1.2",
         "commander": "9.4.0",
         "diff": "5.2.2",
-        "mem-fs": "4.1.2",
-        "mem-fs-editor": "11.1.4",
+        "mem-fs": "3.0.0",
+        "mem-fs-editor": "10.0.3",
         "prompts": "2.4.2"
     },
     "devDependencies": {
@@ -58,7 +58,6 @@
         "@sap-ux/store": "workspace:*",
         "@types/diff": "5.0.9",
         "@types/inquirer": "8.2.6",
-        "@types/mem-fs": "2.2.0",
         "@types/mem-fs-editor": "10.0.1",
         "@types/prompts": "2.4.4"
     }

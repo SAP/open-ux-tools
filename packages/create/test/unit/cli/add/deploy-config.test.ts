@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { addDeployConfigCommand } from '../../../../src/cli/add/deploy-config';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';

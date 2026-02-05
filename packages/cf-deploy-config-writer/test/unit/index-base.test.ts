@@ -8,7 +8,7 @@ import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { type CFBaseConfig, generateBaseConfig } from '../../src';
 import { RouterModuleType } from '../../src/types';
 import { MTABinNotFound } from '../../src/constants';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import fs from 'node:fs';
 
 jest.mock('@sap-ux/btp-utils', () => ({

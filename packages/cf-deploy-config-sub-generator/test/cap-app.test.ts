@@ -9,7 +9,7 @@ import type * as fs from 'node:fs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as cfDeployWriter from '@sap-ux/cf-deploy-config-writer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const mockIsAppStudio = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => {

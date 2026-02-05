@@ -1,7 +1,7 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { create as createStore } from 'mem-fs';
-import type { MemFsEditor as Editor, MemFsEditorFileDump} from 'mem-fs-editor';
+import type { MemFsEditor as Editor, MemFsEditorFileDump } from 'mem-fs-editor';
 import { create as createEditor } from 'mem-fs-editor';
 
 import type { RawMetadata } from '@sap-ux/vocabularies-types';
@@ -408,7 +408,7 @@ export class FioriAnnotationService {
 
     private async commit(): Promise<void> {
         await new Promise<void>((resolve, reject) => {
-            this.fs.commit().catch(error => {
+            this.fs.commit().catch((error: unknown): void => {
                 if (error instanceof Error) {
                     reject(error);
                 } else if (typeof error === 'string') {

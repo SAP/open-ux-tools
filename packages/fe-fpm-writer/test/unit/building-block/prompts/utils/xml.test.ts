@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { isElementIdAvailable, getOrAddNamespace } from '../../../../../src/building-block/prompts/utils/xml';
