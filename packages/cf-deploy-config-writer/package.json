@@ -52,7 +52,7 @@
     "@types/hasbin": "1.2.2",
     "@types/fs-extra": "9.0.13",
     "@types/js-yaml": "4.0.9",
-    "@types/semver": "7.5.2",
+    "@types/semver": "7.7.1",
     "memfs": "3.4.13",
     "js-yaml": "3.14.2",
     "fs-extra": "10.0.0",
