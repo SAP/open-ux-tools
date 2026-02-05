@@ -7,7 +7,6 @@ import { getEntityModel } from '../../src/data-download/utils';
 import { createApplicationAccess } from '@sap-ux/project-access';
 
 describe('Test propt-helpers', () => {
-
     test('should create entity set choices', async () => {
         // Load the test app
         const appPath = join(__dirname, '../test-data/test-apps/travel');

@@ -70,9 +70,7 @@ export function createQueryFromEntities(
             return found?.entity.entitySetName;
         })
         .filter((item): item is string => item !== undefined);
-    ODataDownloadGenerator.logger.info(
-        t('info.entityFilesToBeGenerated', { entities: entitySetNames.join(', ') })
-    );
+    ODataDownloadGenerator.logger.info(t('info.entityFilesToBeGenerated', { entities: entitySetNames.join(', ') }));
 
     const mainEntity = listEntity;
     const mainEntityFilters: Filter<string>[] = [];
