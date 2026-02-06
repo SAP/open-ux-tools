@@ -1,7 +1,5 @@
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types';
 import { spawn, type ChildProcess, exec } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { createInterface } from 'node:readline';
 import { promisify } from 'node:util';
 import { logger } from '../../../utils';
@@ -124,41 +122,10 @@ export default async function (params: ExecuteFunctionalityInput): Promise<Execu
     const { appPath } = params;
 
     try {
-        // 1. Validate appPath exists and contains package.json with start-editor script
-        const packageJsonPath = join(appPath, 'package.json');
-        let packageJson: { scripts?: Record<string, string> };
-
-        try {
-            const packageJsonContent = await readFile(packageJsonPath, 'utf-8');
-            packageJson = JSON.parse(packageJsonContent);
-        } catch (error) {
-            return {
-                functionalityId: details.functionalityId,
-                status: 'Error',
-                message: `Failed to read package.json: ${error instanceof Error ? error.message : String(error)}`,
-                parameters: params.parameters,
-                appPath,
-                changes: [],
-                timestamp: new Date().toISOString()
-            };
-        }
-
-        if (!packageJson.scripts?.['start-editor']) {
-            return {
-                functionalityId: details.functionalityId,
-                status: 'Error',
-                message: "package.json does not contain a 'start-editor' script",
-                parameters: params.parameters,
-                appPath,
-                changes: [],
-                timestamp: new Date().toISOString()
-            };
-        }
-
-        // 2. Spawn npm run start-editor process
+        // 1. Spawn fiori run /test/adaptation-editor.html process
         const isWindows = process.platform === 'win32';
-        const command = isWindows ? 'npm.cmd' : 'npm';
-        const args = ['run', 'start-editor'];
+        const command = isWindows ? 'npx.cmd' : 'npx';
+        const args = ['fiori', 'run', '/test/adaptation-editor.html'];
 
         logger.info(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`);
 
