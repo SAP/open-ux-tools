@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.34.7
+
+### Patch Changes
+
+- 467e6aa: Fixed: `getSpecification` fails with `ENOENT: no such file or directory, open '/home/user/.fioritools/specification-dist-tags.json'"` if .fioritools does not exist before the call.
+
 ## 1.34.6
 
 ### Patch Changes
