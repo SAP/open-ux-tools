@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { convertToVirtualPreview } from '../../../src';
 import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';

@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { promises as fsPromises } from 'node:fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 
 import type {

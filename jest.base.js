@@ -1,7 +1,13 @@
 module.exports = {
     transform: {
-        '^.+\\.ts$': 'ts-jest'
+        '^.+\.ts$': 'ts-jest',
+        '^.+\.m?js$': ['ts-jest', {
+            tsconfig: {
+                allowJs: true
+            }
+        }]
     },
+    transformIgnorePatterns: ['/node_modules/(?!(mem-fs|mem-fs-editor)/)'],
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
     coverageReporters: ['text', ['lcov', { projectRoot: '../../' }]],

@@ -19,7 +19,7 @@ Pnpm
 
 ```Typescript
 import { OdataVersion, OdataService, generate } from '@sap-ux/odata-service-writer';
-import { create, Editor } from 'mem-fs-editor';
+import { create, MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 
 ...

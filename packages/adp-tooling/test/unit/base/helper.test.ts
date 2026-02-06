@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
-import type { create, Editor } from 'mem-fs-editor';
+import type { create, MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
 
 import { UI5Config } from '@sap-ux/ui5-config';
