@@ -190,7 +190,7 @@ function getValueHelpChoices(
             const choiceNameTargets: string[] = [];
             entityRefs.forEach((entityRef) => {
                 if (entityRef.type === 'value-list') {
-                    choiceNameTargets.push(entityRef.target.split(/\/([^/]*)$/)[0]);
+                    choiceNameTargets.push(entityRef.target.replace(/\/[^/]*$/, ''))
                 } else if (entityRef.type === 'code-list') {
                     choiceNameTargets.push(entityRef.collectionPath!);
                 }

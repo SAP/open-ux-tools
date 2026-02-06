@@ -234,9 +234,6 @@ function getResetSelectionPrompt(
         entitySetsFlat: EntitySetsFlat;
     }
 ): Question {
-    // const relatedEntityChoicesInitial: { choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } = {
-    //     choices: []
-    // };
     let previousServicePath;
     let previousReset;
     const toggleSelectionPrompt = {
@@ -249,8 +246,6 @@ function getResetSelectionPrompt(
                 );
                 if (entityChoices) {
                     relatedEntityChoices.choices = entityChoices.choices;
-                    // Keep initial state for reset
-                    // relatedEntityChoicesInitial.choices = [...relatedEntityChoices.choices];
                     Object.assign(relatedEntityChoices.entitySetsFlat, entityChoices.entitySetsFlat);
                     previousServicePath = appConfig.servicePath;
                 }
@@ -267,11 +262,8 @@ function getResetSelectionPrompt(
             // Dont apply a reset unless the value was changed as this validate function is triggered by any earlier prompt inputs
             if (reset !== previousReset) {
                 relatedEntityChoices.choices.forEach((entityChoice) => {
-                    // Parsing is a hack for https://github.com/SAP/inquirer-gui/issues/787
-                    // const entityChoiceValue = JSON.parse(entityChoice.value) as SelectedEntityAnswer;
                     const entityChoiceValue = entityChoice.value as SelectedEntityAnswer;
                     entityChoice.checked = reset === false ? entityChoiceValue.entity.defaultSelected : false; // Restore default selection
-                    entityChoice.value = entityChoiceValue;
                 });
                 previousReset = reset;
             }
