@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.27.3
+
+### Patch Changes
+
+- b990534: UIFlexibleTable. Large cell content in flexible table items no longer shifts the other column to the right.
+
 ## 1.27.2
 
 ### Patch Changes
