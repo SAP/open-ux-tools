@@ -15,9 +15,9 @@
         "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
-        "build:test": "tsc -p tsconfig.test.json",
-        "test": "npm run build:test && jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "npm run build:test && jest --ci --forceExit --detectOpenHandles --colors -u",
+        "lint:fix": "eslint --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
