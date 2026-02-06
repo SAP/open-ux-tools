@@ -53,6 +53,9 @@
     "guidedAnswers": {
         "validationErrorHelpText": "Need help with this error?"
     },
+    "outputChannel": {
+        "viewDetailsText": "View details in OUTPUT tab."
+    },
     "texts": {
         "anExpiredCert": "an expired",
         "aSelfSignedCert": "a self-signed",

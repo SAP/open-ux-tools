@@ -12,7 +12,7 @@ import {
 } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
-import { getTelemPropertyDestinationType, sendTelemetryEvent } from '@sap-ux/inquirer-common';
+import { ErrorHandler, getTelemPropertyDestinationType, sendTelemetryEvent } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { ListChoiceOptions } from 'inquirer';
@@ -245,8 +245,9 @@ async function getServiceMetadataAndValidate(
     } catch (error) {
         const errorText = errorHandler.getErrorMsg(error);
         LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, errorText }));
+        const errorMsg = t('errors.serviceMetadataErrorUI', { servicePath, errorText });
         return {
-            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText })
+            validationMsg: ErrorHandler.getOutputChannelLink(errorMsg) as unknown as string
         };
     }
 }
