@@ -1,5 +1,59 @@
 # @sap-ux/generator-adp
 
+## 0.8.12
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/adp-tooling@0.18.57
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-generator-shared@0.13.66
+    - @sap-ux/odata-service-writer@0.29.14
+    - @sap-ux/project-input-validator@0.6.51
+    - @sap-ux/system-access@0.6.49
+    - @sap-ux/telemetry@0.6.67
+    - @sap-ux/inquirer-common@0.10.26
+
+## 0.8.11
+
+### Patch Changes
+
+- Updated dependencies [38e215e]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/adp-tooling@0.18.56
+    - @sap-ux/fiori-generator-shared@0.13.65
+    - @sap-ux/system-access@0.6.49
+    - @sap-ux/telemetry@0.6.66
+    - @sap-ux/inquirer-common@0.10.25
+
+## 0.8.10
+
+### Patch Changes
+
+- df61c3a: feat: Prompt for credentials when not available in VSCode for adp generator
+- Updated dependencies [df61c3a]
+    - @sap-ux/adp-tooling@0.18.55
+
+## 0.8.9
+
+### Patch Changes
+
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/adp-tooling@0.18.54
+    - @sap-ux/fiori-generator-shared@0.13.64
+    - @sap-ux/system-access@0.6.48
+    - @sap-ux/telemetry@0.6.65
+    - @sap-ux/inquirer-common@0.10.24
+
+## 0.8.8
+
+### Patch Changes
+
+- Updated dependencies [8a56942]
+    - @sap-ux/adp-tooling@0.18.53
+
 ## 0.8.7
 
 ### Patch Changes
