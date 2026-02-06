@@ -7,7 +7,8 @@ import {
     showCredentialQuestion,
     showExtensionProjectQuestion,
     showInternalQuestions,
-    showBusinessSolutionNameQuestion
+    showBusinessSolutionNameQuestion,
+    showStoreCredentialsQuestion
 } from '../../../../src/app/questions/helper/conditions';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -200,5 +201,38 @@ describe('showBusinessSolutionNameQuestion', () => {
         } as CfServicesAnswers;
         const result = showBusinessSolutionNameQuestion(answers, true, true, undefined);
         expect(result).toBe(false);
+    });
+});
+
+describe('showStoreCredentialsQuestion', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should return true when not in AppStudio, system is provided, auth is required, login is successful, and password exists', () => {
+        mockIsAppStudio.mockReturnValue(false);
+        const answers = {
+            system: 'TestSystem',
+            username: 'user',
+            password: 'pass'
+        } as ConfigAnswers;
+        const result = showStoreCredentialsQuestion(answers, true, true);
+        expect(result).toBe(true);
+    });
+
+    it('should return false when any condition is not met', () => {
+        mockIsAppStudio.mockReturnValue(true);
+        const answers = {
+            system: 'TestSystem',
+            username: 'user',
+            password: 'pass'
+        } as ConfigAnswers;
+        expect(showStoreCredentialsQuestion(answers, true, true)).toBe(false);
+
+        mockIsAppStudio.mockReturnValue(false);
+        expect(showStoreCredentialsQuestion(answers, false, true)).toBe(false);
+        expect(showStoreCredentialsQuestion(answers, true, false)).toBe(false);
+        expect(showStoreCredentialsQuestion({ ...answers, password: '' } as ConfigAnswers, true, true)).toBe(false);
+        expect(showStoreCredentialsQuestion({ ...answers, system: '' } as ConfigAnswers, true, true)).toBe(false);
     });
 });

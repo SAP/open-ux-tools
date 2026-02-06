@@ -148,6 +148,42 @@ Object {
       false,
     ],
   },
+  "enableExport": Object {
+    "configurationPath": Array [
+      "sap.ui5",
+      "routing",
+      "targets",
+      "IncidentsList",
+      "options",
+      "settings",
+      "controlConfiguration",
+      "@com.sap.vocabularies.UI.v1.LineItem",
+      "tableSettings",
+      "enableExport",
+    ],
+    "values": Array [
+      true,
+      false,
+    ],
+  },
+  "enablePaste": Object {
+    "configurationPath": Array [
+      "sap.ui5",
+      "routing",
+      "targets",
+      "IncidentsList",
+      "options",
+      "settings",
+      "controlConfiguration",
+      "@com.sap.vocabularies.UI.v1.LineItem",
+      "tableSettings",
+      "enablePaste",
+    ],
+    "values": Array [
+      true,
+      false,
+    ],
+  },
   "tableType": Object {
     "configurationPath": Array [
       "sap.ui5",

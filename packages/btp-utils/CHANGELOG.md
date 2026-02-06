@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.1.7
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+
 ## 1.1.6
 
 ### Patch Changes
