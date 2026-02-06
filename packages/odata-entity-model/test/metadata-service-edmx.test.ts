@@ -1,3 +1,4 @@
+import { console } from 'inspector';
 import { MetadataService } from '../src';
 import type { MetadataElement, ODataVersionType } from '@sap-ux/odata-annotation-core-types';
 
@@ -691,5 +692,139 @@ describe('MetadataService for XML', () => {
 
         // Expect
         expect(result).toMatchObject(['FunctionImport', 'Action']);
+    });
+});
+
+describe('MetadataService for XML - external services', () => {
+    test('import', () => {
+        const srv = new MetadataService({ ODataVersion: '4.0' });
+        srv.import(
+            [
+                {
+                    location: {
+                        uri: 'file://metadata.xml',
+                        range: { start: { line: 1, character: 1 }, end: { line: 5, character: 5 } }
+                    },
+                    isAnnotatable: true,
+                    kind: 'EntityType',
+                    content: [],
+                    name: 'namespace1.dummyEntity',
+                    path: 'namespace1.dummyEntity',
+                    targetKinds: ['EntityType']
+                }
+            ],
+            'dummyUri'
+        );
+        srv.importServiceMetadata(
+            [
+                {
+                    location: {
+                        uri: 'file://metadata.xml',
+                        range: { start: { line: 1, character: 1 }, end: { line: 5, character: 5 } }
+                    },
+                    isAnnotatable: true,
+                    kind: 'EntityType',
+                    content: [],
+                    name: 'namespace2.dummyEntity1',
+                    path: 'namespace2.dummyEntity1',
+                    targetKinds: ['EntityType']
+                }
+            ],
+            'dummyExternalUri',
+            'externalService1'
+        );
+
+        const getExternalMetadataElement = (path: string) => {
+            using ms = srv.useService('externalService1');
+            return ms.getMetadataElement(path);
+        };
+
+        const getExternalNamespaces = () => {
+            using ms = srv.useService('externalService1');
+            return ms.getNamespaces();
+        };
+
+        expect(getExternalMetadataElement('namespace2.dummyEntity1')?.name).toBe('namespace2.dummyEntity1');
+        expect([...getExternalNamespaces().values()]).toStrictEqual(['namespace2']);
+        expect(srv.getMetadataElement('namespace1.dummyEntity')?.name).toBe('namespace1.dummyEntity');
+        expect(srv.getMetadataElement('namespace2.dummyEntity1')).toBeUndefined();
+        expect([...srv.getNamespaces().values()]).toStrictEqual(['namespace1']);
+    });
+
+    test('service keys', () => {
+        const srv = new MetadataService({ ODataVersion: '4.0' });
+        srv.importServiceMetadata(
+            [
+                {
+                    location: {
+                        uri: 'file://metadata.xml',
+                        range: { start: { line: 1, character: 1 }, end: { line: 5, character: 5 } }
+                    },
+                    isAnnotatable: true,
+                    kind: 'EntityType',
+                    content: [],
+                    name: 'namespace1.dummyEntity1',
+                    path: 'namespace1.dummyEntity1',
+                    targetKinds: ['EntityType']
+                }
+            ],
+            'dummyExternalUri',
+            'externalService1'
+        );
+        srv.importServiceMetadata(
+            [
+                {
+                    location: {
+                        uri: 'file://metadata.xml',
+                        range: { start: { line: 1, character: 1 }, end: { line: 5, character: 5 } }
+                    },
+                    isAnnotatable: true,
+                    kind: 'EntityType',
+                    content: [],
+                    name: 'namespace2.dummyEntity2',
+                    path: 'namespace2.dummyEntity2',
+                    targetKinds: ['EntityType']
+                },
+                {
+                    location: {
+                        uri: 'file://metadata.xml',
+                        range: { start: { line: 1, character: 1 }, end: { line: 5, character: 5 } }
+                    },
+                    isAnnotatable: true,
+                    kind: 'EntityType',
+                    content: [],
+                    name: 'namespace3.dummyEntity3',
+                    path: 'namespace3.dummyEntity3',
+                    targetKinds: ['EntityType']
+                }
+            ],
+            'dummyExternalUri2',
+            'externalService2'
+        );
+        expect(srv.getServiceIds()).toMatchInlineSnapshot(`
+            Array [
+              "",
+              "externalService1",
+              "externalService2",
+            ]
+        `);
+        expect(srv.getServiceKeyByNamespace('namespace1')).toBe('externalService1');
+        expect(srv.getServiceKeyByNamespace('namespace2')).toBe('externalService2');
+        expect(srv.getServiceKeyByNamespace('namespace3')).toBe('externalService2');
+        srv.useService('externalService1');
+        expect(srv.getNamespaces()).toMatchInlineSnapshot(`
+            Set {
+              "namespace1",
+            }
+        `);
+        srv.useService('externalService2');
+        expect(srv.getNamespaces()).toMatchInlineSnapshot(`
+            Set {
+              "namespace2",
+              "namespace3",
+            }
+        `);
+        srv.useService('');
+        expect(srv.getNamespaces()).toMatchInlineSnapshot(`Set {}`);
     });
 });

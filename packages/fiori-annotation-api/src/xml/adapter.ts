@@ -193,9 +193,6 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
 
         const metadata = convertMetadataDocument(uri, metadataDocument);
         this.externalServices.set(uri, { annotations: metadataAnnotations, metadata, localFilePath });
-        // TODO: avoid call stack issues with larger metadata
-        // TODO: this probably is not needed as we do not want to mix data from external
-
         this.metadataService.importServiceMetadata(metadata, uri, uri);
     }
 
@@ -210,12 +207,6 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }[] {
         return Array.from(this.externalServices.entries()).map(([uri, { annotations, metadata, localFilePath }]) => {
             // Assume same OData version as main service
-            // const metadataService = new MetadataService({
-            //     ODataVersion: this.service.odataVersion,
-            //     isCds: false
-            // });
-            // metadataService.import(metadata, uri);
-
             return {
                 uri,
                 localFileUri: pathToFileURL(localFilePath).toString(),
@@ -753,17 +744,27 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }
 
     private collectValueListReferences(annotationFile: AnnotationFile): void {
+        const namespaces = annotationFile.references.map((ref) => ({ alias: ref.alias, name: ref.name }));
+
         for (const target of annotationFile.targets) {
             for (const annotation of target.terms) {
                 const term = getElementAttributeValue(annotation, Edm.Term);
-                // console.log(term)
+                const parts = term.split('.');
+                const termName = parts.pop();
+                if (termName !== 'ValueListReferences') {
+                    continue;
+                }
+                const namespaceOrAlias = parts.join('.');
+                const namespace = namespaces.find(
+                    (ns) => ns.alias === namespaceOrAlias || ns.name === namespaceOrAlias
+                )?.name;
+
+                if (namespace !== 'com.sap.vocabularies.Common.v1') {
+                    continue;
+                }
+
                 const collection = annotation.content.find((element) => isElementWithName(element, Edm.Collection));
-                // TODO: resolve alias mapping
-                if (
-                    term === 'SAP__common.ValueListReferences' &&
-                    isElementWithName(collection, Edm.Collection) &&
-                    annotation.range
-                ) {
+                if (isElementWithName(collection, Edm.Collection) && annotation.range) {
                     const references = collection.content
                         .map((reference): string | undefined => {
                             if (isElementWithName(reference, Edm.String)) {
