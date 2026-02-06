@@ -236,6 +236,30 @@ export class MtaConfig {
         }
     }
 
+    /**
+     * Gets the effective service instance name for a resource.
+     * If service-name exists, returns it. Otherwise, returns the resource name.
+     *
+     * @param {string} resourceName - The resource identifier (e.g., HTML5RepoHost, ManagedXSUAA)
+     * @returns {string | undefined} The service instance name to use in destinations
+     */
+    private getServiceInstanceName(resourceName: string): string | undefined {
+        const resource = this.resources.get(resourceName);
+        if (!resource) {
+            return undefined;
+        }
+
+        // Prefer explicit service-name if it exists
+        const explicitServiceName = resource.parameters?.['service-name'];
+        if (explicitServiceName) {
+            return explicitServiceName;
+        }
+
+        // Fallback: Use the resource name (CF will auto-generate using MTA ID + resource name)
+        // This matches what Cloud Foundry actually creates when service-name is missing
+        return resource.name;
+    }
+
     private async addAppFrontResource(): Promise<void> {
         const resource: mta.Resource = {
             name: `${this.prefix?.slice(0, 94)}-app-front`,
@@ -1023,7 +1047,7 @@ export class MtaConfig {
         if (!this.resources.has(ManagedAppFront)) {
             await this.addAppFrontResource();
         }
-
+        
         if (!this.modules.has('com.sap.application.content:appfront')) {
             this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.AppFront }));
             const appHostName = this.resources.get(ManagedAppFront)?.name;
@@ -1076,19 +1100,17 @@ export class MtaConfig {
             await this.addHtml5Host();
         }
 
-        // Assume these need to be updated for safety!
-        await this.updateServiceName('html5', HTML5RepoHost);
-        await this.updateServiceName('xsuaa', ManagedXSUAA);
-
         // We only want to append a new one, if missing from the existing mta config
         if (!this.modules.has('com.sap.application.content:destination')) {
             this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Managed }));
+            await this.updateServiceName('html5', HTML5RepoHost);
+            await this.updateServiceName('xsuaa', ManagedXSUAA);
             const destinationName = this.resources.get('destination')?.name;
             const appHostName = this.resources.get(HTML5RepoHost)?.name;
-            const appHostServiceName = this.resources.get(HTML5RepoHost)?.parameters?.['service-name'];
             const managedXSUAAName = this.resources.get(ManagedXSUAA)?.name;
-            const managedXSUAAServiceName = this.resources.get(ManagedXSUAA)?.parameters?.['service-name'];
-            if (destinationName && appHostName && managedXSUAAName && managedXSUAAServiceName) {
+            if (destinationName && appHostName && managedXSUAAName) {
+                const appHostServiceName = this.getServiceInstanceName(HTML5RepoHost);
+                const managedXSUAAServiceName = this.getServiceInstanceName(ManagedXSUAA);
                 const router: mta.Module = {
                     name: `${this.prefix?.slice(0, 100)}-destination-content`,
                     type: 'com.sap.application.content',
