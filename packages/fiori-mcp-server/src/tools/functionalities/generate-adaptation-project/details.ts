@@ -7,7 +7,7 @@ export default {
     
     This functionality requires:
     - system: The name of the SAP system (from list-adp-systems)
-    - application: The application ID to adapt (from list-adp-applications)
+    - application: The application ID to adapt
     
     Optional parameters:
     - targetFolder: The target folder where the project will be generated. If not provided, the project will be created in the current directory (appPath).
