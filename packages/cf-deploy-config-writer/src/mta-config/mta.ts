@@ -245,19 +245,15 @@ export class MtaConfig {
      */
     private getServiceInstanceName(resourceName: string): string | undefined {
         const resource = this.resources.get(resourceName);
-        if (!resource) {
-            return undefined;
-        }
-
         // Prefer explicit service-name if it exists
-        const explicitServiceName = resource.parameters?.['service-name'];
+        const explicitServiceName = resource?.parameters?.['service-name'];
         if (explicitServiceName) {
             return explicitServiceName;
         }
 
         // Fallback: Use the resource name (CF will auto-generate using MTA ID + resource name)
         // This matches what Cloud Foundry actually creates when service-name is missing
-        return resource.name;
+        return resource?.name;
     }
 
     private async addAppFrontResource(): Promise<void> {
