@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.16.9
+
+### Patch Changes
+
+- ac865af: Fix for incorrect auth info message shown after auth success
+
 ## 2.16.8
 
 ### Patch Changes
