@@ -1,5 +1,38 @@
 # @sap-ux/project-access
 
+## 1.34.7
+
+### Patch Changes
+
+- 467e6aa: Fixed: `getSpecification` fails with `ENOENT: no such file or directory, open '/home/user/.fioritools/specification-dist-tags.json'"` if .fioritools does not exist before the call.
+
+## 1.34.6
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/ui5-config@0.29.15
+
+## 1.34.5
+
+### Patch Changes
+
+- 89175fe: fix(deps): update dependency fast-xml-parser to v5 [security]
+
+## 1.34.4
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/ui5-config@0.29.14
+
+## 1.34.3
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
 ## 1.34.2
 
 ### Patch Changes

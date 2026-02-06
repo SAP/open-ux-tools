@@ -9,9 +9,13 @@ import {
     getVersionAdditionalMessages,
     getTargetEnvAdditionalMessages
 } from '../../../../src/app/questions/helper/additional-messages';
-import { t } from '../../../../src/utils/i18n';
+import { initI18n, t } from '../../../../src/utils/i18n';
 
 describe('additional-messages', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
+
     describe('getSystemAdditionalMessages', () => {
         it('should return undefined if flexUISystem is undefined', () => {
             const result = getSystemAdditionalMessages(undefined, false);

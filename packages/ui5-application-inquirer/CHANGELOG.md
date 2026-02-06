@@ -1,5 +1,100 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.16.21
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/project-input-validator@0.6.51
+    - @sap-ux/inquirer-common@0.10.26
+
+## 0.16.20
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.25
+
+## 0.16.19
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.24
+
+## 0.16.18
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-info@0.13.11
+    - @sap-ux/project-input-validator@0.6.50
+
+## 0.16.17
+
+### Patch Changes
+
+- Updated dependencies [9f11dd2]
+    - @sap-ux/inquirer-common@0.10.22
+
+## 0.16.16
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/inquirer-common@0.10.21
+    - @sap-ux/project-input-validator@0.6.49
+
+## 0.16.15
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/project-access@1.34.4
+    - @sap-ux/ui5-info@0.13.10
+    - @sap-ux/project-input-validator@0.6.48
+
+## 0.16.14
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/ui5-info@0.13.9
+    - @sap-ux/inquirer-common@0.10.19
+    - @sap-ux/project-input-validator@0.6.47
+
+## 0.16.13
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.18
+
+## 0.16.12
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.17
+
+## 0.16.11
+
+### Patch Changes
+
+- Updated dependencies [d11943d]
+    - @sap-ux/inquirer-common@0.10.16
+    - @sap-ux/project-input-validator@0.6.46
+
+## 0.16.10
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.15
+
 ## 0.16.9
 
 ### Patch Changes

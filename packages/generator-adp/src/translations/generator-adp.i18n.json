@@ -4,6 +4,8 @@
         "configurationDescr": "Configure the system and select an application.",
         "projectAttributesName": "Project Attributes",
         "projectAttributesDescr": "Configure the main project attributes.",
+        "keyUserImportName": "Import Key User Changes",
+        "keyUserImportDescr": "You can either continue with the pre-selected source system or choose a system from which the key-user changes are taken over.",
         "flpConfigName": "SAP Fiori Launchpad Configuration: Tile Settings",
         "tileSettingsName": "SAP Fiori Launchpad Configuration: Tile Handling",
         "tileSettingsDescr": "Add a new tile or replace existing tiles of the base application.\nProject: {{projectName}}",
@@ -25,6 +27,8 @@
         "usernameTooltip": "Enter the user name for the back-end system.",
         "passwordLabel": "Password",
         "passwordTooltip": "Enter the password for the back-end system.",
+        "storeCredentialsTooltip": "Do you want to store the system credentials?",
+        "storeCredentialsLabelBreadcrumb": "Store Credentials",
         "applicationListLabel": "Application",
         "applicationListTooltip": "Select the application for which you want to create an application variant.",
         "fioriIdLabel": "Fiori ID",
@@ -48,6 +52,9 @@
         "ui5VersionTooltip": "Select the SAPUI5 version you want to use to preview your app variant.",
         "addDeployConfig": "Add Deployment Configuration",
         "addFlpConfig": "Add SAP Fiori Launchpad Configuration",
+        "importKeyUserChangesLabel": "Import Key User Changes",
+        "keyUserAdaptationLabel": "Context-Based Adaptation",
+        "keyUserAdaptationBreadcrumb": "Adaptation",
         "targetEnvLabel": "Environment",
         "targetEnvTooltip": "Select the target environment for your Adaptation Project.",
         "targetEnvBreadcrumb": "Target Environment",
@@ -73,6 +80,9 @@
         "projectNameValidationErrorInt": "The name must only contain Latin alphanumeric characters and it must have at least two parts. Every part must start with a letter and the different parts must be separated by a period.",
         "projectNotInWorkspace": "The project: '{{- path}}' is not in the workspace. Some adaptation project tools may not work. What do you want to do?",
         "emptyAnnotationFile": "An empty annotation file will be created in the webapp/changes/annotations folder of your project."
+    },
+    "warnings": {
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
     },
     "error": {
         "selectCannotBeEmptyError": "The {{value}} has to be selected.",
@@ -104,7 +114,11 @@
         "projectDoesNotExist": "The project does not exist. Please select an MTA project.",
         "projectDoesNotExistMta": "Provide the path to the MTA project where you want to have your Adaptation Project created.",
         "noAdaptableBusinessServiceFoundInMta": "No adaptable business service found in the MTA.",
-        "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}."
+        "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}.",
+        "keyUserNoChangesDefault": "Only a single adaptation ('DEFAULT') was found and no key-user changes were found for it. Please select a different system to continue, or navigate back to the 'Project Attributes' page and choose not to import key-user changes.",
+        "keyUserNoChangesAdaptation": "No key-user changes have been found for the '{{adaptationId}}' adaptation. Please select a different adaptation.",
+        "keyUserNoAdaptations": "No context-based adaptations have been found for the selected application. Please refer to the documentation.",
+        "keyUserNotSupported": "The selected system does not allow or support the import of key-user changes. Please refer to the documentation."
     },
     "validators": {
         "ui5VersionNotDetectedError": "The SAPUI5 version of the selected system cannot be determined. You are able to create and edit adaptation projects that use the latest SAPUI5 version, but they are not usable on this system until the system's SAPUI5 version is upgraded to version 1.71 or higher."

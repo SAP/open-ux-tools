@@ -437,7 +437,7 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
             ...options.promptOptions?.systemSelection
         },
         [odataServiceInquirerPromptNames.valueHelpDownload]: {
-            hide: true,
+            hide: false,
             ...options.promptOptions?.valueHelpDownload
         }
     };
