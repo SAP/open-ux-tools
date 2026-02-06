@@ -6,7 +6,7 @@ export default {
     description: `Generates a new SAP Fiori adaptation project by calling the @sap-ux/adp generator with JSON arguments.
     
     This functionality requires:
-    - system: The name of the SAP system (from list-adp-systems)
+    - system: The name of the SAP system (from list-systems)
     - application: The application ID to adapt
     
     Optional parameters:
