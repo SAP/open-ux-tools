@@ -12,11 +12,11 @@
     },
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
-    "types": "dist/index.d.ts",
+    "types": "generators/app/index.d.ts",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "require": "./dist/index.js"
+            "types": "./generators/app/index.d.ts",
+            "require": "./generators/app/index.js"
         },
         "./package.json": "./package.json"
     },
