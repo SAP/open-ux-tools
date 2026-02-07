@@ -12,13 +12,6 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "module": "dist/esm/index.js",
-    "exports": {
-        ".": {
-            "import": "./dist/esm/index.js",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
-    },
     "scripts": {
         "compile": "tsc --build && tsc --build tsconfig.esm.json",
         "build": "npm-run-all clean compile",

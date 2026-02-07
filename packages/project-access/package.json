@@ -14,13 +14,6 @@
     "private": false,
     "main": "dist/index.js",
     "module": "dist/esm/index.js",
-    "exports": {
-        ".": {
-            "import": "./dist/esm/index.js",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
-    },
     "scripts": {
         "build": "tsc --build && tsc --build tsconfig.esm.json",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
