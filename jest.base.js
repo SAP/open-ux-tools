@@ -7,7 +7,9 @@ module.exports = {
             }
         }]
     },
-    transformIgnorePatterns: ['/node_modules/(?!(mem-fs|mem-fs-editor)/)'],
+    transformIgnorePatterns: [
+        '<rootDir>.*/dist/'
+    ],
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
     coverageReporters: ['text', ['lcov', { projectRoot: '../../' }]],

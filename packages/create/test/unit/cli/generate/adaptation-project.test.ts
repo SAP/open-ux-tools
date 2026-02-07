@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
-import type { Editor, create } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, create } from 'mem-fs-editor';
 import { addGenerateAdaptationProjectCommand } from '../../../../src/cli/generate/adaptation-project';
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';

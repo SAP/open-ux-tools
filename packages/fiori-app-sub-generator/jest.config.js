@@ -10,4 +10,5 @@ config.modulePathIgnorePatterns = [
     '<rootDir>/test/int/fiori-freestyle/expected-output',
     '<rootDir>/test/int/test-output'
 ];
+config.transformIgnorePatterns = ['<rootDir>/../../node_modules/(?!(mem-fs|mem-fs-editor)/)'];
 module.exports = config;
