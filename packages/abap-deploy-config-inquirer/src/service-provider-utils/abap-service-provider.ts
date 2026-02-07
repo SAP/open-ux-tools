@@ -73,10 +73,11 @@ export class AbapServiceProviderManager {
      * @returns - system config
      */
     private static getSystemConfig(backendTarget?: BackendTarget): SystemConfig {
+        const { url, client, destination } = PromptState.abapDeployConfig ?? backendTarget?.abapTarget;
         return {
-            url: PromptState.abapDeployConfig.url ?? backendTarget?.abapTarget.url,
-            client: PromptState.abapDeployConfig.client ?? backendTarget?.abapTarget.client,
-            destination: PromptState.abapDeployConfig.destination ?? backendTarget?.abapTarget.destination
+            url,
+            client,
+            destination
         };
     }
 

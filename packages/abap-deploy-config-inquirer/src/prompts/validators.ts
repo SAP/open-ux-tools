@@ -122,17 +122,26 @@ export function updateDestinationPromptState(destinationName: string, destinatio
  *
  * @param target - target system
  * @param choices - abab system choices
+ * @param backendTarget - The backend target
+ * @param adpProjectType - The Adaptation project type
  * @returns boolean or error message string
  */
-export function validateTargetSystem(target?: string, choices?: AbapSystemChoice[]): boolean | string {
+export async function validateTargetSystem(
+    target?: string,
+    choices?: AbapSystemChoice[],
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
+): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
     if (!target || target === TargetSystemType.Url) {
         return true;
     }
-    const isValid = isValidUrl(target?.trim());
+
+    const targetSystemUrl = target?.trim();
+    const isValidSystemUrl = isValidUrl(targetSystemUrl);
 
     const choice = choices?.find((choice) => choice.value === target);
-    if (isValid && choice) {
+    if (isValidSystemUrl && choice) {
         updatePromptState({
             url: choice.value,
             client: choice.client ?? '',
@@ -141,7 +150,20 @@ export function validateTargetSystem(target?: string, choices?: AbapSystemChoice
             target: target
         });
     }
-    return isValid;
+
+    // If ADP project type is not relevant, URL validity is enough.
+    if (!adpProjectType) {
+        return isValidSystemUrl || t('errors.invalidUrl', { url: targetSystemUrl });
+    }
+
+    // ADP also requires a valid system URL.
+    if (!isValidSystemUrl) {
+        return t('errors.invalidUrl', { url: targetSystemUrl });
+    }
+
+    const adpProjectTypeValidation = await validateSystemSupportAdpProjectType(adpProjectType, backendTarget);
+
+    return typeof adpProjectTypeValidation === 'string' ? adpProjectTypeValidation : true;
 }
 
 /**
@@ -175,14 +197,22 @@ export function validateUrl(input: string): boolean | string {
  *
  * @param targetSystem - target system
  * @param choices - abap system choices
+ * @param backendTarget - The backend target.
+ * @param adpProjectType - The Adaptation project type.
  * @throws Error if target system is invalid
  */
-export function validateTargetSystemUrlCli(targetSystem?: string, choices?: AbapSystemChoice[]): void {
-    if (!PromptState.isYUI) {
-        const isTargetValid = validateTargetSystem(targetSystem, choices);
-        if (typeof isTargetValid === 'string') {
-            throw new Error(isTargetValid);
-        }
+export async function validateTargetSystemUrlCli(
+    targetSystem?: string,
+    choices?: AbapSystemChoice[],
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
+): Promise<void> {
+    if (PromptState.isYUI) {
+        return;
+    }
+    const isTargetValid = await validateTargetSystem(targetSystem, choices, backendTarget, adpProjectType);
+    if (typeof isTargetValid === 'string') {
+        throw new Error(isTargetValid);
     }
 }
 

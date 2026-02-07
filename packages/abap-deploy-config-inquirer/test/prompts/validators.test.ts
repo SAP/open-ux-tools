@@ -28,7 +28,7 @@ import {
 } from '../../src/prompts/validators';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
 import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
-import type { AbapSystemChoice } from '../../src/types';
+import type { AbapSystemChoice, BackendTarget } from '../../src/types';
 import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
 import * as utils from '../../src/utils';
 import * as validatorUtils from '../../src/validator-utils';
@@ -162,14 +162,14 @@ describe('Test validators', () => {
             }
         ];
 
-        it('should return true for valid (or empty) target system', () => {
-            let result = validateTargetSystem('');
+        it('should return true for valid (or empty) target system', async () => {
+            let result = await validateTargetSystem('');
             expect(result).toBe(true);
 
-            result = validateTargetSystem(TargetSystemType.Url);
+            result = await validateTargetSystem(TargetSystemType.Url);
             expect(result).toBe(true);
 
-            result = validateTargetSystem('https://mock.url.target1.com', abapSystemChoices);
+            result = await validateTargetSystem('https://mock.url.target1.com', abapSystemChoices);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
                 client: '001',
@@ -180,9 +180,51 @@ describe('Test validators', () => {
             expect(result).toBe(true);
         });
 
-        it('should return false for invalid  target system', () => {
-            const result = validateTargetSystem('/x/inval.z');
-            expect(result).toBe(false);
+        it('should return invalid url localized string for invalid target system', async () => {
+            const url = '/x/inval.z';
+            const result = await validateTargetSystem(url);
+            expect(result).toBe(t('errors.invalidUrl', { url }));
+        });
+
+        it('should return true when url is valid and the ADP project type can be deployed on the target system', async () => {
+            const srcUrl = 'https://mock.url.target1.com';
+            const targetUrl = 'https://mock.url.deployment.target.com';
+            const backendTarget: BackendTarget = {
+                abapTarget: {
+                    url: targetUrl
+                }
+            };
+            mockResolvedSystemInfo([AdaptationProjectType.ON_PREMISE]);
+            const result = await validateTargetSystem(
+                srcUrl,
+                abapSystemChoices,
+                backendTarget,
+                AdaptationProjectType.ON_PREMISE
+            );
+            expect(result).toBe(true);
+        });
+
+        it('should return a string containing the error message when url is valid and the ADP project type cannot be deployed on the target system', async () => {
+            const srcUrl = 'https://mock.url.target1.com';
+            const targetUrl = 'https://mock.url.deployment.target.com';
+            const backendTarget: BackendTarget = {
+                abapTarget: {
+                    url: targetUrl
+                }
+            };
+            mockResolvedSystemInfo([AdaptationProjectType.ON_PREMISE]);
+            const result = await validateTargetSystem(
+                srcUrl,
+                abapSystemChoices,
+                backendTarget,
+                AdaptationProjectType.CLOUD_READY
+            );
+            expect(result).toBe(
+                t('errors.validators.unsupportedAdpProjectType', {
+                    adpProjectType: AdaptationProjectType.CLOUD_READY,
+                    supportedAdpProjectTypes: [AdaptationProjectType.ON_PREMISE]
+                })
+            );
         });
     });
 
@@ -233,18 +275,20 @@ describe('Test validators', () => {
     });
 
     describe('validateTargetSystemUrlCli', () => {
-        it('should resolve when target is valid', () => {
+        it('should resolve when target is valid', async () => {
             PromptState.isYUI = false;
-            expect(validateTargetSystemUrlCli('https://mock.url.target1.com')).toBeUndefined();
+            await expect(validateTargetSystemUrlCli('https://mock.url.target1.com')).resolves.toBeUndefined();
         });
 
-        it('should throw error when target is invalid', () => {
-            PromptState.isYUI = true;
+        it('should throw error when target is invalid', async () => {
+            PromptState.isYUI = false;
+            let validationError;
             try {
-                validateTargetSystemUrlCli('/x/inval.z');
-            } catch (e) {
-                expect(e).toStrictEqual(new Error(t('errors.invalidUrl', { url: '/x/inval.z' })));
+                await validateTargetSystemUrlCli('/x/inval.z');
+            } catch (error) {
+                validationError = error;
             }
+            expect(validationError).toStrictEqual(new Error(t('errors.invalidUrl', { url: '/x/inval.z' })));
         });
     });
 

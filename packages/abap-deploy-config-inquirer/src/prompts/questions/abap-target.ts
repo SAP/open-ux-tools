@@ -90,10 +90,14 @@ function getDestinationPrompt(
  * Returns the target system prompt.
  *
  * @param choices - abap system choices
+ * @param backendTarget - The backend target.
+ * @param adpProjectType - The Adaptation project type.
  * @returns list question for target system
  */
 function getTargetSystemPrompt(
-    choices: AbapSystemChoice[]
+    choices: AbapSystemChoice[],
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
 ): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
         {
@@ -107,16 +111,16 @@ function getTargetSystemPrompt(
             },
             choices: (): AbapSystemChoice[] => choices,
             default: (): string | undefined => defaultTargetSystem(choices),
-            validate: (target: string): boolean | string => validateTargetSystem(target, choices)
+            validate: (target: string) => validateTargetSystem(target, choices, backendTarget, adpProjectType)
         } as ListQuestion<AbapDeployConfigAnswersInternal>
     ];
 
     if (!isAppStudio() && !PromptState.isYUI) {
         prompts.push({
-            when: (answers: AbapDeployConfigAnswersInternal): boolean => {
+            when: async (answers: AbapDeployConfigAnswersInternal) => {
                 const target = answers[promptNames.targetSystem];
                 if (target) {
-                    validateTargetSystemUrlCli(target, choices);
+                    await validateTargetSystemUrlCli(target, choices, backendTarget, adpProjectType);
                 }
                 return false;
             },
@@ -269,7 +273,7 @@ export async function getAbapTargetPrompts(
     const abapSystemChoices = await getAbapSystemChoices(destinations, options?.backendTarget, backendSystems);
     return [
         ...getDestinationPrompt(abapSystemChoices, destinations, options.backendTarget, options.adpProjectType),
-        ...getTargetSystemPrompt(abapSystemChoices),
+        ...getTargetSystemPrompt(abapSystemChoices, options.backendTarget, options.adpProjectType),
         getUrlPrompt(destinations, options.backendTarget),
         ...getScpPrompt(options.backendTarget),
         ...getClientChoicePrompt(options.backendTarget),

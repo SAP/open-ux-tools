@@ -274,11 +274,11 @@ describe('getAbapTargetPrompts', () => {
         );
 
         if (targetSystemCliSetterPrompt) {
-            expect(
+            await expect(
                 (targetSystemCliSetterPrompt.when as Function)({
-                    targetSystem: 'target1'
+                    targetSystem: 'https://target.com'
                 })
-            ).toBe(false);
+            ).resolves.toBe(false);
             expect(validateTargetSystemUrlCliSpy).toHaveBeenCalledTimes(1);
         } else {
             throw new Error('Target system setter prompt not found');
@@ -291,7 +291,7 @@ describe('getAbapTargetPrompts', () => {
             backendSystems: undefined
         });
         PromptState.isYUI = true;
-        jest.spyOn(validators, 'validateTargetSystemUrlCli').mockReturnValueOnce();
+        jest.spyOn(validators, 'validateTargetSystemUrlCli').mockResolvedValueOnce();
         jest.spyOn(validators, 'validateUrl').mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const urlPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.url);
