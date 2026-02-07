@@ -1,7 +1,6 @@
 import { spawn } from 'node:child_process';
 import { basename, dirname, join, normalize, relative, sep } from 'node:path';
 import type { Logger } from '@sap-ux/logger';
-import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { FileName, MinCdsVersion } from '../constants';
 import type {
     CapCustomPaths,
@@ -29,9 +28,41 @@ import {
 import { loadModuleFromProject } from './module-loader';
 import { findCapProjectRoot } from './search';
 import { coerce, gte, satisfies } from 'semver';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
+import type { Store } from 'mem-fs';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { hasDependency } from './dependencies';
+
+// Dynamic imports for ESM-only modules
+let memFsCreateStorage: ((options?: any) => Store) | undefined;
+let memFsEditorCreate: ((store: Store) => Editor) | undefined;
+
+/**
+ * Dynamically loads mem-fs module.
+ * This is needed because mem-fs v3+ is ESM-only.
+ *
+ * @returns create function from mem-fs
+ */
+async function loadMemFs(): Promise<(options?: any) => Store> {
+    if (!memFsCreateStorage) {
+        const memFs = await import('mem-fs');
+        memFsCreateStorage = memFs.create;
+    }
+    return memFsCreateStorage;
+}
+
+/**
+ * Dynamically loads mem-fs-editor module.
+ * This is needed because mem-fs-editor v10+ is ESM-only.
+ *
+ * @returns create function from mem-fs-editor
+ */
+async function loadMemFsEditor(): Promise<(store: Store) => Editor> {
+    if (!memFsEditorCreate) {
+        const memFsEditor = await import('mem-fs-editor');
+        memFsEditorCreate = memFsEditor.create;
+    }
+    return memFsEditorCreate;
+}
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -889,6 +920,8 @@ export async function checkCdsUi5PluginEnabled(
     cdsVersionInfo?: CdsVersionInfo
 ): Promise<boolean | CdsUi5PluginInfo> {
     if (!fs) {
+        const createStorage = await loadMemFs();
+        const create = await loadMemFsEditor();
         fs = create(createStorage());
     }
     const packageJsonPath = join(basePath, 'package.json');

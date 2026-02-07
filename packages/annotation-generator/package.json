@@ -11,6 +11,14 @@
     "author": "SAP SE",
     "license": "Apache-2.0",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
     "scripts": {
         "compile": "tsc --build",
         "build": "npm-run-all clean compile",

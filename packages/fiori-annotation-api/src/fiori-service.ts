@@ -1,8 +1,7 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
-import { create as createStore } from 'mem-fs';
+import type { Store } from 'mem-fs';
 import type { MemFsEditor as Editor, MemFsEditorFileDump } from 'mem-fs-editor';
-import { create as createEditor } from 'mem-fs-editor';
 
 import type { RawMetadata } from '@sap-ux/vocabularies-types';
 import type { Project } from '@sap-ux/project-access';
@@ -15,6 +14,38 @@ import type {
     WorkspaceEdit
 } from '@sap-ux/odata-annotation-core-types';
 import { DiagnosticSeverity } from '@sap-ux/odata-annotation-core-types';
+
+// Dynamic imports for ESM-only modules
+let memFsCreateStore: ((options?: any) => Store) | undefined;
+let memFsEditorCreate: ((store: Store) => Editor) | undefined;
+
+/**
+ * Dynamically loads mem-fs module.
+ * This is needed because mem-fs v3+ is ESM-only.
+ *
+ * @returns create function from mem-fs
+ */
+async function loadMemFs(): Promise<(options?: any) => Store> {
+    if (!memFsCreateStore) {
+        const memFs = await import('mem-fs');
+        memFsCreateStore = memFs.create;
+    }
+    return memFsCreateStore;
+}
+
+/**
+ * Dynamically loads mem-fs-editor module.
+ * This is needed because mem-fs-editor v10+ is ESM-only.
+ *
+ * @returns create function from mem-fs-editor
+ */
+async function loadMemFsEditor(): Promise<(store: Store) => Editor> {
+    if (!memFsEditorCreate) {
+        const memFsEditor = await import('mem-fs-editor');
+        memFsEditorCreate = memFsEditor.create;
+    }
+    return memFsEditorCreate;
+}
 
 import { getAliasInformation, getAllNamespacesAndReferences } from '@sap-ux/odata-annotation-core';
 import type { MetadataService } from '@sap-ux/odata-entity-model';
@@ -174,6 +205,8 @@ export class FioriAnnotationService {
         if (fs) {
             fsEditor = fs;
         } else {
+            const createStore = await loadMemFs();
+            const createEditor = await loadMemFsEditor();
             const store = createStore();
             fsEditor = createEditor(store);
         }

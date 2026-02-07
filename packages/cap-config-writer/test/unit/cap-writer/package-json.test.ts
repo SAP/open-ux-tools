@@ -1,7 +1,7 @@
 import type { CapRuntime, CapServiceCdsInfo } from '../../../src';
-import memFs from 'mem-fs';
+import { create as createStorage } from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';
-import editor, { type MemFsEditor as Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { updateRootPackageJson, updateAppPackageJson } from '../../../src/cap-writer/package-json';
 import type { Package } from '@sap-ux/project-access';
@@ -25,9 +25,9 @@ describe('Writing/package json files', () => {
 
     // beforeEach function to reset fs before each test
     beforeEach(() => {
-        const store = memFs.create();
+        const store = createStorage();
         // Create a new instance of the Editor class before each test
-        fs = editor.create(store);
+        fs = create(store);
     });
 
     beforeEach(() => {

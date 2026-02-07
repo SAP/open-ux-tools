@@ -1,16 +1,18 @@
 import type { AnnotationsData } from '../../../src';
 import { ChangeType, generateChange } from '../../../src';
 import { WriterFactory } from '../../../src/writer/changes/writer-factory';
-import * as memFsEditor from 'mem-fs-editor';
-import * as memFs from 'mem-fs';
+import { create as createEditor, type MemFsEditor as Editor } from 'mem-fs-editor';
+import { create as createStorage, type Store } from 'mem-fs';
 
 jest.mock('mem-fs-editor');
 jest.mock('mem-fs');
 
 describe('generateChange', () => {
     const writeSpy = jest.fn();
-    const createStorageSpy = jest.spyOn(memFs, 'create').mockReturnValue({} as memFs.Store);
-    const createEditorSpy = jest.spyOn(memFsEditor, 'create').mockReturnValue({} as memFsEditor.Editor);
+    const memFs = { create: createStorage };
+    const memFsEditor = { create: createEditor };
+    const createStorageSpy = jest.spyOn(memFs, 'create').mockReturnValue({} as Store);
+    const createEditorSpy = jest.spyOn(memFsEditor, 'create').mockReturnValue({} as Editor);
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -50,7 +52,7 @@ describe('generateChange', () => {
                 variant: {},
                 annotation: {}
             } as AnnotationsData,
-            {} as memFsEditor.Editor
+            {} as Editor
         );
 
         expect(WriterFactory.createWriter).toHaveBeenCalledWith(

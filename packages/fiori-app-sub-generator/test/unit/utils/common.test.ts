@@ -5,9 +5,9 @@ import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import memFs from 'mem-fs';
+import { create as createStorage } from 'mem-fs';
 import type { MemFsEditor as Editor } from 'mem-fs-editor';
-import memFsEditor from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types';
 import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
@@ -274,8 +274,8 @@ describe('Test utils', () => {
     });
 
     describe('generateLaunchConfig', () => {
-        const store = memFs.create();
-        const editor = memFsEditor.create(store);
+        const store = createStorage();
+        const editor = create(store);
         const mockVsCode = {
             workspace: {
                 getConfiguration: jest.fn().mockReturnValue({

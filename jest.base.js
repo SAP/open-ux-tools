@@ -8,7 +8,7 @@ module.exports = {
         }]
     },
     transformIgnorePatterns: [
-        'node_modules/(?!.*(mem-fs|mem-fs-editor))'
+        '<rootDir>.*/dist/'
     ],
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
