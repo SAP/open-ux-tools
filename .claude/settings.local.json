@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test:*)",
+      "Bash(npm run build:*)",
+      "Bash(cat:*)",
+      "Bash(timeout 180 npm test:*)",
+      "Bash(pkill:*)",
+      "Bash(node -e:*)",
+      "Bash(node --version:*)",
+      "Bash(pnpm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run clean:*)",
+      "Bash(pnpm run build:*)"
+    ]
+  }
+}
