@@ -419,4 +419,23 @@ describe('questions', () => {
             t('prompts.validationMessages.backendSystemExistsWarning', { backendName: backendSystemReentrance.name })
         );
     });
+
+    test('Should include value help download prompt when promptOptions.valueHelpDownload.hide is false', () => {
+        const questions = getAbapOnBTPSystemQuestions({ valueHelpDownload: { hide: false } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'abapOnBtp:valueHelpDownload');
+        expect(valueHelpPrompt).toBeDefined();
+        expect(valueHelpPrompt?.type).toBe('confirm');
+    });
+
+    test('Should not include value help download prompt when promptOptions.valueHelpDownload.hide is true', () => {
+        const questions = getAbapOnBTPSystemQuestions({ valueHelpDownload: { hide: true } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'abapOnBtp:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
+    });
+
+    test('Should not include value help download prompt by default when promptOptions is not provided', () => {
+        const questions = getAbapOnBTPSystemQuestions();
+        const valueHelpPrompt = questions.find((question) => question.name === 'abapOnBtp:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
+    });
 });

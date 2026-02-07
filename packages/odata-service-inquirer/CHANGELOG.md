@@ -1,5 +1,40 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.16.10
+
+### Patch Changes
+
+- 722266d: fix(deps): update dependency axios-logger to v2.8.1
+
+## 2.16.9
+
+### Patch Changes
+
+- ac865af: Fix for incorrect auth info message shown after auth success
+
+## 2.16.8
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-generator-shared@0.13.66
+    - @sap-ux/project-input-validator@0.6.51
+    - @sap-ux/telemetry@0.6.67
+    - @sap-ux/inquirer-common@0.10.26
+
+## 2.16.7
+
+### Patch Changes
+
+- 9a96150: Unhide value helps download during generation.
+- Updated dependencies [38e215e]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/fiori-generator-shared@0.13.65
+    - @sap-ux/telemetry@0.6.66
+    - @sap-ux/inquirer-common@0.10.25
+
 ## 2.16.6
 
 ### Patch Changes

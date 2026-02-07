@@ -3174,8 +3174,8 @@ importers:
         specifier: 1.12.2
         version: 1.12.2(debug@4.4.3)
       axios-logger:
-        specifier: 2.8.0
-        version: 2.8.0
+        specifier: 2.8.1
+        version: 2.8.1
       circular-reference-remover:
         specifier: 2.1.0
         version: 2.1.0
@@ -3568,8 +3568,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       livereload:
-        specifier: 0.9.3
-        version: 0.9.3
+        specifier: 0.10.3
+        version: 0.10.3
       portfinder:
         specifier: 1.0.32
         version: 1.0.32
@@ -3774,8 +3774,8 @@ importers:
         specifier: 3.6.0
         version: 3.6.0
       '@zowe/secrets-for-zowe-sdk':
-        specifier: 8.1.2
-        version: 8.1.2
+        specifier: 8.29.4
+        version: 8.29.4
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -3914,8 +3914,8 @@ importers:
         version: 0.1.13
     optionalDependencies:
       '@zowe/secrets-for-zowe-sdk':
-        specifier: 8.1.2
-        version: 8.1.2
+        specifier: 8.29.4
+        version: 8.29.4
     devDependencies:
       '@types/pluralize':
         specifier: 0.0.30
@@ -18081,6 +18081,13 @@ packages:
     resolution: {integrity: sha512-cE8rlBADL48wmiQr+fdQdxczW4wLsmv5BQa03QepKiydBBE7TLrG2Anx/F4uZ+sVIZQuN95SHvwkt8VZaTzuyw==}
     engines: {node: '>=14'}
     requiresBuild: true
+    dev: true
+    optional: true
+
+  /@zowe/secrets-for-zowe-sdk@8.29.4:
+    resolution: {integrity: sha512-fiRfuEuFNapwhVbN3LJIA2ZgVajNB+QNFN7O7ES/fIYGM612PKcXuvbZUJSlU69IZ8eUF8SP+9OnveK4s+GLgw==}
+    engines: {node: '>=14'}
+    requiresBuild: true
 
   /a-sync-waterfall@1.0.1:
     resolution: {integrity: sha512-RYTOHHdWipFUliRFMCS4X2Yn2X8M87V/OpSqWzKKOGhzqyUxzyVmhHDH9sAvG+ZuQf/TAOFsLCpMw09I1ufUnA==}
@@ -18380,6 +18387,7 @@ packages:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
+    dev: true
 
   /apache-arrow@18.1.0:
     resolution: {integrity: sha512-v/ShMp57iBnBp4lDgV8Jx3d3Q5/Hac25FWmQ98eMahUiHPXcvwIMKJD0hBIgclm/FCG+LwPkAKtkRO1O/W0YGg==}
@@ -18770,8 +18778,8 @@ packages:
       possible-typed-array-names: 1.0.0
     dev: true
 
-  /axios-logger@2.8.0:
-    resolution: {integrity: sha512-MWOBmbyAarx18rkI0xsuMDkK1oaqwROqeZjsfVgsD0Y7IGLzN3ZNZPpcnoCDKeajU0uLxjCs85186CeLU36bXg==}
+  /axios-logger@2.8.1:
+    resolution: {integrity: sha512-Bbl7XRR/Rkxg2Owv/kRgAZ/0qf8kMPLc08LtiUcGCWV5RmoI7vHr+eee6SUc8jRi2nE5KWShziCVh35C1SBEaw==}
     dependencies:
       chalk: 4.1.2
       dateformat: 3.0.3
@@ -19274,6 +19282,7 @@ packages:
   /binary-extensions@2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
+    dev: true
 
   /binary-extensions@3.1.0:
     resolution: {integrity: sha512-Jvvd9hy1w+xUad8+ckQsWA/V1AoyubOvqn0aygjMOVM4BfIaRav1NFS3LsTSDaV4n4FtcCtQXvzep1E6MboqwQ==}
@@ -19860,6 +19869,7 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
 
   /chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -19881,7 +19891,6 @@ packages:
     engines: {node: '>= 14.16.0'}
     dependencies:
       readdirp: 4.1.2
-    dev: true
 
   /chokidar@5.0.0:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
@@ -23391,6 +23400,7 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
+    dev: true
     optional: true
 
   /function-bind@1.1.2:
@@ -24693,6 +24703,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       binary-extensions: 2.2.0
+    dev: true
 
   /is-boolean-object@1.1.2:
     resolution: {integrity: sha512-gDYaKHJmnj4aWxyj6YHyXVpdQawtVLHU5cb+eztPGczf6cjuTdwve5ZIEfgXqH4e57An1D1AKf8CZ3kYrQRqYA==}
@@ -26473,18 +26484,19 @@ packages:
       uc.micro: 2.1.0
     dev: true
 
-  /livereload-js@3.4.1:
-    resolution: {integrity: sha512-5MP0uUeVCec89ZbNOT/i97Mc+q3SxXmiUGhRFOTmhrGPn//uWVQdCvcLJDy64MSBR5MidFdOR7B9viumoavy6g==}
+  /livereload-js@4.0.2:
+    resolution: {integrity: sha512-Fy7VwgQNiOkynYyNBTo3v9hQUhcW5pFAheJN148+DTgpShjsy/22pLHKKwDK5v0kOsZsJBK+6q1PMgLvRmrwFQ==}
     dev: false
 
-  /livereload@0.9.3:
-    resolution: {integrity: sha512-q7Z71n3i4X0R9xthAryBdNGVGAO2R5X+/xXpmKeuPMrteg+W2U8VusTKV3YiJbXZwKsOlFlHe+go6uSNjfxrZw==}
+  /livereload@0.10.3:
+    resolution: {integrity: sha512-llSb8HrtSH7ByPFMc8WTTeW3oy++smwgSA8JVGzEn8KiDPESq6jt1M4ZKKkhKTrhn2wvUOadQq4ip10E5daZ3w==}
     engines: {node: '>=8.0.0'}
+    hasBin: true
     dependencies:
-      chokidar: 3.5.3
-      livereload-js: 3.4.1
+      chokidar: 4.0.3
+      livereload-js: 4.0.2
       opts: 2.0.2
-      ws: 7.5.10
+      ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -30704,11 +30716,11 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.1
+    dev: true
 
   /readdirp@4.1.2:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
-    dev: true
 
   /readdirp@5.0.0:
     resolution: {integrity: sha512-9u/XQ1pvrQtYyMpZe7DXKv2p5CNvyVwzUB6uhLAnQwHMSgKMBR62lc7AHljaeteeHXn11XTAaLLUVZYVZyuRBQ==}
@@ -34770,19 +34782,6 @@ packages:
       imurmurhash: 0.1.4
       signal-exit: 4.1.0
     dev: true
-
-  /ws@7.5.10:
-    resolution: {integrity: sha512-+dbF1tHwZpXcbOJdVOkzLDxZP1ailvSxM6ZweXTegylPny803bFhA+vqBYw4s31NSAk4S2Qz+AKXK9a4wkdjcQ==}
-    engines: {node: '>=8.3.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: false
 
   /ws@8.17.1:
     resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
