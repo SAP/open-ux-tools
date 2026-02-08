@@ -31,7 +31,7 @@
                 "{projectRoot}/lib",
                 "{projectRoot}/storybook"
             ],
-            "cache": true
+            "cache": false
         },
         "test": {
             "inputs": [
@@ -42,7 +42,7 @@
                 "sharedGlobals"
             ],
             "outputs": ["{projectRoot}/coverage"],
-            "cache": true
+            "cache": false
         },
         "test:integration": {
             "inputs": [
