@@ -9,8 +9,15 @@ const ruleTester = new RuleTester({
     language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
 });
 
-// Clear cache before each test to ensure clean state
+// Clear cache at the start
+ProjectContext.clearCache();
+
+// Clear cache before and after each test to ensure clean state
 beforeEach(() => {
+    ProjectContext.clearCache();
+});
+
+afterEach(() => {
     ProjectContext.clearCache();
 });
 
