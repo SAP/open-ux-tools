@@ -76,8 +76,8 @@ export function buildSapClientParam(sapClient: string): string {
  * @returns - array of supported odata versions or undefined if all are supported
  */
 export function getRequiredOdataVersion(floorplan: Floorplan): OdataVersion | undefined {
-    const supportedVers = FloorplanAttributes[floorplan].supportedODataVersion;
-    return supportedVers.length === 1 ? supportedVers[0] : undefined;
+    const supportedVers = FloorplanAttributes[floorplan]?.supportedODataVersion;
+    return supportedVers?.length === 1 ? supportedVers[0] : undefined;
 }
 
 /**
