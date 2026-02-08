@@ -278,7 +278,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             // write out the files for debugging
             if (debug?.enabled) {
                 await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
-                fs.commit(resolve);
+                fs.commit();
+                resolve(true);
             } else {
                 resolve(true);
             }
@@ -307,7 +308,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         const Component = { js: join(testPath, 'webapp', 'Component.js') };
 
         expect(fs.exists(Component.js)).toBeTruthy();
-        expect(await fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
+        const componentBuffer = fs.read(Component.js);
+        expect(componentBuffer ? componentBuffer.includes('my/demo/App') : false).toBeTruthy();
     });
 
     test('sapuxLayer is added to package json for edmx projects when provided', async () => {

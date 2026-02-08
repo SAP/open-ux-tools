@@ -12,7 +12,21 @@ function createTestFs(basePath: string) {
         }
     });
     fs.writeJSON(join(basePath, 'package.json'), {});
-    fs.write(join(basePath, 'ui5.yaml'), '');
+    fs.write(
+        join(basePath, 'ui5.yaml'),
+        `specVersion: "2.4"
+metadata:
+  name: apps.v4.example
+type: application
+server:
+  customMiddleware:
+  - name: preview-middleware
+    afterMiddleware: compression
+    configuration:
+      flp:
+        path: test/flpSandbox.html
+`
+    );
     return fs;
 }
 
@@ -32,7 +46,7 @@ describe('enableCardGenerator', () => {
         await enableCardGeneratorConfig(basePath, join(basePath, 'ui5.yaml'), undefined, fs);
 
         if (process.env.UX_DEBUG) {
-            fs.commit(() => {});
+            await fs.commit();
         }
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
@@ -45,7 +59,7 @@ describe('enableCardGenerator', () => {
         await enableCardGeneratorConfig(basePath, join(basePath, 'ui5-without-generator.yaml'), undefined, fs);
 
         if (process.env.UX_DEBUG) {
-            fs.commit(() => {});
+            await fs.commit();
         }
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
@@ -58,7 +72,7 @@ describe('enableCardGenerator', () => {
         await enableCardGeneratorConfig(basePath, join(basePath, 'ui5-with-deprecated-config.yaml'), undefined, fs);
 
         if (process.env.UX_DEBUG) {
-            fs.commit(() => {});
+            await fs.commit();
         }
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
@@ -71,7 +85,7 @@ describe('enableCardGenerator', () => {
         await enableCardGeneratorConfig(basePath, join(basePath, 'ui5-with-deprecated-rta-config.yaml'), undefined, fs);
 
         if (process.env.UX_DEBUG) {
-            fs.commit(() => {});
+            await fs.commit();
         }
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
@@ -89,7 +103,7 @@ describe('enableCardGenerator', () => {
         );
 
         if (process.env.UX_DEBUG) {
-            fs.commit(() => {});
+            await fs.commit();
         }
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();

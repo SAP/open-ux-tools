@@ -51,7 +51,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         path: '/sap/opu/odata/sap/SEPMRA_PROD_MAN',
         url: 'https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com',
         version: OdataVersion.v2,
-        metadata: getMetadata('sepmra_prod_man_v2'),
+        metadata: getMetadata('sepmra_prod_man_v2')!,
         model: '',
         client: '012',
         destination: {
@@ -99,7 +99,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 service: {
                     path: '/here/goes/your/serviceurl/',
                     version: OdataVersion.v4,
-                    metadata: getMetadata('sales_order_manage_v4')
+                    metadata: getMetadata('sales_order_manage_v4')!
                 }
             }
         },
@@ -125,7 +125,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     path: '/catalog-admin-noauth',
                     url: 'https://fesamples-tooling.cfapps.sap.hana.ondemand.com',
                     version: OdataVersion.v4,
-                    metadata: getMetadata('fe_samples_v4')
+                    metadata: getMetadata('fe_samples_v4')!
                 }
             }
         },
@@ -194,7 +194,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             // write out the files for debugging
             if (debug?.enabled) {
                 await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
-                fs.commit(resolve);
+                fs.commit();
+                resolve(true);
             } else {
                 resolve(true);
             }

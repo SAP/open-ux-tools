@@ -21,6 +21,11 @@
             "import": "./dist/esm/index.js",
             "require": "./dist/index.js"
         },
+        "./dist/file": {
+            "types": "./dist/file/index.d.ts",
+            "import": "./dist/esm/file/index.js",
+            "require": "./dist/file/index.js"
+        },
         "./package.json": "./package.json"
     },
     "scripts": {

@@ -99,7 +99,7 @@ describe('App router generator tests', () => {
         const expectMtaConfig = yaml.load(expectMtaContent);
         expect(mtaConfig).toEqual(expectMtaConfig);
         commonChecks(testFixture, appRouterDir);
-    });
+    }, 10000);
 
     it('Generate app router project with connectivity config', async () => {
         hasbinSyncMock.mockReturnValue(true);

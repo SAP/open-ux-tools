@@ -49,14 +49,9 @@ describe('UI5 templates', () => {
             }
         });
         expect(fs.dump(projectDir)).toMatchSnapshot();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
+        if (debug) {
+            await fs.commit();
+        }
     });
     it('option: `loadReuseLibs` UI5 1.120.0', async () => {
         const projectDir = join(outputDir, 'testapp_loadReuseLibs_1.120.0');
@@ -70,14 +65,9 @@ describe('UI5 templates', () => {
             }
         });
         expect(fs.dump(projectDir)).toMatchSnapshot();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
+        if (debug) {
+            await fs.commit();
+        }
     });
 
     it('generates options: `sapux` with specific version', async () => {
@@ -96,14 +86,9 @@ describe('UI5 templates', () => {
             }
         });
         expect(fs.dump(projectDir)).toMatchSnapshot();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
+        if (debug) {
+            await fs.commit();
+        }
     });
 
     it('option: `typescript, npm modules and Fiori tools`', async () => {
@@ -119,14 +104,9 @@ describe('UI5 templates', () => {
             })
         );
         expect(fs.dump(projectDir)).toMatchSnapshot();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
+        if (debug) {
+            await fs.commit();
+        }
     });
 
     it('option: `sapux and use virtual endpoints`', async () => {
@@ -141,14 +121,9 @@ describe('UI5 templates', () => {
             })
         );
         expect(fs.dump(projectDir)).toMatchSnapshot();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
+        if (debug) {
+            await fs.commit();
+        }
     });
 
     it('option: `typescript and eslint` to check for conflicts', async () => {
@@ -165,13 +140,8 @@ describe('UI5 templates', () => {
         expect(fs.read(join(projectDir, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(projectDir, 'tsconfig.json'))).toMatchSnapshot();
         expect(fs.read(join(projectDir, 'eslint.config.js'))).toMatchSnapshot();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
+        if (debug) {
+            await fs.commit();
+        }
     });
 });

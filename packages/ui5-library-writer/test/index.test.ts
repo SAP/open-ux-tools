@@ -79,7 +79,7 @@ describe('Reuse lib templates', () => {
                 ? `${config.namespace}.${config.libraryName}`
                 : `${config.libraryName}`;
         const pkgData = fs.read(join(testOutputDir, projectFolder, 'package.json'));
-        const packageJson = JSON.parse(pkgData);
+        const packageJson = JSON.parse(pkgData!);
         if (config.typescript === true) {
             if (config.frameworkVersion === V1_113_0 || config.frameworkVersion === V1_121_0) {
                 expect(packageJson.devDependencies).toHaveProperty('@sapui5/types');
@@ -87,11 +87,12 @@ describe('Reuse lib templates', () => {
                 expect(packageJson.devDependencies).toHaveProperty('@sapui5/ts-types-esm');
             }
         }
-        return new Promise(async (resolve) => {
+        return new Promise<boolean>(async (resolve) => {
             if (debug) {
                 await updatePackageJSONDependencyToUseLocalPath(projectPath, fs);
                 // write out the files for debugging
-                fs.commit(resolve);
+                await fs.commit();
+                resolve(true);
             } else {
                 resolve(true);
             }

@@ -68,17 +68,11 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise(async (resolve) => {
-            // write out the files for debugging
-            if (debug?.enabled) {
-                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        }).then(async () => {
-            await projectChecks(testPath, config, debug?.debugFull);
-        });
+        if (debug?.enabled) {
+            await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
+            await fs.commit();
+        }
+        await projectChecks(testPath, config, debug?.debugFull);
     });
 
     test('Should generate view XML containing custom page building block title for FPM template', async () => {
@@ -100,7 +94,8 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
         } as FioriElementsApp<FPMSettings>;
         const fs = await generate(testPath, config);
         const viewXmlPath = join(testPath, 'webapp/ext/main/Main.view.xml');
-        const viewXml = fs.read(viewXmlPath).toString();
+        const viewXmlBuffer = fs.read(viewXmlPath);
+        const viewXml = viewXmlBuffer ? viewXmlBuffer.toString() : '';
 
         expect(viewXml).toContain('My Custom Page');
         expect(viewXml).toContain('<macros:Page id="Page" title="My Custom Page"/>');
@@ -126,7 +121,8 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
 
         const fs = await generate(testPath, config);
         const viewXmlPath = join(testPath, 'webapp/ext/main/Main.view.xml');
-        const viewXml = fs.read(viewXmlPath).toString();
+        const viewXmlBuffer = fs.read(viewXmlPath);
+        const viewXml = viewXmlBuffer ? viewXmlBuffer.toString() : '';
 
         expect(viewXml).toContain('<Page id="Main" title="{i18n>MainTitle}">');
     });

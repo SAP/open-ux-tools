@@ -66,7 +66,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check testsuite.qunit.html
         const testSuiteHTML = fs?.read(join(testOutputPath, 'testsuite.qunit.html'));
-        expect(removeSpaces(testSuiteHTML)).toBe(
+        expect(removeSpaces(testSuiteHTML!)).toBe(
             removeSpaces(`
             <!DOCTYPE html>
             <html>
@@ -83,7 +83,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check unit/unitTests.qunit.ts
         const unitTestQUnit = fs?.read(join(testOutputPath, 'unit/unitTests.qunit.ts'));
-        expect(removeSpaces(unitTestQUnit)).toBe(
+        expect(removeSpaces(unitTestQUnit!)).toBe(
             removeSpaces(`
             /* global QUnit */
             // https://api.qunitjs.com/config/autostart/
@@ -99,7 +99,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check unit/unitTests.qunit.html
         const unitTestHTML = fs?.read(join(testOutputPath, 'unit/unitTests.qunit.html'));
-        expect(removeSpaces(unitTestHTML)).toBe(
+        expect(removeSpaces(unitTestHTML!)).toBe(
             removeSpaces(`
             <!DOCTYPE html>
             <html>
@@ -132,7 +132,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check unit/controller/view-testPage.controller.ts
         const viewTestController = fs?.read(join(testOutputPath, 'unit/controller/view-testPage.controller.ts'));
-        expect(removeSpaces(viewTestController)).toBe(
+        expect(removeSpaces(viewTestController!)).toBe(
             removeSpaces(`
             /*global QUnit*/
             import Controller from "${opaConfig.appId}/controller/${opaConfig.viewName}.controller";
@@ -149,7 +149,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check test/testsuite.qunit.ts
         const testSuiteQUnit = fs?.read(join(testOutputPath, 'testsuite.qunit.ts'));
-        expect(removeSpaces(testSuiteQUnit)).toBe(
+        expect(removeSpaces(testSuiteQUnit!)).toBe(
             removeSpaces(`
             /* global window, parent, location */
     
@@ -170,7 +170,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/pages/view-testPage.ts
         const viewTestPage = fs?.read(join(testOutputPath, 'integration/pages/view-testPage.ts'));
-        expect(removeSpaces(viewTestPage)).toBe(
+        expect(removeSpaces(viewTestPage!)).toBe(
             removeSpaces(`
             import Opa5 from "sap/ui/test/Opa5";
     
@@ -197,7 +197,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/pages/AppPage.ts
         const appPage = fs?.read(join(testOutputPath, 'integration/pages/AppPage.ts'));
-        expect(removeSpaces(appPage)).toBe(
+        expect(removeSpaces(appPage!)).toBe(
             removeSpaces(`
             import Opa5 from "sap/ui/test/Opa5";
     
@@ -225,7 +225,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/opaTests.qunit.ts
         const opaTests = fs?.read(join(testOutputPath, 'integration/opaTests.qunit.ts'));
-        expect(removeSpaces(opaTests)).toBe(
+        expect(removeSpaces(opaTests!)).toBe(
             removeSpaces(`
             /* global QUnit */
             // https://api.qunitjs.com/config/autostart/
@@ -241,7 +241,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/opaTests.qunit.html
         const opaTestsHTML = fs?.read(join(testOutputPath, 'integration/opaTests.qunit.html'));
-        expect(removeSpaces(opaTestsHTML)).toBe(
+        expect(removeSpaces(opaTestsHTML!)).toBe(
             removeSpaces(`
             <!DOCTYPE html>
             <html>
@@ -277,7 +277,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/NavigationJourney.ts
         const navigationJourney = fs?.read(join(testOutputPath, 'integration/NavigationJourney.ts'));
-        expect(removeSpaces(navigationJourney)).toBe(
+        expect(removeSpaces(navigationJourney!)).toBe(
             removeSpaces(`
             /*global QUnit*/
             import opaTest from "sap/ui/test/opaQunit";
@@ -345,7 +345,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check unit/unitTests.qunit.js
         const unitTestQUnit = fs?.read(join(testOutputPath, 'unit/unitTests.qunit.js'));
-        expect(removeSpaces(unitTestQUnit)).toBe(
+        expect(removeSpaces(unitTestQUnit!)).toBe(
             removeSpaces(`
             /* global QUnit */
             QUnit.config.autostart = false;
@@ -363,7 +363,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check unit/controller/view-test.controller.js
         const viewTestController = fs?.read(join(testOutputPath, 'unit/controller/view-test.controller.js'));
-        expect(removeSpaces(viewTestController)).toBe(
+        expect(removeSpaces(viewTestController!)).toBe(
             removeSpaces(`
             /*global QUnit*/
 
@@ -386,7 +386,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check test/testsuite.qunit.js
         const testSuiteQUnit = fs?.read(join(testOutputPath, 'testsuite.qunit.js'));
-        expect(removeSpaces(testSuiteQUnit)).toBe(
+        expect(removeSpaces(testSuiteQUnit!)).toBe(
             removeSpaces(`
             /* global window, parent, location */
 
@@ -408,7 +408,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/pages/view-test.js
         const viewTest = fs?.read(join(testOutputPath, 'integration/pages/view-test.js'));
-        expect(removeSpaces(viewTest)).toBe(
+        expect(removeSpaces(viewTest!)).toBe(
             removeSpaces(`
             sap.ui.define([
                 "sap/ui/test/Opa5"
@@ -442,7 +442,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/pages/App.js
         const app = fs?.read(join(testOutputPath, 'integration/pages/App.js'));
-        expect(removeSpaces(app)).toBe(
+        expect(removeSpaces(app!)).toBe(
             removeSpaces(`
             sap.ui.define([
                 "sap/ui/test/Opa5"
@@ -477,7 +477,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/opaTests.qunit.js
         const opaTests = fs?.read(join(testOutputPath, 'integration/opaTests.qunit.js'));
-        expect(removeSpaces(opaTests)).toBe(
+        expect(removeSpaces(opaTests!)).toBe(
             removeSpaces(`
             /* global QUnit */
 
@@ -490,7 +490,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/NavigationJourney.js
         const navigationJourney = fs?.read(join(testOutputPath, 'integration/NavigationJourney.js'));
-        expect(removeSpaces(navigationJourney)).toBe(
+        expect(removeSpaces(navigationJourney!)).toBe(
             removeSpaces(`
             /*global QUnit*/
 
@@ -548,7 +548,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check unit/unitTests.qunit.ts
         const unitTestQUnit = fs?.read(join(testOutputPath, 'unit/unitTests.qunit.ts'));
-        expect(removeSpaces(unitTestQUnit)).toBe(
+        expect(removeSpaces(unitTestQUnit!)).toBe(
             removeSpaces(`
             /* @sapUiRequire */
             QUnit.config.autostart = false;
@@ -564,7 +564,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check unit/unitTests.qunit.html
         const unitTestHTML = fs?.read(join(testOutputPath, 'unit/unitTests.qunit.html'));
-        expect(removeSpaces(unitTestHTML)).toBe(
+        expect(removeSpaces(unitTestHTML!)).toBe(
             removeSpaces(`
             <!DOCTYPE html>
             <html>
@@ -598,7 +598,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/opaTests.qunit.ts
         const opaTests = fs?.read(join(testOutputPath, 'integration/opaTests.qunit.ts'));
-        expect(removeSpaces(opaTests)).toBe(
+        expect(removeSpaces(opaTests!)).toBe(
             removeSpaces(`
              /* global QUnit */
             sap.ui.require(["integration/NavigationJourney"
@@ -610,7 +610,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check integration/opaTests.qunit.html
         const opaTestsHTML = fs?.read(join(testOutputPath, 'integration/opaTests.qunit.html'));
-        expect(removeSpaces(opaTestsHTML)).toBe(
+        expect(removeSpaces(opaTestsHTML!)).toBe(
             removeSpaces(`
             <!DOCTYPE html>
             <html>
@@ -656,8 +656,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
         };
 
         fs = await generateFreestyleOPAFiles(testOutputDir, opaConfig, fs);
-        const commitAsync = promisify(fs.commit.bind(fs));
-        await commitAsync();
+        await fs.commit();
 
         const testOutPutPath = join(testOutputDir, 'webapp', 'test');
         const expectedTestOutputPath = join(expectedOutputPath, 'freestyle', projectName, 'webapp', 'test');

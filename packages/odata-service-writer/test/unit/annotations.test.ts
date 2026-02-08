@@ -155,12 +155,12 @@ describe('removeAnnotationsFromCDSFiles', () => {
         // Remove from annotation file
         await removeAnnotationsFromCDSFiles(annotationsInfo, fs);
         annotationCds = fs.read(annotationPath);
-        expect(annotationCds).toEqual('');
+        expect(annotationCds).toEqual(null);
 
         // Convert the annotation path to the services path
         const serviceCdsPath = join(dirname(annotationPath).replace('annotations', ''), 'services.cds');
         const serviceCds = fs.read(serviceCdsPath);
-        expect(serviceCds).not.toContain(`using from './annotations/annotations';`);
+        expect(serviceCds || '').not.toContain(`using from './annotations/annotations';`);
     });
 
     it('removes from annotations cds files correctly for multiple annotations', async () => {

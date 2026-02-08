@@ -34,17 +34,12 @@ describe('ui5-test-writer', () => {
         return outputDir;
     }
 
-    afterEach(() => {
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug && fs) {
-                fs.commit(resolve);
-                fs = undefined;
-            } else {
-                fs = undefined;
-                resolve(true);
-            }
-        });
+    afterEach(async () => {
+        // write out the files for debugging
+        if (debug && fs) {
+            await fs.commit();
+        }
+        fs = undefined;
     });
 
     describe('generatePageObjectFile', () => {

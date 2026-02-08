@@ -103,7 +103,7 @@ export const v4Service: OdataService = {
     path: '/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/',
     url: 'http://example.feop.v4',
     version: OdataVersion.v4,
-    metadata: getTestData('travel_v4', 'metadata'),
+    metadata: getTestData('travel_v4', 'metadata')!,
     localAnnotationsName: 'annotation'
 };
 
@@ -111,10 +111,10 @@ export const v2Service: OdataService = {
     path: '/sap/opu/odata/sap/SEPMRA_PROD_MAN',
     url: 'http://example.lrop.v2',
     version: OdataVersion.v2,
-    metadata: getTestData('sepmra_prod_man_v2', 'metadata'),
+    metadata: getTestData('sepmra_prod_man_v2', 'metadata')!,
     annotations: {
         technicalName: 'SEPMRA_PROD_MAN_ANNO_MDL',
-        xml: getTestData('sepmra_prod_man_v2', 'annotations')
+        xml: getTestData('sepmra_prod_man_v2', 'annotations')!
     },
     client: '012'
 };

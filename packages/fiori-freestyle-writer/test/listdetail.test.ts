@@ -177,7 +177,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             // write out the files for debugging
             if (debug?.enabled) {
                 await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
-                fs.commit(resolve);
+                fs.commit();
+                resolve(true);
             } else {
                 resolve(true);
             }

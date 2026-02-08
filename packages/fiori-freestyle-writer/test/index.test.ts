@@ -108,7 +108,8 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
         return new Promise((resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
-                fs.commit(resolve);
+                fs.commit();
+                resolve(true);
             } else {
                 resolve(true);
             }
