@@ -40,7 +40,7 @@ const mockDataSources = {
 describe('add/annotations', () => {
     let loggerMock: ToolsLogger;
     const memFsEditorMock = {
-        commit: jest.fn().mockImplementation((cb) => cb())
+        commit: jest.fn().mockResolvedValue(undefined)
     };
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
     const generateChangeSpy = jest

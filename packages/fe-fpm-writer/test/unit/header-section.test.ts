@@ -145,7 +145,10 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             expect(expectedEditFragmentPath).toBeDefined();
             // event handler is not generated, file does not exist
             try {
-                fs.read(expectedEditFragmentPath).replace('.fragment.xml', '.js');
+                const editContent = fs.read(expectedEditFragmentPath);
+                if (editContent) {
+                    editContent.replace('.fragment.xml', '.js');
+                }
             } catch (error) {
                 expect(error).toBeDefined();
             }

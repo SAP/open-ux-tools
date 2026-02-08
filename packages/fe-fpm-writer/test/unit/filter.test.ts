@@ -211,7 +211,7 @@ describe('CustomFilter', () => {
                     });
                     if (typeof position === 'number' && appendLines !== undefined) {
                         const content = fs.read(existingPath);
-                        position += getEndOfLinesLength(appendLines, content);
+                        position += getEndOfLinesLength(appendLines, content ?? undefined);
                     }
                     // Create third action - append existing js file
                     const filterName = 'CustomFilter2';

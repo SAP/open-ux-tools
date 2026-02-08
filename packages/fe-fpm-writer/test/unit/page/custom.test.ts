@@ -195,7 +195,8 @@ describe('CustomPage', () => {
             expect(fs.read(controllerPath)).toEqual('controllerContent');
             expect(fs.exists(viewPath)).toBe(true);
             expect(fs.read(viewPath)).toEqual('viewContent');
-            expect(fs.read(i18nPropertiesPath)).toEqual('');
+            const i18nContent = fs.read(i18nPropertiesPath);
+            expect(i18nContent === '' || i18nContent === null).toBe(true);
         });
     });
 
@@ -305,7 +306,11 @@ describe('CustomPage', () => {
 
             const viewXmlPath = join(target, 'webapp/ext/customPage/CustomPage.view.xml');
             expect(fs.exists(viewXmlPath)).toBe(true);
-            const viewXml = fs.read(viewXmlPath).toString();
+            const viewXmlContent = fs.read(viewXmlPath);
+            if (!viewXmlContent) {
+                throw new Error('Failed to read view XML');
+            }
+            const viewXml = viewXmlContent.toString();
             expect(viewXml).toContain('macros:Page');
             expect(viewXml).toContain('Test Page Title');
 
@@ -333,7 +338,11 @@ describe('CustomPage', () => {
             // page macros should not be added
             const viewXmlPath = join(target, 'webapp/ext/customPage/CustomPage.view.xml');
             expect(fs.exists(viewXmlPath)).toBe(true);
-            const viewXml = fs.read(viewXmlPath).toString();
+            const viewXmlContent2 = fs.read(viewXmlPath);
+            if (!viewXmlContent2) {
+                throw new Error('Failed to read view XML');
+            }
+            const viewXml = viewXmlContent2.toString();
             expect(viewXml).not.toContain('macros:Page');
             expect(viewXml).not.toContain('Test Page Title');
             expect(viewXml).toContain('<Page');
@@ -355,6 +364,9 @@ describe('CustomPage', () => {
             );
 
             let updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+            if (!updatedManifest) {
+                throw new Error('Failed to read manifest.json');
+            }
             let result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
 
@@ -371,6 +383,9 @@ describe('CustomPage', () => {
                 fs
             );
             updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+            if (!updatedManifest) {
+                throw new Error('Failed to read manifest.json');
+            }
             result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
         });

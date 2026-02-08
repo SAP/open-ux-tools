@@ -63,6 +63,30 @@ const ORIGINAL_ANNOTATIONS = {
     code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, '')
 };
 
+const SMALL_TABLE_ANNOTATIONS = {
+    filename: V4_ANNOTATIONS_PATH,
+    code: getAnnotationsAsXmlCode(
+        V4_ANNOTATIONS,
+        `
+            <Annotations Target="IncidentService.Incidents">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="identifier"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="title"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="category_code"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+                `
+    )
+};
+
 const TEST_NAME = 'sap-width-including-column-header';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
@@ -107,7 +131,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                     }
                 ])
             },
-            [ORIGINAL_ANNOTATIONS]
+            [SMALL_TABLE_ANNOTATIONS]
         ),
         createValidTest(
             {
@@ -133,7 +157,7 @@ ruleTester.run(TEST_NAME, flexEnabledRule, {
                     }
                 ]
             },
-            [ORIGINAL_ANNOTATIONS]
+            [SMALL_TABLE_ANNOTATIONS]
         ),
         createInvalidTest(
             {

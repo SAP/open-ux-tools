@@ -78,7 +78,7 @@ describe('CF Writer', () => {
 
     describe('generateCf', () => {
         const mtaProjectDir = join(__dirname, '../../fixtures/mta-project');
-        const originalMtaYaml = fs.read(join(mtaProjectDir, 'mta.yaml'));
+        const originalMtaYaml = fs.read(join(mtaProjectDir, 'mta.yaml')) ?? '';
 
         const mockLogger = {
             debug: jest.fn()

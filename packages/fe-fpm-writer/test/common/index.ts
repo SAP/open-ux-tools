@@ -19,15 +19,11 @@ export function clearTestOutput(path: string) {
  * @param fs - reference to the mem-fs editor instance
  * @returns a promise when the files are written to the file system.
  */
-export function writeFilesForDebugging(fs: Editor): Promise<void> {
-    return new Promise((resolve) => {
-        // write out the files for debugging
-        if (process.env['UX_DEBUG']) {
-            fs.commit(resolve);
-        } else {
-            resolve();
-        }
-    });
+export async function writeFilesForDebugging(fs: Editor): Promise<void> {
+    // write out the files for debugging
+    if (process.env['UX_DEBUG']) {
+        await fs.commit();
+    }
 }
 
 export const tabSizingTestCases = [

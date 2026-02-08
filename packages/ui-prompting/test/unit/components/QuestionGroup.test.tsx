@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import { QuestionGroup } from '../../../src/components/QuestionGroup';
 import type { QuestionGroupProps } from '../../../src/components/QuestionGroup';
-import { Question } from '../../../dist';
+import { Question } from '../../../src';
 import { questions } from '../../mock-data/questions';
 
 describe('QuestionGroup', () => {

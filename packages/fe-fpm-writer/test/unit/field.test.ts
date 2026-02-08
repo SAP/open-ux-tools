@@ -235,7 +235,7 @@ describe('CustomField', () => {
                 });
                 if (typeof position === 'number' && endOfLines !== undefined) {
                     const content = fs.read(existingPath);
-                    position += getEndOfLinesLength(endOfLines, content);
+                    position += getEndOfLinesLength(endOfLines, content ?? undefined);
                 }
                 const extension = {
                     fnName,
@@ -266,6 +266,9 @@ describe('CustomField', () => {
                 fs
             );
             let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            if (!updatedManifest) {
+                throw new Error('Failed to read manifest.json');
+            }
             let result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
             // Generate another field and check if new tab sizing recalculated correctly without passing tab size info
@@ -278,6 +281,9 @@ describe('CustomField', () => {
                 fs
             );
             updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            if (!updatedManifest) {
+                throw new Error('Failed to read manifest.json');
+            }
             result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
         });

@@ -36,7 +36,7 @@ describe('Test command add mockserver-config', () => {
         logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         jest.spyOn(mockserverWriter, 'generateMockserverConfig').mockResolvedValue(fsMock);
         spawnSpy = jest.spyOn(childProcess, 'spawnSync');

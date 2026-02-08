@@ -12,7 +12,7 @@ jest.mock('mem-fs-editor', () => {
         ...editor,
         create(store: Store) {
             const memFs: Editor = editor.create(store);
-            memFs.commit = jest.fn().mockImplementation((cb) => cb());
+            memFs.commit = jest.fn().mockResolvedValue(undefined);
             return memFs;
         }
     };

@@ -303,7 +303,7 @@ describe('CustomView', () => {
                 });
                 if (typeof position === 'number' && endOfLines !== undefined) {
                     const content = fs.read(existingPath);
-                    position += getEndOfLinesLength(endOfLines, content);
+                    position += getEndOfLinesLength(endOfLines, content ?? undefined);
                 }
                 const fnName = 'onHandleSecondAction';
 
@@ -330,11 +330,17 @@ describe('CustomView', () => {
         test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
             await generateCustomView(testDir, { ...customView, tabInfo }, fs);
             let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            if (!updatedManifest) {
+                throw new Error('Failed to read manifest.json');
+            }
             let result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
             // Generate another view and check if new tab sizing recalculated correctly without passing tab size info
             await generateCustomView(testDir, { ...customView, key: 'Second', name: 'Second' }, fs);
             updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            if (!updatedManifest) {
+                throw new Error('Failed to read manifest.json');
+            }
             result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
         });

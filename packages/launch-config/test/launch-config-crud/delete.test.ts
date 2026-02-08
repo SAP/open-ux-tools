@@ -22,11 +22,17 @@ describe('delete', () => {
     test('Delete existing launch config in launch.json', async (): Promise<void> => {
         const launchJSONPath = join(TestPaths.feProjectsLaunchConfig);
         let launchJSONString = memFs.read(launchJSONPath);
+        if (!launchJSONString) {
+            throw new Error('Failed to read launch.json');
+        }
         let launchJSON = parse(launchJSONString);
         expect(launchJSON.configurations.length).toBe(7);
 
         const result = await deleteLaunchConfig(TestPaths.feProjects, 6, memFs);
         launchJSONString = result.read(launchJSONPath);
+        if (!launchJSONString) {
+            throw new Error('Failed to read launch.json');
+        }
         launchJSON = parse(launchJSONString);
         expect(launchJSON.configurations.length).toBe(6);
     });

@@ -26,7 +26,7 @@ describe('change/inbound', () => {
     let loggerMock: ToolsLogger;
     const memFsEditorMock = {
         create: jest.fn().mockReturnValue({
-            commit: jest.fn().mockImplementation((cb) => cb())
+            commit: jest.fn().mockResolvedValue(undefined)
         })
     };
     const mockAnswers = {
