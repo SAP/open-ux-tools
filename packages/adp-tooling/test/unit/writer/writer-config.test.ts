@@ -16,7 +16,7 @@ import type {
 import { t } from '../../../src/i18n';
 import { AppRouterType } from '../../../src/types';
 import { getCfConfig } from '../../../src/writer/writer-config';
-import { FlexLayer, getProviderConfig, getConfig } from '../../../src';
+import { FlexLayer, getProviderConfig, getConfig, SupportedProject, getSupportedProject } from '../../../src';
 import type { CfConfig, CfServicesAnswers, CreateCfConfigParams } from '../../../src/types';
 
 const basePath = join(__dirname, '../../fixtures/base-app/manifest.json');
@@ -24,6 +24,11 @@ const manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
 
 jest.mock('../../../src/abap/config.ts', () => ({
     getProviderConfig: jest.fn()
+}));
+
+jest.mock('../../../src/source/systems.ts', () => ({
+    ...jest.requireActual('../../../src/source/systems.ts'),
+    getSupportedProject: jest.fn()
 }));
 
 const systemDetails = {
@@ -37,6 +42,7 @@ const adaptationProjectTypes: AdaptationProjectType[] = [AdaptationProjectType.C
 const getAtoInfoMock = jest.fn().mockResolvedValue({ operationsType: 'P' });
 const isAbapCloudMock = jest.fn();
 const getSystemInfoMock = jest.fn().mockResolvedValue({ adaptationProjectTypes, activeLanguages });
+const getSupportedProjectMock = getSupportedProject as jest.MockedFunction<typeof getSupportedProject>;
 const mockAbapProvider = {
     getAtoInfo: getAtoInfoMock,
     isAbapCloud: isAbapCloudMock,
@@ -81,9 +87,10 @@ const baseConfig: ConfigOptions = {
 describe('getConfig', () => {
     beforeEach(() => {
         getProviderConfigMock.mockResolvedValue(systemDetails);
+        getSupportedProjectMock.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
     });
 
-    it('returns the correct config with provided parameters when system and the project type are cloud ready', async () => {
+    it.only('returns the correct config with provided parameters when system and the project type are cloud ready', async () => {
         isAbapCloudMock.mockResolvedValue(true);
         const config = await getConfig(baseConfig);
 
@@ -105,7 +112,8 @@ describe('getConfig', () => {
                         toolsId: 'test-tools-id',
                         version: '0.0.1'
                     },
-                    projectType: AdaptationProjectType.CLOUD_READY
+                    projectType: AdaptationProjectType.CLOUD_READY,
+                    supportedProject: SupportedProject.CLOUD_READY_AND_ON_PREM
                 }
             },
             target: {

@@ -26,6 +26,7 @@ import {
 import { getProviderConfig } from '../abap';
 import { AppRouterType, FlexLayer } from '../types';
 import { t } from '../i18n';
+import { getSupportedProject } from '../source';
 
 export interface ConfigOptions {
     /**
@@ -139,6 +140,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         fioriId
     };
 
+    const supportedProject = await getSupportedProject(provider);
     if (projectType === AdaptationProjectType.CLOUD_READY) {
         const lrep = provider.getLayeredRepository();
         const { activeLanguages: languages } = await lrep.getSystemInfo();
@@ -162,7 +164,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
                     version: packageJson.version ?? '',
                     toolsId
                 },
-                projectType
+                projectType,
+                supportedProject
             }
         },
         target,
