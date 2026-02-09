@@ -24,7 +24,7 @@ export async function generateEslintConfig(
     const logger = options.logger;
 
     if (!(await checkPrerequisites(basePath, fs, logger))) {
-        throw Error('The prerequisites are not met. For more information, see the log messages above.');
+        throw new Error('The prerequisites are not met. For more information, see the log messages above.');
     }
     await updatePackageJson(basePath, fs);
     await addEslintConfig(basePath, fs);
@@ -42,12 +42,12 @@ export async function generateEslintConfig(
  */
 async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
     const packageJsonPath = join(basePath, FileName.Package);
-    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
+    const packageJson = fs.readJSON(packageJsonPath);
     if (!packageJson) {
         logger?.error(`No package.json found at path '${packageJsonPath}'`);
         return false;
     }
-    const eslintExists = hasDependency(packageJson, 'eslint');
+    const eslintExists = hasDependency(packageJson as Package, 'eslint');
     if (eslintExists) {
         logger?.error(
             `ESLint already exists in this project. Found 'eslint' dependency in package.json at path '${packageJsonPath}'`
