@@ -1099,12 +1099,14 @@ export class MtaConfig {
         // We only want to append a new one, if missing from the existing mta config
         if (!this.modules.has('com.sap.application.content:destination')) {
             this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Managed }));
-            await this.updateServiceName('html5', HTML5RepoHost);
-            await this.updateServiceName('xsuaa', ManagedXSUAA);
             const destinationName = this.resources.get('destination')?.name;
             const appHostName = this.resources.get(HTML5RepoHost)?.name;
             const managedXSUAAName = this.resources.get(ManagedXSUAA)?.name;
             if (destinationName && appHostName && managedXSUAAName) {
+                // Align the service-name, not always present
+                await this.updateServiceName('html5', HTML5RepoHost);
+                await this.updateServiceName('xsuaa', ManagedXSUAA);
+                // Retrieve the service-name
                 const appHostServiceName = this.getServiceInstanceName(HTML5RepoHost);
                 const managedXSUAAServiceName = this.getServiceInstanceName(ManagedXSUAA);
                 const router: mta.Module = {
