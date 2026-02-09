@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.45
+
+### Patch Changes
+
+- 8c61352: fiori project templates clean eslint warning re @typescript-eslint/no-empty-function
+
 ## 2.5.44
 
 ### Patch Changes
