@@ -5,7 +5,7 @@
     "author": "@SAP/ux-tools-team",
     "private": true,
     "devDependencies": {
-        "@changesets/cli": "2.27.10",
+        "@changesets/cli": "2.29.8",
         "@eslint/eslintrc": "3.3.0",
         "@eslint/js": "9.22.0",
         "@playwright/test": "1.56.1",
@@ -13,7 +13,7 @@
         "@types/node": "18.19.130",
         "autoprefixer": "10.4.21",
         "check-dependency-version-consistency": "5.0.1",
-        "esbuild": "0.25.11",
+        "esbuild": "0.27.2",
         "esbuild-sass-plugin": "3.3.1",
         "eslint": "9.39.1",
         "eslint-config-prettier": "10.1.1",
@@ -35,13 +35,13 @@
         "pretty-quick": "3.3.1",
         "react-select": "5.10.2",
         "react-virtualized": "9.22.6",
-        "rimraf": "6.0.1",
+        "rimraf": "6.1.2",
         "ts-jest": "29.4.5",
         "typescript": "5.9.3",
         "typescript-eslint": "8.49.0",
         "update-ts-references": "3.6.2",
-        "yargs-parser": "21.1.1",
-        "yaml":  "2.8.2"
+        "yaml": "2.8.2",
+        "yargs-parser": "21.1.1"
     },
     "scripts": {
         "update-ts-references": "update-ts-references",
@@ -79,12 +79,15 @@
     "pnpm": {
         "overrides": {
             "@sap-ux/vocabularies-types": "0.14.3",
+            "@storybook/manager-api>store2": "2.14.4",
+            "axios@<1.12.0": "^1.12.2",
+            "esbuild@<=0.24.2": ">=0.25.0",
+            "fast-xml-parser@>=4.3.6 <=5.3.3": ">=5.3.4",
+            "lodash@>=4.0.0 <=4.17.22": ">=4.17.23",
+            "mta-local": "1.0.4",
             "router>path-to-regexp": "0.1.12",
             "router@^2.0.0>path-to-regexp": "8.2.0",
-            "@storybook/manager-api>store2": "2.14.4",
-            "mta-local": "1.0.4",
-            "axios@<1.12.0": "^1.12.2",
-            "eslint": "^9.39.1"
+            "tar@<7.5.7": ">=7.5.7"
         }
     }
 }

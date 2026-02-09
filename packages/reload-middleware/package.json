@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Areload-middleware"
     },
-    "version": "0.3.10",
+    "version": "0.3.12",
     "author": "@SAP/ux-tools-team",
     "license": "Apache-2.0",
     "main": "dist/index.js",
@@ -39,7 +39,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "connect-livereload": "0.6.1",
-        "livereload": "0.9.3",
+        "livereload": "0.10.3",
         "portfinder": "1.0.32"
     },
     "devDependencies": {

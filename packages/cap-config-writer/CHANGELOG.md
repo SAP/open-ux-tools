@@ -1,5 +1,66 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.57
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/fiori-generator-shared@0.13.66
+
+## 0.12.56
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.65
+
+## 0.12.55
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.64
+
+## 0.12.54
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/project-access@1.34.6
+
+## 0.12.53
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.62
+
+## 0.12.52
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-generator-shared@0.13.61
+
+## 0.12.51
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/yaml@0.17.4
+    - @sap-ux/fiori-generator-shared@0.13.60
+    - @sap-ux/project-access@1.34.4
+
+## 0.12.50
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/project-access@1.34.3
+    - @sap-ux/fiori-generator-shared@0.13.59
+
 ## 0.12.49
 
 ### Patch Changes
