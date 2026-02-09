@@ -36,10 +36,17 @@ export function t(key: string, options?: TOptions): string {
 }
 
 // Initialize i18n on module load
-// Errors are silently caught as the module will still function with fallback strings
-initI18n().catch((error: Error) => {
-    // Log error to console for debugging but don't throw to avoid breaking the module
-    if (process.env.NODE_ENV !== 'production') {
-        console.warn('Failed to initialize i18n for cf-deploy-config-writer:', error.message);
+// Wrapped in async function to satisfy Sonar preference for await over promise chains
+// Errors are logged but don't throw to avoid breaking the module (fallback strings will be used)
+(async (): Promise<void> => {
+    try {
+        await initI18n();
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.warn(`[@sap-ux/cf-deploy-config-writer] Failed to initialize i18n: ${errorMessage}`);
     }
+})().catch((error: unknown) => {
+    // Second-level catch for any errors in the async wrapper itself
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`[@sap-ux/cf-deploy-config-writer] Critical error during i18n initialization: ${errorMessage}`);
 });

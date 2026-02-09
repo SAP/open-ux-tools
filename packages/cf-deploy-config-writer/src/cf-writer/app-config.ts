@@ -396,6 +396,7 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
 
 /**
  * Updates the manifest.json file with the cloud service name.
+ * Preserves existing sap.cloud properties while updating public and service values.
  *
  * @param cfConfig writer configuration
  * @param fs reference to a mem-fs editor
@@ -404,8 +405,9 @@ async function updateManifest(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const webappPath = await getWebappPath(cfConfig.appPath, fs);
     const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
     if (manifest && cfConfig.cloudServiceName) {
+        // Preserve existing sap.cloud properties while updating required values (Sonar S7744 fix)
         const sapCloud = {
-            ...(manifest['sap.cloud'] ?? {}),
+            ...manifest['sap.cloud'],
             public: true,
             service: cfConfig.cloudServiceName
         } as Manifest['sap.cloud'];
