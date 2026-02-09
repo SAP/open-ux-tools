@@ -78,7 +78,7 @@
     "packageManager": "pnpm@8.14.0",
     "pnpm": {
         "overrides": {
-            "@sap-ux/vocabularies-types": "0.14.3",
+            "@sap-ux/vocabularies-types": "0.14.5",
             "@storybook/manager-api>store2": "2.14.4",
             "axios@<1.12.0": "^1.12.2",
             "esbuild@<=0.24.2": ">=0.25.0",
