@@ -1,8 +1,8 @@
 import type { ODataService } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
-import type { ServiceSpecification } from '@sap-ux/project-access';
-import { FileName } from '@sap-ux/project-access';
+import type { ServiceSpecification, ApplicationAccess } from '@sap-ux/project-access';
+import { FileName, getSpecificationModuleFromCache } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { CollectionFacet } from '@sap-ux/vocabularies-types/vocabularies/UI';
@@ -18,6 +18,7 @@ import type { SelectedEntityAnswer, SelectedEntityAnswerAsJSONString } from './p
 import { promptNames } from './prompts';
 import type { AppConfig, Entity } from '../types';
 import { getSystemNameFromStore } from '../utils';
+import type { Specification } from '@sap/ux-specification/dist/types/src';
 
 // todo: Create type for gen specific answers
 /**
@@ -235,4 +236,29 @@ export async function getServiceDetails(
         servicePath: service.uri,
         systemName
     };
+}
+
+/**
+ * Retrieves the Specification object.
+ *
+ * @param appAccess
+ * @returns A promise that resolves to a Specification object
+ */
+export async function getSpecification(appAccess: ApplicationAccess): Promise<Specification | string> {
+    let specification = await appAccess.getSpecification<Specification>();
+    let apiVersion = specification.getApiVersion();
+    let version = typeof apiVersion?.version === 'string' ? Number.parseInt(apiVersion.version, 10) : 0;
+    if (version < 24) {
+        ODataDownloadGenerator.logger.debug(
+            `@sap/ux-specification API version referenced by the app is: ${version}. API version '24' at least is required. Will attempt to load from module cache.`
+        );
+        specification = await getSpecificationModuleFromCache(appAccess.app.appRoot);
+    }
+    apiVersion = specification.getApiVersion();
+    version = typeof apiVersion?.version === 'string' ? Number.parseInt(apiVersion.version, 10) : 0;
+    // Check the cache version
+    if (version < 24) {
+        return t('specficationApiVersionOutdated', { specApiVersion: version });
+    }
+    return specification;
 }

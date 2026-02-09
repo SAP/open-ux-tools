@@ -16,7 +16,10 @@
     "prompts": {
         "appSelection": {
             "message": "Select an application as data download target",
-            "breadcrumb": "Selected App"
+            "breadcrumb": "Selected App",
+            "validation": {
+                "specficationApiVersionOutdated": "The found version of @sap/ux-specification {{specApiVersion}} is outdated. Data download cannot proceed."
+            }
         },
         "relatedEntitySelection": {
             "message": "Select entities for data download (pre-selected entities are referenced by the application)"

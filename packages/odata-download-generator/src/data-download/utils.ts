@@ -185,11 +185,13 @@ function getNavPropsForExpansion(
  *  Load the entity model for processing to determine the odata queries that are relevant for the application.
  *
  * @param appAccess application access reference
+ * @param specification
  * @param remoteMetadata the backend service metadata, as distinct to the local metadata
  * @returns
  */
 export async function getEntityModel(
     appAccess: ApplicationAccess,
+    specification: Specification,
     remoteMetadata: string
 ): Promise<ReferencedEntities | undefined> {
     let entities: ReferencedEntities | undefined;
@@ -197,8 +199,7 @@ export async function getEntityModel(
 
     if (mainService.local) {
         const convertedMetadata = convert(parse(remoteMetadata));
-        const appSpec = await appAccess.getSpecification<Specification>();
-        const appConfig = await appSpec.readApp({ app: appAccess });
+        const appConfig = await specification.readApp({ app: appAccess });
 
         if (
             appConfig.applicationModel &&

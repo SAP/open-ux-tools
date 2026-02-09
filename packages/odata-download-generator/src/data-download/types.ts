@@ -1,6 +1,7 @@
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { EntityType } from '@sap-ux/vocabularies-types';
+import type { Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageV4 } from '@sap/ux-specification/dist/types/src/v4';
 
 export type SemanticKeyFilter = { name: string; type: string; value: string | undefined };
@@ -23,6 +24,7 @@ export type Entity = {
 // todo: consolidate this and AppConfig
 export type AppConfig = {
     appAccess?: ApplicationAccess;
+    specification?: Specification;
     referencedEntities?: ReferencedEntities;
     // servicePaths: string[];
     /**

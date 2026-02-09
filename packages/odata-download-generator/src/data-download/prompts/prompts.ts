@@ -1,3 +1,4 @@
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { type CheckBoxQuestion, type ConfirmQuestion, type InputQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
@@ -6,12 +7,11 @@ import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
 import { t } from '../../utils/i18n';
-import type { EntitySetsFlat } from '../odata-query';
 import { ODataDownloadGenerator } from '../odata-download-generator';
-import { createEntityChoices, getData, getServiceDetails } from './prompt-helpers';
+import type { EntitySetsFlat } from '../odata-query';
 import type { AppConfig } from '../types';
 import { getEntityModel } from '../utils';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import { createEntityChoices, getData, getServiceDetails, getSpecification } from './prompt-helpers';
 
 export const promptNames = {
     relatedEntitySelection: 'relatedEntitySelection',
@@ -160,7 +160,14 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], key
             resetAppConfig(appConfig);
             // validate application exists at path
             const appAccess = await createApplicationAccess(appPath);
+            const specResult = await getSpecification(appAccess);
+
+            if (typeof specResult === 'string') {
+                return specResult;
+            }
+
             appConfig.appAccess = appAccess;
+            appConfig.specification = specResult;
 
             const { servicePath, systemName } = await getServiceDetails(
                 appAccess.app.appRoot,
@@ -401,8 +408,12 @@ function getUpdateMainServiceMetadataPrompt(
     const question: ConfirmQuestion = {
         when: async () => {
             // Use this when condition to load the entity data //todo: Why is this here? Should be additional validator for sevice selection?
-            if (appConfig.appAccess && odataServiceAnswers.metadata) {
-                appConfig.referencedEntities = await getEntityModel(appConfig.appAccess, odataServiceAnswers.metadata);
+            if (appConfig.appAccess && appConfig.specification && odataServiceAnswers?.metadata) {
+                appConfig.referencedEntities = await getEntityModel(
+                    appConfig.appAccess,
+                    appConfig.specification,
+                    odataServiceAnswers.metadata
+                );
                 return true;
             }
             return false;
