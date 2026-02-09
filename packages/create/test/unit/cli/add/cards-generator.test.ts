@@ -46,16 +46,16 @@ describe('add/cards-generator', () => {
         test('add cards-generator with relative yaml path containing directory - verifies path derivation logic', async () => {
             // This test verifies that when a yaml path contains a directory separator,
             // the effective base path is derived from the yaml path
-            const capRoot = '/some/cap/project';
-            const relativeYamlPath = 'app/travel_processor/ui5.yaml';
+            const capRoot = join('/some', 'cap', 'project');
+            const relativeYamlPath = join('app', 'travel_processor', 'ui5.yaml');
 
             // The expected derived paths based on the logic in cards-generator.ts
             const expectedEffectiveBasePath = dirname(resolve(capRoot, relativeYamlPath));
             const expectedEffectiveYamlPath = basename(relativeYamlPath);
 
-            // Verify the path derivation logic
-            expect(relativeYamlPath.includes('/')).toBe(true);
-            expect(expectedEffectiveBasePath).toBe('/some/cap/project/app/travel_processor');
+            // Verify the path derivation logic - check for path separator (works on both Unix and Windows)
+            expect(relativeYamlPath.includes('/') || relativeYamlPath.includes('\\')).toBe(true);
+            expect(expectedEffectiveBasePath).toBe(join('/some', 'cap', 'project', 'app', 'travel_processor'));
             expect(expectedEffectiveYamlPath).toBe('ui5.yaml');
         });
 
@@ -78,16 +78,16 @@ describe('add/cards-generator', () => {
         test('add cards-generator with nested relative yaml path - verifies path derivation logic', async () => {
             // This test verifies that when a yaml path contains nested directories,
             // the effective base path is correctly derived
-            const capRoot = '/some/cap/project';
-            const relativeYamlPath = 'packages/app/webapp/ui5-local.yaml';
+            const capRoot = join('/some', 'cap', 'project');
+            const relativeYamlPath = join('packages', 'app', 'webapp', 'ui5-local.yaml');
 
             // The expected derived paths based on the logic in cards-generator.ts
             const expectedEffectiveBasePath = dirname(resolve(capRoot, relativeYamlPath));
             const expectedEffectiveYamlPath = basename(relativeYamlPath);
 
-            // Verify the path derivation logic
-            expect(relativeYamlPath.includes('/')).toBe(true);
-            expect(expectedEffectiveBasePath).toBe('/some/cap/project/packages/app/webapp');
+            // Verify the path derivation logic - check for path separator (works on both Unix and Windows)
+            expect(relativeYamlPath.includes('/') || relativeYamlPath.includes('\\')).toBe(true);
+            expect(expectedEffectiveBasePath).toBe(join('/some', 'cap', 'project', 'packages', 'app', 'webapp'));
             expect(expectedEffectiveYamlPath).toBe('ui5-local.yaml');
         });
     });
