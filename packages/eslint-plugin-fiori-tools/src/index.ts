@@ -53,7 +53,7 @@ const plugin: Plugin = {
         namespace: '@sap-ux/fiori-tools'
     },
     languages,
-    rules,
+    rules: rules as Plugin['rules'],
     processors: {}
 };
 
