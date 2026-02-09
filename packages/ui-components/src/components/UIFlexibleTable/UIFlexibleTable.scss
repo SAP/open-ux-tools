@@ -146,6 +146,7 @@ $readonly-labels-opacity: 0.4;
                 &-item-wrapper {
                     display: flex;
                     width: 100%;
+                    overflow: hidden;
                 }
                 &-no-data {
                     padding: 5px;
