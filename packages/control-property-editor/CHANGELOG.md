@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.10
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+
 ## 0.7.9
 
 ### Patch Changes

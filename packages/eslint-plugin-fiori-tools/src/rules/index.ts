@@ -3,8 +3,12 @@ import type { FioriXMLRuleDefinition } from '../language/xml/types';
 import {
     FLEX_ENABLED,
     WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
-    DISABLE_COPY_TO_CLIPBOARD,
-    CREATION_MODE_FOR_TABLE
+    COPY_TO_CLIPBOARD,
+    CREATION_MODE_FOR_TABLE,
+    ENABLE_EXPORT,
+    ENABLE_PASTE,
+    STATE_PRESERVATION_MODE,
+    TABLE_COLUMN_VERTICAL_ALIGNMENT
 } from '../language/diagnostics';
 
 // Import all rules
@@ -60,7 +64,11 @@ import sapUsageBasemastercontroller from './sap-usage-basemastercontroller';
 import flexEnabledRule from './sap-flex-enabled';
 import requireWidthIncludingColumnHeader from './sap-width-including-column-header';
 import creationModeForTable from './sap-creation-mode-for-table';
-import disableCopyToClipboard from './sap-disable-copy-to-clipboard';
+import statePreservationMode from './sap-state-preservation-mode';
+import copyToClipboard from './sap-copy-to-clipboard';
+import enableExport from './sap-enable-export';
+import enablePaste from './sap-enable-paste';
+import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
 
 import type { Rule } from 'eslint';
 
@@ -115,6 +123,10 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-usage-basemastercontroller': sapUsageBasemastercontroller,
     [FLEX_ENABLED]: flexEnabledRule,
     [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
-    [DISABLE_COPY_TO_CLIPBOARD]: disableCopyToClipboard,
-    [CREATION_MODE_FOR_TABLE]: creationModeForTable
+    [COPY_TO_CLIPBOARD]: copyToClipboard,
+    [ENABLE_EXPORT]: enableExport,
+    [ENABLE_PASTE]: enablePaste,
+    [CREATION_MODE_FOR_TABLE]: creationModeForTable,
+    [STATE_PRESERVATION_MODE]: statePreservationMode,
+    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment
 };
