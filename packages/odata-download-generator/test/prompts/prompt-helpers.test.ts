@@ -6,6 +6,7 @@ import { getEntityModel } from '../../src/data-download/utils';
 import * as commandMock from '@sap-ux/project-access/dist/command';
 import * as fileMock from '@sap-ux/project-access/dist/file';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
+import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
 
 const readJSONOriginal = fileMock.readJSON;
 
@@ -36,7 +37,8 @@ describe('Test prompt-helpers', () => {
         const metadata = await readFile(join(appPath, '/webapp/localService/mainService/metadata.xml'), 'utf8');
         const time3 = Date.now();
         console.log('Time 3:', time3 - time2);
-        const specResult = await await getSpecificationModuleFromCache(appAccess.app.appRoot);
+        const logger = new ToolsLogger({logLevel: LogLevel.Debug, transports: [new ConsoleTransport()]})
+        const specResult = await await getSpecificationModuleFromCache(appAccess.app.appRoot, { logger });
         const time4 = Date.now();
         console.log('Time 4:', time4 - time3);
         if (specResult) {
