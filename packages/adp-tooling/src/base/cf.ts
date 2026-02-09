@@ -23,7 +23,8 @@ export async function isCFEnvironment(basePath: string): Promise<boolean> {
         const customMiddleware =
             ui5Config.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
             ui5Config.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
-        if (customMiddleware?.configuration?.adp?.cfBuildPath === 'dist') {
+        const adpConfig = customMiddleware?.configuration?.adp;
+        if (adpConfig && 'cfBuildPath' in adpConfig && adpConfig.cfBuildPath === 'dist') {
             return true;
         }
     } catch {
