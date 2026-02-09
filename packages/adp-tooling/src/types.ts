@@ -11,7 +11,6 @@ import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
-import type { SupportedProject } from './source';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -775,7 +774,6 @@ export interface CustomConfig {
         environment: OperationsType;
         support: ToolsSupport;
         projectType?: AdaptationProjectType;
-        supportedProject?: SupportedProject;
     };
 }
 

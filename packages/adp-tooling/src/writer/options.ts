@@ -21,7 +21,6 @@ import type {
 } from '../types';
 import { UI5_CDN_URL } from '../base/constants';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { SupportedProject } from '../source';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -243,16 +242,10 @@ function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }
             url: config.target?.url ?? VSCODE_URL
         };
     } else {
-        const customConfig = config.customConfig?.adp;
-        const isCloudProjectInPrivateCloudSystem =
-            customConfig?.projectType === AdaptationProjectType.CLOUD_READY &&
-            customConfig.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM;
-        const client = isCloudProjectInPrivateCloudSystem ? config.target.client : undefined;
         target = {
             url: config.target.url ?? VSCODE_URL,
             authenticationType: config.target.authenticationType,
-            ignoreCertErrors: false,
-            client
+            ignoreCertErrors: false
         };
     }
 
