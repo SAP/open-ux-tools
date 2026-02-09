@@ -266,7 +266,8 @@
         "noExternalServiceMetdataFetched": "No external service metadata was fetched. $t(texts.seeLogForDetails)",
         "missingServices": "OData V{{odataVersion}} services are not available.",
         "specifiedServicesNotAvailable_one": "The required OData service: {{-service}} is not available from the {{odataVersion}}services catalog. Please ensure the service is available.",
-        "specifiedServicesNotAvailable_other": "The required OData services are not available from the {{odataVersion}}services catalog. Please ensure the services are available. $t(texts.seeLogForDetails)"
+        "specifiedServicesNotAvailable_other": "The required OData services are not available from the {{odataVersion}}services catalog. Please ensure the services are available. $t(texts.seeLogForDetails)",
+        "storedSystemUrlPathNotSupported": "The stored cloud system URL '{{- systemUrl}}' contains a path which is not supported for reentrance ticket authentication. The path is ignored for this connection."
     },
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",
