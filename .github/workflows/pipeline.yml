@@ -17,6 +17,10 @@ jobs:
                 node-version: [20.x, 22.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 45
+        defaults:
+            run:
+                # use powershell 5 on windows-2025 to ensure compatibility with older windows versions, while using bash on other OS for better readability of scripts
+                shell: ${{ matrix.os == 'windows-2025' && 'powershell' || 'bash' }}
         steps:
             - name: Checkout code repository
               uses: actions/checkout@v4
