@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.16.10
+
+### Patch Changes
+
+- 722266d: fix(deps): update dependency axios-logger to v2.8.1
+
 ## 2.16.9
 
 ### Patch Changes
