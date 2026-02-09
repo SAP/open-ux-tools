@@ -7,7 +7,7 @@ import {
     type Destination
 } from '@sap-ux/btp-utils';
 import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
+import { type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 import {
     getHelpUrl,
     GUIDED_ANSWERS_ICON,

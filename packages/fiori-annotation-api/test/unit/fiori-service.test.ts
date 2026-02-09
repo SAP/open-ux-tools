@@ -771,8 +771,10 @@ describe('fiori annotation service', () => {
 
                 fsEditor.write(
                     metadataPath,
-                    (fsEditor.read(metadataPath) || '')
-                        .replace('Namespace="IncidentService"', 'Namespace="IncidentService" Alias="Service"')
+                    (fsEditor.read(metadataPath) || '').replace(
+                        'Namespace="IncidentService"',
+                        'Namespace="IncidentService" Alias="Service"'
+                    )
                 );
 
                 const service = await testRead(
@@ -803,8 +805,10 @@ describe('fiori annotation service', () => {
 
                 fsEditor.write(
                     metadataPath,
-                    (fsEditor.read(metadataPath) || '')
-                        .replace('Namespace="IncidentService"', 'Namespace="IncidentService" Alias="Service"')
+                    (fsEditor.read(metadataPath) || '').replace(
+                        'Namespace="IncidentService"',
+                        'Namespace="IncidentService" Alias="Service"'
+                    )
                 );
                 const path = pathFromUri(project.files.annotations);
                 const content = fsEditor.read(path) || '';
