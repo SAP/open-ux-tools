@@ -64,7 +64,7 @@ The following patterns are considered warnings:
 
 ### Using `discovery` Mode with Flexible Column Layout
 
-#### Warning Message: Consider using "persistence". For applications using Flexible Column Layout (FCL), "persistence" mode is recommended.
+#### Warning Message: Consider using default. For applications using Flexible Column Layout (FCL), default is "persistence" mode.
 
 The following patterns are considered warnings:
 
@@ -98,7 +98,7 @@ The following patterns are not considered warnings:
 
 ### Using `persistence` Mode without Flexible Column Layout
 
-#### Warning Message: Consider using "discovery". For applications not using Flexible Column Layout, "discovery" mode is recommended.
+#### Warning Message: Consider using default. For applications not using Flexible Column Layout, default is "discovery" mode.
 
 The following patterns are considered warnings:
 
