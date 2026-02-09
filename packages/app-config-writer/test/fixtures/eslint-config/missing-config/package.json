@@ -1,0 +1,11 @@
+{
+    "name": "test-app",
+    "sapux": true,
+    "sapuxLayer": "VENDOR",
+    "devDependencies": {
+        "@sap/ux-ui5-tooling": "1.15.1"
+    },
+    "scripts": {
+        "start-variants-management": "fiori run --open \"/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-client=500#app-preview\""
+    }
+}

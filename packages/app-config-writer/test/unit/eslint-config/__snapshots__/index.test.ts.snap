@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`generateEslintConfig ESLint config file generation should generate valid eslint config content 1`] = `
+"const fioriTools  = require('@sap-ux/eslint-plugin-fiori-tools');
+
+module.exports = [
+    ...fioriTools.configs.recommended
+];
+"
+`;
