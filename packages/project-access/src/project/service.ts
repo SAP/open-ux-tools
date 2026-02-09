@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types';
 import { readJSON } from '../file';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Get the main service name from the manifest.

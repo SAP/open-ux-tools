@@ -7,7 +7,7 @@ import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
 import { Ui5App } from './types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { App, AppOptions, UI5 } from './types';
 import { copyTemplates } from './utils';
 
@@ -57,7 +57,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
 
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath) ?? '');
     ui5Config.addFioriToolsProxyMiddleware({
         ui5: {
             url: ui5App.ui5?.frameworkUrl
@@ -80,7 +80,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (isEdmxProjectType) {
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         // write ui5-local.yaml only for non-CAP applications
-        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath) ?? '');
         ui5LocalConfig.addUI5Framework(
             ui5App.ui5.framework,
             ui5App.ui5.localVersion,
@@ -140,7 +140,7 @@ async function isTypescriptEnabled(basePath: string, fs?: Editor): Promise<boole
     }
 
     // check middlewares and tasks
-    const ui5Config = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')));
+    const ui5Config = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')) ?? '');
     if (!ui5Config.findCustomMiddleware(ui5TSSupport.middleware.name)) {
         return false;
     }
@@ -171,7 +171,7 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
         throw new Error(`Invalid project folder. Cannot find required file ${ui5ConfigPath}`);
     }
     const manifest = fs.readJSON(manifestPath) as any as Manifest;
-    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath) ?? '');
 
     const tmplPath = join(__dirname, '..', 'templates');
     //By chosing getMinimumUI5Version we assume that the esm type is compatible if there are multiple versions.

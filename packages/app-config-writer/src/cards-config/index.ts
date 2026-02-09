@@ -1,5 +1,5 @@
 import { join, basename } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils';
@@ -70,7 +70,12 @@ async function updateMiddlewareConfigWithGeneratorPath(
  * @param {ToolsLogger} [logger] - Optional logger instance for logging debug information.
  * @returns {Promise<void>} A promise that resolves when the `package.json` file has been successfully updated.
  */
-async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string, logger?: ToolsLogger): Promise<void> {
+async function updatePackageJson(
+    basePath: string,
+    fs: Editor,
+    yamlPath?: string,
+    logger?: ToolsLogger
+): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     if (!fs.exists(packageJsonPath)) {
         throw new Error('package.json not found');
@@ -115,7 +120,7 @@ export async function enableCardGeneratorConfig(
     basePath: string,
     yamlPath?: string,
     logger?: ToolsLogger,
-    fs?: Editor
+    fs?: Editor,
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);

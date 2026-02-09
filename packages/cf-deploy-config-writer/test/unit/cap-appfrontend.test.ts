@@ -5,7 +5,7 @@ import hasbin from 'hasbin';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { generateAppConfig, generateCAPConfig, RouterModuleType } from '../../src';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { DefaultMTADestination } from '../../src/constants';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';

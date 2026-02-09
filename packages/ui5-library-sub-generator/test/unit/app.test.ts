@@ -9,7 +9,7 @@ import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
 import ReuseLibGen from '../../src/app';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import * as fioriToolsSettings from '@sap-ux/fiori-tools-settings';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({

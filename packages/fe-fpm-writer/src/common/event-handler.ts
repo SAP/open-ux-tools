@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { getTemplatePath } from '../templates';
 import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomElement } from '../common/types';
@@ -140,7 +140,7 @@ export function applyEventHandlerConfiguration(
         });
     } else if (insertScript) {
         // Read current file content
-        let content = fs.read(controllerPath);
+        let content = fs.read(controllerPath) ?? '';
         // Append content with additional script fragment
         if (typeof insertScript.position === 'object') {
             content = insertTextAtPosition(insertScript.fragment, content, insertScript.position);

@@ -7,7 +7,7 @@ import type {
 } from '@sap-ux/fe-fpm-writer';
 import inquirer from 'inquirer';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
@@ -25,7 +25,7 @@ async function initialize(): Promise<Editor> {
 
     fs.copy([join(sampleAppPath)], join(testAppPath));
 
-    await promisify(fs.commit).call(fs);
+    await promisify(fs.commit).call(fs, []);
     return fs;
 }
 
@@ -103,7 +103,7 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
             default:
                 break;
         }
-        await promisify(fs.commit).call(fs);
+        await promisify(fs.commit).call(fs, []);
     } catch (error) {
         console.error(error.message);
     }

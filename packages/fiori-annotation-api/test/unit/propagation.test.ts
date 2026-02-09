@@ -2,7 +2,7 @@ import { promises } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { getProject } from '@sap-ux/project-access';
 
 import { pathFromUri } from '../../src/utils';

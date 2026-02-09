@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import type { I18nPropertiesPaths, Manifest } from '../../types';
 import { readJSON } from '../../file';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Return absolute paths to i18n.properties files from manifest.

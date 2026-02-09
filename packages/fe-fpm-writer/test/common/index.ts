@@ -1,6 +1,6 @@
 import os from 'node:os';
 import { rmdirSync, existsSync } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Reusable function to reset/delete the test-output folder before running tests.

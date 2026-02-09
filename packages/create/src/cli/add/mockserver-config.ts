@@ -67,20 +67,19 @@ async function addMockserverConfig(
         const fs = await generateMockserverConfig(basePath, config);
         await traceChanges(fs);
         if (!simulate) {
-            fs.commit(() => {
-                logger.info(`Changes written.`);
-                if (skipInstall) {
-                    logger.warn('To finish mockserver configuration run commands:');
-                    const relPath = relative(basePath, process.cwd());
-                    if (relPath) {
-                        logger.info(`cd ${relPath}`);
-                    }
-                    logger.info('npm install -D @sap-ux/ui5-middleware-fe-mockserver');
-                } else {
-                    logger.debug('Running npm install command');
-                    runNpmInstallCommand(basePath, ['--save-dev', '@sap-ux/ui5-middleware-fe-mockserver']);
+            await fs.commit();
+            logger.info(`Changes written.`);
+            if (skipInstall) {
+                logger.warn('To finish mockserver configuration run commands:');
+                const relPath = relative(basePath, process.cwd());
+                if (relPath) {
+                    logger.info(`cd ${relPath}`);
                 }
-            });
+                logger.info('npm install -D @sap-ux/ui5-middleware-fe-mockserver');
+            } else {
+                logger.debug('Running npm install command');
+                runNpmInstallCommand(basePath, ['--save-dev', '@sap-ux/ui5-middleware-fe-mockserver']);
+            }
         }
     } catch (error) {
         logger.error(`Error while executing add mockserver-config '${(error as Error).message}'`);

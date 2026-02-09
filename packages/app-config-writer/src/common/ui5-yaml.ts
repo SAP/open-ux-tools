@@ -1,7 +1,7 @@
 import { basename, join } from 'node:path';
 import { MiddlewareConfigs } from '../types';
 import { FileName, type Package, readUi5Yaml, getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { PreviewConfigOptions } from '../types';
 import type { CustomMiddleware, FioriAppReloadConfig, UI5Config } from '@sap-ux/ui5-config';
@@ -346,7 +346,7 @@ export async function sanitizeTestScript(
     const tsTestScriptPath = join(await getWebappPath(basePath), path.replace('.html', '.ts'));
     const testScriptPath = fs.exists(jsTestScriptPath) ? jsTestScriptPath : tsTestScriptPath;
     if (fs.exists(testScriptPath)) {
-        const file = fs.read(testScriptPath);
+        const file = fs.read(testScriptPath) ?? '';
         const usesJourneyRunner = file.includes('sap/fe/test/JourneyRunner');
         if (usesJourneyRunner) {
             const filePathRenamed = testScriptPath.replace(/(\.([jt])s)$/, '.custom$1');

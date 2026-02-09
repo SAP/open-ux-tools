@@ -1,5 +1,5 @@
 import { readManifest } from '../../src/utils/file-helpers';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { t } from '../../src/utils/i18n';
 import { adtSourceTemplateId } from '../../src/utils/constants';
 import RepoAppDownloadLogger from '../../src/utils/logger';

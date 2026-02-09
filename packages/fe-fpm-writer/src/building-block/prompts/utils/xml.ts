@@ -1,5 +1,5 @@
 import { DOMParser } from '@xmldom/xmldom';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
 
 /**
@@ -11,7 +11,7 @@ import * as xpath from 'xpath';
  * @returns true if passed id is available.
  */
 export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id: string): boolean {
-    const xmlContent = fs.read(viewOrFragmentPath).toString();
+    const xmlContent = fs.read(viewOrFragmentPath) ?? '';
     const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
     return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
 }
@@ -45,11 +45,11 @@ export function getXPathStringsForXmlFile(
     const result: Record<string, string> = {};
     let pageMacroDefinition: string | undefined;
     try {
-        const xmlContent = fs.read(xmlFilePath);
+        const xmlContent = fs.read(xmlFilePath) as string | undefined;
         const errorHandler = (level: string, message: string) => {
             throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
         };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent ?? '');
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
 
         // check macros namespace and page macro definition
@@ -114,7 +114,7 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
     const errorHandler = (level: string, message: string): void => {
         throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
     };
-    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent ?? '');
     const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
     for (const element of elements) {
         const id = element.getAttributeNode('id')?.value;
@@ -141,7 +141,10 @@ export async function getExistingButtonGroups(
     const existingButtonGroups = new Set<string>();
 
     try {
-        const xmlContent = fs.read(xmlFilePath);
+        const xmlContent = fs.read(xmlFilePath) as string | undefined;
+        if (!xmlContent) {
+            throw new Error(`Unable to read the xml view file.`);
+        }
         const errorHandler = (level: string, message: string): void => {
             throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
         };

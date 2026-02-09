@@ -10,7 +10,7 @@ import type {
 } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import WebSocket from 'ws';
 import type { Data } from 'ws';
@@ -73,7 +73,7 @@ export async function getEditor(forceUpdate = false): Promise<Editor> {
         fsEditor.copy([join(sampleAppPath)], join(testAppPath));
     }
 
-    await promisify(fsEditor.commit).call(fsEditor);
+    await promisify(fsEditor.commit).call(fsEditor, []);
     return fsEditor;
 }
 
@@ -225,7 +225,7 @@ async function handleAction(action: Actions): Promise<void> {
             case APPLY_ANSWERS: {
                 const { answers, buildingBlockType } = action;
                 const _fs = await promptsAPI.submitAnswers(buildingBlockType, answers);
-                await promisify(_fs.commit).call(_fs);
+                await promisify(_fs.commit).call(_fs, []);
                 const responseAction: ResetAnswers = {
                     type: RESET_ANSWERS,
                     buildingBlockType

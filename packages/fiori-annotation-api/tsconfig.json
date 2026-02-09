@@ -1,6 +1,9 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["../../types/mem-fs-editor.d.ts", "src", "index.d.ts"],
+    "include": [
+        "src",
+        "index.d.ts"
+    ],
     "compilerOptions": {
         "outDir": "dist",
         "rootDir": "src",

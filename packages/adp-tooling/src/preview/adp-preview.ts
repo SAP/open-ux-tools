@@ -18,7 +18,7 @@ import type {
     OperationType,
     CommonAdditionalChangeInfoProperties
 } from '../types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import {
     addAnnotationFile,
     addXmlFragment,

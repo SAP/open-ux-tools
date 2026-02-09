@@ -1,7 +1,7 @@
 import { homedir } from 'node:os';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 
 export const appInfoFilePath = join(homedir(), '.fioritools', 'appInfo.json');
@@ -33,7 +33,7 @@ function getFsInstance(fs?: Editor): Editor {
  * @returns {AppInfoSettings} - The parsed JSON object, or the default settings if the file does not exist.
  */
 function readJSONFile(filePath: string, fs: Editor): AppInfoSettings {
-    return fs.exists(filePath) ? JSON.parse(fs.read(filePath)) : defaultAppInfoContents;
+    return fs.exists(filePath) ? JSON.parse(fs.read(filePath) as string) : defaultAppInfoContents;
 }
 
 /**
@@ -49,7 +49,7 @@ export function writeApplicationInfoSettings(path: string, fs?: Editor) {
     const appInfoContents: AppInfoSettings = readJSONFile(appInfoFilePath, fs);
     appInfoContents.latestGeneratedFiles.push(path);
     fs.write(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
-    fs.commit((err) => {
+    fs.commit().catch((err: unknown) => {
         console.log('Error in writting to AppInfo.json file', err);
     });
 }
@@ -67,7 +67,7 @@ export function deleteAppInfoSettings(fs?: Editor) {
     if (fs.exists(appInfoFilePath)) {
         try {
             fs.delete(appInfoFilePath);
-            fs.commit((err) => {
+            fs.commit().catch((err: unknown) => {
                 console.log('Failed to commit the deletion of the AppInfo.json file: ', err);
             });
         } catch (err) {

@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import * as utils from '../../../src/common/utils';
 import { create as createFS } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 describe('utils', () => {
     const basePath = join(__dirname, '../../fixtures/variants-config');

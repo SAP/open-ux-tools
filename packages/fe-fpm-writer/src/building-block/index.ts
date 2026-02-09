@@ -6,7 +6,7 @@ import { join, parse, relative } from 'node:path';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import format from 'xml-formatter';
 import * as xpath from 'xpath';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
@@ -103,7 +103,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         const manifestPath = await getManifestPath(basePath, fs);
         const manifestContent = await getManifestContent(fs);
         const content = fs.read(manifestPath);
-        const tabInfo = detectTabSpacing(content);
+        const tabInfo = detectTabSpacing(content ?? '');
         extendJSON(fs, {
             filepath: manifestPath,
             content: manifestContent,
@@ -125,7 +125,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
 function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Document {
     let viewContent: string;
     try {
-        viewContent = fs.read(join(basePath, viewPath));
+        viewContent = fs.read(join(basePath, viewPath)) ?? '';
     } catch (error) {
         throw new Error(`Unable to read xml view file. Details: ${getErrorMessage(error)}`);
     }
@@ -258,7 +258,7 @@ function getTemplateContent<T extends BuildingBlock>(
         buildingBlockData.id = PLACEHOLDERS.id;
     }
     return render(
-        fs.read(templateFilePath),
+        fs.read(templateFilePath) ?? '',
         {
             macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument, 'sap.fe.macros', 'macros') : 'macros',
             data: buildingBlockData,
@@ -278,7 +278,7 @@ function getTemplateContent<T extends BuildingBlock>(
 export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'): Promise<string> {
     // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
     const templatePath = getTemplatePath('/building-block/common/manifest.json');
-    return render(fs.read(templatePath), { libraries: { [library]: {} } });
+    return render(fs.read(templatePath) ?? '', { libraries: { [library]: {} } });
 }
 
 /**

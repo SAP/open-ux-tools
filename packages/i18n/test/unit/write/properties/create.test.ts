@@ -4,7 +4,7 @@ import * as utils from '../../../../src/utils';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { basename } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 describe('create', () => {
     describe('createPropertiesI18nEntries', () => {

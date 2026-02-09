@@ -140,21 +140,18 @@ importers:
         specifier: ^8.0.0
         version: 8.2.7(@types/node@18.19.130)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
     devDependencies:
       '@types/inquirer':
         specifier: ^8.0.0
         version: 8.2.12
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/vinyl':
         specifier: 2.0.7
         version: 2.0.7
@@ -277,12 +274,9 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/react':
         specifier: 16.14.55
         version: 16.14.55
@@ -314,11 +308,11 @@ importers:
         specifier: 0.6.15
         version: 0.6.15(eslint@8.57.1)(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -453,18 +447,18 @@ importers:
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
+      mem-fs:
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -473,7 +467,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.19.130)(mem-fs@3.0.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/abap-deploy-config-writer:
     dependencies:
@@ -493,11 +487,11 @@ importers:
         specifier: 4.17.23
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       semver:
         specifier: 7.7.3
         version: 7.7.3
@@ -509,14 +503,14 @@ importers:
         specifier: 4.14.202
         version: 4.14.202
       '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
+        specifier: 2.2.0
+        version: 2.2.0
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
-        specifier: 7.7.1
-        version: 7.7.1
+        specifier: 7.5.2
+        version: 7.5.2
       fs-extra:
         specifier: 10.0.0
         version: 10.0.0
@@ -666,11 +660,11 @@ importers:
         specifier: 4.1.1
         version: 4.1.1
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -696,12 +690,9 @@ importers:
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
@@ -751,18 +742,18 @@ importers:
         specifier: 0.14.5
         version: 0.14.5
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
     devDependencies:
       '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
+        specifier: 2.2.0
+        version: 2.2.0
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       npm-run-all2:
         specifier: 5.0.0
         version: 5.0.0
@@ -797,11 +788,11 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -816,11 +807,11 @@ importers:
         specifier: 3.1.2
         version: 3.1.2
       '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
+        specifier: 2.2.0
+        version: 2.2.0
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
@@ -1048,11 +1039,11 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       semver:
         specifier: 7.7.3
         version: 7.7.3
@@ -1060,12 +1051,9 @@ importers:
         specifier: 1.6.11
         version: 1.6.11
     devDependencies:
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -1214,9 +1202,6 @@ importers:
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -1226,6 +1211,9 @@ importers:
       js-yaml:
         specifier: 4.1.1
         version: 4.1.1
+      mem-fs-editor:
+        specifier: 10.0.3
+        version: 10.0.3
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -1275,11 +1263,11 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       mta:
         specifier: ^1.0.8
         version: 1.0.8
@@ -1299,12 +1287,9 @@ importers:
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -1504,11 +1489,11 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -1525,12 +1510,9 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
@@ -1650,9 +1632,6 @@ importers:
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -1665,6 +1644,9 @@ importers:
       js-yaml:
         specifier: 4.1.1
         version: 4.1.1
+      mem-fs-editor:
+        specifier: 10.0.3
+        version: 10.0.3
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -1918,11 +1900,11 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       semver:
         specifier: 7.7.3
         version: 7.7.3
@@ -1945,12 +1927,9 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -2018,11 +1997,11 @@ importers:
         specifier: 1.0.11
         version: 1.0.11
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       vscode-languageserver-textdocument:
         specifier: 1.0.11
         version: 1.0.11
@@ -2030,12 +2009,9 @@ importers:
       '@sap/cds-compiler':
         specifier: 4.8.0
         version: 4.8.0
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       npm-run-all2:
         specifier: 5.0.0
         version: 5.0.0
@@ -2112,17 +2088,17 @@ importers:
         specifier: 4.17.23
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       uuid:
         specifier: 11.0.5
         version: 11.0.5
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+        version: 5.10.0(mem-fs@3.0.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.16.9
@@ -2148,12 +2124,9 @@ importers:
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/vscode':
         specifier: 1.73.1
         version: 1.73.1
@@ -2180,7 +2153,7 @@ importers:
         version: 6.1.2
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.19.130)(mem-fs@3.0.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/fiori-docs-embeddings:
     devDependencies:
@@ -2260,11 +2233,11 @@ importers:
         specifier: 4.17.23
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       read-pkg-up:
         specifier: 7.0.1
         version: 7.0.1
@@ -2287,12 +2260,9 @@ importers:
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -2333,11 +2303,11 @@ importers:
         specifier: 4.17.23
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       read-pkg-up:
         specifier: 7.0.1
         version: 7.0.1
@@ -2358,11 +2328,11 @@ importers:
         specifier: 4.14.202
         version: 4.14.202
       '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
+        specifier: 2.2.0
+        version: 2.2.0
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -2391,11 +2361,11 @@ importers:
         specifier: 2.4.0
         version: 2.4.0
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       os-name:
         specifier: 4.0.1
         version: 4.0.1
@@ -2412,12 +2382,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -2446,11 +2413,11 @@ importers:
         specifier: 2.17.2
         version: 2.17.2
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
     devDependencies:
       '@langchain/core':
         specifier: 1.1.8
@@ -2521,12 +2488,9 @@ importers:
       '@types/json-schema':
         specifier: 7.0.5
         version: 7.0.5
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       esbuild:
         specifier: 0.27.2
         version: 0.27.2
@@ -2552,18 +2516,15 @@ importers:
   packages/fiori-tools-settings:
     dependencies:
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
     devDependencies:
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
 
   packages/flp-config-inquirer:
     dependencies:
@@ -2659,12 +2620,9 @@ importers:
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -2681,8 +2639,8 @@ importers:
         specifier: 4.17.23
         version: 4.17.23
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -2807,18 +2765,15 @@ importers:
         specifier: 1.0.11
         version: 1.0.11
     devDependencies:
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -2979,11 +2934,11 @@ importers:
         specifier: 3.2.0
         version: 3.2.0
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       yargs-parser:
         specifier: 21.1.1
         version: 21.1.1
@@ -2991,12 +2946,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/yargs-parser':
         specifier: 21.0.3
         version: 21.0.3
@@ -3044,18 +2996,15 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
     devDependencies:
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
@@ -3250,11 +3199,11 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       prettify-xml:
         specifier: 1.2.0
         version: 1.2.0
@@ -3274,12 +3223,9 @@ importers:
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -3375,11 +3321,11 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       qrcode:
         specifier: 1.5.4
         version: 1.5.4
@@ -3408,12 +3354,9 @@ importers:
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
@@ -3500,11 +3443,11 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       semver:
         specifier: 7.7.3
         version: 7.7.3
@@ -3512,12 +3455,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -3689,12 +3629,9 @@ importers:
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -3717,8 +3654,8 @@ importers:
         specifier: 4.17.23
         version: 4.17.23
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -3930,8 +3867,8 @@ importers:
         specifier: 6.0.0
         version: 6.0.0(jest@30.2.0)(typescript@5.9.3)
       memfs:
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.4.13
+        version: 3.4.13
       unionfs:
         specifier: 4.4.0
         version: 4.4.0
@@ -4380,7 +4317,7 @@ importers:
         version: 25.8.0(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+        version: 5.10.0(mem-fs@3.0.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
@@ -4394,12 +4331,9 @@ importers:
       '@sap/subaccount-destination-service-provider':
         specifier: 2.9.1
         version: 2.9.1(typescript@5.9.3)
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -4416,11 +4350,11 @@ importers:
         specifier: 6.0.0
         version: 6.0.0(jest@30.2.0)(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       rimraf:
         specifier: 6.1.2
         version: 6.1.2
@@ -4429,7 +4363,7 @@ importers:
         version: 3.19.3(@types/node@18.19.130)
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.19.130)(mem-fs@3.0.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/ui5-application-inquirer:
     dependencies:
@@ -4498,11 +4432,11 @@ importers:
         specifier: 4.17.23
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       semver:
         specifier: 7.7.3
         version: 7.7.3
@@ -4522,12 +4456,9 @@ importers:
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -4717,21 +4648,18 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
     devDependencies:
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       fs-extra:
         specifier: 10.0.0
         version: 10.0.0
@@ -4773,8 +4701,8 @@ importers:
         specifier: workspace:*
         version: link:../jest-file-matchers
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -4791,8 +4719,8 @@ importers:
         specifier: 6.0.0
         version: 6.0.0(jest@30.2.0)(typescript@5.9.3)
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       rimraf:
         specifier: 6.1.2
         version: 6.1.2
@@ -4818,11 +4746,11 @@ importers:
         specifier: 4.17.23
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
       semver:
         specifier: 7.7.3
         version: 7.7.3
@@ -4839,12 +4767,9 @@ importers:
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -4922,11 +4847,11 @@ importers:
         specifier: 25.8.0
         version: 25.8.0(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.0
+        version: 3.0.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 10.0.3
+        version: 10.0.3
     devDependencies:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
@@ -4937,12 +4862,9 @@ importers:
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       fs-extra:
         specifier: 10.0.0
         version: 10.0.0
@@ -5070,8 +4992,8 @@ importers:
   types:
     devDependencies:
       '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
+        specifier: 10.0.1
+        version: 10.0.1
       '@types/vinyl':
         specifier: 2.0.7
         version: 2.0.7
@@ -16302,7 +16224,6 @@ packages:
 
   /@types/ejs@3.1.2:
     resolution: {integrity: sha512-ZmiaE3wglXVWBM9fyVC17aGPkLo/UgaOjEiI2FXQfyczrCefORPxIe+2dVmnmk3zkVIbizjrlQzmPGhSYGXG5g==}
-    dev: true
 
   /@types/enzyme-adapter-react-16@1.0.6:
     resolution: {integrity: sha512-VonDkZ15jzqDWL8mPFIQnnLtjwebuL9YnDkqeCDYnB4IVgwUm0mwKkqhrxLL6mb05xm7qqa3IE95m8CZE9imCg==}
@@ -16336,7 +16257,6 @@ packages:
 
   /@types/expect@1.20.4:
     resolution: {integrity: sha512-Q5Vn3yjTDyCMV50TB6VRIbQNxSE4OmZR86VSbGaNpfUolm0iePBB4KdEEHmxoY5sT2+2DIvXW0rvMDP2nHZ4Mg==}
-    dev: true
 
   /@types/express-serve-static-core@4.17.35:
     resolution: {integrity: sha512-wALWQwrgiB2AWTT91CB62b6Yt0sNHpznUXeZEcnPU3DRdlDIz74x8Qg1UUYKSVFi+va5vKOLYRBI1bRKiLLKIg==}
@@ -16371,13 +16291,6 @@ packages:
     resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
     dependencies:
       '@types/node': 18.11.9
-    dev: true
-
-  /@types/glob@8.1.0:
-    resolution: {integrity: sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==}
-    dependencies:
-      '@types/minimatch': 5.1.2
-      '@types/node': 20.0.0
     dev: true
 
   /@types/hasbin@1.2.2:
@@ -16523,22 +16436,22 @@ packages:
     resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
     dev: true
 
-  /@types/mem-fs-editor@7.0.1:
-    resolution: {integrity: sha512-aixqlCy0k0fZa+J4k7SZ7ZQCuJUmD4YuuMk42Q86YrGNBTZOSSnqkV8QcedBgLF5uR78PXj8HDWIFpXn+eOJbw==}
+  /@types/mem-fs-editor@10.0.1:
+    resolution: {integrity: sha512-x8YRuVyEsp7AwHXwnOwjsroItyadmXHi3qglNHbzdCr/X9ofOn4IcTZl6RHEKtBJcYXK6KzX2N98kNVhUefbSA==}
+    deprecated: This is a stub types definition. mem-fs-editor provides its own type definitions, so you do not need this installed.
     dependencies:
-      '@types/ejs': 3.1.2
-      '@types/glob': 8.1.0
-      '@types/json-schema': 7.0.15
-      '@types/mem-fs': 1.1.2
-      '@types/node': 18.11.9
-      '@types/vinyl': 2.0.7
+      mem-fs-editor: 10.0.3
+    transitivePeerDependencies:
+      - bare-abort-controller
     dev: true
 
-  /@types/mem-fs@1.1.2:
-    resolution: {integrity: sha512-tt+4IoDO8/wmtaP2bHnB91c8AnzYtR9MK6NxfcZY9E3XgtmzOiFMeSXu3EZrBeevd0nJ87iGoUiFDGsb9QUvew==}
+  /@types/mem-fs@2.2.0:
+    resolution: {integrity: sha512-G7D5J0wx7jMJ5dBMDFYcbE/VXol/51o/vpJu3DqRk1R7SrZYtzhDMf1eFoG8A/HOTM7EAbov/euJkULhwvLK1Q==}
+    deprecated: This is a stub types definition. mem-fs provides its own type definitions, so you do not need this installed.
     dependencies:
-      '@types/node': 18.11.9
-      '@types/vinyl': 2.0.7
+      mem-fs: 3.0.0
+    transitivePeerDependencies:
+      - bare-abort-controller
     dev: true
 
   /@types/mime@1.3.2:
@@ -16547,10 +16460,6 @@ packages:
 
   /@types/minimatch@3.0.5:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
-
-  /@types/minimatch@5.1.2:
-    resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
-    dev: true
 
   /@types/minimist@1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
@@ -16574,7 +16483,6 @@ packages:
 
   /@types/node@18.11.9:
     resolution: {integrity: sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==}
-    dev: true
 
   /@types/node@18.19.130:
     resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
@@ -16739,6 +16647,10 @@ packages:
   /@types/scheduler@0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
 
+  /@types/semver@7.5.2:
+    resolution: {integrity: sha512-7aqorHYgdNO4DM36stTiGO3DvKoex9TQRwsJU6vMaFGyqpBA1MNZkz+PG3gaNUPpTAOYhT1WR7M1JyA3fbS9Cw==}
+    dev: true
+
   /@types/semver@7.7.1:
     resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
@@ -16834,7 +16746,6 @@ packages:
     dependencies:
       '@types/expect': 1.20.4
       '@types/node': 18.11.9
-    dev: true
 
   /@types/vscode@1.102.0:
     resolution: {integrity: sha512-V9sFXmcXz03FtYTSUsYsu5K0Q9wH9w9V25slddcxrh5JgORD14LpnOA7ov0L9ALi+6HrTjskLJ/tY5zeRF3TFA==}
@@ -16891,7 +16802,7 @@ packages:
     dependencies:
       '@types/diff': 5.0.9
       '@types/inquirer': 8.2.6
-      '@types/mem-fs': 1.1.2
+      '@types/mem-fs': 2.2.0
       '@types/node': 18.11.9
       '@types/text-table': 0.2.2
       '@types/vinyl': 2.0.7
@@ -16900,6 +16811,8 @@ packages:
       commander: 9.4.0
       execa: 5.1.1
       rxjs: 6.6.7
+    transitivePeerDependencies:
+      - bare-abort-controller
     dev: true
 
   /@types/yeoman-environment@2.10.8:
@@ -16907,7 +16820,7 @@ packages:
     dependencies:
       '@types/diff': 5.0.3
       '@types/inquirer': 8.2.12
-      '@types/mem-fs': 1.1.2
+      '@types/mem-fs': 2.2.0
       '@types/text-table': 0.2.2
       '@types/vinyl': 2.0.7
       '@types/yeoman-generator': 5.2.11
@@ -16915,6 +16828,8 @@ packages:
       commander: 9.4.0
       execa: 5.1.1
       rxjs: 6.6.7
+    transitivePeerDependencies:
+      - bare-abort-controller
     dev: true
 
   /@types/yeoman-generator@5.2.11:
@@ -16923,9 +16838,11 @@ packages:
       '@types/debug': 4.1.12
       '@types/ejs': 3.1.2
       '@types/inquirer': 8.2.12
-      '@types/mem-fs-editor': 7.0.1
+      '@types/mem-fs-editor': 10.0.1
       '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
+    transitivePeerDependencies:
+      - bare-abort-controller
     dev: true
 
   /@types/yeoman-generator@5.2.14:
@@ -16934,19 +16851,23 @@ packages:
       '@types/debug': 4.1.12
       '@types/ejs': 3.1.2
       '@types/inquirer': 8.2.6
-      '@types/mem-fs-editor': 7.0.1
-      '@types/node': 18.11.9
+      '@types/mem-fs-editor': 10.0.1
+      '@types/node': 20.0.0
       '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
+    transitivePeerDependencies:
+      - bare-abort-controller
     dev: true
 
   /@types/yeoman-test@4.0.6:
     resolution: {integrity: sha512-yPhCCqXeinWoH78bvzalZ1fAYjPSSrLK+RgxFxkKKu1WSlSG0ilOPBnquqE4UwvXC30hrwHvXIUMPsXQaTESXA==}
     dependencies:
-      '@types/mem-fs': 1.1.2
-      '@types/mem-fs-editor': 7.0.1
+      '@types/mem-fs': 2.2.0
+      '@types/mem-fs-editor': 10.0.1
       '@types/yeoman-environment': 2.10.11
       '@types/yeoman-generator': 5.2.14
+    transitivePeerDependencies:
+      - bare-abort-controller
     dev: true
 
   /@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2)(eslint@9.39.1)(typescript@5.9.3):
@@ -18534,6 +18455,10 @@ packages:
     resolution: {integrity: sha512-THtfYS6KtME/yIAhKjZ2ul7XI96lQGHRputJQHO80LAWQnuGP4iCIN8vdMRboGbIEYBwU33q8Tch1os2+X0kMg==}
     engines: {node: '>=8'}
 
+  /array-differ@4.0.0:
+    resolution: {integrity: sha512-Q6VPTLMsmXZ47ENG3V+wQyZS1ZxXMxFyYzA+Z/GMrJ6yIutAIEf9wTyroTzmGjNfox9/h3GdGBCVh43GVFx4Uw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
   /array-flatten@1.1.1:
     resolution: {integrity: sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==}
 
@@ -18561,6 +18486,10 @@ packages:
   /array-union@2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
+
+  /array-union@3.0.1:
+    resolution: {integrity: sha512-1OvF9IbWwaeiM9VhzYXVQacMibxpXOMYVNIvMtKRyX9SImBXpKcFr8XvFDeEslCyuH/t6KRt7HEO94AlP8Iatw==}
+    engines: {node: '>=12'}
 
   /array.prototype.filter@1.0.1:
     resolution: {integrity: sha512-Dk3Ty7N42Odk7PjU/Ci3zT4pLj20YvuVnneG/58ICM6bt4Ij5kZaJTVQ9TSaWaIECX2sFyz4KItkVZqHNnciqw==}
@@ -23113,6 +23042,10 @@ packages:
     dependencies:
       readable-stream: 2.3.7
 
+  /first-chunk-stream@5.0.0:
+    resolution: {integrity: sha512-WdHo4ejd2cG2Dl+sLkW79SctU7mUQDfr4s1i26ffOZRs5mgv+BRttIM9gwcq0rDbemo0KlpVPaa3LBVLqPXzcQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
   /flat-cache@3.2.0:
     resolution: {integrity: sha512-CYcENa+FtcUKLmhhqyctpclsq7QF38pKjZHsGNiSQF5r4FtoKDWabFDl3hzaEQMvT1LHEysw5twgLvpYYb4vbw==}
     engines: {node: ^10.12.0 || >=12.0.0}
@@ -23376,10 +23309,6 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
       minipass: 5.0.0
-
-  /fs-monkey@1.0.3:
-    resolution: {integrity: sha512-cybjIfiiE+pTWicSCLFHSrXZ6EilF30oh91FDP9S2B051prEa7QWfrVTQm10/dDpswBDXZugPa1Ogu8Yh+HV0Q==}
-    dev: true
 
   /fs-monkey@1.0.4:
     resolution: {integrity: sha512-INM/fWAxMICjttnD0DX1rBvinKskj5G1w+oy/pnm9u/tSlnBrzFonJMcalKJ30P8RRsPzKcCG7Q8l0jx5Fh9YQ==}
@@ -23796,7 +23725,6 @@ packages:
       ignore: 5.2.4
       merge2: 1.4.1
       slash: 4.0.0
-    dev: true
 
   /globby@14.1.0:
     resolution: {integrity: sha512-0Ia46fDOaT7k4og1PDW4YbodWWr3scS2vAr2lTbsplOt2WkKp0vQbkI9wKis/T5LV/dqPjO3bpS/z6GTJB82LA==}
@@ -25137,6 +25065,10 @@ packages:
   /isbinaryfile@4.0.10:
     resolution: {integrity: sha512-iHrqe5shvBUcFbmZq9zOQHBoeOhZJu6RQGrDpBgenUm/Am+F3JM2MgQj+rK3Z601fzrL5gLZWtAPH2OBaSVcyw==}
     engines: {node: '>= 8.0.0'}
+
+  /isbinaryfile@5.0.3:
+    resolution: {integrity: sha512-VR4gNjFaDP8csJQvzInG20JvBj8MaHYLxNOMXysxRbGM7tcsHZwCjhch3FubFtZBkuDbN55i4dUukGeIrzF+6g==}
+    engines: {node: '>= 18.0.0'}
 
   /isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
@@ -26988,6 +26920,26 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
+  /mem-fs-editor@10.0.3:
+    resolution: {integrity: sha512-EfE+MKDgfplq6wtS0mRP/4hKNBLfVqc1dhnNEIJRQS9neTCAI3SkHQDToh9fvp02QtICiyGVR1/jJPFE7AFIpQ==}
+    engines: {node: '>=16.13.0'}
+    dependencies:
+      '@types/ejs': 3.1.2
+      binaryextensions: 4.19.0
+      commondir: 1.0.1
+      deep-extend: 0.6.0
+      ejs: 3.1.10
+      globby: 13.2.2
+      isbinaryfile: 5.0.3
+      mem-fs: 3.0.0
+      minimatch: 9.0.5
+      multimatch: 6.0.0
+      normalize-path: 3.0.0
+      textextensions: 5.16.0
+      vinyl: 3.0.1
+    transitivePeerDependencies:
+      - bare-abort-controller
+
   /mem-fs-editor@9.4.0(mem-fs@2.1.0):
     resolution: {integrity: sha512-HSSOLSVRrsDdui9I6i96dDtG+oAez/4EB2g4cjSrNhgNQ3M+L57/+22NuPdORSoxvOHjIg/xeOE+C0wwF91D2g==}
     engines: {node: '>=12.10.0'}
@@ -27009,6 +26961,27 @@ packages:
       normalize-path: 3.0.0
       textextensions: 5.16.0
 
+  /mem-fs-editor@9.4.0(mem-fs@3.0.0):
+    resolution: {integrity: sha512-HSSOLSVRrsDdui9I6i96dDtG+oAez/4EB2g4cjSrNhgNQ3M+L57/+22NuPdORSoxvOHjIg/xeOE+C0wwF91D2g==}
+    engines: {node: '>=12.10.0'}
+    peerDependencies:
+      mem-fs: ^2.1.0
+    peerDependenciesMeta:
+      mem-fs:
+        optional: true
+    dependencies:
+      binaryextensions: 4.19.0
+      commondir: 1.0.1
+      deep-extend: 0.6.0
+      ejs: 3.1.10
+      globby: 11.1.0
+      isbinaryfile: 4.0.10
+      mem-fs: 3.0.0
+      minimatch: 3.0.5
+      multimatch: 5.0.0
+      normalize-path: 3.0.0
+      textextensions: 5.16.0
+
   /mem-fs@2.1.0:
     resolution: {integrity: sha512-55vFOT4rfJx/9uoWntNrfzEj9209rd26spsSvKsCVBfOPH001YS5IakfElhcyagieC4uL++Ry/XDcwvgxF4/zQ==}
     engines: {node: '>=12'}
@@ -27016,12 +26989,16 @@ packages:
       vinyl: 2.2.1
       vinyl-file: 3.0.0
 
-  /memfs@3.3.0:
-    resolution: {integrity: sha512-BEE62uMfKOavX3iG7GYX43QJ+hAeeWnwIAuJ/R6q96jaMtiLzhsxHJC8B1L7fK7Pt/vXDRwb3SG/yBpNGDPqzg==}
-    engines: {node: '>= 4.0.0'}
+  /mem-fs@3.0.0:
+    resolution: {integrity: sha512-ORIMUgVVaKTsruUnt8qka8CD0T05mQnW5m7OZ/JtyUcfXKZ5vvHNf34CHvfbpd+WYm+6iWXKS5MvO6zhjJWlrg==}
+    engines: {node: '>=16.13.0'}
     dependencies:
-      fs-monkey: 1.0.3
-    dev: true
+      '@types/node': 18.19.130
+      '@types/vinyl': 2.0.7
+      vinyl: 3.0.1
+      vinyl-file: 5.0.0
+    transitivePeerDependencies:
+      - bare-abort-controller
 
   /memfs@3.4.13:
     resolution: {integrity: sha512-omTM41g3Skpvx5dSYeZIbXKcXoAVc/AoMNwn9TKx++L/gaen/+4TTttmu8ZSch5vfVJ8uJvGbroTsIlslRg6lg==}
@@ -27478,6 +27455,15 @@ packages:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
+      minimatch: 3.0.5
+
+  /multimatch@6.0.0:
+    resolution: {integrity: sha512-I7tSVxHGPlmPN/enE3mS1aOSo6bWBfls+3HmuEeCUBCE7gWnm3cBXCBkpurzFjVRwC6Kld8lLaZ1Iv5vOcjvcQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      '@types/minimatch': 3.0.5
+      array-differ: 4.0.0
+      array-union: 3.0.1
       minimatch: 3.0.5
 
   /mustache@4.2.0:
@@ -30961,6 +30947,10 @@ packages:
     resolution: {integrity: sha512-yD5BHCe7quCgBph4rMQ+0KkIRKwWCrHDOX1p1Gp6HwjPM5kVoCdKGNhN7ydqqsX6lJEnQDKZ/tFMiEdQ1dvPEw==}
     engines: {node: '>= 0.10'}
 
+  /replace-ext@2.0.0:
+    resolution: {integrity: sha512-UszKE5KVK6JvyD92nzMn9cDapSk6w/CaFZ96CnmDMUqH9oowfxF/ZjRITD25H4DnOQClLA4/j7jLGXXLVKxAug==}
+    engines: {node: '>= 10'}
+
   /replacestream@4.0.3:
     resolution: {integrity: sha512-AC0FiLS352pBBiZhd4VXB1Ab/lh0lEgpP+GGvZqbQh8a5cmXVoTe5EX/YeTFArnp4SRGTHh1qCHu9lGs1qG8sA==}
     dependencies:
@@ -32088,7 +32078,6 @@ packages:
   /slash@4.0.0:
     resolution: {integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==}
     engines: {node: '>=12'}
-    dev: true
 
   /slash@5.1.0:
     resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
@@ -32539,7 +32528,6 @@ packages:
       bare-events: 2.8.2
     transitivePeerDependencies:
       - bare-abort-controller
-    optional: true
 
   /strict-uri-encode@2.0.0:
     resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
@@ -32690,12 +32678,25 @@ packages:
     dependencies:
       is-utf8: 0.2.1
 
+  /strip-bom-buf@3.0.1:
+    resolution: {integrity: sha512-iJaWw2WroigLHzQysdc5WWeUc99p7ea7AEgB6JkY8CMyiO1yTVAA1gIlJJgORElUIR+lcZJkNl1OGChMhvc2Cw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      is-utf8: 0.2.1
+
   /strip-bom-stream@2.0.0:
     resolution: {integrity: sha512-yH0+mD8oahBZWnY43vxs4pSinn8SMKAdml/EOGBewoe1Y0Eitd0h2Mg3ZRiXruUW6L4P+lvZiEgbh0NgUGia1w==}
     engines: {node: '>=0.10.0'}
     dependencies:
       first-chunk-stream: 2.0.0
       strip-bom: 2.0.0
+
+  /strip-bom-stream@5.0.0:
+    resolution: {integrity: sha512-Yo472mU+3smhzqeKlIxClre4s4pwtYZEvDNQvY/sJpnChdaxmKuwU28UVx/v1ORKNMxkmj1GBuvxJQyBk6wYMQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      first-chunk-stream: 5.0.0
+      strip-bom-buf: 3.0.1
 
   /strip-bom-string@1.0.0:
     resolution: {integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==}
@@ -32971,6 +32972,13 @@ packages:
       minipass: 7.1.2
       minizlib: 3.1.0
       yallist: 5.0.0
+
+  /teex@1.0.1:
+    resolution: {integrity: sha512-eYE6iEI62Ni1H8oIa7KlDU6uQBtqr4Eajni3wX7rpfXD8ysFx8z0+dri+KWEPWpBsxXfxu58x/0jvTVT1ekOSg==}
+    dependencies:
+      streamx: 2.22.1
+    transitivePeerDependencies:
+      - bare-abort-controller
 
   /telejson@7.2.0:
     resolution: {integrity: sha512-1QTEcJkJEhc8OnStBx/ILRu5J2p0GjvWsBx56bmZRqnrkdBMUe+nX92jxV+p3dB4CP6PZCdJMQJwCggkNBMzkQ==}
@@ -34216,6 +34224,17 @@ packages:
       strip-bom-stream: 2.0.0
       vinyl: 2.2.1
 
+  /vinyl-file@5.0.0:
+    resolution: {integrity: sha512-MvkPF/yA1EX7c6p+juVIvp9+Lxp70YUfNKzEWeHMKpUNVSnTZh2coaOqLxI0pmOe2V9nB+OkgFaMDkodaJUyGw==}
+    engines: {node: '>=14.16'}
+    dependencies:
+      '@types/vinyl': 2.0.7
+      strip-bom-buf: 3.0.1
+      strip-bom-stream: 5.0.0
+      vinyl: 3.0.1
+    transitivePeerDependencies:
+      - bare-abort-controller
+
   /vinyl@2.2.1:
     resolution: {integrity: sha512-LII3bXRFBZLlezoG5FfZVcXflZgWP/4dCwKtxd5ky9+LOtM4CS3bIRQsmR1KMnMW07jpE8fqR2lcxPZ+8sJIcw==}
     engines: {node: '>= 0.10'}
@@ -34226,6 +34245,17 @@ packages:
       cloneable-readable: 1.1.3
       remove-trailing-separator: 1.1.0
       replace-ext: 1.0.1
+
+  /vinyl@3.0.1:
+    resolution: {integrity: sha512-0QwqXteBNXgnLCdWdvPQBX6FXRHtIH3VhJPTd5Lwn28tJXc34YqSCWUmkOvtJHBmB3gGoPtrOKk3Ts8/kEZ9aA==}
+    engines: {node: '>=10.13.0'}
+    dependencies:
+      clone: 2.1.2
+      remove-trailing-separator: 1.1.0
+      replace-ext: 2.0.0
+      teex: 1.0.1
+    transitivePeerDependencies:
+      - bare-abort-controller
 
   /vkbeautify@0.99.3:
     resolution: {integrity: sha512-2ozZEFfmVvQcHWoHLNuiKlUfDKlhh4KGsy54U0UrlLMR1SO+XKAIDqBxtBwHgNrekurlJwE8A9K6L49T78ZQ9Q==}
@@ -35109,6 +35139,37 @@ packages:
       - mem-fs
       - supports-color
 
+  /yeoman-generator@5.10.0(mem-fs@3.0.0)(yeoman-environment@3.19.3):
+    resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
+    engines: {node: '>=12.10.0'}
+    peerDependencies:
+      yeoman-environment: ^3.2.0
+    peerDependenciesMeta:
+      yeoman-environment:
+        optional: true
+    dependencies:
+      chalk: 4.1.2
+      dargs: 7.0.0
+      debug: 4.3.7
+      execa: 5.1.1
+      github-username: 6.0.0
+      lodash: 4.17.23
+      mem-fs-editor: 9.4.0(mem-fs@3.0.0)
+      minimist: 1.2.8
+      pacote: 15.2.0
+      read-pkg-up: 7.0.1
+      run-async: 2.4.1
+      semver: 7.7.3
+      shelljs: 0.8.5
+      sort-keys: 4.2.0
+      text-table: 0.2.0
+      yeoman-environment: 3.19.3(@types/node@18.19.130)
+    transitivePeerDependencies:
+      - bluebird
+      - encoding
+      - mem-fs
+      - supports-color
+
   /yeoman-test@6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0):
     resolution: {integrity: sha512-FpaLV5AiVFlYe4pizAB/QLWc+5BSyttk/TcFQfi/r8g/rz290uqEkV4waN3rHEvP/DCmoMNSJykKTZNWL2y07g==}
     engines: {node: '>=12.10.0'}
@@ -35125,6 +35186,26 @@ packages:
       temp-dir: 2.0.0
       yeoman-environment: 3.19.3(@types/node@18.19.130)
       yeoman-generator: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    transitivePeerDependencies:
+      - '@types/node'
+    dev: true
+
+  /yeoman-test@6.3.0(@types/node@18.19.130)(mem-fs@3.0.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0):
+    resolution: {integrity: sha512-FpaLV5AiVFlYe4pizAB/QLWc+5BSyttk/TcFQfi/r8g/rz290uqEkV4waN3rHEvP/DCmoMNSJykKTZNWL2y07g==}
+    engines: {node: '>=12.10.0'}
+    peerDependencies:
+      mem-fs: ^2.1.0
+      yeoman-environment: ^3.3.0
+      yeoman-generator: '*'
+    dependencies:
+      inquirer: 8.2.7(@types/node@18.19.130)
+      lodash: 4.17.23
+      mem-fs: 3.0.0
+      mem-fs-editor: 9.4.0(mem-fs@3.0.0)
+      sinon: 10.0.1
+      temp-dir: 2.0.0
+      yeoman-environment: 3.19.3(@types/node@18.19.130)
+      yeoman-generator: 5.10.0(mem-fs@3.0.0)(yeoman-environment@3.19.3)
     transitivePeerDependencies:
       - '@types/node'
     dev: true

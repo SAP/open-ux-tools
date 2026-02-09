@@ -70,7 +70,7 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         });
 
         if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
+            await fs.commit();
         } else {
             await traceChanges(fs);
         }

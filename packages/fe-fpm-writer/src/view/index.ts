@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomView, InternalCustomView } from './types';
 import { join } from 'node:path';
@@ -99,7 +99,7 @@ export async function generateCustomView(basePath: string, customView: CustomVie
     const completeView = enhanceConfig(fs, customView, manifestPath, manifest);
 
     // enhance manifest with view definition
-    const filledTemplate = render(fs.read(getTemplatePath('view/manifest.json')), completeView, {});
+    const filledTemplate = render(fs.read(getTemplatePath('view/manifest.json')) ?? '', completeView, {});
     extendJSON(fs, {
         filepath: manifestPath,
         content: filledTemplate,

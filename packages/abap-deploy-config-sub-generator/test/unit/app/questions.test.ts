@@ -2,7 +2,6 @@ import { type Destination, isAppStudio } from '@sap-ux/btp-utils';
 import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import { getAbapQuestions } from '../../../src/app/questions';
 import { readUi5Yaml } from '@sap-ux/project-access';
-import type { BackendSystem } from '@sap-ux/store';
 import { AuthenticationType } from '@sap-ux/store';
 import { DefaultLogger, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 

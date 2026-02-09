@@ -13,7 +13,7 @@ import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-wri
 import { generateOPATests } from './generateOPATests';
 import type { Logger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/ui5-application-writer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
 import type { BasicAppSettings } from './types';
 
 /**
@@ -71,7 +71,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         {
             globOptions: { ignore, dot: true },
             processDestinationPath: processDestinationPath
-        }
+        } as CopyOptions
     );
     fs.copyTpl(
         join(
@@ -86,7 +86,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         {
             globOptions: { ignore, dot: true },
             processDestinationPath: processDestinationPath
-        }
+        } as CopyOptions
     );
 
     if (ffApp.template.type === TemplateType.Basic) {
@@ -99,7 +99,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
             undefined,
             {
                 processDestinationPath: processDestinationPath
-            }
+            } as CopyOptions
         );
         const ext = isTypeScriptEnabled ? 'ts' : 'js';
         const controllerTarget = join(basePath, `webapp/controller/${viewName}.controller.${ext}`);
@@ -110,7 +110,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
             undefined,
             {
                 processDestinationPath: processDestinationPath
-            }
+            } as CopyOptions
         );
     }
 
@@ -125,12 +125,12 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         ffApp.template.type === TemplateType.Basic ? templateVersionPath : '',
         'webapp'
     );
-    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')), ffApp, {})));
+    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')) ?? '', ffApp, {})));
 
     // i18n.properties
     fs.append(
         join(basePath, 'webapp', 'i18n', 'i18n.properties'),
-        render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), ffApp, {})
+        render(fs.read(join(extRoot, 'i18n', 'i18n.properties')) ?? '', ffApp, {})
     );
 
     // package.json
@@ -138,11 +138,11 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
     // extend package.json with scripts for non-CAP projects
     fs.extendJSON(
         packagePath,
-        JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
+        JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')) ?? '', ffApp, {}))
     );
 
     const addTests = ffApp.appOptions?.addTests;
-    const packageJson: Package = JSON.parse(fs.read(packagePath));
+    const packageJson: Package = JSON.parse(fs.read(packagePath) ?? '');
 
     if (ffApp.appOptions?.useVirtualPreviewEndpoints) {
         setVirtualEndpointDefaults(ffApp);
@@ -182,7 +182,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
     } else {
         // Add placeholder middleware so allow adding service later
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath) ?? '');
         ui5LocalConfig.addFioriToolsProxyMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }

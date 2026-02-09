@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { FileName } from '../constants';
 import type { Package } from '../types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readJSON, updatePackageJSON } from '../file';
 import semVer from 'semver';
 

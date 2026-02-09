@@ -2,7 +2,7 @@
 import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor as MemFsEditor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type http from 'node:http';
 import type { Request, Response, Router, NextFunction } from 'express';
@@ -81,7 +81,7 @@ export type EnhancedRequest = Request & { 'ui5-patched-router'?: { baseUrl?: str
 type OnChangeRequestHandler = (
     type: OperationType,
     change: CommonChangeProperties,
-    fs: MemFsEditor,
+    fs: Editor,
     logger: Logger,
     extendedChange?: CommonAdditionalChangeInfoProperties
 ) => Promise<void>;
@@ -120,7 +120,7 @@ export class FlpSandbox {
     public readonly rta?: RtaConfig;
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
-    private readonly fs: MemFsEditor;
+    private readonly fs: Editor;
     private readonly logger: Logger;
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
@@ -729,7 +729,8 @@ export class FlpSandbox {
                 this.logger
             );
             if (success) {
-                this.fs.commit(() => this.sendResponse(res, 'text/plain', 200, message ?? ''));
+                await this.fs.commit();
+                this.sendResponse(res, 'text/plain', 200, message ?? '');
             } else {
                 this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
             }
@@ -1047,7 +1048,8 @@ export class FlpSandbox {
 
             const appAccess = await createApplicationAccess(path.resolve(), this.fs);
             await appAccess.updateManifestJSON(this.manifest, this.fs);
-            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
+            await this.fs.commit();
+            this.sendResponse(res, 'text/plain', 201, `Files were updated/created`);
         } catch (error) {
             this.logger.error(`Files could not be created/updated. Error: ${error}`);
             this.sendResponse(res, 'text/plain', 500, 'Files could not be created/updated.');
@@ -1123,7 +1125,8 @@ export class FlpSandbox {
                 annotation: entry.comment ?? entry.annotation
             }));
             await createPropertiesI18nEntries(filePath, entries);
-            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
+            await this.fs.commit();
+            this.sendResponse(res, 'text/plain', 201, `i18n file updated.`);
         } catch (error) {
             this.logger.error(`File could not be updated. Error: ${error}`);
             this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');

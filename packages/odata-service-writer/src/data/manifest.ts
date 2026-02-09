@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join, sep } from 'node:path';
 import { t } from '../i18n';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';

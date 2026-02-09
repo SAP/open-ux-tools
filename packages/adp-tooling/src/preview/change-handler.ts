@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type {
     AddXMLChange,
     CommonChangeProperties,
@@ -254,7 +254,7 @@ export function addXmlFragment(
     try {
         if (templateConfig) {
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
-            const text = fs.read(fragmentTemplatePath);
+            const text = fs.read(fragmentTemplatePath) ?? '';
             const changeTemplate = {
                 ...templateConfig.getData(change),
                 viewName: additionalChangeInfo?.viewName,
@@ -267,7 +267,7 @@ export function addXmlFragment(
             // use default fragment template
             const templateName = 'fragment.xml'; /* TemplateFileName.Fragment */
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateName);
-            const text = fs.read(fragmentTemplatePath);
+            const text = fs.read(fragmentTemplatePath) ?? '';
             const template = render(text, {
                 viewName: additionalChangeInfo?.viewName,
                 targetAggregation: additionalChangeInfo?.targetAggregation,
@@ -304,7 +304,7 @@ export async function addControllerExtension(
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
     const tmplPath = join(__dirname, '../../templates/rta', tmplFileName);
     try {
-        const text = fs.read(tmplPath);
+        const text = fs.read(tmplPath) ?? '';
         const id = (await getVariant(rootPath))?.id;
         const extensionPath = `${id}.${fileName}`;
         const templateData = isTsSupported ? { name: fileName, ns: id } : { extensionPath };

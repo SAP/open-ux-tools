@@ -10,7 +10,7 @@ import {
     DESTINATION_CHOICE_DIRECT_SERVICE_BINDING
 } from '../utils';
 import type { Manifest } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { CfSystemChoice } from '@sap-ux/cf-deploy-config-inquirer';
 
 /**

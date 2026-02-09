@@ -4,7 +4,7 @@ import { join, basename } from 'node:path';
 import { DirName } from '@sap-ux/project-access';
 import { LAUNCH_JSON_FILE } from '../types';
 import type { FioriOptions, LaunchJSON, UpdateWorkspaceFolderOptions, DebugOptions, LaunchConfig } from '../types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils';
 import { updateLaunchJSON } from './writer';
 import { parse } from 'jsonc-parser';
@@ -41,7 +41,7 @@ async function handleNoDebugOptions(rootFolder: string, fioriOptions: FioriOptio
     if (fs.exists(launchJsonWritePath)) {
         // launch.json exists, enhance existing file with new config
         const launchConfig = generateNewFioriLaunchConfig(rootFolder, fioriOptions);
-        const launchJsonString = fs.read(launchJsonWritePath);
+        const launchJsonString = fs.read(launchJsonWritePath) ?? '';
         const launchJson = parse(launchJsonString) as LaunchJSON;
         await updateLaunchJSON(
             launchConfig,
@@ -79,7 +79,7 @@ async function handleExistingLaunchJson(
     configurations: LaunchConfig[],
     replaceWithNew: boolean = false
 ): Promise<void> {
-    const launchJsonString = fs.read(launchJSONPath);
+    const launchJsonString = fs.read(launchJSONPath) ?? '';
     const launchJson = parse(launchJsonString) as LaunchJSON;
     if (replaceWithNew) {
         // replaceWithNew is needed in cases where launch config exists in

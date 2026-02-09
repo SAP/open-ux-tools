@@ -1,7 +1,7 @@
 import type { CapServiceCdsInfo, CapProjectSettings } from '../cap-config/types';
 import { updateRootPackageJson, updateAppPackageJson } from './package-json';
 import { updateTsConfig } from './tsconfig-and-yaml';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Applies updates to a CAP project based on the provided options.

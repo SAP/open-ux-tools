@@ -15,7 +15,7 @@ import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as questions from '../src/app/questions';
 import * as cfConfigWriter from '@sap-ux/cf-deploy-config-writer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const mockIsAppStudio = jest.fn();
 

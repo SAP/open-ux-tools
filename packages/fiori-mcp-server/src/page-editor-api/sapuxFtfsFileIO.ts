@@ -203,9 +203,7 @@ export class SapuxFtfsFileIO {
         const oldChangeFiles = await readFlexChanges(this.appAccess.app.changes);
         const mergedChangeFiles = mergeChanges(changesPath, oldChangeFiles, result.flexChanges);
         const fsEditor = await writeFlexChanges(changesPath, mergedChangeFiles);
-        await fsEditor.commit(() => {
-            //empty callback, do nothing.
-        });
+        await fsEditor.commit();
         result.flexChanges = Object.keys(fsEditor.dump());
         return result;
     }

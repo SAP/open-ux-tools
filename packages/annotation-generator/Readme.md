@@ -22,7 +22,7 @@ Annotation generation example with SAP CAP CDS project:
 import { join } from 'path';
 import { create as createStore } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getProject } from '@sap-ux/project-access';
 
@@ -55,7 +55,7 @@ Annotation generation example with standalone UI project and OData backend:
 import { join } from 'path';
 import { create as createStore } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getProject } from '@sap-ux/project-access';
 

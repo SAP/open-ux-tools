@@ -4,7 +4,7 @@ import { FileName } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { join } from 'node:path';
 import { cfChoice, abapChoice } from './constants';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Target } from '../types';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-sub-generator';
 
@@ -31,8 +31,11 @@ export async function getSupportedTargets(
     const isProjectExtension = fs.exists(join(projectPath, '.extconfig.json'));
     let isLibrary = false;
     try {
-        const ui5Config = await UI5Config.newInstance(fs.read(join(projectPath, configFile)));
-        isLibrary = ui5Config.getType() === DeployProjectType.Library;
+        const ui5ConfigFile = fs.read(join(projectPath, configFile));
+        if (ui5ConfigFile) {
+            const ui5Config = await UI5Config.newInstance(ui5ConfigFile);
+            isLibrary = ui5Config.getType() === DeployProjectType.Library;
+        }
     } catch {
         // Ignore error, ui5.yaml may not be written yet
     }

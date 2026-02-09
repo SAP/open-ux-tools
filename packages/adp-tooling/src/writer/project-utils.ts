@@ -1,7 +1,6 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
-
+import type { MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
 import {
     type CloudApp,
     type AdpWriterConfig,
@@ -127,13 +126,13 @@ export function writeTemplateToFolder(
         fs.copyTpl(tmplPath, projectPath, { ...data, typesPackage, typesVersion }, undefined, {
             globOptions: { dot: true },
             processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-        });
+        } as CopyOptions);
 
         if (data.options?.enableTypeScript) {
             const id = data.app?.id?.split('.').join('/');
             fs.copyTpl(tsConfigPath, join(projectPath, 'tsconfig.json'), { id, typesPackage }, undefined, {
                 globOptions: { dot: true }
-            });
+            } as CopyOptions);
         }
     } catch (e) {
         throw new Error(`Could not write template files to folder. Reason: ${e.message}`);
@@ -152,7 +151,7 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
     try {
         const ui5ConfigPath = join(projectPath, 'ui5.yaml');
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
-        const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
+        const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent ?? '');
         ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
         enhanceUI5YamlWithCustomConfig(ui5Config, data.customConfig);
         enhanceUI5YamlWithTranspileMiddleware(ui5Config, data);
@@ -177,7 +176,7 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
     try {
         const ui5ConfigPath = join(projectPath, 'ui5.yaml');
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
-        const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
+        const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent ?? '');
         ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
         enhanceUI5YamlWithCustomConfig(ui5Config, data.customConfig);
         /** Builder task */
@@ -204,7 +203,7 @@ export async function writeUI5DeployYaml(projectPath: string, data: AdpWriterCon
         if (hasDeployConfig(data)) {
             const ui5ConfigPath = join(projectPath, 'ui5.yaml');
             const baseUi5ConfigContent = fs.read(ui5ConfigPath);
-            const ui5DeployConfig = await UI5Config.newInstance(baseUi5ConfigContent);
+            const ui5DeployConfig = await UI5Config.newInstance(baseUi5ConfigContent ?? '');
             enhanceUI5DeployYaml(ui5DeployConfig, data);
 
             fs.write(join(projectPath, 'ui5-deploy.yaml'), ui5DeployConfig.toString());

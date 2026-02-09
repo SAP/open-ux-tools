@@ -1,6 +1,6 @@
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { Command } from 'commander';
 import { addAnnotationsToOdataCommand } from '../../../../src/cli/add/annotations-to-odata';
 import * as tracer from '../../../../src/tracing/trace';

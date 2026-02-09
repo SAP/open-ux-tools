@@ -1,5 +1,5 @@
 import { join, posix, relative, sep } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware, DataSourceConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
@@ -142,7 +142,7 @@ async function updateUi5MockYamlConfig(
     annotationsConfig: MockserverConfig['annotations'],
     overwrite = false
 ): Promise<UI5Config> {
-    const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+    const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath) ?? '');
     if (overwrite) {
         const newMockserverMiddleware = await getNewMockserverMiddleware(
             basePath,

@@ -1,4 +1,4 @@
-import type { Editor, FileMap } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, MemFsEditorFileDump } from 'mem-fs-editor';
 import { basename, dirname, extname, join, sep, posix } from 'node:path';
 import type { FindError } from 'findit2';
 import find from 'findit2';
@@ -23,26 +23,26 @@ import { promises as fs } from 'node:fs';
  * @returns - array of deleted and modified files filtered by query
  */
 function getMemFsChanges(
-    changes: FileMap,
+    changes: MemFsEditorFileDump[],
     fileNames: string[],
     extensionNames: string[],
     root: string
 ): { deleted: string[]; modified: string[] } {
     const deleted: string[] = [];
     const modified: string[] = [];
-    const filteredChanges = Object.keys(changes).filter(
-        (f) =>
-            f.startsWith(root.replaceAll(sep, posix.sep)) &&
-            (fileNames.includes(basename(f)) ||
-                extensionNames.includes(extname(f)) ||
+    const filteredChanges = (Object.entries(changes) as [string, MemFsEditorFileDump][]).filter(
+        ([entry]) =>
+            entry.startsWith(root.replaceAll(sep, posix.sep)) &&
+            (fileNames.includes(basename(entry)) ||
+                extensionNames.includes(extname(entry)) ||
                 (fileNames.length === 0 && extensionNames.length === 0))
     );
-    for (const file of filteredChanges) {
-        if (changes[file].state === 'deleted') {
-            deleted.push(join(file));
+    for (const [path, fileObj] of filteredChanges) {
+        if (fileObj.state === 'deleted') {
+            deleted.push(join(path));
         }
-        if (changes[file].state === 'modified') {
-            modified.push(join(file));
+        if (fileObj.state === 'modified') {
+            modified.push(join(path));
         }
     }
     return { deleted, modified };

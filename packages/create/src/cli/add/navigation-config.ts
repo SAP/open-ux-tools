@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 
 import {
     generateInboundConfig,
@@ -109,7 +109,8 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
         );
 
         if (!simulate) {
-            fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
+            await fs.commit();
+            logger.info(`Inbound navigation configuration complete.`);
         } else {
             await traceChanges(fs);
         }
