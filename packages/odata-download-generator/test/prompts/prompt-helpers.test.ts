@@ -1,4 +1,4 @@
-import { createApplicationAccess, FileName } from '@sap-ux/project-access';
+import { createApplicationAccess, FileName, getSpecificationModuleFromCache } from '@sap-ux/project-access';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createEntityChoices, getSpecification } from '../../src/data-download/prompts/prompt-helpers';
@@ -36,7 +36,7 @@ describe('Test prompt-helpers', () => {
         const metadata = await readFile(join(appPath, '/webapp/localService/mainService/metadata.xml'), 'utf8');
         const time3 = Date.now();
         console.log('Time 3:', time3 - time2);
-        const specResult = await getSpecification(appAccess);
+        const specResult = await await getSpecificationModuleFromCache(appAccess.app.appRoot);
         const time4 = Date.now();
         console.log('Time 4:', time4 - time3);
         if (specResult) {

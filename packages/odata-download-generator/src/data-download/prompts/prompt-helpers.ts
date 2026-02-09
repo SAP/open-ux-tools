@@ -245,19 +245,13 @@ export async function getServiceDetails(
  * @returns A promise that resolves to a Specification object
  */
 export async function getSpecification(appAccess: ApplicationAccess): Promise<Specification | string> {
-    let specification = await appAccess.getSpecification<Specification>();
-    let apiVersion = specification.getApiVersion();
-    let version = typeof apiVersion?.version === 'string' ? Number.parseInt(apiVersion.version, 10) : 0;
+    const specification: Specification = await getSpecificationModuleFromCache(appAccess.app.appRoot);
+    const apiVersion = specification.getApiVersion();
+    const version = typeof apiVersion?.version === 'string' ? Number.parseInt(apiVersion.version, 10) : 0;
     if (version < 24) {
         ODataDownloadGenerator.logger.debug(
-            `@sap/ux-specification API version referenced by the app is: ${version}. API version '24' at least is required. Will attempt to load from module cache.`
+            `@sap/ux-specification from module cache API version is: ${version}. API version '24' at least is required.`
         );
-        specification = await getSpecificationModuleFromCache(appAccess.app.appRoot);
-    }
-    apiVersion = specification.getApiVersion();
-    version = typeof apiVersion?.version === 'string' ? Number.parseInt(apiVersion.version, 10) : 0;
-    // Check the cache version
-    if (version < 24) {
         return t('specficationApiVersionOutdated', { specApiVersion: version });
     }
     return specification;
