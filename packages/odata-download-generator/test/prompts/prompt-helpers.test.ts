@@ -11,6 +11,7 @@ const readJSONOriginal = fileMock.readJSON;
 
 describe('Test prompt-helpers', () => {
     test('should create entity set choices based on app model (from specification)', async () => {
+        const startTime = Date.now();
         // Prevent spec from fetching versions and writing on test jobs
         jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"latest": "1.142.1"}');
         jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
@@ -23,13 +24,21 @@ describe('Test prompt-helpers', () => {
         );
         // Load the test app
         const appPath = join(__dirname, '../test-data/test-apps/travel');
+        const time1 = Date.now();
+        console.log('Time 1:', time1 - startTime);
         const appAccess = await createApplicationAccess(appPath);
         if (appAccess) {
             console.log('Created app access');
         }
+        const time2 = Date.now();
+        console.log('Time 2:', time2 - time1);
         // Usually loaded from backend, use local copy for testing
         const metadata = await readFile(join(appPath, '/webapp/localService/mainService/metadata.xml'), 'utf8');
+        const time3 = Date.now();
+        console.log('Time 3:', time3 - time2);
         const specResult = await getSpecification(appAccess);
+        const time4 = Date.now();
+        console.log('Time 4:', time4 - time3);
         if (specResult) {
             console.log('Got spec result');
         }
