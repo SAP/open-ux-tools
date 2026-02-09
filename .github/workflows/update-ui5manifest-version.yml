@@ -1,0 +1,198 @@
+name: Update @ui5/manifest Version
+
+# This workflow automates @ui5/manifest dependency updates which require additional
+# changes beyond the package.json version bump (test assertions, fixtures, changeset).
+
+on:
+    # Manual trigger with options for dry-run and force update
+    workflow_dispatch:
+        inputs:
+            dry_run:
+                description: 'Dry run (show changes without applying)'
+                type: boolean
+                default: false
+            force:
+                description: 'Force update even if versions match'
+                type: boolean
+                default: false
+
+    # Scheduled trigger - runs every Wednesday at 5 AM UTC
+    # Note: Running weekly is simpler and more predictable than bi-weekly cron expressions
+    schedule:
+        - cron: '0 5 * * 3'
+
+    # Trigger when Renovate creates a PR for @ui5/manifest
+    # Only on 'opened' to avoid conflicts with Renovate rebasing
+    pull_request:
+        types: [opened]
+        branches: [main]
+
+jobs:
+    check-and-update:
+        name: Check and Update @ui5/manifest
+        runs-on: ubuntu-latest
+        # Only run on PR if it's a Renovate PR for @ui5/manifest
+        if: |
+            github.event_name != 'pull_request' ||
+            (github.event_name == 'pull_request' &&
+             github.actor == 'renovate[bot]' &&
+             contains(github.event.pull_request.title, '@ui5/manifest'))
+        outputs:
+            updated: ${{ steps.update.outputs.updated }}
+            new_version: ${{ steps.update.outputs.new_version }}
+            old_version: ${{ steps.update.outputs.old_version }}
+
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.ACCESS_PAT }}
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4.2.0
+              with:
+                  run_install: false
+
+            - name: Use Node.js 20.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 20.x
+                  cache: 'pnpm'
+
+            - name: Install pnpm modules
+              run: pnpm install --frozen-lockfile
+
+            - name: Run update script
+              id: update
+              run: |
+                  FLAGS=""
+                  if [ "${{ inputs.dry_run }}" == "true" ]; then
+                    FLAGS="$FLAGS --dry-run"
+                  fi
+                  if [ "${{ inputs.force }}" == "true" ]; then
+                    FLAGS="$FLAGS --force"
+                  fi
+                  node scripts/update-ui5manifest-version.js $FLAGS
+
+            - name: Check for changes
+              id: check-changes
+              if: steps.update.outputs.updated == 'true' || github.event_name == 'pull_request'
+              run: |
+                  if [[ -n $(git status --porcelain) ]]; then
+                    echo "has_changes=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "has_changes=false" >> $GITHUB_OUTPUT
+                  fi
+
+            # For scheduled/manual runs: Create a PR with the changes
+            - name: Create Pull Request
+              if: |
+                  github.event_name != 'pull_request' &&
+                  steps.check-changes.outputs.has_changes == 'true' &&
+                  inputs.dry_run != true
+              uses: peter-evans/create-pull-request@v8
+              with:
+                  token: ${{ secrets.ACCESS_PAT }}
+                  commit-message: 'fix(deps): update @ui5/manifest to ${{ steps.update.outputs.new_version }}'
+                  title: 'fix(deps): update dependency @ui5/manifest to ${{ steps.update.outputs.new_version }}'
+                  body: |
+                      ## Summary
+                      This PR updates `@ui5/manifest` from `${{ steps.update.outputs.old_version }}` to `${{ steps.update.outputs.new_version }}`.
+
+                      ## Changes
+                      - Updated `@ui5/manifest` version in:
+                        - `packages/preview-middleware-client/package.json`
+                        - `packages/project-access/package.json`
+                        - `packages/ui5-application-writer/package.json`
+                      - Updated test assertions in `packages/ui5-application-writer/test/data.test.ts`
+                      - Updated expected output fixtures
+                      - Created changeset for version bumps
+
+                      ## Automated
+                      This PR was automatically created by the `update-manifest-version` workflow.
+
+                      ---
+                      :robot: *This is an automated PR. Please review the changes before merging.*
+                  branch: chore/update-ui5-manifest
+                  delete-branch: true
+                  labels: |
+                      dependencies
+                      automated
+
+            # For Renovate PRs: Commit additional changes directly to the PR branch
+            - name: Commit changes to Renovate PR
+              if: |
+                  github.event_name == 'pull_request' &&
+                  steps.check-changes.outputs.has_changes == 'true'
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add -A
+                  git commit -m "chore: update manifest version test fixtures and changeset" || echo "No changes to commit"
+                  git push
+
+    # Build and test job - runs after update if there were changes
+    build-and-test:
+        name: Build and Test
+        needs: check-and-update
+        if: |
+            needs.check-and-update.result == 'success' &&
+            (needs.check-and-update.outputs.updated == 'true' ||
+             github.event_name == 'pull_request')
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.event_name == 'pull_request' && github.head_ref || 'chore/update-ui5-manifest' }}
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4.2.0
+              with:
+                  run_install: false
+
+            - name: Use Node.js 20.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 20.x
+                  cache: 'pnpm'
+
+            - name: Install pnpm modules
+              run: pnpm install --frozen-lockfile
+
+            - name: Build affected packages
+              run: |
+                  pnpm --filter @sap-ux/ui5-application-writer... build
+                  pnpm --filter @sap-ux/project-access... build
+                  pnpm --filter @sap-ux-private/preview-middleware-client... build
+
+            - name: Run tests for affected packages
+              run: |
+                  pnpm --filter @sap-ux/ui5-application-writer test
+                  pnpm --filter @sap-ux/project-access test
+                  pnpm --filter @sap-ux-private/preview-middleware-client test
+
+            - name: Run integration tests
+              continue-on-error: true # Integration tests may fail due to external dependencies
+              run: |
+                  pnpm --filter @sap-ux-private/fiori-app-sub-generator test:integration
+
+    # Notification job
+    notify:
+        name: Send Notification
+        needs: [check-and-update, build-and-test]
+        if: |
+            always() &&
+            needs.check-and-update.outputs.updated == 'true' &&
+            github.event_name != 'pull_request'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Send Slack notification
+              if: env.SLACK_WEBHOOK_URL != ''
+              uses: slackapi/slack-github-action@v2
+              with:
+                  payload: |
+                      {"text": ":package: @ui5/manifest updated from ${{ needs.check-and-update.outputs.old_version }} to ${{ needs.check-and-update.outputs.new_version }}\n\nA PR has been created: https://github.com/${{ github.repository }}/pull?q=is%3Apr+head%3Achore%2Fupdate-ui5-manifest \n\n Please review and merge it before branching."}
+              env:
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

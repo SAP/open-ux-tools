@@ -32,6 +32,11 @@
 
     assigneesFromCodeOwners: true,
 
+    // Allow Renovate to continue updating PRs after GitHub Actions bot commits
+    // This is needed for the update-ui5manifest-version workflow which adds
+    // additional changes (test fixtures, changesets) to Renovate PRs
+    gitIgnoredAuthors: ['github-actions[bot]@users.noreply.github.com'],
+
     ignorePaths: [
         '**/templates/**',
         '**/test-input/**',
@@ -65,6 +70,16 @@
     ignoreDeps: ['@sap-ux-private/playwright'],
 
     packageRules: [
+        {
+            matchPackageNames: ['@ui5/manifest'],
+            groupName: 'dependencies [@ui5/manifest]',
+            semanticCommitType: 'fix',
+            commitMessagePrefix: 'fix(deps):',
+            labels: ['dependencies', '@ui5/manifest'],
+            assignees: ['devinea'],
+            automerge: false,
+            rebaseWhen: 'conflicted'
+        },
         {
             matchPackageNames: ['react{/,}**', 'react-dom{/,}**', '@types/react{/,}**', '@types/react-dom{/,}**'],
             groupName: 'dependencies [react]',
