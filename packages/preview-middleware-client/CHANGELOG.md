@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.17
+
+### Patch Changes
+
+- 40989a9: fix: Extension points under node 'element' not listed in Outline
+
 ## 0.18.16
 
 ### Patch Changes
