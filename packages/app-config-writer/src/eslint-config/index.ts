@@ -83,11 +83,16 @@ async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
  * @param fs - file system reference
  * @param config - the name of the SAP Fiori tools eslint plugin config to be used
  */
-async function addEslintConfig(basePath: string, fs: Editor, config = 'recommended'): Promise<void> {
+async function addEslintConfig(basePath: string, fs: Editor, config: string = 'recommended'): Promise<void> {
     //todo:
     // * mjs
-    // * different configs
     const templatePath = require.resolve('@sap-ux/ui5-application-writer/templates/optional/eslint/eslint.config.js');
-    const templateContent = await fs.read(templatePath);
+    let templateContent = await fs.read(templatePath);
+    if (config === 'recommended-for-s4hana') {
+        templateContent = templateContent.replace(
+            '...fioriTools.configs.recommended',
+            "...fioriTools.configs['recommended-for-s4hana']"
+        );
+    }
     await fs.write(join(basePath, 'eslint.config.mjs'), templateContent);
 }

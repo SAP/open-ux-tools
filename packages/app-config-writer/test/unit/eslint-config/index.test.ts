@@ -122,6 +122,17 @@ describe('generateEslintConfig', () => {
 
             expect(eslintConfigContent).toMatchSnapshot();
         });
+
+        test('should use recommended-for-s4hana config when specified', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
+            await generateEslintConfig(basePath, { logger: loggerMock, fs, config: 'recommended-for-s4hana' });
+
+            const eslintConfigPath = join(basePath, 'eslint.config.mjs');
+            const eslintConfigContent = fs.read(eslintConfigPath);
+
+            expect(eslintConfigContent).toContain("fioriTools.configs['recommended-for-s4hana']");
+            expect(eslintConfigContent).not.toContain('fioriTools.configs.recommended');
+        });
     });
 
     describe('File system handling', () => {
