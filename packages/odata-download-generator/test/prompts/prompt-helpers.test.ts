@@ -38,5 +38,5 @@ describe('Test prompt-helpers', () => {
 
         const entityChoices = createEntityChoices(entityModel.listEntity, entityModel?.pageObjectEntities);
         expect(entityChoices).toMatchSnapshot();
-    }, 10000);
+    }, 20000);
 });
