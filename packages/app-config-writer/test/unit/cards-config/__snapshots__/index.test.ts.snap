@@ -71,6 +71,11 @@ exports[`enableCardGenerator Valid LROP 2`] = `
     - name: preview-middleware
       afterMiddleware: compression
       configuration:
+        flp:
+          path: /test/flp.html
+          intent:
+            object: app
+            action: preview
         editors:
           cardGenerator:
             path: /test/flpCardGeneratorSandbox.html
@@ -250,6 +255,39 @@ server:
 "
 `;
 
+exports[`enableCardGenerator Valid LROP with existing flp config - should not modify flp configuration 1`] = `
+"specVersion: \\"2.4\\"
+metadata:
+  name: apps.v4.example
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: /test/flpSandbox.html
+        editors:
+          cardGenerator:
+            path: test/flpGeneratorSandboxTest.html
+    - name: sap-fe-mockserver
+      afterMiddleware: compression
+      configuration:
+        services:
+          - urlPath: '/sap/opu/odata4/mock'
+            metadataPath: './webapp/localService/metadata.xml'
+            generateMockData: true
+    - name: fiori-tools-proxy
+      afterMiddleware: sap-fe-mockserver
+      configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+"
+`;
+
 exports[`enableCardGenerator Valid LROP without cardGenerator config 1`] = `
 "{
   \\"name\\": \\"apps.v4.example\\",
@@ -298,6 +336,47 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: compression
       configuration:
+        flp:
+          path: /test/flp.html
+          intent:
+            object: app
+            action: preview
+        editors:
+          cardGenerator:
+            path: /test/flpCardGeneratorSandbox.html
+"
+`;
+
+exports[`enableCardGenerator Valid LROP without preview middleware - should add preview middleware with flp configuration 1`] = `
+"specVersion: \\"2.4\\"
+metadata:
+  name: apps.v4.example
+type: application
+server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      afterMiddleware: compression
+      configuration:
+        services:
+          - urlPath: '/sap/opu/odata4/mock'
+            metadataPath: './webapp/localService/metadata.xml'
+            generateMockData: true
+    - name: fiori-tools-proxy
+      afterMiddleware: sap-fe-mockserver
+      configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: /test/flp.html
+          intent:
+            object: app
+            action: preview
         editors:
           cardGenerator:
             path: /test/flpCardGeneratorSandbox.html

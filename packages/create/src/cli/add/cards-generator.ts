@@ -3,6 +3,7 @@ import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { FileName } from '@sap-ux/project-access';
+import { dirname, resolve, basename } from 'node:path';
 
 /**
  * Add the cards-editor command.
@@ -37,10 +38,23 @@ Example:
 async function addCardsGeneratorConfig(basePath: string, simulate: boolean, yamlPath: string): Promise<void> {
     const logger = getLogger();
     try {
-        logger.debug(`Called add cards-generator-config for path '${basePath}', simulate is '${simulate}'`);
-        await validateBasePath(basePath);
+        // If yamlPath contains a directory path (e.g., app/travel_processor/ui5.yaml),
+        // derive the basePath from it to support running from CAP project root
+        let effectiveBasePath = basePath;
+        let effectiveYamlPath = yamlPath;
 
-        const fs = await enableCardGeneratorConfig(basePath, yamlPath, logger);
+        if (yamlPath && yamlPath.includes('/')) {
+            // yamlPath is a relative path like "app/travel_processor/ui5.yaml"
+            const resolvedYamlPath = resolve(basePath, yamlPath);
+            effectiveBasePath = dirname(resolvedYamlPath);
+            effectiveYamlPath = basename(yamlPath);
+            logger.debug(`Derived app path from config: ${effectiveBasePath}`);
+        }
+
+        logger.debug(`Called add cards-generator-config for path '${effectiveBasePath}', simulate is '${simulate}'`);
+        await validateBasePath(effectiveBasePath);
+
+        const fs = await enableCardGeneratorConfig(effectiveBasePath, effectiveYamlPath, logger);
         if (!simulate) {
             fs.commit(() => logger.info(`Card Generator configuration written.`));
         } else {
