@@ -24,9 +24,15 @@ describe('Test prompt-helpers', () => {
         // Load the test app
         const appPath = join(__dirname, '../test-data/test-apps/travel');
         const appAccess = await createApplicationAccess(appPath);
+        if (appAccess) {
+            console.log('Created app access');
+        }
         // Usually loaded from backend, use local copy for testing
         const metadata = await readFile(join(appPath, '/webapp/localService/mainService/metadata.xml'), 'utf8');
         const specResult = await getSpecification(appAccess);
+        if (specResult) {
+            console.log('Got spec result');
+        }
         if (typeof specResult === 'string') {
             throw new Error(specResult);
         }
