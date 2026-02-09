@@ -14,11 +14,12 @@ import { join } from 'node:path';
  * @param options - options for the conversion
  * @param options.logger - logger to report info to the user
  * @param options.fs - file system reference
+ * @param options.config - the name of the SAP Fiori tools eslint plugin config to be used
  * @returns file system reference
  */
 export async function generateEslintConfig(
     basePath: string,
-    options: { logger?: ToolsLogger; fs?: Editor }
+    options: { logger?: ToolsLogger; fs?: Editor; config?: string }
 ): Promise<Editor> {
     const fs = options.fs ?? create(createStorage());
     const logger = options.logger;
@@ -27,7 +28,7 @@ export async function generateEslintConfig(
         throw new Error('The prerequisites are not met. For more information, see the log messages above.');
     }
     await updatePackageJson(basePath, fs);
-    await addEslintConfig(basePath, fs);
+    await addEslintConfig(basePath, fs, options?.config);
 
     return fs;
 }
@@ -80,9 +81,12 @@ async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
+ * @param config - the name of the SAP Fiori tools eslint plugin config to be used
  */
-async function addEslintConfig(basePath: string, fs: Editor): Promise<void> {
-    //todo: mjs
+async function addEslintConfig(basePath: string, fs: Editor, config = 'recommended'): Promise<void> {
+    //todo:
+    // * mjs
+    // * different configs
     const templatePath = require.resolve('@sap-ux/ui5-application-writer/templates/optional/eslint/eslint.config.js');
     const templateContent = await fs.read(templatePath);
     await fs.write(join(basePath, 'eslint.config.mjs'), templateContent);

@@ -2,6 +2,7 @@ import type { Command } from 'commander';
 import { generateEslintConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
+import { getProjectType } from '@sap-ux/project-access';
 
 /**
  * Add the "add eslint config" command to a passed command.
@@ -17,11 +18,15 @@ Example:
         )
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
+        .option(
+            '-c, --config',
+            'The name of the SAP Fiori tools eslint plugin configuration to be used (default is `recommended`).'
+        )
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
-            await addEslintConfig(path || process.cwd(), !!options.simulate);
+            await addEslintConfig(path || process.cwd(), !!options.simulate, options.config);
         });
 }
 
@@ -30,13 +35,14 @@ Example:
  *
  * @param basePath - path to application root
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
+ * @param config - the name of the SAP Fiori tools eslint plugin config to be used
  */
-async function addEslintConfig(basePath: string, simulate: boolean): Promise<void> {
+async function addEslintConfig(basePath: string, simulate: boolean, config = 'recommended'): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called add eslint-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
-        const fs = await generateEslintConfig(basePath, { logger });
+        const fs = await generateEslintConfig(basePath, { logger, config });
         await traceChanges(fs);
         if (!simulate) {
             fs.commit(() =>
@@ -48,5 +54,15 @@ async function addEslintConfig(basePath: string, simulate: boolean): Promise<voi
     } catch (error) {
         logger.error(`Error while executing add eslint-config '${(error as Error).message}'`);
         logger.debug(error as Error);
+    }
+    if ((await getProjectType(basePath)) !== 'EDMXBackend') {
+        logger.info(
+            `You can execute \`npm run lint --workspaces --if-present\` from the CAP project root to lint app.`
+        );
+        logger.info(
+            `You can add a command such as \`&& npm run lint --workspaces --if-present\` to an existing command in the CAP project root where linting is executed.
+            A complete command may look like:
+        //  \`"lint": "cds lint  && npm run lint --workspaces --if-present"\``
+        );
     }
 }

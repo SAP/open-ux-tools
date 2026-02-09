@@ -114,6 +114,7 @@ Example:
 Options:
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
+- `-c, --config` - The name of the SAP Fiori tools eslint plugin configuration to be used (default is `recommended`).
 
 --------------------------------
 

@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import * as appConfigWriter from '@sap-ux/app-config-writer';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as logger from '../../../../src/tracing/logger';
+import * as projectAccess from '@sap-ux/project-access';
 import { addAddEslintConfigCommand } from '../../../../src/cli/add/eslint-config';
 
 jest.mock('prompts');
@@ -13,6 +14,7 @@ describe('Test command add eslint-config', () => {
     let loggerMock: ToolsLogger;
     let fsMock: Editor;
     let logLevelSpy: jest.SpyInstance;
+    let getProjectTypeSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -34,6 +36,7 @@ describe('Test command add eslint-config', () => {
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
         jest.spyOn(appConfigWriter, 'generateEslintConfig').mockResolvedValue(fsMock);
+        getProjectTypeSpy = jest.spyOn(projectAccess, 'getProjectType').mockResolvedValue('CAPNodejs');
     });
 
     test('Test create-fiori add eslint-config <appRoot>', async () => {
@@ -75,5 +78,46 @@ describe('Test command add eslint-config', () => {
         expect(loggerMock.debug).toHaveBeenCalled();
         expect(loggerMock.error).toHaveBeenCalled();
         expect(fsMock.commit).not.toHaveBeenCalled();
+    });
+
+    describe('Project type specific behavior', () => {
+        test('Test CAP project (CAPNodejs) shows additional lint instructions', async () => {
+            // Mock setup
+            getProjectTypeSpy.mockResolvedValue('CAPNodejs');
+
+            // Test execution
+            const command = new Command('add');
+            addAddEslintConfigCommand(command);
+            await command.parseAsync(getArgv(['eslint-config', appRoot]));
+
+            // Result check
+            expect(getProjectTypeSpy).toHaveBeenCalledWith(appRoot);
+            expect(loggerMock.info).toHaveBeenCalledWith(
+                expect.stringContaining('npm run lint --workspaces --if-present')
+            );
+            expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('CAP project root'));
+            expect(fsMock.commit).toHaveBeenCalled();
+        });
+
+        test('Test EDMXBackend project does not show additional lint instructions', async () => {
+            // Mock setup
+            getProjectTypeSpy.mockResolvedValue('EDMXBackend');
+
+            // Test execution
+            const command = new Command('add');
+            addAddEslintConfigCommand(command);
+            await command.parseAsync(getArgv(['eslint-config', appRoot]));
+
+            // Result check
+            expect(getProjectTypeSpy).toHaveBeenCalledWith(appRoot);
+            expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('Eslint configuration written'));
+            // Should not show CAP-specific messages
+            const infoMockCalls = (loggerMock.info as jest.Mock).mock.calls;
+            const hasCapMessage = infoMockCalls.some((call) =>
+                call[0].includes('npm run lint --workspaces --if-present')
+            );
+            expect(hasCapMessage).toBe(false);
+            expect(fsMock.commit).toHaveBeenCalled();
+        });
     });
 });
