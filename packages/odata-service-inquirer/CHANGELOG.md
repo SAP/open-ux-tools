@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.17.1
+
+### Patch Changes
+
+- 1ad56d1: Fix for previous errors shown as info under services selection prompt
+- Updated dependencies [1ad56d1]
+    - @sap-ux/inquirer-common@0.11.1
+
 ## 2.17.0
 
 ### Minor Changes
