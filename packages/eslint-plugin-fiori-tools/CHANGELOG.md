@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.5.3
+
+### Patch Changes
+
+- 0e1d0f3: Remove statePreservationMode with auto fix option
+
 ## 9.5.2
 
 ### Patch Changes
