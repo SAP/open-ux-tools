@@ -69,7 +69,8 @@ export function getTemplatePath(relativeTemplatePath: string): string {
 export function toMtaModuleName(id: string): string {
     // Remove special characters not allowed in MTA module names
     // Keep alphanumeric, underscore, hyphen, and dot
-    return id.replace(/[`~!@#$%^&*£()|+=?;:'",.<>]/gi, '');
+    // Using replaceAll for global replacement (Sonar S7781)
+    return id.replaceAll(/[`~!@#$%^&*£()|+=?;:'",.<>]/gi, '');
 }
 
 /**
