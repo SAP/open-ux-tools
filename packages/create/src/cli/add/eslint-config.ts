@@ -11,7 +11,7 @@ import { validateBasePath } from '../../validation';
 export function addAddEslintConfigCommand(cmd: Command): void {
     cmd.command('eslint-config [path]')
         .description(
-            `Add a \`eslint\` configuration to a project including Fiori tools lint plugin.\n
+            `Add an \`eslint\` configuration to a project including SAP Fiori tools lint plugin (\`@sap-ux/eslint-plugin-fiori-tools\`).\n
 Example:
     \`npx --yes @sap-ux/create@latest add eslint-config\``
         )
