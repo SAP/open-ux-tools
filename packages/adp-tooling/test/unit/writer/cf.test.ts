@@ -78,7 +78,7 @@ describe('CF Writer', () => {
 
     describe('generateCf', () => {
         const mtaProjectDir = join(__dirname, '../../fixtures/mta-project');
-        const originalMtaYaml = fs.read(join(mtaProjectDir, 'mta.yaml'));
+        const originalMtaYaml = fs.read(join(mtaProjectDir, 'mta.yaml')) ?? '';
 
         const mockLogger = {
             debug: jest.fn()
@@ -88,15 +88,11 @@ describe('CF Writer', () => {
             await rimraf(outputDir);
         }, 10000);
 
-        afterAll(() => {
-            return new Promise((resolve) => {
-                // write out the files for debugging
-                if (debug) {
-                    fs.commit(resolve);
-                } else {
-                    resolve(true);
-                }
-            });
+        afterAll(async () => {
+            // write out the files for debugging
+            if (debug) {
+                await fs.commit();
+            }
         });
 
         beforeEach(() => {

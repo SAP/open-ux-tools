@@ -1,7 +1,15 @@
 module.exports = {
     transform: {
-        '^.+\\.ts$': 'ts-jest'
+        '^.+\.ts$': 'ts-jest',
+        '^.+\.m?js$': ['ts-jest', {
+            tsconfig: {
+                allowJs: true
+            }
+        }]
     },
+    transformIgnorePatterns: [
+        '<rootDir>.*/dist/'
+    ],
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
     coverageReporters: ['text', ['lcov', { projectRoot: '../../' }]],

@@ -102,13 +102,11 @@ describe('generate', () => {
         const fs = await generate(testPath, config, options);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                fsExtra.removeSync(testPath);
-                resolve(true);
-            }
-        });
+        if (debug) {
+            fs.commit();
+        } else {
+            fsExtra.removeSync(testPath);
+        }
+        return Promise.resolve();
     });
 });

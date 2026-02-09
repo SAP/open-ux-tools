@@ -3,7 +3,7 @@ import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { addCardsEditorConfigCommand } from '../../../../src/cli/add/cards-generator';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
-import type { Editor, create } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import * as projectAccess from '@sap-ux/project-access';
 
@@ -13,7 +13,7 @@ jest.mock('mem-fs-editor', () => {
         ...editor,
         create(store: Store) {
             const memFs: Editor = editor.create(store);
-            memFs.commit = jest.fn().mockImplementation((cb) => cb());
+            memFs.commit = jest.fn().mockResolvedValue(undefined);
             return memFs;
         }
     };

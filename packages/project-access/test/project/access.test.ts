@@ -5,7 +5,7 @@ import * as i18nMock from '../../src/project/i18n/write';
 import * as specMock from '../../src/project/specification';
 import * as capMock from '../../src/project/cap';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { promises } from 'node:fs';
 import { readFile, readJSON } from '../../src/file';
 

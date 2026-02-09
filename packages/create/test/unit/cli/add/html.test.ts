@@ -3,7 +3,7 @@ import * as preview from '@sap-ux/preview-middleware';
 import { addAddHtmlFilesCmd } from '../../../../src/cli/add/html';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
-import type { Editor, create } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, create } from 'mem-fs-editor';
 import { join } from 'node:path';
 
 jest.mock('mem-fs-editor', () => {
@@ -12,7 +12,7 @@ jest.mock('mem-fs-editor', () => {
         ...editor,
         create(store: Store) {
             const memFs: Editor = editor.create(store);
-            memFs.commit = jest.fn().mockImplementation((cb) => cb());
+            memFs.commit = jest.fn().mockResolvedValue(undefined);
             return memFs;
         }
     };

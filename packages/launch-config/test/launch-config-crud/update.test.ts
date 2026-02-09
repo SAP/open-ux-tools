@@ -7,7 +7,10 @@ import { TestPaths } from '../test-data/utils';
 import { parse } from 'jsonc-parser';
 import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
-function checkJSONComments(launchJsonString: string) {
+function checkJSONComments(launchJsonString: string | null) {
+    if (!launchJsonString) {
+        throw new Error('Failed to read launch.json');
+    }
     expect(launchJsonString).toMatch('// test json with comments - comment 1');
     for (let i = 2; i < 12; i++) {
         expect(launchJsonString).toMatch(`// comment ${i}`);
@@ -49,6 +52,9 @@ describe('update', () => {
             memFs
         );
         let launchJSONString = result.read(launchJSONPath);
+        if (!launchJSONString) {
+            throw new Error('Failed to read launch.json');
+        }
         let launchJSON = parse(launchJSONString);
         const expectedEnv = {
             'run.config': JSON.stringify({
@@ -88,6 +94,9 @@ describe('update', () => {
             memFs
         );
         launchJSONString = result.read(launchJSONPath);
+        if (!launchJSONString) {
+            throw new Error('Failed to read launch.json');
+        }
         launchJSON = parse(launchJSONString);
         const expectedEnvUpdate = {
             'run.config': JSON.stringify({
@@ -142,6 +151,9 @@ describe('update', () => {
             FIORI_TOOLS_UI5_VERSION: 'TEST_UI5_VERSION_UPDATED'
         };
         const launchJSONString = result.read(launchJSONPath);
+        if (!launchJSONString) {
+            throw new Error('Failed to read launch.json');
+        }
         const launchJSON = parse(launchJSONString);
         expect(launchJSON.configurations[6]).toStrictEqual({
             console: 'internalConsole',
@@ -183,6 +195,9 @@ describe('update', () => {
             FIORI_TOOLS_UI5_VERSION: 'TEST_UI5_VERSION_UPDATED2'
         };
         const launchJSONString = result.read(launchJSONPath);
+        if (!launchJSONString) {
+            throw new Error('Failed to read launch.json');
+        }
         const launchJSON = parse(launchJSONString);
         expect(launchJSON.configurations[7]).toStrictEqual({
             args: [],
@@ -224,6 +239,9 @@ describe('update', () => {
             })
         };
         const launchJSONString = result.read(launchJSONPath);
+        if (!launchJSONString) {
+            throw new Error('Failed to read launch.json');
+        }
         const launchJSON = parse(launchJSONString);
         expect(launchJSON.configurations[7]).toStrictEqual({
             args: ['--config', 'ui5-local.yaml', '--framework-version', 'snapshot'],

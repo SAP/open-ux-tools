@@ -54,7 +54,7 @@ describe('Test enhanceYaml()', () => {
 
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
 
-        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath)!);
         const mockserverConfig = ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
         expect(mockserverConfig?.configuration.services?.[0]).toStrictEqual({
             generateMockData: true,
@@ -78,7 +78,7 @@ describe('Test enhanceYaml()', () => {
         const fs = getFs({ [customManifestJsonPath]: mockManifestJson });
         await enhanceYaml(fs, basePath, customWebappPath);
 
-        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath)!);
         const mockserverConfig = ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
         expect(mockserverConfig?.configuration.services?.[0]).toStrictEqual({
             generateMockData: true,
@@ -118,7 +118,7 @@ describe('Test enhanceYaml()', () => {
         await enhanceYaml(fs, basePath, webappPath);
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
-        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath)!);
         expect(
             ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services?.[0]
         ).toStrictEqual({
@@ -143,7 +143,7 @@ describe('Test enhanceYaml()', () => {
         await enhanceYaml(fs, basePath, webappPath, { resolveExternalServiceReferences: { mainService: true } });
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
-        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath)!);
         expect(
             ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services?.[0]
         ).toStrictEqual({
@@ -169,7 +169,7 @@ describe('Test enhanceYaml()', () => {
         await enhanceYaml(fs, basePath, webappPath);
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
-        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath)!);
         // manifest without dataSources are used, so no services added
         expect(
             ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services
@@ -181,7 +181,7 @@ describe('Test enhanceYaml()', () => {
         await enhanceYaml(fs, basePath, webappPath);
         expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
         // additional check of urlPath, even if snapshot test get lightheartedly updated, the urlPath should remain stable.
-        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath)!);
         // manifest without dataSources are used, so no services added
         expect(
             ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.services

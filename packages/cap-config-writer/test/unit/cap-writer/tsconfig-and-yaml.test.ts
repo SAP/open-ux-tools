@@ -1,6 +1,6 @@
-import memFs from 'mem-fs';
+import { create as createStorage } from 'mem-fs';
 import { join } from 'node:path';
-import editor, { type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { updateTsConfig, updateStaticLocationsInApplicationYaml } from '../../../src/cap-writer/tsconfig-and-yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 
@@ -17,9 +17,9 @@ describe('Writing tsConfig and yaml files', () => {
 
     // beforeEach function to reset fs before each test
     beforeEach(() => {
-        const store = memFs.create();
+        const store = createStorage();
         // Create a new instance of the Editor class before each test
-        fs = editor.create(store);
+        fs = create(store);
     });
 
     test('should update tsConfig files correctly', async () => {

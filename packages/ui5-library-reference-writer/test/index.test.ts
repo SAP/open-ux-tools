@@ -15,15 +15,13 @@ describe('Test UI5 Library Reference Writer', () => {
     });
 
     afterAll(() => {
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                fsextra.removeSync(testOutputDir);
-                resolve(true);
-            }
-        });
+        // write out the files for debugging
+        if (debug) {
+            fs.commit();
+        } else {
+            fsextra.removeSync(testOutputDir);
+        }
+        return Promise.resolve();
     });
 
     it('should generate the UI5 library reference', async () => {

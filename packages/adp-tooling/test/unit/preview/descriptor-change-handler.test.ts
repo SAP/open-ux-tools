@@ -20,7 +20,7 @@ import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange, Descri
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
-import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
+import * as serviceWriter from '@sap-ux/odata-service-writer';
 import { addCustomSectionFragment } from '../../../src/preview/descriptor-change-handler';
 
 describe('change-handler', () => {

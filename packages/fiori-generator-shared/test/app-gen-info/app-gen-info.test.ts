@@ -1,6 +1,6 @@
 import path from 'node:path';
-import memFs from 'mem-fs';
-import memFsEditor from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 import { generateAppGenInfo } from '../../src/app-gen-info';
 import type { AppGenInfo } from '../../src/types';
 
@@ -14,8 +14,8 @@ function getLaunchText(): string {
 }
 
 describe('Readme file generation tests', () => {
-    const store = memFs.create();
-    const editor = memFsEditor.create(store);
+    const store = createStorage();
+    const editor = create(store);
 
     it('should generate README.md with the correct content including core and optional properties', () => {
         const readMePath = path.join(__dirname, '/README.md');

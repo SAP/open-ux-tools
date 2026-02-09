@@ -213,11 +213,17 @@ describe('CustomAction', () => {
             test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
                 await generateActionMenu(testDir, { name, target, settings, tabInfo }, fs);
                 let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!updatedManifest) {
+                    throw new Error('Failed to read manifest.json');
+                }
                 let result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
                 // Generate another action and check if new tab sizing recalculated correctly without passing tab size info
                 await generateActionMenu(testDir, { name: 'Second', target, settings }, fs);
                 updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!updatedManifest) {
+                    throw new Error('Failed to read manifest.json');
+                }
                 result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });

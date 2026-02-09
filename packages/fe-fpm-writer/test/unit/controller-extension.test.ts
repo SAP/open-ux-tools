@@ -325,7 +325,11 @@ describe('ControllerExtension', () => {
                     fs
                 );
                 // Check if new manifest entry created
-                let manifest = JSON.parse(fs.read(join(testDir, 'webapp/manifest.json')));
+                const manifestContent = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!manifestContent) {
+                    throw new Error('Failed to read manifest.json');
+                }
+                let manifest = JSON.parse(manifestContent);
                 expect(manifest?.['sap.ui5']?.['extends']?.['extensions']).toEqual({
                     'sap.ui.controllerExtensions': {
                         'sap.fe.templates.ListReport.ListReportController': {
@@ -359,7 +363,11 @@ describe('ControllerExtension', () => {
                 expect(copySpy).toHaveBeenCalledTimes(1);
                 expect(isCopyCalledWithOrigin(copySpy, 0, 'Controller.ts')).toBeTruthy();
                 expect(isCopyCalledWithTarget(copySpy, 0, getControllerPath(secondExtension, true))).toBeTruthy();
-                manifest = JSON.parse(fs.read(join(testDir, 'webapp/manifest.json')));
+                const manifestContent2 = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!manifestContent2) {
+                    throw new Error('Failed to read manifest.json');
+                }
+                manifest = JSON.parse(manifestContent2);
                 expect(manifest?.['sap.ui5']?.['extends']?.['extensions']).toEqual({
                     'sap.ui.controllerExtensions': {
                         'sap.fe.templates.ListReport.ListReportController': {
@@ -384,6 +392,9 @@ describe('ControllerExtension', () => {
                     fs
                 );
                 let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!updatedManifest) {
+                    throw new Error('Failed to read manifest.json');
+                }
                 let result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
                 // Generate another controller extension and check if new tab sizing recalculated correctly without passing tab size info
@@ -396,6 +407,9 @@ describe('ControllerExtension', () => {
                     fs
                 );
                 updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!updatedManifest) {
+                    throw new Error('Failed to read manifest.json');
+                }
                 result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });

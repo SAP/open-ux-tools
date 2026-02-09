@@ -19,6 +19,14 @@
     },
     "license": "Apache-2.0",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
     "scripts": {
         "build-esbuild-base": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --external:@sap-ux/fiori-docs-embeddings  --external:@sap-ux/store --main-fields=module,main src/index.ts",
         "build-dev": "pnpm run build-esbuild-base --sourcemap=inline",

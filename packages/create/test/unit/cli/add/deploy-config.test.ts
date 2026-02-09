@@ -39,7 +39,7 @@ describe('add/deploy-config', () => {
         logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
     });
 

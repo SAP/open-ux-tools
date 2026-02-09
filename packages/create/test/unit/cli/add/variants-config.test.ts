@@ -34,7 +34,7 @@ describe('Test command add variants-config', () => {
         fsMock = {
             dump: jest.fn(),
             exists: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         jest.spyOn(appConfigWriter, 'generateVariantsConfig').mockResolvedValue(fsMock);
         spawnSpy = jest.spyOn(childProcess, 'spawnSync');

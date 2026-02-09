@@ -108,7 +108,7 @@ export async function writeFlexChanges(
     for (const filePath in changeFiles) {
         let oldContent = '';
         if (existsSync(filePath)) {
-            oldContent = await fs.read(filePath) ?? '';
+            oldContent = (await fs.read(filePath)) ?? '';
         }
         const fileContent = JSON.stringify(changeFiles[filePath], undefined, 4);
         const isFileChanged = fileContent !== oldContent;

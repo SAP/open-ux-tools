@@ -1486,9 +1486,9 @@ describe('update', () => {
             false
         );
         // Check that YAML are not updated with backend and mockserver middlewares
-        expect(fs.read(join(testDir, 'ui5.yaml'))).toBe('');
-        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toBe('');
-        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toBe('');
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toBe(null);
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toBe(null);
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toBe(null);
         // Check that annotation and metadata files are created
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);

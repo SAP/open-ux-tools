@@ -1,7 +1,7 @@
 import path, { join, sep } from 'node:path';
 import * as childProcess from 'node:child_process';
 import { create as createStorage, type Store } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';

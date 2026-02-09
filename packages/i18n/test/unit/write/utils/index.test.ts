@@ -2,7 +2,7 @@ import { writeToExistingI18nPropertiesFile } from '../../../../src/write/utils';
 import { SapShortTextType } from '../../../../src';
 import * as utils from '../../../../src/utils';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 
 describe('index', () => {
     describe('writeToExistingI18nPropertiesFile', () => {

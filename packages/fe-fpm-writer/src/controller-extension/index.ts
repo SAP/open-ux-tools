@@ -225,7 +225,11 @@ export async function generateControllerExtension(
     const internalConfig = enhanceConfig(controllerConfig, manifestPath, manifest);
 
     // enhance manifest with view definition
-    const filledTemplate = render(fs.read(getTemplatePath('controller-extension/manifest.json')) ?? '', internalConfig, {});
+    const filledTemplate = render(
+        fs.read(getTemplatePath('controller-extension/manifest.json')) ?? '',
+        internalConfig,
+        {}
+    );
     extendJSON(fs, {
         filepath: manifestPath,
         content: filledTemplate,

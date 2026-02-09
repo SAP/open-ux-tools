@@ -1,5 +1,6 @@
 import path, { resolve } from 'node:path';
-import { create, type Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { renderFile } from 'ejs';
@@ -33,7 +34,6 @@ import {
     writeKeyUserChanges
 } from '../../../src/base/change-utils';
 import type { KeyUserChangeContent } from '@sap-ux/axios-extension';
-import { create as createStorage } from 'mem-fs';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),

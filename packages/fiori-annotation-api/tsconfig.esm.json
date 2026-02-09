@@ -1,0 +1,40 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist/esm",
+        "module": "ES2020",
+        "target": "ES2020",
+        "moduleResolution": "node"
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../cds-annotation-parser"
+        },
+        {
+            "path": "../cds-odata-annotation-converter"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../odata-annotation-core"
+        },
+        {
+            "path": "../odata-annotation-core-types"
+        },
+        {
+            "path": "../odata-entity-model"
+        },
+        {
+            "path": "../odata-vocabularies"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../xml-odata-annotation-converter"
+        }
+    ]
+}

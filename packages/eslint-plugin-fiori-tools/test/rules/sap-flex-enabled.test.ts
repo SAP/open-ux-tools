@@ -1,11 +1,24 @@
 import { RuleTester } from 'eslint';
 import flexEnabledRule from '../../src/rules/sap-flex-enabled';
 import { meta, languages } from '../../src/index';
-import { V4_MANIFEST_PATH } from '../test-helper';
+import { V4_MANIFEST_PATH, V4_MANIFEST, getManifestAsCode } from '../test-helper';
+import { ProjectContext } from '../../src/project-context/project-context';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
     language: '@sap-ux/eslint-plugin-fiori-tools/fiori'
+});
+
+// Clear cache at the start
+ProjectContext.clearCache();
+
+// Clear cache before and after each test to ensure clean state
+beforeEach(() => {
+    ProjectContext.clearCache();
+});
+
+afterEach(() => {
+    ProjectContext.clearCache();
 });
 
 ruleTester.run('sap-flex-enabled', flexEnabledRule, {

@@ -66,7 +66,7 @@ jest.mock('prompts');
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     generateChange: jest.fn().mockResolvedValue({
-        commit: jest.fn().mockImplementation((cb) => cb())
+        commit: jest.fn().mockResolvedValue(undefined)
     } as Partial<Editor> as Editor),
     getPromptsForNewModel: jest.fn()
 }));

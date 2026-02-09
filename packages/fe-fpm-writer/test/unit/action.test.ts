@@ -397,7 +397,7 @@ describe('CustomAction', () => {
                     });
                     if (typeof position === 'number' && appendLines !== undefined) {
                         const content = fs.read(existingPath);
-                        position += getEndOfLinesLength(appendLines, content);
+                        position += getEndOfLinesLength(appendLines, content ?? undefined);
                     }
                     // Create third action - append existing js file
                     const actionName = 'CustomAction2';
@@ -471,11 +471,17 @@ describe('CustomAction', () => {
             test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
                 await generateCustomAction(testDir, { name, target, settings, tabInfo }, fs);
                 let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!updatedManifest) {
+                    throw new Error('Failed to read manifest.json');
+                }
                 let result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
                 // Generate another action and check if new tab sizing recalculated correctly without passing tab size info
                 await generateCustomAction(testDir, { name: 'Second', target, settings }, fs);
                 updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!updatedManifest) {
+                    throw new Error('Failed to read manifest.json');
+                }
                 result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });

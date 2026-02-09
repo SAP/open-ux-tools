@@ -25,8 +25,9 @@ describe('ui5-test-writer - Integration tests', () => {
         return new Promise((resolve) => {
             // write out the files for debugging
             if (debug && fs) {
-                fs.commit(resolve);
+                fs.commit();
                 fs = undefined;
+                resolve(true);
             } else {
                 fs = undefined;
                 resolve(true);

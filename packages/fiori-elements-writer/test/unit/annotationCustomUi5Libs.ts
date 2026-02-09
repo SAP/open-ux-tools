@@ -51,7 +51,7 @@ describe('getAnnotationV4Libs', () => {
                 },
                 service: {
                     version: OdataVersion.v2,
-                    metadata: getTestData('annotation_v4', 'metadata')
+                    metadata: getTestData('annotation_v4', 'metadata')!
                 }
             })
         } as FioriElementsApp<LROPSettings>;

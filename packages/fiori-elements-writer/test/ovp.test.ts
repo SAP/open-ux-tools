@@ -26,10 +26,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         path: '/sap/opu/odata/sap/GWSAMPLE_BASIC',
         url: 'http://example.ovp.v2',
         version: OdataVersion.v2,
-        metadata: getTestData('gwsample_basic_v2', 'metadata'),
+        metadata: getTestData('gwsample_basic_v2', 'metadata')!,
         annotations: {
             technicalName: 'GWSAMPLE_BASIC',
-            xml: getTestData('gwsample_basic_v2', 'annotations')
+            xml: getTestData('gwsample_basic_v2', 'annotations')!
         }
     };
 
@@ -37,7 +37,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         path: '/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/',
         url: 'http://example.alp.v4',
         version: OdataVersion.v4,
-        metadata: getTestData('sales_order_manage_v4', 'metadata')
+        metadata: getTestData('sales_order_manage_v4', 'metadata')!
     };
 
     const configuration: Array<{ name: string; config: FioriElementsApp<OVPSettings> }> = [
@@ -154,16 +154,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise(async (resolve) => {
-            // write out the files for debugging
-            if (debug?.enabled) {
-                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        }).then(async () => {
-            await projectChecks(testPath, config, debug?.debugFull);
-        });
+        if (debug?.enabled) {
+            await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
+            await fs.commit();
+        }
+        await projectChecks(testPath, config, debug?.debugFull);
     });
 });

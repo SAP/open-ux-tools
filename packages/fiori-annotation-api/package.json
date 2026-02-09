@@ -11,8 +11,18 @@
     },
     "license": "Apache-2.0",
     "main": "dist/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "require": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
     "scripts": {
-        "compile": "tsc --build",
+        "compile": "tsc --build && tsc --build tsconfig.esm.json",
         "build": "npm-run-all clean compile",
         "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo  ./reports",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import { create, type MemFsEditor as Editor, CopyOptions } from 'mem-fs-editor';
+import type { CopyOptions, create, type MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getManifestContent } from './manifest';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';

@@ -250,6 +250,15 @@ export class ProjectContext {
     });
 
     /**
+     * Clears the file cache. Useful for testing.
+     */
+    public static clearCache(): void {
+        this.fileCache.clear();
+        this.instanceCache.clear();
+        this.updateCache.clear();
+    }
+
+    /**
      * Creates a ProjectContext for the given file path by parsing artifacts and building indexes.
      *
      * @param uri - The URI of the file to create the context for

@@ -15,15 +15,11 @@ describe('UI5 templates', () => {
         removeSync(outputDir); // even for in memory
     });
 
-    afterAll(() => {
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
+    afterAll(async () => {
+        // write out the files for debugging
+        if (debug) {
+            await fs.commit();
+        }
     });
 
     const ui5AppConfig = {

@@ -42,6 +42,7 @@ describe('findFiles', () => {
 
         test('Find files with modified existing files in mem-fs', async () => {
             const fs = create(createStorage());
+            fs.write(join(root, 'childB/child'), 'initial content');
             fs.append(join(root, 'childB/child'), '...');
             const result = await findFiles('child', root, [], fs);
             expect(result.length).toBe(4);

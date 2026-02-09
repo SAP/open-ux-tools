@@ -9,6 +9,14 @@
     "version": "0.1.141",
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
+    "types": "generators/app/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./generators/app/index.d.ts",
+            "require": "./generators/app/index.js"
+        },
+        "./package.json": "./package.json"
+    },
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",

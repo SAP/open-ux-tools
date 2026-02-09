@@ -295,7 +295,7 @@ describe('CustomAction', () => {
                     });
                     if (typeof position === 'number' && appendLines !== undefined) {
                         const content = fs.read(existingPath);
-                        position += getEndOfLinesLength(appendLines, content);
+                        position += getEndOfLinesLength(appendLines, content ?? undefined);
                     }
                     const fnName = 'onHandleSecondAction';
 
@@ -329,6 +329,9 @@ describe('CustomAction', () => {
                     fs
                 );
                 let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!updatedManifest) {
+                    throw new Error('Failed to read manifest.json');
+                }
                 let result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
                 // Generate another columns and check if new tab sizing recalculated correctly without passing tab size info
@@ -341,6 +344,9 @@ describe('CustomAction', () => {
                     fs
                 );
                 updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                if (!updatedManifest) {
+                    throw new Error('Failed to read manifest.json');
+                }
                 result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });

@@ -33,9 +33,9 @@ describe('ODataService templates', () => {
         }
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         if (debug) {
-            fs.commit(() => 0);
+            await fs.commit();
         }
     });
 

@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
-import type { Editor, create } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, create } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as adpTooling from '@sap-ux/adp-tooling';
@@ -17,7 +17,7 @@ import app from '../../../../../abap-deploy-config-sub-generator/src/app';
 
 jest.mock('prompts');
 
-const commitMock = jest.fn().mockImplementation((callback) => callback());
+const commitMock = jest.fn().mockResolvedValue(undefined);
 jest.mock('mem-fs-editor', () => {
     const editor = jest.requireActual<{ create: typeof create }>('mem-fs-editor');
     return {
@@ -112,7 +112,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
         logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
 
         genAdpNavSpy = jest.spyOn(adpTooling, 'generateInboundConfig').mockResolvedValue(fsMock);
