@@ -96,6 +96,11 @@ export default class extends DeploymentGenerator {
 
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();
+            // NOTE: This _initializing() method is called here when the generator is started as standalone generator.
+            // In the writing phase the same method is called when the generator is started as a sub-generator.
+            // This casues the adpProjectType field to be overriden with undefined in case the generator is started as
+            // sub-generator, that's why we leave the initialization out of the _initializing() method.
+            this.adpProjectType = await getExistingAdpProjectType(this.destinationRoot());
         }
     }
 
@@ -158,7 +163,6 @@ export default class extends DeploymentGenerator {
             this._processProjectConfig();
             await this._initBackendConfig();
             await this._processIndexHtmlConfig();
-            this.adpProjectType = await getExistingAdpProjectType(this.destinationRoot());
         } catch (e) {
             if (e === ERROR_TYPE.ABORT_SIGNAL) {
                 DeploymentGenerator.logger?.debug(
