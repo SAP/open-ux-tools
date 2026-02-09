@@ -1,5 +1,27 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.17.0
+
+### Minor Changes
+
+- a5ecd7f: Moved the minimal set of helper functions needed for getTableCapabilitiesByEntitySet into project-access, added that new capability aggregator, and refactored odata-service-inquirer and inquirer-common to use the new API.
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/inquirer-common@0.11.0
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-generator-shared@0.13.67
+    - @sap-ux/project-input-validator@0.6.52
+    - @sap-ux/telemetry@0.6.68
+
+## 2.16.11
+
+### Patch Changes
+
+- 14e914a: strip path from cloud system URLs during connection validation for reentrance ticket auth type
+
 ## 2.16.10
 
 ### Patch Changes
