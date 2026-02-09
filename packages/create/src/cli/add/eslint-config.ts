@@ -37,11 +37,13 @@ Example:
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param config - the name of the SAP Fiori tools eslint plugin config to be used
  */
-async function addEslintConfig(basePath: string, simulate: boolean, config = 'recommended'): Promise<void> {
+async function addEslintConfig(basePath: string, simulate: boolean, config?: string): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called add eslint-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
+        //todo: find out the most appropriate config value if not given as parameter instead of just using 'recommended' as default
+        config ??= 'recommended';
         const fs = await generateEslintConfig(basePath, { logger, config });
         await traceChanges(fs);
         if (!simulate) {

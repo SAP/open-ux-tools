@@ -101,11 +101,11 @@ describe('generateEslintConfig', () => {
     });
 
     describe('ESLint config file generation', () => {
-        test('should create eslint.config.mjs file', async () => {
+        test('should create eslint.config.js file', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
             await generateEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const eslintConfigPath = join(basePath, 'eslint.config.mjs');
+            const eslintConfigPath = join(basePath, 'eslint.config.js');
             const eslintConfigContent = fs.read(eslintConfigPath);
 
             expect(eslintConfigContent).toBeDefined();
@@ -117,7 +117,7 @@ describe('generateEslintConfig', () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
             await generateEslintConfig(basePath, { logger: loggerMock, fs });
 
-            const eslintConfigPath = join(basePath, 'eslint.config.mjs');
+            const eslintConfigPath = join(basePath, 'eslint.config.js');
             const eslintConfigContent = fs.read(eslintConfigPath);
 
             expect(eslintConfigContent).toMatchSnapshot();
@@ -127,7 +127,7 @@ describe('generateEslintConfig', () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
             await generateEslintConfig(basePath, { logger: loggerMock, fs, config: 'recommended-for-s4hana' });
 
-            const eslintConfigPath = join(basePath, 'eslint.config.mjs');
+            const eslintConfigPath = join(basePath, 'eslint.config.js');
             const eslintConfigContent = fs.read(eslintConfigPath);
 
             expect(eslintConfigContent).toContain("fioriTools.configs['recommended-for-s4hana']");

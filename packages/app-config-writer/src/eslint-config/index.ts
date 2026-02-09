@@ -27,7 +27,7 @@ export async function generateEslintConfig(
     if (!(await checkPrerequisites(basePath, fs, logger))) {
         throw new Error('The prerequisites are not met. For more information, see the log messages above.');
     }
-    await updatePackageJson(basePath, fs);
+    await updatePackageJson(basePath, fs, logger);
     await addEslintConfig(basePath, fs, options?.config);
 
     return fs;
@@ -63,16 +63,22 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
+ * @param logger - logger to report info to the user
  */
-async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
+async function updatePackageJson(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<void> {
     const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     packageJson.devDependencies ??= {};
     packageJson.devDependencies['eslint'] = '^9.0.0';
     packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = '^9.0.0';
     packageJson.scripts ??= {};
-    //todo: check if lint script already exists?
-    packageJson.scripts['lint'] = 'eslint .';
+    if (packageJson.scripts['lint']) {
+        logger?.warn(
+            `A 'lint' script already exists in package.json at path '${packageJsonPath}'. Adding lint script skipped.`
+        );
+    } else {
+        packageJson.scripts['lint'] = 'eslint .';
+    }
     fs.writeJSON(packageJsonPath, packageJson);
 }
 
@@ -84,8 +90,7 @@ async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
  * @param config - the name of the SAP Fiori tools eslint plugin config to be used
  */
 async function addEslintConfig(basePath: string, fs: Editor, config: string = 'recommended'): Promise<void> {
-    //todo:
-    // * mjs
+    //todo: use mjs instead of js
     const templatePath = require.resolve('@sap-ux/ui5-application-writer/templates/optional/eslint/eslint.config.js');
     let templateContent = await fs.read(templatePath);
     if (config === 'recommended-for-s4hana') {
@@ -94,5 +99,5 @@ async function addEslintConfig(basePath: string, fs: Editor, config: string = 'r
             "...fioriTools.configs['recommended-for-s4hana']"
         );
     }
-    await fs.write(join(basePath, 'eslint.config.mjs'), templateContent);
+    await fs.write(join(basePath, 'eslint.config.js'), templateContent);
 }
