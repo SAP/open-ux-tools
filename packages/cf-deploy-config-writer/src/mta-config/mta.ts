@@ -1043,7 +1043,7 @@ export class MtaConfig {
         if (!this.resources.has(ManagedAppFront)) {
             await this.addAppFrontResource();
         }
-        
+
         if (!this.modules.has('com.sap.application.content:appfront')) {
             this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.AppFront }));
             const appHostName = this.resources.get(ManagedAppFront)?.name;
