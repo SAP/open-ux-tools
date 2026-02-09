@@ -1,5 +1,86 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.109
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/ui5-library-reference-inquirer@0.4.109
+    - @sap-ux/fiori-generator-shared@0.13.67
+    - @sap-ux/telemetry@0.6.68
+    - @sap-ux/ui5-library-reference-writer@0.2.45
+
+## 0.1.108
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/fiori-generator-shared@0.13.66
+    - @sap-ux/telemetry@0.6.67
+    - @sap-ux/ui5-library-reference-inquirer@0.4.108
+    - @sap-ux/ui5-library-reference-writer@0.2.44
+
+## 0.1.107
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.65
+- @sap-ux/telemetry@0.6.66
+- @sap-ux/ui5-library-reference-inquirer@0.4.107
+
+## 0.1.106
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.64
+- @sap-ux/telemetry@0.6.65
+- @sap-ux/ui5-library-reference-inquirer@0.4.106
+
+## 0.1.105
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-library-reference-inquirer@0.4.105
+    - @sap-ux/telemetry@0.6.64
+    - @sap-ux/ui5-library-reference-writer@0.2.43
+
+## 0.1.104
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/ui5-library-reference-inquirer@0.4.104
+    - @sap-ux/fiori-generator-shared@0.13.62
+    - @sap-ux/telemetry@0.6.63
+
+## 0.1.103
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-generator-shared@0.13.61
+    - @sap-ux/telemetry@0.6.62
+    - @sap-ux/ui5-library-reference-inquirer@0.4.103
+    - @sap-ux/ui5-library-reference-writer@0.2.42
+
+## 0.1.102
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.60
+- @sap-ux/ui5-library-reference-inquirer@0.4.102
+- @sap-ux/project-access@1.34.4
+- @sap-ux/telemetry@0.6.61
+- @sap-ux/ui5-library-reference-writer@0.2.41
+
 ## 0.1.101
 
 ### Patch Changes

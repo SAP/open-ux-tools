@@ -1,5 +1,53 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.42.3
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/fiori-annotation-api@0.9.10
+
+## 0.42.2
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/fiori-annotation-api@0.9.9
+
+## 0.42.1
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/fiori-annotation-api@0.9.8
+
+## 0.42.0
+
+### Minor Changes
+
+- 8064811: feat(fpm-writer): Form building block
+
+## 0.41.6
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-annotation-api@0.9.7
+
+## 0.41.5
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/fiori-annotation-api@0.9.6
+    - @sap-ux/project-access@1.34.4
+
 ## 0.41.4
 
 ### Patch Changes
