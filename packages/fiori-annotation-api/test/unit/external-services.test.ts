@@ -1,4 +1,4 @@
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { promises } from 'node:fs';
 
 import { createElementNode, Range, Edm, Location } from '@sap-ux/odata-annotation-core-types';
@@ -9,6 +9,8 @@ import type { Editor } from 'mem-fs-editor';
 import { pathFromUri } from '../../src/utils/path';
 import { PROJECTS } from './projects';
 import { testRead } from './fiori-service.test';
+import { ValueListReference } from '../../src/types/adapter';
+import { fileURLToPath } from 'node:url';
 
 describe('external service loading', () => {
     test('placeholder test', async () => {
@@ -96,6 +98,12 @@ describe('external service loading', () => {
         fsEditor.write(path, testData);
 
         const service = await testRead(PROJECTS.V4_XML_START.root, [], undefined, fsEditor);
+        const result = service.getExternalServices() as Map<string, ValueListReference[]>;
+        result.forEach((entry) => {
+            entry.forEach((valueListReference) => {
+                valueListReference.location.uri = relative(__dirname, fileURLToPath(valueListReference.location.uri));
+            });
+        });
         expect(service.getExternalServices()).toMatchSnapshot();
     });
 });

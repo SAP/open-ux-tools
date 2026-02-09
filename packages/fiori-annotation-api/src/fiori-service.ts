@@ -249,8 +249,7 @@ export class FioriAnnotationService {
     }
 
     /**
-     *
-     * @returns
+     * @returns Returns a map with value list references per external service URI.
      */
     public getExternalServices(): Map<string, ValueListReference[]> {
         return this.adapter.getValueListReferences();

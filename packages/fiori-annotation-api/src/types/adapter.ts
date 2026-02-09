@@ -42,8 +42,6 @@ export interface AnnotationServiceAdapter {
     ): Promise<ValidationResultType> | ValidationResultType;
     /**
      *
-     * @param uri
-     * @param data
      */
     syncExternalService(uri: string, data: string, localFilePath: string): void;
     getExternalServices(): {

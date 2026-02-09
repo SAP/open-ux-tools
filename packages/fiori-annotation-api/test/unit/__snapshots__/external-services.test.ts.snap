@@ -226,7 +226,7 @@ Map {
             "line": 652,
           },
         },
-        "uri": "file:///C:/SAPDevelop/UXTools/OpenUXTools/open-ux-tools/packages/fiori-annotation-api/test/data/v4-xml-start/webapp/localService/metadata.xml",
+        "uri": "..\\\\data\\\\v4-xml-start\\\\webapp\\\\localService\\\\metadata.xml",
       },
       "uris": Array [
         "../../../../srvd_f4/dmo/i_category/0001;ps='srvd-*dmo*sd_incidents_mdsk-0001';va='com.sap.gateway.srvd.dmo.sd_incidents_mdsk.v0001.et-*dmo*c_incidents_mdsk.category'/$metadata",
@@ -457,7 +457,7 @@ Map {
             "line": 17,
           },
         },
-        "uri": "file:///C:/SAPDevelop/UXTools/OpenUXTools/open-ux-tools/packages/fiori-annotation-api/test/data/v4-xml-start/webapp/annotations/annotation.xml",
+        "uri": "..\\\\data\\\\v4-xml-start\\\\webapp\\\\annotations\\\\annotation.xml",
       },
       "uris": Array [
         "../../../../srvd_f4/dmo/i_priority/0001;ps='srvd-*dmo*sd_incidents_mdsk-0001';va='com.sap.gateway.srvd.dmo.sd_incidents_mdsk.v0001.et-*dmo*c_incidents_mdsk.priority'/$metadata",

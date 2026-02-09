@@ -197,7 +197,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }
 
     /**
-     *
+     * @returns Returns compiled data of all external services.
      */
     public getExternalServices(): {
         uri: string;

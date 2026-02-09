@@ -431,7 +431,6 @@ export class MetadataService implements IMetadataService {
     }
 
     /**
-     *
      * @returns service id list
      */
     getServiceIds(): string[] {
