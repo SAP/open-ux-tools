@@ -94,7 +94,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     private readonly documents = new Map<string, Document>();
     private metadata: MetadataElement[] = [];
 
-    private setFileCache(fileCache: Map<string, string>) {
+    private setFileCache(fileCache: Map<string, string>): void {
         this.fileCache = fileCache;
     }
 
@@ -105,9 +105,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
      * @returns Compiled XML service.
      */
     public get compiledService(): CompiledService {
-        if (!this._compiledService) {
-            this._compiledService = this._getCompiledService();
-        }
+        this._compiledService ??= this._getCompiledService();
         return this._compiledService;
     }
     private set compiledService(v: CompiledService) {
@@ -175,10 +173,11 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }
 
     /**
+     * Refreshes internal data structures from the provided external service data.
      *
-     * @param uri
-     * @param data
-     * @param localFilePath
+     * @param uri - URI of the external service metadata.
+     * @param data - Content of the external service metadata file.
+     * @param localFilePath - Local file path of the external service metadata file.
      */
     public syncExternalService(uri: string, data: string, localFilePath: string): void {
         const { ast: metadataDocument, comments: metadataComments } = parseWithoutCache(data, true);
