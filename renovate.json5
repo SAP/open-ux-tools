@@ -76,7 +76,6 @@
             semanticCommitType: 'fix',
             commitMessagePrefix: 'fix(deps):',
             labels: ['dependencies', '@ui5/manifest'],
-            assignees: ['devinea'],
             automerge: false,
             rebaseWhen: 'conflicted'
         },
