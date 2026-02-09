@@ -151,10 +151,10 @@ describe('ConfigPrompter Integration Tests', () => {
     });
 
     describe('General', () => {
-        it('should return four prompts with correct names', () => {
+        it('should return prompts with correct names', () => {
             const prompts = configPrompter.getPrompts();
 
-            expect(prompts).toHaveLength(10);
+            expect(prompts).toHaveLength(11);
             const names = prompts.map((p) => p.name);
 
             names.map((name) => {

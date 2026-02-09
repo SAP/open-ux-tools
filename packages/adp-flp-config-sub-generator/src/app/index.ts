@@ -461,7 +461,7 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @throws {Error} If the project is not supported or not cloud ready.
      */
     private async _validateCloudProject(): Promise<void> {
-        const projectType = await this._getProjectType();
+        const projectType = await getExistingAdpProjectType(this.projectRootPath);
         if (projectType !== AdaptationProjectType.CLOUD_READY) {
             this._abortExecution(t('error.projectNotCloudReady'));
         }
