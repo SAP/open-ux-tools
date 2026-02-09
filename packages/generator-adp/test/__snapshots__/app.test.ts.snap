@@ -328,12 +328,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - test-app-id.zip
-          name: test-app-id
+            - app.variant.zip
+          name: app.variant
           target-path: resources/
-  - name: test-app-id
+  - name: app.variant
     type: html5
-    path: test-app-id
+    path: app.variant
     build-parameters:
       builder: custom
       commands:

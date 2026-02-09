@@ -21,7 +21,8 @@ import {
     isLoggedInCf,
     isMtaProject,
     loadApps,
-    loadCfConfig
+    loadCfConfig,
+    storeCredentials
 } from '@sap-ux/adp-tooling';
 import {
     getDefaultTargetFolder,
@@ -371,6 +372,10 @@ export default class extends Generator {
             if (this.isCfEnv) {
                 await this._generateAdpProjectArtifactsCF();
                 return;
+            }
+
+            if (this.configAnswers.storeCredentials) {
+                await storeCredentials(this.configAnswers, this.systemLookup, this.logger);
             }
 
             if (this.shouldCreateExtProject) {

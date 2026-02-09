@@ -1,5 +1,90 @@
 # @sap-ux/preview-middleware
 
+## 0.23.113
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/adp-tooling@0.18.57
+    - @sap-ux/system-access@0.6.49
+
+## 0.23.112
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.56
+- @sap-ux/system-access@0.6.49
+
+## 0.23.111
+
+### Patch Changes
+
+- Updated dependencies [df61c3a]
+    - @sap-ux/adp-tooling@0.18.55
+
+## 0.23.110
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.54
+- @sap-ux/system-access@0.6.48
+
+## 0.23.109
+
+### Patch Changes
+
+- Updated dependencies [8a56942]
+    - @sap-ux/adp-tooling@0.18.53
+
+## 0.23.108
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/adp-tooling@0.18.52
+    - @sap-ux/system-access@0.6.47
+
+## 0.23.107
+
+### Patch Changes
+
+- f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
+- Updated dependencies [f1e6ed6]
+    - @sap-ux/adp-tooling@0.18.51
+
+## 0.23.106
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/system-access@0.6.47
+    - @sap-ux/adp-tooling@0.18.50
+    - @sap-ux/btp-utils@1.1.7
+
+## 0.23.105
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/adp-tooling@0.18.49
+    - @sap-ux/system-access@0.6.46
+
+## 0.23.104
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/adp-tooling@0.18.48
+    - @sap-ux/system-access@0.6.45
+    - @sap-ux/btp-utils@1.1.6
+    - @sap-ux/project-access@1.34.4
+
 ## 0.23.103
 
 ### Patch Changes

@@ -1,17 +1,44 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
-import type { LinkerContext } from './types';
+import type { LinkerContext, ConfigurationBase } from './types';
 import { getParsedServiceByName } from '../utils';
 import type { ParsedService } from '../parser';
 
 import type { AnnotationNode, TableNode, TableSectionNode } from './annotations';
 import { collectSections, collectTables } from './annotations';
 
+export interface FlexibleColumnLayoutSettings {
+    defaultTwoColumnLayoutType: string;
+    defaultThreeColumnLayoutType: string;
+}
+
+export type TableColumnVerticalAlignmentValues = 'Bottom' | 'Middle' | 'Top';
 export interface ApplicationSetting {
     createMode: string;
+    statePreservationMode: string;
+    flexibleColumnLayout: FlexibleColumnLayoutSettings;
+    tableColumnVerticalAlignment: TableColumnVerticalAlignmentValues;
 }
 export interface PageSetting {
     createMode: string;
 }
+
+export type OrphanSection = ConfigurationBase<'orphan-section', TableSettings>;
+export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
+export type Section = TableSection | OrphanSection;
+
+export interface TableSettings {
+    createMode: string;
+    tableType: string;
+    copy: boolean;
+}
+
+export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
+export type Table = AnnotationBasedNode<TableNode, TableSettings>;
+
+export type Node = Section | Table | OrphanTable;
+export type NodeLookup<T extends Node> = {
+    [K in T['type']]?: Extract<T, { type: K }>[];
+};
 
 export interface LinkedFeV2App extends ConfigurationBase<'fe-v2', ApplicationSetting> {
     pages: FeV2PageType[];
@@ -46,6 +73,7 @@ export interface AnnotationBasedNode<T extends AnnotationNode, Configuration ext
 
 const createModeValues = ['creationRows', 'creationRowsHiddenInEditMode', 'newPage'];
 const tableTypeValues = ['Table', 'ResponsiveTable', 'AnalyticalTable', 'GridTable'];
+const statePreservationModeValues = ['persistence', 'discovery'];
 
 /**
  * Creates a configuration key from an annotation path
@@ -236,45 +264,6 @@ function createPageConfiguration(path: string[], name: string, createMode: strin
     };
 }
 
-export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
-    type: T;
-    annotation?: unknown;
-    configuration: {
-        [K in keyof Configuration]: {
-            /**
-             * All possible supported configuration values. Empty means dynamic value resolved by framework at runtime.
-             */
-            values: Configuration[K][];
-            /**
-             * Actual value as defined in the manifest file.
-             */
-            valueInFile?: Configuration[K];
-            /**
-             * Absolute path in manifest where this configuration is defined.
-             */
-            configurationPath: string[];
-        };
-    };
-}
-
-export type OrphanSection = ConfigurationBase<'orphan-section', TableSettings>;
-export type TableSection = AnnotationBasedNode<TableSectionNode, {}, Table>;
-export type Section = TableSection | OrphanSection;
-
-export interface TableSettings {
-    createMode: string;
-    tableType: string;
-    copy: boolean;
-}
-
-export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
-export type Table = AnnotationBasedNode<TableNode, TableSettings>;
-
-export type Node = Section | Table | OrphanTable;
-export type NodeLookup<T extends Node> = {
-    [K in T['type']]?: Extract<T, { type: K }>[];
-};
-
 /**
  * Links Fiori Elements v2 application structure.
  * Processes application settings and pages to create a linked model.
@@ -285,7 +274,7 @@ export type NodeLookup<T extends Node> = {
 export function runFeV2Linker(context: LinkerContext): LinkedFeV2App {
     const manifest = context.app.manifestObject;
     const config = manifest['sap.ui.generic.app'];
-    const linkedApp = linkApplicationSettings(config ?? {});
+    const linkedApp = linkApplicationSettings(context);
     const service = getParsedServiceByName(context.app);
     if (!service) {
         return linkedApp;
@@ -326,10 +315,12 @@ interface ManifestPageSettings {
 
 interface ManifestApplicationSettings {
     settings?: {
+        tableColumnVerticalAlignment?: TableColumnVerticalAlignmentValues;
         tableSettings?: TableSettings;
+        statePreservationMode?: string;
+        flexibleColumnLayout?: FlexibleColumnLayoutSettings;
     };
 }
-
 /**
  * Links a list report page
  *
@@ -596,10 +587,16 @@ function linkObjectPageSections(
 /**
  * Links application-level settings from manifest configuration for Fiori Elements V2.
  *
- * @param config - The manifest application settings
+ * @param context - Linker context containing parsed application data
+ * @returns A linked Fiori Elements V2 application object
  */
-function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV2App {
+function linkApplicationSettings(context: LinkerContext): LinkedFeV2App {
+    const config: ManifestApplicationSettings = context.app.manifestObject['sap.ui.generic.app'] ?? {};
     const createMode = config.settings?.tableSettings?.createMode;
+    const statePreservationMode = config.settings?.statePreservationMode;
+    const twoColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultTwoColumnLayoutType;
+    const threeColumnLayoutValue = config.settings?.flexibleColumnLayout?.defaultThreeColumnLayoutType;
+    const tableColumnVerticalAlignmentValue = config.settings?.tableColumnVerticalAlignment;
     const linkedApp: LinkedFeV2App = {
         type: 'fe-v2',
         pages: [],
@@ -608,6 +605,28 @@ function linkApplicationSettings(config: ManifestApplicationSettings): LinkedFeV
                 values: createModeValues,
                 configurationPath: ['sap.ui.generic.app', 'settings', 'tableSettings', 'createMode'],
                 valueInFile: createMode
+            },
+            statePreservationMode: {
+                values: statePreservationModeValues,
+                configurationPath: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
+                valueInFile: statePreservationMode
+            },
+            flexibleColumnLayout: {
+                defaultTwoColumnLayoutType: {
+                    values: ['TwoColumnsBeginExpanded', 'TwoColumnsMidExpanded'],
+                    configurationPath: ['sap.ui.generic.app', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
+                    valueInFile: twoColumnLayoutValue
+                },
+                defaultThreeColumnLayoutType: {
+                    values: ['ThreeColumnsMidExpanded', 'ThreeColumnsEndExpanded'],
+                    configurationPath: ['sap.ui.generic.app', 'flexibleColumnLayout', 'defaultThreeColumnLayoutType'],
+                    valueInFile: threeColumnLayoutValue
+                }
+            },
+            tableColumnVerticalAlignment: {
+                values: ['Bottom', 'Middle', 'Top'],
+                configurationPath: ['sap.ui.generic.app', 'settings', 'tableColumnVerticalAlignment'],
+                valueInFile: tableColumnVerticalAlignmentValue
             }
         }
     };

@@ -1,5 +1,19 @@
 # @sap-ux/ui5-config
 
+## 0.29.15
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+
+## 0.29.14
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/yaml@0.17.4
+
 ## 0.29.13
 
 ### Patch Changes

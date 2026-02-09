@@ -6,7 +6,8 @@ import {
     getAdpConfig,
     ManifestService,
     getVariant,
-    isCFEnvironment
+    isCFEnvironment,
+    type AdpPreviewConfigWithTarget
 } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-service-writer';
@@ -56,7 +57,7 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         }
 
         const variant = await getVariant(basePath);
-        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
+        const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(basePath, yamlPath);
         const provider = await createAbapServiceProvider(
             target,
             {

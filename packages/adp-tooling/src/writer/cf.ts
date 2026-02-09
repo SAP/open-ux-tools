@@ -42,12 +42,12 @@ export async function generateCf(
     }
 
     const fullConfig = setDefaults(config);
-    const { app, cf, ui5 } = fullConfig;
+    const { app, cf, ui5, project } = fullConfig;
 
     await adjustMtaYaml(
         {
             projectPath: basePath,
-            moduleName: app.id,
+            adpProjectName: project.name,
             appRouterType: cf.approuter,
             businessSolutionName: cf.businessSolutionName ?? '',
             businessService: cf.businessService
