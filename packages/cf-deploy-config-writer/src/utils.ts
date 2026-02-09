@@ -69,8 +69,7 @@ export function getTemplatePath(relativeTemplatePath: string): string {
 export function toMtaModuleName(id: string): string {
     // Remove special characters not allowed in MTA module names
     // Keep alphanumeric, underscore, hyphen, and dot
-    // Using replaceAll for global replacement (Sonar S7781)
-    return id.replaceAll(/[`~!@#$%^&*£()|+=?;:'",.<>]/gi, '');
+    return id.replace(/[`~!@#$%^&*£()|+=?;:'",.<>]/gi, '');
 }
 
 /**
@@ -214,7 +213,7 @@ export async function generateSupportingConfig(
  */
 export function setMtaDefaults(config: CFBaseConfig): void {
     config.mtaPath = config.mtaPath.replace(/\/$/, '');
-    config.addConnectivityService ??= false;
+    config.addConnectivityService ||= false;
     config.mtaId = toMtaModuleName(config.mtaId);
 }
 

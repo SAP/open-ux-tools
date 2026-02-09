@@ -20,8 +20,7 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: NS,
-        ns: [NS],
-        showSupportNotice: false
+        ns: [NS]
     });
 }
 
@@ -37,7 +36,10 @@ export function t(key: string, options?: TOptions): string {
 }
 
 // Initialize i18n on module load
-// Errors are ignored since the writer will still work (fallback strings will be used)
-initI18n().catch(() => {
-    // Ignore any errors since the write will still work
+// Errors are silently caught as the module will still function with fallback strings
+initI18n().catch((error: Error) => {
+    // Log error to console for debugging but don't throw to avoid breaking the module
+    if (process.env.NODE_ENV !== 'production') {
+        console.warn('Failed to initialize i18n for cf-deploy-config-writer:', error.message);
+    }
 });

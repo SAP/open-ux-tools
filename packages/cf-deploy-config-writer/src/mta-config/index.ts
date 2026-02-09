@@ -72,8 +72,7 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
 export function toMtaModuleName(appId: string): string {
     // Remove special characters not allowed in MTA module names
     // MTA IDs must contain only alphanumeric characters, hyphens, underscores, and dots
-    // Using replaceAll for global replacement (Sonar S7781)
-    return appId.replaceAll(/[`~!@#$%^&*()_|+\-=?;:'",.<>]/gi, '').slice(0, MAX_MTA_ID_LENGTH);
+    return appId.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>]/gi, '').slice(0, MAX_MTA_ID_LENGTH);
 }
 
 /**
