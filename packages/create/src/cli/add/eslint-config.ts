@@ -39,7 +39,11 @@ async function addEslintConfig(basePath: string, simulate: boolean): Promise<voi
         const fs = await generateEslintConfig(basePath, { logger });
         await traceChanges(fs);
         if (!simulate) {
-            fs.commit(() => logger.info(`Eslint configuration written. Please make sure to install the new dependency by running 'npm install'.`));
+            fs.commit(() =>
+                logger.info(
+                    `Eslint configuration written. Please make sure to install the new dependency by running 'npm install'.`
+                )
+            );
         }
     } catch (error) {
         logger.error(`Error while executing add eslint-config '${(error as Error).message}'`);

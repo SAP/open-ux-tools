@@ -68,6 +68,7 @@ async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     packageJson.devDependencies ??= {};
     packageJson.devDependencies['eslint'] = '^9.0.0';
+    packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = '^9.0.0';
     packageJson.scripts ??= {};
     //todo: check if lint script already exists?
     packageJson.scripts['lint'] = 'eslint .';
