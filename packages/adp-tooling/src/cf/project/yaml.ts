@@ -32,6 +32,7 @@ interface AdjustMtaYamlParams {
     appRouterType: AppRouterType;
     businessSolutionName: string;
     businessService: string;
+    serviceKeys?: ServiceKeys[];
 }
 
 /**
@@ -101,6 +102,33 @@ export function getAppParamsFromUI5Yaml(projectPath: string): AppParamsExtended 
 }
 
 /**
+ * Extract endpoint destinations from service keys.
+ *
+ * @param {ServiceKeys[]} serviceKeys - The service keys.
+ * @returns {Array<{name: string; url: string}>} Array of endpoint destinations.
+ */
+function getServiceKeyDestinations(serviceKeys: ServiceKeys[]): Array<{ name: string; url: string }> {
+    const endpointDestinations: Array<{ name: string; url: string }> = [];
+
+    for (const key of serviceKeys) {
+        const endpoints = key.credentials?.endpoints;
+        if (endpoints && typeof endpoints === 'object') {
+            for (const endpointKey in endpoints) {
+                const endpoint = endpoints[endpointKey];
+                if (endpoint?.url && endpoint.destination) {
+                    endpointDestinations.push({
+                        name: endpoint.destination,
+                        url: endpoint.url
+                    });
+                }
+            }
+        }
+    }
+
+    return endpointDestinations;
+}
+
+/**
  * Adjusts the MTA YAML for a standalone approuter.
  *
  * @param {MtaYaml} yamlContent - The YAML content.
@@ -145,13 +173,15 @@ function adjustMtaYamlStandaloneApprouter(yamlContent: MtaYaml, projectName: str
  * @param {string} businessSolution - The business solution.
  * @param {string} businessService - The business service.
  * @param {string} timestamp - The timestamp.
+ * @param {ServiceKeys[]} serviceKeys - The service keys (optional).
  */
 function adjustMtaYamlManagedApprouter(
     yamlContent: MtaYaml,
     projectName: string,
     businessSolution: string,
     businessService: string,
-    timestamp: string
+    timestamp: string,
+    serviceKeys?: ServiceKeys[]
 ): void {
     const projectNameForXsSecurity = getProjectNameForXsSecurity(yamlContent, timestamp);
     const appRouterName = `${projectName}-destination-content`;
@@ -218,7 +248,17 @@ function adjustMtaYamlManagedApprouter(
                                 Authentication: 'OAuth2UserTokenExchange',
                                 ServiceInstanceName: `${businessService}`,
                                 ServiceKeyName: `${businessService}-key`
-                            }
+                            },
+                            // Add endpoint destinations from service keys
+                            ...(serviceKeys
+                                ? getServiceKeyDestinations(serviceKeys).map((endpoint) => ({
+                                      Name: endpoint.name,
+                                      URL: endpoint.url,
+                                      Authentication: 'OAuth2UserTokenExchange',
+                                      ServiceInstanceName: businessService,
+                                      ServiceKeyName: `${businessService}-key`
+                                  }))
+                                : [])
                         ],
                         existing_destinations_policy: 'update'
                     }
@@ -423,7 +463,14 @@ function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, busin
  * @returns {Promise<void>} The promise.
  */
 export async function adjustMtaYaml(
-    { projectPath, adpProjectName, appRouterType, businessSolutionName, businessService }: AdjustMtaYamlParams,
+    {
+        projectPath,
+        adpProjectName,
+        appRouterType,
+        businessSolutionName,
+        businessService,
+        serviceKeys
+    }: AdjustMtaYamlParams,
     memFs: Editor,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
@@ -453,7 +500,14 @@ export async function adjustMtaYaml(
     if (isStandaloneApprouter) {
         adjustMtaYamlStandaloneApprouter(yamlContent, mtaProjectName, businessService);
     } else {
-        adjustMtaYamlManagedApprouter(yamlContent, mtaProjectName, businessSolutionName, businessService, timestamp);
+        adjustMtaYamlManagedApprouter(
+            yamlContent,
+            mtaProjectName,
+            businessSolutionName,
+            businessService,
+            timestamp,
+            serviceKeys
+        );
     }
     adjustMtaYamlUDeployer(yamlContent, mtaProjectName, adpProjectName);
     adjustMtaYamlResources(yamlContent, mtaProjectName, timestamp, !isStandaloneApprouter);
@@ -462,7 +516,9 @@ export async function adjustMtaYaml(
     adjustMtaYamlFlpModule(yamlContent, mtaProjectName, businessService);
     await createServices(yamlContent, initialServices, timestamp, templatePathOverwrite, logger);
 
-    const updatedYamlContent = yaml.dump(yamlContent);
+    const updatedYamlContent = yaml.dump(yamlContent, {
+        lineWidth: -1 // Disable line wrapping to keep URLs on single lines
+    });
 
     memFs.write(mtaYamlPath, updatedYamlContent);
     logger?.debug(`Adjusted MTA YAML for project ${projectPath}`);

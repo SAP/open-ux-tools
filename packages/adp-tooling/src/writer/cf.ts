@@ -44,13 +44,21 @@ export async function generateCf(
     const fullConfig = setDefaults(config);
     const { app, cf, ui5, project } = fullConfig;
 
+    const serviceInfo = await getServiceInstanceKeys(
+        {
+            names: [cf.businessService]
+        },
+        logger
+    );
+
     await adjustMtaYaml(
         {
             projectPath: basePath,
             adpProjectName: project.name,
             appRouterType: cf.approuter,
             businessSolutionName: cf.businessSolutionName ?? '',
-            businessService: cf.businessService
+            businessService: cf.businessService,
+            serviceKeys: serviceInfo?.serviceKeys
         },
         fs,
         config.options?.templatePathOverwrite,

@@ -15,7 +15,7 @@ import {
     addBackendProxyMiddleware
 } from '../../../../src/cf/project/yaml';
 import { AppRouterType } from '../../../../src/types';
-import type { MtaYaml, CfUI5Yaml } from '../../../../src/types';
+import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types';
 import { createServices } from '../../../../src/cf/services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from '../../../../src/cf/project/yaml-loader';
 import { getBackendUrlsWithPaths } from '../../../../src/cf/app/discovery';
@@ -479,6 +479,197 @@ describe('YAML Project Functions', () => {
             expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
             expect(mockCreateServices).toHaveBeenCalled();
             expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+        });
+
+        test('should adjust MTA YAML with service keys for managed approuter', async () => {
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
+            const mockYamlContent: MtaYaml = {
+                '_schema-version': '3.2.0',
+                ID: 'test-project',
+                version: '1.0.0',
+                modules: [],
+                resources: []
+            };
+            const mockServiceKeys = [
+                {
+                    credentials: {
+                        uaa: { url: 'https://uaa.example.com' },
+                        uri: 'https://service.example.com',
+                        endpoints: {
+                            endpoint1: {
+                                url: 'https://endpoint1.example.com',
+                                destination: 'endpoint1-dest'
+                            },
+                            endpoint2: {
+                                url: 'https://endpoint2.example.com',
+                                destination: 'endpoint2-dest'
+                            }
+                        }
+                    }
+                }
+            ];
+
+            mockGetYamlContent.mockReturnValue(mockYamlContent);
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+            mockCreateServices.mockResolvedValue(undefined);
+
+            await adjustMtaYaml(
+                {
+                    projectPath,
+                    adpProjectName: 'test-adp-project',
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
+                },
+                mockMemFs,
+                undefined,
+                mockLogger
+            );
+
+            expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
+            expect(mockCreateServices).toHaveBeenCalled();
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+            const writtenContent = mockMemFs.write.mock.calls[0][1] as string;
+            expect(writtenContent).toContain('endpoint1-dest');
+            expect(writtenContent).toContain('https://endpoint1.example.com');
+            expect(writtenContent).toContain('endpoint2-dest');
+            expect(writtenContent).toContain('https://endpoint2.example.com');
+        });
+
+        test('should handle service keys with no endpoints', async () => {
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
+            const mockYamlContent: MtaYaml = {
+                '_schema-version': '3.2.0',
+                ID: 'test-project',
+                version: '1.0.0',
+                modules: [],
+                resources: []
+            };
+            const mockServiceKeys = [
+                {
+                    credentials: {
+                        uaa: { url: 'https://uaa.example.com' },
+                        uri: 'https://service.example.com',
+                        endpoints: {}
+                    }
+                }
+            ];
+
+            mockGetYamlContent.mockReturnValue(mockYamlContent);
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+            mockCreateServices.mockResolvedValue(undefined);
+
+            await adjustMtaYaml(
+                {
+                    projectPath,
+                    adpProjectName: 'test-adp-project',
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
+                },
+                mockMemFs,
+                undefined,
+                mockLogger
+            );
+
+            expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
+            expect(mockCreateServices).toHaveBeenCalled();
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+            const writtenContent = mockMemFs.write.mock.calls[0][1] as string;
+            expect(writtenContent).toContain('test-service-service_instance_name');
+            expect(writtenContent).not.toContain('endpoint');
+        });
+
+        test('should handle service keys with endpoints missing destination', async () => {
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
+            const mockYamlContent: MtaYaml = {
+                '_schema-version': '3.2.0',
+                ID: 'test-project',
+                version: '1.0.0',
+                modules: [],
+                resources: []
+            };
+            const mockServiceKeys = [
+                {
+                    credentials: {
+                        uaa: { url: 'https://uaa.example.com' },
+                        uri: 'https://service.example.com',
+                        endpoints: {
+                            endpoint1: {
+                                url: 'https://endpoint1.example.com'
+                            }
+                        }
+                    }
+                }
+            ];
+
+            mockGetYamlContent.mockReturnValue(mockYamlContent);
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+            mockCreateServices.mockResolvedValue(undefined);
+
+            await adjustMtaYaml(
+                {
+                    projectPath,
+                    adpProjectName: 'test-adp-project',
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
+                },
+                mockMemFs,
+                undefined,
+                mockLogger
+            );
+
+            expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
+            expect(mockCreateServices).toHaveBeenCalled();
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+            const writtenContent = mockMemFs.write.mock.calls[0][1] as string;
+            expect(writtenContent).toContain('test-service-service_instance_name');
+            expect(writtenContent).not.toContain('https://endpoint1.example.com');
+        });
+
+        test('should handle service keys without credentials', async () => {
+            const mtaYamlPath = join(projectPath, 'mta.yaml');
+            const mockYamlContent: MtaYaml = {
+                '_schema-version': '3.2.0',
+                ID: 'test-project',
+                version: '1.0.0',
+                modules: [],
+                resources: []
+            };
+            const mockServiceKeys = [
+                {
+                    credentials: null as any
+                }
+            ];
+
+            mockGetYamlContent.mockReturnValue(mockYamlContent);
+            mockGetProjectNameForXsSecurity.mockReturnValue('test_project_1234567890');
+            mockCreateServices.mockResolvedValue(undefined);
+
+            await adjustMtaYaml(
+                {
+                    projectPath,
+                    adpProjectName: 'test-adp-project',
+                    appRouterType: AppRouterType.MANAGED,
+                    businessSolutionName,
+                    businessService,
+                    serviceKeys: mockServiceKeys
+                },
+                mockMemFs,
+                undefined,
+                mockLogger
+            );
+
+            expect(mockGetYamlContent).toHaveBeenCalledWith(mtaYamlPath);
+            expect(mockCreateServices).toHaveBeenCalled();
+            expect(mockMemFs.write).toHaveBeenCalledWith(mtaYamlPath, expect.any(String));
+            const writtenContent = mockMemFs.write.mock.calls[0][1] as string;
+            expect(writtenContent).toContain('test-service-service_instance_name');
+            expect(writtenContent).not.toContain('endpoint');
         });
 
         test('should add required modules and move FLP module to last position', async () => {
