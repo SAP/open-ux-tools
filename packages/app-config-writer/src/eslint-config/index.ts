@@ -81,7 +81,8 @@ async function updatePackageJson(basePath: string, fs: Editor): Promise<void> {
  * @param fs - file system reference
  */
 async function addEslintConfig(basePath: string, fs: Editor): Promise<void> {
+    //todo: mjs
     const templatePath = require.resolve('@sap-ux/ui5-application-writer/templates/optional/eslint.config.js');
     const templateContent = await fs.read(templatePath);
-    await fs.write(basePath, templateContent);
+    await fs.write(join(basePath, 'eslint.config.mjs'), templateContent);
 }
