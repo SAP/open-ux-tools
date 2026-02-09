@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.35.0
+
+### Minor Changes
+
+- a5ecd7f: Moved the minimal set of helper functions needed for getTableCapabilitiesByEntitySet into project-access, added that new capability aggregator, and refactored odata-service-inquirer and inquirer-common to use the new API.
+
 ## 1.34.7
 
 ### Patch Changes
