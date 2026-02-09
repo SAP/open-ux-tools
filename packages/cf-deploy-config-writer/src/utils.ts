@@ -30,20 +30,21 @@ import {
     MbtPackage,
     MTABuildScript,
     CDSDKPackage,
-    CDSPackage
+    CDSPackage,
+    MAX_MTA_PREFIX_LENGTH
 } from './constants';
 import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types';
 
 let cachedDestinationsList: Destinations = {};
 
 /**
- *  Read manifest file for processing.
+ * Read manifest file for processing.
  *
  * @param manifestPath Path to the manifest file
  * @param fs reference to a mem-fs editor
  * @returns Manifest object
  */
-export async function readManifest(manifestPath: string, fs: Editor): Promise<Manifest> {
+export function readManifest(manifestPath: string, fs: Editor): Manifest {
     return fs.readJSON(manifestPath) as unknown as Manifest;
 }
 
@@ -59,12 +60,15 @@ export function getTemplatePath(relativeTemplatePath: string): string {
 }
 
 /**
- *  Convert an app name to an MTA ID that is suitable for CF deployment.
+ * Convert an app name to an MTA ID that is suitable for CF deployment.
+ * Removes special characters that are not allowed in MTA module names.
  *
  * @param id Name of the app, like `sap.ux.app`
- * @returns Name that's acceptable in an mta.yaml
+ * @returns Name that's acceptable in an mta.yaml (special characters removed)
  */
 export function toMtaModuleName(id: string): string {
+    // Remove special characters not allowed in MTA module names
+    // Keep alphanumeric, underscore, hyphen, and dot
     return id.replace(/[`~!@#$%^&*£()|+=?;:'",.<>]/gi, '');
 }
 
@@ -137,7 +141,7 @@ export function validateVersion(mtaVersion?: string): boolean {
  */
 export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Editor, addTenant: boolean = true): void {
     fs.copyTpl(getTemplatePath(`common/${FileName.XSSecurityJson}`), join(mtaPath, FileName.XSSecurityJson), {
-        id: mtaId.slice(0, 100),
+        id: mtaId.slice(0, MAX_MTA_PREFIX_LENGTH),
         addTenant
     });
 }
@@ -295,14 +299,15 @@ export async function alignCdsVersions(rootPath: string, fs: Editor): Promise<vo
  * @throws {Error} Throws an error with the provided error message concatenated with the original error if execution fails
  * @example
  * // Execute npm install in the project directory
- * await runCommand('/path/to/project', 'npm', ['install'], 'Failed to install dependencies:');
+ * await runCommand('/path/to/project', 'npm', ['install'], 'Failed to install dependencies');
  */
 export async function runCommand(cwd: string, cmd: string, args: string[], errorMsg: string): Promise<void> {
     const commandRunner = new CommandRunner();
     try {
         await commandRunner.run(cmd, args, { cwd });
-    } catch (e) {
-        throw new Error(`${errorMsg} ${e.message ?? e}`);
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error(`${errorMsg}: ${errorMessage}`);
     }
 }
 

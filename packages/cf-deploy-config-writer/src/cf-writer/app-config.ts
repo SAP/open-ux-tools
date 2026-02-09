@@ -213,10 +213,11 @@ async function processManifest(
     firstServicePathSegment: string | undefined;
     appId: string | undefined;
 }> {
-    const manifest = await readManifest(join(await getWebappPath(appPath), FileName.Manifest), fs);
-    const appId = manifest?.['sap.app']?.id ? toMtaModuleName(manifest?.['sap.app']?.id) : undefined;
+    const webappPath = await getWebappPath(appPath);
+    const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
+    const appId = manifest?.['sap.app']?.id ? toMtaModuleName(manifest['sap.app'].id) : undefined;
     const servicePath = manifest?.['sap.app']?.dataSources?.mainService?.uri;
-    const firstServicePathSegment = servicePath?.substring(0, servicePath?.indexOf('/', 1));
+    const firstServicePathSegment = servicePath?.substring(0, servicePath.indexOf('/', 1));
     return { servicePath, firstServicePathSegment, appId };
 }
 
@@ -401,10 +402,10 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
  */
 async function updateManifest(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const webappPath = await getWebappPath(cfConfig.appPath, fs);
-    const manifest = await readManifest(join(webappPath, FileName.Manifest), fs);
+    const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
     if (manifest && cfConfig.cloudServiceName) {
         const sapCloud = {
-            ...(manifest['sap.cloud'] || {}),
+            ...(manifest['sap.cloud'] ?? {}),
             public: true,
             service: cfConfig.cloudServiceName
         } as Manifest['sap.cloud'];
