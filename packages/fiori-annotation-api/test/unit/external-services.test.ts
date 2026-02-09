@@ -9,7 +9,7 @@ import type { Editor } from 'mem-fs-editor';
 import { pathFromUri } from '../../src/utils/path';
 import { PROJECTS } from './projects';
 import { testRead } from './fiori-service.test';
-import { ValueListReference } from '../../src/types/adapter';
+import type { ValueListReference } from '../../src/types/adapter';
 import { fileURLToPath } from 'node:url';
 
 describe('external service loading', () => {
