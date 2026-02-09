@@ -1,5 +1,18 @@
 # @sap-ux/ui5-info
 
+## 0.13.11
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+
+## 0.13.10
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+
 ## 0.13.9
 
 ### Patch Changes

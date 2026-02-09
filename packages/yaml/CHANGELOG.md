@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.17.4
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+
 ## 0.17.3
 
 ### Patch Changes

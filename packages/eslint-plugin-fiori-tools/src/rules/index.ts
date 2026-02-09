@@ -5,7 +5,10 @@ import {
     WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE,
     COPY_TO_CLIPBOARD,
     CREATION_MODE_FOR_TABLE,
-    STATE_PRESERVATION_MODE
+    ENABLE_EXPORT,
+    ENABLE_PASTE,
+    STATE_PRESERVATION_MODE,
+    TABLE_COLUMN_VERTICAL_ALIGNMENT
 } from '../language/diagnostics';
 
 // Import all rules
@@ -63,6 +66,9 @@ import requireWidthIncludingColumnHeader from './sap-width-including-column-head
 import creationModeForTable from './sap-creation-mode-for-table';
 import statePreservationMode from './sap-state-preservation-mode';
 import copyToClipboard from './sap-copy-to-clipboard';
+import enableExport from './sap-enable-export';
+import enablePaste from './sap-enable-paste';
+import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
 
 import type { Rule } from 'eslint';
 
@@ -118,6 +124,9 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [FLEX_ENABLED]: flexEnabledRule,
     [WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE]: requireWidthIncludingColumnHeader,
     [COPY_TO_CLIPBOARD]: copyToClipboard,
+    [ENABLE_EXPORT]: enableExport,
+    [ENABLE_PASTE]: enablePaste,
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
-    [STATE_PRESERVATION_MODE]: statePreservationMode
+    [STATE_PRESERVATION_MODE]: statePreservationMode,
+    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment
 };

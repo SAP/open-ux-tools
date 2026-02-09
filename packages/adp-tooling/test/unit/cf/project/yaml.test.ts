@@ -303,7 +303,7 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.STANDALONE,
                     businessSolutionName,
                     businessService
@@ -335,7 +335,7 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService
@@ -372,7 +372,7 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: null as unknown as AppRouterType,
                     businessSolutionName,
                     businessService
@@ -407,7 +407,7 @@ describe('YAML Project Functions', () => {
                 adjustMtaYaml(
                     {
                         projectPath,
-                        moduleName,
+                        adpProjectName: 'test-adp-project',
                         appRouterType: AppRouterType.STANDALONE,
                         businessSolutionName,
                         businessService
@@ -455,7 +455,7 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService
@@ -510,7 +510,7 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService
@@ -569,7 +569,7 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService
@@ -628,7 +628,7 @@ describe('YAML Project Functions', () => {
             await adjustMtaYaml(
                 {
                     projectPath,
-                    moduleName,
+                    adpProjectName: 'test-adp-project',
                     appRouterType: AppRouterType.MANAGED,
                     businessSolutionName,
                     businessService

@@ -268,8 +268,11 @@ export const configs: Record<string, Linter.Config[]> = {
                 '@sap-ux/fiori-tools/sap-flex-enabled': 'warn',
                 '@sap-ux/fiori-tools/sap-width-including-column-header': 'warn',
                 '@sap-ux/fiori-tools/sap-copy-to-clipboard': 'warn',
+                '@sap-ux/fiori-tools/sap-enable-export': 'warn',
+                '@sap-ux/fiori-tools/sap-enable-paste': 'warn',
                 '@sap-ux/fiori-tools/sap-creation-mode-for-table': 'warn',
-                '@sap-ux/fiori-tools/sap-state-preservation-mode': 'warn'
+                '@sap-ux/fiori-tools/sap-state-preservation-mode': 'warn',
+                '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn'
             }
         }
     ]
