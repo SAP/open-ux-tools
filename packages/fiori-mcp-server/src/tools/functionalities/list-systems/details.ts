@@ -3,7 +3,7 @@ import type { GetFunctionalityDetailsOutput } from '../../../types';
 export default {
     functionalityId: 'list-systems',
     name: 'List SAP Systems',
-    description: `Lists all available SAP systems configured for Fiori applications. 
+    description: `Lists all available SAP systems configured for SAP Fiori application or SAPUI5 Adaptation Project. 
     This functionality retrieves systems from either Business Application Studio (via destinations) or from the backend system store.
     Use this to get a list of available systems before generating a Fiori application.
     
