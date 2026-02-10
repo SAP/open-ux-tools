@@ -16,7 +16,7 @@ This document provides essential guidelines for AI-powered tools working with th
 
 ## Overview
 
-The SAP UX Tools is a monorepo containing 96+ packages for building SAP Fiori applications. The project uses:
+The SAP UX Tools is a monorepo for building SAP Fiori applications. All packages of this monorepo can be found in the `/packages` folder. The project uses:
 
 - **Package Manager**: pnpm 8.14.0 (required)
 - **Node Version**: >=20.x
@@ -128,10 +128,6 @@ pnpm lint:fix
 **Configuration:**
 - Root config: [eslint.config.js](eslint.config.js)
 - Prettier config: [.prettierrc.json](.prettierrc.json)
-- Print width: 120 characters
-- Tab width: 4 spaces
-- Single quotes: true
-- Trailing commas: never
 
 ### 5. Security Audit Resolution
 
@@ -165,6 +161,7 @@ pnpm audit
 - Use async/await over raw Promises
 - Leverage TypeScript features: generics, union types, type guards, etc.
 - Avoid `any` type - use `unknown` or proper types
+- **Avoid TypeScript enums** - prefer union types or const objects for better type safety and tree-shaking
 
 **TypeScript config** (from [tsconfig.json](tsconfig.json)):
 - Strict mode enabled
@@ -258,17 +255,14 @@ The CI/CD pipeline enforces these quality gates on all pull requests:
 Follow the conventions in [docs/Guidelines.md](docs/Guidelines.md):
 
 **TypeScript:**
-- Use ESLint and Prettier for consistent formatting
-- 120 character line length
-- 4 space indentation
-- Single quotes
-- No trailing commas
+- Use ESLint and Prettier for consistent formatting (see [.prettierrc.json](.prettierrc.json) for specific rules)
 
 **Testing:**
 - Use given/when/then pattern
 - Test behavior, not implementation
 - Test public interfaces with all possible inputs
 - Use Jest snapshots for file generation validation
+- **Cross-platform snapshots**: Snapshots must never contain file or folder paths with `/` or `\` to ensure tests run consistently across Linux, Mac, and Windows
 - Mock dependencies appropriately
 - Keep test scope focused
 
@@ -277,6 +271,54 @@ Follow the conventions in [docs/Guidelines.md](docs/Guidelines.md):
 - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `revert`, `WIP`
 - Max 100 characters for commit message
 - Use imperative mood: "Add feature" not "Added feature"
+
+### Code Reusability and Common Libraries
+
+**Always reuse existing functions from common libraries before implementing new ones.**
+
+**Common reusable libraries in this monorepo:**
+- `@sap-ux/project-access` - Project file system operations and Fiori project utilities
+- `@sap-ux/axios-extension` - Enhanced HTTP client with middleware support
+- `@sap-ux/logger` - Logging utilities and message handling
+- `@sap-ux/ui5-config` - UI5 configuration management
+- `@sap-ux/store` - Secure storage and credentials management
+- `@sap-ux/btp-utils` - SAP BTP platform utilities
+- And others in `/packages` folder
+
+**Guidelines:**
+
+1. **Search before implementing**: Before creating a new utility function, search existing common libraries to see if the functionality already exists
+   ```bash
+   # Search for existing functionality
+   pnpm --filter @sap-ux/project-access exec -- echo "Check package API"
+   # Or use grep to search for similar functions
+   ```
+
+2. **Refactor to common libraries**: When you find duplicate code across multiple packages:
+   - Identify the appropriate existing common library to extend
+   - Or create a new common library if the functionality doesn't fit existing ones
+   - Move the common function to the shared library
+   - Update all packages to use the shared implementation
+   - Ensure proper testing of the refactored code
+
+3. **Avoid circular dependencies**: When moving code to common libraries:
+   - Check dependency graphs before refactoring
+   - Common libraries should depend on other common libraries, not on higher-level packages
+   - Use the dependency hierarchy: utilities → core libraries → feature packages
+   - If circular dependencies are unavoidable, consider splitting the library into smaller focused packages
+
+4. **Create new common libraries when necessary**:
+   - If functionality doesn't fit existing libraries
+   - If adding it would create circular dependencies
+   - Name new libraries following the pattern: `@sap-ux/[descriptive-name]`
+   - Keep libraries focused on a single responsibility
+   - Document the library's purpose and API
+
+5. **Document library usage**: When using or extending common libraries:
+   - Update the library's README with new functionality
+   - Add JSDoc comments for all public APIs
+   - Include usage examples in documentation
+   - Update types for TypeScript consumers
 
 ### Internationalization (i18n)
 
@@ -347,6 +389,8 @@ Use `workspace:*` for internal dependencies:
 ### Unit Tests
 
 **Location**: `test/` or `test/unit/` within each package
+
+**Naming Convention**: Test files follow the pattern `*.test.ts`, typically matching the source file they test (e.g., `logger.ts` → `logger.test.ts`)
 
 **Framework**: Jest with ts-jest
 
@@ -576,6 +620,8 @@ pnpm outdated
 8. ❌ **Don't break semver** - Follow semantic versioning strictly
 9. ❌ **Don't commit generated files** - dist/, coverage/, etc. are gitignored
 10. ❌ **Don't reduce code coverage** - Maintain or improve 80% threshold
+11. ❌ **Don't duplicate code** - Reuse existing functions from common libraries like @sap-ux/project-access, @sap-ux/axios-extension, etc.
+12. ❌ **Don't create circular dependencies** - Follow proper dependency hierarchy when refactoring to common libraries
 
 ## Summary Checklist
 
