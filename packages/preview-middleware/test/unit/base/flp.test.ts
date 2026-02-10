@@ -64,11 +64,13 @@ describe('FlpSandbox', () => {
             )
         )
     } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
-    const mockWebappPath = join(tmpdir(), 'webapp');
+    const mockProjectRoot = tmpdir();
+    const mockWebappPath = join(mockProjectRoot, 'webapp');
     const mockUtils = {
         getProject() {
             return {
-                getSourcePath: () => mockWebappPath
+                getSourcePath: () => mockWebappPath,
+                getRootPath: () => mockProjectRoot
             };
         }
     } as unknown as MiddlewareUtils;

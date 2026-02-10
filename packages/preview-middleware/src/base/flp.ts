@@ -1025,8 +1025,7 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            // getSourcePath() returns the webapp path directly
-            const webappPath = this.utils.getProject().getSourcePath();
+            const webappPath = await getWebappPath(this.utils.getProject().getRootPath(), this.fs);
             const projectPath = dirname(webappPath);
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
@@ -1080,8 +1079,7 @@ export class FlpSandbox {
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            // getSourcePath() returns the webapp path directly
-            const webappPath = this.utils.getProject().getSourcePath();
+            const webappPath = await getWebappPath(this.utils.getProject().getRootPath(), this.fs);
             const i18nConfig = this.manifest['sap.app'].i18n;
             let i18nPath = 'i18n/i18n.properties';
             let fallbackLocale: string | undefined;
