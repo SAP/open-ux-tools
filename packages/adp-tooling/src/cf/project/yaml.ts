@@ -21,6 +21,7 @@ import { AppRouterType } from '../../types';
 import { createServices } from '../services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader';
 import { getBackendUrlsWithPaths } from '../app/discovery';
+import { getVariant } from '../../base/helper';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
@@ -541,40 +542,41 @@ export async function addServeStaticMiddleware(
             ui5Config.removeCustomMiddleware('fiori-tools-servestatic');
         }
 
+        const paths: Array<{ path: string; src: string; fallthrough: boolean }> = [];
+
+        // Add reusable library paths from ui5AppInfo.json if it exists
         const ui5AppInfoPath = path.join(basePath, 'ui5AppInfo.json');
-        if (!fs.existsSync(ui5AppInfoPath)) {
-            logger?.warn('ui5AppInfo.json not found in project root, skipping fiori-tools-servestatic configuration');
-            return;
+        if (fs.existsSync(ui5AppInfoPath)) {
+            const ui5AppInfoData = JSON.parse(fs.readFileSync(ui5AppInfoPath, 'utf-8')) as Record<string, unknown>;
+            const ui5AppInfo = ui5AppInfoData[Object.keys(ui5AppInfoData)[0]] as CfUi5AppInfo;
+
+            const reusableLibs =
+                ui5AppInfo.asyncHints?.libs?.filter(
+                    (lib) => lib.html5AppName && lib.url && typeof lib.url === 'object' && lib.url.url !== undefined
+                ) ?? [];
+
+            for (const lib of reusableLibs) {
+                const libName = String(lib.name);
+                const html5AppName = String(lib.html5AppName);
+                const resourcePath = '/resources/' + libName.replaceAll('.', '/');
+
+                paths.push({
+                    path: resourcePath,
+                    src: `./.adp/reuse/${html5AppName}`,
+                    fallthrough: false
+                });
+            }
+        } else {
+            logger?.warn('ui5AppInfo.json not found in project root');
         }
 
-        const ui5AppInfoData = JSON.parse(fs.readFileSync(ui5AppInfoPath, 'utf-8')) as Record<string, unknown>;
-        const ui5AppInfo = ui5AppInfoData[Object.keys(ui5AppInfoData)[0]] as CfUi5AppInfo;
-
-        const reusableLibs =
-            ui5AppInfo.asyncHints?.libs?.filter(
-                (lib) => lib.html5AppName && lib.url && typeof lib.url === 'object' && lib.url.url !== undefined
-            ) ?? [];
-
-        if (reusableLibs.length === 0) {
-            logger?.info(
-                'No reusable libraries found in ui5AppInfo.json, skipping fiori-tools-servestatic configuration'
-            );
-            return;
-        }
-
-        const paths = reusableLibs.map((lib) => {
-            const libName = String(lib.name);
-            const html5AppName = String(lib.html5AppName);
-            const resourcePath = '/resources/' + libName.replaceAll('.', '/');
-
-            return {
-                path: resourcePath,
-                src: `./.adp/reuse/${html5AppName}`,
-                fallthrough: false
-            };
+        const variant = await getVariant(basePath);
+        paths.push({
+            path: `/changes/${variant.id.replaceAll('.', '_')}`,
+            src: './webapp/changes',
+            fallthrough: true
         });
 
-        // Add the fiori-tools-servestatic configuration
         ui5Config.addCustomMiddleware([
             {
                 name: 'fiori-tools-servestatic',

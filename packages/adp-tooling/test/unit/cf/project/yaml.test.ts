@@ -38,6 +38,12 @@ jest.mock('../../../../src/cf/app/discovery', () => ({
     getBackendUrlsWithPaths: jest.fn()
 }));
 
+jest.mock('../../../../src/base/helper', () => ({
+    getVariant: jest.fn()
+}));
+
+import { getVariant } from '../../../../src/base/helper';
+
 const mockExistsSync = existsSync as jest.MockedFunction<typeof existsSync>;
 const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
 const mockCreateServices = createServices as jest.MockedFunction<typeof createServices>;
@@ -46,6 +52,7 @@ const mockGetProjectNameForXsSecurity = getProjectNameForXsSecurity as jest.Mock
     typeof getProjectNameForXsSecurity
 >;
 const mockGetBackendUrlsWithPaths = getBackendUrlsWithPaths as jest.MockedFunction<typeof getBackendUrlsWithPaths>;
+const mockGetVariant = getVariant as jest.MockedFunction<typeof getVariant>;
 
 describe('YAML Project Functions', () => {
     const mockLogger = {
@@ -897,6 +904,13 @@ describe('YAML Project Functions', () => {
 
             mockExistsSync.mockReturnValue(true);
             mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': ui5AppInfo }));
+            mockGetVariant.mockResolvedValue({
+                id: 'test.variant.id',
+                layer: 'CUSTOMER_BASE',
+                reference: 'com.sap.test.app',
+                namespace: 'apps/com.sap.test.app/appVariants/test.variant.id/',
+                content: []
+            });
 
             await addServeStaticMiddleware(basePath, mockUi5Config, mockLogger);
 
@@ -916,6 +930,11 @@ describe('YAML Project Functions', () => {
                                 path: '/resources/another/lib',
                                 src: './.adp/reuse/anotherlib',
                                 fallthrough: false
+                            },
+                            {
+                                path: '/changes/test_variant_id',
+                                src: './webapp/changes',
+                                fallthrough: true
                             }
                         ]
                     }
@@ -923,18 +942,84 @@ describe('YAML Project Functions', () => {
             ]);
         });
 
-        test('should skip configuration when ui5AppInfo.json does not exist', async () => {
-            mockExistsSync.mockReturnValue(false);
+        test('should add fiori-tools-servestatic middleware with changes path from manifest.appdescr_variant id', async () => {
+            const ui5AppInfo = {
+                asyncHints: {
+                    libs: [
+                        {
+                            name: 'my.reusable.lib',
+                            html5AppName: 'myreusablelib',
+                            url: { url: 'https://example.com/resources/my/reusable/lib' }
+                        }
+                    ]
+                }
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': ui5AppInfo }));
+            mockGetVariant.mockResolvedValue({
+                id: 'customer.app.variant',
+                layer: 'CUSTOMER_BASE',
+                reference: 'com.sap.test.app',
+                namespace: 'apps/com.sap.test.app/appVariants/customer.app.variant/',
+                content: []
+            });
 
             await addServeStaticMiddleware(basePath, mockUi5Config, mockLogger);
 
-            expect(mockLogger.warn).toHaveBeenCalledWith(
-                'ui5AppInfo.json not found in project root, skipping fiori-tools-servestatic configuration'
-            );
-            expect(mockUi5Config.addCustomMiddleware).not.toHaveBeenCalled();
+            expect(mockUi5Config.addCustomMiddleware).toHaveBeenCalledWith([
+                {
+                    name: 'fiori-tools-servestatic',
+                    beforeMiddleware: 'compression',
+                    configuration: {
+                        paths: [
+                            {
+                                path: '/resources/my/reusable/lib',
+                                src: './.adp/reuse/myreusablelib',
+                                fallthrough: false
+                            },
+                            {
+                                path: '/changes/customer_app_variant',
+                                src: './webapp/changes',
+                                fallthrough: true
+                            }
+                        ]
+                    }
+                }
+            ]);
         });
 
-        test('should skip configuration when no reusable libraries found', async () => {
+        test('should add changes path even when ui5AppInfo.json does not exist', async () => {
+            mockExistsSync.mockReturnValue(false);
+            mockGetVariant.mockResolvedValue({
+                id: 'customer.app.variant',
+                layer: 'CUSTOMER_BASE',
+                reference: 'com.sap.test.app',
+                namespace: 'apps/com.sap.test.app/appVariants/customer.app.variant/',
+                content: []
+            });
+
+            await addServeStaticMiddleware(basePath, mockUi5Config, mockLogger);
+
+            expect(mockLogger.warn).toHaveBeenCalledWith('ui5AppInfo.json not found in project root');
+            expect(mockUi5Config.addCustomMiddleware).toHaveBeenCalledWith([
+                {
+                    name: 'fiori-tools-servestatic',
+                    beforeMiddleware: 'compression',
+                    configuration: {
+                        paths: [
+                            {
+                                path: '/changes/customer_app_variant',
+                                src: './webapp/changes',
+                                fallthrough: true
+                            }
+                        ]
+                    }
+                }
+            ]);
+        });
+
+        test('should add changes path when no reusable libraries found', async () => {
             const ui5AppInfo = {
                 asyncHints: {
                     libs: [{ name: 'sap.m' }, { name: 'sap.ui.core' }]
@@ -943,24 +1028,43 @@ describe('YAML Project Functions', () => {
 
             mockExistsSync.mockReturnValue(true);
             mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': ui5AppInfo }));
+            mockGetVariant.mockResolvedValue({
+                id: 'customer.app.variant',
+                layer: 'CUSTOMER_BASE',
+                reference: 'com.sap.test.app',
+                namespace: 'apps/com.sap.test.app/appVariants/customer.app.variant/',
+                content: []
+            });
 
             await addServeStaticMiddleware(basePath, mockUi5Config, mockLogger);
 
-            expect(mockLogger.info).toHaveBeenCalledWith(
-                'No reusable libraries found in ui5AppInfo.json, skipping fiori-tools-servestatic configuration'
-            );
-            expect(mockUi5Config.addCustomMiddleware).not.toHaveBeenCalled();
+            expect(mockUi5Config.addCustomMiddleware).toHaveBeenCalledWith([
+                {
+                    name: 'fiori-tools-servestatic',
+                    beforeMiddleware: 'compression',
+                    configuration: {
+                        paths: [
+                            {
+                                path: '/changes/customer_app_variant',
+                                src: './webapp/changes',
+                                fallthrough: true
+                            }
+                        ]
+                    }
+                }
+            ]);
         });
 
-        test('should throw and warn on error', async () => {
+        test('should throw and warn on error when getVariant fails', async () => {
             mockExistsSync.mockReturnValue(true);
-            mockReadFileSync.mockImplementation(() => {
-                throw new Error('Read error');
-            });
+            mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': { asyncHints: { libs: [] } } }));
+            mockGetVariant.mockRejectedValue(new Error('Variant read error'));
 
-            await expect(addServeStaticMiddleware(basePath, mockUi5Config, mockLogger)).rejects.toThrow('Read error');
+            await expect(addServeStaticMiddleware(basePath, mockUi5Config, mockLogger)).rejects.toThrow(
+                'Variant read error'
+            );
             expect(mockLogger.warn).toHaveBeenCalledWith(
-                'Could not add fiori-tools-servestatic configuration: Read error'
+                'Could not add fiori-tools-servestatic configuration: Variant read error'
             );
         });
     });
