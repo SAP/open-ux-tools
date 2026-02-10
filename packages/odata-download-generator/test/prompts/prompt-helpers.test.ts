@@ -38,7 +38,7 @@ describe('Test prompt-helpers', () => {
         const time3 = Date.now();
         console.log('Time 3:', time3 - time2);
         const logger = new ToolsLogger({logLevel: LogLevel.Debug, transports: [new ConsoleTransport()]})
-        const specResult = await await getSpecificationModuleFromCache(appAccess.app.appRoot, { logger });
+        const specResult = await getSpecificationModuleFromCache(appAccess.app.appRoot, { logger });
         const time4 = Date.now();
         console.log('Time 4:', time4 - time3);
         if (specResult) {
