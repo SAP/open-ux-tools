@@ -1,5 +1,14 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.62
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+- Updated dependencies [2bffca7]
+    - @sap-ux/ui5-application-writer@1.7.7
+    - @sap-ux/ui5-test-writer@0.7.65
+
 ## 2.8.61
 
 ### Patch Changes
