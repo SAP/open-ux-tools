@@ -1,5 +1,26 @@
 # @sap-ux/preview-middleware
 
+## 0.23.116
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.59
+
+## 0.23.115
+
+### Patch Changes
+
+- 40989a9: fix: Extension points under node 'element' not listed in Outline
+
+## 0.23.114
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/adp-tooling@0.18.58
+    - @sap-ux/system-access@0.6.49
+
 ## 0.23.113
 
 ### Patch Changes
