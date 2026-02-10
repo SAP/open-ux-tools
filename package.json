@@ -72,21 +72,25 @@
     "engines": {
         "npm": "please-use-pnpm",
         "yarn": "please-use-pnpm",
-        "pnpm": "8.14.0",
+        "pnpm": "10.29.2",
         "node": ">=20.x"
     },
-    "packageManager": "pnpm@8.14.0",
+    "packageManager": "pnpm@10.29.2",
     "pnpm": {
         "overrides": {
             "@storybook/manager-api>store2": "2.14.4",
             "axios@<1.12.0": "^1.12.2",
             "esbuild@<=0.24.2": ">=0.25.0",
+            "enzyme>cheerio": "1.0.0-rc.12",
             "fast-xml-parser@>=4.3.6 <=5.3.3": ">=5.3.4",
             "lodash@>=4.0.0 <=4.17.22": ">=4.17.23",
             "mta-local": "1.0.4",
             "router>path-to-regexp": "0.1.12",
             "router@^2.0.0>path-to-regexp": "8.2.0",
             "tar@<7.5.7": ">=7.5.7"
-        }
+        },
+        "onlyBuiltDependencies": [
+            "sharp"
+        ]
     }
 }

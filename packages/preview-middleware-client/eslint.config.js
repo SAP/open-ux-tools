@@ -1,5 +1,3 @@
-const jsdoc = require('eslint-plugin-jsdoc');
-const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const tsParser = require('@typescript-eslint/parser');
 const fioriTools = require('@sap-ux/eslint-plugin-fiori-tools');
 
@@ -20,11 +18,6 @@ module.exports = [
             parser: tsParser,
             ecmaVersion: 5,
             sourceType: 'script',
-        },
-        plugins: {
-            '@typescript-eslint': typescriptEslint,
-            jsdoc,
-            'fiori-custom': fioriTools // backward compatibility
         },
         rules: {
             'quotes': ['error', 'single', { 'allowTemplateLiterals': true }],
