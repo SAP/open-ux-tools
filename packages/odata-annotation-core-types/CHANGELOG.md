@@ -1,5 +1,11 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.5.4
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 0.5.3
 
 ### Patch Changes

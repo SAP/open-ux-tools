@@ -33,7 +33,7 @@
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "axios": "1.12.2",
+        "axios": "1.13.5",
         "http-proxy-middleware": "3.0.5"
     },
     "devDependencies": {

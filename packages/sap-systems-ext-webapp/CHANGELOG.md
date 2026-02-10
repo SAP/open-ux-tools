@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.0.12
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 0.0.11
 
 ### Patch Changes

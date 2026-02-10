@@ -51,7 +51,7 @@
         "@sap-ux/ui5-info": "workspace:*",
         "@sap/cf-tools": "3.3.0",
         "adm-zip": "0.5.10",
-        "axios": "1.12.2",
+        "axios": "1.13.5",
         "ejs": "3.1.10",
         "i18next": "25.8.0",
         "inquirer": "8.2.7",

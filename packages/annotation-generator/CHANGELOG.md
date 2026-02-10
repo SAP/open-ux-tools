@@ -1,5 +1,15 @@
 # @sap-ux/annotation-generator
 
+## 0.4.18
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+- Updated dependencies [3795bb2]
+    - @sap-ux/odata-annotation-core-types@0.5.4
+    - @sap-ux/fiori-annotation-api@0.9.11
+    - @sap-ux/odata-entity-model@0.3.5
+
 ## 0.4.17
 
 ### Patch Changes
