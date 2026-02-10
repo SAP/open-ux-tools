@@ -47,7 +47,6 @@ async function updateMiddlewareConfigWithGeneratorPath(
         previewMiddleware.configuration ??= {};
 
         const middlewareConfig = previewMiddleware.configuration as PreviewConfig;
-
         const cardGeneratorPath =
             middlewareConfig?.editors?.cardGenerator?.path ?? '/test/flpCardGeneratorSandbox.html';
 
