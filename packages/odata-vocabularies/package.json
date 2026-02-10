@@ -38,6 +38,9 @@
         "prettier": "2.5.1",
         "ts-node": "10.9.2"
     },
+    "engines": {
+        "node": ">=20.x"
+    },
     "files": [
         "dist/**"
     ]

@@ -35,6 +35,9 @@
         "npm-run-all2": "6.2.0",
         "@sap-ux/odata-entity-model": "workspace:*"
     },
+    "engines": {
+        "node": ">=20.x"
+    },
     "files": [
         "LICENSE",
         "dist/**"

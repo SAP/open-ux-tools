@@ -46,5 +46,8 @@
         "@ui5/cli": "4.0.33",
         "@ui5/project": "4.0.8",
         "cross-env": "^7.0.3"
+    },
+    "engines": {
+        "node": ">=20.x"
     }
 }

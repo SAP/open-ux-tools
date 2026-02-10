@@ -33,6 +33,9 @@
     "devDependencies": {
         "npm-run-all2": "6.2.0"
     },
+    "engines": {
+        "node": ">=20.x"
+    },
     "files": [
         "LICENSE",
         "dist/**"

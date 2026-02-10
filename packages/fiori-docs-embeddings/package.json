@@ -51,6 +51,9 @@
         "indexing"
     ],
     "license": "Apache-2.0",
+    "engines": {
+        "node": ">=20.x"
+    },
     "files": [
         "data/index.js",
         "data/embeddings/**/*",
