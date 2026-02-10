@@ -20,6 +20,10 @@ jest.mock('fs', () => ({
     existsSync: jest.fn()
 }));
 
+jest.mock('mem-fs-editor', () => ({
+    create: jest.fn()
+}));
+
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
