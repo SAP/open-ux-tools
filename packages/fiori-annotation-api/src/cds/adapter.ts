@@ -350,10 +350,12 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
     /**
      * Refreshes internal data structures from the provided external service file.
      *
-     * @param _uri
-     * @param _data
+     * @param _uri - URI of the external service metadata file.
+     * @param _data - Metadata file content.
      */
-    public syncExternalService(_uri: string, _data: string): void {}
+    public syncExternalService(_uri: string, _data: string): void {
+        // not supported in cds
+    }
 
     /**
      *

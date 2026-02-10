@@ -279,7 +279,7 @@ export class MetadataService implements IMetadataService {
      * @returns set of namespaces
      */
     getNamespaces(): Set<string> {
-        return new Set([...(this.namespaces.get(this.serviceId) ?? [])]);
+        return new Set(this.namespaces.get(this.serviceId) ?? []);
     }
 
     /**
@@ -398,7 +398,7 @@ export class MetadataService implements IMetadataService {
      * @param serviceId - service identifier
      * @returns The current instance of MetadataService with the updated service context.
      */
-    useService(serviceId: string): MetadataService {
+    useService(serviceId: string): this {
         this.serviceId = serviceId ?? '';
         return this;
     }

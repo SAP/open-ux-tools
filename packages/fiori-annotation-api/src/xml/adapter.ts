@@ -72,7 +72,7 @@ import { collectUsedNamespaces } from './references';
 import { collectComments } from './comments';
 import { getNodeFromPointer } from './pointer';
 import type { ValueListReference } from '../types/adapter';
-import { pathToFileURL } from 'url';
+import { pathToFileURL } from 'node:url';
 
 /**
  * XML Annotation Service Adapter.
@@ -83,7 +83,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     public splitAnnotationSupport = false;
     public fileCache: Map<string, string>;
 
-    private externalServices = new Map<
+    private readonly externalServices = new Map<
         string,
         { annotations: AnnotationFile; metadata: MetadataElement[]; localFilePath: string }
     >();
@@ -91,7 +91,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     /**
      * Mapping from targets to value list references
      */
-    private valueListReferences = new Map<string, ValueListReference[]>();
+    private readonly valueListReferences = new Map<string, ValueListReference[]>();
     private readonly documents = new Map<string, Document>();
     private metadata: MetadataElement[] = [];
 

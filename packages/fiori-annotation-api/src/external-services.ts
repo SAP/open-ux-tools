@@ -27,7 +27,7 @@ export async function readExternalServiceMetadata(
                     relativeServicePath,
                     target
                         .split('/')
-                        .map((segment) => segment.split('.').slice(-1)[0])
+                        .map((segment) => segment.split('.').pop())
                         .join('/')
                 );
 
