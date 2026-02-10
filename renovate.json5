@@ -76,8 +76,7 @@
             semanticCommitType: 'fix',
             commitMessagePrefix: 'fix(deps):',
             labels: ['dependencies', '@ui5/manifest'],
-            automerge: false,
-            rebaseWhen: 'conflicted'
+            automerge: false
         },
         {
             matchPackageNames: ['react{/,}**', 'react-dom{/,}**', '@types/react{/,}**', '@types/react-dom{/,}**'],

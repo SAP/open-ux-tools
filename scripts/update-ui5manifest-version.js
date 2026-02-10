@@ -1,47 +1,39 @@
 #!/usr/bin/env node
 /**
- * Updates @ui5/manifest dependency across the monorepo.
+ * Updates @ui5/manifest test fixtures and creates changeset.
  *
- * Usage:
- *   node scripts/update-ui5manifest-version.js [--dry-run] [--force]
- *
- * @example GitHub Actions Triggers
- * The associated workflow (.github/workflows/update-ui5manifest-version.yml) has 3 triggers:
- * - Manual: workflow_dispatch with dry_run and force options
- * - Scheduled: Every Wednesday at 5 AM UTC
- * - Renovate PR: When Renovate creates a PR for @ui5/manifest
- *
- * Updates package.json files, test assertions, fixtures, creates changeset, and runs pnpm install.
+ * This script complements Renovate's package.json updates by:
+ * - Updating test assertions with new manifest descriptor versions
+ * - Updating manifest.json fixtures
+ * - Creating a changeset for affected packages
  * @see {@link https://www.npmjs.com/package/@ui5/manifest} @ui5/manifest on npm
- * @see {@link https://github.com/UI5/manifest/blob/main/mapping.json} UI5 manifest mapping.json
  * @see {@link https://github.com/SAP/open-ux-tools/pull/3872} Sample PR #3872
  */
 
 const fs = require('fs');
 const https = require('https');
+const path = require('path');
 const { execSync } = require('child_process');
+const YAML = require('yaml');
 
 const CONFIG = {
-    PACKAGE_JSON_PATHS: [
-        'packages/preview-middleware-client/package.json',
-        'packages/project-access/package.json',
-        'packages/ui5-application-writer/package.json'
-    ],
-    DATA_TEST_PATH: 'packages/ui5-application-writer/test/data.test.ts',
-    EXPECTED_OUTPUT_MANIFEST_PATH:
-        'packages/fiori-app-sub-generator/test/int/fiori-elements/expected-output/headless/lrop_v4_no_ui5_version/webapp/manifest.json',
+    PACKAGE_JSON_PATH: 'packages/ui5-application-writer/package.json',
+    TEST_PACKAGES: ['@sap-ux/ui5-application-writer', '@sap-ux/fiori-app-sub-generator'],
     CHANGESET_PACKAGES: [
         '@sap-ux-private/preview-middleware-client',
         '@sap-ux/ui5-application-writer',
-        '@sap-ux/project-access'
+        '@sap-ux/project-access',
+        '@sap-ux/ui5-info',
+        '@sap-ux/fiori-app-sub-generator'
     ],
-    NPM_REGISTRY_URL: 'https://registry.npmjs.org/@ui5/manifest/latest'
+    UI5_VERSION_FALLBACK_FILE: 'packages/ui5-info/src/ui5-version-fallback.ts',
+    UI5_VERSION_OVERVIEW_URL: 'https://ui5.sap.com/versionoverview.json'
 };
 
-const isDryRun = process.argv.includes('--dry-run');
-const isForce = process.argv.includes('--force');
-
-/** Fetches JSON from URL, rejects on non-2xx status */
+/**
+ * Fetches JSON from URL
+ * @param url
+ */
 function fetchJson(url) {
     return new Promise((resolve, reject) => {
         https
@@ -55,7 +47,7 @@ function fetchJson(url) {
                     try {
                         resolve(JSON.parse(data));
                     } catch (e) {
-                        reject(new Error(`Failed to parse JSON from ${url}`));
+                        reject(new Error(`Failed to parse JSON from ${url}, error: ${e.message}`));
                     }
                 });
             })
@@ -63,91 +55,114 @@ function fetchJson(url) {
     });
 }
 
-/** Sets GitHub Actions output variable */
-function setOutput(name, value) {
-    if (process.env.GITHUB_OUTPUT) {
-        fs.appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`);
-    }
-    console.log(`  [output] ${name}=${value}`);
-}
-
 /** Gets @ui5/manifest version from package.json */
-function getCurrentVersion(path) {
+function getInstalledVersion() {
     try {
-        const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
+        const pkg = JSON.parse(fs.readFileSync(CONFIG.PACKAGE_JSON_PATH, 'utf8'));
         return pkg.dependencies?.['@ui5/manifest'] || pkg.devDependencies?.['@ui5/manifest'] || null;
     } catch {
         return null;
     }
 }
 
-/** Updates @ui5/manifest version in package.json */
-function updatePackageJson(path, version) {
+/** Updates test snapshots with new manifest version */
+function updateTestSnapshots() {
     try {
-        const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
-        let updated = false;
-        if (pkg.dependencies?.['@ui5/manifest']) {
-            pkg.dependencies['@ui5/manifest'] = version;
-            updated = true;
+        for (const pkg of CONFIG.TEST_PACKAGES) {
+            console.log(`  Updating ${pkg} snapshots...`);
+            execSync(`pnpm --filter ${pkg} test-u`, { stdio: 'inherit' });
         }
-        if (pkg.devDependencies?.['@ui5/manifest']) {
-            pkg.devDependencies['@ui5/manifest'] = version;
-            updated = true;
-        }
-        if (updated) {
-            fs.writeFileSync(path, JSON.stringify(pkg, null, 4) + '\n');
-            console.log(`  Updated ${path}`);
-        }
-        return updated;
-    } catch (e) {
-        console.error(`  Error updating ${path}: ${e.message}`);
-        return false;
-    }
-}
-
-/** Updates test file with new manifest version */
-function updateDataTest(path, oldVer, newVer) {
-    try {
-        let content = fs.readFileSync(path, 'utf8');
-        const escaped = oldVer.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        // Matches the specific test case with version and descriptorVersion in the same block 
-        const regex = new RegExp(`(version: '1\\.199\\.0'[\\s\\S]*?descriptorVersion:\\s*')${escaped}(')`, 'g');
-
-        if (regex.test(content)) {
-            regex.lastIndex = 0; // Reset regex state for replace
-            content = content.replace(regex, `$1${newVer}$2`);
-            fs.writeFileSync(path, content);
-            console.log(`  Updated ${path}`);
-            return true;
-        }
-        console.log(`  Warning: Could not find test case in ${path}`);
-        return false;
-    } catch (e) {
-        console.error(`  Error updating ${path}: ${e.message}`);
-        return false;
-    }
-}
-
-/** Updates manifest.json fixture */
-function updateManifest(path, version) {
-    try {
-        const manifest = JSON.parse(fs.readFileSync(path, 'utf8'));
-        manifest._version = version;
-        fs.writeFileSync(path, JSON.stringify(manifest, null, 2) + '\n');
-        console.log(`  Updated ${path}`);
         return true;
     } catch (e) {
-        console.error(`  Error updating ${path}: ${e.message}`);
+        console.error(`  Error updating snapshots: ${e.message}`);
         return false;
     }
 }
 
-/** Creates changeset file */
-function createChangeset(packages) {
+/** Updates UI5 version fallback TypeScript file from versionoverview.json */
+async function updateUI5VersionFallback() {
     try {
-        const name = `manifest-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
-        const content = `---\n${packages.map((p) => `'${p}': patch`).join('\n')}\n---\n\nBump @ui5/manifest version\n`;
-        fs.writeFileSync(`.changeset/${name}.md`, content);
+        console.log(`  Fetching UI5 versions from ${CONFIG.UI5_VERSION_OVERVIEW_URL}...`);
+        const data = await fetchJson(CONFIG.UI5_VERSION_OVERVIEW_URL);
+
+        if (!data.versions || !Array.isArray(data.versions)) {
+            console.error('  Invalid versionoverview.json: missing versions array');
+            return false;
+        }
+
+        // Filter and map versions with support status
+        const filteredVersions = data.versions
+            .filter((v) => v.version && v.support)
+            .map((v) => {
+                const supportLower = v.support.toLowerCase();
+                let support = null;
+
+                if (supportLower === 'maintenance') {
+                    support = 'supportState.maintenance';
+                } else if (supportLower === 'out of maintenance') {
+                    support = 'supportState.outOfMaintenance';
+                }
+
+                return support ? { version: v.version, support } : null;
+            })
+            .filter(Boolean);
+
+        // Read existing file and check if it needs updating
+        let content = fs.readFileSync(CONFIG.UI5_VERSION_FALLBACK_FILE, 'utf8');
+
+        // Generate new array content with proper formatting (4-space indent)
+        const formatEntry = (v) =>
+            ['    {', `        version: '${v.version}',`, `        support: ${v.support}`, '    }'].join('\n');
+        const newArray = [
+            'export const ui5VersionFallbacks = [',
+            filteredVersions.map(formatEntry).join(',\n'),
+            '] as UI5VersionSupport[];'
+        ].join('\n');
+
+        // Check if content would change
+        const arrayRegex = /export const ui5VersionFallbacks = \[[\s\S]*?\] as UI5VersionSupport\[\];/;
+        const currentArray = content.match(arrayRegex)?.[0];
+
+        if (currentArray === newArray) {
+            console.log(`  No changes detected in UI5 versions, skipping update`);
+            return true;
+        }
+
+        // Update the comment with current date
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const commentRegex = /\/\/ Updated .+ from https:\/\/ui5\.sap\.com\/versionoverview\.json/;
+        content = content.replace(commentRegex, `// Updated ${today} from ${CONFIG.UI5_VERSION_OVERVIEW_URL}`);
+
+        // Update the array
+        content = content.replace(arrayRegex, newArray);
+
+        fs.writeFileSync(CONFIG.UI5_VERSION_FALLBACK_FILE, content);
+        console.log(`  Updated ${CONFIG.UI5_VERSION_FALLBACK_FILE} (${filteredVersions.length} versions)`);
+        return true;
+    } catch (e) {
+        console.error(`  Error updating ${CONFIG.UI5_VERSION_FALLBACK_FILE}: ${e.message}`);
+        return false;
+    }
+}
+
+/** Creates changeset file, skipping if one already exists from a previous run */
+function createChangeset() {
+    try {
+        const changesetDir = '.changeset';
+        const prefix = 'automated-cset-';
+
+        // Skip if changeset already exists (avoid duplicate changelog entries on rebases and same message appearing in changeset once mergeds)
+        const existing = fs.readdirSync(changesetDir).find((f) => f.startsWith(prefix));
+        if (existing) {
+            console.log(`  Changeset already exists: ${existing}, skipping`);
+            return true;
+        }
+
+        const name = `${prefix}${Math.random().toString(36).slice(2, 6)}`;
+        const packages = Object.fromEntries(CONFIG.CHANGESET_PACKAGES.map((p) => [p, 'patch']));
+        // Trim YAML output to avoid extra newline before closing ---
+        const content = `---\n${YAML.stringify(packages).trim()}\n---\n\nBump @ui5/manifest version and UI5 version fallbacks\n`;
+        fs.writeFileSync(path.join(changesetDir, `${name}.md`), content);
         console.log(`  Created .changeset/${name}.md`);
         return true;
     } catch (e) {
@@ -156,105 +171,44 @@ function createChangeset(packages) {
     }
 }
 
+/**
+ * Updates @ui5/manifest test fixtures, UI5 version fallbacks, creates changeset, and updates lockfile.
+ */
 async function main() {
-    console.log('Checking for @ui5/manifest updates...\n');
+    console.log('Updating @ui5/manifest fixtures...\n');
 
-    // Fetch versions
-    const latestNpm = await fetchJson(CONFIG.NPM_REGISTRY_URL).catch((e) => {
-        console.error(`Failed to fetch npm: ${e.message}`);
-        process.exit(1);
-    });
-    const latestVersion = latestNpm.version;
-    const currentVersion = getCurrentVersion(CONFIG.PACKAGE_JSON_PATHS[0]);
-
-    console.log(`Current: ${currentVersion}, Latest: ${latestVersion}\n`);
-
-    if (!currentVersion) {
-        console.error('Could not determine current version');
+    const installedVersion = getInstalledVersion();
+    if (!installedVersion) {
+        console.error('Could not determine installed @ui5/manifest version');
         process.exit(1);
     }
+    console.log(`Installed @ui5/manifest version: ${installedVersion}\n`);
 
-    if (currentVersion === latestVersion && !isForce) {
-        console.log('Already up to date.\n');
-        setOutput('updated', 'false');
-        return;
-    }
-
-    if (isForce) console.log('Force mode enabled.\n');
-
-    // Get manifest descriptor versions
-    const latestMapping = await fetchJson(`https://unpkg.com/@ui5/manifest@${latestVersion}/mapping.json`).catch(
-        (e) => {
-            console.error(`Failed to fetch mapping: ${e.message}`);
-            process.exit(1);
-        }
-    );
-    if (!latestMapping.latest) {
-        console.error('Invalid mapping.json: missing "latest" property');
-        process.exit(1);
-    }
-    const latestManifestVer = latestMapping.latest;
-
-    let currentManifestVer;
-    try {
-        const currentMapping = await fetchJson(`https://unpkg.com/@ui5/manifest@${currentVersion}/mapping.json`);
-        currentManifestVer = currentMapping.latest;
-    } catch {
-        currentManifestVer = JSON.parse(fs.readFileSync(CONFIG.EXPECTED_OUTPUT_MANIFEST_PATH, 'utf8'))._version;
-    }
-
-    console.log(`Manifest version: ${currentManifestVer} -> ${latestManifestVer}\n`);
-
-    if (isDryRun) {
-        console.log('DRY RUN - Files that would be updated:');
-        console.log(`  ${CONFIG.PACKAGE_JSON_PATHS.join('\n  ')}`);
-        console.log(`  ${CONFIG.DATA_TEST_PATH}`);
-        console.log(`  ${CONFIG.EXPECTED_OUTPUT_MANIFEST_PATH}`);
-        console.log('  .changeset/<name>.md\n');
-        setOutput('updated', 'false');
-        setOutput('dry_run', 'true');
-        return;
-    }
-
-    // Perform updates
     let success = true;
 
-    console.log('Updating package.json files...');
-    for (const path of CONFIG.PACKAGE_JSON_PATHS) {
-        if (!updatePackageJson(path, latestVersion)) success = false;
-    }
+    console.log('Updating test snapshots...');
+    if (!updateTestSnapshots()) success = false;
 
-    console.log('\nUpdating test assertions...');
-    if (!updateDataTest(CONFIG.DATA_TEST_PATH, currentManifestVer, latestManifestVer)) success = false;
-
-    console.log('\nUpdating fixtures...');
-    if (!updateManifest(CONFIG.EXPECTED_OUTPUT_MANIFEST_PATH, latestManifestVer)) success = false;
+    console.log('\nUpdating UI5 version fallbacks...');
+    if (!(await updateUI5VersionFallback())) success = false;
 
     console.log('\nCreating changeset...');
-    if (!createChangeset(CONFIG.CHANGESET_PACKAGES)) success = false;
+    if (!createChangeset()) success = false;
 
     console.log('\nRunning pnpm install...');
     try {
         execSync('pnpm install --lockfile-only', { stdio: 'inherit' });
-        console.log('  Updated pnpm-lock.yaml');
     } catch (e) {
         console.error(`  pnpm install failed: ${e.message}`);
         success = false;
     }
 
-    // Summary
-    console.log('\n' + '='.repeat(50));
-    if (success) {
-        console.log(`Updated @ui5/manifest: ${currentVersion} -> ${latestVersion}`);
-        setOutput('updated', 'true');
-        setOutput('old_version', currentVersion);
-        setOutput('new_version', latestVersion);
-    } else {
-        console.log('Update completed with warnings.');
-        setOutput('updated', 'true');
-        setOutput('warnings', 'true');
+    if (!success) {
+        console.error('\nCompleted with errors.');
+        process.exit(1);
     }
-    console.log('='.repeat(50));
+
+    console.log('\nDone.');
 }
 
 main().catch((e) => {
