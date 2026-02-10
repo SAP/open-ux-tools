@@ -50,7 +50,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
         "@types/semver": "7.7.1",
-        "axios": "1.12.2",
+        "axios": "1.13.5",
         "nock": "13.4.0"
     },
     "engines": {
