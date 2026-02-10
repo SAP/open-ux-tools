@@ -8,7 +8,7 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync, promises } from 'node:fs';
-import path, { join, dirname } from 'node:path';
+import path, { join } from 'node:path';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express, { type Response, type NextFunction } from 'express';
@@ -64,13 +64,10 @@ describe('FlpSandbox', () => {
             )
         )
     } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
-    const mockProjectRoot = tmpdir();
-    const mockWebappPath = join(mockProjectRoot, 'webapp');
     const mockUtils = {
         getProject() {
             return {
-                getSourcePath: () => mockWebappPath,
-                getRootPath: () => mockProjectRoot
+                getSourcePath: () => tmpdir()
             };
         }
     } as unknown as MiddlewareUtils;
@@ -818,7 +815,6 @@ describe('FlpSandbox', () => {
         beforeEach(() => {
             mockFsPromisesWriteFile = jest.fn();
             promises.writeFile = mockFsPromisesWriteFile;
-            createPropertiesI18nEntriesMock.mockClear();
         });
 
         afterEach(() => {
@@ -903,23 +899,8 @@ describe('FlpSandbox', () => {
             };
             const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
             expect(projectAccessMock).toHaveBeenCalled();
-            // Verify that createApplicationAccess was called with the project path (parent of webapp)
-            // The projectPath should be derived from getSourcePath() which returns webapp path
-            expect(projectAccessMock).toHaveBeenCalledWith(expect.any(String), expect.anything());
             expect(response.status).toBe(201);
             expect(response.text).toBe('Files were updated/created');
-        });
-
-        test('POST /cards/store verifies project path is derived from getSourcePath', async () => {
-            // This test verifies that the project path is correctly derived from getSourcePath()
-            // The storeCardManifestHandler uses:
-            //   const webappPath = this.utils.getProject().getSourcePath();
-            //   const projectPath = dirname(webappPath);
-            // So projectPath should be the parent of the webapp path
-
-            // Verify the path derivation logic
-            const derivedProjectPath = dirname(mockWebappPath);
-            expect(derivedProjectPath).toBe(tmpdir());
         });
 
         test('POST /cards/store without payload', async () => {
@@ -936,32 +917,13 @@ describe('FlpSandbox', () => {
                 }
             ];
             const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
-            // The webapp path is now obtained from getSourcePath() instead of path.resolve()
-            const filePath = join(mockWebappPath, 'i18n', 'i18n.properties');
+            const webappPath = await getWebappPath(path.resolve());
+            const filePath = join(webappPath, 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
-            // The handler adds annotation property from comment
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, [
-                { key: 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0', value: 'new Entry', annotation: undefined }
-            ]);
-        });
-
-        test('POST /editor/i18n uses webapp path from getSourcePath', async () => {
-            const newI18nEntry = [
-                {
-                    'key': 'TestKey',
-                    'value': 'Test Value'
-                }
-            ];
-            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
-
-            expect(response.status).toBe(201);
-            // Verify the file path is constructed using the webapp path from getSourcePath()
-            const calledFilePath = createPropertiesI18nEntriesMock.mock.calls[0][0];
-            expect(calledFilePath).toContain(mockWebappPath);
-            expect(calledFilePath).toContain('i18n');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
         });
         test('should handle string i18n path', async () => {
             const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
@@ -969,15 +931,12 @@ describe('FlpSandbox', () => {
             manifest['sap.app'].i18n = 'i18n/custom.properties';
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            // The webapp path is now obtained from getSourcePath()
-            const expectedPath = join(mockWebappPath, 'i18n', 'custom_de.properties');
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'custom_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            // The handler adds annotation property from comment
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, [
-                { key: 'HELLO', value: 'Hello World', annotation: undefined }
-            ]);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
         });
 
         test('should handle bundleUrl with supported and fallback locales', async () => {
@@ -991,15 +950,12 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
 
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            // The webapp path is now obtained from getSourcePath()
-            const expectedPath = join(mockWebappPath, 'i18n', 'i18n_de.properties');
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'i18n_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            // The handler adds annotation property from comment
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, [
-                { key: 'GREETING', value: 'Hallo Welt', annotation: undefined }
-            ]);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
         });
 
         test('should reject unsupported locale', async () => {
@@ -1025,15 +981,12 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
 
-            // The webapp path is now obtained from getSourcePath()
-            const expectedPath = join(mockWebappPath, 'i18n', 'i18n.properties');
+            const webappPath = await getWebappPath(path.resolve());
+            const expectedPath = join(webappPath, 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            // The handler adds annotation property from comment
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, [
-                { key: 'HELLO', value: 'Hello World', annotation: undefined }
-            ]);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
         });
     });
 
