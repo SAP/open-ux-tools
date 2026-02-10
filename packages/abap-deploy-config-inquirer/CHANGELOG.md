@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.95
+
+### Patch Changes
+
+- ede6ae8: extend validation pre check to transport choice prompt
+
 ## 1.6.94
 
 ### Patch Changes
