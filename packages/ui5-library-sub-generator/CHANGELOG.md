@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.121
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+- Updated dependencies [2bffca7]
+    - @sap-ux/ui5-library-writer@0.6.52
+
 ## 0.1.120
 
 ### Patch Changes
