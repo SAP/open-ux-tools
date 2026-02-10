@@ -18,8 +18,8 @@ This document provides essential guidelines for AI-powered tools working with th
 
 The SAP UX Tools is a monorepo for building SAP Fiori applications. All packages of this monorepo can be found in the `/packages` folder. The project uses:
 
-- **Package Manager**: pnpm 8.14.0 (required)
-- **Node Version**: >=20.x
+- **Package Manager**: pnpm (see root [package.json](package.json) for required version)
+- **Node Version**: >=20.x (see root [package.json](package.json) engines field)
 - **Build System**: Nx for orchestration
 - **Testing**: Jest for unit tests, Playwright for integration tests
 - **Versioning**: Changesets for automated version management
@@ -127,7 +127,7 @@ pnpm lint:fix
 
 **Configuration:**
 - Root config: [eslint.config.js](eslint.config.js)
-- Prettier config: [.prettierrc.json](.prettierrc.json)
+- Prettier config: [.prettierrc.js](.prettierrc.js)
 
 ### 5. Security Audit Resolution
 
@@ -186,8 +186,11 @@ pnpm audit
    - Examples: `sap-ux-application-modeler-ext`, `sap-ux-sap-systems-ext`
 
 4. **Private packages:**
-   - Must have `"private": true` in package.json
+   - Packages intended for internal use only (e.g., test utilities, integration tests) must have `"private": true` in package.json
+   - Private packages are NOT published to npm
+   - Use `@sap-ux-private/` scope for private packages
    - Example: `@sap-ux-private/adaptation-editor-tests`
+   - **Default**: All packages are public unless explicitly marked private - only add `"private": true` when the package should not be published
 
 ### 9. Changeset Requirements
 
@@ -202,11 +205,10 @@ pnpm audit
 - ✅ Breaking changes
 
 **When NOT to create a changeset:**
-- ❌ Changes only to tests
-- ❌ Changes only to devDependencies and not using esbuild for bundling
-- ❌ Documentation updates
-- ❌ Configuration changes
-- ❌ CI/CD pipeline updates
+- ❌ Changes only to tests (test files in `test/` directories)
+- ❌ Changes only to devDependencies (unless the package uses esbuild for bundling, as bundled devDependencies affect runtime)
+- ❌ Configuration changes (eslint, prettier, jest configs)
+- ❌ CI/CD pipeline updates (.github/workflows)
 
 **Create a changeset:**
 ```bash
@@ -255,7 +257,10 @@ The CI/CD pipeline enforces these quality gates on all pull requests:
 Follow the conventions in [docs/Guidelines.md](docs/Guidelines.md):
 
 **TypeScript:**
-- Use ESLint and Prettier for consistent formatting (see [.prettierrc.json](.prettierrc.json) for specific rules)
+- Use ESLint and Prettier for consistent formatting
+- See [eslint.config.js](eslint.config.js) for linting rules
+- See [.prettierrc.js](.prettierrc.js) for formatting rules
+- Individual packages may have their own eslint configs that extend the root configuration
 
 **Testing:**
 - Use given/when/then pattern
@@ -368,13 +373,15 @@ packages/[package-name]/
 ├── package.json      # Package manifest
 ├── tsconfig.json     # TypeScript config
 ├── jest.config.js    # Jest config
+├── eslint.config.js  # ESLint config (optional, extends root config)
 └── README.md         # Package documentation
 ```
 
 ### Workspace Dependencies
 
-Use `workspace:*` for internal dependencies:
+**For internal monorepo packages**, use the `workspace:*` protocol to reference other packages in the workspace:
 
+**Example** of workspace dependencies in package.json:
 ```json
 {
   "dependencies": {
@@ -383,6 +390,8 @@ Use `workspace:*` for internal dependencies:
   }
 }
 ```
+
+This ensures packages always use the local workspace version during development and are replaced with appropriate version ranges during publishing.
 
 ## Testing Requirements
 
@@ -398,15 +407,20 @@ Use `workspace:*` for internal dependencies:
 
 **Run tests:**
 ```bash
-# All packages
+# All packages (run from repository root)
 pnpm test
 
-# Specific package
+# Specific package - PREFERRED when working on a single package
 pnpm --filter @sap-ux/[package-name] test
+
+# or from the package folder
+pnpm test
 
 # With coverage
 pnpm test # Coverage is collected by default
 ```
+
+**IMPORTANT**: When working on a specific package, always use `pnpm --filter` to run only that package's tests. Running `pnpm test` at the root level tests ALL packages in the monorepo, which is slow and unnecessary for focused development.
 
 **Best practices:**
 - Use `describe` blocks to group related tests
@@ -622,6 +636,8 @@ pnpm outdated
 10. ❌ **Don't reduce code coverage** - Maintain or improve 80% threshold
 11. ❌ **Don't duplicate code** - Reuse existing functions from common libraries like @sap-ux/project-access, @sap-ux/axios-extension, etc.
 12. ❌ **Don't create circular dependencies** - Follow proper dependency hierarchy when refactoring to common libraries
+13. ❌ **Don't run all tests when working on a single package** - Use `pnpm --filter @sap-ux/[package-name] test` instead of `pnpm test` at root
+14. ❌ **Don't hardcode version numbers in documentation** - Reference source files (like package.json) instead, as versions change frequently
 
 ## Summary Checklist
 
