@@ -9,7 +9,7 @@ import type { Editor } from 'mem-fs-editor';
 import { pathFromUri } from '../../src/utils/path';
 import { PROJECTS } from './projects';
 import { testRead } from './fiori-service.test';
-import { ValueListReference } from '../../src/types/adapter';
+import type { ValueListReference } from '../../src/types/adapter';
 import { fileURLToPath } from 'node:url';
 
 describe('external service loading', () => {
@@ -35,11 +35,16 @@ describe('external service loading', () => {
                 ]
             ])
         );
+        data.forEach((value) => {
+            let relativePath = relative(__dirname, value.localFilePath);
+            relativePath = relativePath.split('\\').join('/');
+            value.localFilePath = relativePath;
+        });
         expect(data).toMatchInlineSnapshot(`
             Map {
               "../../../../srvd_f4/sap/p_paymentcardtypevaluehelp/0001;ps='srvd-zrc_arcustomer_definition-0001';va='com.sap.gateway.srvd.zrc_arcustomer_definition.v0001.et-z_arcustomer2.paymentcardtype'" => Object {
                 "data": "file",
-                "localFilePath": "C:\\\\SAPDevelop\\\\UXTools\\\\OpenUXTools\\\\open-ux-tools\\\\packages\\\\fiori-annotation-api\\\\test\\\\unit\\\\localService\\\\srvd_f4\\\\sap\\\\p_paymentcardtypevaluehelp\\\\0001\\\\TargetA\\\\metadata.xml",
+                "localFilePath": "localService/srvd_f4/sap/p_paymentcardtypevaluehelp/0001/TargetA/metadata.xml",
               },
             }
         `);
@@ -101,7 +106,9 @@ describe('external service loading', () => {
         const result = service.getExternalServices() as Map<string, ValueListReference[]>;
         result.forEach((entry) => {
             entry.forEach((valueListReference) => {
-                valueListReference.location.uri = relative(__dirname, fileURLToPath(valueListReference.location.uri));
+                valueListReference.location.uri = relative(__dirname, fileURLToPath(valueListReference.location.uri))
+                    .split('\\')
+                    .join('/');
             });
         });
         expect(service.getExternalServices()).toMatchSnapshot();

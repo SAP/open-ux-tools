@@ -37,7 +37,8 @@ import {
     getAliasInformation,
     getAllNamespacesAndReferences,
     getElementAttributeValue,
-    isElementWithName
+    isElementWithName,
+    parseIdentifier
 } from '@sap-ux/odata-annotation-core';
 
 import type { Project } from '@sap-ux/project-access';
@@ -748,14 +749,13 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         for (const target of annotationFile.targets) {
             for (const annotation of target.terms) {
                 const term = getElementAttributeValue(annotation, Edm.Term);
-                const parts = term.split('.');
-                const termName = parts.pop();
-                if (termName !== 'ValueListReferences') {
+                const parsedTerm = parseIdentifier(term);
+
+                if (parsedTerm.name !== 'ValueListReferences') {
                     continue;
                 }
-                const namespaceOrAlias = parts.join('.');
                 const namespace = namespaces.find(
-                    (ns) => ns.alias === namespaceOrAlias || ns.name === namespaceOrAlias
+                    (ns) => ns.alias === parsedTerm.namespaceOrAlias || ns.name === parsedTerm.namespaceOrAlias
                 )?.name;
 
                 if (namespace !== 'com.sap.vocabularies.Common.v1') {
