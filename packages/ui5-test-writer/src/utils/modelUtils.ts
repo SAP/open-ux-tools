@@ -18,7 +18,7 @@ export interface AggregationItem extends TreeAggregation {
 /**
  * Gets feature data from the application model using ux-specification.
  *
- * @param basePath - the absolute target path where the application will be generated
+ * @param appModel - the application model containing page definitions and their respective models
  * @param fs - optional mem-fs editor instance
  * @param log - optional logger instance
  * @returns feature data extracted from the application model
@@ -27,11 +27,13 @@ export async function getAppFeatures(appModel?: ReadAppResult, fs?: Editor, log?
     const featureData: AppFeatures = {};
     let listReportPage: PageWithModelV4 | null = null;
     let objectPages: PageWithModelV4[] | null = null;
+    let fpmPage: PageWithModelV4 | null = null;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
-        listReportPage = appModel?.applicationModel ? getListReportPage(appModel?.applicationModel) : listReportPage;
-        objectPages = appModel?.applicationModel ? getObjectPages(appModel?.applicationModel) : objectPages;
+        listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
+        objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
+        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel, log) : fpmPage;
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -40,22 +42,26 @@ export async function getAppFeatures(appModel?: ReadAppResult, fs?: Editor, log?
         return featureData;
     }
 
-    if (!listReportPage) {
-        log?.warn(
-            'List Report page not found in application model. Dynamic tests will not be generated for List Report pages.'
-        );
-        return featureData;
-    }
-    if (!objectPages || objectPages.length === 0) {
-        log?.warn(
-            'Object Page(s) not found in application model. Dynamic tests will not be generated for Object Pages.'
-        );
+    if (!listReportPage && !objectPages && !fpmPage) {
+        log?.warn('Pages not found in application model. Dynamic tests will not be generated.');
         return featureData;
     }
 
     // attempt to get individual feature data
-    featureData.listReport = getListReportFeatures(listReportPage.model, log);
-    featureData.objectPages = getObjectPageFeatures(objectPages, log);
+    try {
+        if (listReportPage) {
+            featureData.listReport = getListReportFeatures(listReportPage.model, log);
+        }
+        if (objectPages) {
+            featureData.objectPages = getObjectPageFeatures(objectPages, log);
+        }
+        if (fpmPage) {
+            featureData.fpm = getFPMFeatures(fpmPage.model, log);
+        }
+    } catch (error) {
+        // do noting here, as individual feature extraction methods already log warnings
+    }
+    log?.info('Extracted feature data from application model: ' + JSON.stringify(featureData));
 
     return featureData;
 }
@@ -129,6 +135,14 @@ function transformTableColumns(columnAggregations: Record<string, any>): Record<
 export function getListReportFeatures(pageModel: TreeModel, log?: Logger): ListReportFeatures {
     return {
         filterBarItems: getFilterFieldNames(pageModel, log),
+        tableColumns: getTableColumnData(pageModel, log),
+        toolBarActions: getToolBarActionNames(pageModel, log)
+    };
+}
+
+export function getFPMFeatures(pageModel: TreeModel, log?: Logger): ListReportFeatures {
+    return {
+        filterBarItems: getFilterFieldNames(pageModel, log),
         tableColumns: getTableColumnData(pageModel, log)
     };
 }
@@ -171,6 +185,25 @@ function getFilterFieldNames(pageModel: TreeModel, log?: Logger): string[] {
     return filterBarItems;
 }
 
+function getToolBarActionNames(pageModel: TreeModel, log?: Logger): string[] {
+    let toolBarActions: string[] = [];
+
+    try {
+        const toolbarActions = getToolBarActions(pageModel);
+        toolBarActions = getToolBarActionItems(toolbarActions);
+    } catch (error) {
+        log?.debug(error);
+    }
+
+    if (!toolBarActions?.length) {
+        log?.warn(
+            'Unable to extract toolbar actions from project model using specification. No toolbar action tests will be generated.'
+        );
+    }
+
+    return toolBarActions;
+}
+
 /**
  * Retrieves table column data from the page model using ux-specification.
  *
@@ -210,6 +243,26 @@ export function getListReportPage<T = ApplicationModel['pages'][string]>(applica
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
         if (page.pageType === 'ListReport') {
+            return page as T;
+        }
+    }
+    return null;
+}
+
+/**
+ * Retrieves all List Report definitions from the given application model.
+ *
+ * @param applicationModel - The application model containing page definitions.
+ * @returns An array of List Report definitions.
+ */
+export function getFPMPage<T = ApplicationModel['pages'][string]>(
+    applicationModel: ApplicationModel,
+    log?: Logger
+): T | null {
+    for (const pageKey in applicationModel.pages) {
+        const page = applicationModel.pages[pageKey];
+        log?.warn('pageType:' + page.pageType);
+        if (page.pageType === 'FPMCustomPage') {
             return page as T;
         }
     }
@@ -266,6 +319,17 @@ export function getSelectionFieldItems(selectionFieldsAgg: TreeAggregations): st
     return [];
 }
 
+export function getToolBarActionItems(toolBarActionsAgg: TreeAggregations): string[] {
+    if (toolBarActionsAgg && typeof toolBarActionsAgg === 'object') {
+        const items: string[] = [];
+        for (const itemKey in toolBarActionsAgg) {
+            items.push((toolBarActionsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem).description);
+        }
+        return items;
+    }
+    return [];
+}
+
 /**
  * Retrieves filter field descriptions from the given tree model.
  *
@@ -278,6 +342,22 @@ export function getFilterFields(pageModel: TreeModel): TreeAggregations {
     const selectionFields = filterBarAggregations['selectionFields'];
     const selectionFieldsAggregations = getAggregations(selectionFields);
     return selectionFieldsAggregations;
+}
+
+/**
+ * Retrieves toolbar action definitions from the given tree model.
+ *
+ * @param pageModel - The tree model containing toolbar definitions.
+ * @returns The toolbar actions aggregation object.
+ */
+export function getToolBarActions(pageModel: TreeModel): TreeAggregations {
+    const table = getAggregations(pageModel.root)['table'];
+    const tableAggregations = getAggregations(table);
+    const toolBar = tableAggregations['toolBar'];
+    const toolBarAggregations = getAggregations(toolBar);
+    const actions = toolBarAggregations['actions'];
+    const actionAggregations = getAggregations(actions);
+    return actionAggregations;
 }
 
 /**

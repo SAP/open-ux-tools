@@ -269,6 +269,7 @@ function writePageObject(
  * @param pageConfig - the page configuration object
  * @param listReportFeatures - features of the List Report page
  * @param objectPageFeatures - features of the Object Page(s)
+ * @param fpmFeatures - features of the FPM page
  */
 function writeJourneys(
     journeyParams: any,
@@ -277,10 +278,13 @@ function writeJourneys(
     fs: Editor,
     pageConfig: FEV4OPAPageConfig,
     listReportFeatures?: ListReportFeatures,
-    objectPageFeatures?: ObjectPageFeatures[]
+    objectPageFeatures?: ObjectPageFeatures[],
+    fpmFeatures?: ListReportFeatures
 ): void {
     if (pageConfig.template === 'ListReport') {
-        journeyParams.listReportFeatures = listReportFeatures;
+        journeyParams.listReportFeatures = listReportFeatures ?? {};
+    } else if (pageConfig.template === 'FPM') {
+        journeyParams.fpmFeatures = fpmFeatures ?? {};
     } else {
         journeyParams.objectPageFeatures = objectPageFeatures?.find((op) => op.hasOwnProperty(pageConfig.targetKey));
     }
@@ -363,20 +367,22 @@ export async function generateOPAFiles(
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
         hideFilterBar: config.hideFilterBar
-        // filterBarItems: filterBarItems,
-        // tableColumns: tableColumns
     };
 
-    if (LROP.pageLR) {
-        // Access ux-specification to get feature data for OPA test generation
-        const appModel = await getModelFromSpecification(basePath, editor, log);
-        const { listReport, objectPages } = await getAppFeatures(appModel, editor, log);
+    // Access ux-specification to get feature data for OPA test generation
+    const appModel = await getModelFromSpecification(basePath, editor, log);
+    const { listReport, objectPages, fpm } = await getAppFeatures(appModel, editor, log);
 
-        // Journey files (one for each page in the app)
-        config.pages.forEach((page) => {
-            writeJourneys(journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, page, listReport, objectPages);
-        });
-    }
+    // Journey files (one for each page in the app)
+    const seenTemplates = new Set<string>();
+    config.pages.forEach((page) => {
+        if (seenTemplates.has(page.template)) {
+            return; // Skip if we've already processed this template
+        }
+        seenTemplates.add(page.template);
+
+        writeJourneys(journeyParams, rootV4TemplateDirPath, testOutDirPath, editor, page, listReport, objectPages, fpm);
+    });
 
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),

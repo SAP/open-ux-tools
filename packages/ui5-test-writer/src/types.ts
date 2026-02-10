@@ -76,11 +76,13 @@ export interface FFOPAConfig {
 export type AppFeatures = {
     listReport?: ListReportFeatures;
     objectPages?: ObjectPageFeatures[];
+    fpm?: ListReportFeatures;
 };
 
 export type ListReportFeatures = {
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
+    toolBarActions?: string[];
 };
 
 export type ObjectPageFeatures = {

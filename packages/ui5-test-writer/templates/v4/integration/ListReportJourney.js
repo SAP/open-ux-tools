@@ -11,15 +11,26 @@ sap.ui.define([
             Given.iStartMyApp();
             <%_ startPages.forEach(function(pageName) { %>
             Then.onThe<%- pageName %>.iSeeThisPage();
+            <%_ }); -%>
+        });
+
+        opaTest("Check filter bar", function (Given, When, Then) {
             <%_ if (listReportFeatures.filterBarItems && listReportFeatures.filterBarItems.length > 0) { -%>
                 <%_ listReportFeatures.filterBarItems.forEach(function(item) { _%>
-            Then.onThe<%- pageName%>.onFilterBar().iCheckFilterField("<%- item %>");
+            Then.onThe<%- startLR%>.onFilterBar().iCheckFilterField("<%- item %>");
+                <%_ }); -%>
+            <%_ } -%>
+        });
+
+        opaTest("Check table columns and actions", function (Given, When, Then) {
+            <%_ if (listReportFeatures.toolBarActions && listReportFeatures.toolBarActions.length > 0) { -%>
+                <%_ listReportFeatures.toolBarActions.forEach(function(item) { _%>
+            Then.onThe<%- startLR%>.onTable().iCheckAction("<%- item %>");
                 <%_ }); -%>
             <%_ } -%>
             <%_ if (listReportFeatures.tableColumns && Object.keys(listReportFeatures.tableColumns).length > 0) { _%>
-            Then.onThe<%- pageName %>.onTable().iCheckColumns(<%- Object.keys(listReportFeatures.tableColumns).length %>, <%- JSON.stringify(listReportFeatures.tableColumns) %>);
+            Then.onThe<%- startLR %>.onTable().iCheckColumns(<%- Object.keys(listReportFeatures.tableColumns).length %>, <%- JSON.stringify(listReportFeatures.tableColumns) %>);
             <%_ } %>
-            <%_ }); -%>
         });
 
 <% if (startLR) { %>
