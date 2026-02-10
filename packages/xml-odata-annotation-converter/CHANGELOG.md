@@ -1,5 +1,11 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.4.7
+
+### Patch Changes
+
+- @sap-ux/odata-annotation-core@0.2.13
+
 ## 0.4.6
 
 ### Patch Changes

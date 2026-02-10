@@ -243,9 +243,10 @@ async function getServiceMetadataAndValidate(
             convertedMetadata
         };
     } catch (error) {
-        LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, error }));
+        const errorText = errorHandler.getErrorMsg(error);
+        LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, errorText }));
         return {
-            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath })
+            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath, errorText })
         };
     }
 }
@@ -453,9 +454,8 @@ export async function getSelectedServiceMessage(
                 severity: Severity.warning
             };
         }
-    }
-    // If any catalog request errors, show an info message. We know this is a catalog error since there is no service selected.
-    if (errorHandler.getErrorMsg()) {
+    } else if (errorHandler.getErrorMsg()) {
+        // If any catalog request errors, show an info message. We know this is a catalog error since there is no service selected.
         return {
             message: `${errorHandler.getErrorMsg()} ${t('texts.seeLogForDetails')}`,
             severity: Severity.information

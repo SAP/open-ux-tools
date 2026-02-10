@@ -116,7 +116,12 @@ export function getAbapOnBTPSystemQuestions(
 
     // Service selection prompt
     questions.push(
-        ...getSystemServiceQuestion(connectValidator, abapOnBtpPromptNamespace, promptOptions?.serviceSelection)
+        ...getSystemServiceQuestion(
+            connectValidator,
+            abapOnBtpPromptNamespace,
+            promptOptions?.serviceSelection,
+            promptOptions?.valueHelpDownload?.hide
+        )
     );
     return questions;
 }

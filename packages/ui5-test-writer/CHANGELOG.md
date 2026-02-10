@@ -1,5 +1,81 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.64
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/ui5-application-writer@1.7.6
+
+## 0.7.63
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/ui5-application-writer@1.7.6
+
+## 0.7.62
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-application-writer@1.7.6
+
+## 0.7.61
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+
+## 0.7.60
+
+### Patch Changes
+
+- 185a8cf: Align @sap/ux-specification version
+
+## 0.7.59
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/ui5-application-writer@1.7.5
+
+## 0.7.58
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/ui5-application-writer@1.7.5
+    - @sap-ux/project-access@1.34.4
+
+## 0.7.57
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+- Updated dependencies [6d71400]
+    - @sap-ux/ui5-application-writer@1.7.4
+    - @sap-ux/project-access@1.34.3
+
+## 0.7.56
+
+### Patch Changes
+
+- be6ea11: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [be6ea11]
+    - @sap-ux/ui5-application-writer@1.7.3
+
+## 0.7.55
+
+### Patch Changes
+
+- 924e26f: fix(deps): update dependency @sap/ux-specification to v1.142.0
+
 ## 0.7.54
 
 ### Patch Changes

@@ -79,6 +79,27 @@ server:
 "
 `;
 
+exports[`Adaptation Project Generator Integration Test ABAP Environment should generate adaptation project with key user changes 1`] = `
+{
+  "changeType": "renameLabel",
+  "content": {
+    "annotationPath": "/category_ID@com.vocabularies.Common.v1.Label",
+  },
+  "fileName": "id_1767885281745_1726_renameLabel",
+  "fileType": "annotation_change",
+  "layer": "CUSTOMER_BASE",
+  "namespace": "apps/customer.app.variant/changes/",
+  "projectId": "customer.app.variant",
+  "reference": "customer.app.variant",
+  "selector": {
+    "serviceUrl": "/odata/test/service",
+  },
+  "support": {
+    "generator": "adp-key-user-converter",
+  },
+}
+`;
+
 exports[`Adaptation Project Generator Integration Test ABAP Environment should generate an onPremise adaptation project successfully 1`] = `
 "{
   "fileName": "manifest",
@@ -301,12 +322,12 @@ modules:
       build-result: resources
       requires:
         - artifacts:
-            - test-app-id.zip
-          name: test-app-id
+            - app.variant.zip
+          name: app.variant
           target-path: resources/
-  - name: test-app-id
+  - name: app.variant
     type: html5
-    path: test-app-id
+    path: app.variant
     build-parameters:
       builder: custom
       commands:
@@ -368,7 +389,7 @@ exports[`Adaptation Project Generator Integration Test CF Environment should gen
 	},
 	"devDependencies": {
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
-		"@sap-ux/backend-proxy-middleware-cf": "^0.0.1",
+		"@sap-ux/backend-proxy-middleware-cf": "0",
 		"@sapui5/ts-types": "^1.141.2",
 		"@sap/ux-ui5-tooling": "1",
 		"@ui5/cli": "^4.0.33",

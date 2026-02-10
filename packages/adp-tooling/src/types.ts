@@ -1,7 +1,7 @@
 import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { AxiosRequestConfig, OperationsType } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig, KeyUserChangeContent, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
@@ -32,18 +32,32 @@ export interface ToolsSupport {
  */
 type AbapTarget = DestinationAbapTarget | Pick<UrlAbapTarget, 'url' | 'client' | 'scp'>;
 
-export interface AdpPreviewConfig {
+/**
+ * Configuration for ADP preview using ABAP target connection.
+ */
+export interface AdpPreviewConfigWithTarget {
     target: AbapTarget;
-
     /**
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
+}
+
+/**
+ * Configuration for ADP preview using CF build output path.
+ */
+export interface AdpPreviewConfigWithBuildPath {
     /**
      * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
      */
-    cfBuildPath?: string;
+    cfBuildPath: string;
+    /**
+     * If set to true then certification validation errors are ignored.
+     */
+    ignoreCertErrors?: boolean;
 }
+
+export type AdpPreviewConfig = AdpPreviewConfigWithTarget | AdpPreviewConfigWithBuildPath;
 
 export interface OnpremApp {
     /** Application variant id. */
@@ -109,6 +123,10 @@ export interface AdpWriterConfig {
          */
         templatePathOverwrite?: string;
     };
+    /**
+     * Optional: Key-user changes to be written to the project.
+     */
+    keyUserChanges?: KeyUserChangeContent[];
 }
 
 /**
@@ -118,6 +136,7 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
+    storeCredentials?: boolean;
     application: SourceApplication;
     fioriId?: string;
     ach?: string;
@@ -133,6 +152,7 @@ export interface AttributesAnswers {
     enableTypeScript: boolean;
     addDeployConfig?: boolean;
     addFlpConfig?: boolean;
+    importKeyUserChanges?: boolean;
 }
 
 export interface SourceApplication {
@@ -187,6 +207,7 @@ export interface Endpoint extends Partial<Destination> {
     Credentials?: { username?: string; password?: string };
     UserDisplayName?: string;
     Scp?: boolean;
+    SystemType?: string;
 }
 
 export interface ChangeInboundNavigation {
