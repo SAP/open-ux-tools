@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.11.1
+
+### Patch Changes
+
+- 1ad56d1: Fix for previous errors shown as info under services selection prompt
+
 ## 0.11.0
 
 ### Minor Changes

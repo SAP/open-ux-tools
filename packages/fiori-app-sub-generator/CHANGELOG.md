@@ -1,5 +1,22 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.59
+
+### Patch Changes
+
+- 8c61352: fiori project templates clean eslint warning re @typescript-eslint/no-empty-function
+- Updated dependencies [8c61352]
+    - @sap-ux/fiori-freestyle-writer@2.5.45
+    - @sap-ux/odata-service-inquirer@2.17.1
+
+## 0.11.58
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/odata-service-inquirer@2.17.1
+    - @sap-ux/ui5-application-inquirer@0.16.23
+
 ## 0.11.57
 
 ### Patch Changes
