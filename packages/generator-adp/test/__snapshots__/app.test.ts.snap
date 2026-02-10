@@ -316,6 +316,11 @@ modules:
               Authentication: OAuth2UserTokenExchange
               ServiceInstanceName: test-service
               ServiceKeyName: test-service-key
+            - Name: test-backend-destination
+              URL: https://backend.example.com
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: test-service
+              ServiceKeyName: test-service-key
           existing_destinations_policy: update
   - name: mta-project_ui_deployer
     type: com.sap.application.content
