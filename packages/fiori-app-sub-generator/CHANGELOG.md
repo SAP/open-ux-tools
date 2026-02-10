@@ -1,5 +1,15 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.60
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+- Updated dependencies [2bffca7]
+    - @sap-ux/fiori-freestyle-writer@2.5.46
+    - @sap-ux/fiori-elements-writer@2.8.62
+    - @sap-ux/odata-service-inquirer@2.17.1
+
 ## 0.11.59
 
 ### Patch Changes
