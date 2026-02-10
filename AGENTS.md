@@ -203,6 +203,7 @@ pnpm audit
 - ✅ Bug fixes
 - ✅ New features
 - ✅ Breaking changes
+- ✅ Changes to README.md
 
 **When NOT to create a changeset:**
 - ❌ Changes only to tests (test files in `test/` directories)
