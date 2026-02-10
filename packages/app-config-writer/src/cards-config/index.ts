@@ -6,7 +6,7 @@ import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } fr
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
-import { updateMiddlewaresForPreview, DEFAULT_FLP_PATH } from '../common/ui5-yaml';
+import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
 const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
@@ -47,18 +47,6 @@ async function updateMiddlewareConfigWithGeneratorPath(
         previewMiddleware.configuration ??= {};
 
         const middlewareConfig = previewMiddleware.configuration as PreviewConfig;
-
-        // Add flp configuration if not present (required for sandbox to work)
-        if (!middlewareConfig.flp) {
-            middlewareConfig.flp = {
-                path: DEFAULT_FLP_PATH,
-                intent: {
-                    object: 'app',
-                    action: 'preview'
-                }
-            };
-            logger?.debug(`Added flp configuration to preview middleware.`);
-        }
 
         const cardGeneratorPath =
             middlewareConfig?.editors?.cardGenerator?.path ?? '/test/flpCardGeneratorSandbox.html';

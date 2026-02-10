@@ -816,6 +816,7 @@ describe('FlpSandbox', () => {
         beforeEach(() => {
             mockFsPromisesWriteFile = jest.fn();
             promises.writeFile = mockFsPromisesWriteFile;
+            createPropertiesI18nEntriesMock.mockClear();
         });
 
         afterEach(() => {
@@ -939,11 +940,13 @@ describe('FlpSandbox', () => {
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
+            // The handler adds annotation property from comment
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, [
+                { key: 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0', value: 'new Entry', annotation: undefined }
+            ]);
         });
 
         test('POST /editor/i18n uses webapp path from getSourcePath', async () => {
-            createPropertiesI18nEntriesMock.mockClear();
             const newI18nEntry = [
                 {
                     'key': 'TestKey',
@@ -969,7 +972,10 @@ describe('FlpSandbox', () => {
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            // The handler adds annotation property from comment
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, [
+                { key: 'HELLO', value: 'Hello World', annotation: undefined }
+            ]);
         });
 
         test('should handle bundleUrl with supported and fallback locales', async () => {
@@ -988,7 +994,10 @@ describe('FlpSandbox', () => {
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            // The handler adds annotation property from comment
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, [
+                { key: 'GREETING', value: 'Hallo Welt', annotation: undefined }
+            ]);
         });
 
         test('should reject unsupported locale', async () => {
@@ -1019,7 +1028,10 @@ describe('FlpSandbox', () => {
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            // The handler adds annotation property from comment
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, [
+                { key: 'HELLO', value: 'Hello World', annotation: undefined }
+            ]);
         });
     });
 

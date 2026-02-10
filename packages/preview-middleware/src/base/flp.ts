@@ -1025,7 +1025,7 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            // getSourcePath() returns the webapp path, we need the app root (parent of webapp)
+            // getSourcePath() returns the webapp path directly
             const webappPath = this.utils.getProject().getSourcePath();
             const projectPath = dirname(webappPath);
             const fullPath = join(webappPath, localPath);
