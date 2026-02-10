@@ -36,7 +36,7 @@
         "js-yaml": "4.1.1",
         "lodash": "4.17.23",
         "semver": "7.7.3",
-        "axios": "1.12.2"
+        "axios": "1.13.5"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",

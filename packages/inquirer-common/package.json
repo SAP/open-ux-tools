@@ -42,7 +42,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "axios": "1.12.2",
+        "axios": "1.13.5",
         "chalk": "4.1.2",
         "figures": "3.2.0",
         "fuzzy": "0.1.3",

@@ -34,7 +34,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "@sap/bas-sdk": "3.13.2",
         "archiver": "7.0.1",
-        "axios": "1.12.2",
+        "axios": "1.13.5",
         "glob-gitignore": "1.0.14",
         "i18next": "25.8.0",
         "ignore": "5.2.4",
