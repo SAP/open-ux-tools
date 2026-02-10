@@ -41,7 +41,7 @@
         "@storybook/addons": "7.6.20",
         "@storybook/components": "8.4.2",
         "@storybook/react": "8.4.2",
-        "@storybook/react-webpack5": "8.4.2",
+        "@storybook/react-webpack5": "10.2.8",
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
