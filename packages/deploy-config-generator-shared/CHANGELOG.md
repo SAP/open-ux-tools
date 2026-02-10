@@ -1,5 +1,14 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.87
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/nodejs-utils@0.2.14
+
 ## 0.1.86
 
 ### Patch Changes

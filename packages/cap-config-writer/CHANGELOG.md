@@ -1,5 +1,12 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.59
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.68
+- @sap-ux/project-access@1.35.1
+
 ## 0.12.58
 
 ### Patch Changes
