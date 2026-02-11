@@ -13,7 +13,7 @@ import type { CapService } from '@sap-ux/cap-config-writer';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';
-import { ERROR_TYPE } from '@sap-ux/inquirer-common';
+import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import { realpath } from 'node:fs/promises';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { cwd } from 'node:process';
@@ -187,8 +187,17 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
             capCdsVersionInfo = cdsVersionInfo;
         } catch (error) {
             const capLoadErrorMsg = t('errors.capModelAndServicesLoadError', { error: error?.message });
-            errorHandler.logErrorMsgs(ERROR_TYPE.UNKNOWN, capLoadErrorMsg);
-            LoggerHelper.logger.error(capLoadErrorMsg);
+            // For long error messages, use output channel link instead of showing full message in UI
+            if (capLoadErrorMsg.length > 150) {
+                LoggerHelper.logger.error(capLoadErrorMsg);
+                errorHandler.logErrorMsgs(
+                    ERROR_TYPE.UNKNOWN,
+                    ErrorHandler.getOutputChannelLink(capLoadErrorMsg) as unknown as string
+                );
+            } else {
+                errorHandler.logErrorMsgs(ERROR_TYPE.UNKNOWN, capLoadErrorMsg);
+                LoggerHelper.logger.error(capLoadErrorMsg);
+            }
             return [];
         }
         // We need the relative service definitions file paths (.cds) for the generated annotation file
