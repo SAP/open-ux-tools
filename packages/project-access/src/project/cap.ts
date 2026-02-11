@@ -691,7 +691,7 @@ async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> 
                 for (const line of out.split('\n').filter((v) => v)) {
                     let key: string | undefined;
                     let value: string | undefined;
-                    // Try parse new 'cds --version' output
+                    // Try parse new 'cds --version' output first(cds version >= 9.7.0)
                     if (line.startsWith(' ')) {
                         const formattedLine = line.trim();
                         // Find first double space to detect separator
