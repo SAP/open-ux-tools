@@ -551,12 +551,12 @@ export async function addServeStaticMiddleware(
  * @param serviceKeys - service keys from Cloud Foundry
  * @param logger - logger instance
  */
-export async function addBackendProxyMiddleware(
+export function addBackendProxyMiddleware(
     basePath: string,
     ui5Config: UI5Config,
     serviceKeys: ServiceKeys[],
     logger?: ToolsLogger
-): Promise<void> {
+): void {
     try {
         if (ui5Config.findCustomMiddleware('backend-proxy-middleware-cf')) {
             ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');

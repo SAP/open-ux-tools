@@ -257,7 +257,7 @@ describe('CF Writer', () => {
             mockGetBaseAppId.mockResolvedValue('test-app-id');
             mockGetCfUi5AppInfo.mockResolvedValue(mockUi5AppInfo);
             mockAddServeStaticMiddleware.mockResolvedValue(undefined);
-            mockAddBackendProxyMiddleware.mockResolvedValue(undefined);
+            mockAddBackendProxyMiddleware.mockReturnValue(undefined);
             mockRunBuild.mockResolvedValue(undefined);
         });
 

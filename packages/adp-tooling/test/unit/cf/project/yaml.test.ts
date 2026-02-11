@@ -1061,7 +1061,7 @@ describe('YAML Project Functions', () => {
 
             mockGetBackendUrlsWithPaths.mockReturnValue(urlsWithPaths);
 
-            await addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
+            addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
 
             expect(mockUi5Config.removeCustomMiddleware).toHaveBeenCalledWith('backend-proxy-middleware-cf');
             expect(mockUi5Config.addCustomMiddleware).toHaveBeenCalledWith([
@@ -1078,7 +1078,7 @@ describe('YAML Project Functions', () => {
         test('should skip configuration when no backend URLs found', async () => {
             mockGetBackendUrlsWithPaths.mockReturnValue([]);
 
-            await addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
+            addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
 
             expect(mockLogger.info).toHaveBeenCalledWith(
                 'No backend URLs with paths found. Skipping backend-proxy-middleware-cf configuration.'
@@ -1091,7 +1091,7 @@ describe('YAML Project Functions', () => {
                 throw new Error('Discovery error');
             });
 
-            await addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
+            addBackendProxyMiddleware(basePath, mockUi5Config, mockServiceKeys, mockLogger);
 
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 'Could not add backend-proxy-middleware-cf configuration: Discovery error'
