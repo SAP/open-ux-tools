@@ -700,7 +700,7 @@ async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> 
                         value = formattedLine.slice(separatorIndex).trim();
                     }
                     if (key === undefined || value == undefined) {
-                        // Old cds output format
+                        // Old cds output format(cds version < 9.7.0)
                         [key, value] = line.split(': ');
                     }
                     if (key !== undefined && value !== undefined) {
