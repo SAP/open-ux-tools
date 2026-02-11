@@ -1,5 +1,26 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.47
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/odata-service-writer@0.29.16
+    - @sap-ux/ui5-application-writer@1.7.8
+    - @sap-ux/cap-config-writer@0.12.59
+    - @sap-ux/ui5-test-writer@0.7.66
+
+## 2.5.46
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+- Updated dependencies [2bffca7]
+    - @sap-ux/ui5-application-writer@1.7.7
+    - @sap-ux/ui5-test-writer@0.7.65
+
 ## 2.5.45
 
 ### Patch Changes
