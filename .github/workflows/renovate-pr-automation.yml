@@ -1,25 +1,45 @@
-name: Update @ui5/manifest Version
+name: Renovate PR Automation
 
-# This workflow complements Renovate PRs for @ui5/manifest by adding:
-# - Test assertion updates (hardcoded values that can't be auto-updated)
-# - Manifest fixture updates
-# - Changeset creation
+# This workflow automates Renovate PR follow-up tasks:
+# - For general dependency updates: Creates changesets automatically
+# - For @ui5/manifest updates: Runs manifest-specific updates (fixtures, fallbacks, custom changeset)
 
 on:
-    # Trigger when Renovate creates, rebases or reopens a PR for @ui5/manifest
-    pull_request:
+    pull_request_target:
         types: [opened, synchronize, reopened]
         branches: [main]
 
 jobs:
+    # Job 1: Create changeset for general Renovate dependency PRs (NOT @ui5/manifest)
+    create-changeset:
+        name: Create Dependency Changeset
+        runs-on: ubuntu-latest
+        # All Renovate PRs EXCEPT @ui5/manifest (which has custom handling)
+        if: |
+            github.actor == 'renovate[bot]' &&
+            !contains(github.event.pull_request.title, '@ui5/manifest')
+        steps:
+            - name: Checkout PR branch
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.head_ref }}
+                  fetch-depth: 0
+                  token: ${{ secrets.ACCESS_PAT }}
+
+            - name: Create changeset
+              uses: mscharley/dependency-changesets-action@v1.2.2
+              with:
+                  author-email: 'github-actions[bot]@users.noreply.github.com'
+                  commit-message: 'chore: add changeset for dependency update'
+
+    # Job 2: Run manifest-specific updates (only for @ui5/manifest PRs)
+    # This job creates its own custom changeset with detailed message
     update-manifest-fixtures:
         name: Update @ui5/manifest Fixtures
         runs-on: ubuntu-latest
-        # Only run for Renovate PRs that update @ui5/manifest
         if: |
             github.actor == 'renovate[bot]' &&
             contains(github.event.pull_request.title, '@ui5/manifest')
-
         steps:
             - name: Checkout PR branch
               uses: actions/checkout@v6
@@ -30,8 +50,6 @@ jobs:
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.2.0
-              with:
-                  run_install: false
 
             - name: Use Node.js 22.x
               uses: actions/setup-node@v6
@@ -54,12 +72,11 @@ jobs:
                     echo "has_changes=false" >> $GITHUB_OUTPUT
                   fi
 
-            - name: Commit changes to Renovate PR
+            - name: Commit changes
               if: steps.check-changes.outputs.has_changes == 'true'
               run: |
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
-                  # Stage only expected files to avoid committing unrelated changes
                   git add \
                     'packages/ui5-application-writer/test/__snapshots__/' \
                     'packages/fiori-app-sub-generator/test/' \
@@ -67,16 +84,34 @@ jobs:
                     '.changeset/*.md' \
                     'pnpm-lock.yaml' \
                     2>/dev/null || true
-                  git commit -m "chore: update manifest version test fixtures, ui5 version fallbacks & changeset" || echo "No changes to commit"
+                  git commit -m "chore: update manifest version test fixtures, ui5 version fallbacks & changeset"
                   git push
 
     notify:
         name: Send Notification
-        needs: update-manifest-fixtures
-        if: always() && needs.update-manifest-fixtures.result != 'skipped'
+        needs: [create-changeset, update-manifest-fixtures]
+        if: always() && (needs.create-changeset.result != 'skipped' || needs.update-manifest-fixtures.result != 'skipped')
         runs-on: ubuntu-latest
         steps:
-            - name: Send Slack notification (success)
+            - name: Send Slack notification (dependency changeset success)
+              if: needs.create-changeset.result == 'success' && env.SLACK_WEBHOOK_URL != ''
+              uses: slackapi/slack-github-action@v2
+              with:
+                  payload: |
+                      {"text": ":package: Dependency changeset created for PR #${{ github.event.pull_request.number }}\n\nPlease review: ${{ github.event.pull_request.html_url }}"}
+              env:
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+            - name: Send Slack notification (dependency changeset failure)
+              if: needs.create-changeset.result == 'failure' && env.SLACK_WEBHOOK_URL != ''
+              uses: slackapi/slack-github-action@v2
+              with:
+                  payload: |
+                      {"text": ":warning: Dependency changeset creation failed for PR #${{ github.event.pull_request.number }}\n\nPlease check: ${{ github.event.pull_request.html_url }}"}
+              env:
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+            - name: Send Slack notification (@ui5/manifest success)
               if: needs.update-manifest-fixtures.result == 'success' && env.SLACK_WEBHOOK_URL != ''
               uses: slackapi/slack-github-action@v2
               with:
@@ -85,7 +120,7 @@ jobs:
               env:
                   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-            - name: Send Slack notification (failure)
+            - name: Send Slack notification (@ui5/manifest failure)
               if: needs.update-manifest-fixtures.result == 'failure' && env.SLACK_WEBHOOK_URL != ''
               uses: slackapi/slack-github-action@v2
               with:
