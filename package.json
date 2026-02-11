@@ -79,7 +79,9 @@
     "pnpm": {
         "overrides": {
             "@storybook/manager-api>store2": "2.14.4",
-            "axios@<1.12.0": "^1.12.2",
+            "@sap/bas-sdk>axios": "^1.13.5",
+            "@sap-ux/ui5-config>axios": "^1.13.5",
+            "@sap/service-provider-apis>axios": "^1.13.5",
             "esbuild@<=0.24.2": ">=0.25.0",
             "fast-xml-parser@>=4.3.6 <=5.3.3": ">=5.3.4",
             "lodash@>=4.0.0 <=4.17.22": ">=4.17.23",
