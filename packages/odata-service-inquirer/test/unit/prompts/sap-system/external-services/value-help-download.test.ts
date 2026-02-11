@@ -55,14 +55,18 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     }
 }));
 
-jest.mock('../../../../../src/utils', () => ({
-    ...jest.requireActual('../../../../../src/utils'),
-    getPromptHostEnvironment: jest.fn(() => ({ technical: 'vscode', name: 'VSCode' })) // Default to non-CLI for most tests
-}));
+jest.mock('../../../../../src/utils', () => {
+    const { hostEnvironment } = jest.requireActual('@sap-ux/fiori-generator-shared');
+    return {
+        ...jest.requireActual('../../../../../src/utils'),
+        getPromptHostEnvironment: jest.fn(() => hostEnvironment.vscode) // Default to non-CLI for most tests
+    };
+});
 
 const mockGetExternalServiceReferences = getExternalServiceReferences as jest.Mock;
 const mockSendTelemetryEvent = sendTelemetryEvent as jest.Mock;
 const mockGetPromptHostEnvironment = jest.requireMock('../../../../../src/utils').getPromptHostEnvironment;
+const { hostEnvironment } = jest.requireMock('@sap-ux/fiori-generator-shared');
 
 describe('getValueHelpDownloadPrompt', () => {
     let connectionValidator: ConnectionValidator;
@@ -388,12 +392,12 @@ describe('getValueHelpDownloadPrompt', () => {
     describe('CLI-specific behavior', () => {
         beforeEach(() => {
             // Mock CLI environment for these tests
-            mockGetPromptHostEnvironment.mockReturnValue({ technical: 'CLI', name: 'CLI' });
+            mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         });
 
         afterEach(() => {
             // Restore to default non-CLI environment
-            mockGetPromptHostEnvironment.mockReturnValue({ technical: 'VSCode', name: 'Visual Studio Code' });
+            mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.vscode);
         });
 
         it('should return 2 prompts in CLI mode (confirm + hidden download trigger)', () => {
@@ -440,7 +444,7 @@ describe('getValueHelpDownloadPrompt', () => {
 
         it('should return 1 prompt in non-CLI mode (confirm with validate)', () => {
             // Switch back to non-CLI
-            mockGetPromptHostEnvironment.mockReturnValue({ technical: 'VSCode', name: 'Visual Studio Code' });
+            mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.vscode);
 
             const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
 

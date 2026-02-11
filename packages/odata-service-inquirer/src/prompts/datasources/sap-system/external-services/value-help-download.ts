@@ -156,7 +156,7 @@ export function getValueHelpDownloadPrompt(
         message: t('prompts.valueHelpDownload.message'),
         validate: async (downloadMetadata: boolean) => {
             // Only run download in YUI mode - CLI mode will use the hidden prompt below
-            if (getPromptHostEnvironment().technical !== hostEnvironment.cli.technical) {
+            if (getPromptHostEnvironment() !== hostEnvironment.cli) {
                 await performValueHelpDownload(downloadMetadata, connectionValidator, externalServiceRefs);
             }
             return true;
@@ -167,7 +167,7 @@ export function getValueHelpDownloadPrompt(
 
     // Add CLI-specific hidden prompt to handle the download
     // This is necessary because validate functions don't execute for confirm prompts in CLI mode
-    if (getPromptHostEnvironment().technical === hostEnvironment.cli.technical) {
+    if (getPromptHostEnvironment() === hostEnvironment.cli) {
         questions.push({
             when: async (answers: Record<string, any>) => {
                 const downloadMetadata = answers?.[promptName] as boolean | undefined;
