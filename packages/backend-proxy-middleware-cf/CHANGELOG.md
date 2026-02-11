@@ -1,5 +1,14 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.50
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/adp-tooling@0.18.60
+    - @sap-ux/project-access@1.35.1
+
 ## 0.0.49
 
 ### Patch Changes

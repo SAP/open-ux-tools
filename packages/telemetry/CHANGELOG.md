@@ -1,5 +1,16 @@
 # @sap-ux/telemetry
 
+## 0.6.69
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/project-access@1.35.1
+    - @sap-ux/nodejs-utils@0.2.14
+
 ## 0.6.68
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/system-access
 
+## 0.6.50
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/btp-utils@1.1.8
+
 ## 0.6.49
 
 ### Patch Changes
