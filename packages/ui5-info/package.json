@@ -21,7 +21,8 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
+        "unlink": "pnpm unlink --global",
+        "update-fallbacks": "node scripts/update-fallbacks.js"
     },
     "files": [
         "LICENSE",

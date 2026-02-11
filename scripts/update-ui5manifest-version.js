@@ -11,7 +11,6 @@
  */
 
 const fs = require('fs');
-const https = require('https');
 const path = require('path');
 const { execSync } = require('child_process');
 const YAML = require('yaml');
@@ -25,35 +24,8 @@ const CONFIG = {
         '@sap-ux/project-access',
         '@sap-ux/ui5-info',
         '@sap-ux/fiori-app-sub-generator'
-    ],
-    UI5_VERSION_FALLBACK_FILE: 'packages/ui5-info/src/ui5-version-fallback.ts',
-    UI5_VERSION_OVERVIEW_URL: 'https://ui5.sap.com/versionoverview.json'
+    ]
 };
-
-/**
- * Fetches JSON from URL
- * @param url
- */
-function fetchJson(url) {
-    return new Promise((resolve, reject) => {
-        https
-            .get(url, (res) => {
-                if (res.statusCode < 200 || res.statusCode >= 300) {
-                    return reject(new Error(`HTTP ${res.statusCode} fetching ${url}`));
-                }
-                let data = '';
-                res.on('data', (chunk) => (data += chunk));
-                res.on('end', () => {
-                    try {
-                        resolve(JSON.parse(data));
-                    } catch (e) {
-                        reject(new Error(`Failed to parse JSON from ${url}, error: ${e.message}`));
-                    }
-                });
-            })
-            .on('error', reject);
-    });
-}
 
 /** Gets @ui5/manifest version from package.json */
 function getInstalledVersion() {
@@ -79,68 +51,13 @@ function updateTestSnapshots() {
     }
 }
 
-/** Updates UI5 version fallback TypeScript file from versionoverview.json */
+/** Updates UI5 version fallback TypeScript file using @sap-ux/ui5-info package */
 async function updateUI5VersionFallback() {
     try {
-        console.log(`  Fetching UI5 versions from ${CONFIG.UI5_VERSION_OVERVIEW_URL}...`);
-        const data = await fetchJson(CONFIG.UI5_VERSION_OVERVIEW_URL);
-
-        if (!data.versions || !Array.isArray(data.versions)) {
-            console.error('  Invalid versionoverview.json: missing versions array');
-            return false;
-        }
-
-        // Filter and map versions with support status
-        const filteredVersions = data.versions
-            .filter((v) => v.version && v.support)
-            .map((v) => {
-                const supportLower = v.support.toLowerCase();
-                let support = null;
-
-                if (supportLower === 'maintenance') {
-                    support = 'supportState.maintenance';
-                } else if (supportLower === 'out of maintenance') {
-                    support = 'supportState.outOfMaintenance';
-                }
-
-                return support ? { version: v.version, support } : null;
-            })
-            .filter(Boolean);
-
-        // Read existing file and check if it needs updating
-        let content = fs.readFileSync(CONFIG.UI5_VERSION_FALLBACK_FILE, 'utf8');
-
-        // Generate new array content with proper formatting (4-space indent)
-        const formatEntry = (v) =>
-            ['    {', `        version: '${v.version}',`, `        support: ${v.support}`, '    }'].join('\n');
-        const newArray = [
-            'export const ui5VersionFallbacks = [',
-            filteredVersions.map(formatEntry).join(',\n'),
-            '] as UI5VersionSupport[];'
-        ].join('\n');
-
-        // Check if content would change
-        const arrayRegex = /export const ui5VersionFallbacks = \[[\s\S]*?\] as UI5VersionSupport\[\];/;
-        const currentArray = content.match(arrayRegex)?.[0];
-
-        if (currentArray === newArray) {
-            console.log(`  No changes detected in UI5 versions, skipping update`);
-            return true;
-        }
-
-        // Update the comment with current date
-        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const commentRegex = /\/\/ Updated .+ from https:\/\/ui5\.sap\.com\/versionoverview\.json/;
-        content = content.replace(commentRegex, `// Updated ${today} from ${CONFIG.UI5_VERSION_OVERVIEW_URL}`);
-
-        // Update the array
-        content = content.replace(arrayRegex, newArray);
-
-        fs.writeFileSync(CONFIG.UI5_VERSION_FALLBACK_FILE, content);
-        console.log(`  Updated ${CONFIG.UI5_VERSION_FALLBACK_FILE} (${filteredVersions.length} versions)`);
+        execSync('pnpm --filter @sap-ux/ui5-info update-fallbacks', { stdio: 'inherit' });
         return true;
     } catch (e) {
-        console.error(`  Error updating ${CONFIG.UI5_VERSION_FALLBACK_FILE}: ${e.message}`);
+        console.error(`  Error updating UI5 version fallbacks: ${e.message}`);
         return false;
     }
 }
