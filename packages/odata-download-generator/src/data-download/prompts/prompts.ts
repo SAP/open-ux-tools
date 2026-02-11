@@ -14,6 +14,8 @@ import { getEntityModel } from '../utils';
 import { createEntityChoices, getData, getServiceDetails, getSpecification } from './prompt-helpers';
 
 export const promptNames = {
+    appSelection: 'appSelection',
+    toggleSelection: 'toggleSelection',
     relatedEntitySelection: 'relatedEntitySelection',
     confirmDownload: 'confirmDownload',
     updateMainServiceMetadata: 'updateMainServiceMetadata'
@@ -142,7 +144,7 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], key
     return {
         type: 'input',
         guiType: 'folder-browser',
-        name: 'appSelection',
+        name: promptNames.appSelection,
         message: t('prompts.appSelection.message'),
         default: (answers: Answers) => answers.appSelection ?? appConfig.appAccess?.app.appRoot,
         guiOptions: { mandatory: true, breadcrumb: t('prompts.appSelection.breadcrumb') },
@@ -259,7 +261,7 @@ function getResetSelectionPrompt(
             }
             return relatedEntityChoices.choices.length > 0;
         },
-        name: 'toggleSelection',
+        name: promptNames.toggleSelection,
         type: 'confirm',
         message: 'Reset selection',
         labelTrue: 'Clear selected',

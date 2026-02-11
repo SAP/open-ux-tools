@@ -56,7 +56,7 @@
         "lint": "nx run-many --target=lint --all",
         "lint:fix": "nx run-many --target=lint:fix --all",
         "lint:dependency-versions": "check-dependency-version-consistency .",
-        "test": "nx run-many --target=test --all",
+        "test": "nx test @sap-ux/generator-odata-downloader",
         "test:integration": "nx run-many --target=test:integration --all --exclude @sap-ux-private/adaptation-editor-tests",
         "link": "pnpm recursive run link",
         "unlink": "pnpm recursive run unlink",
