@@ -5,10 +5,16 @@ import { createEntityChoices, getSpecification } from '../../src/data-download/p
 import { getEntityModel } from '../../src/data-download/utils';
 import * as commandMock from '@sap-ux/project-access/dist/command';
 import * as fileMock from '@sap-ux/project-access/dist/file';
+import * as fsMock from 'node:fs';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
 
 const readJSONOriginal = fileMock.readJSON;
+
+jest.mock('fs', () => {
+    const actual = jest.requireActual<typeof fsMock>('fs');
+    return { ...actual, existsSync: jest.fn().mockImplementation(actual.existsSync) };
+});
 
 describe('Test prompt-helpers', () => {
     test('should create entity set choices based on app model (from specification)', async () => {
@@ -16,6 +22,8 @@ describe('Test prompt-helpers', () => {
         // Prevent spec from fetching versions and writing on test jobs
         jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"latest": "1.142.1"}');
         jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
+        // Mock existence of dist tags
+        jest.spyOn(fsMock, 'existsSync').mockReturnValueOnce(true);
         jest.spyOn(fileMock, 'readJSON').mockImplementation(async (path) => {
             if (path.endsWith(FileName.SpecificationDistTags)) {
                 return {
