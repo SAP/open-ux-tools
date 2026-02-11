@@ -75,6 +75,12 @@ function createValueListService(
     };
 }
 
+// Helper function to extract choices from a question
+function getChoices(question: any): any[] {
+    const choicesFn = question.choices;
+    return typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+}
+
 describe('value-help-prompts', () => {
     const mockServicePath = '/sap/opu/odata/sap/TEST_SERVICE';
     const mockMetadata = '<edmx:Edmx>mock metadata</edmx:Edmx>';
@@ -123,8 +129,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue([]);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             expect(choices).toEqual([]);
         });
@@ -138,8 +143,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockValueListRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             expect(choices).toHaveLength(2);
             const choiceNames = (choices as any[]).map((c: any) => c.name);
@@ -155,8 +159,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockValueListRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             // Both should be grouped under AgencyID since they have the same target entity name
             expect(choices).toHaveLength(1);
@@ -172,8 +175,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockCodeListRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             // Code lists from the same service should be grouped together
             expect(choices).toHaveLength(1);
@@ -188,8 +190,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockValueListRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             expect(choices).toHaveLength(1);
             expect((choices as any[])[0].name).toContain('AgencyID');
@@ -206,8 +207,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockValueListRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             expect((choices as any[])[0].name).toContain('AgencyID');
             expect((choices as any[])[1].name).toContain('BookingID');
@@ -433,8 +433,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             expect(choices).toHaveLength(2);
             const choiceNames = (choices as any[]).map((c) => c.name);
@@ -447,8 +446,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             expect(choices).toHaveLength(1);
             expect((choices as any[])[0].name).toContain('AgencyID');
@@ -474,8 +472,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             // Both refs have the same target entity name (AgencyID), so they should be grouped together
             expect(choices).toHaveLength(1);
@@ -488,8 +485,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             expect((choices as any[])[0].name).toContain('Travel');
         });
@@ -499,8 +495,7 @@ describe('value-help-prompts', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockRefs);
 
             const result = getValueHelpSelectionPrompt(mockServicePath, mockMetadata, mockAbapServiceProvider);
-            const choicesFn = result.questions[0].choices;
-            const choices = typeof choicesFn === 'function' ? choicesFn({}) : choicesFn;
+            const choices = getChoices(result.questions[0]);
 
             expect((choices as any[])[0].name).toContain('Currencies');
         });

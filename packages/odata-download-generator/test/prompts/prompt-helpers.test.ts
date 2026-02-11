@@ -16,13 +16,15 @@ describe('Test prompt-helpers', () => {
         // Prevent spec from fetching versions and writing on test jobs
         jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"latest": "1.142.1"}');
         jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
-        jest.spyOn(fileMock, 'readJSON').mockImplementation(async (path) =>
-            path.endsWith(FileName.SpecificationDistTags)
-                ? {
+        jest.spyOn(fileMock, 'readJSON').mockImplementation(async (path) => {
+            if (path.endsWith(FileName.SpecificationDistTags)) {
+                return {
                       latest: '1.142.1'
                   }
-                : readJSONOriginal(path)
-        );
+            }
+            console.log('Original readJSON', path);
+            return await readJSONOriginal(path)
+        });
         // Load the test app
         const appPath = join(__dirname, '../test-data/test-apps/travel');
         const time1 = Date.now();
