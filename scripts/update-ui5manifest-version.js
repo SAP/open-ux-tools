@@ -66,7 +66,7 @@ async function updateUI5VersionFallback() {
 function createChangeset() {
     try {
         const changesetDir = '.changeset';
-        const prefix = 'automated-cset-';
+        const prefix = 'automated-csetui5-';
 
         // Skip if changeset already exists (avoid duplicate changelog entries on rebases and same message appearing in changeset once mergeds)
         const existing = fs.readdirSync(changesetDir).find((f) => f.startsWith(prefix));
