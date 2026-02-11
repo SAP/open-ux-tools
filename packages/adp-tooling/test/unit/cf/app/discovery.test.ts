@@ -11,7 +11,8 @@ import {
     getCfApps,
     getOAuthPathsFromXsApp,
     getBackendUrlsFromServiceKeys,
-    getBackendUrlsWithPaths
+    getBackendUrlsWithPaths,
+    getServiceKeyDestinations
 } from '../../../../src/cf/app/discovery';
 import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types';
 
@@ -817,6 +818,107 @@ describe('CF App Discovery', () => {
                 routes: [{ source: '/sap/opu/odata(.*)(.*)', service: 'odata-service' }]
             } as XsApp);
             expect(getOAuthPathsFromXsApp(mockZipEntries)).toEqual(['/sap/opu/odata']);
+        });
+    });
+
+    describe('getServiceKeyDestinations', () => {
+        test('should extract endpoint destinations from service keys with valid endpoints', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            backend: {
+                                url: '/backend-url',
+                                destination: 'backend-destination'
+                            },
+                            odata: {
+                                url: '/odata-url',
+                                destination: 'odata-destination'
+                            }
+                        }
+                    }
+                },
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-2',
+                        endpoints: {
+                            api: {
+                                url: '/api-url',
+                                destination: 'api-destination'
+                            }
+                        }
+                    }
+                }
+            ];
+
+            const result = getServiceKeyDestinations(serviceKeys);
+
+            expect(result).toEqual([
+                { name: 'backend-destination', url: '/backend-url' },
+                { name: 'odata-destination', url: '/odata-url' },
+                { name: 'api-destination', url: '/api-url' }
+            ]);
+        });
+
+        test('should return empty array when service keys are empty or endpoints are missing/invalid', () => {
+            expect(getServiceKeyDestinations([])).toEqual([]);
+
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {}
+                    }
+                },
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-2'
+                        // endpoints missing
+                    } as ServiceKeys['credentials']
+                },
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri-3',
+                        endpoints: null as any
+                    }
+                }
+            ];
+
+            expect(getServiceKeyDestinations(serviceKeys)).toEqual([]);
+        });
+
+        test('should skip endpoints missing url or destination', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            valid: {
+                                url: '/valid-url',
+                                destination: 'valid-destination'
+                            },
+                            missingUrl: {
+                                destination: 'missing-url-destination'
+                            },
+                            missingDestination: {
+                                url: '/missing-dest-url'
+                            },
+                            missingBoth: {}
+                        }
+                    }
+                }
+            ];
+
+            const result = getServiceKeyDestinations(serviceKeys);
+
+            expect(result).toEqual([{ name: 'valid-destination', url: '/valid-url' }]);
         });
     });
 });

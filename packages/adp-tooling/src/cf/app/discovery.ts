@@ -195,6 +195,33 @@ export function getBackendUrlsWithPaths(
 }
 
 /**
+ * Extract endpoint destinations from service keys.
+ *
+ * @param {ServiceKeys[]} serviceKeys - The service keys.
+ * @returns {Array<{name: string; url: string}>} Array of endpoint destinations.
+ */
+export function getServiceKeyDestinations(serviceKeys: ServiceKeys[]): Array<{ name: string; url: string }> {
+    const endpointDestinations: Array<{ name: string; url: string }> = [];
+
+    for (const key of serviceKeys) {
+        const endpoints = key.credentials?.endpoints;
+        if (endpoints && typeof endpoints === 'object') {
+            for (const endpointKey in endpoints) {
+                const endpoint = endpoints[endpointKey];
+                if (endpoint?.url && endpoint.destination) {
+                    endpointDestinations.push({
+                        name: endpoint.destination,
+                        url: endpoint.url
+                    });
+                }
+            }
+        }
+    }
+
+    return endpointDestinations;
+}
+
+/**
  * Extracts OAuth paths from xs-app.json routes that have a source property.
  * These paths should receive OAuth Bearer tokens in the middleware.
  *

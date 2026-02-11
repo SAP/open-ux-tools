@@ -14,14 +14,14 @@ import type {
     MtaRequire,
     CfUI5Yaml,
     MtaYaml,
-    CfUi5AppInfo,
     ServiceKeys
 } from '../../types';
 import { AppRouterType } from '../../types';
 import { createServices } from '../services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader';
-import { getBackendUrlsWithPaths } from '../app/discovery';
+import { getBackendUrlsWithPaths, getServiceKeyDestinations } from '../app/discovery';
 import { getVariant } from '../../base/helper';
+import { getReusableLibraryPaths } from './ui5-app-info';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
@@ -103,33 +103,6 @@ export function getAppParamsFromUI5Yaml(projectPath: string): AppParamsExtended 
 }
 
 /**
- * Extract endpoint destinations from service keys.
- *
- * @param {ServiceKeys[]} serviceKeys - The service keys.
- * @returns {Array<{name: string; url: string}>} Array of endpoint destinations.
- */
-function getServiceKeyDestinations(serviceKeys: ServiceKeys[]): Array<{ name: string; url: string }> {
-    const endpointDestinations: Array<{ name: string; url: string }> = [];
-
-    for (const key of serviceKeys) {
-        const endpoints = key.credentials?.endpoints;
-        if (endpoints && typeof endpoints === 'object') {
-            for (const endpointKey in endpoints) {
-                const endpoint = endpoints[endpointKey];
-                if (endpoint?.url && endpoint.destination) {
-                    endpointDestinations.push({
-                        name: endpoint.destination,
-                        url: endpoint.url
-                    });
-                }
-            }
-        }
-    }
-
-    return endpointDestinations;
-}
-
-/**
  * Adjusts the MTA YAML for a standalone approuter.
  *
  * @param {MtaYaml} yamlContent - The YAML content.
@@ -188,6 +161,15 @@ function adjustMtaYamlManagedApprouter(
     const appRouterName = `${projectName}-destination-content`;
     let appRouter = yamlContent.modules?.find((module: MtaModule) => module.name === appRouterName);
     if (appRouter == null) {
+        const endpointDestinations = serviceKeys
+            ? getServiceKeyDestinations(serviceKeys).map((endpoint) => ({
+                  Name: endpoint.name,
+                  URL: endpoint.url,
+                  Authentication: 'OAuth2UserTokenExchange',
+                  ServiceInstanceName: businessService,
+                  ServiceKeyName: `${businessService}-key`
+              }))
+            : [];
         businessSolution = businessSolution.split('.').join('_');
         appRouter = {
             name: appRouterName,
@@ -251,15 +233,7 @@ function adjustMtaYamlManagedApprouter(
                                 ServiceKeyName: `${businessService}-key`
                             },
                             // Add endpoint destinations from service keys
-                            ...(serviceKeys
-                                ? getServiceKeyDestinations(serviceKeys).map((endpoint) => ({
-                                      Name: endpoint.name,
-                                      URL: endpoint.url,
-                                      Authentication: 'OAuth2UserTokenExchange',
-                                      ServiceInstanceName: businessService,
-                                      ServiceKeyName: `${businessService}-key`
-                                  }))
-                                : [])
+                            ...endpointDestinations
                         ],
                         existing_destinations_policy: 'update'
                     }
@@ -545,30 +519,7 @@ export async function addServeStaticMiddleware(
         const paths: Array<{ path: string; src: string; fallthrough: boolean }> = [];
 
         // Add reusable library paths from ui5AppInfo.json if it exists
-        const ui5AppInfoPath = path.join(basePath, 'ui5AppInfo.json');
-        if (fs.existsSync(ui5AppInfoPath)) {
-            const ui5AppInfoData = JSON.parse(fs.readFileSync(ui5AppInfoPath, 'utf-8')) as Record<string, unknown>;
-            const ui5AppInfo = ui5AppInfoData[Object.keys(ui5AppInfoData)[0]] as CfUi5AppInfo;
-
-            const reusableLibs =
-                ui5AppInfo.asyncHints?.libs?.filter(
-                    (lib) => lib.html5AppName && lib.url && typeof lib.url === 'object' && lib.url.url !== undefined
-                ) ?? [];
-
-            for (const lib of reusableLibs) {
-                const libName = String(lib.name);
-                const html5AppName = String(lib.html5AppName);
-                const resourcePath = '/resources/' + libName.replaceAll('.', '/');
-
-                paths.push({
-                    path: resourcePath,
-                    src: `./.adp/reuse/${html5AppName}`,
-                    fallthrough: false
-                });
-            }
-        } else {
-            logger?.warn('ui5AppInfo.json not found in project root');
-        }
+        paths.push(...getReusableLibraryPaths(basePath, logger));
 
         const variant = await getVariant(basePath);
         paths.push({

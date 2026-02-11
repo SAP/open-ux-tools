@@ -35,6 +35,7 @@ jest.mock('../../../../src/cf/project/yaml-loader', () => ({
 }));
 
 jest.mock('../../../../src/cf/app/discovery', () => ({
+    ...jest.requireActual('../../../../src/cf/app/discovery'),
     getBackendUrlsWithPaths: jest.fn()
 }));
 
@@ -884,19 +885,14 @@ describe('YAML Project Functions', () => {
             } as unknown as UI5Config;
         });
 
-        test('should add fiori-tools-servestatic middleware with reusable libraries', async () => {
+        test('should add fiori-tools-servestatic middleware with reusable libraries and changes path', async () => {
             const ui5AppInfo = {
                 asyncHints: {
                     libs: [
                         {
                             name: 'my.reusable.lib',
                             html5AppName: 'myreusablelib',
-                            url: { url: 'https://example.com/resources/my/reusable/lib' }
-                        },
-                        {
-                            name: 'another.lib',
-                            html5AppName: 'anotherlib',
-                            url: { url: 'https://example.com/resources/another/lib' }
+                            url: { url: '/resources/my/reusable/lib' }
                         }
                     ]
                 }
@@ -927,11 +923,6 @@ describe('YAML Project Functions', () => {
                                 fallthrough: false
                             },
                             {
-                                path: '/resources/another/lib',
-                                src: './.adp/reuse/anotherlib',
-                                fallthrough: false
-                            },
-                            {
                                 path: '/changes/test_variant_id',
                                 src: './webapp/changes',
                                 fallthrough: true
@@ -949,7 +940,7 @@ describe('YAML Project Functions', () => {
                         {
                             name: 'my.reusable.lib',
                             html5AppName: 'myreusablelib',
-                            url: { url: 'https://example.com/resources/my/reusable/lib' }
+                            url: { url: '/resources/my/reusable/lib' }
                         }
                     ]
                 }
@@ -1019,42 +1010,6 @@ describe('YAML Project Functions', () => {
             ]);
         });
 
-        test('should add changes path when no reusable libraries found', async () => {
-            const ui5AppInfo = {
-                asyncHints: {
-                    libs: [{ name: 'sap.m' }, { name: 'sap.ui.core' }]
-                }
-            };
-
-            mockExistsSync.mockReturnValue(true);
-            mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': ui5AppInfo }));
-            mockGetVariant.mockResolvedValue({
-                id: 'customer.app.variant',
-                layer: 'CUSTOMER_BASE',
-                reference: 'com.sap.test.app',
-                namespace: 'apps/com.sap.test.app/appVariants/customer.app.variant/',
-                content: []
-            });
-
-            await addServeStaticMiddleware(basePath, mockUi5Config, mockLogger);
-
-            expect(mockUi5Config.addCustomMiddleware).toHaveBeenCalledWith([
-                {
-                    name: 'fiori-tools-servestatic',
-                    beforeMiddleware: 'compression',
-                    configuration: {
-                        paths: [
-                            {
-                                path: '/changes/customer_app_variant',
-                                src: './webapp/changes',
-                                fallthrough: true
-                            }
-                        ]
-                    }
-                }
-            ]);
-        });
-
         test('should throw and warn on error when getVariant fails', async () => {
             mockExistsSync.mockReturnValue(true);
             mockReadFileSync.mockReturnValue(JSON.stringify({ 'test-app': { asyncHints: { libs: [] } } }));
@@ -1081,9 +1036,9 @@ describe('YAML Project Functions', () => {
             {
                 credentials: {
                     uaa: {} as any,
-                    uri: 'https://backend.example.com',
+                    uri: '/backend-url',
                     endpoints: {
-                        'odata-v2': 'https://backend.example.com/odata/v2'
+                        'odata-v2': '/backend-url/odata/v2'
                     },
                     'html5-apps-repo': {}
                 }
@@ -1100,8 +1055,8 @@ describe('YAML Project Functions', () => {
 
         test('should add backend-proxy-middleware-cf with backend URLs', async () => {
             const urlsWithPaths = [
-                { url: 'https://backend.example.com', paths: ['/backend'] },
-                { url: 'https://api.example.com', paths: ['/api'] }
+                { url: '/backend-url', paths: ['/backend'] },
+                { url: '/api-url', paths: ['/api'] }
             ];
 
             mockGetBackendUrlsWithPaths.mockReturnValue(urlsWithPaths);

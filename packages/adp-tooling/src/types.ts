@@ -870,13 +870,6 @@ export interface ServiceKeys {
     };
 }
 
-export interface ServiceKeysCredentials {
-    [key: string]: any;
-    uaa: Uaa;
-    uri: string;
-    endpoints: any;
-}
-
 export interface ServiceInfo {
     serviceKeys: ServiceKeys[];
     serviceInstance: ServiceInstance;
