@@ -133,9 +133,12 @@ describe('LayeredRepositoryService', () => {
         });
         test('logError is called when request fails', async () => {
             const mockAxiosError = {
+                isAxiosError: true,
                 response: {
                     status: 404,
-                    data: 'Not found'
+                    data: '{ "code": "404", "message": "Not Found" }',
+                    headers: {},
+                    config: {} as any
                 },
                 message: 'Request failed with status code 404'
             } as AxiosError;
@@ -165,7 +168,7 @@ describe('LayeredRepositoryService', () => {
             } catch (error) {
                 expect(error).toBeDefined();
                 expect(loggerMock.error).toHaveBeenCalledWith(
-                    expect.stringContaining(mockAxiosError.response?.data as string)
+                    expect.stringContaining(mockAxiosError.message as string)
                 );
             }
         });

@@ -1,5 +1,81 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.127
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/deploy-config-generator-shared@0.1.87
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/cf-deploy-config-inquirer@0.5.84
+    - @sap-ux/cf-deploy-config-writer@0.3.62
+    - @sap-ux/project-access@1.35.1
+
+## 0.2.126
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/inquirer-common@0.11.1
+    - @sap-ux/cf-deploy-config-inquirer@0.5.83
+    - @sap-ux/deploy-config-generator-shared@0.1.86
+
+## 0.2.125
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/inquirer-common@0.11.0
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/cf-deploy-config-inquirer@0.5.82
+    - @sap-ux/deploy-config-generator-shared@0.1.86
+    - @sap-ux/cf-deploy-config-writer@0.3.61
+    - @sap-ux/fiori-generator-shared@0.13.67
+
+## 0.2.124
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/cf-deploy-config-writer@0.3.60
+    - @sap-ux/fiori-generator-shared@0.13.66
+    - @sap-ux/deploy-config-generator-shared@0.1.85
+    - @sap-ux/inquirer-common@0.10.26
+    - @sap-ux/cf-deploy-config-inquirer@0.5.81
+
+## 0.2.123
+
+### Patch Changes
+
+- @sap-ux/deploy-config-generator-shared@0.1.84
+- @sap-ux/fiori-generator-shared@0.13.65
+- @sap-ux/inquirer-common@0.10.25
+- @sap-ux/cf-deploy-config-inquirer@0.5.80
+
+## 0.2.122
+
+### Patch Changes
+
+- @sap-ux/deploy-config-generator-shared@0.1.83
+- @sap-ux/fiori-generator-shared@0.13.64
+- @sap-ux/inquirer-common@0.10.24
+- @sap-ux/cf-deploy-config-inquirer@0.5.79
+
+## 0.2.121
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/cf-deploy-config-writer@0.3.59
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/deploy-config-generator-shared@0.1.82
+    - @sap-ux/cf-deploy-config-inquirer@0.5.78
+
 ## 0.2.120
 
 ### Patch Changes

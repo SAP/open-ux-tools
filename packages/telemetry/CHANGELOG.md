@@ -1,5 +1,55 @@
 # @sap-ux/telemetry
 
+## 0.6.69
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/project-access@1.35.1
+    - @sap-ux/nodejs-utils@0.2.14
+
+## 0.6.68
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+
+## 0.6.67
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+
+## 0.6.66
+
+### Patch Changes
+
+- Updated dependencies [38e215e]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/ui5-config@0.29.15
+
+## 0.6.65
+
+### Patch Changes
+
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/ui5-config@0.29.15
+
+## 0.6.64
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/nodejs-utils@0.2.13
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-config@0.29.15
+
 ## 0.6.63
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @sap-ux/store
 
+## 1.5.5
+
+### Patch Changes
+
+- 38e215e: chore(deps): update dependency @zowe/secrets-for-zowe-sdk to v8.29.4
+
+## 1.5.4
+
+### Patch Changes
+
+- 83e3b70: check for presence of legacy systems.json file
+
 ## 1.5.3
 
 ### Patch Changes

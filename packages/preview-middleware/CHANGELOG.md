@@ -1,5 +1,82 @@
 # @sap-ux/preview-middleware
 
+## 0.23.117
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/adp-tooling@0.18.60
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/system-access@0.6.50
+    - @sap-ux/project-access@1.35.1
+
+## 0.23.116
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.59
+
+## 0.23.115
+
+### Patch Changes
+
+- 40989a9: fix: Extension points under node 'element' not listed in Outline
+
+## 0.23.114
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/adp-tooling@0.18.58
+    - @sap-ux/system-access@0.6.49
+
+## 0.23.113
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/adp-tooling@0.18.57
+    - @sap-ux/system-access@0.6.49
+
+## 0.23.112
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.56
+- @sap-ux/system-access@0.6.49
+
+## 0.23.111
+
+### Patch Changes
+
+- Updated dependencies [df61c3a]
+    - @sap-ux/adp-tooling@0.18.55
+
+## 0.23.110
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.54
+- @sap-ux/system-access@0.6.48
+
+## 0.23.109
+
+### Patch Changes
+
+- Updated dependencies [8a56942]
+    - @sap-ux/adp-tooling@0.18.53
+
+## 0.23.108
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/adp-tooling@0.18.52
+    - @sap-ux/system-access@0.6.47
+
 ## 0.23.107
 
 ### Patch Changes

@@ -1,5 +1,100 @@
 # @sap-ux/adp-tooling
 
+## 0.18.60
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/ui5-info@0.13.12
+    - @sap-ux/odata-service-writer@0.29.16
+    - @sap-ux/system-access@0.6.50
+    - @sap-ux/project-access@1.35.1
+    - @sap-ux/nodejs-utils@0.2.14
+    - @sap-ux/project-input-validator@0.6.53
+
+## 0.18.59
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/inquirer-common@0.11.1
+
+## 0.18.58
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/inquirer-common@0.11.0
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/odata-service-writer@0.29.15
+    - @sap-ux/project-input-validator@0.6.52
+    - @sap-ux/system-access@0.6.49
+
+## 0.18.57
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/odata-service-writer@0.29.14
+    - @sap-ux/project-input-validator@0.6.51
+    - @sap-ux/system-access@0.6.49
+    - @sap-ux/inquirer-common@0.10.26
+
+## 0.18.56
+
+### Patch Changes
+
+- Updated dependencies [38e215e]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/system-access@0.6.49
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/inquirer-common@0.10.25
+
+## 0.18.55
+
+### Patch Changes
+
+- df61c3a: feat: Prompt for credentials when not available in VSCode for adp generator
+
+## 0.18.54
+
+### Patch Changes
+
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/system-access@0.6.48
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/inquirer-common@0.10.24
+
+## 0.18.53
+
+### Patch Changes
+
+- 8a56942: update "@sap/approuter": "^20.8.0" in cf template
+
+## 0.18.52
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/nodejs-utils@0.2.13
+    - @sap-ux/odata-service-writer@0.29.13
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/ui5-info@0.13.11
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/project-input-validator@0.6.50
+    - @sap-ux/system-access@0.6.47
+
 ## 0.18.51
 
 ### Patch Changes

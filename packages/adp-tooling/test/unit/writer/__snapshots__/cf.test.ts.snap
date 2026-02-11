@@ -978,7 +978,7 @@ description: Test MTA Project for CF Writer Tests
 		\\"node\\": \\"^10.0.0\\"
 	},
 	\\"dependencies\\": {
-		\\"@sap/approuter\\": \\"^7.0.0\\"
+		\\"@sap/approuter\\": \\"^20.8.0\\"
 	},
 	\\"scripts\\": {
 		\\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"

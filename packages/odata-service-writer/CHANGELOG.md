@@ -1,5 +1,40 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.16
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/mockserver-config-writer@0.9.48
+    - @sap-ux/project-access@1.35.1
+
+## 0.29.15
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/mockserver-config-writer@0.9.47
+
+## 0.29.14
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/mockserver-config-writer@0.9.46
+
+## 0.29.13
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/mockserver-config-writer@0.9.45
+
 ## 0.29.12
 
 ### Patch Changes

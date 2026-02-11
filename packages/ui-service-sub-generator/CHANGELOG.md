@@ -1,5 +1,105 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.180
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/telemetry@0.6.69
+    - @sap-ux/ui-service-inquirer@0.2.117
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/system-access@0.6.50
+
+## 0.1.179
+
+### Patch Changes
+
+- @sap-ux/ui-service-inquirer@0.2.116
+
+## 0.1.178
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/inquirer-common@0.11.1
+    - @sap-ux/ui-service-inquirer@0.2.115
+
+## 0.1.177
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/inquirer-common@0.11.0
+    - @sap-ux/ui-service-inquirer@0.2.114
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-generator-shared@0.13.67
+    - @sap-ux/system-access@0.6.49
+    - @sap-ux/telemetry@0.6.68
+
+## 0.1.176
+
+### Patch Changes
+
+- @sap-ux/ui-service-inquirer@0.2.113
+
+## 0.1.175
+
+### Patch Changes
+
+- @sap-ux/ui-service-inquirer@0.2.112
+
+## 0.1.174
+
+### Patch Changes
+
+- @sap-ux/ui-service-inquirer@0.2.111
+
+## 0.1.173
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.10
+- @sap-ux/fiori-generator-shared@0.13.66
+- @sap-ux/system-access@0.6.49
+- @sap-ux/telemetry@0.6.67
+- @sap-ux/inquirer-common@0.10.26
+- @sap-ux/ui-service-inquirer@0.2.110
+
+## 0.1.172
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.65
+- @sap-ux/system-access@0.6.49
+- @sap-ux/telemetry@0.6.66
+- @sap-ux/ui-service-inquirer@0.2.109
+- @sap-ux/inquirer-common@0.10.25
+
+## 0.1.171
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.64
+- @sap-ux/system-access@0.6.48
+- @sap-ux/telemetry@0.6.65
+- @sap-ux/ui-service-inquirer@0.2.108
+- @sap-ux/inquirer-common@0.10.24
+
+## 0.1.170
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/ui-service-inquirer@0.2.107
+    - @sap-ux/telemetry@0.6.64
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/system-access@0.6.47
+
 ## 0.1.169
 
 ### Patch Changes

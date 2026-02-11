@@ -1,5 +1,63 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.16.24
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/ui5-info@0.13.12
+    - @sap-ux/project-access@1.35.1
+    - @sap-ux/project-input-validator@0.6.53
+
+## 0.16.23
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/inquirer-common@0.11.1
+
+## 0.16.22
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/inquirer-common@0.11.0
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/project-input-validator@0.6.52
+
+## 0.16.21
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/project-input-validator@0.6.51
+    - @sap-ux/inquirer-common@0.10.26
+
+## 0.16.20
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.25
+
+## 0.16.19
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.24
+
+## 0.16.18
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-info@0.13.11
+    - @sap-ux/project-input-validator@0.6.50
+
 ## 0.16.17
 
 ### Patch Changes

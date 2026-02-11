@@ -1,5 +1,71 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.122
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-info@0.13.12
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/ui5-library-inquirer@0.6.61
+    - @sap-ux/ui5-library-writer@0.6.53
+    - @sap-ux/nodejs-utils@0.2.14
+
+## 0.1.121
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+- Updated dependencies [2bffca7]
+    - @sap-ux/ui5-library-writer@0.6.52
+
+## 0.1.120
+
+### Patch Changes
+
+- @sap-ux/ui5-library-inquirer@0.6.60
+
+## 0.1.119
+
+### Patch Changes
+
+- @sap-ux/ui5-library-inquirer@0.6.59
+- @sap-ux/fiori-generator-shared@0.13.67
+- @sap-ux/ui5-library-writer@0.6.51
+
+## 0.1.118
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.66
+- @sap-ux/ui5-library-writer@0.6.50
+- @sap-ux/ui5-library-inquirer@0.6.58
+
+## 0.1.117
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.65
+- @sap-ux/ui5-library-inquirer@0.6.57
+
+## 0.1.116
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.64
+- @sap-ux/ui5-library-inquirer@0.6.56
+
+## 0.1.115
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/nodejs-utils@0.2.13
+    - @sap-ux/ui5-info@0.13.11
+    - @sap-ux/ui5-library-writer@0.6.49
+    - @sap-ux/ui5-library-inquirer@0.6.55
+
 ## 0.1.114
 
 ### Patch Changes

@@ -1,5 +1,54 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.69
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/system-access@0.6.50
+    - @sap-ux/project-access@1.35.1
+
+## 0.2.68
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/system-access@0.6.49
+
+## 0.2.67
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/system-access@0.6.49
+
+## 0.2.66
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.49
+- @sap-ux/ui5-config@0.29.15
+
+## 0.2.65
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.48
+- @sap-ux/ui5-config@0.29.15
+
+## 0.2.64
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/system-access@0.6.47
+
 ## 0.2.63
 
 ### Patch Changes

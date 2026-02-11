@@ -1,5 +1,32 @@
 # @sap-ux/project-access
 
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+
+## 1.35.0
+
+### Minor Changes
+
+- a5ecd7f: Moved the minimal set of helper functions needed for getTableCapabilitiesByEntitySet into project-access, added that new capability aggregator, and refactored odata-service-inquirer and inquirer-common to use the new API.
+
+## 1.34.7
+
+### Patch Changes
+
+- 467e6aa: Fixed: `getSpecification` fails with `ENOENT: no such file or directory, open '/home/user/.fioritools/specification-dist-tags.json'"` if .fioritools does not exist before the call.
+
+## 1.34.6
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/ui5-config@0.29.15
+
 ## 1.34.5
 
 ### Patch Changes

@@ -1,5 +1,71 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.48
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/system-access@0.6.50
+    - @sap-ux/project-input-validator@0.6.53
+
+## 0.17.47
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/inquirer-common@0.11.1
+
+## 0.17.46
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/inquirer-common@0.11.0
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/project-input-validator@0.6.52
+    - @sap-ux/system-access@0.6.49
+
+## 0.17.45
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.10
+- @sap-ux/project-input-validator@0.6.51
+- @sap-ux/system-access@0.6.49
+- @sap-ux/inquirer-common@0.10.26
+
+## 0.17.44
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.49
+- @sap-ux/ui5-config@0.29.15
+- @sap-ux/inquirer-common@0.10.25
+
+## 0.17.43
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.48
+- @sap-ux/ui5-config@0.29.15
+- @sap-ux/inquirer-common@0.10.24
+
+## 0.17.42
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/inquirer-common@0.10.23
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/project-input-validator@0.6.50
+    - @sap-ux/system-access@0.6.47
+
 ## 0.17.41
 
 ### Patch Changes
