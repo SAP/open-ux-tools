@@ -163,7 +163,7 @@ function getValueHelpChoices(
     Object.entries(uniqueByServicePaths).forEach(([path, serviceRefs]) => {
         serviceRefs.forEach((ref) => {
             if (ref.type === 'value-list') {
-                const targetEntity = ref.target.match(/[^\/]+$/)?.[0];
+                const targetEntity = ref.target.split('/').pop();
                 if (targetEntity) {
                     if (choiceNameByPathAndEntity[path]?.[targetEntity]) {
                         choiceNameByPathAndEntity[path][targetEntity].push(ref);

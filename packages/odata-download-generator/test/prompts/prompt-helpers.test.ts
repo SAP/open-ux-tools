@@ -23,7 +23,6 @@ describe('Test prompt-helpers', () => {
                     latest: '1.142.1'
                 };
             }
-            console.log('Original readJSON', path);
             return await readJSONOriginal(path);
         });
         // Load the test app
