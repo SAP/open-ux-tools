@@ -647,8 +647,12 @@ async function loadGlobalCdsModule(): Promise<CdsFacade> {
         globalCdsModulePromise ??
         new Promise<CdsFacade>((resolve, reject) => {
             return getCdsVersionInfo().then((versions) => {
-                if (versions.home) {
-                    resolve(loadModuleFromProject<CdsFacade>(versions.home, '@sap/cds'));
+                // Handle output of `cds --version`
+                // cds >= 9.7 uses "cds.home"
+                // cds <= 9.6 uses "home"
+                const home = versions['cds.home'] ?? versions.home;
+                if (home) {
+                    resolve(loadModuleFromProject<CdsFacade>(home, '@sap/cds'));
                 } else {
                     reject(
                         new Error(
@@ -685,8 +689,23 @@ async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> 
             if (out) {
                 const versions: Record<string, string> = {};
                 for (const line of out.split('\n').filter((v) => v)) {
-                    const [key, value] = line.split(': ');
-                    versions[key] = value;
+                    let key: string | undefined;
+                    let value: string | undefined;
+                    // Try parse new 'cds --version' output
+                    if (line.startsWith(' ')) {
+                        const formattedLine = line.trim();
+                        // Find first double space to detect separator
+                        const separatorIndex = formattedLine.indexOf('  ');
+                        key = formattedLine.slice(0, separatorIndex).trim();
+                        value = formattedLine.slice(separatorIndex).trim();
+                    }
+                    if (key === undefined || value == undefined) {
+                        // Old cds output format
+                        [key, value] = line.split(': ');
+                    }
+                    if (key !== undefined && value !== undefined) {
+                        versions[key] = value;
+                    }
                 }
                 resolve(versions);
             } else {

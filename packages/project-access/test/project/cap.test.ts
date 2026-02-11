@@ -817,6 +817,64 @@ describe('Test getCapEnvironment()', () => {
         expect(loadSpy).toHaveBeenNthCalledWith(2, 'GLOBAL_ROOT', '@sap/cds');
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
+
+    describe('Handle different outputs of "cds --version"', () => {
+        const testCases = [
+            {
+                name: 'Output of cds version below 9.7',
+                versionOutput: `
+@sap/cds: 9.6.2
+@sap/cds-compiler: 6.6.0
+@sap/cds-dk (global): 9.6.1
+Node.js: v20.18.1
+home: GLOBAL_ROOT
+`,
+                cdsHomeFolderPath: 'GLOBAL_ROOT'
+            },
+            {
+                name: 'Output of cds version above 9.7',
+                versionOutput: `
+@sap/cds: 9.6.2
+@sap/cds-compiler: 6.6.0
+@sap/cds-dk (global): 9.6.1
+Node.js: v20.18.1
+home: GLOBAL_ROOT
+`,
+                cdsHomeFolderPath: 'GLOBAL_ROOT'
+            },
+            {
+                name: 'Output of cds version above 9.7 - home path with multiple spaces',
+                versionOutput: `
+  @sap/cds-dk (global)  9.7.0    CDS_DK
+  cds.home                       ${join('GLOBAL_ROOT', 'my  test  folder')}
+  cds.root                       CDS_ROOT
+  npm root -l                    ${join('GLOBAL_ROOT', 'node_modules')}
+  Node.js               20.18.1  ${join('nodejs', 'node.exe')}
+`,
+                cdsHomeFolderPath: join('GLOBAL_ROOT', 'my  test  folder')
+            }
+        ];
+        test.each(testCases)('$name', async ({ versionOutput, cdsHomeFolderPath }) => {
+            // Mock setup
+            const spawnSpy = jest
+                .spyOn(childProcessMock, 'spawn')
+                .mockReturnValueOnce(getChildProcessMock(versionOutput));
+            const forSpy = jestMockEnv.for;
+            const loadSpy = jest
+                .spyOn(projectModuleMock, 'loadModuleFromProject')
+                .mockRejectedValueOnce('ERROR_LOCAL')
+                .mockResolvedValueOnce({ default: { env: { for: forSpy } } });
+
+            // Test execution
+            await getCapEnvironment('PROJECT_ROOT');
+
+            // Result check
+            expect(spawnSpy).toHaveBeenCalledWith('cds', ['--version'], { cwd: undefined, shell: true });
+            expect(loadSpy).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
+            expect(loadSpy).toHaveBeenNthCalledWith(2, cdsHomeFolderPath, '@sap/cds');
+            expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
+        });
+    });
 });
 
 describe('toReferenceUri', () => {
