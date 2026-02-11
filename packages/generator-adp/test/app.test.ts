@@ -187,7 +187,6 @@ jest.mock('../src/utils/workspace', () => ({
     handleWorkspaceFolderChoice: jest.fn()
 }));
 
-
 const originalCwd = process.cwd();
 const testOutputDir = join(__dirname, 'test-output');
 const generatorPath = join(__dirname, '../src/app/index.ts');
