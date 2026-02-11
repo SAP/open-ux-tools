@@ -19,7 +19,7 @@ Example:
         .option('-s, --simulate', 'Simulate only. Do not write to the config file. Also, sets `--verbose`')
         .option('-v, --verbose', 'Show verbose information.')
         .option(
-            '-c, --config',
+            '-c, --config <string>',
             'The name of the SAP Fiori tools eslint plugin configuration to be used (default is `recommended`).'
         )
         .action(async (path, options) => {
