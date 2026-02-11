@@ -6,8 +6,10 @@ settings:
 
 overrides:
   '@storybook/manager-api>store2': 2.14.4
+  '@sap/bas-sdk>axios': ^1.13.5
+  '@sap-ux/ui5-config>axios': ^1.13.5
+  '@sap/service-provider-apis>axios': ^1.13.5
   '@storybook/react-webpack5>webpack': '>=5.104.1'
-  axios@<1.12.0: ^1.12.2
   esbuild@<=0.24.2: '>=0.25.0'
   fast-xml-parser@>=4.3.6 <=5.3.3: '>=5.3.4'
   lodash@>=4.0.0 <=4.17.22: '>=4.17.23'
@@ -221,8 +223,8 @@ importers:
         specifier: 5.2.11
         version: 5.2.11
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
 
   examples/ui-prompting-examples:
     dependencies:
@@ -406,8 +408,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
 
   packages/abap-deploy-config-sub-generator:
     dependencies:
@@ -652,8 +654,8 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -829,8 +831,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -850,8 +852,8 @@ importers:
         specifier: 0.8.10
         version: 0.8.10
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       detect-content-type:
         specifier: 1.2.0
         version: 1.2.0
@@ -981,8 +983,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       http-proxy-middleware:
         specifier: 3.0.5
         version: 3.0.5
@@ -1021,8 +1023,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
     devDependencies:
       '@sap-ux/logger':
         specifier: workspace:*
@@ -1709,8 +1711,8 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -1761,8 +1763,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       glob-gitignore:
         specifier: 1.0.14
         version: 1.0.14
@@ -2866,8 +2868,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -3175,8 +3177,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       axios-logger:
         specifier: 2.8.1
         version: 2.8.1
@@ -3304,8 +3306,8 @@ importers:
         specifier: 2.7.1
         version: 2.7.1
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -3594,8 +3596,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       express:
         specifier: 4.22.1
         version: 4.22.1
@@ -3998,8 +4000,8 @@ importers:
         specifier: 2.9.8
         version: 2.9.8
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       performance-now:
         specifier: 2.1.0
         version: 2.1.0
@@ -4551,8 +4553,8 @@ importers:
         specifier: 8.17.1
         version: 8.17.1
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: ^1.13.5
+        version: 1.13.5(debug@4.4.3)
       js-yaml:
         specifier: 4.1.1
         version: 4.1.1
@@ -4582,8 +4584,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       axios:
-        specifier: 1.12.2
-        version: 1.12.2(debug@4.4.3)
+        specifier: 1.13.5
+        version: 1.13.5(debug@4.4.3)
       semver:
         specifier: 7.7.3
         version: 7.7.3
@@ -7636,7 +7638,7 @@ packages:
       '@babel/core': 7.28.5
       '@babel/helper-plugin-utils': 7.27.1
       '@babel/helper-remap-async-to-generator': 7.27.1(@babel/core@7.28.5)
-      '@babel/traverse': 7.29.0
+      '@babel/traverse': 7.28.5
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -13828,7 +13830,7 @@ packages:
       '@sap/xsenv': 6.0.0
       '@sap/xssec': 4.11.0
       async-retry: 1.3.3
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       jsonwebtoken: 9.0.2
     transitivePeerDependencies:
       - debug
@@ -13841,7 +13843,7 @@ packages:
       '@sap-cloud-sdk/connectivity': 4.1.2
       '@sap-cloud-sdk/resilience': 4.1.2
       '@sap-cloud-sdk/util': 4.1.2
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -13854,7 +13856,7 @@ packages:
       '@sap-cloud-sdk/http-client': 4.1.2
       '@sap-cloud-sdk/resilience': 4.1.2
       '@sap-cloud-sdk/util': 4.1.2
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -13865,7 +13867,7 @@ packages:
     dependencies:
       '@sap-cloud-sdk/util': 4.1.2
       async-retry: 1.3.3
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       opossum: 9.0.0
     transitivePeerDependencies:
       - debug
@@ -13874,7 +13876,7 @@ packages:
   /@sap-cloud-sdk/util@4.1.2:
     resolution: {integrity: sha512-lsxsBc60pokMDCHvs0/CXTa6fjVEMzTeSyB8CerG6L0sN4sK8Ppm63VVcSh/E+X+U4aVMHmLuOmmd6XyLGAc3Q==}
     dependencies:
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       chalk: 4.1.2
       logform: 2.7.0
       voca: 1.4.1
@@ -14215,7 +14217,7 @@ packages:
     dependencies:
       '@sap-ux/yaml': 0.17.3
       ajv: 8.17.1
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       js-yaml: 4.1.1
       lodash: 4.17.23
       semver: 7.5.4
@@ -14229,7 +14231,7 @@ packages:
     dependencies:
       '@sap-ux/yaml': 0.17.3
       ajv: 8.17.1
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       js-yaml: 4.1.1
       lodash: 4.17.23
       semver: 7.5.4
@@ -14281,7 +14283,7 @@ packages:
   /@sap/bas-sdk@3.12.0:
     resolution: {integrity: sha512-7PHLhBtJYNAYkgCuLz8TPHuIYhqlKZxqyT0MAtF05bNLKOLpcMhX3OG0FyypVWmjhGo9qKeG78NTlmMHOMcsQg==}
     dependencies:
-      axios: 1.12.0
+      axios: 1.13.5(debug@4.4.3)
       cross-spawn: 7.0.5
       fs-extra: 11.2.0
       jwt-decode: 4.0.0
@@ -14297,7 +14299,7 @@ packages:
   /@sap/bas-sdk@3.13.2:
     resolution: {integrity: sha512-tuWNJ6Y3e9EjrYJoxub9PsHIson+mWj01zIxoT/SpVx/LQUHPY2i7o7GrP4C54tDILUPAG3EBT3RBIS+NVtNuQ==}
     dependencies:
-      axios: 1.13.2
+      axios: 1.13.5(debug@4.4.3)
       cross-spawn: 7.0.6
       fs-extra: 11.3.2
       jwt-decode: 4.0.0
@@ -14338,7 +14340,7 @@ packages:
   /@sap/service-provider-apis@2.5.1:
     resolution: {integrity: sha512-KSZTBxs2PLG8FntD0QXcOF66P0REg6o2/vzhv+xNz35lTbtmvfERhX2wzU1ZqlWIFQ92KQwxqy/T1IuGlWb/1w==}
     dependencies:
-      axios: 1.12.0
+      axios: 1.13.5(debug@4.4.3)
       lodash: 4.17.23
       xml2js: 0.6.2
     transitivePeerDependencies:
@@ -14749,7 +14751,7 @@ packages:
       '@slack/types': 2.19.0
       '@types/node': 20.0.0
       '@types/retry': 0.12.0
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       eventemitter3: 5.0.4
       form-data: 4.0.4
       is-electron: 2.2.2
@@ -18568,33 +18570,14 @@ packages:
       dateformat: 3.0.3
     dev: false
 
-  /axios@1.12.0:
-    resolution: {integrity: sha512-oXTDccv8PcfjZmPGlWsPSwtOJCZ/b6W5jAMCNcfwJbCzDckwG0jrYJFaWH1yvivfCXjVzV/SPDEhMB3Q+DSurg==}
+  /axios@1.13.5(debug@4.4.3):
+    resolution: {integrity: sha512-cz4ur7Vb0xS4/KUN0tPWe44eqxrIu31me+fbang3ijiNscE129POzipJJA6zniq2C/Z6sJCjMimjS8Lc/GAs8Q==}
     dependencies:
-      follow-redirects: 1.15.6(debug@4.4.3)
-      form-data: 4.0.4
+      follow-redirects: 1.15.11(debug@4.4.3)
+      form-data: 4.0.5
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
-
-  /axios@1.12.2(debug@4.4.3):
-    resolution: {integrity: sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==}
-    dependencies:
-      follow-redirects: 1.15.6(debug@4.4.3)
-      form-data: 4.0.4
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-
-  /axios@1.13.2:
-    resolution: {integrity: sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==}
-    dependencies:
-      follow-redirects: 1.15.6(debug@4.4.3)
-      form-data: 4.0.4
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-    dev: false
 
   /azure-devops-node-api@12.5.0:
     resolution: {integrity: sha512-R5eFskGvOm3U/GzeAuxRkUsAl0hrAwGgWn6zAd2KrZmrEhWZVqLew4OOupbQlXUuojUzpGtq62SmdhJ06N88og==}
@@ -22866,6 +22849,17 @@ packages:
       - supports-color
     dev: false
 
+  /follow-redirects@1.15.11(debug@4.4.3):
+    resolution: {integrity: sha512-deG2P0JfjrTxl50XGCDyfI97ZGVCxIpfKYmfyrQ54n5FO/0gfIES8C/Psl6kWVDolizcaaxZJnTS0QSMxvnsBQ==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.4.3
+
   /follow-redirects@1.15.6(debug@4.4.3):
     resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
@@ -22939,6 +22933,16 @@ packages:
 
   /form-data@4.0.4:
     resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
+    engines: {node: '>= 6'}
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      hasown: 2.0.2
+      mime-types: 2.1.35
+
+  /form-data@4.0.5:
+    resolution: {integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==}
     engines: {node: '>= 6'}
     dependencies:
       asynckit: 0.4.0
@@ -24042,7 +24046,7 @@ packages:
       '@types/debug': 4.1.12
       '@types/node': 18.19.130
       '@types/tough-cookie': 4.0.2
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       camelcase: 6.3.0
       debug: 4.4.3
       dotenv: 16.6.1
@@ -24052,7 +24056,7 @@ packages:
       isstream: 0.1.2
       jsonwebtoken: 9.0.3
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.12.2)
+      retry-axios: 2.6.0(axios@1.13.5)
       tough-cookie: 4.1.3
     transitivePeerDependencies:
       - supports-color
@@ -27146,7 +27150,7 @@ packages:
     resolution: {integrity: sha512-Be/+H9p58qVJRou8lthyWT4VSyifBdh/SnbVuZ7NNQQDvmOk/cKLnFeaPIel1Vk2FdojNLlTsCAlO+BElXcWDg==}
     requiresBuild: true
     dependencies:
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       tar: 7.5.7
       unzip-stream: 0.3.4
     transitivePeerDependencies:
@@ -27831,7 +27835,7 @@ packages:
       '@yarnpkg/lockfile': 1.1.0
       '@yarnpkg/parsers': 3.0.2
       '@zkochan/js-yaml': 0.0.7
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 8.0.1
@@ -30781,14 +30785,14 @@ packages:
     engines: {node: '>=0.12'}
     dev: true
 
-  /retry-axios@2.6.0(axios@1.12.2):
+  /retry-axios@2.6.0(axios@1.13.5):
     resolution: {integrity: sha512-pOLi+Gdll3JekwuFjXO3fTq+L9lzMQGcSq7M5gIjExcl3Gu1hd4XXuf5o3+LuSBsaULQH7DiNbsqPd1chVpQGQ==}
     engines: {node: '>=10.7.0'}
     requiresBuild: true
     peerDependencies:
-      axios: ^1.12.2
+      axios: '*'
     dependencies:
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
     dev: true
     optional: true
 
@@ -33906,7 +33910,7 @@ packages:
     resolution: {integrity: sha512-wCQcHkRazgjG5XoAq9jbTMLpNIjoSlZslrJ2+N9MxDsGEv1HnFoVjOCexL0ESva7Y9cu350j+DWADdk54s4AFQ==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       joi: 17.11.0
       lodash: 4.17.23
       minimist: 1.2.8
@@ -33919,7 +33923,7 @@ packages:
     resolution: {integrity: sha512-8f9LugAGo4PSc0aLbpKVCVtzayd36sSCp4WLpVngkYq6PK87H79zt77/tlCU6eKCLqR46iFvcl0PU5f+DmtkwA==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      axios: 1.12.2(debug@4.4.3)
+      axios: 1.13.5(debug@4.4.3)
       joi: 17.13.3
       lodash: 4.17.23
       minimist: 1.2.8
