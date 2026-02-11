@@ -10,7 +10,7 @@ import { join } from 'path';
 import prettifyXml from 'prettify-xml';
 import type { GeneratorOptions } from 'yeoman-generator';
 import Generator from 'yeoman-generator';
-import { initI18nODataDownloadGnerator, t } from '../utils/i18n';
+import { initI18nODataDownloadGenerator, t } from '../utils/i18n';
 import type { EntitySetsFlat } from './odata-query';
 import { getODataDownloaderPrompts, promptNames } from './prompts/prompts';
 import { type ReferencedEntities } from './types';
@@ -123,7 +123,7 @@ export class ODataDownloadGenerator extends Generator {
 
     async initializing(): Promise<void> {
         // Ensure i18n bundles are loaded, default loading is unreliable
-        await initI18nODataDownloadGnerator();
+        await initI18nODataDownloadGenerator();
 
         ODataDownloadGenerator._logger = this._configureLogging(
             this.options.logLevel,

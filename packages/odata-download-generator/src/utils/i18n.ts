@@ -8,7 +8,7 @@ export const odataDownloadGenerator = 'odata-dowload-generator';
 /**
  * Initialize i18next with the translations for this module.
  */
-export async function initI18nODataDownloadGnerator(): Promise<void> {
+export async function initI18nODataDownloadGenerator(): Promise<void> {
     await i18n.init({
         resources: {
             en: {
@@ -37,6 +37,6 @@ export function t(key: string, options?: TOptions): string {
     return i18n.t(key, options);
 }
 
-initI18nODataDownloadGnerator().catch(() => {
+initI18nODataDownloadGenerator().catch(() => {
     // Needed for lint
 });

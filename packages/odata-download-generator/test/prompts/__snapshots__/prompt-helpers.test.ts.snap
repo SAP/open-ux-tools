@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Test prompt-helpers should create entity set choices based on app model (from specification) 1`] = `
+exports[`Test createEntityChoices should create entity set choices based on app model (from specification) 1`] = `
 {
   "choices": [
     {

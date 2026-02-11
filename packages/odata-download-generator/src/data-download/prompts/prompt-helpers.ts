@@ -40,12 +40,7 @@ export async function getData(
             );
 
             if (answers[promptNames.confirmDownload] === true) {
-                // this.state.appEntities = appConfig.referencedEntities;
                 const selectedEntities = answers[promptNames.relatedEntitySelection] as SelectedEntityAnswer[];
-                // const selectedEntities = selectedEntitiesAsJsonStrings.map((entityAsJSONString) => {
-                //     //return JSON.parse(entityAsJSONString) as SelectedEntityAnswer;
-                //     return entityAsJSONString as SelectedEntityAnswer;
-                // });
                 const { odataResult } = await fetchData(
                     appConfig.referencedEntities,
                     odataServiceProvider!,
@@ -133,7 +128,7 @@ function getEntitySelectionChoices(
     if (navEntities) {
         // Check the entity types assigned annotations for cross refs to other entities that should be selected by default
         // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-select
-        // todo: memoize, we will hit the szme type multiple times
+        // todo: memoize, we will hit the same type multiple times
         const defaultSelectionPaths = rootEntity.entityType ? getDefaultSelectionPaths(rootEntity.entityType) : [];
         for (const navEntity of navEntities) {
             const expandPath = navEntity.entityPath;
@@ -152,7 +147,7 @@ function getEntitySelectionChoices(
                     entityPath: navEntity.entityPath,
                     entitySetName: navEntity.entitySetName,
                     defaultSelected:
-                        defaultSelectionPaths.includes(navEntity.entityPath) || poEntityPaths?.includes(fullPath)
+                        defaultSelectionPaths.includes(navEntity.entityPath) || !!poEntityPaths?.includes(fullPath)
                 }
             };
             const choiceId = `${fullPath}`;
@@ -161,7 +156,7 @@ function getEntitySelectionChoices(
             }
             choices.push({
                 name: choiceId,
-                value: entityChoice, //JSON.stringify(entityChoice),
+                value: entityChoice,
                 checked: entityChoice.entity.defaultSelected
             });
             entitySetsFlat[expandPath] = navEntity.entitySetName; // Can overwrite since we will only need to know each unique entity set name later
