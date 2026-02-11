@@ -42,6 +42,7 @@ export const RouterModuleType = {
     AppFront: 'appFront'
 } as const;
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];
 export interface MTABaseConfig {
     mtaId: string;
@@ -80,6 +81,7 @@ export interface CFConfig extends CFAppConfig, CFBaseConfig {
     firstServicePathSegment?: string;
     isMtaRoot?: boolean;
 }
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface CAPConfig extends Omit<CFBaseConfig, 'abapServiceProvider'> {}
 export const enum ApiHubType {
     apiHub = 'API_HUB',

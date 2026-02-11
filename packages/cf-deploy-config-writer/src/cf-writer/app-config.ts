@@ -68,9 +68,7 @@ import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type M
  * @returns file system reference
  */
 export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     if (logger) {
         LoggerHelper.logger = logger;
     }
@@ -107,16 +105,16 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
 
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
-        destinationName: cfAppConfig.destinationName || destination,
+        destinationName: cfAppConfig.destinationName ?? destination,
         addManagedAppRouter: cfAppConfig.addManagedAppRouter,
         addAppFrontendRouter: cfAppConfig.addAppFrontendRouter,
         addMtaDestination: cfAppConfig.addMtaDestination ?? false,
         cloudServiceName: cfAppConfig.cloudServiceName,
         lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
         isMtaRoot: hasRoot ?? false,
-        serviceHost: cfAppConfig.serviceHost || serviceHost,
+        serviceHost: cfAppConfig.serviceHost ?? serviceHost,
         rootPath: rootPath.replace(/\/$/, ''),
-        destinationAuthentication: cfAppConfig.destinationAuthentication || destinationAuthentication,
+        destinationAuthentication: cfAppConfig.destinationAuthentication ?? destinationAuthentication,
         isDestinationFullUrl: cfAppConfig.isDestinationFullUrl ?? destinationIsFullUrl,
         apiHubConfig: cfAppConfig.apiHubConfig,
         firstServicePathSegment:

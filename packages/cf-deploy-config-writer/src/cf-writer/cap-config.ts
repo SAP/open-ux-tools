@@ -18,9 +18,7 @@ import { MTA_FILE_OPERATION_DELAY_MS } from '../constants';
  * @returns file system reference
  */
 export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     if (logger) {
         LoggerHelper.logger = logger;
     }

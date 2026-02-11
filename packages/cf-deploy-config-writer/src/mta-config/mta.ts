@@ -507,11 +507,11 @@ export class MtaConfig {
         let cloudServiceName;
         this.modules.forEach((contentModule) => {
             const moduleDestinations: MTADestinationType[] =
-                contentModule.parameters?.content?.instance?.destinations || [];
+                contentModule.parameters?.content?.instance?.destinations ?? [];
             if (contentModule.type === 'com.sap.application.content' && moduleDestinations.length) {
                 // In theory, if there is more than one, it should be same!
                 moduleDestinations.some((destination: MTADestinationType) => {
-                    cloudServiceName = destination['sap.cloud.service'] || undefined;
+                    cloudServiceName = destination['sap.cloud.service'];
                     return !!cloudServiceName;
                 });
             }

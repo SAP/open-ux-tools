@@ -214,7 +214,7 @@ export async function generateSupportingConfig(
  */
 export function setMtaDefaults(config: CFBaseConfig): void {
     config.mtaPath = config.mtaPath.replace(/\/$/, '');
-    config.addConnectivityService ||= false;
+    config.addConnectivityService ??= false;
     config.mtaId = toMtaModuleName(config.mtaId);
 }
 
