@@ -1,18 +1,16 @@
+import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
 import { createApplicationAccess, FileName, getSpecificationModuleFromCache } from '@sap-ux/project-access';
-import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { createEntityChoices, getSpecification } from '../../src/data-download/prompts/prompt-helpers';
-import { getEntityModel } from '../../src/data-download/utils';
 import * as commandMock from '@sap-ux/project-access/dist/command';
 import * as fileMock from '@sap-ux/project-access/dist/file';
-import * as fs from 'node:fs';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
-import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { createEntityChoices } from '../../src/data-download/prompts/prompt-helpers';
+import { getEntityModel } from '../../src/data-download/utils';
 
 const readJSONOriginal = fileMock.readJSON;
 
-jest.mock('node:fs', () => {
+/* jest.mock('node:fs', () => {
     const originalFs = jest.requireActual('node:fs');
     return {
         ...originalFs,
@@ -23,7 +21,7 @@ jest.mock('node:fs', () => {
             return originalFs.existsSync(path); // Use original for all other paths
         })
     };
-});
+}); */
 
 describe('Test prompt-helpers', () => {
     test('should create entity set choices based on app model (from specification)', async () => {
