@@ -696,8 +696,10 @@ async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> 
                         const formattedLine = line.trim();
                         // Find first double space to detect separator
                         const separatorIndex = formattedLine.indexOf('  ');
-                        key = formattedLine.slice(0, separatorIndex).trim();
-                        value = formattedLine.slice(separatorIndex).trim();
+                        if (separatorIndex !== -1) {
+                            key = formattedLine.slice(0, separatorIndex).trim();
+                            value = formattedLine.slice(separatorIndex).trim();
+                        }
                     }
                     if (key === undefined || value == undefined) {
                         // Old cds output format(cds version < 9.7.0)
