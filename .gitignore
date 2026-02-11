@@ -182,3 +182,14 @@ nx-cloud.env
 
 # act - Local GitHub Actions runner
 .act
+
+# AI Coding Agents
+.claude/settings.local.json
+CLAUDE.local.md
+.cursorignore
+.codeiumignore
+.aiignore
+
+# Local Model/Agent Caches
+.anthropic/
+.claude/cache/
