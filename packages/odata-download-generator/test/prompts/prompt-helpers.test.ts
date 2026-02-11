@@ -10,19 +10,6 @@ import { getEntityModel } from '../../src/data-download/utils';
 
 const readJSONOriginal = fileMock.readJSON;
 
-/* jest.mock('node:fs', () => {
-    const originalFs = jest.requireActual('node:fs');
-    return {
-        ...originalFs,
-        existsSync: jest.fn().mockImplementation((path) => {
-            if (path.toString().endsWith(FileName.SpecificationDistTags)) {
-                return true;
-            }
-            return originalFs.existsSync(path); // Use original for all other paths
-        })
-    };
-}); */
-
 describe('Test prompt-helpers', () => {
     test('should create entity set choices based on app model (from specification)', async () => {
         const startTime = Date.now();
@@ -41,25 +28,16 @@ describe('Test prompt-helpers', () => {
         });
         // Load the test app
         const appPath = join(__dirname, '../test-data/test-apps/travel');
-        const time1 = Date.now();
-        console.log('Time 1:', time1 - startTime);
+
         const appAccess = await createApplicationAccess(appPath);
-        if (appAccess) {
-            console.log('Created app access');
-        }
-        const time2 = Date.now();
-        console.log('Time 2:', time2 - time1);
+
         // Usually loaded from backend, use local copy for testing
         const metadata = await readFile(join(appPath, '/webapp/localService/mainService/metadata.xml'), 'utf8');
-        const time3 = Date.now();
-        console.log('Time 3:', time3 - time2);
+
         const logger = new ToolsLogger({ logLevel: LogLevel.Debug, transports: [new ConsoleTransport()] });
+        // Use non-mocked spec to ensure integration
         const specResult = await getSpecificationModuleFromCache(appAccess.app.appRoot, { logger });
-        const time4 = Date.now();
-        console.log('Time 4:', time4 - time3);
-        if (specResult) {
-            console.log('Got spec result');
-        }
+
         if (typeof specResult === 'string') {
             throw new Error(specResult);
         }
@@ -71,5 +49,5 @@ describe('Test prompt-helpers', () => {
 
         const entityChoices = createEntityChoices(entityModel.listEntity, entityModel?.pageObjectEntities);
         expect(entityChoices).toMatchSnapshot();
-    }, 99999999);
+    }, 900000); // Very long spec load time on Windows
 });
