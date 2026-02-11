@@ -138,7 +138,7 @@ export function getValueHelpDownloadPrompt(
 
     let externalServiceRefs: ExternalServiceReference[];
 
-    const confirmQuestion: ConfirmQuestion = {
+    const valueHelpPrompt: ConfirmQuestion = {
         when: (answers: Record<string, any> | undefined) => {
             const service = answers?.[servicePromptName] as ServiceAnswer | undefined;
             const servicePath = service?.servicePath;
@@ -163,7 +163,7 @@ export function getValueHelpDownloadPrompt(
         }
     };
 
-    const questions: Question[] = [confirmQuestion];
+    const questions: Question[] = [valueHelpPrompt];
 
     // Add CLI-specific hidden prompt to handle the download
     // This is necessary because validate functions don't execute for confirm prompts in CLI mode
