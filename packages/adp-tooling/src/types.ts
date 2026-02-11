@@ -1094,6 +1094,10 @@ export interface CfAdpWriterConfig {
          * OAuth paths extracted from xs-app.json routes that have a source property.
          */
         oauthPaths?: string[];
+        /**
+         * Business service instance keys.
+         */
+        serviceInfo?: ServiceInfo | null;
     };
     project: {
         name: string;
@@ -1132,6 +1136,7 @@ export interface CreateCfConfigParams {
     publicVersions: UI5Version;
     packageJson: Package;
     toolsId: string;
+    serviceInfo?: ServiceInfo | null;
 }
 
 export const AppRouterType = {

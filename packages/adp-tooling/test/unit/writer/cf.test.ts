@@ -35,6 +35,19 @@ const mockGetBaseAppId = getBaseAppId as jest.MockedFunction<typeof getBaseAppId
 const mockRunBuild = runBuild as jest.MockedFunction<typeof runBuild>;
 const mockReadUi5Yaml = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
 
+const mockServiceKeys = [
+    {
+        credentials: {
+            uaa: {} as any,
+            uri: 'test-uri',
+            endpoints: {},
+            'html5-apps-repo': {
+                app_host_id: 'host-123'
+            }
+        }
+    }
+];
+
 const config: CfAdpWriterConfig = {
     app: {
         id: 'my.test.cf.app',
@@ -66,7 +79,11 @@ const config: CfAdpWriterConfig = {
         html5RepoRuntimeGuid: 'runtime-guid',
         approuter: AppRouterType.STANDALONE,
         businessService: 'test-service',
-        businessSolutionName: 'test-solution'
+        businessSolutionName: 'test-solution',
+        serviceInfo: {
+            serviceKeys: mockServiceKeys,
+            serviceInstance: { guid: 'service-guid', name: 'service-name' }
+        }
     },
     project: {
         name: 'test-cf-project',
@@ -218,19 +235,6 @@ describe('CF Writer', () => {
             space: { GUID: 'space-guid', Name: 'test-space' },
             token: 'test-token'
         };
-
-        const mockServiceKeys = [
-            {
-                credentials: {
-                    uaa: {} as any,
-                    uri: 'test-uri',
-                    endpoints: {},
-                    'html5-apps-repo': {
-                        app_host_id: 'host-123'
-                    }
-                }
-            }
-        ];
 
         const mockUi5AppInfo: CfUi5AppInfo = {
             asyncHints: {
