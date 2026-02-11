@@ -30,7 +30,7 @@ describe('Test prompt-helpers', () => {
         const startTime = Date.now();
         // Prevent spec from fetching versions and writing on test jobs
         jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"latest": "1.142.1"}');
-        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce()
+        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
 
         jest.spyOn(fileMock, 'readJSON').mockImplementation(async (path) => {
             if (path.endsWith(FileName.SpecificationDistTags)) {
