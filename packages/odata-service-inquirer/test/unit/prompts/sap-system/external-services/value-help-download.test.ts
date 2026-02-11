@@ -47,11 +47,22 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
             Platform: 'CLI',
             OperatingSystem: 'test'
         }))
+    },
+    hostEnvironment: {
+        cli: { name: 'CLI', technical: 'CLI' },
+        vscode: { name: 'Visual Studio Code', technical: 'VSCode' },
+        bas: { name: 'SAP Business Application Studio', technical: 'SBAS' }
     }
+}));
+
+jest.mock('../../../../../src/utils', () => ({
+    ...jest.requireActual('../../../../../src/utils'),
+    getPromptHostEnvironment: jest.fn(() => ({ technical: 'vscode', name: 'VSCode' })) // Default to non-CLI for most tests
 }));
 
 const mockGetExternalServiceReferences = getExternalServiceReferences as jest.Mock;
 const mockSendTelemetryEvent = sendTelemetryEvent as jest.Mock;
+const mockGetPromptHostEnvironment = jest.requireMock('../../../../../src/utils').getPromptHostEnvironment;
 
 describe('getValueHelpDownloadPrompt', () => {
     let connectionValidator: ConnectionValidator;
@@ -116,11 +127,8 @@ describe('getValueHelpDownloadPrompt', () => {
         it('should return true when external service references exist', () => {
             mockGetExternalServiceReferences.mockReturnValue(mockExternalServiceRefs);
 
-            const prompt = getValueHelpDownloadPrompt(
-                connectionValidator,
-                'testNamespace',
-                convertedMetadataRef
-            ) as ConfirmQuestion;
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
+            const prompt = prompts[0] as ConfirmQuestion;
 
             const answers = {
                 'testNamespace:serviceSelection': {
@@ -140,11 +148,8 @@ describe('getValueHelpDownloadPrompt', () => {
         it('should return false when no external service references exist', () => {
             mockGetExternalServiceReferences.mockReturnValue([]);
 
-            const prompt = getValueHelpDownloadPrompt(
-                connectionValidator,
-                'testNamespace',
-                convertedMetadataRef
-            ) as ConfirmQuestion;
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
+            const prompt = prompts[0] as ConfirmQuestion;
 
             const answers = {
                 'testNamespace:serviceSelection': {
@@ -158,9 +163,10 @@ describe('getValueHelpDownloadPrompt', () => {
         });
 
         it('should return false when no converted metadata', () => {
-            const prompt = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', {
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', {
                 convertedMetadata: undefined
-            }) as ConfirmQuestion;
+            });
+            const prompt = prompts[0] as ConfirmQuestion;
 
             const answers = {
                 'testNamespace:serviceSelection': {
@@ -174,11 +180,8 @@ describe('getValueHelpDownloadPrompt', () => {
         });
 
         it('should return false when no service path', () => {
-            const prompt = getValueHelpDownloadPrompt(
-                connectionValidator,
-                'testNamespace',
-                convertedMetadataRef
-            ) as ConfirmQuestion;
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
+            const prompt = prompts[0] as ConfirmQuestion;
 
             const answers = {
                 'testNamespace:serviceSelection': {}
@@ -195,11 +198,8 @@ describe('getValueHelpDownloadPrompt', () => {
 
         beforeEach(() => {
             mockGetExternalServiceReferences.mockReturnValue(mockExternalServiceRefs);
-            prompt = getValueHelpDownloadPrompt(
-                connectionValidator,
-                'testNamespace',
-                convertedMetadataRef
-            ) as ConfirmQuestion;
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
+            prompt = prompts[0] as ConfirmQuestion;
 
             // Trigger when condition to set externalServiceRefs
             const answers = {
@@ -320,25 +320,29 @@ describe('getValueHelpDownloadPrompt', () => {
 
     describe('prompt properties', () => {
         it('should have correct prompt name without namespace', () => {
-            const prompt = getValueHelpDownloadPrompt(connectionValidator, undefined, convertedMetadataRef);
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, undefined, convertedMetadataRef);
+            const prompt = prompts[0];
 
             expect(prompt.name).toBe(promptNames.valueHelpDownload);
         });
 
         it('should have correct prompt name with namespace', () => {
-            const prompt = getValueHelpDownloadPrompt(connectionValidator, 'myNamespace', convertedMetadataRef);
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'myNamespace', convertedMetadataRef);
+            const prompt = prompts[0];
 
             expect(prompt.name).toBe(`myNamespace:${promptNames.valueHelpDownload}`);
         });
 
         it('should have confirm type', () => {
-            const prompt = getValueHelpDownloadPrompt(connectionValidator, undefined, convertedMetadataRef);
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, undefined, convertedMetadataRef);
+            const prompt = prompts[0];
 
             expect(prompt.type).toBe('confirm');
         });
 
         it('should have a message', () => {
-            const prompt = getValueHelpDownloadPrompt(connectionValidator, undefined, convertedMetadataRef);
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, undefined, convertedMetadataRef);
+            const prompt = prompts[0];
 
             expect(prompt.message).toBeDefined();
             expect(typeof prompt.message).toBe('string');
@@ -348,11 +352,8 @@ describe('getValueHelpDownloadPrompt', () => {
     describe('telemetry timing', () => {
         it('should measure download time accurately', async () => {
             mockGetExternalServiceReferences.mockReturnValue(mockExternalServiceRefs);
-            const prompt = getValueHelpDownloadPrompt(
-                connectionValidator,
-                'testNamespace',
-                convertedMetadataRef
-            ) as ConfirmQuestion;
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
+            const prompt = prompts[0] as ConfirmQuestion;
 
             // Trigger when condition
             const answers = {
@@ -381,6 +382,71 @@ describe('getValueHelpDownloadPrompt', () => {
             expect(successCall).toBeDefined();
 
             expect(successCall?.[0]?.measurements?.downloadTimeMs).toBeGreaterThanOrEqual(99);
+        });
+    });
+
+    describe('CLI-specific behavior', () => {
+        beforeEach(() => {
+            // Mock CLI environment for these tests
+            mockGetPromptHostEnvironment.mockReturnValue({ technical: 'CLI', name: 'CLI' });
+        });
+
+        afterEach(() => {
+            // Restore to default non-CLI environment
+            mockGetPromptHostEnvironment.mockReturnValue({ technical: 'VSCode', name: 'Visual Studio Code' });
+        });
+
+        it('should return 2 prompts in CLI mode (confirm + hidden download trigger)', () => {
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
+
+            // In CLI mode, should have 2 prompts: confirm + hidden download
+            expect(prompts.length).toBe(2);
+            expect(prompts[0].type).toBe('confirm');
+            expect(prompts[1].type).toBe('input'); // Hidden prompt
+            expect(prompts[1].name).toContain('cliValueHelpDownload');
+        });
+
+        it('should trigger download via hidden prompt when user confirms in CLI', async () => {
+            mockGetExternalServiceReferences.mockReturnValue(mockExternalServiceRefs);
+            mockAbapServiceProvider.fetchExternalServices.mockResolvedValue(mockExternalServiceMetadata);
+
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
+
+            // Simulate user flow in CLI
+            const confirmPrompt = prompts[0] as ConfirmQuestion;
+
+            // Trigger when condition to set externalServiceRefs
+            const answers = {
+                'testNamespace:serviceSelection': {
+                    servicePath: '/sap/opu/odata/sap/MAIN_SRV'
+                },
+                'testNamespace:valueHelpDownload': true // User answered "Y"
+            };
+
+            if (typeof confirmPrompt.when === 'function') {
+                confirmPrompt.when(answers);
+            }
+
+            // Execute the hidden prompt's when condition
+            const hiddenPrompt = prompts[1];
+            if (typeof hiddenPrompt.when === 'function') {
+                await hiddenPrompt.when(answers);
+            }
+
+            // Verify download was triggered
+            expect(mockAbapServiceProvider.fetchExternalServices).toHaveBeenCalledWith(mockExternalServiceRefs);
+            expect(PromptState.odataService.valueListMetadata).toEqual(mockExternalServiceMetadata);
+        });
+
+        it('should return 1 prompt in non-CLI mode (confirm with validate)', () => {
+            // Switch back to non-CLI
+            mockGetPromptHostEnvironment.mockReturnValue({ technical: 'VSCode', name: 'Visual Studio Code' });
+
+            const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
+
+            // In non-CLI mode, should have 1 prompt: confirm with validate function
+            expect(prompts.length).toBe(1);
+            expect(prompts[0].type).toBe('confirm');
         });
     });
 });
