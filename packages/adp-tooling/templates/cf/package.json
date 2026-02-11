@@ -29,7 +29,7 @@
 		"@ui5/cli": "^4.0.33",
 		"@ui5/task-adaptation": "1.6.0-rc.3",
 		"bestzip": "^2.2.1",
-		"rimraf": "^5.0.5",
+		"rimraf": "^6.1.2",
 		"mbt": "^1.2.34"
 	}
 }
