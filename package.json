@@ -79,6 +79,7 @@
     "pnpm": {
         "overrides": {
             "@storybook/manager-api>store2": "2.14.4",
+            "@storybook/react-webpack5>webpack": ">=5.104.1",
             "axios@<1.12.0": "^1.12.2",
             "esbuild@<=0.24.2": ">=0.25.0",
             "fast-xml-parser@>=4.3.6 <=5.3.3": ">=5.3.4",
