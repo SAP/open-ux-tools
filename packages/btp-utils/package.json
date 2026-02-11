@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/btp-utils",
-    "version": "1.1.7",
+    "version": "1.1.8",
     "description": "Library to simplify working with SAP BTP specific features especially in SAP Business Application",
     "repository": {
         "type": "git",
@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "@sap/cf-tools": "3.3.0",
-        "axios": "1.12.2",
+        "axios": "1.13.5",
         "@sap/bas-sdk": "3.13.2"
     },
     "devDependencies": {

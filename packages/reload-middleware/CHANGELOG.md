@@ -1,5 +1,13 @@
 # @sap-ux/reload-middleware
 
+## 0.3.13
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/btp-utils@1.1.8
+
 ## 0.3.12
 
 ### Patch Changes

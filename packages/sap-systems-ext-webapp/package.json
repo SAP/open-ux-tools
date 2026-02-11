@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/sap-systems-ext-webapp",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -48,6 +48,9 @@
         "react-i18next": "15.4.1",
         "react-redux": "7.2.9",
         "redux": "4.0.4"
+    },
+    "engines": {
+        "node": ">=20.x"
     },
     "files": [
         "dist/"
