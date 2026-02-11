@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.40
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/btp-utils@1.1.8
+
 ## 0.10.39
 
 ### Patch Changes
