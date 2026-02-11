@@ -47,11 +47,11 @@ describe('i18n', () => {
     });
 
     describe('module initialization', () => {
-        test('should not throw when module is loaded', () => {
+        test('should not throw when module is loaded', async () => {
             // The module-level initI18n().catch() should prevent any errors
             // from breaking the module load. This test verifies the module
             // loaded successfully.
-            expect(() => require('../../src/i18n')).not.toThrow();
+            await expect(import('../../src/i18n')).resolves.toBeDefined();
         });
     });
 });

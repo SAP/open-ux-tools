@@ -42,7 +42,6 @@ export const RouterModuleType = {
     AppFront: 'appFront'
 } as const;
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];
 export interface MTABaseConfig {
     mtaId: string;
