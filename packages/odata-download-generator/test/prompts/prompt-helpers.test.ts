@@ -19,11 +19,11 @@ describe('Test prompt-helpers', () => {
         jest.spyOn(fileMock, 'readJSON').mockImplementation(async (path) => {
             if (path.endsWith(FileName.SpecificationDistTags)) {
                 return {
-                      latest: '1.142.1'
-                  }
+                    latest: '1.142.1'
+                };
             }
             console.log('Original readJSON', path);
-            return await readJSONOriginal(path)
+            return await readJSONOriginal(path);
         });
         // Load the test app
         const appPath = join(__dirname, '../test-data/test-apps/travel');
