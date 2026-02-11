@@ -1,5 +1,62 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.62
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/odata-service-inquirer@2.17.2
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/telemetry@0.6.69
+    - @sap-ux/ui5-info@0.13.12
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/odata-service-writer@0.29.16
+    - @sap-ux/ui5-application-inquirer@0.16.24
+    - @sap-ux/fiori-elements-writer@2.8.64
+    - @sap-ux/fiori-freestyle-writer@2.5.47
+    - @sap-ux/launch-config@0.10.60
+    - @sap-ux/project-access@1.35.1
+    - @sap-ux/annotation-generator@0.4.19
+    - @sap-ux/cap-config-writer@0.12.59
+
+## 0.11.61
+
+### Patch Changes
+
+- Updated dependencies [3795bb2]
+    - @sap-ux/annotation-generator@0.4.18
+    - @sap-ux/fiori-elements-writer@2.8.63
+    - @sap-ux/fiori-freestyle-writer@2.5.46
+    - @sap-ux/odata-service-inquirer@2.17.1
+
+## 0.11.60
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+- Updated dependencies [2bffca7]
+    - @sap-ux/fiori-freestyle-writer@2.5.46
+    - @sap-ux/fiori-elements-writer@2.8.62
+    - @sap-ux/odata-service-inquirer@2.17.1
+
+## 0.11.59
+
+### Patch Changes
+
+- 8c61352: fiori project templates clean eslint warning re @typescript-eslint/no-empty-function
+- Updated dependencies [8c61352]
+    - @sap-ux/fiori-freestyle-writer@2.5.45
+    - @sap-ux/odata-service-inquirer@2.17.1
+
+## 0.11.58
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/odata-service-inquirer@2.17.1
+    - @sap-ux/ui5-application-inquirer@0.16.23
+
 ## 0.11.57
 
 ### Patch Changes

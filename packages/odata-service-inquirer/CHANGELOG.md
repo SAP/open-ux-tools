@@ -1,5 +1,28 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.17.2
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/telemetry@0.6.69
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/project-access@1.35.1
+    - @sap-ux/nodejs-utils@0.2.14
+    - @sap-ux/project-input-validator@0.6.53
+
+## 2.17.1
+
+### Patch Changes
+
+- 1ad56d1: Fix for previous errors shown as info under services selection prompt
+- Updated dependencies [1ad56d1]
+    - @sap-ux/inquirer-common@0.11.1
+
 ## 2.17.0
 
 ### Minor Changes
