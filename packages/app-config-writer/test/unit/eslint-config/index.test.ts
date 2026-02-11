@@ -42,7 +42,7 @@ describe('generateEslintConfig', () => {
             } catch (error) {
                 expect(error.message).toContain('The prerequisites are not met');
                 expect(errorMock).toHaveBeenCalledWith(
-                    expect.stringContaining('ESLint already exists in this project')
+                    expect.stringContaining('EsLint already exists in this project')
                 );
             }
         });
