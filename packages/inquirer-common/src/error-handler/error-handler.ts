@@ -15,6 +15,7 @@ import {
     HELP_NODES,
     HELP_TREE
 } from '@sap-ux/guided-answers-helper';
+import { OUTPUT_ICON } from '../icons';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import type { AxiosError } from 'axios';
 import { t } from '../i18n';
@@ -26,7 +27,7 @@ const telemEventGALinkCreated = 'GA_LINK_CREATED';
 const telemBasError = 'SERVICE_INQUIRER_BAS_ERROR';
 
 // Output channel command ID for showing detailed error logs
-export const OUTPUT_CHANNEL_CMD_ID = 'sap.ux.applicationModeler.showOutputChannel';
+export const OUTPUT_CHANNEL_CMD_ID = 'sap.ux.appWizard.showOutputChannel';
 
 /**
  * Constants specific to error handling
@@ -712,7 +713,7 @@ export class ErrorHandler {
             message: errorMsg,
             link: {
                 text: t('outputChannel.viewDetailsText'),
-                icon: '$(output)',
+                icon: OUTPUT_ICON,
                 command: {
                     id: OUTPUT_CHANNEL_CMD_ID,
                     params: {}

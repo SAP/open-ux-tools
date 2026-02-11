@@ -774,22 +774,20 @@ describe('Test new system prompt', () => {
         expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(selectedService.servicePath));
         expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to get metadata'));
         // Validation result should be a ValidationLink object with output channel command
-        expect(validationResult).toEqual(
-            expect.objectContaining({
-                message: t('errors.serviceMetadataErrorUI', {
-                    servicePath: selectedService.servicePath,
-                    errorText: 'An error occurred: Failed to get metadata'
-                }),
-                link: expect.objectContaining({
-                    text: expect.any(String),
-                    icon: '$(output)',
-                    command: expect.objectContaining({
-                        id: 'sap.ux.applicationModeler.showOutputChannel',
-                        params: {}
-                    })
-                })
-            })
-        );
+        expect(validationResult).toMatchObject({
+            message: t('errors.serviceMetadataErrorUI', {
+                servicePath: selectedService.servicePath,
+                errorText: 'An error occurred: Failed to get metadata'
+            }),
+            link: {
+                text: expect.any(String),
+                icon: expect.any(String), // SVG icon as base64 string
+                command: {
+                    id: 'sap.ux.appWizard.showOutputChannel',
+                    params: {}
+                }
+            }
+        });
     });
 
     test('should show a guided answer link when no services are returned and an error was logged', async () => {

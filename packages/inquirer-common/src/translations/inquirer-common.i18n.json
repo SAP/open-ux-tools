@@ -54,7 +54,7 @@
         "validationErrorHelpText": "Need help with this error?"
     },
     "outputChannel": {
-        "viewDetailsText": "View details in OUTPUT tab."
+        "viewDetailsText": "View details in the OUTPUT tab."
     },
     "texts": {
         "anExpiredCert": "an expired",
