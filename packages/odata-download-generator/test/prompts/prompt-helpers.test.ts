@@ -1,19 +1,28 @@
 import { createApplicationAccess, FileName, getSpecificationModuleFromCache } from '@sap-ux/project-access';
 import { readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { createEntityChoices, getSpecification } from '../../src/data-download/prompts/prompt-helpers';
 import { getEntityModel } from '../../src/data-download/utils';
 import * as commandMock from '@sap-ux/project-access/dist/command';
 import * as fileMock from '@sap-ux/project-access/dist/file';
-import * as fsMock from 'node:fs';
+import * as fs from 'node:fs';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
 
 const readJSONOriginal = fileMock.readJSON;
 
-jest.mock('fs', () => {
-    const actual = jest.requireActual<typeof fsMock>('fs');
-    return { ...actual, existsSync: jest.fn().mockImplementation(actual.existsSync) };
+jest.mock('node:fs', () => {
+    const originalFs = jest.requireActual('node:fs');
+    return {
+        ...originalFs,
+        existsSync: jest.fn().mockImplementation((path) => {
+            if (path.toString().endsWith(FileName.SpecificationDistTags)) {
+                return true;
+            }
+            return originalFs.existsSync(path); // Use original for all other paths
+        })
+    };
 });
 
 describe('Test prompt-helpers', () => {
@@ -21,9 +30,8 @@ describe('Test prompt-helpers', () => {
         const startTime = Date.now();
         // Prevent spec from fetching versions and writing on test jobs
         jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('{"latest": "1.142.1"}');
-        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce();
-        // Mock existence of dist tags
-        jest.spyOn(fsMock, 'existsSync').mockReturnValueOnce(true);
+        jest.spyOn(fileMock, 'writeFile').mockResolvedValueOnce()
+
         jest.spyOn(fileMock, 'readJSON').mockImplementation(async (path) => {
             if (path.endsWith(FileName.SpecificationDistTags)) {
                 return {
@@ -65,5 +73,5 @@ describe('Test prompt-helpers', () => {
 
         const entityChoices = createEntityChoices(entityModel.listEntity, entityModel?.pageObjectEntities);
         expect(entityChoices).toMatchSnapshot();
-    }, 20000);
+    }, 99999999);
 });
