@@ -33,9 +33,9 @@ import {
     loadApps,
     loadCfConfig,
     storeCredentials,
-    validateUI5VersionExists
+    validateUI5VersionExists,
+    getServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
-import { getServiceInstanceKeys, createServices as createCfServices } from '@sap-ux/adp-tooling/dist/cf/services/api';
 import {
     type AbapServiceProvider,
     AdaptationProjectType,
@@ -139,7 +139,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getApprouterType: jest.fn(),
     hasApprouter: jest.fn(),
     createServices: jest.fn(),
-    storeCredentials: jest.fn()
+    storeCredentials: jest.fn(),
+    getServiceInstanceKeys: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -184,12 +185,6 @@ jest.mock('../src/utils/workspace', () => ({
     existsInWorkspace: jest.fn(),
     showWorkspaceFolderWarning: jest.fn(),
     handleWorkspaceFolderChoice: jest.fn()
-}));
-
-jest.mock('@sap-ux/adp-tooling/dist/cf/services/api', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling/dist/cf/services/api'),
-    getServiceInstanceKeys: jest.fn(),
-    createServices: jest.fn()
 }));
 
 const originalCwd = process.cwd();
@@ -358,8 +353,7 @@ const mockSystemService = {
     read: jest.fn(),
     write: jest.fn()
 };
-const mockGetServiceInstanceKeys = getServiceInstanceKeys as jest.MockedFunction<typeof getServiceInstanceKeys>;
-const mockCreateCfServices = createCfServices as jest.MockedFunction<typeof createCfServices>;
+const getServiceInstanceKeysMock = getServiceInstanceKeys as jest.MockedFunction<typeof getServiceInstanceKeys>;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -743,7 +737,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             const mtaYamlTarget = join(cfTestOutputDir, 'mta.yaml');
             fs.copyFileSync(mtaYamlSource, mtaYamlTarget);
 
-            mockGetServiceInstanceKeys.mockResolvedValue({
+            getServiceInstanceKeysMock.mockResolvedValue({
                 serviceKeys: [
                     {
                         credentials: {
@@ -767,7 +761,6 @@ describe('Adaptation Project Generator Integration Test', () => {
                     guid: 'test-service-instance-guid'
                 }
             });
-            mockCreateCfServices.mockResolvedValue(undefined);
 
             mockIsAppStudio.mockReturnValue(true);
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);

@@ -123,6 +123,18 @@ describe('getConfig', () => {
 });
 
 describe('getCfConfig', () => {
+    const mockServiceKeys = [
+        {
+            credentials: {
+                uaa: {} as any,
+                uri: 'test-uri',
+                endpoints: {},
+                'html5-apps-repo': {
+                    app_host_id: 'host-123'
+                }
+            }
+        }
+    ];
     const baseParams: CreateCfConfigParams = {
         projectPath: '/test/project',
         layer: FlexLayer.CUSTOMER_BASE,
@@ -159,7 +171,11 @@ describe('getCfConfig', () => {
         packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
         toolsId: 'test-tools-id',
         html5RepoRuntimeGuid: 'runtime-guid',
-        publicVersions: { latest: { version: '1.135.0' } as VersionDetail }
+        publicVersions: { latest: { version: '1.135.0' } as VersionDetail },
+        serviceInfo: {
+            serviceKeys: mockServiceKeys,
+            serviceInstance: { guid: 'service-guid', name: 'service-name' }
+        }
     };
 
     test('should create CF config with managed approuter', () => {
