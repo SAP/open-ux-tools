@@ -105,7 +105,7 @@ Options:
 
 ## [`add eslint-config`](#add-eslint-config)
 
-Add an `eslint` configuration to a project including SAP Fiori tools lint plugin (`@sap-ux/eslint-plugin-fiori-tools`).
+Add an `eslint` configuration to a project including the SAP Fiori tools lint plugin (`@sap-ux/eslint-plugin-fiori-tools`).
 
 Example:
 
