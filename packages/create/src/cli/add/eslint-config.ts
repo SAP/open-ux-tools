@@ -12,7 +12,7 @@ import { getProjectType } from '@sap-ux/project-access';
 export function addAddEslintConfigCommand(cmd: Command): void {
     cmd.command('eslint-config [path]')
         .description(
-            `Add an \`eslint\` configuration to a project including SAP Fiori tools lint plugin (\`@sap-ux/eslint-plugin-fiori-tools\`).\n
+            `Add an \`eslint\` configuration to a project including the SAP Fiori tools lint plugin (\`@sap-ux/eslint-plugin-fiori-tools\`).\n
 Example:
     \`npx --yes @sap-ux/create@latest add eslint-config\``
         )
@@ -47,7 +47,7 @@ async function addEslintConfig(basePath: string, simulate: boolean, config = 're
         if (!simulate) {
             fs.commit(() =>
                 logger.info(
-                    `Eslint configuration written. Please make sure to install the new dependency by running 'npm install'.`
+                    `Eslint configuration written. Ensure you install the new dependency by executing 'npm install'.`
                 )
             );
         }
@@ -61,7 +61,7 @@ async function addEslintConfig(basePath: string, simulate: boolean, config = 're
         );
         logger.info(
             `You can add a command such as \`&& npm run lint --workspaces --if-present\` to an existing command in the CAP project root where linting is executed.
-            A complete command may look like:
+            A complete command is similar to the following:
         //  \`"lint": "cds lint  && npm run lint --workspaces --if-present"\``
         );
     }

@@ -7,8 +7,8 @@ import { join } from 'node:path';
 /**
  * Adds eslint configuration to the project.
  *
- * It will check the prerequisites and confirm an explicit approval to add the configuration.
- * If the prerequisites and approval are met, the corresponding eslint configuration and packages will be added.
+ * It checks the prerequisites and confirms an explicit approval to add the configuration.
+ * If the prerequisites and approval are met, the corresponding eslint configuration and packages are added.
  *
  * @param basePath - base path to be used for the conversion
  * @param options - options for the conversion
@@ -34,7 +34,7 @@ export async function generateEslintConfig(
 }
 
 /**
- * Checks the prerequisites for adding eslint configuration to the project.
+ * Checks the prerequisites for adding an eslint configuration to the project.
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
@@ -51,7 +51,7 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
     const eslintExists = hasDependency(packageJson as Package, 'eslint');
     if (eslintExists) {
         logger?.error(
-            `ESLint already exists in this project. Found 'eslint' dependency in package.json at path '${packageJsonPath}'`
+            `EsLint already exists in this project. Found 'eslint' dependency in package.json at path '${packageJsonPath}'`
         );
         return false;
     }
@@ -90,8 +90,7 @@ async function updatePackageJson(basePath: string, fs: Editor, logger?: ToolsLog
  * @param config - the name of the SAP Fiori tools eslint plugin config to be used
  */
 async function addEslintConfig(basePath: string, fs: Editor, config: string = 'recommended'): Promise<void> {
-    //todo: use mjs instead of js
-    const templatePath = require.resolve('@sap-ux/ui5-application-writer/templates/optional/eslint/eslint.config.js');
+    const templatePath = require.resolve('@sap-ux/ui5-application-writer/templates/optional/eslint/eslint.config.mjs');
     let templateContent = await fs.read(templatePath);
     if (config === 'recommended-for-s4hana') {
         templateContent = templateContent.replace(
@@ -99,5 +98,5 @@ async function addEslintConfig(basePath: string, fs: Editor, config: string = 'r
             "...fioriTools.configs['recommended-for-s4hana']"
         );
     }
-    await fs.write(join(basePath, 'eslint.config.js'), templateContent);
+    await fs.write(join(basePath, 'eslint.config.mjs'), templateContent);
 }
