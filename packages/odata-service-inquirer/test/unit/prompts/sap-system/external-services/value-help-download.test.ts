@@ -401,7 +401,7 @@ describe('getValueHelpDownloadPrompt', () => {
             mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.vscode);
         });
 
-        it('should return 2 prompts in CLI mode (confirm + hidden download trigger)', () => {
+        it('should return valueHelpDownload and cliValueHelpDownload prompts in CLI mode', () => {
             const prompts = getValueHelpDownloadPrompt(connectionValidator, 'testNamespace', convertedMetadataRef);
 
             expect(prompts.length).toBe(2);
