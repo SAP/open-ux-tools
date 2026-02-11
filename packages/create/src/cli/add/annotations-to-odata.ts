@@ -28,6 +28,7 @@ export function addAnnotationsToOdataCommand(cmd: Command): void {
     cmd.command('annotations [path]')
         .description(
             `Adds an annotation to the OData Source of the base application in an adaptation project.\n
+            This command is not supported for Cloud Foundry projects.\n
 Example:
     \`npx --yes @sap-ux/create@latest add annotations\``
         )
@@ -53,7 +54,7 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         }
         await validateAdpAppType(basePath);
         if (await isCFEnvironment(basePath)) {
-            throw new Error('This command is not supported for CF projects.');
+            throw new Error('This command is not supported for Cloud Foundry projects.');
         }
 
         const variant = await getVariant(basePath);

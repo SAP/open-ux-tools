@@ -16,6 +16,7 @@ export function addNewModelCommand(cmd: Command): void {
     cmd.command('model [path]')
         .description(
             `Add a new OData service and SAPUI5 model to an existing adaptation project.\n
+            This command is not supported for Cloud Foundry projects.\n
 Example:
     \`npx --yes @sap-ux/create@latest add model\``
         )
@@ -40,7 +41,7 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
 
         await validateAdpAppType(basePath);
         if (await isCFEnvironment(basePath)) {
-            throw new Error('This command is not supported for CF projects.');
+            throw new Error('This command is not supported for Cloud Foundry projects.');
         }
 
         const variant = await getVariant(basePath);

@@ -152,6 +152,9 @@ Options:
 
 Add a new OData service and SAPUI5 model to an existing adaptation project.
 
+
+This command is not supported for Cloud Foundry projects.
+
 Example:
 
 `npx --yes @sap-ux/create@latest add model`
@@ -164,6 +167,9 @@ Options:
 ## [`add annotations`](#add-annotations)
 
 Adds an annotation to the OData Source of the base application in an adaptation project.
+
+
+This command is not supported for Cloud Foundry projects.
 
 Example:
 
@@ -319,6 +325,9 @@ The available subcommands are: `data-source` and `inbound`
 
 Replace the OData Source of the base application in an adaptation project.
 
+
+This command is not supported for Cloud Foundry projects.
+
 Example:
 
 `npx --yes @sap-ux/create@latest change data-source`
@@ -332,6 +341,9 @@ Options:
 ## [`change inbound`](#change-inbound)
 
 Replace the inbound FLP configurations of the base application in an adaptation project.
+
+
+This command is not supported for Cloud Foundry projects.
 
 Example:
 

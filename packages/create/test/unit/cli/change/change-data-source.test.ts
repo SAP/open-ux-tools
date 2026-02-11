@@ -113,7 +113,7 @@ describe('change/data-source', () => {
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for CF projects.');
+        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for Cloud Foundry projects.');
         expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 

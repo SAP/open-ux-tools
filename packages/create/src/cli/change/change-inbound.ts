@@ -20,6 +20,7 @@ export function addChangeInboundCommand(cmd: Command): void {
     cmd.command('inbound [path]')
         .description(
             `Replace the inbound FLP configurations of the base application in an adaptation project.\n
+            This command is not supported for Cloud Foundry projects.\n
 Example:
     \`npx --yes @sap-ux/create@latest change inbound\``
         )
@@ -44,7 +45,7 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
 
         await validateAdpAppType(basePath);
         if (await isCFEnvironment(basePath)) {
-            throw new Error('This command is not supported for CF projects.');
+            throw new Error('This command is not supported for Cloud Foundry projects.');
         }
 
         await validateCloudAdpProject(basePath);

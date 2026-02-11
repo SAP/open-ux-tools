@@ -26,6 +26,7 @@ export function addChangeDataSourceCommand(cmd: Command): void {
     cmd.command('data-source [path]')
         .description(
             `Replace the OData Source of the base application in an adaptation project.\n
+            This command is not supported for Cloud Foundry projects.\n
 Example:
     \`npx --yes @sap-ux/create@latest change data-source\``
         )
@@ -51,7 +52,7 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         }
         await validateAdpAppType(basePath);
         if (await isCFEnvironment(basePath)) {
-            throw new Error('This command is not supported for CF projects.');
+            throw new Error('This command is not supported for Cloud Foundry projects.');
         }
 
         const variant = await getVariant(basePath);

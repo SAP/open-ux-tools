@@ -97,7 +97,7 @@ describe('add/annotations', () => {
         await command.parseAsync(getArgv());
 
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for CF projects.');
+        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for Cloud Foundry projects.');
         expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
