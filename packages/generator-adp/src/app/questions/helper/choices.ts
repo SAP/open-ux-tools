@@ -66,6 +66,7 @@ export const getAppRouterChoices = (isInternalUsage: boolean): { name: AppRouter
 };
 
 /**
+ * Creates the list of choices for the project type prompt.
  *
  * @returns {{ name: string; value: AdaptationProjectType }[]} The localized project type choices.
  */
