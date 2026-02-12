@@ -674,13 +674,14 @@ export function clearGlobalCdsModulePromiseCache(): void {
 /**
  * Get cds environment information, which includes the home path of cds-dk module.
  *
+ * @param [cwd] - optional folder in which cds env --json should be executed
  * @returns - result of call 'cds env --json'
  */
-async function getCdsEnvData(): Promise<Record<string, string>> {
+async function getCdsEnvData(cwd?: string): Promise<Record<string, string>> {
     return new Promise((resolve, reject) => {
         let out = '';
         // call 'cds env --json'
-        const cdsVersionInfo = spawn('cds', ['env', '--json'], { shell: true });
+        const cdsVersionInfo = spawn('cds', ['env', '--json'], { cwd, shell: true });
         cdsVersionInfo.stdout.on('data', (data) => {
             out += data.toString();
         });
