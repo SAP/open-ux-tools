@@ -1,5 +1,13 @@
 # @sap-ux/ui-prompting
 
+## 0.6.2
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+- Updated dependencies [3795bb2]
+    - @sap-ux/ui-components@1.27.4
+
 ## 0.6.1
 
 ### Patch Changes

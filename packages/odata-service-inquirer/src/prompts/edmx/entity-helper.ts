@@ -6,13 +6,8 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../i18n';
 import LoggerHelper from '../logger-helper';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
-import {
-    filterAggregateTransformations,
-    hasAggregateTransformations,
-    hasRecursiveHierarchyForEntitySet,
-    findEntitySetByName,
-    shouldUseAnalyticalTable
-} from '@sap-ux/inquirer-common';
+import { filterAggregateTransformations, findEntitySetByName, shouldUseAnalyticalTable } from '@sap-ux/inquirer-common';
+import { getTableCapabilitiesByEntitySet } from '@sap-ux/project-access';
 
 export type EntityAnswer = {
     entitySetName: string;
@@ -268,8 +263,8 @@ export function getDefaultTableType(
     // Handle OData v4 specific logic
     if (odataVersion === OdataVersion.v4 && entitySet) {
         const canUseAnalytical = templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp';
-        const hasHierarchy = hasRecursiveHierarchyForEntitySet(entitySet);
-        const hasAnalyticalData = hasAggregateTransformations(entitySet);
+        const { hasRecursiveHierarchyForEntitySet: hasHierarchy, hasAggregateTransformations: hasAnalyticalData } =
+            getTableCapabilitiesByEntitySet(entitySet);
 
         // Check for analytical capabilities first (highest priority)
         if (canUseAnalytical && hasAnalyticalData) {

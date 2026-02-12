@@ -23,6 +23,7 @@ import LoggerHelper from '../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../src/types';
 import * as nodejsUtils from '@sap-ux/nodejs-utils';
 import { ToolsLogger } from '@sap-ux/logger';
+import { errorHandler } from '../../../src/prompts/prompt-helpers';
 
 const odataServicesMock: ODataServiceInfo[] = [];
 const catalogServiceMock = jest.fn().mockImplementation(() => ({
@@ -992,5 +993,12 @@ describe('ConnectionValidator', () => {
         expect(debugLogSpy).toHaveBeenCalledWith(
             'ConnectionValidator.setConnectedSystem(): Use of a cached connected system is only supported for AbapServiceProviders. Re-authorization will be required.'
         );
+    });
+
+    test('Should reset previous errors when connection state is reset', () => {
+        const connectValidator = new ConnectionValidator();
+        errorHandler.setCurrentError(ERROR_TYPE.AUTH);
+        connectValidator.resetConnectionState();
+        expect(errorHandler.hasError()).toBe(false);
     });
 });

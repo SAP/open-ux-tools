@@ -79,12 +79,7 @@ ruleTester.run(TEST_NAME, rule, {
                         value: 'invalidMode'
                     }
                 ]),
-                output: getManifestAsCode(V2_MANIFEST, [
-                    {
-                        path: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
-                        value: 'discovery'
-                    }
-                ]),
+                output: getManifestAsCode(V2_MANIFEST, []),
                 errors: [
                     {
                         message: 'Invalid value "invalidMode" for statePreservationMode. "discovery" is recommended.'
@@ -112,16 +107,12 @@ ruleTester.run(TEST_NAME, rule, {
                     {
                         path: ['sap.ui.generic.app', 'settings', 'flexibleColumnLayout', 'defaultTwoColumnLayoutType'],
                         value: 'TwoColumnsBeginExpanded'
-                    },
-                    {
-                        path: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
-                        value: 'persistence'
                     }
                 ]),
                 errors: [
                     {
                         message:
-                            'Consider using "persistence". For applications using Flexible Column Layout (FCL), "persistence" mode is recommended.'
+                            'Consider using default. For applications using Flexible Column Layout (FCL), default is "persistence" mode.'
                     }
                 ]
             },
@@ -138,16 +129,11 @@ ruleTester.run(TEST_NAME, rule, {
                         value: 'persistence'
                     }
                 ]),
-                output: getManifestAsCode(V2_MANIFEST, [
-                    {
-                        path: ['sap.ui.generic.app', 'settings', 'statePreservationMode'],
-                        value: 'discovery'
-                    }
-                ]),
+                output: getManifestAsCode(V2_MANIFEST, []),
                 errors: [
                     {
                         message:
-                            'Consider using "discovery". For applications not using Flexible Column Layout, "discovery" mode is recommended.'
+                            'Consider using default. For applications not using Flexible Column Layout, default is "discovery" mode.'
                     }
                 ]
             },

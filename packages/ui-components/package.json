@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "1.27.3",
+    "version": "1.27.4",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -82,5 +82,8 @@
         "storybook-addon-turbo-build": "2.0.1",
         "style-loader": "3.3.3",
         "ts-loader": "9.4.4"
+    },
+    "engines": {
+        "node": ">=20.x"
     }
 }

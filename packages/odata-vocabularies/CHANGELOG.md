@@ -1,5 +1,19 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.24
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+
+## 0.4.23
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+- Updated dependencies [3795bb2]
+    - @sap-ux/odata-annotation-core-types@0.5.4
+
 ## 0.4.22
 
 ### Patch Changes

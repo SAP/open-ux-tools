@@ -302,7 +302,7 @@ export async function runCommand(cwd: string, cmd: string, args: string[], error
     try {
         await commandRunner.run(cmd, args, { cwd });
     } catch (e) {
-        throw new Error(`${errorMsg} ${e.message}`);
+        throw new Error(`${errorMsg} ${e.message ?? e}`);
     }
 }
 
