@@ -176,11 +176,7 @@ describe('ODataDownloadGenerator', () => {
             await generator.writing();
 
             expect(mockDestinationRoot).toHaveBeenCalledWith(join('/test/app'));
-            expect(createEntitySetData).toHaveBeenCalledWith(
-                [{ TravelID: '1' }],
-                { Travel: 'Travel' },
-                'Travel'
-            );
+            expect(createEntitySetData).toHaveBeenCalledWith([{ TravelID: '1' }], { Travel: 'Travel' }, 'Travel');
             expect(mockWriteDestinationJSON).toHaveBeenCalledTimes(2);
             expect(mockWriteDestinationJSON).toHaveBeenCalledWith(
                 join('webapp', 'localService', 'mockdata', 'Travel.json'),
@@ -236,16 +232,13 @@ describe('ODataDownloadGenerator', () => {
             await generator.prompting();
             await generator.writing();
 
-            expect(mockWriteDestinationJSON).toHaveBeenCalledWith(
-                join('custom/mockdata/path', 'Travel.json'),
-                [{ TravelID: '1' }]
-            );
+            expect(mockWriteDestinationJSON).toHaveBeenCalledWith(join('custom/mockdata/path', 'Travel.json'), [
+                { TravelID: '1' }
+            ]);
         });
 
         it('should write value help data when available', async () => {
-            const mockValueHelpData = [
-                { path: '/sap/opu/odata4/sap/valuehelp', entities: [] }
-            ];
+            const mockValueHelpData = [{ path: '/sap/opu/odata4/sap/valuehelp', entities: [] }];
 
             (createEntitySetData as jest.Mock).mockReturnValue({});
 
@@ -406,10 +399,7 @@ describe('ODataDownloadGenerator', () => {
             await generator.writing();
 
             // Should have matched despite different slash formatting
-            expect(mockWriteDestinationJSON).toHaveBeenCalledWith(
-                join('matched/path', 'Travel.json'),
-                []
-            );
+            expect(mockWriteDestinationJSON).toHaveBeenCalledWith(join('matched/path', 'Travel.json'), []);
         });
     });
 });
