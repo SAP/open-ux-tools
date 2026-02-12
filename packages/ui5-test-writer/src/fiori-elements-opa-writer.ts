@@ -336,11 +336,19 @@ export async function generateOPAFiles(
             globOptions: { dot: true }
         }
     );
+    const htmlJourneyConfig = {
+        ...config
+    };
+    // re-write test target for dev tool agnostic testing
+    if (htmlJourneyConfig.htmlTarget.startsWith('test/')) {
+        htmlJourneyConfig.htmlTarget = htmlJourneyConfig.htmlTarget.startsWith('test/') ? htmlJourneyConfig.htmlTarget.substring(5) : htmlJourneyConfig.htmlTarget; // Remove leading "test" if any, as it will be added in the template
+        htmlJourneyConfig.appPath = `${htmlJourneyConfig.appPath}/test`; // Add "test" to the appPath as the HTML file will be created in the test folder, so the app will be one level up
+    }
     // Journey Runner
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'pages', 'JourneyRunner.js'),
         join(testOutDirPath, 'integration', 'pages', 'JourneyRunner.js'),
-        config,
+        htmlJourneyConfig,
         undefined,
         {
             globOptions: { dot: true }
