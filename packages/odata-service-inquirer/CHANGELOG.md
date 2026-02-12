@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.18.0
+
+### Minor Changes
+
+- bb5eea0: Fix value helps download in CLI generator.
+
 ## 2.17.3
 
 ### Patch Changes
