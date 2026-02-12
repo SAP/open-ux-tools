@@ -219,7 +219,6 @@ export async function getServiceDetails(
     const ui5Config = await UI5Config.newInstance(await readFile(join(appRoot, FileName.Ui5Yaml), 'utf-8'));
     const backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
 
-    //servicePaths.push(appConfig?.servicePath ?? '');
     let systemName;
     if (backendConfig) {
         systemName = isAppStudio()
