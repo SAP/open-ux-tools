@@ -12,13 +12,13 @@ interface ConnectionNameProps {
 }
 
 /**
- * Renders the system name input field.
+ * Renders the connection name input field.
  *
- * @param props - system name props
- * @param props.connectionName - the system name value
- * @param props.setName - function to set the system name
+ * @param props - connection name props
+ * @param props.connectionName - the connection name value
+ * @param props.setName - function to set the connection name
  * @param props.setIsDetailsUpdated - function to set the details updated flag
- * @returns - the system name JSX element
+ * @returns - the connection name JSX element
  */
 export function ConnectionName({
     connectionName,
@@ -34,7 +34,7 @@ export function ConnectionName({
             </label>
             <UITextInput
                 name="connectionName"
-                id="sysName"
+                id="connName"
                 value={connectionName}
                 onChange={(e) => {
                     setName((e.target as HTMLInputElement).value);
