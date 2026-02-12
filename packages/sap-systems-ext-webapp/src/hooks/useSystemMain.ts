@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { LoadingState } from '../types';
 import type { SystemState } from '../types';
-import type { AuthenticationType, BackendSystem, SystemType } from '@sap-ux/store';
+import type { AuthenticationType, BackendSystem, ConnectionType, SystemType } from '@sap-ux/store';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
 
 /**
@@ -15,8 +15,9 @@ export function useSystemMain(): {
     systemUnSaved?: boolean;
     defaultName: string;
     setName: (name: string | undefined) => void;
-    setType: (systemType: SystemType) => void;
+    setSystemType: (systemType: SystemType) => void;
     setAuthenticationType: (authenticationType: AuthenticationType | undefined) => void;
+    setConnectionType: (connectionType: ConnectionType | undefined) => void;
     setUrl: (url: string | undefined) => void;
     setClient: (client: string | undefined) => void;
     setUsername: (username: string) => void;
@@ -56,6 +57,7 @@ export function useSystemMain(): {
         name: systemInfo?.name,
         systemType: systemInfo?.systemType,
         authenticationType: systemInfo?.authenticationType,
+        connectionType: systemInfo?.connectionType,
         url: systemInfo?.url,
         client: systemInfo?.client,
         username: systemInfo?.username,
@@ -68,7 +70,7 @@ export function useSystemMain(): {
     // Memoized setters
     const setName = useCallback((name: string | undefined) => setSystemFields((fields) => ({ ...fields, name })), []);
 
-    const setType = useCallback(
+    const setSystemType = useCallback(
         (systemType: SystemType) => setSystemFields((fields) => ({ ...fields, systemType })),
         []
     );
@@ -76,6 +78,11 @@ export function useSystemMain(): {
     const setAuthenticationType = useCallback(
         (authenticationType: AuthenticationType | undefined) =>
             setSystemFields((fields) => ({ ...fields, authenticationType })),
+        []
+    );
+
+    const setConnectionType = useCallback(
+        (connectionType: ConnectionType | undefined) => setSystemFields((fields) => ({ ...fields, connectionType })),
         []
     );
 
@@ -104,6 +111,7 @@ export function useSystemMain(): {
             name: systemInfo?.name,
             systemType: systemInfo?.systemType,
             authenticationType: systemInfo?.authenticationType,
+            connectionType: systemInfo?.connectionType,
             url: systemInfo?.url,
             client: systemInfo?.client,
             username: systemInfo?.username,
@@ -182,8 +190,9 @@ export function useSystemMain(): {
         systemUnSaved: unSaved,
         defaultName,
         setName,
-        setType,
+        setSystemType,
         setAuthenticationType,
+        setConnectionType,
         setUrl,
         setClient,
         setUsername,

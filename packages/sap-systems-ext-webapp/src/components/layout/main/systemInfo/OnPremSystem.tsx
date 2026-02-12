@@ -51,12 +51,15 @@ export function OnPremSystem({
                 <UITextInput
                     name="systemUrl"
                     id="sysUrl"
-                    defaultValue={systemInfo?.url}
+                    key={`systemUrl-${systemInfo?.connectionType}`} // force re-render so validation is ran if connection type changes
+                    value={systemInfo?.url}
                     onChange={(e) => {
                         setUrl((e.target as HTMLInputElement).value);
                         setIsDetailsUpdated(true);
                     }}
-                    onGetErrorMessage={(value) => getUrlErrorMessage(value, t, setIsDetailsValid)}
+                    onGetErrorMessage={(value) =>
+                        getUrlErrorMessage(value, t, setIsDetailsValid, systemInfo?.connectionType)
+                    }
                 />
             </div>
             <div className="store-text-field">
@@ -64,7 +67,7 @@ export function OnPremSystem({
                 <UITextInput
                     name="systemClient"
                     id="sysClient"
-                    defaultValue={systemInfo?.client}
+                    value={systemInfo?.client}
                     onChange={(e) => {
                         if (setClient) {
                             setClient((e.target as HTMLInputElement).value);

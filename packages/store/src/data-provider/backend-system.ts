@@ -68,13 +68,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
             });
         }
 
-        const systemList = Object.values(systems);
-
-        if (!backendSystemFilter) {
-            return systemList;
-        }
-
-        return this.applyFilters(systemList, backendSystemFilter);
+        return this.applyFilters(Object.values(systems), backendSystemFilter);
     }
 
     /**
@@ -96,6 +90,10 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
      * Applies filter objects to a list of backend systems.
      */
     private applyFilters(systems: BackendSystem[], filters: BackendSystemFilter = {}): BackendSystem[] {
+        if (!filters.connectionType) {
+            // unless a filter for connectionType is explicitly provided, default to filtering by the ABAP Catalog type as this is what existing consumers expect
+            filters.connectionType = 'abap_catalog';
+        }
         return systems.filter((system) => isMatch(system, filters));
     }
 

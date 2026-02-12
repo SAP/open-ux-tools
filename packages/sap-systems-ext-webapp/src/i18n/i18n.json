@@ -1,6 +1,6 @@
 {
     "labels": {
-        "name": "System Name",
+        "name": "Connection Name",
         "type": "System Type",
         "authenticationType": "Authentication Type",
         "url": "URL",
@@ -20,7 +20,14 @@
         "sapSystemDetails": "SAP System Details",
         "newSapSystem": "New SAP System",
         "onPremSystem": "ABAP On Premise",
-        "btpSystem": "ABAP Environment on SAP Business Technology Platform"
+        "btpSystem": "ABAP Environment on SAP Business Technology Platform",
+        "genericHost": "Generic Host",
+        "catalog": "Catalog",
+        "serviceUrl": "Service URL"
+    },
+    "options": {
+        "abapCatalog": "ABAP Catalog",
+        "serviceUrlEndpoint": "Service URL endpoint"
     },
     "systemStatus": {
         "infoLoading": "Loading System Information...",
@@ -32,7 +39,6 @@
         },
         "increaseLogLevel": "You might need to increase the log level to <b>Debug</b>."
     },
-
     "dialog": {
         "titleConfirmSave": "Save Confirmation",
         "subtextConfirmSave": "The SAP system has not been validated by testing the connection. Are you sure you want to save?",

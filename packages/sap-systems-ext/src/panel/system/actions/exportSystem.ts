@@ -28,7 +28,8 @@ export const exportSystem = async (_context: PanelContext, action: ExportSystem)
                 {
                     name: backendSystem.name,
                     url: backendSystem.url,
-                    client: backendSystem.client
+                    client: backendSystem.client,
+                    connectionType: backendSystem.connectionType
                 }
             ]
         };
