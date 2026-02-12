@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.35.2
+
+### Patch Changes
+
+- d2b772d: Fix `loadGlobalCdsModule` failing to load global CDS module for CDS versions >= 9.7.0
+
 ## 1.35.1
 
 ### Patch Changes
