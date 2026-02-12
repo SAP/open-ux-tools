@@ -41,7 +41,7 @@ dist/
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.3\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -184,7 +184,7 @@ dist/
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.3\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -332,7 +332,7 @@ dist/
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.3\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -475,7 +475,7 @@ dist/
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.3\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -654,7 +654,7 @@ dist/
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.3\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
@@ -802,7 +802,7 @@ dist/
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
-		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.3\\",
+		\\"@ui5/task-adaptation\\": \\"1.6.0-rc.4\\",
 		\\"bestzip\\": \\"^2.2.1\\",
 		\\"rimraf\\": \\"^6.1.2\\",
 		\\"mbt\\": \\"^1.2.34\\"
