@@ -1,5 +1,23 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.18.0
+
+### Minor Changes
+
+- bb5eea0: Fix value helps download in CLI generator.
+
+## 2.17.3
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/fiori-generator-shared@0.13.69
+    - @sap-ux/inquirer-common@0.11.3
+    - @sap-ux/project-input-validator@0.6.54
+    - @sap-ux/telemetry@0.6.70
+
 ## 2.17.2
 
 ### Patch Changes

@@ -646,9 +646,12 @@ async function loadGlobalCdsModule(): Promise<CdsFacade> {
     globalCdsModulePromise =
         globalCdsModulePromise ??
         new Promise<CdsFacade>((resolve, reject) => {
-            return getCdsVersionInfo().then((versions) => {
-                if (versions.home) {
-                    resolve(loadModuleFromProject<CdsFacade>(versions.home, '@sap/cds'));
+            return getCdsEnvData().then((data) => {
+                // Handle output of `cds env --json`
+                const home = data['_home_cds-dk'];
+                if (home) {
+                    // "@sap/cds" module is inside node_modules of "@sap/cds-dk"
+                    resolve(loadModuleFromProject<CdsFacade>(join(home, 'node_modules', '@sap', 'cds'), '@sap/cds'));
                 } else {
                     reject(
                         new Error(
@@ -669,26 +672,26 @@ export function clearGlobalCdsModulePromiseCache(): void {
 }
 
 /**
- * Get cds information, which includes versions and also the home path of cds module.
+ * Get cds environment information, which includes the home path of cds-dk module.
  *
- * @param [cwd] - optional folder in which cds --version should be executed
- * @returns - result of call 'cds --version'
+ * @param [cwd] - optional folder in which cds env --json should be executed
+ * @returns - result of call 'cds env --json'
  */
-async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> {
+async function getCdsEnvData(cwd?: string): Promise<Record<string, string>> {
     return new Promise((resolve, reject) => {
         let out = '';
-        const cdsVersionInfo = spawn('cds', ['--version'], { cwd, shell: true });
+        // call 'cds env --json'
+        const cdsVersionInfo = spawn('cds', ['env', '--json'], { cwd, shell: true });
         cdsVersionInfo.stdout.on('data', (data) => {
             out += data.toString();
         });
         cdsVersionInfo.on('close', () => {
             if (out) {
-                const versions: Record<string, string> = {};
-                for (const line of out.split('\n').filter((v) => v)) {
-                    const [key, value] = line.split(': ');
-                    versions[key] = value;
+                try {
+                    resolve(JSON.parse(out));
+                } catch (e) {
+                    reject(new Error(`Unexpected output of "cds env --json": ${e.message}`));
                 }
-                resolve(versions);
             } else {
                 reject(new Error('Module path not found'));
             }
