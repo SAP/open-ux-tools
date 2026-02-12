@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.63
+
+### Patch Changes
+
+- 14e0ab4: Ensure service-name is only added when destinations are being added by cf-writer
+
 ## 0.3.62
 
 ### Patch Changes

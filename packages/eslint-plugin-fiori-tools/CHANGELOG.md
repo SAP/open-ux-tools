@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.5.7
+
+### Patch Changes
+
+- 47f2f3f: Add auto fix for `sap-width-including-column-header` rule
+
 ## 9.5.6
 
 ### Patch Changes
