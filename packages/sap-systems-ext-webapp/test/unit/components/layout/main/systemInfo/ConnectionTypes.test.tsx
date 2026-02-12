@@ -8,7 +8,7 @@ describe('<ConnectionTypes />', () => {
         const setConnectionType = jest.fn();
         render(<ConnectionTypes setConnectionType={setConnectionType} />);
 
-        const serviceUrlOption = screen.getByLabelText('Service URL endpoint');
+        const serviceUrlOption = screen.getByLabelText('Service URL Endpoint');
 
         fireEvent.click(serviceUrlOption);
 

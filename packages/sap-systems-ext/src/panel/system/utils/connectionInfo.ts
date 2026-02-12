@@ -95,7 +95,7 @@ export async function hasServiceMetadata(system: BackendSystem): Promise<boolean
     const abapServiceProvider = getAbapServiceProvider(system);
     const url = new URL(system.url);
     // auto add trailing '/' to path
-    url.pathname = !url.pathname?.endsWith('/') ? `${url.pathname}/` : url.pathname;
+    url.pathname = url.pathname?.endsWith('/') ? url.pathname : `${url.pathname}/`;
 
     const service = abapServiceProvider.service<ODataService>(url.pathname);
     const metadata = await service.metadata();

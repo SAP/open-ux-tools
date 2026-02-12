@@ -27,7 +27,7 @@
     },
     "options": {
         "abapCatalog": "ABAP Catalog",
-        "serviceUrlEndpoint": "Service URL endpoint"
+        "serviceUrlEndpoint": "Service URL Endpoint"
     },
     "systemStatus": {
         "infoLoading": "Loading System Information...",
