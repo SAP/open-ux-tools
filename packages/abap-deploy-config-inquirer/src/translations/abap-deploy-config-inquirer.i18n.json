@@ -148,7 +148,7 @@
             "abapInvalidAppNameNamespaceOrStartingPrefix": "The SAPUI5 ABAP Repository and Package must start in the same way. Use either a namespace or capital letters: 'Z', 'Y' or 'SAP'.",
             "invalidCloudPackage": "The provided package is not intended for cloud deployment.",
             "invalidOnPremPackage": "The provided package is not intended for on-premise deployments.",
-            "unsupportedAdpProjectType": "You cannot deploy {{adpProjectType}} project because the system only supports {{supportedAdpProjectTypes}}.",
+            "unsupportedAdpProjectType": "You cannot deploy a {{adpProjectType}} project because the system only supports {{supportedAdpProjectTypes}} projects.",
             "invalidAdpProjectTypes": "Unable to determine the supported project types."
         }
     }
