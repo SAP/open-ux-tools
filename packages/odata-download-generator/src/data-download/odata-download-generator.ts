@@ -153,8 +153,8 @@ export class ODataDownloadGenerator extends Generator {
                     // Find the matching service from mock config ignoring leading and trailing '/'
                     serviceConfig = mockConfig.services.find(
                         (service) =>
-                            service.urlPath.replace(/^\/|\/$/g, '') ===
-                            this.state.mainServicePath?.replace(/^\/|\/$/g, '')
+                            service.urlPath.replace(/(^\/)|(\/$)/g, '') ===
+                            this.state.mainServicePath?.replace(/(^\/)|(\/$)/g, '')
                     );
                 }
                 // If no config found use the default location for mock data

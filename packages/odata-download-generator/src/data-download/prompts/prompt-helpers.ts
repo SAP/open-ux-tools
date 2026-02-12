@@ -185,7 +185,7 @@ export function createEntityChoices(
             // Create the relative paths from the list entity
             const fullPath =
                 poEntity.page?.contextPath ??
-                poEntity.page?.routePattern?.replace(':?query:', '').replace(/\({[^}]*}\)/g, '');
+                poEntity.page?.routePattern?.replace(':?query:', '').replace(/\(\{[^}]*\}\)/g, '');
             if (fullPath?.startsWith(`/${rootEntity.entityPath}/`)) {
                 return fullPath.replace(`/${rootEntity.entityPath}/`, '');
             }
