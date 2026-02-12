@@ -646,13 +646,12 @@ async function loadGlobalCdsModule(): Promise<CdsFacade> {
     globalCdsModulePromise =
         globalCdsModulePromise ??
         new Promise<CdsFacade>((resolve, reject) => {
-            return getCdsVersionInfo().then((versions) => {
-                // Handle output of `cds --version`
-                // cds >= 9.7 uses "cds.home"
-                // cds <= 9.6 uses "home"
-                const home = versions['cds.home'] ?? versions.home;
+            return getCdsEnvData().then((data) => {
+                // Handle output of `cds env --json`
+                const home = data['_home_cds-dk'];
                 if (home) {
-                    resolve(loadModuleFromProject<CdsFacade>(home, '@sap/cds'));
+                    // "@sap/cds" module is inside node_modules of "@sap/cds-dk"
+                    resolve(loadModuleFromProject<CdsFacade>(join(home, 'node_modules', '@sap', 'cds'), '@sap/cds'));
                 } else {
                     reject(
                         new Error(
@@ -673,43 +672,25 @@ export function clearGlobalCdsModulePromiseCache(): void {
 }
 
 /**
- * Get cds information, which includes versions and also the home path of cds module.
+ * Get cds environment information, which includes the home path of cds-dk module.
  *
- * @param [cwd] - optional folder in which cds --version should be executed
- * @returns - result of call 'cds --version'
+ * @returns - result of call 'cds env --json'
  */
-async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> {
+async function getCdsEnvData(): Promise<Record<string, string>> {
     return new Promise((resolve, reject) => {
         let out = '';
-        const cdsVersionInfo = spawn('cds', ['--version'], { cwd, shell: true });
+        // call 'cds env --json'
+        const cdsVersionInfo = spawn('cds', ['env', '--json'], { shell: true });
         cdsVersionInfo.stdout.on('data', (data) => {
             out += data.toString();
         });
         cdsVersionInfo.on('close', () => {
             if (out) {
-                const versions: Record<string, string> = {};
-                for (const line of out.split('\n').filter((v) => v)) {
-                    let key: string | undefined;
-                    let value: string | undefined;
-                    // Try parse new 'cds --version' output first(cds version >= 9.7.0)
-                    if (line.startsWith(' ')) {
-                        const formattedLine = line.trim();
-                        // Find first double space to detect separator
-                        const separatorIndex = formattedLine.indexOf('  ');
-                        if (separatorIndex !== -1) {
-                            key = formattedLine.slice(0, separatorIndex).trim();
-                            value = formattedLine.slice(separatorIndex).trim();
-                        }
-                    }
-                    if (key === undefined || value == undefined) {
-                        // Old cds output format(cds version < 9.7.0)
-                        [key, value] = line.split(': ');
-                    }
-                    if (key !== undefined && value !== undefined) {
-                        versions[key] = value;
-                    }
+                try {
+                    resolve(JSON.parse(out));
+                } catch (e) {
+                    reject(new Error('Unexpected output of "cds env --json"'));
                 }
-                resolve(versions);
             } else {
                 reject(new Error('Module path not found'));
             }

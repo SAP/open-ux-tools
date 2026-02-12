@@ -500,7 +500,9 @@ describe('Test getCapModelAndServices()', () => {
             },
             env: jestMockEnv
         };
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('home: /global/cds'));
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(
+            getChildProcessMock('{"_home_cds-dk": "/global/cds"}')
+        );
         jest.spyOn(projectModuleMock, 'loadModuleFromProject')
             .mockRejectedValueOnce('ERROR')
             .mockResolvedValue(cdsMock);
@@ -522,7 +524,7 @@ describe('Test getCapModelAndServices()', () => {
             },
             version: '7.0.0'
         };
-        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('home: /any/path'));
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('{"_home_cds-dk": "/any/path"}'));
         jest.spyOn(projectModuleMock, 'loadModuleFromProject')
             .mockRejectedValueOnce('ERROR')
             .mockResolvedValue(cdsMock);
@@ -767,7 +769,7 @@ describe('Test getCapEnvironment()', () => {
         }
     });
 
-    test('call to cds --version does not contain result', async () => {
+    test('call to cds env --json does not contain result', async () => {
         // Mock setup
         jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock(''));
         const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
@@ -782,7 +784,7 @@ describe('Test getCapEnvironment()', () => {
         expect(loadSpy).toHaveBeenCalledTimes(1);
     });
 
-    test('call to cds --version throws error', async () => {
+    test('call to cds env --json throws error', async () => {
         // Mock setup
         jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('', true));
         const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
@@ -797,11 +799,43 @@ describe('Test getCapEnvironment()', () => {
         expect(loadSpy).toHaveBeenCalledTimes(1);
     });
 
+    test('call to cds env --json gives empty json', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('{}', true));
+        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+
+        // Test execution
+        try {
+            await getCapEnvironment('PROJECT_ROOT');
+            fail('Call to getCapEnvironment() should have thrown error due to missing cds module path but did not');
+        } catch (error) {
+            expect(error.toString()).toContain(
+                'Error: Can not find global installation of module @sap/cds, which should be part of @sap/cds-dk'
+            );
+        }
+        expect(loadSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('call to cds env --json gives incorrect json', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('error', true));
+        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+
+        // Test execution
+        try {
+            await getCapEnvironment('PROJECT_ROOT');
+            fail('Call to getCapEnvironment() should have thrown error due to missing cds module path but did not');
+        } catch (error) {
+            expect(error.toString()).toContain('Error: Unexpected output of "cds env --json"');
+        }
+        expect(loadSpy).toHaveBeenCalledTimes(1);
+    });
+
     test('with cds loaded from other location than project', async () => {
         // Mock setup
         const spawnSpy = jest
             .spyOn(childProcessMock, 'spawn')
-            .mockReturnValueOnce(getChildProcessMock('anyKey: anyValue\nhome: GLOBAL_ROOT\n'));
+            .mockReturnValueOnce(getChildProcessMock('{\n "anyKey": "anyValue",\n "_home_cds-dk": "GLOBAL_ROOT"\n}'));
         const forSpy = jestMockEnv.for;
         const loadSpy = jest
             .spyOn(projectModuleMock, 'loadModuleFromProject')
@@ -812,68 +846,10 @@ describe('Test getCapEnvironment()', () => {
         await getCapEnvironment('PROJECT_ROOT');
 
         // Result check
-        expect(spawnSpy).toHaveBeenCalledWith('cds', ['--version'], { cwd: undefined, shell: true });
+        expect(spawnSpy).toHaveBeenCalledWith('cds', ['env', '--json'], { cwd: undefined, shell: true });
         expect(loadSpy).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
-        expect(loadSpy).toHaveBeenNthCalledWith(2, 'GLOBAL_ROOT', '@sap/cds');
+        expect(loadSpy).toHaveBeenNthCalledWith(2, join('GLOBAL_ROOT', 'node_modules', '@sap', 'cds'), '@sap/cds');
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
-    });
-
-    describe('Handle different outputs of "cds --version"', () => {
-        const testCases = [
-            {
-                name: 'Output of cds version below 9.7',
-                versionOutput: `
-@sap/cds: 9.6.2
-@sap/cds-compiler: 6.6.0
-@sap/cds-dk (global): 9.6.1
-Node.js: v20.18.1
-home: GLOBAL_ROOT
-`,
-                cdsHomeFolderPath: 'GLOBAL_ROOT'
-            },
-            {
-                name: 'Output of cds version above 9.7',
-                versionOutput: `
-@sap/cds: 9.6.2
-@sap/cds-compiler: 6.6.0
-@sap/cds-dk (global): 9.6.1
-Node.js: v20.18.1
-home: GLOBAL_ROOT
-`,
-                cdsHomeFolderPath: 'GLOBAL_ROOT'
-            },
-            {
-                name: 'Output of cds version above 9.7 - home path with multiple spaces',
-                versionOutput: `
-  @sap/cds-dk (global)  9.7.0    CDS_DK
-  cds.home                       ${join('GLOBAL_ROOT', 'my  test  folder')}
-  cds.root                       CDS_ROOT
-  npm root -l                    ${join('GLOBAL_ROOT', 'node_modules')}
-  Node.js               20.18.1  ${join('nodejs', 'node.exe')}
-`,
-                cdsHomeFolderPath: join('GLOBAL_ROOT', 'my  test  folder')
-            }
-        ];
-        test.each(testCases)('$name', async ({ versionOutput, cdsHomeFolderPath }) => {
-            // Mock setup
-            const spawnSpy = jest
-                .spyOn(childProcessMock, 'spawn')
-                .mockReturnValueOnce(getChildProcessMock(versionOutput));
-            const forSpy = jestMockEnv.for;
-            const loadSpy = jest
-                .spyOn(projectModuleMock, 'loadModuleFromProject')
-                .mockRejectedValueOnce('ERROR_LOCAL')
-                .mockResolvedValueOnce({ default: { env: { for: forSpy } } });
-
-            // Test execution
-            await getCapEnvironment('PROJECT_ROOT');
-
-            // Result check
-            expect(spawnSpy).toHaveBeenCalledWith('cds', ['--version'], { cwd: undefined, shell: true });
-            expect(loadSpy).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
-            expect(loadSpy).toHaveBeenNthCalledWith(2, cdsHomeFolderPath, '@sap/cds');
-            expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
-        });
     });
 });
 
