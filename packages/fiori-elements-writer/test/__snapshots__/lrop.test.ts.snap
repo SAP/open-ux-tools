@@ -19009,7 +19009,8 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_add_test_virtual_endpoints\\": \\"../../\\"
+                \\"lrop_v4_add_test_virtual_endpoints\\": \\"../../\\",
+                \\"lrop_v4_add_test_virtual_endpoints.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -22921,7 +22922,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests\\": \\"../../\\"
+                \\"lrop_v4_addtests\\": \\"../../\\",
+                \\"lrop_v4_addtests.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -23766,7 +23768,8 @@ appDescription=A Fiori application.",
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -24678,7 +24681,8 @@ appDescription=A Fiori application.",
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -26062,7 +26066,8 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\"
+                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\",
+                \\"lrop_v4_annotation_reuse_lib.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
