@@ -33,9 +33,8 @@ jobs:
                   commit-message: 'chore: add changeset for dependency update'
 
     # Job 2: Run manifest-specific updates (only for @ui5/manifest PRs)
-    # This job creates its own custom changeset with detailed message
     update-manifest-fixtures:
-        name: Update @ui5/manifest Fixtures
+        name: Update @ui5/manifest Fixtures & Changeset
         runs-on: ubuntu-latest
         if: |
             github.actor == 'renovate[bot]' &&
@@ -60,7 +59,7 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
 
-            - name: Run update script
+            - name: Run update script (fixtures & fallbacks)
               run: node scripts/update-ui5manifest-version.js
 
             - name: Check for changes
@@ -72,59 +71,17 @@ jobs:
                     echo "has_changes=false" >> $GITHUB_OUTPUT
                   fi
 
-            - name: Commit changes
+            - name: Commit fixture updates
               if: steps.check-changes.outputs.has_changes == 'true'
               run: |
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git add \
-                    'packages/ui5-application-writer/test/__snapshots__/' \
-                    'packages/fiori-app-sub-generator/test/' \
-                    'packages/ui5-info/src/ui5-version-fallback.ts' \
-                    '.changeset/*.md' \
-                    'pnpm-lock.yaml' \
-                    2>/dev/null || true
-                  git commit -m "chore: update manifest version test fixtures, ui5 version fallbacks & changeset"
+                  git add -u || true # Add updated files, but don't fail if no files were changed
+                  git commit -m "chore: update manifest version test fixtures & ui5 version fallbacks"
                   git push
 
-    notify:
-        name: Send Notification
-        needs: [create-changeset, update-manifest-fixtures]
-        if: always() && (needs.create-changeset.result != 'skipped' || needs.update-manifest-fixtures.result != 'skipped')
-        runs-on: ubuntu-latest
-        steps:
-            - name: Send Slack notification (dependency changeset success)
-              if: needs.create-changeset.result == 'success' && env.SLACK_WEBHOOK_URL != ''
-              uses: slackapi/slack-github-action@v2
+            - name: Create changeset
+              uses: mscharley/dependency-changesets-action@v1.2.2
               with:
-                  payload: |
-                      {"text": ":package: Dependency changeset created for PR #${{ github.event.pull_request.number }}\n\nPlease review: ${{ github.event.pull_request.html_url }}"}
-              env:
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-            - name: Send Slack notification (dependency changeset failure)
-              if: needs.create-changeset.result == 'failure' && env.SLACK_WEBHOOK_URL != ''
-              uses: slackapi/slack-github-action@v2
-              with:
-                  payload: |
-                      {"text": ":warning: Dependency changeset creation failed for PR #${{ github.event.pull_request.number }}\n\nPlease check: ${{ github.event.pull_request.html_url }}"}
-              env:
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-            - name: Send Slack notification (@ui5/manifest success)
-              if: needs.update-manifest-fixtures.result == 'success' && env.SLACK_WEBHOOK_URL != ''
-              uses: slackapi/slack-github-action@v2
-              with:
-                  payload: |
-                      {"text": ":package: @ui5/manifest updated in PR #${{ github.event.pull_request.number }}\n\nPlease review: ${{ github.event.pull_request.html_url }}"}
-              env:
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-            - name: Send Slack notification (@ui5/manifest failure)
-              if: needs.update-manifest-fixtures.result == 'failure' && env.SLACK_WEBHOOK_URL != ''
-              uses: slackapi/slack-github-action@v2
-              with:
-                  payload: |
-                      {"text": ":warning: @ui5/manifest update workflow failed for PR #${{ github.event.pull_request.number }}\n\nPlease check: ${{ github.event.pull_request.html_url }}"}
-              env:
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+                  author-email: 'github-actions[bot]@users.noreply.github.com'
+                  commit-message: 'chore: add changeset for @ui5/manifest update'
