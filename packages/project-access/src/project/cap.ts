@@ -690,7 +690,7 @@ async function getCdsEnvData(cwd?: string): Promise<Record<string, string>> {
                 try {
                     resolve(JSON.parse(out));
                 } catch (e) {
-                    reject(new Error('Unexpected output of "cds env --json"'));
+                    reject(new Error(`Unexpected output of "cds env --json": ${e.message}`));
                 }
             } else {
                 reject(new Error('Module path not found'));

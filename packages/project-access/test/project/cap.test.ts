@@ -826,7 +826,7 @@ describe('Test getCapEnvironment()', () => {
             await getCapEnvironment('PROJECT_ROOT');
             fail('Call to getCapEnvironment() should have thrown error due to missing cds module path but did not');
         } catch (error) {
-            expect(error.toString()).toContain('Error: Unexpected output of "cds env --json"');
+            expect(error.toString()).toContain('Error: Unexpected output of "cds env --json": Unexpected token');
         }
         expect(loadSpy).toHaveBeenCalledTimes(1);
     });
