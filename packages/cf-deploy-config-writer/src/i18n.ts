@@ -7,6 +7,8 @@ export const i18n: i18nNext = i18next.createInstance();
 
 /**
  * Initialize i18next with the translations for this module.
+ *
+ * @returns {Promise<void>} A promise that resolves when i18n is initialized
  */
 export async function initI18n(): Promise<void> {
     await i18n.init({
@@ -33,6 +35,8 @@ export function t(key: string, options?: TOptions): string {
     return i18n.t(key, options);
 }
 
+// Initialize i18n on module load
+// Errors are ignored since the writer will still work (fallback strings will be used)
 initI18n().catch(() => {
     // Ignore any errors since the write will still work
 });

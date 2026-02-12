@@ -1,5 +1,18 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.65
+
+### Patch Changes
+
+- c21f1b6: Ensure mta service-name is handled
+
+## 0.3.64
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+
 ## 0.3.63
 
 ### Patch Changes
