@@ -7,9 +7,9 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { CollectionFacet } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import type { CheckboxChoiceOptions } from 'inquirer';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Answers } from 'yeoman-generator';
 import { t } from '../../utils/i18n';
 import { fetchData, type EntitySetsFlat } from '../odata-query';
@@ -39,11 +39,11 @@ export async function getData(
                 odataService.servicePath
             );
 
-            if (answers[promptNames.confirmDownload] === true) {
+            if (answers[promptNames.confirmDownload] === true && odataServiceProvider) {
                 const selectedEntities = answers[promptNames.relatedEntitySelection] as SelectedEntityAnswer[];
                 const { odataResult } = await fetchData(
                     appConfig.referencedEntities,
-                    odataServiceProvider!,
+                    odataServiceProvider,
                     selectedEntities,
                     1
                 );
@@ -185,7 +185,7 @@ export function createEntityChoices(
             // Create the relative paths from the list entity
             const fullPath =
                 poEntity.page?.contextPath ??
-                poEntity.page?.routePattern?.replace(':?query:', '').replace(/\(\{[^}]*\}\)/g, '');
+                poEntity.page?.routePattern?.replace(':?query:', '').replaceAll(/\(\{[^}]*\}\)/g, '');
             if (fullPath?.startsWith(`/${rootEntity.entityPath}/`)) {
                 return fullPath.replace(`/${rootEntity.entityPath}/`, '');
             }
@@ -196,7 +196,7 @@ export function createEntityChoices(
     if (rootEntity.navPropEntities) {
         const entityChoices = getEntitySelectionChoices(rootEntity, undefined, undefined, poEntityPaths);
 
-        entityChoices.choices.sort((a, b) => a.name!.localeCompare(b.name!));
+        entityChoices.choices.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
         return entityChoices;
     }
 }

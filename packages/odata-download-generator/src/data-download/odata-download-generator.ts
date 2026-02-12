@@ -6,7 +6,7 @@ import type { Logger } from '@sap-ux/logger';
 import { writeExternalServiceMetadata } from '@sap-ux/odata-service-writer';
 import { DirName, getMockServerConfig } from '@sap-ux/project-access';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
-import { join } from 'path';
+import { join } from 'node:path';
 import prettifyXml from 'prettify-xml';
 import type { GeneratorOptions } from 'yeoman-generator';
 import Generator from 'yeoman-generator';
@@ -25,7 +25,7 @@ export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
  */
 export class ODataDownloadGenerator extends Generator {
     private readonly vscode: unknown;
-    private appWizard: AppWizard | undefined;
+    private readonly appWizard: AppWizard | undefined;
 
     // The logger is static to allow convenient access from everywhere, cross-cutting concern
     private static _logger: ILogWrapper & Logger = DefaultLogger;
@@ -34,7 +34,7 @@ export class ODataDownloadGenerator extends Generator {
     prompts: Prompts;
     setPromptsCallback: (fn: object) => void;
 
-    private state: {
+    private readonly state: {
         /**
          * The root path to the application being used as the data source
          */
@@ -153,8 +153,8 @@ export class ODataDownloadGenerator extends Generator {
                     // Find the matching service from mock config ignoring leading and trailing '/'
                     serviceConfig = mockConfig.services.find(
                         (service) =>
-                            service.urlPath.replace(/(^\/)|(\/$)/g, '') ===
-                            this.state.mainServicePath?.replace(/(^\/)|(\/$)/g, '')
+                            service.urlPath.replaceAll(/(^\/)|(\/$)/g, '') ===
+                            this.state.mainServicePath?.replaceAll(/(^\/)|(\/$)/g, '')
                     );
                 }
                 // If no config found use the default location for mock data
@@ -165,13 +165,15 @@ export class ODataDownloadGenerator extends Generator {
             this.state.updateMainServiceMetadata = promptAnswers[promptNames.updateMainServiceMetadata];
             this.state.mainServiceMetadata = odataServiceAnswers.metadata;
 
-            const { questions: valueHelpQuestions, valueHelpData } = getValueHelpSelectionPrompt(
-                odataServiceAnswers.servicePath!,
-                odataServiceAnswers.metadata!,
-                odataServiceAnswers.connectedSystem?.serviceProvider as AbapServiceProvider
-            );
-            await this.prompt(valueHelpQuestions);
-            this.state.valueHelpData = valueHelpData;
+            if (odataServiceAnswers.servicePath && odataServiceAnswers.metadata) {
+                const { questions: valueHelpQuestions, valueHelpData } = getValueHelpSelectionPrompt(
+                    odataServiceAnswers.servicePath,
+                    odataServiceAnswers.metadata,
+                    odataServiceAnswers.connectedSystem?.serviceProvider as AbapServiceProvider
+                );
+                await this.prompt(valueHelpQuestions);
+                this.state.valueHelpData = valueHelpData;
+            }
         } catch (error) {
             // Fatal prompting error
             ODataDownloadGenerator.logger.error(error);

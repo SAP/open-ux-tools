@@ -11,7 +11,7 @@ import type { CheckBoxQuestion } from '@sap-ux/inquirer-common';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
 import type { CheckboxChoiceOptions } from 'inquirer';
 import merge from 'lodash/merge';
-import { join } from 'path';
+import { join } from 'node:path';
 import { t } from '../../utils/i18n';
 import { PromptState } from '../prompt-state';
 import { entityTypeExclusions } from '../types';
@@ -87,7 +87,7 @@ async function getExternalServiceEntityData(
             const entitySetName = entitySet.name;
             // If we already have this entity data dont request again
             if (PromptState.externalServiceRequestCache[servicePath].includes(entitySetName)) {
-                return Promise.resolve();
+                return;
             }
             PromptState.externalServiceRequestCache[servicePath].push(entitySetName);
 
@@ -191,8 +191,8 @@ function getValueHelpChoices(
             entityRefs.forEach((entityRef) => {
                 if (entityRef.type === 'value-list') {
                     choiceNameTargets.push(entityRef.target.replace(/\/[^/]*$/, ''));
-                } else if (entityRef.type === 'code-list') {
-                    choiceNameTargets.push(entityRef.collectionPath!);
+                } else if (entityRef.type === 'code-list' && entityRef.collectionPath) {
+                    choiceNameTargets.push(entityRef.collectionPath);
                 }
             });
             const choiceName = `${targetEntity} (${choiceNameTargets.join()})`;

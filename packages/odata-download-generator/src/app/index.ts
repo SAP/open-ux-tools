@@ -1,3 +1,1 @@
-import { ODataDownloadGenerator } from '../data-download';
-
-export default ODataDownloadGenerator;
+export { ODataDownloadGenerator as default } from '../data-download';

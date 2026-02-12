@@ -121,10 +121,7 @@ function getSemanticKeyProperties(entityType: EntityType): SemanticKeyFilter[] {
  * @returns
  */
 function findEntitySet(entitySets: EntitySet[], entityTypeFullName: string): EntitySet | undefined {
-    const foundEntitySet = entitySets.find((entitySet) => {
-        return entitySet.entityTypeName === entityTypeFullName;
-    });
-    return foundEntitySet ? foundEntitySet : undefined;
+    return entitySets.find((entitySet) => entitySet.entityTypeName === entityTypeFullName);
 }
 
 /**
@@ -147,23 +144,15 @@ function getNavPropsForExpansion(
 ): Entity[] {
     const navPropEntities: Entity[] = [];
     if (--maxDepth > 0) {
-        /* if (ancestorTypes) {
-            ancestorTypes.push(entityType.name);
-        } else {
-            ancestorTypes = [entityType.name];
-        } */
         entityType.navigationProperties.forEach((entityTypeNavProp) => {
-            // Exclude entities that are using specific property names and prevent re-inclusion of the entity type again along the same branch
-            if (
-                !navPropNameExclusions.includes(entityTypeNavProp.name) /* &&
-                !ancestorTypes?.includes(entityTypeNavProp.targetType.name) */
-            ) {
+            // Exclude entities that are using specific property names
+            if (!navPropNameExclusions.includes(entityTypeNavProp.name)) {
                 let nestedNavPropEntities: Entity[] = [];
                 if (entityTypeNavProp.targetType.navigationProperties.length > 0 && maxDepth > 0) {
                     nestedNavPropEntities = getNavPropsForExpansion(
                         entityTypeNavProp.targetType,
                         convertedMetadata,
-                        undefined, //[...ancestorTypes!],
+                        ancestorTypes,
                         maxDepth
                     );
                 }
@@ -171,8 +160,9 @@ function getNavPropsForExpansion(
                     entityType: entityTypeNavProp.targetType,
                     entityPath: entityTypeNavProp.name,
                     entitySetName:
-                        findEntitySet(convertedMetadata.entitySets, entityTypeNavProp.targetTypeName)?.name ??
-                        'Check parent entity file',
+                        convertedMetadata.entitySets.find(
+                            (entitySet) => entitySet.entityTypeName === entityTypeNavProp.targetTypeName
+                        )?.name ?? 'Unknown',
                     navPropEntities: [...nestedNavPropEntities]
                 });
             }
