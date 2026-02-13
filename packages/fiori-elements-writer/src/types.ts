@@ -183,6 +183,10 @@ export interface FioriElementsApp<T> extends Ui5App {
          * However, annotations will only be written if the template type is lrop, worklist, or formEntryObject; annotation generation is unspported for other project types.
          */
         addAnnotations?: boolean;
+        /**
+         * Indicates if updates to the root package.json of CAP projects should be disabled. If true, the root package.json will not be updated with the sapux array or the cds watch scripts.
+         */
+        disableCapRootPkgJsonUpdates?: boolean;
     };
 }
 
