@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.14
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 0.4.13
 
 ### Patch Changes

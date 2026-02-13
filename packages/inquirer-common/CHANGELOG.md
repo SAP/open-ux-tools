@@ -1,5 +1,38 @@
 # @sap-ux/inquirer-common
 
+## 0.11.4
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/fiori-generator-shared@0.13.70
+    - @sap-ux/odata-service-writer@0.29.18
+    - @sap-ux/telemetry@0.6.71
+
+## 0.11.3
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/fiori-generator-shared@0.13.69
+    - @sap-ux/odata-service-writer@0.29.17
+    - @sap-ux/telemetry@0.6.70
+
+## 0.11.2
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/telemetry@0.6.69
+    - @sap-ux/ui5-info@0.13.12
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/odata-service-writer@0.29.16
+    - @sap-ux/project-access@1.35.1
+
 ## 0.11.1
 
 ### Patch Changes

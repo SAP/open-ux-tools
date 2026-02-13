@@ -1,5 +1,33 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.55
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+
+## 0.6.54
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+
+## 0.6.53
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/project-access@1.35.1
+
+## 0.6.52
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+
 ## 0.6.51
 
 ### Patch Changes

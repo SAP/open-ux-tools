@@ -1,5 +1,24 @@
 # @sap-ux/project-access
 
+## 1.35.3
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+
+## 1.35.2
+
+### Patch Changes
+
+- d2b772d: Fix `loadGlobalCdsModule` failing to load global CDS module for CDS versions >= 9.7.0
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+
 ## 1.35.0
 
 ### Minor Changes

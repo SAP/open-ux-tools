@@ -288,14 +288,14 @@ function getKeysWithDifferentValues(
 }
 
 /**
- * Determines whether to validate the package again based on changed answers.
- * The description change does not require re-validation of the package.
+ * Determines whether to run the validation based on changed answers.
+ * The description change does not require re-validation.
  *
  * @param prevAnswers - previous answers
  * @param newAnswers - new answers
  * @returns - whether to validate the package again
  */
-export function shouldValidatePackage(
+export function shouldRunValidation(
     prevAnswers: AbapDeployConfigAnswersInternal,
     newAnswers: AbapDeployConfigAnswersInternal
 ): boolean {
