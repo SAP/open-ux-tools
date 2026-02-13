@@ -11,7 +11,8 @@ jest.mock('../../../../../src/panel/system/utils', () => ({
     getCatalogServiceCount: jest.fn(),
     createGALink: jest.fn(),
     getErrorType: jest.fn(),
-    getSystemInfo: jest.fn()
+    getSystemInfo: jest.fn(),
+    hasServiceMetadata: jest.fn()
 }));
 
 const systemServicePartialUpdateMock = jest.fn();
@@ -293,5 +294,89 @@ describe('Test Connection Action', () => {
         await expect(
             testSystemConnection(panelContext, { type: 'TEST_CONNECTION', payload: { system: backendSystem } })
         ).resolves.not.toThrow();
+    });
+
+    it('should test odata_service connection type successfully', async () => {
+        const odataServiceSystem = new BackendSystem({
+            name: 'OData Service System',
+            systemType: 'OnPrem',
+            url: 'https://test-system.example.com/sap/opu/odata/sap/SERVICE',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service'
+        });
+
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'hasServiceMetadata').mockResolvedValue(true);
+
+        const postMessageMock = jest.fn();
+        const panelContext = {
+            postMessage: postMessageMock,
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn()
+        } as unknown as PanelContext;
+
+        await testSystemConnection(panelContext, {
+            type: 'TEST_CONNECTION',
+            payload: { system: odataServiceSystem }
+        });
+
+        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem);
+        expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
+        expect(postMessageMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'TEST_CONNECTION_STATUS',
+                payload: {
+                    connectionStatus: {
+                        connected: true,
+                        message: 'Service metadata retrieved successfully.'
+                    }
+                }
+            })
+        );
+    });
+
+    it('should handle odata_service connection failure', async () => {
+        const odataServiceSystem = new BackendSystem({
+            name: 'OData Service System',
+            systemType: 'OnPrem',
+            url: 'https://test-system.example.com/sap/opu/odata/sap/SERVICE',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service'
+        });
+
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'hasServiceMetadata').mockRejectedValue(new Error('Metadata not found'));
+
+        const postMessageMock = jest.fn();
+        const panelContext = {
+            postMessage: postMessageMock,
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn()
+        } as unknown as PanelContext;
+
+        await testSystemConnection(panelContext, {
+            type: 'TEST_CONNECTION',
+            payload: { system: odataServiceSystem }
+        });
+
+        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem);
+        expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
+        expect(postMessageMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'TEST_CONNECTION_STATUS',
+                payload: {
+                    connectionStatus: {
+                        connected: false,
+                        message: 'Service metadata not available.'
+                    }
+                }
+            })
+        );
     });
 });
