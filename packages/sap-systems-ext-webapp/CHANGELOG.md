@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.1.0
+
+### Minor Changes
+
+- 9f94937: support adding full service urls as a new connection type
+
 ## 0.0.12
 
 ### Patch Changes
