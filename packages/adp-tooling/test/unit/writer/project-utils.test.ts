@@ -34,6 +34,19 @@ const mockedGetTypesPackage = getTypesPackage as jest.Mock;
 const mockedGetTypesVersion = getTypesVersion as jest.Mock;
 const mockedGetEsmTypesVersion = getEsmTypesVersion as jest.Mock;
 
+const mockServiceKeys = [
+    {
+        credentials: {
+            uaa: {} as any,
+            uri: 'test-uri',
+            endpoints: {},
+            'html5-apps-repo': {
+                app_host_id: 'host-123'
+            }
+        }
+    }
+];
+
 const cfData = {
     app: {
         id: 'my.test.cf.app',
@@ -57,8 +70,10 @@ const cfData = {
         html5RepoRuntimeGuid: 'runtime-guid',
         approuter: AppRouterType.MANAGED,
         businessService: 'business-service',
-        backendUrl: '/backend.example',
-        oauthPaths: ['/sap/opu/odata', '/api/v1']
+        serviceInfo: {
+            serviceKeys: mockServiceKeys,
+            serviceInstance: { guid: 'service-guid', name: 'service-name' }
+        }
     },
     project: {
         name: 'my-test-cf-project',
