@@ -95,4 +95,65 @@ describe('enableCardGenerator', () => {
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(basePath, 'ui5-with-deprecated-config-and-cards-generator.yaml'))).toMatchSnapshot();
     });
+
+    test('CAP project with cds-plugin-ui5 adds script to both app and CAP root', async () => {
+        const capProjectRoot = join(__dirname, '../../fixtures/cards-config/cap-project');
+        const appPath = join(capProjectRoot, 'app/test-app');
+        const fs = create(createStorage());
+
+        // Set up CAP root package.json with cds-plugin-ui5
+        fs.writeJSON(join(capProjectRoot, 'package.json'), {
+            name: 'cap-test-project',
+            version: '1.0.0',
+            dependencies: {
+                '@sap/cds': '^8'
+            },
+            devDependencies: {
+                'cds-plugin-ui5': '^0.13.0'
+            },
+            workspaces: ['app/*'],
+            sapux: ['app/test-app']
+        });
+
+        // Set up srv folder (needed for CAP detection)
+        fs.write(join(capProjectRoot, 'srv/service.cds'), '');
+
+        // Set up app package.json
+        fs.writeJSON(join(appPath, 'package.json'), {
+            name: 'test.cap.app',
+            version: '0.0.1',
+            devDependencies: {
+                '@sap/ux-ui5-tooling': '1'
+            },
+            scripts: {}
+        });
+
+        // Set up app manifest.json
+        fs.writeJSON(join(appPath, 'webapp/manifest.json'), {
+            'sap.app': {
+                id: 'test.cap.app',
+                title: 'Test CAP App'
+            }
+        });
+
+        await enableCardGeneratorConfig(appPath, join(appPath, 'ui5.yaml'), undefined, fs);
+
+        if (process.env.UX_DEBUG) {
+            fs.commit(() => {});
+        }
+
+        // Check app's package.json has fiori run script
+        const appPackageJson = JSON.parse(fs.read(join(appPath, 'package.json')));
+        expect(appPackageJson.scripts['start-cards-generator']).toContain('fiori run');
+        expect(appPackageJson.scripts['start-cards-generator']).toContain('flpCardGeneratorSandbox.html');
+        expect(appPackageJson.scripts['start-cards-generator']).toContain('#app-preview');
+
+        // Check CAP root's package.json has cds watch script
+        const capPackageJson = JSON.parse(fs.read(join(capProjectRoot, 'package.json')));
+        expect(capPackageJson.scripts['start-cards-generator']).toContain('cds watch');
+        expect(capPackageJson.scripts['start-cards-generator']).toContain('test.cap.app');
+        expect(capPackageJson.scripts['start-cards-generator']).toContain('flpCardGeneratorSandbox.html');
+        expect(capPackageJson.scripts['start-cards-generator']).toContain('#app-preview');
+        expect(capPackageJson.scripts['start-cards-generator']).toContain('--livereload false');
+    });
 });
