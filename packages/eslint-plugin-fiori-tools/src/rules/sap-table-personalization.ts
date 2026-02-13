@@ -9,6 +9,8 @@ import type { MemberNode } from '@humanwhocodes/momoa';
 import { createJsonFixer } from '../language/rule-fixer';
 import type { FeV4PageType, Table } from '../project-context/linker/fe-v4';
 import type { ParsedApp } from '../project-context/parser';
+import { isLowerThanMinimalUi5Version } from '../utils/version';
+import type { MinUI5Version } from '../project-context/parser/types';
 
 enum PersonalizationProperties {
     column = 'column',
@@ -36,7 +38,12 @@ enum MessageIdByProperty {
     group = TABLE_PERSONALIZATION_GROUP
 }
 
-const checkPersonalizationValue = (table: Table, page: FeV4PageType, parsedApp: ParsedApp): TablePersonalization[] => {
+const checkPersonalizationValue = (
+    table: Table,
+    page: FeV4PageType,
+    parsedApp: ParsedApp,
+    minUI5Version: MinUI5Version | undefined
+): TablePersonalization[] => {
     const problems: TablePersonalization[] = [];
 
     const personalization = table.configuration.personalization.valueInFile;
@@ -53,7 +60,7 @@ const checkPersonalizationValue = (table: Table, page: FeV4PageType, parsedApp: 
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
-                propertyPath: table.configuration.personalization.configurationPath // not a property in Page Editor
+                propertyPath: table.configuration.personalization.configurationPath
             }
         });
     } else {
@@ -62,7 +69,28 @@ const checkPersonalizationValue = (table: Table, page: FeV4PageType, parsedApp: 
         for (const key in PersonalizationProperties) {
             const property = key as PersonalizationProperty;
             if (personalization[property] === false) {
-                if (property !== 'group' || tableType === 'AnalyticalTable' || tableType === 'ResponsiveTable') {
+                if (property === 'group') {
+                    const checkGroupForAnalyticalTable =
+                        tableType === 'AnalyticalTable' &&
+                        minUI5Version &&
+                        !isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 108 });
+                    const checkGroupForResponsiveTable =
+                        tableType === 'ResponsiveTable' &&
+                        minUI5Version &&
+                        !isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 120 });
+                    if (checkGroupForAnalyticalTable || checkGroupForResponsiveTable) {
+                        problems.push({
+                            type: TABLE_PERSONALIZATION,
+                            pageName: page.targetName,
+                            property,
+                            manifest: {
+                                uri: parsedApp.manifest.manifestUri,
+                                object: parsedApp.manifestObject,
+                                propertyPath: [...table.configuration.personalization.configurationPath, property]
+                            }
+                        });
+                    }
+                } else {
                     problems.push({
                         type: TABLE_PERSONALIZATION,
                         pageName: page.targetName,
@@ -117,7 +145,12 @@ const rule: FioriRuleDefinition = createFioriRule({
 
             for (const page of app.pages) {
                 for (const table of page.lookup['table'] ?? []) {
-                    const tableProblems = checkPersonalizationValue(table, page, parsedApp);
+                    const tableProblems = checkPersonalizationValue(
+                        table,
+                        page,
+                        parsedApp,
+                        parsedApp.manifest.minUI5Version
+                    );
                     problems.push(...tableProblems);
                 }
             }
