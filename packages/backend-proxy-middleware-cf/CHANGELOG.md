@@ -1,5 +1,14 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.52
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+- Updated dependencies [346f09c]
+    - @sap-ux/adp-tooling@0.18.62
+    - @sap-ux/project-access@1.35.3
+
 ## 0.0.51
 
 ### Patch Changes

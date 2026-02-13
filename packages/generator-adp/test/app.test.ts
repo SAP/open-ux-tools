@@ -33,7 +33,8 @@ import {
     loadApps,
     loadCfConfig,
     storeCredentials,
-    validateUI5VersionExists
+    validateUI5VersionExists,
+    getServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
 import {
     type AbapServiceProvider,
@@ -66,6 +67,7 @@ import {
     workspaceChoices
 } from '../src/utils/workspace';
 import { CFServicesPrompter } from '../src/app/questions/cf-services';
+import { get } from 'node:http';
 
 jest.mock('@sap-ux/feature-toggle', () => ({
     ...jest.requireActual('@sap-ux/feature-toggle'),
@@ -137,19 +139,21 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getApprouterType: jest.fn(),
     hasApprouter: jest.fn(),
     createServices: jest.fn(),
-    storeCredentials: jest.fn()
+    storeCredentials: jest.fn(),
+    getServiceInstanceKeys: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
     ...jest.requireActual('../src/utils/deps.ts'),
-    getPackageInfo: jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' })
+    getPackageInfo: jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' }),
+    installDependencies: jest.fn().mockResolvedValue(undefined)
 }));
 
 jest.mock('../src/utils/appWizardCache.ts');
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
+    sendTelemetry: jest.fn().mockResolvedValue(undefined),
     TelemetryHelper: {
         createTelemetryData: jest.fn().mockReturnValue({
             OperatingSystem: 'testOS',
@@ -157,7 +161,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
         })
     },
     isExtensionInstalled: jest.fn(),
-    getHostEnvironment: jest.fn(),
+    getHostEnvironment: jest.fn().mockReturnValue('cli'),
     isCli: jest.fn(),
     getDefaultTargetFolder: jest.fn().mockReturnValue(undefined)
 }));
@@ -349,6 +353,7 @@ const mockSystemService = {
     read: jest.fn(),
     write: jest.fn()
 };
+const getServiceInstanceKeysMock = getServiceInstanceKeys as jest.MockedFunction<typeof getServiceInstanceKeys>;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -731,6 +736,31 @@ describe('Adaptation Project Generator Integration Test', () => {
             const mtaYamlSource = join(__dirname, 'fixtures', 'mta-project', 'mta.yaml');
             const mtaYamlTarget = join(cfTestOutputDir, 'mta.yaml');
             fs.copyFileSync(mtaYamlSource, mtaYamlTarget);
+
+            getServiceInstanceKeysMock.mockResolvedValue({
+                serviceKeys: [
+                    {
+                        credentials: {
+                            uaa: {
+                                clientid: 'test-client-id',
+                                clientsecret: 'test-client-secret',
+                                url: 'https://test-uaa.example.com'
+                            },
+                            uri: 'https://example.com',
+                            endpoints: {
+                                backend: {
+                                    url: 'https://backend.example.com',
+                                    destination: 'test-backend-destination'
+                                }
+                            }
+                        }
+                    }
+                ],
+                serviceInstance: {
+                    name: 'test-service-instance',
+                    guid: 'test-service-instance-guid'
+                }
+            });
 
             mockIsAppStudio.mockReturnValue(true);
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);

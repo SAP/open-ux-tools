@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.35.3
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+
 ## 1.35.2
 
 ### Patch Changes

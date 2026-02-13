@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.18.62
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/inquirer-common@0.11.4
+    - @sap-ux/odata-service-writer@0.29.18
+    - @sap-ux/project-input-validator@0.6.55
+    - @sap-ux/system-access@0.6.50
+
 ## 0.18.61
 
 ### Patch Changes
