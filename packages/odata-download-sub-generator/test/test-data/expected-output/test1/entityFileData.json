@@ -1,0 +1,54 @@
+{
+    "Travel": [
+        {
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {},
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {},
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {},
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {},
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {},
+            "@odata.etag": "W/\"SADL-202601151014145823360C~20260115101414.5823360\"",
+            "AgencyID": "80025",
+            "AgencyName": "Global Travel Solutions Inc.",
+            "BeginDate": "2026-11-20",
+            "BookingFee": 1024,
+            "Confirmed": false,
+            "CreationDateTime": null,
+            "CreationDateTimeTimezone": "",
+            "CurrencyCode": "EUR",
+            "CustomerID": "1847",
+            "CustomerName": "Anderson",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "EndDate": "2026-12-31",
+            "HasActiveEntity": false,
+            "HasDraftEntity": true,
+            "IsActiveEntity": true,
+            "LastChangedAtTravel": "2026-01-15T10:14:14.582336Z",
+            "Memo": "Business trip to conference",
+            "SAP__Messages": [],
+            "Status": "N",
+            "TotalPrice": 12003.5,
+            "TravelCode": 0,
+            "TravelID": "245",
+            "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
+            "__CreateByAssociationControl": {
+                "_Booking": true
+            },
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            },
+            "__FieldControl": {
+                "BookingFee": 3
+            },
+            "__OperationControl": {
+                "Check": true,
+                "Edit": true,
+                "deductDiscount": true,
+                "dummyAction": true,
+                "setToBooked": true,
+                "setToNew": false
+            }
+        }
+    ]
+}
