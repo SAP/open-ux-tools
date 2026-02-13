@@ -40,6 +40,7 @@ import {
 import type { Package } from '@sap-ux/project-access';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**
  * Get the writer template type from the Fiori App floorplan.
@@ -232,6 +233,8 @@ export async function transformState<T>(
         }
 
         if (service.capService) {
+            const disableCapRootPkgJsonUpdates = isFeatureEnabled('sap.ux.internal.DISABLE_ROOT_PACKAGE_JSON_UPDATES');
+
             const { cdsUi5PluginInfo, ...capServiceInfo } = service.capService;
             appConfig.service.capService = {
                 ...capServiceInfo,
@@ -244,6 +247,10 @@ export async function transformState<T>(
                 appConfig.service.capService.cdsUi5PluginInfo.isWorkspaceEnabled = true;
                 appConfig.service.capService.cdsUi5PluginInfo.hasCdsUi5Plugin = true;
             }
+            appConfig.appOptions = {
+                ...appConfig.appOptions,
+                disableCapRootPkgJsonUpdates
+            };
         }
 
         if (
