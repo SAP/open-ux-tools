@@ -897,6 +897,15 @@ export interface BusinessServiceResource {
     label: string;
 }
 
+export interface CfUi5AppInfo {
+    asyncHints?: {
+        libs?: Array<{
+            name: string;
+            html5AppName?: string;
+            url?: { url: string };
+        }>;
+    };
+}
 /**
  * Cloud Foundry ADP UI5 YAML Types
  */
@@ -1071,13 +1080,17 @@ export interface CfAdpWriterConfig {
          */
         serviceInstanceGuid?: string;
         /**
-         * Backend URL from service instance keys.
+         * Backend URLs from service instance keys.
          */
-        backendUrl?: string;
+        backendUrls?: string[];
         /**
          * OAuth paths extracted from xs-app.json routes that have a source property.
          */
         oauthPaths?: string[];
+        /**
+         * Business service instance keys.
+         */
+        serviceInfo?: ServiceInfo | null;
     };
     project: {
         name: string;
@@ -1109,13 +1122,14 @@ export interface CreateCfConfigParams {
     manifest: Manifest;
     html5RepoRuntimeGuid: string;
     serviceInstanceGuid?: string;
-    backendUrl?: string;
+    backendUrls?: string[];
     oauthPaths?: string[];
     projectPath: string;
     addStandaloneApprouter?: boolean;
     publicVersions: UI5Version;
     packageJson: Package;
     toolsId: string;
+    serviceInfo?: ServiceInfo | null;
 }
 
 export const AppRouterType = {

@@ -22,7 +22,8 @@ import {
     isMtaProject,
     loadApps,
     loadCfConfig,
-    storeCredentials
+    storeCredentials,
+    getServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
 import {
     getDefaultTargetFolder,
@@ -236,7 +237,6 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         // Force the generator to overwrite existing files without additional prompting
         setYeomanEnvConflicterForce(this.env, this.options.force);
-
         await initI18n();
         this.isCli = isCli();
         this.layer = getFlexLayer();
@@ -621,8 +621,16 @@ export default class extends Generator {
 
         const html5RepoRuntimeGuid = this.cfPrompter.html5RepoRuntimeGuid;
         const serviceInstanceGuid = this.cfPrompter.serviceInstanceGuid;
-        const backendUrl = this.cfPrompter.backendUrl;
+        const backendUrls = this.cfPrompter.backendUrls;
         const oauthPaths = this.cfPrompter.oauthPaths;
+
+        const serviceInfo = await getServiceInstanceKeys(
+            {
+                names: [this.cfServicesAnswers.businessService ?? '']
+            },
+            this.logger
+        );
+
         const config = getCfConfig({
             attributeAnswers: this.attributeAnswers,
             cfServicesAnswers: this.cfServicesAnswers,
@@ -631,12 +639,13 @@ export default class extends Generator {
             manifest,
             html5RepoRuntimeGuid,
             serviceInstanceGuid,
-            backendUrl,
+            backendUrls,
             oauthPaths,
             projectPath,
             publicVersions,
             packageJson: getPackageInfo(),
-            toolsId: this.toolsId
+            toolsId: this.toolsId,
+            serviceInfo
         });
 
         if (config.options) {

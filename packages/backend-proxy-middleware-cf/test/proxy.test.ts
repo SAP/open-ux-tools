@@ -124,19 +124,27 @@ describe('proxy', () => {
 
     describe('setupProxyRoutes', () => {
         test('sets up multiple proxy routes', () => {
-            const paths = ['/sap/opu/odata', '/sap/bc/ui5_ui5', '/api'];
-            const destinationUrl = '/backend.example';
+            const backends = [
+                {
+                    url: '/backend.example',
+                    paths: ['/sap/opu/odata', '/sap/bc/ui5_ui5', '/api']
+                }
+            ];
 
-            const router = setupProxyRoutes(paths, destinationUrl, mockTokenProvider, logger);
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             expect(typeof router).toBe('function');
             expect(router.use).toBeDefined();
-            expect(mockTokenProvider.createTokenMiddleware).toHaveBeenCalledTimes(paths.length);
+            expect(mockTokenProvider.createTokenMiddleware).toHaveBeenCalledTimes(backends[0].paths.length);
         });
 
         test('throws error when route registration fails', () => {
-            const paths = ['/sap/opu/odata'];
-            const destinationUrl = '/backend.example';
+            const backends = [
+                {
+                    url: '/backend.example',
+                    paths: ['/sap/opu/odata']
+                }
+            ];
             const failingTokenProvider = {
                 createTokenMiddleware: jest.fn().mockImplementation(() => {
                     throw new Error('Token middleware creation failed');
@@ -144,19 +152,43 @@ describe('proxy', () => {
             } as unknown as OAuthTokenProvider;
 
             expect(() => {
-                setupProxyRoutes(paths, destinationUrl, failingTokenProvider, logger);
+                setupProxyRoutes(backends, failingTokenProvider, logger);
             }).toThrow('Failed to register proxy for /sap/opu/odata');
         });
 
         test('handles empty paths array', () => {
-            const paths: string[] = [];
-            const destinationUrl = '/backend.example';
+            const backends = [
+                {
+                    url: '/backend.example',
+                    paths: []
+                }
+            ];
 
-            const router = setupProxyRoutes(paths, destinationUrl, mockTokenProvider, logger);
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             expect(typeof router).toBe('function');
             expect(router.use).toBeDefined();
             expect(router.stack.length).toBe(0);
+        });
+
+        test('sets up routes for multiple backends', () => {
+            const backends = [
+                {
+                    url: '/backend1.example',
+                    paths: ['/sap/opu/odata', '/sap/bc/ui5_ui5']
+                },
+                {
+                    url: '/backend2.example',
+                    paths: ['/api/v1', '/api/v2']
+                }
+            ];
+
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
+
+            expect(typeof router).toBe('function');
+            expect(router.use).toBeDefined();
+            const totalPaths = backends[0].paths.length + backends[1].paths.length;
+            expect(mockTokenProvider.createTokenMiddleware).toHaveBeenCalledTimes(totalPaths);
         });
     });
 
@@ -165,7 +197,13 @@ describe('proxy', () => {
         const destinationUrl = 'https://backend.example';
 
         test('proxies request with token middleware', async () => {
-            const router = setupProxyRoutes([path], destinationUrl, mockTokenProvider, logger);
+            const backends = [
+                {
+                    url: destinationUrl,
+                    paths: [path]
+                }
+            ];
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             const app = express();
             app.use(router);
@@ -183,7 +221,13 @@ describe('proxy', () => {
         });
 
         test('proxies request with query parameters', async () => {
-            const router = setupProxyRoutes([path], destinationUrl, mockTokenProvider, logger);
+            const backends = [
+                {
+                    url: destinationUrl,
+                    paths: [path]
+                }
+            ];
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             const app = express();
             app.use(router);
@@ -197,7 +241,13 @@ describe('proxy', () => {
         });
 
         test('handles non-proxied paths', async () => {
-            const router = setupProxyRoutes([path], destinationUrl, mockTokenProvider, logger);
+            const backends = [
+                {
+                    url: destinationUrl,
+                    paths: [path]
+                }
+            ];
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             const app = express();
             app.use(router);
