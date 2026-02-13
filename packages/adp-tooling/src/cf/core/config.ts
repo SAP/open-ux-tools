@@ -28,7 +28,7 @@ function getHomedir(): string {
  * @param {ToolsLogger} logger - The logger.
  * @returns {CfConfig} The CF configuration.
  */
-export function loadCfConfig(logger: ToolsLogger): CfConfig {
+export function loadCfConfig(logger?: ToolsLogger): CfConfig {
     let cfHome = process.env['CF_HOME'];
     if (!cfHome) {
         cfHome = path.join(getHomedir(), '.cf');
