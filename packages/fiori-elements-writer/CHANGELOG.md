@@ -1,5 +1,74 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.66
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.21
+- @sap-ux/cap-config-writer@0.12.61
+- @sap-ux/fe-fpm-writer@0.42.7
+- @sap-ux/fiori-generator-shared@0.13.70
+- @sap-ux/odata-service-writer@0.29.18
+- @sap-ux/ui5-application-writer@1.7.8
+- @sap-ux/ui5-test-writer@0.7.68
+
+## 2.8.65
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.20
+- @sap-ux/cap-config-writer@0.12.60
+- @sap-ux/fe-fpm-writer@0.42.6
+- @sap-ux/fiori-generator-shared@0.13.69
+- @sap-ux/odata-service-writer@0.29.17
+- @sap-ux/ui5-application-writer@1.7.8
+- @sap-ux/ui5-test-writer@0.7.67
+
+## 2.8.64
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/odata-service-writer@0.29.16
+    - @sap-ux/ui5-application-writer@1.7.8
+    - @sap-ux/annotation-generator@0.4.19
+    - @sap-ux/fe-fpm-writer@0.42.5
+    - @sap-ux/cap-config-writer@0.12.59
+    - @sap-ux/ui5-test-writer@0.7.66
+
+## 2.8.63
+
+### Patch Changes
+
+- Updated dependencies [3795bb2]
+    - @sap-ux/annotation-generator@0.4.18
+    - @sap-ux/fe-fpm-writer@0.42.4
+    - @sap-ux/ui5-test-writer@0.7.65
+    - @sap-ux/ui5-application-writer@1.7.7
+
+## 2.8.62
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+- Updated dependencies [2bffca7]
+    - @sap-ux/ui5-application-writer@1.7.7
+    - @sap-ux/ui5-test-writer@0.7.65
+
+## 2.8.61
+
+### Patch Changes
+
+- @sap-ux/annotation-generator@0.4.17
+- @sap-ux/cap-config-writer@0.12.58
+- @sap-ux/fe-fpm-writer@0.42.3
+- @sap-ux/fiori-generator-shared@0.13.67
+- @sap-ux/odata-service-writer@0.29.15
+- @sap-ux/ui5-application-writer@1.7.6
+- @sap-ux/ui5-test-writer@0.7.64
+
 ## 2.8.60
 
 ### Patch Changes

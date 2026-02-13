@@ -1,5 +1,60 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.98
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.11
+- @sap-ux/fiori-generator-shared@0.13.70
+- @sap-ux/inquirer-common@0.11.4
+- @sap-ux/system-access@0.6.50
+
+## 1.6.97
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.11
+- @sap-ux/fiori-generator-shared@0.13.69
+- @sap-ux/inquirer-common@0.11.3
+- @sap-ux/system-access@0.6.50
+
+## 1.6.96
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/system-access@0.6.50
+    - @sap-ux/nodejs-utils@0.2.14
+
+## 1.6.95
+
+### Patch Changes
+
+- ede6ae8: extend validation pre check to transport choice prompt
+
+## 1.6.94
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/inquirer-common@0.11.1
+
+## 1.6.93
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/inquirer-common@0.11.0
+    - @sap-ux/axios-extension@1.25.10
+    - @sap-ux/fiori-generator-shared@0.13.67
+    - @sap-ux/system-access@0.6.49
+
 ## 1.6.92
 
 ### Patch Changes

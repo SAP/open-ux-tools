@@ -1,5 +1,54 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.14
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/cds-odata-annotation-converter@0.7.5
+
+## 0.9.13
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/cds-odata-annotation-converter@0.7.5
+
+## 0.9.12
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/odata-vocabularies@0.4.24
+    - @sap-ux/cds-annotation-parser@0.2.29
+    - @sap-ux/cds-odata-annotation-converter@0.7.5
+    - @sap-ux/xml-odata-annotation-converter@0.4.8
+    - @sap-ux/project-access@1.35.1
+
+## 0.9.11
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+- Updated dependencies [3795bb2]
+    - @sap-ux/cds-odata-annotation-converter@0.7.4
+    - @sap-ux/xml-odata-annotation-converter@0.4.8
+    - @sap-ux/odata-annotation-core-types@0.5.4
+    - @sap-ux/cds-annotation-parser@0.2.28
+    - @sap-ux/odata-annotation-core@0.2.14
+    - @sap-ux/odata-entity-model@0.3.5
+    - @sap-ux/odata-vocabularies@0.4.23
+
+## 0.9.10
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/cds-odata-annotation-converter@0.7.3
+
 ## 0.9.9
 
 ### Patch Changes

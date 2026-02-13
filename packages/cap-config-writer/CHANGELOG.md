@@ -1,5 +1,36 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.61
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/fiori-generator-shared@0.13.70
+
+## 0.12.60
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/fiori-generator-shared@0.13.69
+
+## 0.12.59
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.68
+- @sap-ux/project-access@1.35.1
+
+## 0.12.58
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/fiori-generator-shared@0.13.67
+
 ## 0.12.57
 
 ### Patch Changes

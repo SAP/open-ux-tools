@@ -442,6 +442,8 @@ export class ConnectionValidator {
         if (resetValidity) {
             this.resetValidity();
         }
+        // Reset any previous connection errors
+        errorHandler.resetErrorState();
     }
 
     /**
@@ -505,8 +507,7 @@ export class ConnectionValidator {
         destination?: Destination;
         odataVersion?: ODataVersion;
     }): Promise<void> {
-        this.resetConnectionState();
-        this.resetValidity();
+        this.resetConnectionState(true);
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
@@ -734,8 +735,7 @@ export class ConnectionValidator {
         servicePath?: string,
         requiredOdataVersion?: ODataVersion
     ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
-        this.resetConnectionState();
-        this.resetValidity();
+        this.resetConnectionState(true);
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest. This function lowercases the origin.
         const destUrl = getDestinationUrlForAppStudio(destination.Name.toLowerCase(), servicePath);
         // Get the destination URL in the portable form <protocol>://<host>:<port>.
