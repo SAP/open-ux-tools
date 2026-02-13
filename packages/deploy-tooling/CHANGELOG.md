@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.51
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.51
+- @sap-ux/ui5-config@0.29.16
+- @sap-ux/inquirer-common@0.11.5
+
 ## 0.17.50
 
 ### Patch Changes
