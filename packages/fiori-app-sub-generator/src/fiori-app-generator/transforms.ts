@@ -233,7 +233,9 @@ export async function transformState<T>(
         }
 
         if (service.capService) {
-            const disableCapRootPkgJsonUpdates = isFeatureEnabled('sap.ux.internal.DISABLE_ROOT_PACKAGE_JSON_UPDATES');
+            const disableCapRootPkgJsonUpdates = isFeatureEnabled(
+                'sap.ux.testBetaFeatures.disableCapRootPkgJsonUpdates'
+            );
 
             const { cdsUi5PluginInfo, ...capServiceInfo } = service.capService;
             appConfig.service.capService = {
