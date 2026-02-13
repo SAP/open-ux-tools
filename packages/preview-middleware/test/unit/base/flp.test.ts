@@ -23,6 +23,7 @@ import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
 jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
@@ -1485,7 +1486,7 @@ describe('initAdp', () => {
                 sync: syncSpy,
                 onChangeRequest: jest.fn(),
                 addApis: jest.fn(),
-                isCloudProject: true
+                projectType: AdaptationProjectType.CLOUD_READY
             } as unknown as adpTooling.AdpPreview;
         });
         const config = {
@@ -1533,7 +1534,7 @@ describe('initAdp', () => {
                 sync: syncSpy,
                 onChangeRequest: jest.fn(),
                 addApis: jest.fn(),
-                isCloudProject: false
+                projectType: AdaptationProjectType.ON_PREMISE
             } as unknown as adpTooling.AdpPreview;
         });
 

@@ -726,6 +726,19 @@ export class UI5Config {
     }
 
     /**
+     * Determines whether the UI5 configuration document contains the builder key.
+     *
+     * @returns True if the configuration contains builder key at root level otherwise false.
+     */
+    public hasBuilderKey(): boolean {
+        try {
+            return !!this.document.getNode({ path: 'builder' });
+        } catch {
+            return false;
+        }
+    }
+
+    /**
      * Remove a middleware form the UI5 config.
      *
      * @param name name of the middleware that is to be removed
