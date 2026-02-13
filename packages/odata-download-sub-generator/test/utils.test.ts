@@ -11,7 +11,9 @@ describe('Test utils', () => {
             ) as ReferencedEntities['listEntity'];
             // No selected entities, only the unexpanded main/list entity is written
             let odataResult = (
-                JSON.parse(await readFile(join(__dirname, './test-data/odataResult1.json'), 'utf8')) as { value: unknown[] }
+                JSON.parse(await readFile(join(__dirname, './test-data/odataResult1.json'), 'utf8')) as {
+                    value: unknown[];
+                }
             ).value;
             let entitySetData = createEntitySetData(odataResult, {}, rootEntity.entitySetName);
             let expectedEntitySetData = await readFile(
@@ -22,7 +24,9 @@ describe('Test utils', () => {
 
             // More complex query, multiple entity set files created.
             odataResult = (
-                JSON.parse(await readFile(join(__dirname, './test-data/odataResult2.json'), 'utf8')) as { value: unknown[] }
+                JSON.parse(await readFile(join(__dirname, './test-data/odataResult2.json'), 'utf8')) as {
+                    value: unknown[];
+                }
             ).value;
             entitySetData = createEntitySetData(
                 odataResult,
