@@ -108,10 +108,15 @@ function getLineItemAnnotation(table: MacroTable): string | undefined {
  * @param table - table control
  * @returns string
  */
+
 export function getActionsPropertyPath(table: UI5Element): string | undefined {
     const macroTable = table.getParent();
     const configPath = '';
-    if (macroTable && (isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable) || isA<MacroTable>('sap.fe.macros.Table', macroTable))) {
+    if (
+        macroTable &&
+        (isA<MacroTable>('sap.fe.macros.Table', macroTable) ||
+            isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable))
+    ) {
         const lineItemAnnotation = getLineItemAnnotation(macroTable);
 
         const navigationPath = macroTable.metaPath.split(macroTable.getProperty('contextPath'))[1];
