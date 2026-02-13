@@ -1,5 +1,31 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.66
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+
+## 0.3.65
+
+### Patch Changes
+
+- c21f1b6: Ensure mta service-name is handled
+
+## 0.3.64
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+
+## 0.3.63
+
+### Patch Changes
+
+- 14e0ab4: Ensure service-name is only added when destinations are being added by cf-writer
+
 ## 0.3.62
 
 ### Patch Changes

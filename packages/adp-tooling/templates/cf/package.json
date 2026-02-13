@@ -4,26 +4,32 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"prestart": "npm run build",
-		"start": "fiori run --open /test/flp.html#app-preview",
-		"start-editor": "fiori run --open /test/adaptation-editor.html",
+		"start": "npm run setup-cf && npm run build && fiori run --open /test/flp.html#app-preview",
+		"start-nobuild": "fiori run --open /test/flp.html#app-preview",
+		"setup-cf": "sap-ux add adp-cf-config",
+		"start-editor-nobuild": "fiori run --open /test/adaptation-editor.html",
+		"start-editor": "npm run setup-cf && fiori run --open /test/adaptation-editor.html",
 		"build": "npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip",
 		"zip": "cd dist && npx bestzip ../<%= module %>.zip *",
 		"clean": "npx rimraf <%= module %>.zip dist",
-		"build-ui5": "npm explore @ui5/task-adaptation -- npm run rollup"
+		"build-ui5": "npm explore @ui5/task-adaptation -- npm run rollup",
+		"build-mta": "rimraf resources mta_archives && mbt build --mtar archive --source ../",
+		"deploy": "cf deploy ../mta_archives/archive.mtar"
 	},
 	"repository": {
 		"type": "git",
 		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
 	},
 	"devDependencies": {
+		"@sap-ux/create": "^0.14.22",
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
 		"@sap-ux/backend-proxy-middleware-cf": "0",
 		"@sapui5/ts-types": "^1.141.2",
 		"@sap/ux-ui5-tooling": "1",
 		"@ui5/cli": "^4.0.33",
-		"@ui5/task-adaptation": "^1.5.3",
+		"@ui5/task-adaptation": "1.6.0-rc.4",
 		"bestzip": "^2.2.1",
-		"rimraf": "^5.0.5"
+		"rimraf": "^6.1.2",
+		"mbt": "^1.2.34"
 	}
 }
