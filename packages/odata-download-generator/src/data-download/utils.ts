@@ -13,30 +13,35 @@ import type { Entity, ReferencedEntities, SemanticKeyFilter } from './types';
 import { navPropNameExclusions } from './types';
 
 /**
- * Merge array properties by removing dups and concating
+ * Merge array properties by removing dups and concatenating.
  *
- * @param objValue
- * @param srcValue
+ * @param objValue - The destination value
+ * @param srcValue - The source value
+ * @returns The merged array or undefined
  */
-function mergeCustomizer(objValue, srcValue) {
+function mergeCustomizer(objValue: unknown, srcValue: unknown): unknown[] | undefined {
     if (Array.isArray(objValue)) {
         return uniqWith(objValue.concat(srcValue), isEqual);
     }
+    return undefined;
 }
 /**
- * Creates an object keyed on entity set name containing expanded results
+ * Creates an object keyed on entity set name containing expanded results.
  *
- * @param odataResult
- * @param entitySetsFlat
- * @param entitySetName
+ * @param odataResult - The OData result to process
+ * @param entitySetsFlat - Map of entity paths to entity set names
+ * @param entitySetName - The name of the entity set
+ * @returns Object keyed on entity set name containing entity data arrays
  */
 export function createEntitySetData(
-    odataResult: {} | [],
+    odataResult: object | unknown[],
     entitySetsFlat: EntitySetsFlat,
     entitySetName: string
-): { [key: string]: {}[] } {
-    const resultDataByEntitySet: { [key: string]: {}[] } = {};
-    const odataRestulAsArray = Array.isArray(odataResult) ? odataResult : [odataResult];
+): { [key: string]: object[] } {
+    const resultDataByEntitySet: { [key: string]: object[] } = {};
+    const odataRestulAsArray: Record<string, unknown>[] = Array.isArray(odataResult)
+        ? (odataResult as Record<string, unknown>[])
+        : [odataResult as Record<string, unknown>];
 
     // Each entry is of the same entity set data
     odataRestulAsArray.forEach((resultEntry) => {
@@ -66,27 +71,27 @@ export function createEntitySetData(
 /**
  * Load the system from store if available otherwise return as a new system choice.
  *
- * @param systemUrl
- * @param client
- * @returns
+ * @param systemUrl - The system URL
+ * @param client - The client number
+ * @returns The system name or 'NewSystemChoice' if not found
  */
 export async function getSystemNameFromStore(systemUrl: string, client?: string | number): Promise<string | undefined> {
     const systemStore = await getService<BackendSystem, BackendSystemKey>({
-        //logger, // todo: inti logger from YUI
+        logger: ODataDownloadGenerator.logger,
         entityName: 'system'
     });
 
     if (typeof client === 'number') {
         client = String(client);
     }
-    // todo: try...catch?
     const system = await systemStore.read(new BackendSystemKey({ url: systemUrl, client }));
     return system?.name ?? 'NewSystemChoice';
 }
 /**
+ * Gets the semantic key properties from an entity type.
  *
- * @param entityType
- * @returns
+ * @param entityType - The entity type to get semantic keys from
+ * @returns Array of semantic key filters
  */
 function getSemanticKeyProperties(entityType: EntityType): SemanticKeyFilter[] {
     const keyNames: SemanticKeyFilter[] = [];
@@ -116,9 +121,9 @@ function getSemanticKeyProperties(entityType: EntityType): SemanticKeyFilter[] {
 /**
  * Find the entity set of the specified type, since mock server needs the files to be named as entity set names.
  *
- * @param entitySets
- * @param entityTypeFullName
- * @returns
+ * @param entitySets - Array of entity sets to search
+ * @param entityTypeFullName - The fully qualified entity type name to find
+ * @returns The matching entity set or undefined
  */
 function findEntitySet(entitySets: EntitySet[], entityTypeFullName: string): EntitySet | undefined {
     return entitySets.find((entitySet) => entitySet.entityTypeName === entityTypeFullName);
@@ -130,11 +135,11 @@ function findEntitySet(entitySets: EntitySet[], entityTypeFullName: string): Ent
  * A limit to the depth can be provided.
  * If the same entity is found or its a leaf, recursion will stop to avoid infinite loops.
  *
- * @param entityType
- * @param convertedMetadata
- * @param ancestorTypes Keeps track of ancestors to prevent self referential loops and endless nested expansions
- * @param maxDepth
- * @returns
+ * @param entityType - The entity type to get navigation properties from
+ * @param convertedMetadata - The converted metadata object
+ * @param ancestorTypes - Keeps track of ancestors to prevent self referential loops and endless nested expansions
+ * @param maxDepth - Maximum depth for recursion
+ * @returns Array of navigation property entities
  */
 function getNavPropsForExpansion(
     entityType: EntityType,
@@ -172,12 +177,12 @@ function getNavPropsForExpansion(
 }
 
 /**
- *  Load the entity model for processing to determine the odata queries that are relevant for the application.
+ * Load the entity model for processing to determine the odata queries that are relevant for the application.
  *
- * @param appAccess application access reference
- * @param specification
- * @param remoteMetadata the backend service metadata, as distinct to the local metadata
- * @returns
+ * @param appAccess - Application access reference
+ * @param specification - The specification instance
+ * @param remoteMetadata - The backend service metadata, as distinct to the local metadata
+ * @returns The referenced entities or undefined if not found
  */
 export async function getEntityModel(
     appAccess: ApplicationAccess,

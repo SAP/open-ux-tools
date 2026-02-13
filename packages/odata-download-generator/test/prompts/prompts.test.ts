@@ -11,6 +11,7 @@ import {
 } from '../../src/data-download/prompts/prompts';
 import * as promptHelpers from '../../src/data-download/prompts/prompt-helpers';
 import { getEntityModel } from '../../src/data-download/utils';
+import { PromptState } from '../../src/data-download/prompt-state';
 
 jest.mock('@sap-ux/fiori-generator-shared');
 jest.mock('@sap-ux/odata-service-inquirer');
@@ -21,6 +22,9 @@ jest.mock('../../src/data-download/utils');
 describe('Test prompts', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        // Reset PromptState caches for test isolation
+        PromptState.externalServiceRequestCache = {};
+        PromptState.entityTypeRefFacetCache = {};
     });
 
     describe('getODataDownloaderPrompts', () => {
@@ -56,13 +60,13 @@ describe('Test prompts', () => {
 
             expect(result.questions.length).toBeGreaterThan(0);
             // Should include app selection, system selection, key prompts, reset, entity selection, and confirm download
-            const promptTypes = result.questions.map((q: any) => q.name || q.type);
-            expect(promptTypes).toContain(promptNames.appSelection);
-            expect(promptTypes).toContain('datasourceType');
-            expect(promptTypes).toContain('serviceSelection');
-            expect(promptTypes).toContain(promptNames.toggleSelection);
-            expect(promptTypes).toContain(promptNames.relatedEntitySelection);
-            expect(promptTypes).toContain(promptNames.confirmDownload);
+            const allPromptNames = result.questions.map((q: any) => q.name);
+            expect(allPromptNames).toContain(promptNames.appSelection);
+            expect(allPromptNames).toContain('datasourceType');
+            expect(allPromptNames).toContain('serviceSelection');
+            expect(allPromptNames).toContain(promptNames.toggleSelection);
+            expect(allPromptNames).toContain(promptNames.relatedEntitySelection);
+            expect(allPromptNames).toContain(promptNames.confirmDownload);
             // Verify key prompts exist
             const keyPrompts = result.questions.filter((q: any) => q.name?.startsWith('entityKeyIdx:'));
             expect(keyPrompts.length).toBe(5);
@@ -346,6 +350,146 @@ describe('Test prompts', () => {
 
             // createApplicationAccess should only be called once (from first validation)
             expect(createApplicationAccess).toHaveBeenCalledTimes(1);
+        });
+
+        it('should reset PromptState caches when app selection changes', async () => {
+            const mockAppAccess1 = {
+                app: {
+                    appRoot: '/test/app1',
+                    services: { mainService: { uri: '/service1' } },
+                    mainService: 'mainService'
+                }
+            };
+            const mockSpec1 = { getApiVersion: () => ({ version: '24' }) };
+
+            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess1);
+            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue(mockSpec1);
+            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+                servicePath: '/service1/path',
+                systemName: 'System1'
+            });
+
+            // Get prompts
+            const result = await getODataDownloaderPrompts();
+            const firstAppPrompt = result.questions.find(
+                (q: any) => q.name === promptNames.appSelection
+            ) as InputQuestion;
+
+            // Populate the PromptState caches to simulate usage
+            PromptState.externalServiceRequestCache['/service/test'] = ['Entity1', 'Entity2'];
+            PromptState.entityTypeRefFacetCache['TravelType'] = ['_Booking'];
+
+            // Spy on resetServiceCaches to verify it's called
+            const resetCachesSpy = jest.spyOn(PromptState, 'resetServiceCaches');
+
+            // Validate first app - this triggers resetAppConfig which should reset caches
+            await firstAppPrompt.validate!('/test/app1');
+
+            // Verify caches were reset
+            expect(resetCachesSpy).toHaveBeenCalled();
+            expect(PromptState.externalServiceRequestCache).toEqual({});
+            expect(PromptState.entityTypeRefFacetCache).toEqual({});
+
+            resetCachesSpy.mockRestore();
+        });
+
+        it('should reset PromptState caches when switching between different apps', async () => {
+            // First app setup
+            const mockAppAccess1 = {
+                app: {
+                    appRoot: '/test/app1',
+                    services: { mainService: { uri: '/service1' } },
+                    mainService: 'mainService'
+                }
+            };
+
+            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess1);
+            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue({
+                getApiVersion: () => ({ version: '24' })
+            });
+            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+                servicePath: '/service1/path',
+                systemName: 'System1'
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appPrompt = result.questions.find((q: any) => q.name === promptNames.appSelection) as InputQuestion;
+
+            // Validate first app
+            await appPrompt.validate!('/test/app1');
+
+            // Simulate cache population during first app's usage
+            PromptState.externalServiceRequestCache['/service1/path'] = ['Travel', 'Booking'];
+            PromptState.entityTypeRefFacetCache['TravelType'] = ['_Booking', '_Agency'];
+
+            // Verify caches are populated
+            expect(Object.keys(PromptState.externalServiceRequestCache).length).toBeGreaterThan(0);
+            expect(Object.keys(PromptState.entityTypeRefFacetCache).length).toBeGreaterThan(0);
+
+            // Switch to second app
+            const mockAppAccess2 = {
+                app: {
+                    appRoot: '/test/app2',
+                    services: { mainService: { uri: '/service2' } },
+                    mainService: 'mainService'
+                }
+            };
+
+            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess2);
+            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+                servicePath: '/service2/path',
+                systemName: 'System2'
+            });
+
+            // Validate second app - should reset caches
+            await appPrompt.validate!('/test/app2');
+
+            // Verify caches were reset when switching apps
+            expect(PromptState.externalServiceRequestCache).toEqual({});
+            expect(PromptState.entityTypeRefFacetCache).toEqual({});
+        });
+
+        it('should not reset PromptState caches when validating the same app path', async () => {
+            const mockAppAccess = {
+                app: {
+                    appRoot: '/test/app',
+                    services: { mainService: { uri: '/service' } },
+                    mainService: 'mainService'
+                }
+            };
+
+            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess);
+            (promptHelpers.getSpecification as jest.Mock).mockResolvedValue({
+                getApiVersion: () => ({ version: '24' })
+            });
+            (promptHelpers.getServiceDetails as jest.Mock).mockResolvedValue({
+                servicePath: '/service/path',
+                systemName: 'TestSystem'
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appPrompt = result.questions.find((q: any) => q.name === promptNames.appSelection) as InputQuestion;
+
+            // First validation
+            await appPrompt.validate!('/test/app');
+
+            // Populate caches after first validation
+            PromptState.externalServiceRequestCache['/service/path'] = ['Entity1'];
+            PromptState.entityTypeRefFacetCache['Type1'] = ['path1'];
+
+            const resetCachesSpy = jest.spyOn(PromptState, 'resetServiceCaches');
+
+            // Validate same path again
+            await appPrompt.validate!('/test/app');
+
+            // resetServiceCaches should NOT be called when path is the same
+            expect(resetCachesSpy).not.toHaveBeenCalled();
+
+            // Caches should remain populated
+            expect(PromptState.externalServiceRequestCache['/service/path']).toEqual(['Entity1']);
+            expect(PromptState.entityTypeRefFacetCache['Type1']).toEqual(['path1']);
+
+            resetCachesSpy.mockRestore();
         });
     });
 
@@ -1002,13 +1146,9 @@ describe('Test prompts', () => {
 
         it('should reject invalid range specification', () => {
             const keyPrompt = keyPrompts[0];
-            // Note: The forEach in the validation doesn't actually return the error message properly
-            // due to the return being inside forEach, so this test actually returns true
-            // This is a bug in the implementation, but we test the actual behavior
             const result = keyPrompt.validate!('1-10-20');
 
-            // Due to the forEach return issue, validation passes even with invalid range
-            expect(result).toBe(true);
+            expect(result).toBe("Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'");
         });
 
         it('should validate boolean values', async () => {

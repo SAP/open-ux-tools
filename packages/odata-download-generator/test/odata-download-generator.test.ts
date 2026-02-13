@@ -70,8 +70,8 @@ jest.mock('yeoman-generator', () => {
         rootGeneratorName() {
             return 'test-generator';
         }
-        constructor(args: any, opts: any, features?: any) {
-            this.options = opts || {};
+        constructor(args: unknown, opts: Record<string, unknown>, _features?: unknown) {
+            this.options = opts ?? {};
         }
     };
 });

@@ -7,11 +7,12 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createEntityChoices, getData } from '../../src/data-download/prompts/prompt-helpers';
 import { getEntityModel } from '../../src/data-download/utils';
-import { promptNames } from '../../src/data-download/prompts/prompts';
 import * as odataQueryModule from '../../src/data-download/odata-query';
 import { initI18nODataDownloadGenerator } from '../../src/utils/i18n';
-import type { Entity } from '../../src/data-download/types';
+import type { AppConfig, Entity } from '../../src/data-download/types';
+import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { EntityType } from '@sap-ux/vocabularies-types';
+import { PromptState } from '../../src/data-download/prompt-state';
 
 const readJSONOriginal = fileMock.readJSON;
 
@@ -22,6 +23,11 @@ const UIAnnotationTypes = {
 } as const;
 
 describe('Test createEntityChoices', () => {
+    beforeEach(() => {
+        // Test isolation, this is a static cache
+        PromptState.resetServiceCaches();
+    });
+
     test('should return undefined when rootEntity has no navPropEntities', () => {
         const rootEntity: Entity = {
             entitySetName: 'Travel',
@@ -51,6 +57,7 @@ describe('Test createEntityChoices', () => {
     test('should create choices with default selection from ReferenceFacet annotations', () => {
         // Mock entity type with UI.Facets containing ReferenceFacet
         const mockEntityType = {
+            name: 'TravelType',
             annotations: {
                 UI: {
                     Facets: [
@@ -111,6 +118,7 @@ describe('Test createEntityChoices', () => {
     test('should create choices with default selection from nested CollectionFacet annotations', () => {
         // Mock entity type with nested CollectionFacet containing ReferenceFacet
         const mockEntityType = {
+            name: 'TravelType',
             annotations: {
                 UI: {
                     Facets: [
@@ -141,7 +149,7 @@ describe('Test createEntityChoices', () => {
                     ]
                 }
             }
-        } as unknown as EntityType;
+        } as EntityType;
 
         const rootEntity: Entity = {
             entitySetName: 'Travel',
@@ -151,19 +159,19 @@ describe('Test createEntityChoices', () => {
                 {
                     entitySetName: 'Booking',
                     entityPath: '_Booking',
-                    entityType: undefined,
+                    entityType: { name: 'BookingType' } as EntityType,
                     navPropEntities: []
                 },
                 {
                     entitySetName: 'Passenger',
                     entityPath: '_Customer',
-                    entityType: undefined,
+                    entityType: { name: 'PassengerType' } as EntityType,
                     navPropEntities: []
                 },
                 {
                     entitySetName: 'Agency',
                     entityPath: '_Agency',
-                    entityType: undefined,
+                    entityType: { name: 'TravelAgencyType' } as EntityType,
                     navPropEntities: []
                 }
             ]
@@ -202,7 +210,7 @@ describe('Test createEntityChoices', () => {
                 entityType: undefined,
                 page: {
                     contextPath: '/Travel/_Booking'
-                } as any
+                } as unknown as Entity['page']
             }
         ];
 
@@ -235,7 +243,7 @@ describe('Test createEntityChoices', () => {
                 entityType: undefined,
                 page: {
                     routePattern: '/Travel({key})/_Booking({key2}):?query:'
-                } as any
+                } as unknown as Entity['page']
             }
         ];
 
@@ -329,6 +337,7 @@ describe('Test createEntityChoices', () => {
 
     test('should handle ReferenceFacet without path separator (no default selection)', () => {
         const mockEntityType = {
+            name: 'TravelType',
             annotations: {
                 UI: {
                     Facets: [
@@ -436,17 +445,17 @@ describe('Test getData', () => {
     });
 
     test('should return error message when metadata is missing', async () => {
-        const result = await getData({ metadata: undefined }, { appAccess: {} } as any, {});
+        const result = await getData({ metadata: undefined }, { appAccess: {} } as any, []);
         expect(result).toBe('Data was not fetched');
     });
 
     test('should return error message when appAccess is missing', async () => {
-        const result = await getData({ metadata: '<xml/>' }, { appAccess: undefined } as any, {});
+        const result = await getData({ metadata: '<xml/>' }, { appAccess: undefined } as any, []);
         expect(result).toBe('Data was not fetched');
     });
 
     test('should return error message when connectedSystem is missing', async () => {
-        const result = await getData({ metadata: '<xml/>', connectedSystem: undefined }, { appAccess: {} } as any, {});
+        const result = await getData({ metadata: '<xml/>', connectedSystem: undefined }, { appAccess: {} } as any, []);
         expect(result).toBe('Data was not fetched');
     });
 
@@ -454,23 +463,12 @@ describe('Test getData', () => {
         const result = await getData(
             {
                 metadata: '<xml/>',
-                connectedSystem: { serviceProvider: mockServiceProvider } as any
+                connectedSystem: {
+                    serviceProvider: mockServiceProvider
+                } as unknown as OdataServiceAnswers['connectedSystem']
             },
-            { appAccess: {}, referencedEntities: {} } as any,
-            {}
-        );
-        expect(result).toBe('Data was not fetched');
-    });
-
-    test('should return error message when confirmDownload is false', async () => {
-        const result = await getData(
-            {
-                metadata: '<xml/>',
-                connectedSystem: { serviceProvider: mockServiceProvider } as any,
-                servicePath: '/sap/opu/odata/sap/TEST_SRV'
-            },
-            { appAccess: {}, referencedEntities: {} } as any,
-            { [promptNames.confirmDownload]: false }
+            { appAccess: {}, referencedEntities: {} } as unknown as AppConfig,
+            []
         );
         expect(result).toBe('Data was not fetched');
     });
@@ -479,22 +477,21 @@ describe('Test getData', () => {
         const mockEntityData = [{ id: 1, name: 'Test' }];
         jest.spyOn(odataQueryModule, 'fetchData').mockResolvedValueOnce({
             odataResult: { entityData: mockEntityData }
-        } as any);
+        } as unknown as Awaited<ReturnType<typeof odataQueryModule.fetchData>>);
 
         const result = await getData(
             {
                 metadata: '<xml/>',
-                connectedSystem: { serviceProvider: mockServiceProvider } as any,
+                connectedSystem: {
+                    serviceProvider: mockServiceProvider
+                } as unknown as OdataServiceAnswers['connectedSystem'],
                 servicePath: '/sap/opu/odata/sap/TEST_SRV'
             },
             {
                 appAccess: {},
                 referencedEntities: { listEntity: { entitySetName: 'TestSet' } }
-            } as any,
-            {
-                [promptNames.confirmDownload]: true,
-                [promptNames.relatedEntitySelection]: [{ fullPath: 'Test', entity: { entitySetName: 'TestSet' } }]
-            }
+            } as unknown as AppConfig,
+            [{ fullPath: 'Test', entity: { entitySetName: 'TestSet', entityPath: 'Test' } }]
         );
         expect(result).toEqual({ odataQueryResult: mockEntityData });
     });
@@ -502,22 +499,21 @@ describe('Test getData', () => {
     test('should return error string when fetchData returns error', async () => {
         jest.spyOn(odataQueryModule, 'fetchData').mockResolvedValueOnce({
             odataResult: { error: 'Connection failed' }
-        } as any);
+        } as unknown as Awaited<ReturnType<typeof odataQueryModule.fetchData>>);
 
         const result = await getData(
             {
                 metadata: '<xml/>',
-                connectedSystem: { serviceProvider: mockServiceProvider } as any,
+                connectedSystem: {
+                    serviceProvider: mockServiceProvider
+                } as unknown as OdataServiceAnswers['connectedSystem'],
                 servicePath: '/sap/opu/odata/sap/TEST_SRV'
             },
             {
                 appAccess: {},
                 referencedEntities: { listEntity: { entitySetName: 'TestSet' } }
-            } as any,
-            {
-                [promptNames.confirmDownload]: true,
-                [promptNames.relatedEntitySelection]: []
-            }
+            } as unknown as AppConfig,
+            []
         );
         expect(result).toBe('Connection failed');
     });

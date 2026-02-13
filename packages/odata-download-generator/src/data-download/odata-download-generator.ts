@@ -16,6 +16,7 @@ import { getODataDownloaderPrompts, promptNames } from './prompts/prompts';
 import { type ReferencedEntities } from './types';
 import { createEntitySetData } from './utils';
 import { getValueHelpSelectionPrompt } from './prompts/value-help-prompts';
+import type { MockserverService } from '@sap-ux/ui5-config';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -78,9 +79,10 @@ export class ODataDownloadGenerator extends Generator {
     } = {};
 
     /**
+     * Creates a new ODataDownloadGenerator instance.
      *
-     * @param args
-     * @param opts
+     * @param args - Generator arguments passed to yeoman
+     * @param opts - Generator options passed to yeoman
      */
     constructor(args: string | string[], opts: GeneratorOptions) {
         super(args, opts, {
@@ -115,7 +117,7 @@ export class ODataDownloadGenerator extends Generator {
     /**
      * Static getter for the logger.
      *
-     * @returns {ILogWrapper & Logger}
+     * @returns The logger instance
      */
     public static get logger(): ILogWrapper & Logger {
         return ODataDownloadGenerator._logger;
@@ -138,7 +140,7 @@ export class ODataDownloadGenerator extends Generator {
                 answers: { application, odataQueryResult, odataServiceAnswers },
                 questions
             } = await getODataDownloaderPrompts();
-            const promptAnswers = await this.prompt(questions);
+            const promptAnswers = (await this.prompt(questions)) as Record<string, unknown>;
             this.state.entityOData = odataQueryResult;
             this.state.appRootPath = application.appAccess?.getAppRoot();
             this.state.mainServicePath = odataServiceAnswers.servicePath;
@@ -147,7 +149,7 @@ export class ODataDownloadGenerator extends Generator {
 
             if (this.state.appRootPath) {
                 const mockConfig = await getMockServerConfig(this.state.appRootPath);
-                let serviceConfig;
+                let serviceConfig: MockserverService | undefined;
                 if (mockConfig?.services) {
                     ODataDownloadGenerator.logger.debug(`Mock config: ${JSON.stringify(mockConfig)}`);
                     // Find the matching service from mock config ignoring leading and trailing '/'
@@ -162,7 +164,7 @@ export class ODataDownloadGenerator extends Generator {
                     serviceConfig?.mockdataPath ?? join(DirName.Webapp, DirName.LocalService, DirName.Mockdata);
             }
 
-            this.state.updateMainServiceMetadata = promptAnswers[promptNames.updateMainServiceMetadata];
+            this.state.updateMainServiceMetadata = promptAnswers[promptNames.updateMainServiceMetadata] as boolean;
             this.state.mainServiceMetadata = odataServiceAnswers.metadata;
 
             if (odataServiceAnswers.servicePath && odataServiceAnswers.metadata) {
@@ -235,8 +237,9 @@ export class ODataDownloadGenerator extends Generator {
     }
 
     /**
+     * Shows an error message and throws an exception.
      *
-     * @param error
+     * @param error - The error message to display
      */
     private _exitOnError(error: string): void {
         if (getHostEnvironment() !== hostEnvironment.cli) {
@@ -249,9 +252,10 @@ export class ODataDownloadGenerator extends Generator {
      * Configures the vscode logger and yeoman logger to share single wrapper.
      * Set as an option to be passed to sub-gens.
      *
-     * @param logLevel
-     * @param vscLogger
-     * @param vscode
+     * @param logLevel - The log level to use
+     * @param vscLogger - The VS Code extension logger
+     * @param vscode - The VS Code API object
+     * @returns The configured log wrapper
      */
     _configureLogging(logLevel: LogLevel, vscLogger: IVSCodeExtLogger, vscode?: object): ILogWrapper {
         const logWrapper = new LogWrapper(

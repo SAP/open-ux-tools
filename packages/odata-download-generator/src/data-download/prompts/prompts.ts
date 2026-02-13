@@ -12,6 +12,7 @@ import type { EntitySetsFlat } from '../odata-query';
 import type { AppConfig } from '../types';
 import { getEntityModel } from '../utils';
 import { createEntityChoices, getData, getServiceDetails, getSpecification } from './prompt-helpers';
+import { PromptState } from '../prompt-state';
 
 export const promptNames = {
     appSelection: 'appSelection',
@@ -36,12 +37,14 @@ export type SelectedEntityAnswer = {
 };
 
 /**
- * Reset the values of the passed app config reference otherwise create a new object reference
+ * Reset the values of the passed app config reference otherwise create a new object reference.
+ * Reset any caches.
  *
- * @param appConfig
- * @returns
+ * @param appConfig - The app configuration to reset
+ * @returns A null state app config
  */
 function resetAppConfig(appConfig?: AppConfig): AppConfig {
+    PromptState.resetServiceCaches();
     if (appConfig) {
         appConfig.appAccess = undefined;
         appConfig.referencedEntities = undefined;
@@ -60,7 +63,9 @@ function resetAppConfig(appConfig?: AppConfig): AppConfig {
 }
 
 /**
+ * Gets all prompts for the OData downloader flow.
  *
+ * @returns Object containing questions and answer references
  */
 export async function getODataDownloaderPrompts(): Promise<{
     questions: Question[];
@@ -85,7 +90,7 @@ export async function getODataDownloaderPrompts(): Promise<{
             },
             systemSelection: {
                 includeCloudFoundryAbapEnvChoice: false,
-                defaultChoice: appConfig.systemName, // todo: Destination test BAS
+                defaultChoice: appConfig.systemName,
                 hideNewSystem: true
             },
             serviceSelection: {
@@ -135,12 +140,16 @@ export async function getODataDownloaderPrompts(): Promise<{
 /**
  * Gets the app selection prompt.
  *
- * @param appConfig
- * @param servicePaths
- * @param keyPrompts
- * @returns
+ * @param appConfig - The application configuration reference
+ * @param servicePaths - Array to store service paths
+ * @param keyPrompts - Array to store key prompts
+ * @returns The app selection input question
  */
-function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], keyPrompts: InputQuestion<Answers>[]) {
+function getAppSelectionPrompt(
+    appConfig: AppConfig,
+    servicePaths: string[],
+    keyPrompts: InputQuestion<Answers>[]
+): InputQuestion {
     return {
         type: 'input',
         guiType: 'folder-browser',
@@ -192,17 +201,17 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[], key
 /**
  * Gets the entity selection prompt.
  *
- * @param relatedEntityChoices
- * @param relatedEntityChoices.choices
- * @param relatedEntityChoices.entitySetsFlat
- * @returns
+ * @param relatedEntityChoices - Object containing choices and entitySetsFlat
+ * @param relatedEntityChoices.choices - The checkbox choices for entity selection
+ * @param relatedEntityChoices.entitySetsFlat - Map of entity paths to entity set names
+ * @returns The checkbox question for entity selection
  */
 function getEntitySelectionPrompt(relatedEntityChoices: {
     choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
     entitySetsFlat: EntitySetsFlat;
 }): CheckBoxQuestion<Answers> {
     return {
-        when: async () => {
+        when: async (): Promise<boolean> => {
             return relatedEntityChoices.choices.length > 0;
         },
         name: promptNames.relatedEntitySelection,
@@ -212,7 +221,7 @@ function getEntitySelectionPrompt(relatedEntityChoices: {
         },
         message: t('prompts.relatedEntitySelection.message'),
         choices: () => relatedEntityChoices.choices,
-        validate: (selectedEntities) => {
+        validate: (selectedEntities): boolean => {
             // Set `checked` to avoid deselection when re-running `default`.
             selectedEntities.forEach((selectedEntity) => {
                 const selectedEntityChoice = relatedEntityChoices.choices.find(
@@ -230,11 +239,11 @@ function getEntitySelectionPrompt(relatedEntityChoices: {
 /**
  * Gets the reset selection prompt. This prompt is responsible for loading the entity choices.
  *
- * @param appConfig
- * @param relatedEntityChoices
- * @param relatedEntityChoices.choices
- * @param relatedEntityChoices.entitySetsFlat
- * @returns
+ * @param appConfig - The application configuration
+ * @param relatedEntityChoices - Object containing choices and entitySetsFlat
+ * @param relatedEntityChoices.choices - The checkbox choices for entity selection
+ * @param relatedEntityChoices.entitySetsFlat - Map of entity paths to entity set names
+ * @returns The reset selection confirm question
  */
 function getResetSelectionPrompt(
     appConfig: AppConfig,
@@ -247,7 +256,6 @@ function getResetSelectionPrompt(
     let previousReset;
     const toggleSelectionPrompt = {
         when: () => {
-            // todo: path is not sufficent to determine a change as another system selection may have the same service path
             if (appConfig.servicePath !== previousServicePath && appConfig.referencedEntities?.listEntity) {
                 const entityChoices = createEntityChoices(
                     appConfig.referencedEntities.listEntity,
@@ -284,15 +292,16 @@ function getResetSelectionPrompt(
 }
 
 /**
- * Get the prompt for keys
+ * Get the prompt for keys.
  *
- * @param size
- * @param appConfig
+ * @param size - The number of key prompts to generate
+ * @param appConfig - The application configuration
+ * @returns Array of input questions for key entry
  */
 function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
     const questions: InputQuestion[] = [];
 
-    const getEntityKeyInputPrompt = (keypart: number) =>
+    const getEntityKeyInputPrompt = (keypart: number): InputQuestion =>
         ({
             when: async () => !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name,
             name: `entityKeyIdx:${keypart}`,
@@ -304,8 +313,7 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
             guiOptions: {
                 hint: t('prompts.entityKey.hint')
             },
-            validate: (keyValue: string) => {
-                // todo : move to a validator
+            validate: (keyValue: string): boolean | string => {
                 if (invalidEntityKeyFilterChars.includes(keyValue)) {
                     return t('prompts.entityKey.validation.invalidKeyValueChars', {
                         chars: invalidEntityKeyFilterChars.join()
@@ -318,14 +326,13 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
                 }
 
                 const filterAndParts = keyValue.split(',');
-                filterAndParts.forEach((filterPart) => {
+                for (const filterPart of filterAndParts) {
                     const filterRangeParts = filterPart.split('-');
                     if (filterRangeParts.length > 2) {
                         return t('prompts.entityKey.validation.invalidRangeSpecified');
                     }
-                });
+                }
 
-                // todo: validate the input based on the key type
                 if (keyRef) {
                     if (keyRef.type === 'Edm.Boolean') {
                         try {
@@ -349,11 +356,13 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
 }
 
 /**
+ * Gets the confirm download prompt that triggers data fetch.
  *
- * @param odataServiceAnswers
- * @param appConfig
- * @param odataQueryResult
- * @param odataQueryResult.odata
+ * @param odataServiceAnswers - The OData service answers
+ * @param appConfig - The application configuration
+ * @param odataQueryResult - Object to store the query result
+ * @param odataQueryResult.odata - The OData result array
+ * @returns The confirm download question
  */
 function getConfirmDownloadPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,
@@ -376,7 +385,7 @@ function getConfirmDownloadPrompt(
         },
         validate: async (download, answers: Answers) => {
             if (download) {
-                result = await getData(odataServiceAnswers, appConfig, answers);
+                result = await getData(odataServiceAnswers, appConfig, answers[promptNames.relatedEntitySelection]);
                 if (typeof result === 'string') {
                     return result;
                 }
@@ -393,15 +402,17 @@ function getConfirmDownloadPrompt(
                     severity: Severity.information
                 };
             }
+            return undefined;
         }
     } as ConfirmQuestion;
 }
 
 /**
+ * Gets the prompt for updating main service metadata.
  *
- * @param odataServiceAnswers
- * @param appConfig
- * @returns
+ * @param odataServiceAnswers - The OData service answers
+ * @param appConfig - The application configuration
+ * @returns The confirm question for updating metadata
  */
 function getUpdateMainServiceMetadataPrompt(
     odataServiceAnswers: Partial<OdataServiceAnswers>,

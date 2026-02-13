@@ -8,7 +8,7 @@ export type SemanticKeyFilter = { name: string; type: string; value: string | un
 
 export type ReferencedEntities = {
     listEntity: Entity & {
-        semanticKeys: SemanticKeyFilter[];
+        semanticKeys: SemanticKeyFilter[]; // The query filters for the list entity
     };
     pageObjectEntities?: Entity[];
     navPropEntities?: Map<Entity, Entity[]>;
@@ -21,12 +21,13 @@ export type Entity = {
     navPropEntities?: Entity[];
 };
 
-// todo: consolidate this and AppConfig
+/**
+ * Type to manage application configuration state.
+ */
 export type AppConfig = {
     appAccess?: ApplicationAccess;
     specification?: Specification;
     referencedEntities?: ReferencedEntities;
-    // servicePaths: string[];
     /**
      * Main service path
      */

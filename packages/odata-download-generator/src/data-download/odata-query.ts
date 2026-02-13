@@ -8,11 +8,13 @@ import type { ReferencedEntities } from './types';
 export type EntitySetsFlat = { [entityPath: string]: string };
 
 /**
+ * Builds the expands object used to create an odata query.
  *
- * @param entityPaths
+ * @param entityPaths - Array of entity paths with their entity set names
+ * @returns Object containing expands configuration and entity path parts
  */
 export function getExpands(entityPaths: { entityPath: string; entitySetName: string }[]): {
-    expands: {};
+    expands: object;
     entityPathParts: string[];
 } {
     const entityPathParts: string[] = [];
@@ -25,10 +27,8 @@ export function getExpands(entityPaths: { entityPath: string; entitySetName: str
                 if (!current.expand) {
                     current.expand = {};
                 }
-                if (!current.expand[part]) {
-                    current.expand[part] = index === parts.length - 1 ? {} : { expand: {} };
-                }
-                current = current.expand[part];
+                current.expand[part] ??= index === parts.length - 1 ? {} : { expand: {} };
+                current = current.expand[part] as typeof current;
                 if (!entityPathParts.includes(part)) {
                     entityPathParts.push(part);
                 }
@@ -45,10 +45,10 @@ export function getExpands(entityPaths: { entityPath: string; entitySetName: str
 /**
  * Create the odata query by expanding and filtering the list entity.
  *
- * @param listEntity
- * @param selectedEntities
- * @param top
- * @returns
+ * @param listEntity - The list entity to query from
+ * @param selectedEntities - The selected entities to include in the query
+ * @param top - The maximum number of records to return
+ * @returns The generated query string
  */
 export function createQueryFromEntities(
     listEntity: ReferencedEntities['listEntity'],
@@ -123,7 +123,6 @@ export function createQueryFromEntities(
     }
     if (mainEntityFilters.length > 0) {
         Object.assign(queryInput, {
-            // todo: multiple keys should be and'd
             filter: mainEntityFilters.length === 1 ? mainEntityFilters[0] : mainEntityFilters,
             count: true
         });
@@ -138,21 +137,21 @@ export function createQueryFromEntities(
     return { query };
 }
 /**
- * todo: take a single entity list to download
+ * Builds an odata query and fetches the data from a backend.
  *
- * @param entities
- * @param odataService
- * @param selectedEntities
- * @param top
- * @returns
+ * @param listEntity - The list entity to query from
+ * @param odataService - The OData service to use for fetching
+ * @param selectedEntities - The selected entities to include in the query
+ * @param top - The maximum number of records to return
+ * @returns The fetched OData result
  */
 export async function fetchData(
-    entities: ReferencedEntities, // todo: Only pass root/listy entity
+    listEntity: ReferencedEntities['listEntity'],
     odataService: ODataService,
     selectedEntities: SelectedEntityAnswer[],
     top?: number
 ): Promise<{ odataResult: { entityData?: []; error?: string } }> {
-    const query = createQueryFromEntities(entities.listEntity, selectedEntities, top);
+    const query = createQueryFromEntities(listEntity, selectedEntities, top);
     const odataResult = await executeQuery(odataService, query.query);
     return {
         odataResult
@@ -160,9 +159,11 @@ export async function fetchData(
 }
 
 /**
+ * Sends a get request to run the odata query using the specified odata service.
  *
- * @param odataService
- * @param query
+ * @param odataService - The OData service to use for executing the query
+ * @param query - The query string to execute
+ * @returns The query result or error
  */
 async function executeQuery(odataService: ODataService, query: string): Promise<{ entityData?: []; error?: string }> {
     try {

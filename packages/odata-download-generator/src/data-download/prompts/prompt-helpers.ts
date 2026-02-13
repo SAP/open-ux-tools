@@ -10,27 +10,27 @@ import { UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { readFile } from 'node:fs/promises';
 import type { CheckboxChoiceOptions } from 'inquirer';
 import { join } from 'node:path';
-import type { Answers } from 'yeoman-generator';
 import { t } from '../../utils/i18n';
 import { fetchData, type EntitySetsFlat } from '../odata-query';
 import { ODataDownloadGenerator } from '../odata-download-generator';
 import type { SelectedEntityAnswer, SelectedEntityAnswerAsJSONString } from './prompts';
-import { promptNames } from './prompts';
 import type { AppConfig, Entity } from '../types';
 import { getSystemNameFromStore } from '../utils';
+import { PromptState } from '../prompt-state';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 
-// todo: Create type for gen specific answers
 /**
+ * Fetches OData from the backend service.
  *
- * @param odataService
- * @param appConfig
- * @param answers
+ * @param odataService - The OData service answers containing connection details
+ * @param appConfig - The application configuration
+ * @param selectedEntities - The selected entities to fetch data for
+ * @returns The query result or an error message
  */
 export async function getData(
     odataService: Partial<OdataServiceAnswers>,
     appConfig: AppConfig,
-    answers: Answers // todo: narrower type
+    selectedEntities: SelectedEntityAnswer[]
 ): Promise<{ odataQueryResult: [] } | string> {
     if (odataService.metadata && appConfig.appAccess && odataService.connectedSystem) {
         if (odataService.servicePath && appConfig.appAccess && appConfig.referencedEntities) {
@@ -39,10 +39,9 @@ export async function getData(
                 odataService.servicePath
             );
 
-            if (answers[promptNames.confirmDownload] === true && odataServiceProvider) {
-                const selectedEntities = answers[promptNames.relatedEntitySelection] as SelectedEntityAnswer[];
+            if (odataServiceProvider) {
                 const { odataResult } = await fetchData(
-                    appConfig.referencedEntities,
+                    appConfig.referencedEntities.listEntity,
                     odataServiceProvider,
                     selectedEntities,
                     1
@@ -60,8 +59,10 @@ export async function getData(
 }
 
 /**
+ * Recursively extracts all reference facet target paths from a collection facet.
  *
- * @param collectionFacet
+ * @param collectionFacet - The collection facet to extract reference paths from
+ * @returns Array of reference target paths
  */
 function getAllReferenceFacets(collectionFacet: CollectionFacet): string[] {
     const refTargetPaths: string[] = [];
@@ -78,12 +79,16 @@ function getAllReferenceFacets(collectionFacet: CollectionFacet): string[] {
     });
     return refTargetPaths;
 }
-
 /**
+ * Get the entity paths referenced by reference facets to be used as default selections.
  *
- * @param entityType
+ * @param entityType - The entity type to get default selection paths from
+ * @returns Array of reference target paths
  */
 function getDefaultSelectionPaths(entityType: EntityType): string[] {
+    if (PromptState.entityTypeRefFacetCache[entityType.name]) {
+        return PromptState.entityTypeRefFacetCache[entityType.name];
+    }
     const refTargetPaths: string[] = [];
     entityType.annotations.UI?.Facets?.forEach((facet) => {
         if (facet.$Type === UIAnnotationTypes.ReferenceFacet && facet.Target?.type === 'AnnotationPath') {
@@ -98,6 +103,7 @@ function getDefaultSelectionPaths(entityType: EntityType): string[] {
         }
     });
 
+    PromptState.entityTypeRefFacetCache[entityType.name] = refTargetPaths;
     return refTargetPaths ?? [];
 }
 
@@ -109,13 +115,13 @@ export type Expands = {
     };
 };
 /**
- * Creates a query expand config that can be used to build the query and display entities with their full paths
+ * Creates a query expand config that can be used to build the query and display entities with their full paths.
  *
- * @param rootEntity
- * @param parentPath
- * @param choices
- * @param poEntityPaths
- * @returns
+ * @param rootEntity - The root entity to build choices from
+ * @param parentPath - The parent path for constructing full paths
+ * @param choices - Accumulated choices array
+ * @param poEntityPaths - Page object entity paths for pre-selection
+ * @returns Object containing entity sets flat map and checkbox choices
  */
 function getEntitySelectionChoices(
     rootEntity: Entity,
@@ -127,8 +133,7 @@ function getEntitySelectionChoices(
     const navEntities = rootEntity.navPropEntities;
     if (navEntities) {
         // Check the entity types assigned annotations for cross refs to other entities that should be selected by default
-        // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-select
-        // todo: memoize, we will hit the same type multiple times
+        // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-selectá
         const defaultSelectionPaths = rootEntity.entityType ? getDefaultSelectionPaths(rootEntity.entityType) : [];
         for (const navEntity of navEntities) {
             const expandPath = navEntity.entityPath;
@@ -169,11 +174,11 @@ function getEntitySelectionChoices(
 }
 
 /**
- * Create an expand/entity selection list from the specified entities nav properties
+ * Create an expand/entity selection list from the specified entities nav properties.
  *
- * @param rootEntity
- * @param pageObjectEntities
- * @returns
+ * @param rootEntity - The root entity to create choices for
+ * @param pageObjectEntities - Optional page object entities for pre-selection
+ * @returns Object containing entity sets flat map and checkbox choices, or undefined
  */
 export function createEntityChoices(
     rootEntity: Entity,
@@ -199,14 +204,15 @@ export function createEntityChoices(
         entityChoices.choices.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
         return entityChoices;
     }
+    return undefined;
 }
 
 /**
- * Get the service path and service name from the service
+ * Get the service path and service name from the service.
  *
- * @param appRoot
- * @param service
- * @returns
+ * @param appRoot - The application root path
+ * @param service - The service specification
+ * @returns Object containing service path and system name
  */
 export async function getServiceDetails(
     appRoot: string,
@@ -235,8 +241,8 @@ export async function getServiceDetails(
 /**
  * Retrieves the Specification object.
  *
- * @param appAccess
- * @returns A promise that resolves to a Specification object
+ * @param appAccess - The application access reference
+ * @returns A promise that resolves to a Specification object or an error string
  */
 export async function getSpecification(appAccess: ApplicationAccess): Promise<Specification | string> {
     const specification: Specification = await getSpecificationModuleFromCache(appAccess.app.appRoot);

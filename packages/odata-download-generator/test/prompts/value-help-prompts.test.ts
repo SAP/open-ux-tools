@@ -89,7 +89,7 @@ describe('value-help-prompts', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        PromptState.reset();
+        PromptState.resetServiceCaches();
 
         mockAbapServiceProvider = {
             get: jest.fn(),
@@ -99,8 +99,8 @@ describe('value-help-prompts', () => {
         mockT.mockImplementation((key: string) => key);
     });
 
-    afterEach(() => {
-        PromptState.reset();
+    afterAll(() => {
+        PromptState.resetServiceCaches();
     });
 
     describe('getValueHelpSelectionPrompt', () => {
