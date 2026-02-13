@@ -1,5 +1,19 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.174
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+- Updated dependencies [346f09c]
+    - @sap-ux/adp-tooling@0.18.62
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/flp-config-inquirer@0.4.121
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/fiori-generator-shared@0.13.70
+    - @sap-ux/inquirer-common@0.11.4
+    - @sap-ux/system-access@0.6.50
+
 ## 0.1.173
 
 ### Patch Changes

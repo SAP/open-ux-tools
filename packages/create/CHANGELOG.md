@@ -1,5 +1,23 @@
 # @sap-ux/create
 
+## 0.14.62
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+- Updated dependencies [346f09c]
+    - @sap-ux/adp-tooling@0.18.62
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/flp-config-inquirer@0.4.121
+    - @sap-ux/preview-middleware@0.23.119
+    - @sap-ux/abap-deploy-config-writer@0.2.71
+    - @sap-ux/app-config-writer@0.6.96
+    - @sap-ux/cap-config-writer@0.12.61
+    - @sap-ux/mockserver-config-writer@0.9.50
+    - @sap-ux/odata-service-writer@0.29.18
+    - @sap-ux/system-access@0.6.50
+    - @sap-ux/abap-deploy-config-inquirer@1.6.98
+
 ## 0.14.61
 
 ### Patch Changes
