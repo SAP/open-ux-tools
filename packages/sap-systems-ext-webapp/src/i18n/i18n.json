@@ -2,6 +2,7 @@
     "labels": {
         "name": "Connection Name",
         "type": "System Type",
+        "connectionType": "Connection Type",
         "authenticationType": "Authentication Type",
         "url": "URL",
         "client": "Client",

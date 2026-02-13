@@ -5,7 +5,7 @@ import { UIChoiceGroup } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
 interface ConnectionTypeProps {
-    readonly setConnectionType?: (connType: ConnectionType) => void;
+    readonly setConnectionType: (connType: ConnectionType) => void;
 }
 
 /**
@@ -25,7 +25,7 @@ export function ConnectionTypes({ setConnectionType }: Readonly<ConnectionTypePr
 
     return (
         <div className="store-text-field">
-            <label className="store-detail-label">{'Connection Type'}</label>
+            <label className="store-detail-label">{t('labels.connectionType')}</label>
             <UIChoiceGroup
                 name="connectionType"
                 id="connType"
@@ -33,7 +33,7 @@ export function ConnectionTypes({ setConnectionType }: Readonly<ConnectionTypePr
                 defaultSelectedKey={'abap_catalog'}
                 inline={true}
                 onChange={(e, option) => {
-                    setConnectionType?.(option?.key as ConnectionType);
+                    setConnectionType(option?.key as ConnectionType);
                 }}
             />
         </div>

@@ -111,7 +111,7 @@ export function useSystemMain(): {
             name: systemInfo?.name,
             systemType: systemInfo?.systemType,
             authenticationType: systemInfo?.authenticationType,
-            connectionType: systemInfo?.connectionType,
+            connectionType: systemInfo?.connectionType ?? 'abap_catalog', // default to abap_catalog
             url: systemInfo?.url,
             client: systemInfo?.client,
             username: systemInfo?.username,
