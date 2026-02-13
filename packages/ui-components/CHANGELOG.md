@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.27.4
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
+## 1.27.3
+
+### Patch Changes
+
+- b990534: UIFlexibleTable. Large cell content in flexible table items no longer shifts the other column to the right.
+
 ## 1.27.2
 
 ### Patch Changes

@@ -100,11 +100,17 @@
         "failedToGetCredentialsFromHtml5Repo": "Failed to retrieve the credentials from the HTML5 repository for space: {{spaceGuid}}. Error: {{error}}",
         "failedToParseCFAPIResponse": "Failed to parse the CF API response: {{error}}",
         "failedToRequestCFAPI": "Request to the CF API failed. Error: {{error}}",
+        "emptyCFAPIResponse": "Empty response from CF API. Please verify your CF login status with 'cf target' and re-authenticate if needed with 'cf login'.",
         "xsSecurityJsonCouldNotBeParsed": "The xs-security.json file could not be parsed. Ensure the xs-security.json file exists and try again.",
         "failedToCreateServiceInstance": "Failed to create the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
         "failedToGetFDCApps": "Retrieving FDC apps failed: {{error}}",
         "failedToConnectToFDCService": "Failed to connect to the FDC service: '{{status}}'",
-        "baseAppRequired": "A base app is required for CF project generation. Please select a base app and try again."
+        "baseAppRequired": "A base app is required for Cloud Foundry project generation. Please select a base app and try again.",
+        "invalidXsAppJson": "The xs-app.json file is invalid: {{error}}",
+        "xsAppJsonNotFound": "The xs-app.json file was not found in any of the expected locations: {{paths}}",
+        "noServiceInstanceNameFound": "No serviceInstanceName found in the app-variant-bundler-build configuration",
+        "noServiceKeysFoundForInstance": "No service keys found for service instance: {{serviceInstanceName}}",
+        "couldNotFetchServiceKeys": "Could not fetch the service keys: {{error}}"
     },
     "choices": {
         "true": "true",
