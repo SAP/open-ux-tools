@@ -7,6 +7,7 @@ import {
 } from './generate-fiori-ui-application-cap';
 import {
     ADD_PAGE,
+    ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID,
     CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID,
     DELETE_PAGE,
     GENERATE_FIORI_UI_APPLICATION_CAP_ID
@@ -14,6 +15,7 @@ import {
 
 import generateFioriUIApplication from './generate-fiori-ui-application';
 import fetchServiceMetadata from './fetch-service-metadata';
+import adpControllerExtension from './adp-controller-extension';
 
 export const FUNCTIONALITIES_DETAILS = [
     ADD_PAGE_FUNCTIONALITY,
@@ -21,7 +23,8 @@ export const FUNCTIONALITIES_DETAILS = [
     DELETE_PAGE_FUNCTIONALITY,
     CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY,
     generateFioriUIApplication.details,
-    fetchServiceMetadata.details
+    fetchServiceMetadata.details,
+    adpControllerExtension.details
 ];
 
 export const FUNCTIONALITIES_HANDLERS: Map<string, FunctionalityHandlers> = new Map([
@@ -30,5 +33,6 @@ export const FUNCTIONALITIES_HANDLERS: Map<string, FunctionalityHandlers> = new 
     [GENERATE_FIORI_UI_APPLICATION_CAP_ID, generateFioriUIApplicationCapHandlers],
     [CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID, createControllerExtensionHandlers],
     [generateFioriUIApplication.id, generateFioriUIApplication.handlers],
-    [fetchServiceMetadata.id, fetchServiceMetadata.handlers]
+    [fetchServiceMetadata.id, fetchServiceMetadata.handlers],
+    [ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID, adpControllerExtension.handlers]
 ]);
