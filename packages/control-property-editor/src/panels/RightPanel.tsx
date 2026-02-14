@@ -21,10 +21,21 @@ export function RightPanel(): ReactElement {
     const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
     const infoCenterMessagesCount = useSelector<RootState, number>((state) => state.infoCenterMessages.length);
 
-    const rowSize = 100;
+    const actionsRowHeight = 100;
     const header = 50;
-    const initialSizeQuickActions = actionsCount * rowSize + header;
-    const initialSizeInfoCenter = infoCenterMessagesCount * rowSize + header;
+    /**
+     * The info center can accommodate at most {@link infoCenterMaxRowsCount} rows
+     * with height of {@link infoCenterMaxRowHeight} each, initially.
+     */
+    const infoCenterMaxRowsCount = 3;
+    // Each info center row item contains a title, description and actions(less/more, view details).
+    // The descriotption can contain max 4 lines with ellipsis and if the text content is more we have a `more`
+    // button to expand it. So the 130px seems to be the max height for each info center item when not expanded.
+    const infoCenterMaxRowHeight = 130;
+
+    const initialSizeQuickActions = actionsCount * actionsRowHeight + header;
+    const initialSizeInfoCenter =
+        Math.min(infoCenterMessagesCount, infoCenterMaxRowsCount) * infoCenterMaxRowHeight + header;
 
     return (
         <UISections
