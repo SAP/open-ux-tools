@@ -1,0 +1,66 @@
+{
+  "@odata.context": "$metadata#Travel",
+  "@odata.metadataEtag": "W/\"20260112210435\"",
+  "value": [
+    {
+      "@odata.etag": "W/\"SADL-202601151014145823360C~20260115101414.5823360\"",
+      "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {
+
+      },
+      "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {
+
+      },
+      "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {
+
+      },
+      "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {
+
+      },
+      "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {
+
+      },
+      "TravelUUID": "a7f3c8e2-9d4b-4a1e-b5c6-2f8e9a1d3c7b",
+      "TravelID": "245",
+      "AgencyID": "80025",
+      "AgencyName": "Global Travel Solutions Inc.",
+      "CustomerID": "1847",
+      "CustomerName": "Anderson",
+      "BeginDate": "2026-11-20",
+      "EndDate": "2026-12-31",
+      "BookingFee": 1024,
+      "TotalPrice": 12003.5,
+      "CurrencyCode": "EUR",
+      "Memo": "Business trip to conference",
+      "Status": "N",
+      "Confirmed": false,
+      "CreationDateTime": null,
+      "CreationDateTimeTimezone": "",
+      "TravelCode": 0,
+      "LastChangedAtTravel": "2026-01-15T10:14:14.582336Z",
+      "HasDraftEntity": true,
+      "DraftEntityCreationDateTime": null,
+      "DraftEntityLastChangeDateTime": null,
+      "HasActiveEntity": false,
+      "IsActiveEntity": true,
+      "__CreateByAssociationControl": {
+        "_Booking": true
+      },
+      "__EntityControl": {
+        "Deletable": true,
+        "Updatable": true
+      },
+      "__FieldControl": {
+        "BookingFee": 3
+      },
+      "__OperationControl": {
+        "Check": true,
+        "deductDiscount": true,
+        "dummyAction": true,
+        "Edit": true,
+        "setToBooked": true,
+        "setToNew": false
+      },
+      "SAP__Messages": []
+    }
+  ]
+}
