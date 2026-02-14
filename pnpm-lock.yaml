@@ -361,8 +361,8 @@ importers:
   packages/abap-deploy-config-inquirer:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -413,8 +413,8 @@ importers:
   packages/abap-deploy-config-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/abap-deploy-config-inquirer':
         specifier: workspace:*
         version: link:../abap-deploy-config-inquirer
@@ -526,8 +526,8 @@ importers:
   packages/adp-flp-config-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling
@@ -605,8 +605,8 @@ importers:
   packages/adp-tooling:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.16.9
-        version: 1.16.9
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -1144,8 +1144,8 @@ importers:
         version: 2.0.1(inquirer@8.2.7)
     devDependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/project-input-validator':
         specifier: workspace:*
         version: link:../project-input-validator
@@ -1165,8 +1165,8 @@ importers:
   packages/cf-deploy-config-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -1546,8 +1546,8 @@ importers:
   packages/deploy-config-generator-shared:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -1586,8 +1586,8 @@ importers:
   packages/deploy-config-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.16.9
-        version: 1.16.9
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/abap-deploy-config-sub-generator':
         specifier: workspace:*
         version: link:../abap-deploy-config-sub-generator
@@ -2133,8 +2133,8 @@ importers:
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.16.9
-        version: 1.16.9
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/deploy-config-sub-generator':
         specifier: workspace:*
         version: link:../deploy-config-sub-generator
@@ -2604,8 +2604,8 @@ importers:
         version: 4.17.23
     devDependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -2619,8 +2619,8 @@ importers:
   packages/flp-config-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/app-config-writer':
         specifier: workspace:*
         version: link:../app-config-writer
@@ -2710,8 +2710,8 @@ importers:
         specifier: 2.0.3
         version: 2.0.3
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.16.9
-        version: 1.16.9
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling
@@ -2898,8 +2898,8 @@ importers:
         version: 7.7.3
     devDependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/vocabularies-types':
         specifier: 0.14.5
         version: 0.14.5
@@ -3204,8 +3204,8 @@ importers:
         version: 4.0.1
     devDependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
@@ -3613,8 +3613,8 @@ importers:
   packages/repo-app-import-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/abap-deploy-config-writer':
         specifier: workspace:*
         version: link:../abap-deploy-config-writer
@@ -4284,8 +4284,8 @@ importers:
   packages/ui-service-inquirer:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.16.9
-        version: 1.16.9
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/abap-deploy-config-inquirer':
         specifier: workspace:*
         version: link:../abap-deploy-config-inquirer
@@ -4360,8 +4360,8 @@ importers:
   packages/ui-service-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.16.9
-        version: 1.16.9
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -4473,8 +4473,8 @@ importers:
         version: 7.7.3
     devDependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
@@ -4649,8 +4649,8 @@ importers:
         version: 25.8.0(typescript@5.9.3)
     devDependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -4661,8 +4661,8 @@ importers:
   packages/ui5-library-reference-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -4753,8 +4753,8 @@ importers:
   packages/ui5-library-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.22.0
+        version: 1.22.0
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -14017,11 +14017,8 @@ packages:
       node-cache: 5.1.2
     dev: false
 
-  /@sap-devx/yeoman-ui-types@1.14.4:
-    resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
-
-  /@sap-devx/yeoman-ui-types@1.16.9:
-    resolution: {integrity: sha512-GpyTtj2RGWopUWROS3dfAV+0MQzARSRpqoWGDLQflCQpQWCkEFUQlj/dgowrEblj+1oJDTYBEdLu7nPc5lkNMA==}
+  /@sap-devx/yeoman-ui-types@1.22.0:
+    resolution: {integrity: sha512-t2BgSyRL700OSVlVW/6OC3pAED9V7nlp8PcZOijwAVn7sAPM0oNTKrDhz0yg+F79/AhmhzUkuIBiWHN6/An6cQ==}
 
   /@sap-ux/annotation-converter@0.10.19:
     resolution: {integrity: sha512-KuIuaD3nhV2pO09CX5xMtLQYFAFFVNbDcfyuidjG3PECm3kbxTaC5Ldh1QHzO0eLNpnb2jE6hjFs4Kr/csdPCQ==}
