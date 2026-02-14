@@ -3,6 +3,10 @@ import type { ID } from 'sap/ui/core/library';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import Element from 'sap/ui/core/Element';
 import View from 'sap/ui/core/mvc/View';
+import type Selector from 'sap/ui/fl/Selector';
+import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
+import Log from 'sap/base/Log';
+import { getError } from './error';
 
 /**
  * Gets Component by id.
@@ -34,6 +38,38 @@ export function getControlById<T extends Element = Element>(id: string): T | und
     } else {
         return sap.ui.getCore().byId(id) as T;
     }
+}
+
+/**
+ * Gets target control by trying getControlById first, then falling back to JsControlTreeModifier.bySelector
+ * for projects where the control may not be found by global ID.
+ *
+ * @param selector - The selector object from the change.
+ * @param appComponent - The app component (optional).
+ * @returns The target control element or undefined.
+ */
+export function getControlBySelector<T extends Element = Element>(
+    selector: Selector | undefined,
+    appComponent?: Component
+): T | undefined {
+    if (!selector?.id) {
+        return undefined;
+    }
+
+    // Try to get control by ID first
+    let control = getControlById<T>(selector.id);
+
+    // If control not found and we have appComponent, try using JsControlTreeModifier.bySelector
+    // This is needed for freestyle projects where controls may not be found by global ID
+    if (!control && appComponent && selector) {
+        try {
+            control = JsControlTreeModifier.bySelector(selector, appComponent) as unknown as T | undefined;
+        } catch (error) {
+            Log.warning('Failed to get control by selector:', getError(error));
+        }
+    }
+
+    return control;
 }
 
 /**
