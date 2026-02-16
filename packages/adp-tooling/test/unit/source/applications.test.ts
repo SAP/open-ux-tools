@@ -1,24 +1,36 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { initI18n, t } from '../../../src/i18n';
-import type { SourceApplication } from '../../../src';
-import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, filterApps, isAppSupported, loadApps } from '../../../src';
+import { isAppSupported, loadApps } from '../../../src';
 
 describe('Target Applications', () => {
+    const APP_FIELDS =
+        'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName,sap.fiori/cloudDevAdaptationStatus';
+    const APPS_WITH_DESCR_FILTER = {
+        fields: APP_FIELDS,
+        'sap.ui/technology': 'UI5',
+        'sap.app/type': 'application',
+        'fileType': 'appdescr'
+    };
+    const APPS_WITH_VARIANT_DESCR_FILTER = {
+        fields: APP_FIELDS,
+        'sap.ui/technology': 'UI5',
+        'sap.app/type': 'application',
+        'fileType': 'appdescr_variant',
+        'originLayer': 'VENDOR'
+    };
     const searchMock = jest.fn();
-    const isAbapCloudMock = jest.fn().mockResolvedValue(false);
 
     const mockAbapProvider = {
         getAppIndex: jest.fn().mockReturnValue({
             search: searchMock
-        }),
-        isAbapCloud: isAbapCloudMock
+        })
     } as unknown as AbapServiceProvider;
 
-    const mockApps = [
-        { 'sap.app/id': '1', 'sap.app/title': 'App One' },
-        { 'sap.app/id': '2', 'sap.app/title': 'App Two' }
+    const cloudApps = [
+        { 'sap.app/id': '1', 'sap.app/title': 'App One', 'sap.fiori/cloudDevAdaptationStatus': 'released' },
+        { 'sap.app/id': '2', 'sap.app/title': 'App Two', 'sap.fiori/cloudDevAdaptationStatus': 'released' }
     ];
 
     afterEach(() => {
@@ -26,23 +38,24 @@ describe('Target Applications', () => {
     });
 
     describe('loadApps', () => {
-        it('should load applications correctly for cloud systems', async () => {
-            searchMock.mockResolvedValue(mockApps);
-            isAbapCloudMock.mockResolvedValue(true);
+        it('should load applications correctly for cloud project', async () => {
+            searchMock.mockResolvedValue(cloudApps);
 
-            const apps = await loadApps(mockAbapProvider, true);
+            const apps = await loadApps(mockAbapProvider, true, AdaptationProjectType.CLOUD_READY);
             expect(apps.length).toBe(2);
             expect(apps[0].title).toEqual('App One');
+            expect(apps[0].cloudDevAdaptationStatus).toEqual('released');
         });
 
-        it('should load and merge applications correctly for on-premise systems', async () => {
-            const mockCloudApps = [{ 'sap.app/id': '1', 'sap.app/title': 'App One' }];
+        it('should load and merge applications correctly for on-premise project', async () => {
+            const mockCloudApps = [
+                { 'sap.app/id': '1', 'sap.app/title': 'App One', 'sap.fiori/cloudDevAdaptationStatus': 'released' }
+            ];
             const mockVariantApps = [{ 'sap.app/id': '2', 'sap.app/title': 'App Two' }];
 
-            isAbapCloudMock.mockResolvedValue(false);
             searchMock.mockResolvedValueOnce(mockCloudApps).mockResolvedValueOnce(mockVariantApps);
 
-            const apps = await loadApps(mockAbapProvider, true);
+            const apps = await loadApps(mockAbapProvider, true, AdaptationProjectType.ON_PREMISE);
 
             expect(apps.length).toBe(2);
             expect(apps).toEqual(
@@ -54,7 +67,8 @@ describe('Target Applications', () => {
                         fileType: '',
                         id: '1',
                         registrationIds: [],
-                        title: 'App One'
+                        title: 'App One',
+                        cloudDevAdaptationStatus: 'released'
                     },
                     {
                         ach: '',
@@ -63,20 +77,72 @@ describe('Target Applications', () => {
                         fileType: '',
                         id: '2',
                         registrationIds: [],
-                        title: 'App Two'
+                        title: 'App Two',
+                        cloudDevAdaptationStatus: ''
                     }
                 ])
             );
             expect(searchMock).toHaveBeenCalledTimes(2);
-            expect(searchMock).toHaveBeenCalledWith(ABAP_APPS_PARAMS);
-            expect(searchMock).toHaveBeenCalledWith(ABAP_VARIANT_APPS_PARAMS);
+            expect(searchMock).toHaveBeenCalledWith(APPS_WITH_DESCR_FILTER);
+            expect(searchMock).toHaveBeenCalledWith(APPS_WITH_VARIANT_DESCR_FILTER);
         });
 
         it('should throw an error if apps cannot be loaded', async () => {
             const errorMsg = 'Could not load applications: Failed to fetch';
             searchMock.mockRejectedValue(new Error('Failed to fetch'));
 
-            await expect(loadApps(mockAbapProvider, true)).rejects.toThrow(errorMsg);
+            await expect(loadApps(mockAbapProvider, true, AdaptationProjectType.ON_PREMISE)).rejects.toThrow(errorMsg);
+        });
+
+        it('should return an empty array if no ADP project type is provided', async () => {
+            searchMock.mockResolvedValue(cloudApps);
+
+            const apps = await loadApps(mockAbapProvider, true);
+            expect(apps).toEqual([]);
+        });
+
+        it('should sort applications alphabetically by title', async () => {
+            const appA = { 'sap.app/id': '1', 'sap.app/title': 'Application A' };
+            const appB = { 'sap.app/id': '2', 'sap.app/title': 'Application B' };
+
+            searchMock.mockResolvedValue([appA, appB]);
+
+            let apps = await loadApps(mockAbapProvider, false, AdaptationProjectType.ON_PREMISE);
+
+            expect(apps.length).toBe(2);
+            expect(apps[0].title).toBe('Application A');
+            expect(apps[0].id).toBe('1');
+            expect(apps[1].title).toBe('Application B');
+            expect(apps[1].id).toBe('2');
+
+            searchMock.mockResolvedValue([appB, appA]);
+            apps = await loadApps(mockAbapProvider, false, AdaptationProjectType.ON_PREMISE);
+
+            expect(apps.length).toBe(2);
+            expect(apps[0].title).toBe('Application A');
+            expect(apps[0].id).toBe('1');
+            expect(apps[1].title).toBe('Application B');
+            expect(apps[1].id).toBe('2');
+        });
+
+        it('should sort applications by ids if titles are not provided', async () => {
+            const appA = { 'sap.app/id': '1' };
+            const appB = { 'sap.app/id': '2', 'sap.app/title': '' };
+
+            searchMock.mockResolvedValue([appA, appB]);
+
+            let apps = await loadApps(mockAbapProvider, false, AdaptationProjectType.ON_PREMISE);
+
+            expect(apps.length).toBe(2);
+            expect(apps[0].id).toBe('1');
+            expect(apps[1].id).toBe('2');
+
+            searchMock.mockResolvedValue([appB, appA]);
+            apps = await loadApps(mockAbapProvider, false, AdaptationProjectType.ON_PREMISE);
+
+            expect(apps.length).toBe(2);
+            expect(apps[0].id).toBe('1');
+            expect(apps[1].id).toBe('2');
         });
     });
 
@@ -119,31 +185,6 @@ describe('Target Applications', () => {
             expect(logger.debug).toHaveBeenCalledWith(
                 `Application '${fakeAppId}' is not supported by Adaptation Project`
             );
-        });
-    });
-
-    describe('filterApps', () => {
-        it('sorts applications alphabetically by title', () => {
-            const appA = { id: '1', title: 'Application B' } as SourceApplication;
-            const appB = { id: '2', title: 'Application A' } as SourceApplication;
-
-            expect(filterApps(appA, appB)).toBe(1);
-            expect(filterApps(appB, appA)).toBe(-1);
-        });
-
-        it('uses IDs if titles are empty', () => {
-            const appA = { id: '2', title: '' } as SourceApplication;
-            const appB = { id: '1', title: '' } as SourceApplication;
-
-            expect(filterApps(appA, appB)).toBe(1);
-            expect(filterApps(appB, appA)).toBe(-1);
-        });
-
-        it('returns 0 when both titles and IDs are identical', () => {
-            const appA = { id: '1', title: 'Application' } as SourceApplication;
-            const appB = { id: '1', title: 'Application' } as SourceApplication;
-
-            expect(filterApps(appA, appB)).toBe(0);
         });
     });
 });

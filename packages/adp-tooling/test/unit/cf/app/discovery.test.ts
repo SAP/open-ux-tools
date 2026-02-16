@@ -29,7 +29,9 @@ jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
-jest.mock('../../../../src/cf/services/api');
+jest.mock('../../../../src/cf/services/api', () => ({
+    getFDCApps: jest.fn()
+}));
 
 jest.mock('../../../../src/cf/utils/validation', () => ({
     ...jest.requireActual('../../../../src/cf/utils/validation'),

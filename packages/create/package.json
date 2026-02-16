@@ -48,6 +48,7 @@
         "@sap-ux/flp-config-inquirer": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap/cf-tools": "3.3.0",
+        "@sap-ux/axios-extension": "workspace:*",
         "chalk": "4.1.2",
         "commander": "9.4.0",
         "diff": "5.2.2",

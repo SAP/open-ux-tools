@@ -138,12 +138,7 @@ export function showPasswordQuestion(): boolean {
  * @returns boolean
  */
 export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRepoPromptOptions): boolean {
-    if (
-        !ui5AbapPromptOptions?.hide &&
-        ui5AbapPromptOptions?.hideIfOnPremise &&
-        !PromptState.abapDeployConfig?.scp &&
-        !PromptState.abapDeployConfig?.isAbapCloud
-    ) {
+    if (!ui5AbapPromptOptions?.hide && ui5AbapPromptOptions?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
@@ -236,11 +231,7 @@ function defaultOrShowTransportQuestion(): boolean {
  * @returns boolean
  */
 export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
-    if (
-        options?.hideIfOnPremise === true &&
-        !PromptState.abapDeployConfig?.isAbapCloud &&
-        !PromptState.abapDeployConfig?.scp
-    ) {
+    if (options?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
         return false;
     }
 
@@ -276,7 +267,7 @@ export function defaultOrShowTransportListQuestion(
     return (
         transportInputChoice === TransportChoices.ListExistingChoice &&
         !isTransportListEmpty(PromptState.transportAnswers.transportList) &&
-        !(transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isAbapCloud === false)
+        !transportInputChoiceOptions?.hideIfOnPremise
     );
 }
 
@@ -310,9 +301,7 @@ export function defaultOrShowManualTransportQuestion(
 ): boolean {
     return (
         defaultOrShowTransportQuestion() &&
-        (transportInputChoice === TransportChoices.EnterManualChoice ||
-            (transportInputChoiceOptions?.hideIfOnPremise === true &&
-                PromptState?.abapDeployConfig?.isAbapCloud === false))
+        (transportInputChoice === TransportChoices.EnterManualChoice || !!transportInputChoiceOptions?.hideIfOnPremise)
     );
 }
 
