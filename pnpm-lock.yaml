@@ -421,6 +421,12 @@ importers:
       '@sap-ux/abap-deploy-config-writer':
         specifier: workspace:*
         version: link:../abap-deploy-config-writer
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -1472,6 +1478,9 @@ importers:
       '@sap-ux/app-config-writer':
         specifier: workspace:*
         version: link:../app-config-writer
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer

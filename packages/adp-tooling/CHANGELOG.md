@@ -1,5 +1,20 @@
 # @sap-ux/adp-tooling
 
+## 0.18.64
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/odata-service-writer@0.29.19
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/inquirer-common@0.11.6
+    - @sap-ux/project-input-validator@0.6.56
+
 ## 0.18.63
 
 ### Patch Changes

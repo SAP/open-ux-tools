@@ -1,5 +1,21 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.7.0
+
+### Minor Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/inquirer-common@0.11.6
+
 ## 1.6.99
 
 ### Patch Changes

@@ -12,7 +12,7 @@ import * as Logger from '@sap-ux/logger';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as inquirerCommon from '@sap-ux/inquirer-common';
 import * as projectAccess from '@sap-ux/project-access';
-import type { AbapServiceProvider, InboundContent } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, type AbapServiceProvider, type InboundContent } from '@sap-ux/axios-extension';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 
 import adpFlpConfigGenerator from '../src/app';
@@ -21,7 +21,6 @@ import { EventName } from '../src/telemetryEvents';
 import * as sysAccess from '@sap-ux/system-access';
 import { t, initI18n } from '../src/utils/i18n';
 import * as appWizardCache from '../src/utils/appWizardCache';
-import { prompts } from 'inquirer';
 
 const originalCwd = process.cwd();
 
@@ -47,7 +46,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
         getSystemByName: jest.fn().mockResolvedValue({
             name: 'testDestination'
         }) as unknown as sysAccess.AbapTarget
-    }))
+    })),
+    getExistingAdpProjectType: jest.fn()
 }));
 jest.mock('@sap-ux/inquirer-common', () => ({
     ...jest.requireActual('@sap-ux/inquirer-common'),
@@ -85,9 +85,6 @@ jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('FLPConfigGenerator Integration Tests', () => {
     jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValue(false);
-    jest.spyOn(sysAccess, 'createAbapServiceProvider').mockResolvedValue({
-        isAbapCloud: jest.fn().mockReturnValue(true)
-    } as unknown as AbapServiceProvider);
     const generatorPath = join(__dirname, '../../src/app/index.ts');
     const testOutputDir = join(__dirname, 'test-output');
     const credentialsPrompts = {
@@ -151,6 +148,8 @@ describe('FLPConfigGenerator Integration Tests', () => {
     jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
     jest.spyOn(adpTooling, 'getBaseAppInbounds').mockResolvedValue(inbounds);
     const generateInboundConfigSpy = jest.spyOn(adpTooling, 'generateInboundConfig');
+    const getExistingAdpProjectTypeMock = adpTooling.getExistingAdpProjectType as jest.Mock;
+    getExistingAdpProjectTypeMock.mockResolvedValue(AdaptationProjectType.CLOUD_READY);
 
     beforeEach(async () => {
         answers = {
@@ -453,9 +452,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             if (property === 'credentialsPrompted') {
                 return false;
             }
-            return {
-                isAbapCloud: jest.fn().mockReturnValue(true)
-            } as unknown as AbapServiceProvider;
+            return {} as unknown as AbapServiceProvider;
         });
 
         const runContext = yeomanTest
@@ -513,9 +510,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         jest.spyOn(appWizardCache, 'getFromCache')
             .mockImplementationOnce(() => {
-                return {
-                    isAbapCloud: jest.fn().mockReturnValue(true)
-                } as unknown as AbapServiceProvider;
+                return {} as unknown as AbapServiceProvider;
             })
             .mockImplementationOnce(() => true);
 
@@ -524,7 +519,6 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 destination: 'testDestination'
             }
         });
-        const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
 
         const runContext = yeomanTest
             .create(
@@ -701,9 +695,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             }
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
-        jest.spyOn(sysAccess, 'createAbapServiceProvider').mockResolvedValueOnce({
-            isAbapCloud: jest.fn().mockReturnValueOnce(false)
-        } as unknown as AbapServiceProvider);
+        getExistingAdpProjectTypeMock.mockResolvedValue(AdaptationProjectType.ON_PREMISE);
         const testProjectPath = join(__dirname, 'fixtures/app.variant1');
 
         const runContext = yeomanTest

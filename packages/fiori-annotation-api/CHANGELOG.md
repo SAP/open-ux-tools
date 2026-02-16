@@ -1,5 +1,12 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.15
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/cds-odata-annotation-converter@0.7.5
+
 ## 0.9.14
 
 ### Patch Changes
