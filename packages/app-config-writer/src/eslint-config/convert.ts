@@ -138,10 +138,10 @@ async function addFioriToolsToExistingConfig(
         const fioriToolsIndex = eslintConfig.extends.findIndex((config) =>
             config.includes(packageName.ESLINT_PLUGIN_FIORI_TOOLS)
         );
-        if (fioriToolsIndex !== -1) {
-            eslintConfig.extends[fioriToolsIndex] = fioriConfig;
-        } else {
+        if (fioriToolsIndex === -1) {
             eslintConfig.extends.push(fioriConfig);
+        } else {
+            eslintConfig.extends[fioriToolsIndex] = fioriConfig;
         }
     }
 
