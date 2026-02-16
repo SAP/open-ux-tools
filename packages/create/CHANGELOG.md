@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.14.64
+
+### Patch Changes
+
+- edc7b52: feat: add new command to add eslint config to a project
+- Updated dependencies [edc7b52]
+    - @sap-ux/app-config-writer@0.6.98
+
 ## 0.14.63
 
 ### Patch Changes
