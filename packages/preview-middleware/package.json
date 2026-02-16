@@ -52,7 +52,7 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "qrcode": "1.5.4",
-        "@sap/bas-sdk": "3.13.2"
+        "@sap/bas-sdk": "3.13.3"
     },
     "devDependencies": {
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",

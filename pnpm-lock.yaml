@@ -6,9 +6,9 @@ settings:
 
 overrides:
   '@storybook/manager-api>store2': 2.14.4
-  '@sap/bas-sdk>axios': ^1.13.5
   '@sap-ux/ui5-config>axios': ^1.13.5
   '@sap/service-provider-apis>axios': ^1.13.5
+  '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.3
   esbuild@<=0.24.2: '>=0.25.0'
   fast-xml-parser@>=4.3.6 <=5.3.3: '>=5.3.4'
   lodash@>=4.0.0 <=4.17.22: '>=4.17.23'
@@ -1025,8 +1025,8 @@ importers:
   packages/btp-utils:
     dependencies:
       '@sap/bas-sdk':
-        specifier: 3.13.2
-        version: 3.13.2
+        specifier: 3.13.3
+        version: 3.13.3
       '@sap/cf-tools':
         specifier: 3.3.0
         version: 3.3.0
@@ -1774,8 +1774,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@sap/bas-sdk':
-        specifier: 3.13.2
-        version: 3.13.2
+        specifier: 3.13.3
+        version: 3.13.3
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -3392,8 +3392,8 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       '@sap/bas-sdk':
-        specifier: 3.13.2
-        version: 3.13.2
+        specifier: 3.13.3
+        version: 3.13.3
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -4418,8 +4418,8 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
       '@sap/subaccount-destination-service-provider':
-        specifier: 2.9.1
-        version: 2.9.1(typescript@5.9.3)
+        specifier: 2.14.1
+        version: 2.14.1(typescript@5.9.3)
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -14254,6 +14254,16 @@ packages:
       winston-transport: 4.7.0
     dev: true
 
+  /@sap-ux/logger@0.7.2:
+    resolution: {integrity: sha512-1VrGrFykTa/HMxCFOI674zU+EZQD4EUgDjw21/ua7gTb0PO9tM/NFhuFUsnoXCDQ/3Gg1SMfW/VA1hZ7LjpqGw==}
+    engines: {node: '>=20.x'}
+    dependencies:
+      chalk: 4.1.2
+      lodash: 4.17.23
+      winston: 3.11.0
+      winston-transport: 4.7.0
+    dev: true
+
   /@sap-ux/logger@0.8.0:
     resolution: {integrity: sha512-GFkFfg8s0y4qRU0nUiQuoCwZCITs+f2t+9HQrNscdSSxKfesPx4aTTVjVjxBbXOKVGwRqind65JULSPrYZy83Q==}
     engines: {node: '>=20.x'}
@@ -14327,11 +14337,11 @@ packages:
       - debug
     dev: false
 
-  /@sap-ux/store@1.1.3(typescript@5.9.3):
-    resolution: {integrity: sha512-uF/Q/OaAVNqBY0axt+K+k4FQUjbHYAoewPikdm8fkKeBmjWK94MsqY+12TDZ+HEsQlZRgXgmxQOY2jSxeFyDIA==}
+  /@sap-ux/store@1.4.0(typescript@5.9.3):
+    resolution: {integrity: sha512-YdsVm4x6WZTwayZvDr9cRIjMLHUM4KPbUhBX82uYT2Fa/VK+TdYz/vyTpD9/AQwgOBFPdiuiJdG/uZVMIFziYw==}
     engines: {node: '>=20.x'}
     dependencies:
-      '@sap-ux/logger': 0.7.0
+      '@sap-ux/logger': 0.7.2
       i18next: 25.3.0(typescript@5.9.3)
       pluralize: 8.0.0
       reflect-metadata: 0.1.13
@@ -14416,24 +14426,8 @@ packages:
       lodash: 4.17.23
       yaml: 2.2.2
 
-  /@sap/bas-sdk@3.12.0:
-    resolution: {integrity: sha512-7PHLhBtJYNAYkgCuLz8TPHuIYhqlKZxqyT0MAtF05bNLKOLpcMhX3OG0FyypVWmjhGo9qKeG78NTlmMHOMcsQg==}
-    dependencies:
-      axios: 1.13.5(debug@4.4.3)
-      cross-spawn: 7.0.5
-      fs-extra: 11.2.0
-      jwt-decode: 4.0.0
-      lodash: 4.17.23
-      url-join: 4.0.1
-      ws: 8.17.1
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - utf-8-validate
-    dev: true
-
-  /@sap/bas-sdk@3.13.2:
-    resolution: {integrity: sha512-tuWNJ6Y3e9EjrYJoxub9PsHIson+mWj01zIxoT/SpVx/LQUHPY2i7o7GrP4C54tDILUPAG3EBT3RBIS+NVtNuQ==}
+  /@sap/bas-sdk@3.13.3:
+    resolution: {integrity: sha512-HLOwEc6z/Dyu5qR7mSwhRSjz0KbRBPZGL8FIAVwvGP/6JHU0tc6UDMQRHBV6NoyrNXdGSYzbPlS9y2uPWlmuow==}
     dependencies:
       axios: 1.13.5(debug@4.4.3)
       cross-spawn: 7.0.6
@@ -14446,7 +14440,6 @@ packages:
       - bufferutil
       - debug
       - utf-8-validate
-    dev: false
 
   /@sap/cds-compiler@4.8.0:
     resolution: {integrity: sha512-C8IkzNfdMIzG136K/VvOmG65d8UnR9lcZF5q/c//Jp2/RZIZvwFvO5HHPre19+YWhuwJXbIMb3kc5x9CW9ZLNw==}
@@ -14482,13 +14475,23 @@ packages:
     transitivePeerDependencies:
       - debug
 
-  /@sap/subaccount-destination-service-provider@2.9.1(typescript@5.9.3):
-    resolution: {integrity: sha512-YE6TPP71k5g7UpEBtc7e0QyV6j3TGWQA5A8DFBYhynpoXPjRwBBr9rGv1q6kr5gdQrfOA8ybvIeWi6I+BTx2aw==}
+  /@sap/service-provider-apis@2.7.1:
+    resolution: {integrity: sha512-xdL/m04grQWX0Mai0Gx/kQUgrBhHSfbjxZN6hXdJqKKhfU19HC8+iw/UfVZheGaHgfck7D0oyP/U8yRwGUpnlQ==}
+    dependencies:
+      axios: 1.13.5(debug@4.4.3)
+      lodash: 4.17.23
+      xml2js: 0.6.2
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
+  /@sap/subaccount-destination-service-provider@2.14.1(typescript@5.9.3):
+    resolution: {integrity: sha512-P23fwTlPcaG3Y8s4ykMM+b6KrC59/fldxAFAYub9gge+5BBVp5O+JSogswcBuwXPw6KhuXbvWrKIBR4oc32AIg==}
     dependencies:
       '@sap-ux/logger': 0.7.0
-      '@sap-ux/store': 1.1.3(typescript@5.9.3)
-      '@sap/bas-sdk': 3.12.0
-      '@sap/service-provider-apis': 2.5.1
+      '@sap-ux/store': 1.4.0(typescript@5.9.3)
+      '@sap/bas-sdk': 3.13.3
+      '@sap/service-provider-apis': 2.7.1
       stream-json: 1.9.1
       vkbeautify: 0.99.3
     transitivePeerDependencies:
@@ -23364,7 +23367,6 @@ packages:
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.1
-    dev: false
 
   /fs-extra@7.0.1:
     resolution: {integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==}
@@ -23615,7 +23617,7 @@ packages:
       basic-ftp: 5.0.5
       data-uri-to-buffer: 6.0.2
       debug: 4.4.3
-      fs-extra: 11.2.0
+      fs-extra: 11.3.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -33968,7 +33970,7 @@ packages:
     dependencies:
       bluebird: 3.7.2
       duplexer2: 0.1.4
-      fs-extra: 11.2.0
+      fs-extra: 11.3.2
       graceful-fs: 4.2.11
       node-int64: 0.4.0
     dev: true
@@ -34843,7 +34845,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: false
 
   /ws@8.19.0:
     resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
