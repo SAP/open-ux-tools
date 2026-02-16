@@ -29,6 +29,7 @@ jobs:
             - name: Create changeset
               uses: mscharley/dependency-changesets-action@v1.2.2
               with:
+                  token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'
                   commit-message: 'chore: add changeset for dependency update'
 
@@ -83,5 +84,6 @@ jobs:
             - name: Create changeset
               uses: mscharley/dependency-changesets-action@v1.2.2
               with:
+                  token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'
                   commit-message: 'chore: add changeset for @ui5/manifest update'

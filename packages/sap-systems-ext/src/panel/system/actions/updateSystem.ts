@@ -187,8 +187,7 @@ async function saveSystem(
     // ensure the user display name is set to the username
     const newBackendSystem: BackendSystem = {
         ...backendSystem,
-        userDisplayName: backendSystem.username,
-        connectionType: 'abap_catalog' // can be hardcoded until we support adding more types
+        userDisplayName: backendSystem.username
     };
     const systemService = await getBackendSystemService();
     await systemService.write(newBackendSystem, {
