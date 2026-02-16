@@ -792,6 +792,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/ui5-application-writer':
+        specifier: workspace:*
+        version: link:../ui5-application-writer
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
