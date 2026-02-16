@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.74
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.53
+
 ## 0.2.73
 
 ### Patch Changes
