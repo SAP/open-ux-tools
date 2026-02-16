@@ -23,7 +23,7 @@
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/ui-prompting": "workspace:*",
         "react-markdown": "5.0.2",
-        "sanitize-html": "2.12.1"
+        "sanitize-html": "2.17.0"
     },
     "peerDependencies": {
         "react": ">=16.14.0",
@@ -47,7 +47,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/react": "16.14.55",
         "@types/react-dom": "16.9.24",
-        "@types/sanitize-html": "2.11.0",
+        "@types/sanitize-html": "2.16.0",
         "@types/uuid": "3.4.11",
         "@types/ws": "8.5.12",
         "babel-loader": "9.1.3",
