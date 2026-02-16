@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.63
+
+### Patch Changes
+
+- 1a922e7: adds option to prevent root package json updates for cap
+
 ## 0.12.62
 
 ### Patch Changes
