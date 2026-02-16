@@ -56,11 +56,7 @@ export function getControlBySelector<T extends Element = Element>(
         return undefined;
     }
 
-    // Try to get control by ID first
     let control = getControlById<T>(selector.id);
-
-    // If control not found and we have appComponent, try using JsControlTreeModifier.bySelector
-    // This is needed for freestyle projects where controls may not be found by global ID
     if (!control && appComponent && selector) {
         try {
             control = JsControlTreeModifier.bySelector(selector, appComponent) as unknown as T | undefined;
