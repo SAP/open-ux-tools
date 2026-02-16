@@ -270,7 +270,7 @@ Example:
 
 Options:
 - `-v, --verbose` - Show verbose information.
-- `-c, --config <string>` _(required)_ - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
+- `-c, --config <string>` - Path to the project configuration file in YAML format. _(default: `ui5.yaml`)_
 
 --------------------------------
 
