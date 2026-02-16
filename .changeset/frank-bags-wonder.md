@@ -3,4 +3,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-fix: Missing additional info for projects with local IDs
+fix: Missing additional info for adaptation projects with local IDs
