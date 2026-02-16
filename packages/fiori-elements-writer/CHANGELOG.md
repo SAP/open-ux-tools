@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.70
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.73
+- @sap-ux/odata-service-writer@0.29.19
+- @sap-ux/cap-config-writer@0.12.65
+
 ## 2.8.69
 
 ### Patch Changes

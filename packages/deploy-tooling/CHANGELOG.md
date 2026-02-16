@@ -1,5 +1,15 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.53
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/system-access@0.6.53
+
 ## 0.17.52
 
 ### Patch Changes

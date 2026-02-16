@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.18.65
+
+### Patch Changes
+
+- dd2131c: Axios upgrade from bas-sdk
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/nodejs-utils@0.2.15
+    - @sap-ux/system-access@0.6.53
+    - @sap-ux/odata-service-writer@0.29.19
+
 ## 0.18.64
 
 ### Patch Changes
