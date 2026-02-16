@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.12
+
+### Patch Changes
+
+- bda7356: fix(deps): update dependency qs to v6.14.2 [security]
+
 ## 1.25.11
 
 ### Patch Changes

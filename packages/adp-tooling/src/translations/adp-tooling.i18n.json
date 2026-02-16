@@ -106,6 +106,7 @@
         "failedToGetFDCApps": "Retrieving FDC apps failed: {{error}}",
         "failedToConnectToFDCService": "Failed to connect to the FDC service: '{{status}}'",
         "baseAppRequired": "A base app is required for Cloud Foundry project generation. Please select a base app and try again.",
+        "projectTypeNotProvided": "The project type is missing." ,
         "invalidXsAppJson": "The xs-app.json file is invalid: {{error}}",
         "xsAppJsonNotFound": "The xs-app.json file was not found in any of the expected locations: {{paths}}",
         "noServiceInstanceNameFound": "No serviceInstanceName found in the app-variant-bundler-build configuration",

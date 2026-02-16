@@ -1,5 +1,15 @@
 # @sap-ux/preview-middleware
 
+## 0.23.121
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+- Updated dependencies [e7f58d7]
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+
 ## 0.23.120
 
 ### Patch Changes
