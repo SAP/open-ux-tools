@@ -26,7 +26,7 @@
         "c8": "^11.0.0",
         "cross-env": "10.1.0",
         "eslint": "^9",
-        "@typescript-eslint/rule-tester": "8.46.2",
+        "@typescript-eslint/rule-tester": "8.57.0",
         "eslint-plugin-eslint-plugin": "7.2.0"
     },
     "dependencies": {

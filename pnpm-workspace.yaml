@@ -5,3 +5,15 @@ packages:
     - 'tests/fixtures/projects/mock'
     - 'types'
     - '!**/test/**'
+
+# @see https://pnpm.io/settings
+
+minimumReleaseAge: 1440
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 1440
+blockExoticSubdeps: true
+strictStorePkgContentCheck: true
+
+minimumReleaseAgeExclude:
+    # to be removed after 14th March 2026
+    - '@smithy/node-http-handler@4.4.16'
