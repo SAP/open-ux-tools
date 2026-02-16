@@ -1,8 +1,7 @@
-import { TelemetryHelper } from '../../src/telemetry';
+import { TelemetryHelper, mcpServerName } from '../../src/telemetry';
 import * as sapUxTelemetry from '@sap-ux/telemetry';
 import { ClientFactory } from '@sap-ux/telemetry';
 import type { TelemetryData } from '../../src/telemetry';
-import { mcpServerName } from '../../src/telemetry';
 
 describe('TelemetryHelper', () => {
     const opts = {
@@ -25,7 +24,8 @@ describe('TelemetryHelper', () => {
             const telemetryData = TelemetryHelper.createTelemetryData();
             expect(telemetryData).toStrictEqual({
                 Platform: 'VSCode',
-                OperatingSystem: expect.any(String)
+                OperatingSystem: expect.any(String),
+                SessionId: expect.any(String)
             });
         });
 
@@ -41,6 +41,7 @@ describe('TelemetryHelper', () => {
             expect(TelemetryHelper.telemetryData).toEqual({
                 Platform: 'VSCode',
                 OperatingSystem: expect.any(String),
+                SessionId: expect.any(String),
                 test: 'test2'
             });
         });
@@ -62,7 +63,8 @@ describe('TelemetryHelper', () => {
                 properties: {
                     test: 'test',
                     Platform: 'VSCode',
-                    OperatingSystem: expect.any(String)
+                    OperatingSystem: expect.any(String),
+                    SessionId: expect.any(String)
                 }
             },
             2,
@@ -85,7 +87,8 @@ describe('TelemetryHelper', () => {
                 properties: {
                     test: 'test',
                     Platform: 'VSCode',
-                    OperatingSystem: expect.any(String)
+                    OperatingSystem: expect.any(String),
+                    SessionId: expect.any(String)
                 }
             },
             2,

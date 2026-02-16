@@ -38,6 +38,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
 import { t } from '../../utils/i18n';
+import type { TelemetryCollector } from '../../telemetry';
 import type {
     AchPromptOptions,
     ApplicationPromptOptions,
@@ -46,6 +47,7 @@ import type {
     FioriIdPromptOptions,
     PasswordPromptOptions,
     ShouldCreateExtProjectPromptOptions,
+    StoreCredentialsPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
@@ -56,11 +58,13 @@ import {
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
-    showInternalQuestions
+    showInternalQuestions,
+    showStoreCredentialsQuestion
 } from './helper/conditions';
 import { getExtProjectMessage } from './helper/message';
 import { validateExtensibilityExtension } from './helper/validators';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -217,8 +221,14 @@ export class ConfigPrompter {
      * @param {SystemLookup} systemLookup - The source system class to retrieve system endpoints.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - Instance of the logger.
+     * @param {TelemetryCollector} telemetryCollector - Instance of the telemetry collector.
      */
-    constructor(private readonly systemLookup: SystemLookup, layer: FlexLayer, private readonly logger: ToolsLogger) {
+    constructor(
+        private readonly systemLookup: SystemLookup,
+        layer: FlexLayer,
+        private readonly logger: ToolsLogger,
+        private readonly telemetryCollector: TelemetryCollector
+    ) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 
@@ -235,6 +245,9 @@ export class ConfigPrompter {
             [configPromptNames.systemValidationCli]: this.getSystemValidationPromptForCli(),
             [configPromptNames.username]: this.getUsernamePrompt(promptOptions?.[configPromptNames.username]),
             [configPromptNames.password]: this.getPasswordPrompt(promptOptions?.[configPromptNames.password]),
+            [configPromptNames.storeCredentials]: this.getStoreCredentialsPrompt(
+                promptOptions?.[configPromptNames.storeCredentials]
+            ),
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
@@ -355,6 +368,35 @@ export class ConfigPrompter {
                     return this.systemAdditionalMessage;
                 }
                 return undefined;
+            }
+        };
+    }
+
+    /**
+     * Creates the store credentials prompt configuration.
+     *
+     * @param {StoreCredentialsPromptOptions} _ - Optional configuration for the store credentials prompt.
+     * @returns The store credentials prompt as a {@link ConfigQuestion}.
+     */
+    private getStoreCredentialsPrompt(_?: StoreCredentialsPromptOptions): ConfirmQuestion<ConfigAnswers> {
+        return {
+            type: 'confirm',
+            name: configPromptNames.storeCredentials,
+            message: t('prompts.storeCredentialsLabelBreadcrumb'),
+            default: false,
+            guiOptions: {
+                breadcrumb: t('prompts.storeCredentialsLabelBreadcrumb'),
+                hint: t('prompts.storeCredentialsTooltip')
+            },
+            when: (answers: ConfigAnswers) =>
+                showStoreCredentialsQuestion(answers, this.isLoginSuccessful, this.isAuthRequired),
+            additionalMessages: (input?: unknown) => {
+                if (input === true) {
+                    return {
+                        message: t('warnings.passwordStoreWarning'),
+                        severity: Severity.warning
+                    };
+                }
             }
         };
     }
@@ -558,10 +600,18 @@ export class ConfigPrompter {
      * @param {ConfigAnswers} answers - The configuration answers provided by the user.
      * @returns An error message if validation fails, or true if the system selection is valid.
      */
-    private async validatePassword(password: string, answers: ConfigAnswers): Promise<string | boolean> {
+    private async validatePassword(password: string, answers?: ConfigAnswers): Promise<string | boolean> {
         const validationResult = validateEmptyString(password);
         if (typeof validationResult === 'string') {
             return validationResult;
+        }
+
+        if (!answers) {
+            return true;
+        }
+
+        if (!answers.system || !answers.username) {
+            return t('error.pleaseProvideAllRequiredData');
         }
 
         const options = {
@@ -579,7 +629,10 @@ export class ConfigPrompter {
                 return validationResult;
             }
 
+            this.telemetryCollector.startTiming('applicationListLoadingTime');
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+            this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
+            this.telemetryCollector.endTiming('applicationListLoadingTime');
             this.isLoginSuccessful = true;
             return true;
         } catch (e) {
@@ -622,7 +675,10 @@ export class ConfigPrompter {
                     return validationResult;
                 }
 
+                this.telemetryCollector.startTiming('applicationListLoadingTime');
                 this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+                this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
+                this.telemetryCollector.endTiming('applicationListLoadingTime');
             }
 
             return true;
@@ -698,7 +754,7 @@ export class ConfigPrompter {
 
         this.systemVersion = checkSystemVersionPattern(version);
         this.publicVersions = await fetchPublicVersions(this.logger);
-        this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);
+        this.ui5Versions = await getRelevantVersions(version, this.isCustomerBase, this.publicVersions);
     }
 
     /**

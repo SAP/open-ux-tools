@@ -1,6 +1,6 @@
-/node_modules/
-/preview/
-/dist/
-*.tar
+node_modules/
+dist/
+.tmp
+.env
+.adp
 *.zip
-UIAdaptation*.html

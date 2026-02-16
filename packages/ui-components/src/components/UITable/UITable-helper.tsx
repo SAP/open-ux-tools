@@ -14,7 +14,11 @@ import type { UIColumn, EditedCell, UITableProps, UITableState } from '.';
  */
 export function _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
     const key = columnKey as keyof T;
-    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1));
+    return items.slice(0).sort((a: T, b: T) => {
+        const comparison = a[key] < b[key];
+        const shouldSwap = isSortedDescending ? !comparison : comparison;
+        return shouldSwap ? 1 : -1;
+    });
 }
 
 /**
@@ -112,7 +116,7 @@ export function scrollToColumn(
     const sidebarWidth = (sidebar?.getBoundingClientRect().width ?? 0) + (addOneToColIndex ? 20 : 0);
     const scrollContainer = document.querySelector('.ms-ScrollablePane--contentContainer');
     const cell = getCellFromCoords(selectedRow, columnKey, columns, addOneToColIndex);
-    const box = cell && cell.getBoundingClientRect();
+    const box = cell?.getBoundingClientRect();
 
     if (scrollContainer && box) {
         const left = scrollContainer.scrollLeft + Math.ceil(box.x) - sidebarWidth;
@@ -154,7 +158,7 @@ export function scrollToRow(idx = 0, table: IDetailsList | null = null) {
  */
 export async function waitFor(selector: string, count = 10): Promise<Element | void> {
     if (count === 0) {
-        return Promise.reject(new Error('Element for selector not found: ' + selector));
+        throw new Error('Element for selector not found: ' + selector);
     }
     await sleep();
     const el = document.querySelector(selector);

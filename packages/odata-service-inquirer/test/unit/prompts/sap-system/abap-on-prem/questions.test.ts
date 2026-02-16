@@ -1,14 +1,18 @@
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
+import type { InputQuestion } from '@sap-ux/inquirer-common';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { BackendSystem } from '@sap-ux/store';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
+import { BasicCredentialsPromptNames } from '../../../../../src/prompts/datasources/sap-system/credentials/questions';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
+import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import { promptNames } from '../../../../../src/types';
-import { PromptState } from '../../../../../src/utils';
 import * as utils from '../../../../../src/utils';
-import type { InputQuestion } from '@sap-ux/inquirer-common';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import { PromptState } from '../../../../../src/utils';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue({ valResult: true });
@@ -188,6 +192,33 @@ describe('questions', () => {
         expect(await (systemUrlQuestion?.validate as Function)(systemUrl)).toBe('Authentication needed');
     });
 
+    test('Should connect to abap-on-prem system with `requiredOdataVersion` if provided', async () => {
+        const newSystemQuestions = getAbapOnPremQuestions({
+            serviceSelection: { requiredOdataVersion: OdataVersion.v4 }
+        });
+
+        const passwordPrompt = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${BasicCredentialsPromptNames.systemPassword}`
+        );
+
+        connectionValidatorMock.validatedUrl = 'http://some.validate.url';
+        connectionValidatorMock.validateAuth = jest.fn().mockResolvedValue({ valResult: false });
+        const answers = {
+            'abapOnPrem:systemUsername': 'username1',
+            [promptNames.systemSelection]: {
+                type: 'backendSystem',
+                system: {} as BackendSystem
+            } as SystemSelectionAnswerType
+        };
+        expect(await (passwordPrompt?.validate as Function)('password1', answers)).toBe(false);
+        expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(
+            'http://some.validate.url',
+            'username1',
+            'password1',
+            { 'isSystem': true, 'odataVersion': '4', 'sapClient': undefined }
+        );
+    });
+
     test('should prompt for new system name and create Backend System for storage (VSCode)', async () => {
         const systemUrl = 'http://some.abap.system:1234';
         // Should show new system name prompt only once authenticated or authentication not required
@@ -233,7 +264,9 @@ describe('questions', () => {
     test('Should validate sap-client input', () => {
         jest.spyOn(utils, 'isBackendSystemKeyExisting').mockReturnValue({
             name: 'System1234',
-            url: 'http://some.system.hos'
+            url: 'http://some.system.hos',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog'
         });
         const newSystemQuestions = getAbapOnPremQuestions();
         const sapClientPrompt = newSystemQuestions.find((question) => question.name === `sapClient`);
@@ -259,5 +292,24 @@ describe('questions', () => {
             message: t('warnings.certErrorIgnoredByNodeSetting'),
             severity: Severity.warning
         });
+    });
+
+    test('Should include value help download prompt when promptOptions.valueHelpDownload.hide is false', () => {
+        const questions = getAbapOnPremQuestions({ valueHelpDownload: { hide: false } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'abapOnPrem:valueHelpDownload');
+        expect(valueHelpPrompt).toBeDefined();
+        expect(valueHelpPrompt?.type).toBe('confirm');
+    });
+
+    test('Should not include value help download prompt when promptOptions.valueHelpDownload.hide is true', () => {
+        const questions = getAbapOnPremQuestions({ valueHelpDownload: { hide: true } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'abapOnPrem:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
+    });
+
+    test('Should not include value help download prompt by default when promptOptions is not provided', () => {
+        const questions = getAbapOnPremQuestions();
+        const valueHelpPrompt = questions.find((question) => question.name === 'abapOnPrem:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
     });
 });

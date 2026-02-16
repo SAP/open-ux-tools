@@ -23,7 +23,7 @@ export const ControllerExtensionCreationSchema: zod.ZodObject<{
 export async function buildControllerExtensionSchema(ftfsFileIo?: SapuxFtfsFileIO) {
     let pageIds: string[] = [];
     if (ftfsFileIo) {
-        const appData = await ftfsFileIo.readApp();
+        const appData = await ftfsFileIo.readAppData();
         pageIds = Object.keys(appData.config.pages ?? {});
     }
     if (pageIds.length > 0) {

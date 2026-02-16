@@ -1,7 +1,7 @@
-import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { AxiosRequestConfig, OperationsType } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig, KeyUserChangeContent, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
@@ -32,14 +32,32 @@ export interface ToolsSupport {
  */
 type AbapTarget = DestinationAbapTarget | Pick<UrlAbapTarget, 'url' | 'client' | 'scp'>;
 
-export interface AdpPreviewConfig {
+/**
+ * Configuration for ADP preview using ABAP target connection.
+ */
+export interface AdpPreviewConfigWithTarget {
     target: AbapTarget;
-
     /**
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
 }
+
+/**
+ * Configuration for ADP preview using CF build output path.
+ */
+export interface AdpPreviewConfigWithBuildPath {
+    /**
+     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
+     */
+    cfBuildPath: string;
+    /**
+     * If set to true then certification validation errors are ignored.
+     */
+    ignoreCertErrors?: boolean;
+}
+
+export type AdpPreviewConfig = AdpPreviewConfigWithTarget | AdpPreviewConfigWithBuildPath;
 
 export interface OnpremApp {
     /** Application variant id. */
@@ -86,7 +104,6 @@ export interface AdpWriterConfig {
         name?: string;
         description?: string;
     };
-    flp?: FlpConfig;
     customConfig?: CustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
@@ -106,6 +123,10 @@ export interface AdpWriterConfig {
          */
         templatePathOverwrite?: string;
     };
+    /**
+     * Optional: Key-user changes to be written to the project.
+     */
+    keyUserChanges?: KeyUserChangeContent[];
 }
 
 /**
@@ -115,6 +136,7 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
+    storeCredentials?: boolean;
     application: SourceApplication;
     fioriId?: string;
     ach?: string;
@@ -130,6 +152,7 @@ export interface AttributesAnswers {
     enableTypeScript: boolean;
     addDeployConfig?: boolean;
     addFlpConfig?: boolean;
+    importKeyUserChanges?: boolean;
 }
 
 export interface SourceApplication {
@@ -184,6 +207,7 @@ export interface Endpoint extends Partial<Destination> {
     Credentials?: { username?: string; password?: string };
     UserDisplayName?: string;
     Scp?: boolean;
+    SystemType?: string;
 }
 
 export interface ChangeInboundNavigation {
@@ -214,8 +238,6 @@ export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
 }
-
-export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
 
 export interface Language {
     sap: string;
@@ -261,6 +283,7 @@ export interface CommonAdditionalChangeInfoProperties {
     templateName?: string;
     targetAggregation?: string;
     controlType?: string;
+    viewName?: string;
 }
 
 export interface ManifestChangeProperties {
@@ -427,6 +450,8 @@ export const enum HttpStatusCodes {
     SERVICE_UNAVAILABLE = 503
 }
 
+export type NetworkError = { message?: string; name?: string; code?: string };
+
 export type OperationType = 'read' | 'write' | 'delete';
 
 /**
@@ -493,16 +518,16 @@ export const ChangeTypeMap: Record<ChangeType, string> = {
 export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOTATIONS_TO_ODATA
     ? AnnotationsData
     : T extends ChangeType.ADD_COMPONENT_USAGES
-    ? ComponentUsagesData
-    : T extends ChangeType.ADD_LIBRARY_REFERENCE
-    ? ComponentUsagesData
-    : T extends ChangeType.ADD_NEW_MODEL
-    ? NewModelData
-    : T extends ChangeType.CHANGE_DATA_SOURCE
-    ? DataSourceData
-    : T extends ChangeType.CHANGE_INBOUND
-    ? InboundData
-    : never;
+      ? ComponentUsagesData
+      : T extends ChangeType.ADD_LIBRARY_REFERENCE
+        ? ComponentUsagesData
+        : T extends ChangeType.ADD_NEW_MODEL
+          ? NewModelData
+          : T extends ChangeType.CHANGE_DATA_SOURCE
+            ? DataSourceData
+            : T extends ChangeType.CHANGE_INBOUND
+              ? InboundData
+              : never;
 
 export interface AnnotationsData {
     variant: DescriptorVariant;
@@ -836,15 +861,17 @@ export interface AppParamsExtended extends CfAppParams {
     spaceGuid: string;
 }
 
-export interface CfCredentials {
-    [key: string]: any;
-    uaa: Uaa;
-    uri: string;
-    endpoints: any;
+export interface ServiceKeys {
+    credentials: {
+        [key: string]: any;
+        uaa: Uaa;
+        uri: string;
+        endpoints: any;
+    };
 }
 
-export interface ServiceKeys {
-    credentials: CfCredentials[];
+export interface ServiceInfo {
+    serviceKeys: ServiceKeys[];
     serviceInstance: ServiceInstance;
 }
 
@@ -870,6 +897,15 @@ export interface BusinessServiceResource {
     label: string;
 }
 
+export interface CfUi5AppInfo {
+    asyncHints?: {
+        libs?: Array<{
+            name: string;
+            html5AppName?: string;
+            url?: { url: string };
+        }>;
+    };
+}
 /**
  * Cloud Foundry ADP UI5 YAML Types
  */
@@ -882,6 +918,8 @@ export interface UI5YamlCustomTaskConfiguration {
     space: string;
     html5RepoRuntime: string;
     sapCloudService: string;
+    serviceInstanceName: string;
+    serviceInstanceGuid: string;
 }
 
 export interface UI5YamlCustomTask {
@@ -1037,12 +1075,29 @@ export interface CfAdpWriterConfig {
         approuter: AppRouterType;
         businessService: string;
         businessSolutionName?: string;
+        /**
+         * GUID of the business service instance.
+         */
+        serviceInstanceGuid?: string;
+        /**
+         * Backend URLs from service instance keys.
+         */
+        backendUrls?: string[];
+        /**
+         * OAuth paths extracted from xs-app.json routes that have a source property.
+         */
+        oauthPaths?: string[];
+        /**
+         * Business service instance keys.
+         */
+        serviceInfo?: ServiceInfo | null;
     };
     project: {
         name: string;
         path: string;
         folder: string;
     };
+    customConfig?: CustomConfig;
     ui5: {
         version: string;
     };
@@ -1066,9 +1121,15 @@ export interface CreateCfConfigParams {
     layer: FlexLayer;
     manifest: Manifest;
     html5RepoRuntimeGuid: string;
+    serviceInstanceGuid?: string;
+    backendUrls?: string[];
+    oauthPaths?: string[];
     projectPath: string;
     addStandaloneApprouter?: boolean;
     publicVersions: UI5Version;
+    packageJson: Package;
+    toolsId: string;
+    serviceInfo?: ServiceInfo | null;
 }
 
 export const AppRouterType = {
@@ -1135,7 +1196,6 @@ export interface CFApp {
     messages?: string[];
     serviceInstanceGuid?: string;
 }
-
 /**
  * CF services (application sources) prompts
  */

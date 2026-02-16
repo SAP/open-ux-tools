@@ -1,33 +1,32 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import { coerce, lt } from 'semver';
 import { join, parse, relative } from 'node:path';
+import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
+import format from 'xml-formatter';
+import * as xpath from 'xpath';
+import type { Editor } from 'mem-fs-editor';
+
+import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
-    type CustomColumn,
     type RichTextEditor,
     bindingContextAbsolute,
     type TemplateConfig
 } from './types';
-import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
-import * as xpath from 'xpath';
-import format from 'xml-formatter';
+import type { Manifest } from '../common/types';
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
-import { coerce, lt } from 'semver';
-import type { Manifest } from '../common/types';
-import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
-import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
-import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { processBuildingBlock } from './processor';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -70,13 +69,17 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
     const { updatedAggregationPath, processedBuildingBlockData, hasAggregation, aggregationNamespace } =
         processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, manifest, aggregationPath, fs);
+
     const templateConfig: TemplateConfig = {
         hasAggregation,
         aggregationNamespace
     };
     const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest, templateConfig);
 
-    if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
+    if (
+        buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
+        buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditorButtonGroups
+    ) {
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
         if (minUI5Version && lt(minUI5Version, '1.117.0')) {
             const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
@@ -109,124 +112,6 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     }
 
     return fs;
-}
-
-/**
- * Updates aggregation path for table columns based on XML document structure.
- *
- * @param {Document} xmlDocument - The XML document to analyze
- * @param {string} aggregationPath - The current aggregation path
- * @param {CustomColumn} buildingBlockData - The building block data with embedded fragment
- * @returns {object} Object containing the updated aggregation path
- */
-function updateAggregationPathForTableColumns(
-    xmlDocument: Document,
-    aggregationPath: string,
-    buildingBlockData: CustomColumn
-): { updatedAggregationPath: string; hasTableColumns: boolean } {
-    if (!buildingBlockData.embededFragment) {
-        return { updatedAggregationPath: aggregationPath, hasTableColumns: false };
-    }
-
-    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
-    const hasColumnsAggregation = xpathSelect("//*[local-name()='columns']", xmlDocument);
-    if (hasColumnsAggregation && Array.isArray(hasColumnsAggregation) && hasColumnsAggregation.length > 0) {
-        return {
-            updatedAggregationPath: aggregationPath + `/${getOrAddNamespace(xmlDocument)}:columns`,
-            hasTableColumns: true
-        };
-    } else {
-        const useDefaultAggregation = xpathSelect("//*[local-name()='Column']", xmlDocument);
-        if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
-            return { updatedAggregationPath: aggregationPath, hasTableColumns: true };
-        }
-    }
-
-    return { updatedAggregationPath: aggregationPath, hasTableColumns: false };
-}
-
-/**
- * Processes custom column building block configuration.
- *
- * @param {BuildingBlock} buildingBlockData - The building block data
- * @param {Document} xmlDocument - The XML document
- * @param {string} manifestPath - The manifest file path
- * @param {Manifest} manifest - The manifest object
- * @param {string} aggregationPath - The aggregation path
- * @param {Editor} fs - The memfs editor instance
- * @returns {object} Object containing updated aggregation path and processed building block data
- */
-function processBuildingBlock<T extends BuildingBlock>(
-    buildingBlockData: T,
-    xmlDocument: Document,
-    manifestPath: string,
-    manifest: Manifest,
-    aggregationPath: string,
-    fs: Editor
-): {
-    updatedAggregationPath: string;
-    processedBuildingBlockData: T;
-    hasAggregation: boolean;
-    aggregationNamespace: string;
-} {
-    let updatedAggregationPath = aggregationPath;
-    let hasAggregation = false;
-    let aggregationNamespace = 'macrosTable';
-
-    if (isCustomColumn(buildingBlockData) && buildingBlockData.embededFragment) {
-        const embededFragment = setCommonDefaults(buildingBlockData.embededFragment, manifestPath, manifest);
-        const viewPath = join(
-            embededFragment.path,
-            `${embededFragment.fragmentFile ?? embededFragment.name}.fragment.xml`
-        );
-
-        // Apply event handler
-        if (buildingBlockData.embededFragment.eventHandler) {
-            buildingBlockData.embededFragment.eventHandler = applyEventHandlerConfiguration(
-                fs,
-                buildingBlockData.embededFragment,
-                buildingBlockData.embededFragment.eventHandler,
-                {
-                    controllerSuffix: false,
-                    typescript: buildingBlockData.embededFragment.typescript
-                }
-            );
-        }
-        buildingBlockData.embededFragment.content = getDefaultFragmentContent(
-            'Sample Text',
-            buildingBlockData.embededFragment.eventHandler
-        );
-        if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, buildingBlockData.embededFragment);
-        }
-        // check xmlDocument for macrosTable element
-        const tableColumnsResult = updateAggregationPathForTableColumns(
-            xmlDocument,
-            aggregationPath,
-            buildingBlockData
-        );
-        updatedAggregationPath = tableColumnsResult.updatedAggregationPath;
-        hasAggregation = tableColumnsResult.hasTableColumns;
-
-        aggregationNamespace = getOrAddNamespace(xmlDocument, 'sap.fe.macros.table', 'macrosTable');
-    }
-
-    return {
-        updatedAggregationPath,
-        processedBuildingBlockData: buildingBlockData,
-        hasAggregation,
-        aggregationNamespace
-    };
-}
-
-/**
- * Type guard to check if the building block data is a custom column.
- *
- * @param {BuildingBlock} data - The building block data to check
- * @returns {boolean} True if the data is a custom column
- */
-function isCustomColumn(data: BuildingBlock): data is CustomColumn {
-    return data.buildingBlockType === BuildingBlockType.CustomColumn;
 }
 
 /**

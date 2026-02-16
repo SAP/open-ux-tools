@@ -7,3 +7,5 @@ data/embeddings/**/*
 bundle/data/embeddings/**/*
 data/git_repos/**/*
 *.tgz
+**/data_local/*-README.md
+!**/data_local/ux-ui5-tooling-README.md

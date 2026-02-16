@@ -28,7 +28,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -3566,7 +3566,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -3671,7 +3670,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -7209,7 +7208,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -7314,7 +7312,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -10642,6 +10640,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -10902,7 +10905,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -11007,7 +11009,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -14336,6 +14338,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -14783,7 +14790,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;

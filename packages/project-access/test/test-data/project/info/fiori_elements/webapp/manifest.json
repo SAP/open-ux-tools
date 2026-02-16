@@ -1,7 +1,27 @@
 {
     "sap.app": {
         "id": "single_apps-fiori_elements",
-        "type": "application"
+        "type": "application",
+        "dataSources": {
+            "mainService": {
+                "uri": "/catalog-admin-noauth/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [
+                        "annotation"
+                    ],
+                    "odataVersion": "4.0",
+                    "localUri": "localService/metadata.xml"
+                }
+            },
+            "annotation": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation.xml",
+                "settings": {
+                    "localUri": "annotations/annotation.xml"
+                }
+            }
+        }
     },
     "sap.ui5": {
         "models": {

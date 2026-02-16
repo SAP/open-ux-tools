@@ -2,7 +2,7 @@ import type { SystemConfigFile } from '../../../../../src/types';
 import { exportSystem } from '../../../../../src/panel/system/actions/exportSystem';
 import { initI18n } from '../../../../../src/utils';
 import * as vscodeMod from 'vscode';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import * as panelActionUtils from '../../../../../src/panel/system/utils';
 
 const systemServiceReadMock = jest.fn();
@@ -34,7 +34,8 @@ describe('Test the export system action', () => {
         url: 'https://example.com',
         client: '100',
         name: 'Test System',
-        systemType: 'OnPrem'
+        systemType: 'OnPrem' as const,
+        connectionType: 'abap_catalog' as const
     };
 
     it('should call writeFileSync to export the system', async () => {
@@ -47,7 +48,15 @@ describe('Test the export system action', () => {
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
-            payload: { system: { name: 'Test System', url: 'https://example.com', client: '100' } }
+            payload: {
+                system: {
+                    name: 'Test System',
+                    url: 'https://example.com',
+                    client: '100',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                }
+            }
         });
 
         expect(showSaveDialogSpy).toHaveBeenCalled();
@@ -59,7 +68,8 @@ describe('Test the export system action', () => {
                         {
                             name: 'Test System',
                             url: 'https://example.com',
-                            client: '100'
+                            client: '100',
+                            connectionType: 'abap_catalog'
                         }
                     ]
                 } as SystemConfigFile,
@@ -82,7 +92,15 @@ describe('Test the export system action', () => {
 
         await exportSystem({} as any, {
             type: 'EXPORT_SYSTEM',
-            payload: { system: { name: 'Test System', url: 'https://example.com', client: '100' } }
+            payload: {
+                system: {
+                    name: 'Test System',
+                    url: 'https://example.com',
+                    client: '100',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                }
+            }
         });
 
         expect(showSaveDialogSpy).toHaveBeenCalled();
@@ -94,7 +112,8 @@ describe('Test the export system action', () => {
                         {
                             name: 'Test System',
                             url: 'https://example.com',
-                            client: '100'
+                            client: '100',
+                            connectionType: 'abap_catalog'
                         }
                     ]
                 },
@@ -103,5 +122,86 @@ describe('Test the export system action', () => {
             )
         );
         expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to export system information: Writing failure.');
+    });
+
+    it('should export system without client when not provided', async () => {
+        const systemWithoutClient = {
+            url: 'https://example.com/service',
+            name: 'OData Service System',
+            systemType: 'OnPrem' as const,
+            connectionType: 'odata_service' as const
+        };
+        systemServiceReadMock.mockResolvedValue(systemWithoutClient);
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation();
+        const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation();
+        const showSaveDialogSpy = jest
+            .spyOn(panelActionUtils, 'showFileSaveDialog')
+            .mockResolvedValue({ fsPath: '/mock/path/odata-system.json' } as vscodeMod.Uri);
+
+        await exportSystem({} as any, {
+            type: 'EXPORT_SYSTEM',
+            payload: {
+                system: systemWithoutClient
+            }
+        });
+
+        expect(showSaveDialogSpy).toHaveBeenCalled();
+        expect(writeFileSyncSpy).toHaveBeenCalledWith(
+            '/mock/path/odata-system.json',
+            JSON.stringify(
+                {
+                    systems: [
+                        {
+                            name: 'OData Service System',
+                            url: 'https://example.com/service',
+                            connectionType: 'odata_service'
+                        }
+                    ]
+                } as SystemConfigFile,
+                null,
+                2
+            )
+        );
+        expect(showInformationMessageSpy).toHaveBeenCalledWith('System [OData Service System] exported.');
+    });
+
+    it('should not export if file path is not provided', async () => {
+        systemServiceReadMock.mockResolvedValue(backendSystem);
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation();
+        const showInformationMessageSpy = jest.spyOn(vscodeMod.window, 'showInformationMessage').mockImplementation();
+        const showSaveDialogSpy = jest.spyOn(panelActionUtils, 'showFileSaveDialog').mockResolvedValue(undefined);
+
+        await exportSystem({} as any, {
+            type: 'EXPORT_SYSTEM',
+            payload: {
+                system: backendSystem
+            }
+        });
+
+        expect(showSaveDialogSpy).toHaveBeenCalled();
+        expect(writeFileSyncSpy).not.toHaveBeenCalled();
+        expect(showInformationMessageSpy).not.toHaveBeenCalled();
+    });
+
+    it('should return early if system is not found in store', async () => {
+        systemServiceReadMock.mockResolvedValue(undefined);
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync').mockImplementation();
+        const showSaveDialogSpy = jest.spyOn(panelActionUtils, 'showFileSaveDialog');
+
+        await exportSystem({} as any, {
+            type: 'EXPORT_SYSTEM',
+            payload: {
+                system: {
+                    name: 'Non-existent System',
+                    url: 'https://nonexistent.com',
+                    client: '100',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                }
+            }
+        });
+
+        expect(showSaveDialogSpy).not.toHaveBeenCalled();
+        expect(writeFileSyncSpy).not.toHaveBeenCalled();
     });
 });

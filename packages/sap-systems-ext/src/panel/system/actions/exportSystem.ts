@@ -28,7 +28,8 @@ export const exportSystem = async (_context: PanelContext, action: ExportSystem)
                 {
                     name: backendSystem.name,
                     url: backendSystem.url,
-                    client: backendSystem.client
+                    client: backendSystem.client,
+                    connectionType: backendSystem.connectionType
                 }
             ]
         };
@@ -36,7 +37,7 @@ export const exportSystem = async (_context: PanelContext, action: ExportSystem)
         if (filePath?.fsPath) {
             const data = JSON.stringify(systemDetails, null, 2);
             writeFileSync(filePath.fsPath, data);
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
             window.showInformationMessage(t('info.systemExported', geti18nOpts(backendSystem.name)));
             logTelemetry(SystemActionStatus.EXPORT_SUCCESS);
         }
@@ -53,7 +54,6 @@ export const exportSystem = async (_context: PanelContext, action: ExportSystem)
  * @param errorMsg - the error message to display and log
  */
 function errorHandler(errorMsg: string): void {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     window.showErrorMessage(errorMsg);
     SystemsLogger.logger.error(errorMsg);
     logTelemetry(SystemActionStatus.EXPORT_FAIL);

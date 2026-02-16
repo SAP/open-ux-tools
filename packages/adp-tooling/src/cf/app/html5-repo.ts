@@ -6,7 +6,7 @@ import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
 import { getServiceNameByTags, getServiceInstanceKeys, createServiceInstance } from '../services/api';
-import type { HTML5Content, ServiceKeys, Uaa, CfAppParams } from '../../types';
+import type { HTML5Content, ServiceInfo, Uaa, CfAppParams } from '../../types';
 
 const HTML5_APPS_REPO_RUNTIME = 'html5-apps-repo-runtime';
 
@@ -62,11 +62,11 @@ export async function downloadZip(token: string, appHostId: string, uri: string)
  *
  * @param {string} spaceGuid space guid
  * @param {ToolsLogger} logger logger to log messages
- * @returns {Promise<ServiceKeys>} credentials json object
+ * @returns {Promise<ServiceInfo>} credentials json object
  */
-export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLogger): Promise<ServiceKeys> {
+export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLogger): Promise<ServiceInfo> {
     try {
-        let serviceKeys = await getServiceInstanceKeys(
+        let serviceInfo = await getServiceInstanceKeys(
             {
                 spaceGuids: [spaceGuid],
                 planNames: ['app-runtime'],
@@ -74,18 +74,18 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
             },
             logger
         );
-        if (!serviceKeys?.credentials?.length) {
+        if (!serviceInfo?.serviceKeys?.length) {
             const serviceName = await getServiceNameByTags(spaceGuid, ['html5-apps-repo-rt']);
             await createServiceInstance('app-runtime', HTML5_APPS_REPO_RUNTIME, serviceName, {
                 logger
             });
-            serviceKeys = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
-            if (!serviceKeys?.credentials?.length) {
+            serviceInfo = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
+            if (!serviceInfo?.serviceKeys?.length) {
                 logger.debug(t('error.noUaaCredentialsFoundForHtml5Repo'));
                 throw new Error(t('error.cannotFindHtml5RepoRuntime'));
             }
         }
-        return serviceKeys;
+        return serviceInfo;
     } catch (e) {
         throw new Error(t('error.failedToGetCredentialsFromHtml5Repo', { error: e.message }));
     }
@@ -107,10 +107,10 @@ export async function downloadAppContent(
     const { appHostId, appName, appVersion } = parameters;
     const appNameVersion = `${appName}-${appVersion}`;
     try {
-        const htmlRepoCredentials = await getHtml5RepoCredentials(spaceGuid, logger);
+        const { serviceKeys, serviceInstance } = await getHtml5RepoCredentials(spaceGuid, logger);
 
-        const token = await getToken(htmlRepoCredentials?.credentials[0]?.uaa);
-        const uri = `${htmlRepoCredentials?.credentials[0]?.uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
+        const token = await getToken(serviceKeys[0]?.credentials.uaa);
+        const uri = `${serviceKeys[0]?.credentials.uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
         const zip = await downloadZip(token, appHostId, uri);
 
         let admZip;
@@ -131,7 +131,7 @@ export async function downloadAppContent(
             const manifest = JSON.parse(zipEntry.getData().toString('utf8')) as Manifest;
             return {
                 entries: admZip.getEntries(),
-                serviceInstanceGuid: htmlRepoCredentials.serviceInstance.guid,
+                serviceInstanceGuid: serviceInstance.guid,
                 manifest: manifest
             };
         } catch (e) {

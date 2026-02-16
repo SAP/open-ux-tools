@@ -1,7 +1,13 @@
-import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import {
+    ODataService,
+    ODataVersion,
+    ServiceProvider,
+    type AbapServiceProvider,
+    type ODataServiceInfo,
+    type AxiosRequestConfig
+} from '@sap-ux/axios-extension';
 import { createForAbap } from '@sap-ux/axios-extension';
 import * as axiosExtension from '@sap-ux/axios-extension';
-import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
     GUIDED_ANSWERS_ICON,
@@ -17,6 +23,7 @@ import LoggerHelper from '../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../src/types';
 import * as nodejsUtils from '@sap-ux/nodejs-utils';
 import { ToolsLogger } from '@sap-ux/logger';
+import { errorHandler } from '../../../src/prompts/prompt-helpers';
 
 const odataServicesMock: ODataServiceInfo[] = [];
 const catalogServiceMock = jest.fn().mockImplementation(() => ({
@@ -112,6 +119,23 @@ describe('ConnectionValidator', () => {
         });
     });
 
+    test('should validate and return error message on non origin urls for isSystem URL and reentrance tickets', async () => {
+        const serviceUrl = 'https://example.com/service/path';
+        const validator = new ConnectionValidator();
+
+        // isSystem URL case
+        const result = await validator.validateUrl(serviceUrl, { isSystem: true });
+        expect(result).toBe(t('prompts.validationMessages.systemUrlOriginOnlyWarning'));
+        expect(validator.validity).toEqual({});
+
+        // Reentrance ticket case
+        const validatorReentrance = new ConnectionValidator();
+        validatorReentrance.systemAuthType = 'reentranceTicket';
+        const resultReentrance = await validatorReentrance.validateUrl(serviceUrl);
+        expect(resultReentrance).toBe(t('prompts.validationMessages.systemUrlOriginOnlyWarning'));
+        expect(validatorReentrance.validity).toEqual({});
+    });
+
     test('should handle url not found error', async () => {
         const axiosError = new AxiosError('', 'ENOTFOUND');
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(axiosError);
@@ -169,10 +193,29 @@ describe('ConnectionValidator', () => {
         );
         expect(serviceProviderSpy).toHaveBeenCalledWith('/some/path/to/service/');
 
-        // Username/pword are invalid
+        // Username/pword are invalid, authorization
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(403));
         expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({
-            valResult: t('errors.authenticationFailed'),
+            valResult: t('errors.authenticationFailedAllCatalogs', { authFailType: t('texts.authorizationFailed') }),
+            errorType: 'AUTH'
+        });
+
+        // Username/pword are invalid, authorization, specific catalog
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(403));
+        expect(
+            await validator.validateAuth(serviceUrl, 'user1', 'password1', { odataVersion: ODataVersion.v4 })
+        ).toEqual({
+            valResult: t('errors.authenticationFailedSpecificCatalog', {
+                authFailType: t('texts.authorizationFailed'),
+                odataVersion: '4'
+            }),
+            errorType: 'AUTH'
+        });
+
+        // Username/pword are invalid, authentication
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(401));
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({
+            valResult: t('errors.authenticationFailedAllCatalogs', { authFailType: t('texts.authenticationFailed') }),
             errorType: 'AUTH'
         });
 
@@ -883,7 +926,9 @@ describe('ConnectionValidator', () => {
                 url: 'https://system1:12345/',
                 authenticationType: 'reentranceTicket',
                 userDisplayName: 'user1',
-                client: '001'
+                client: '001',
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             }
         };
         connectValidator.setConnectedSystem(cachedConnectedSystem);
@@ -919,10 +964,12 @@ describe('ConnectionValidator', () => {
             backendSystem: {
                 name: 'system2',
                 url: 'https://system2:1234554321/',
-                authenticationType: '',
+                authenticationType: 'oauth2',
                 serviceKeys: {
                     url: 'https://system2:54321/'
-                }
+                },
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             }
         };
 
@@ -946,5 +993,12 @@ describe('ConnectionValidator', () => {
         expect(debugLogSpy).toHaveBeenCalledWith(
             'ConnectionValidator.setConnectedSystem(): Use of a cached connected system is only supported for AbapServiceProviders. Re-authorization will be required.'
         );
+    });
+
+    test('Should reset previous errors when connection state is reset', () => {
+        const connectValidator = new ConnectionValidator();
+        errorHandler.setCurrentError(ERROR_TYPE.AUTH);
+        connectValidator.resetConnectionState();
+        expect(errorHandler.hasError()).toBe(false);
     });
 });

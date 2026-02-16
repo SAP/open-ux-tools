@@ -1,7 +1,12 @@
 import { initI18n, t } from '../../src/i18n';
-import { getAbapSystemChoices, getPackageChoices, updatePromptStateUrl } from '../../src/prompts/helpers';
+import {
+    getAbapSystemChoices,
+    getPackageChoices,
+    shouldRunValidation,
+    updatePromptStateUrl
+} from '../../src/prompts/helpers';
 import { PromptState } from '../../src/prompts/prompt-state';
-import type { BackendTarget } from '../../src/types';
+import type { AbapDeployConfigAnswersInternal, BackendTarget } from '../../src/types';
 import { queryPackages } from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
 import { mockTargetSystems } from '../fixtures/targets';
@@ -236,6 +241,63 @@ describe('helpers', () => {
                 packages: ['package3', 'package1', 'package2'],
                 morePackageResultsMsg: ''
             });
+        });
+    });
+
+    describe('shouldRunValidation', () => {
+        it('should return true if prev answers object is empty', () => {
+            const newAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const result = shouldRunValidation({} as AbapDeployConfigAnswersInternal, newAnswers);
+            expect(result).toBe(true);
+        });
+
+        it('should return false if no changes', () => {
+            const prevAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const newAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const result = shouldRunValidation(prevAnswers, newAnswers);
+            expect(result).toBe(false);
+        });
+
+        it('should return false if only description changed', () => {
+            const prevAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const newAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc2'
+            };
+            const result = shouldRunValidation(prevAnswers, newAnswers);
+            expect(result).toBe(false);
+        });
+
+        it('should return true if url changed', () => {
+            const prevAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const newAnswers = {
+                url: 'https://mock.url2.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const result = shouldRunValidation(prevAnswers, newAnswers);
+            expect(result).toBe(true);
         });
     });
 });

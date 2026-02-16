@@ -1,13 +1,14 @@
 import hasbin from 'hasbin';
-import * as childProcess from 'child_process';
+import * as childProcess from 'node:child_process';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import { readdirSync, writeFileSync } from 'node:fs';
 import { copy, existsSync } from 'fs-extra';
-import { readFile, rename } from 'fs/promises';
+import { readFile, rename } from 'node:fs/promises';
 import { rimraf } from 'rimraf';
 import { basename, join } from 'node:path';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
-import { DeployTarget, type TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { hostEnvironment, DeployTarget } from '@sap-ux/fiori-generator-shared';
+import type { AppConfig, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import {
     INPUT_APP_DIR_CF,
     INPUT_APP_NAME_BASE,
@@ -21,9 +22,8 @@ import {
     ignoreMatcherOpts
 } from './fixtures/constants';
 import { runHeadlessGen } from './utils';
-import Generator from 'yeoman-generator';
 import { generatorNamespace, initI18n } from '../../src/utils';
-import type { AppConfig } from '@sap-ux/fiori-generator-shared';
+import HeadlessGenerator from '../../src/headless';
 
 expect.extend({ toMatchFolder });
 
@@ -43,7 +43,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./mockMta').MockMta
     };
 });
@@ -65,6 +65,7 @@ describe('Test headless generator', () => {
     jest.setTimeout(1200000);
 
     beforeAll(async () => {
+        jest.restoreAllMocks();
         jest.spyOn(hasbin, 'sync').mockReturnValue(true);
         rimraf.rimrafSync(OUTPUT_DIR);
         await copy(INPUT_APP_DIR_CF, OUTPUT_DIR);
@@ -73,7 +74,7 @@ describe('Test headless generator', () => {
     });
 
     beforeEach(() => {
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
+        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 }) as any);
     });
 
     afterEach(() => {
@@ -90,6 +91,7 @@ describe('Test headless generator', () => {
         } catch {
             // do nothing
         }
+        jest.resetAllMocks();
     });
 
     it('Test: Headless deploy-config', async () => {
@@ -284,7 +286,9 @@ describe('Test headless generator', () => {
         // Dont run the expensive phases that are not under test, prompting is run but doesnt prompt since `launchDeployConfigAsSubGenerator` is true
         jest.spyOn(CFGen.prototype, 'writing').mockImplementation(jest.fn());
         jest.spyOn(CFGen.prototype, 'initializing').mockImplementation(jest.fn());
-        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
+        const composeWithSpy = jest
+            .spyOn(HeadlessGenerator.prototype as any, 'composeWith')
+            .mockResolvedValue(undefined);
         await runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR);
 
         expect(composeWithSpy).toHaveBeenCalledWith(

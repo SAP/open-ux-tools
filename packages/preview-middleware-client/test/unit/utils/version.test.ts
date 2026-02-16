@@ -33,7 +33,7 @@ describe('utils/version', () => {
         expect(version.patch).toEqual(11);
     });
 
-    test('getUi5Version fallback to 1.130.0', async () => {
+    test('getUi5Version fallback to 1.130.9', async () => {
         jest.spyOn(CommunicationService, 'sendAction');
         const version = await getUi5Version();
         expect(version.major).toEqual(1);
@@ -41,7 +41,7 @@ describe('utils/version', () => {
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'SAPUI5 Version Retrieval Failed',
-                description: `Could not get the SAPUI5 version of the application. Using 1.130.0 as fallback.`,
+                description: `Could not get the SAPUI5 version of the application. Using 1.130.9 as fallback.`,
                 type: MessageBarType.error
             })
         );

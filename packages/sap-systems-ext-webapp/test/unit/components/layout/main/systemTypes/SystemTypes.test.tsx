@@ -24,9 +24,9 @@ jest.mock('@sap-ux/ui-components', () => {
 
 describe('<SystemTypes />', () => {
     it('Test selecting Cloud system type', () => {
-        const setType = jest.fn();
+        const setSystemType = jest.fn();
         const setAuthenticationType = jest.fn();
-        render(<SystemTypes setType={setType} setAuthenticationType={setAuthenticationType} />);
+        render(<SystemTypes setSystemType={setSystemType} setAuthenticationType={setAuthenticationType} />);
 
         const systemTypeLabel = screen.getByText('System Type');
         expect(systemTypeLabel).toBeInTheDocument();
@@ -35,14 +35,14 @@ describe('<SystemTypes />', () => {
         const dropdown = screen.getByTestId('system-type-dropdown');
         fireEvent.change(dropdown, { target: { value: 'AbapCloud' } });
 
-        expect(setType).toHaveBeenCalledWith('AbapCloud');
+        expect(setSystemType).toHaveBeenCalledWith('AbapCloud');
         expect(setAuthenticationType).toHaveBeenCalledWith('reentranceTicket');
     });
 
     it('Test selecting OnPremise system type', () => {
-        const setType = jest.fn();
+        const setSystemType = jest.fn();
         const setAuthenticationType = jest.fn();
-        render(<SystemTypes setType={setType} setAuthenticationType={setAuthenticationType} />);
+        render(<SystemTypes setSystemType={setSystemType} setAuthenticationType={setAuthenticationType} />);
 
         const systemTypeLabel = screen.getByText('System Type');
         expect(systemTypeLabel).toBeInTheDocument();
@@ -51,6 +51,7 @@ describe('<SystemTypes />', () => {
         const dropdown = screen.getByTestId('system-type-dropdown');
         fireEvent.change(dropdown, { target: { value: 'OnPrem' } });
 
-        expect(setType).toHaveBeenCalledWith('OnPrem');
+        expect(setSystemType).toHaveBeenCalledWith('OnPrem');
+        expect(setAuthenticationType).toHaveBeenCalledWith('basic');
     });
 });

@@ -34,6 +34,7 @@ describe('package-json', () => {
             const variousConfigsPath = join(basePath, 'various-configs');
 
             const variousConfigsPackageJsonPath = join(variousConfigsPath, 'package.json');
+            fs.delete(variousConfigsPackageJsonPath);
             ensurePreviewMiddlewareDependency(fs, variousConfigsPath);
             expect(() => fs.read(join(variousConfigsPath, 'package.json'))).toThrow(
                 `${variousConfigsPackageJsonPath} doesn\'t exist`

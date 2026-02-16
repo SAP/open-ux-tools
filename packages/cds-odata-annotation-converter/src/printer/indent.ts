@@ -10,16 +10,11 @@ const CLOSING_CHARACTERS = new Set([']', '}', ')']);
  *
  * @param string - String representing a complete element
  * @param indentInfo - indentation level, default 0 and skipFirstLine a boolean flag, flag to skip indenting first line if insert position is known.
+ * @param indentInfo.level
+ * @param indentInfo.skipFirstLine
  * @returns Indent a string representing a complete element.
  */
-export function indent(
-    string: string,
-    indentInfo = {
-        level: 0,
-        skipFirstLine: false
-    }
-): string {
-    let level = indentInfo.level;
+export function indent(string: string, { level = 0, skipFirstLine = false } = {}): string {
     const parts = string.split('\n');
     for (let i = 0; i < parts.length; i++) {
         const line = parts[i];
@@ -27,7 +22,7 @@ export function indent(
         if (change < 0) {
             level += change;
         }
-        if (indentInfo.skipFirstLine && i === 0) {
+        if (skipFirstLine && i === 0) {
             level += change;
             continue;
         }
@@ -54,6 +49,7 @@ function indentLine(string: string, level: number): string {
 }
 
 /**
+ * Calculates the net change in indentation level for a line of code.
  *
  * @param line - The line of code or text.
  * @returns The change in indentation level, positive for each opening character,

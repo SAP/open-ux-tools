@@ -20,10 +20,16 @@ export async function enableCdsUi5Plugin(basePath: string, fs?: Editor): Promise
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
 
+    const originalPackageJson = structuredClone<Package>(packageJson); // keep a copy of the package.json
+
     ensureMinCdsVersion(packageJson);
     await enableWorkspaces(basePath, packageJson);
     addCdsPluginUi5(packageJson);
 
-    fs.writeJSON(packageJsonPath, packageJson);
+    // only write if there are changes
+    if (JSON.stringify(originalPackageJson) !== JSON.stringify(packageJson)) {
+        fs.writeJSON(packageJsonPath, packageJson);
+    }
+
     return fs;
 }

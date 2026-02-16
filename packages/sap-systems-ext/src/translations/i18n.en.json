@@ -22,7 +22,10 @@
         "systemDeleted": "System [{{- system}}] deleted.",
         "systemExported": "System [{{- system}}] exported.",
         "systemSaved": "System [{{- system}}] saved.",
-        "systemUpdated": "System [{{- system}}] updated."
+        "systemUpdated": "System [{{- system}}] updated.",
+        "serviceMetadata": "Service metadata retrieved successfully.",
+        "noServiceMetadata": "Service metadata not available.",
+        "serviceRequestCheckLogs": "{{- url}} returned service data. Check the debug logs for the full metadata."
     },
     "warn": {
         "deletionCancelled": "Deletion cancelled for system: [{{- system}}].",
@@ -59,7 +62,13 @@
         "noFileSelected": "No file selected for import.",
         "panelActionDispatch": "Error dispatching panel action: {{- error}}",
         "noneSelected": "No SAP system selected.",
-        "testConnection": "An error occurred when testing the connection: {{- error}}"
+        "testConnection": "An error occurred when testing the connection: {{- error}}",
+        "systemInfoUpdate": "Failed to add the system information to the backend system: {{- error}}",
+        "serviceRequest": "An error occurred while requesting the service metadata: {{- error}}"
+    },
+    "debug": {
+        "systemInfoRetrieved": "Successfully retrieved the system ID '{{- systemId}}' and client '{{client}}' from '/sap/bc/adt/core/http/systeminformation'.",
+        "systemInfoRetrievalFailure": "Failed to retrieve system information from '/sap/bc/adt/core/http/systeminformation': {{- error}}"
     },
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection.",

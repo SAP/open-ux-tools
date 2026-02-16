@@ -1,11 +1,12 @@
-import Dialog from 'sap/m/Dialog';
-import UI5Element from 'sap/ui/core/Element';
+import type Dialog from 'sap/m/Dialog';
+import type UI5Element from 'sap/ui/core/Element';
 import Fragment from 'sap/ui/core/Fragment';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getTextBundle } from '../i18n';
 
-import AddFragment, { AddFragmentOptions } from './controllers/AddFragment.controller';
+import type { AddFragmentOptions } from './controllers/AddFragment.controller';
+import AddFragment from './controllers/AddFragment.controller';
 import AddTableColumnFragments from './controllers/AddTableColumnFragments.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
@@ -17,9 +18,11 @@ import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExi
 import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
 import { QuickActionTelemetryData } from '../cpe/quick-actions/quick-action-definition';
 import AddCustomFragment, { AddCustomFragmentOptions } from './controllers/AddCustomFragment.controller';
+import AddActionFragment, { AddActionOptions } from './controllers/AddActionFragment.controller';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
+    ADD_ACTION = 'AddAction',
     ADD_TABLE_COLUMN_FRAGMENTS = 'AddTableColumnFragments',
     CONTROLLER_EXTENSION = 'ControllerExtension',
     ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint',
@@ -31,6 +34,7 @@ export const enum DialogNames {
 type Controller =
     | AddFragment
     | AddTableColumnFragments
+    | AddActionFragment
     | ControllerExtension
     | ExtensionPoint
     | FileExistsDialog
@@ -71,6 +75,7 @@ export class DialogFactory {
             | Partial<AddFragmentOptions>
             | Partial<FileExistsDialogOptions>
             | AddCustomFragmentOptions
+            | AddActionOptions
             | AddSubpageOptions = {},
         telemetryData?: QuickActionTelemetryData
     ): Promise<void> {
@@ -106,6 +111,17 @@ export class DialogFactory {
                         ...options,
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
                     } as AddCustomFragmentOptions
+                );
+                break;
+            case DialogNames.ADD_ACTION:
+                controller = new AddActionFragment(
+                    `open.ux.preview.client.adp.controllers.${dialogName}`,
+                    overlay,
+                    rta,
+                    {
+                        ...options,
+                        title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
+                    } as AddActionOptions
                 );
                 break;
             case DialogNames.ADD_TABLE_COLUMN_FRAGMENTS:

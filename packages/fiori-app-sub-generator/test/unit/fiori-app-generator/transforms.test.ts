@@ -11,6 +11,7 @@ import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types
 import type { Destination } from '@sap-ux/btp-utils';
 import { Authentication as DestinationAuthType } from '@sap-ux/btp-utils';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import * as featureToggle from '@sap-ux/feature-toggle';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     return {
@@ -20,6 +21,13 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
             name: 'CLI',
             technical: 'CLI'
         })
+    };
+});
+
+jest.mock('@sap-ux/feature-toggle', () => {
+    return {
+        ...jest.requireActual('@sap-ux/feature-toggle'),
+        isFeatureEnabled: jest.fn()
     };
 });
 
@@ -148,7 +156,9 @@ describe('Test transform state', () => {
                     backendSystem: {
                         authenticationType: AuthenticationType.ReentranceTicket,
                         name: 'some-backend-system',
-                        url: 'https://abap.cloud.system'
+                        url: 'https://abap.cloud.system',
+                        systemType: 'AbapCloud',
+                        connectionType: 'abap_catalog'
                     },
                     serviceProvider: {} as ServiceProvider
                 }
@@ -190,7 +200,9 @@ describe('Test transform state', () => {
                     backendSystem: {
                         authenticationType: AuthenticationType.ReentranceTicket,
                         name: 'some-backend-system',
-                        url: 'https://abap.cloud.system'
+                        url: 'https://abap.cloud.system',
+                        systemType: 'AbapCloud',
+                        connectionType: 'abap_catalog'
                     },
                     serviceProvider: {} as ServiceProvider
                 }
@@ -304,8 +316,10 @@ describe('Test transform state', () => {
                 }
             }
         };
+        jest.spyOn(featureToggle, 'isFeatureEnabled').mockReturnValueOnce(true); // mock feature flag to disable root package json updates
         const feApp = await transformState<FioriElementsApp<unknown>>(state, true);
         expect(feApp.app.projectType).toStrictEqual('CAPNodejs');
+        expect(feApp.appOptions.disableCapRootPkgJsonUpdates).toBe(true);
     });
 
     test('Should transform state to Fiori Freestyle `simple` template settings', async () => {
@@ -353,6 +367,63 @@ describe('Test transform state', () => {
                 localVersion: undefined,
                 minUI5Version: '1.84.0',
                 frameworkUrl: 'https://ui5.sap.com'
+            }
+        });
+    });
+    test('Should transform state setting hasCdsUi5Plugin, isWorkspaceEnabled to true when addCdsUi5Plugin is true (CAP) ', async () => {
+        const state: State = {
+            project: {
+                name: 'TestProject1',
+                description: 'An SAP Fiori application.',
+                title: 'App Title',
+                skipAnnotations: false,
+                namespace: 'namespace1',
+                targetFolder: '',
+                addCdsUi5Plugin: true
+            } as Project,
+            service: {
+                ...baseState.service,
+                capService: {
+                    projectPath: 'path/to/cds/project',
+                    appPath: 'app',
+                    capType: 'Node.js',
+                    serviceName: 'TestService',
+                    serviceCdsPath: 'path/to/cds/project/srv'
+                }
+            },
+            floorplan: FloorplanFE.FE_LROP,
+            entityRelatedConfig: {
+                mainEntity: {
+                    entitySetName: 'SEPMRA_C_PD_Product',
+                    entitySetType: 'SEPMRA_C_PD_ProductType'
+                }
+            }
+        };
+        const noDataSourceState = await transformState<FioriElementsApp<unknown>>(state);
+        expect(noDataSourceState).toMatchObject({
+            service: {
+                capService: {
+                    cdsUi5PluginInfo: {
+                        hasCdsUi5Plugin: true,
+                        isWorkspaceEnabled: true
+                    }
+                },
+                'annotations': {
+                    'appPath': 'app',
+                    'cdsFileContents': "using TestService as service from '../../path/to/cds/project/srv';",
+                    'projectName': 'TestProject1',
+                    'projectPath': 'path/to/cds/project'
+                },
+                'client': undefined,
+                'ignoreCertError': undefined,
+                'metadata': undefined,
+                'model': '',
+                'name': 'mainService',
+                'path': '/sap/opu/odata',
+                'previewSettings': {},
+                'type': 'cds',
+                'url': 'https://abap.s4hana.cloud',
+                'version': '4'
             }
         });
     });

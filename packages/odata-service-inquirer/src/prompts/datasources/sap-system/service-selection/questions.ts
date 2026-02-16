@@ -2,7 +2,8 @@
  * Service selection prompting for SAP systems. Used by new and existing system prompts.
  *
  */
-import type { CatalogService, ODataVersion } from '@sap-ux/axios-extension';
+import type { CatalogService } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
@@ -12,6 +13,7 @@ import {
     extendWithOptions,
     searchChoices,
     type ValidationLink,
+    withCondition,
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -20,7 +22,7 @@ import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
+import { areArraysEquivalent, getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -33,31 +35,40 @@ import {
 } from '../service-selection/service-helper';
 import type { SystemSelectionAnswers } from '../system-selection';
 import { type ServiceAnswer } from './types';
+import { getValueHelpDownloadPrompt } from '../external-services/value-help-download';
 
 const cliServicePromptName = 'cliServiceSelection';
 
 /**
  * Get the service selection prompt for an Abap system connection (on-prem or on-btp). The service selection prompt is used to select a service from the system catalog.
  *
- * @param connectValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
- * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
+ * @param connectValidator - A reference to the active connection validator, used to validate the service selection and retrieve service details.
+ * @param promptNamespace - The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  *     This is used to avoid conflicts with other prompts of the same types.
- * @param promptOptions Options for the service selection prompt see {@link OdataServicePromptOptions}
+ * @param promptOptions - Options for the service selection prompt see {@link OdataServicePromptOptions}
+ * @param hideValueHelpDownloadPrompt - If true the value help download confirm prompt will be hidden (default: true)
  * @returns the service selection prompt
  */
 export function getSystemServiceQuestion(
     connectValidator: ConnectionValidator,
     promptNamespace: string,
-    promptOptions?: ServiceSelectionPromptOptions
+    promptOptions?: ServiceSelectionPromptOptions,
+    hideValueHelpDownloadPrompt = true
 ): Question<ServiceAnswer>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
     let previousSystemUrl: string | undefined;
     let previousClient: string | undefined;
     let previousService: ServiceAnswer | undefined;
+    let previousServiceFilter: ServiceSelectionPromptOptions['serviceFilter'];
     // State shared across validate and additionalMessages functions
     let hasBackendAnnotations: boolean | undefined;
-    let convertedMetadata: ConvertedMetadata | undefined;
+    // Wrap to allow pass by ref to nested prompts
+    const convertedMetadataRef: {
+        convertedMetadata: ConvertedMetadata | undefined;
+    } = {
+        convertedMetadata: undefined
+    };
 
     const requiredOdataVersion = promptOptions?.requiredOdataVersion;
     const serviceSelectionPromptName = `${promptNamespace}:${promptNames.serviceSelection}`;
@@ -79,7 +90,8 @@ export function getSystemServiceQuestion(
             if (
                 serviceChoices.length === 0 ||
                 previousSystemUrl !== connectValidator.validatedUrl ||
-                previousClient !== connectValidator.validatedClient
+                previousClient !== connectValidator.validatedClient ||
+                !areArraysEquivalent(previousServiceFilter, promptOptions?.serviceFilter)
             ) {
                 // if we have a catalog, use it to list services
                 if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
@@ -90,6 +102,7 @@ export function getSystemServiceQuestion(
                     );
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
+                    previousServiceFilter = promptOptions?.serviceFilter ? [...promptOptions.serviceFilter] : undefined;
 
                     // Telemetry event for successful service listing using a destination
                     if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
@@ -128,12 +141,13 @@ export function getSystemServiceQuestion(
             getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, {
                 requiredOdataVersion,
                 hasAnnotations: hasBackendAnnotations,
-                showCollabDraftWarnOptions: convertedMetadata
+                showCollabDraftWarnOptions: convertedMetadataRef.convertedMetadata
                     ? {
                           showCollabDraftWarning: !!promptOptions?.showCollaborativeDraftWarning,
-                          edmx: convertedMetadata
+                          edmx: convertedMetadataRef.convertedMetadata
                       }
-                    : undefined
+                    : undefined,
+                serviceFilter: promptOptions?.serviceFilter
             }),
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI and cli when automcomplete is used
@@ -154,13 +168,17 @@ export function getSystemServiceQuestion(
                 return ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE) ?? false;
             }
             // Dont re-request the same service details
-            if (serviceAnswer && previousService?.servicePath !== serviceAnswer.servicePath) {
+            if (
+                serviceAnswer &&
+                (previousService?.servicePath !== serviceAnswer.servicePath ||
+                    previousService?.servicePath !== PromptState.odataService.servicePath) // PromptState was reset by a system selection
+            ) {
                 hasBackendAnnotations = undefined;
-                convertedMetadata = undefined;
+                convertedMetadataRef.convertedMetadata = undefined;
                 previousService = serviceAnswer;
                 const validationResult = await validateService(serviceAnswer, connectValidator, requiredOdataVersion);
                 hasBackendAnnotations = validationResult.hasAnnotations;
-                convertedMetadata = validationResult.convertedMetadata;
+                convertedMetadataRef.convertedMetadata = validationResult.convertedMetadata;
                 return validationResult.validationResult;
             }
             return true;
@@ -187,11 +205,16 @@ export function getSystemServiceQuestion(
             when: async (answers: Answers): Promise<boolean> => {
                 const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];
                 if (selectedService && connectValidator.validatedUrl) {
-                    const { validationResult } = await validateService(selectedService, connectValidator);
+                    const { validationResult, hasAnnotations, convertedMetadata } = await validateService(
+                        selectedService,
+                        connectValidator
+                    );
                     if (typeof validationResult === 'string') {
                         LoggerHelper.logger.error(validationResult);
                         throw new Error(validationResult);
                     }
+                    hasBackendAnnotations = hasAnnotations;
+                    convertedMetadataRef.convertedMetadata = convertedMetadata;
                 }
                 if (serviceChoices.length === 0 && errorHandler.hasError()) {
                     const noServicesError = ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE)!.toString();
@@ -202,6 +225,22 @@ export function getSystemServiceQuestion(
             name: `${promptNamespace}:${cliServicePromptName}`
         } as Question);
     }
+
+    if (!hideValueHelpDownloadPrompt) {
+        /**
+         * Only show the value help download prompt when a service has been validated (convertedMetadata is set), is odata version v4 and is an abap connection
+         */
+        questions.push(
+            ...withCondition(
+                getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef),
+                (answers: { [serviceSelectionPromptName]?: ServiceAnswer }) =>
+                    !!(connectValidator.serviceProvider instanceof AbapServiceProvider) &&
+                    !!convertedMetadataRef.convertedMetadata &&
+                    answers?.[serviceSelectionPromptName]?.serviceODataVersion === ODataVersion.v4
+            )
+        );
+    }
+
     return questions;
 }
 /**

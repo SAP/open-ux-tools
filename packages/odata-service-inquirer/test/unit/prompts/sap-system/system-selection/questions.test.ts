@@ -34,18 +34,20 @@ const backendSystemBasic: BackendSystem = {
     url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1',
-    systemType: 'OnPrem'
+    systemType: 'OnPrem',
+    connectionType: 'abap_catalog'
 };
 const backendSystemReentrance: BackendSystem = {
     name: 'http://s4hc:1234',
     url: 'http:/s4hc:1234',
     authenticationType: 'reentranceTicket',
-    systemType: 'S4HC'
+    systemType: 'AbapCloud',
+    connectionType: 'abap_catalog'
 };
 const backendSystemServiceKeys: BackendSystem = {
     name: 'http://abap.on.btp:1234',
     url: 'http:/abap.on.btp:1234',
-    authenticationType: 'serviceKeys',
+    authenticationType: 'oauth2',
     serviceKeys: {
         uaa: {
             clientid: 'clientid',
@@ -55,7 +57,8 @@ const backendSystemServiceKeys: BackendSystem = {
         url: 'https://example.com/uaa',
         systemid: 'abap_btp_001'
     },
-    systemType: 'BTP'
+    systemType: 'AbapCloud',
+    connectionType: 'abap_catalog'
 };
 
 const backendSystems: BackendSystem[] = [backendSystemBasic];
@@ -167,6 +170,8 @@ describe('Test system selection prompts', () => {
         isAuthRequiredMock.mockResolvedValue(false);
         validateServiceInfoResultMock = true;
         validateUrlResultMock = true;
+        // Reset the backend systems in place
+        backendSystems.splice(0, backendSystems.length, backendSystemBasic);
     });
 
     test('should return system selection prompts and choices based on development environment, BAS or non-BAS', async () => {
@@ -369,7 +374,7 @@ describe('Test system selection prompts', () => {
         // validate backend system selection
         validateAuthResultMock = { valResult: true };
         const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
-        systemServiceReadMock.mockResolvedValue(backendSystemBasic);
+        systemServiceReadMock.mockResolvedValueOnce(backendSystemBasic);
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'backendSystem',
@@ -388,6 +393,11 @@ describe('Test system selection prompts', () => {
         // If auth failed using creds from BackendSystem, the creds prompts should be displayed and the user notified that the backend system creds will be updated
         validateAuthResultMock = { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };
         const loggerErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
+        systemServiceReadMock.mockResolvedValueOnce({
+            url: backendSystemBasic.url,
+            client: backendSystemBasic.client,
+            name: backendSystemBasic.name
+        });
         expect(
             await systemSelectionPrompt.validate?.({
                 type: 'backendSystem',
@@ -643,13 +653,46 @@ describe('Test system selection prompts', () => {
     test('Should set the default system choice based on the defaultChoice options', async () => {
         backendSystems.push(backendSystemReentrance);
         const defaultChoice = backendSystemReentrance.name;
-        const systemSelectionQuestions = await getSystemSelectionQuestions({
+        let systemSelectionQuestions = await getSystemSelectionQuestions({
             [promptNames.systemSelection]: { defaultChoice }
         });
-        const systemSelectionPrompt = systemSelectionQuestions.find(
+        let systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        const defaultIndex = (systemSelectionPrompt as Question).default;
+        let defaultIndex = (systemSelectionPrompt as Question).default();
+        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
+            value: {
+                system: backendSystemReentrance,
+                type: 'backendSystem'
+            }
+        });
+
+        const testBackendSystemDefault: BackendSystem = {
+            name: 'System Name1',
+            url: 'http://test.default.selection:1234',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
+        };
+        backendSystems.push(testBackendSystemDefault);
+
+        // Test the default choice as a bound value
+        const defaultChoiceValue = { value: testBackendSystemDefault.name };
+        systemSelectionQuestions = await getSystemSelectionQuestions({
+            [promptNames.systemSelection]: { defaultChoice: defaultChoiceValue }
+        });
+        systemSelectionPrompt = systemSelectionQuestions.find(
+            (question) => question.name === promptNames.systemSelection
+        );
+        defaultIndex = (systemSelectionPrompt as Question).default();
+        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
+            value: {
+                system: testBackendSystemDefault,
+                type: 'backendSystem'
+            }
+        });
+        // Mimic a dynmaic update to the default choice value
+        defaultChoiceValue.value = backendSystemReentrance.name;
+        defaultIndex = (systemSelectionPrompt as Question).default();
         expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
             value: {
                 system: backendSystemReentrance,
@@ -667,7 +710,7 @@ describe('Test system selection prompts', () => {
         const systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        const defaultIndex = (systemSelectionPrompt as Question).default;
+        const defaultIndex = (systemSelectionPrompt as Question).default();
         expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(1);
         expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
             value: {
@@ -685,7 +728,7 @@ describe('Test system selection prompts', () => {
         const systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(8);
+        expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(3);
     });
 
     test('Should hide the service selection prompt when hide option in provided as true', async () => {

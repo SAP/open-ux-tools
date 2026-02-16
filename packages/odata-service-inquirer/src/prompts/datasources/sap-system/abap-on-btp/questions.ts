@@ -69,7 +69,8 @@ export function getAbapOnBTPSystemQuestions(
         message: t('prompts.abapOnBTPType.message'),
         // Only runs on YUI, but we only need to reset on YUI as the user cannot change previous values on the Yo CLI
         validate: () => {
-            connectValidator.resetConnectionState();
+            connectValidator.resetConnectionState(true);
+            PromptState.resetConnectedSystem();
             return true;
         }
     } as ListQuestion);
@@ -115,7 +116,12 @@ export function getAbapOnBTPSystemQuestions(
 
     // Service selection prompt
     questions.push(
-        ...getSystemServiceQuestion(connectValidator, abapOnBtpPromptNamespace, promptOptions?.serviceSelection)
+        ...getSystemServiceQuestion(
+            connectValidator,
+            abapOnBtpPromptNamespace,
+            promptOptions?.serviceSelection,
+            promptOptions?.valueHelpDownload?.hide
+        )
     );
     return questions;
 }

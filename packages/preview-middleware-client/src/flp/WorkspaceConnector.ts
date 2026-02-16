@@ -1,9 +1,13 @@
 import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
-import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
+import type { FlexChange } from './common';
+import { CHANGES_API_PATH as CHANGES_API_PATH_STATIC, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
+
+const baseUrl = document.getElementById('sap-ui-bootstrap')?.dataset.openUxPreviewBaseUrl ??'';
+const changesApiPath = `${baseUrl}${CHANGES_API_PATH_STATIC}`;
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
@@ -22,7 +26,7 @@ const connector = merge({}, ObjectStorageConnector, {
             if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
                     this.fileChangeRequestNotifier(change.fileName, 'create', change, additionalChangeInfo);
-                } catch (e) {
+                } catch {
                     // exceptions in the listener call are ignored
                 }
             }
@@ -32,7 +36,7 @@ const connector = merge({}, ObjectStorageConnector, {
                 additionalChangeInfo
             };
 
-            return fetch(CHANGES_API_PATH, {
+            return fetch(changesApiPath, {
                 method: 'POST',
                 body: JSON.stringify(body, null, 2),
                 headers: {
@@ -44,12 +48,12 @@ const connector = merge({}, ObjectStorageConnector, {
             if (typeof this.fileChangeRequestNotifier === 'function') {
                 try {
                     this.fileChangeRequestNotifier(key, 'delete');
-                } catch (e) {
+                } catch {
                     // exceptions in the listener call are ignored
                 }
             }
 
-            return fetch(CHANGES_API_PATH, {
+            return fetch(changesApiPath, {
                 method: 'DELETE',
                 body: JSON.stringify({ fileName: key }),
                 headers: {
@@ -64,7 +68,7 @@ const connector = merge({}, ObjectStorageConnector, {
             // not implemented
         },
         getItems: async function () {
-            const response = await fetch(CHANGES_API_PATH, {
+            const response = await fetch(changesApiPath, {
                 method: 'GET',
                 headers: {
                     'content-type': 'application/json'

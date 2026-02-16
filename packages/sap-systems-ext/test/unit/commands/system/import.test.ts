@@ -4,6 +4,7 @@ import { importSystemCommandHandler } from '../../../../src/commands/system/impo
 import { join } from 'path';
 import * as utils from '../../../../src/utils';
 import * as vscodeMod from 'vscode';
+import { SystemPanelViewType } from '../../../../src/utils/constants';
 
 const systemServiceReadMock = jest.fn();
 
@@ -25,11 +26,14 @@ describe('Test the import system command handler', () => {
     const mockContext = {
         panelManager,
         extContext: {
-            extensionPath: '/mock/extension/path'
+            vscodeExtContext: {
+                extensionPath: '/mock/extension/path'
+            }
         }
     } as SystemCommandContext;
 
     const vsCodeWindow = vscodeMod.window;
+    const getOrCreateNewPanelSpy = jest.spyOn(panelManager, 'getOrCreateNewPanel');
 
     beforeAll(async () => {
         await utils.initI18n();
@@ -40,8 +44,6 @@ describe('Test the import system command handler', () => {
     });
 
     it('should import a system and reveal a new system panel', async () => {
-        const getOrCreateNewPanelSpy = jest.spyOn(panelManager, 'getOrCreateNewPanel');
-
         jest.spyOn(vsCodeWindow, 'showOpenDialog').mockResolvedValue([
             { path: join(__dirname, '../../../fixtures/import/valid-test.json') } as vscodeMod.Uri
         ]);
@@ -124,5 +126,61 @@ describe('Test the import system command handler', () => {
         await handler();
 
         expect(showWarningMessageSpy).toHaveBeenCalledWith('Import cancelled.');
+    });
+
+    it('should launch the system panel in view mode when a system exists', async () => {
+        getOrCreateNewPanelSpy.mockClear();
+        jest.spyOn(vsCodeWindow, 'showOpenDialog').mockResolvedValue([
+            { path: join(__dirname, '../../../fixtures/import/existing-test.json') } as vscodeMod.Uri
+        ]);
+        systemServiceReadMock.mockResolvedValue({
+            url: 'https://existing.system.test.url.com',
+            client: '100',
+            name: 'Existing System',
+            systemType: 'OnPrem',
+            username: 'existingUser',
+            password: 'existingPass'
+        });
+
+        jest.spyOn(utils, 'confirmPrompt').mockResolvedValue(true);
+
+        const handler = importSystemCommandHandler(mockContext);
+        await handler();
+
+        expect(getOrCreateNewPanelSpy).toHaveReturnedWith(
+            expect.objectContaining({ systemPanelViewType: SystemPanelViewType.View })
+        );
+    });
+
+    it('should import a system with odata_service connection type', async () => {
+        jest.spyOn(vsCodeWindow, 'showOpenDialog').mockResolvedValue([
+            { path: join(__dirname, '../../../fixtures/import/valid-odata-service-test.json') } as vscodeMod.Uri
+        ]);
+        systemServiceReadMock.mockResolvedValue(undefined);
+
+        const handler = importSystemCommandHandler(mockContext);
+        await handler();
+
+        expect(getOrCreateNewPanelSpy).toHaveBeenCalledWith(
+            'https://odata.service.test.url.com/sap/opu/odata/sap/SERVICE_NAME',
+            expect.any(Function)
+        );
+    });
+
+    it('should default to abap_catalog connection type when not specified', async () => {
+        jest.spyOn(vsCodeWindow, 'showOpenDialog').mockResolvedValue([
+            { path: join(__dirname, '../../../fixtures/import/existing-test.json') } as vscodeMod.Uri
+        ]);
+        systemServiceReadMock.mockResolvedValue(undefined);
+
+        const handler = importSystemCommandHandler(mockContext);
+        await handler();
+
+        expect(getOrCreateNewPanelSpy).toHaveBeenCalled();
+        const createPanelFn = getOrCreateNewPanelSpy.mock.calls[0][1];
+        const panel = createPanelFn();
+
+        // Access the backendSystem property through the protected/private API
+        expect((panel as any).backendSystem?.connectionType).toBe('abap_catalog');
     });
 });

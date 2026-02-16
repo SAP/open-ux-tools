@@ -15,6 +15,24 @@ export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undef
     );
 };
 
+/**
+ * Checks if any of the values in the object are not `undefined` or `null`
+ *
+ * @param obj - the object to check
+ * @param props - the properties to check on the object
+ * @returns - `true` if any value is not `undefined` or `null`, `false` otherwise
+ */
+export function hasAnyValue<E extends object, K extends keyof E>(obj: E, props: K[]): boolean {
+    if (obj == null || typeof obj !== 'object') {
+        return false;
+    }
+
+    return props.some((prop) => {
+        const value = obj[prop];
+        return value !== undefined && value !== null;
+    });
+}
+
 /** Given an `Error` or any other object thrown, returns an `Error` instance */
 export function errorInstance(e: Error | unknown): NodeJS.ErrnoException {
     if (e instanceof Error) {
@@ -59,6 +77,25 @@ export function toPersistenceName(s: string): string | undefined {
 
 export function getEntityFileName(entityName: string): string {
     return toPersistenceName(entityName) + '.json';
+}
+
+/**
+ * Simple object matcher that supports nested objects
+ *
+ * @param obj - object to inspect
+ * @param filter - properties and values used for filtering the object.
+ * @returns - true if the `obj` has equivalent property values to `attrs`
+ */
+export function isMatch(obj: any, filter: any): boolean {
+    return Object.entries(filter).every(([key, val]) => {
+        if (Array.isArray(val)) {
+            return val.includes(obj[key]);
+        }
+        if (val && typeof val === 'object') {
+            return isMatch(obj[key], val);
+        }
+        return obj[key] === val;
+    });
 }
 
 export * from './app-studio';

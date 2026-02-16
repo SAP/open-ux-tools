@@ -16,9 +16,10 @@ export {
     toReferenceUri,
     getWorkspaceInfo,
     hasMinCdsVersion,
-    checkCdsUi5PluginEnabled
+    checkCdsUi5PluginEnabled,
+    processServices
 } from './cap';
-export { filterDataSourcesByType } from './service';
+export { filterDataSourcesByType, getMainService } from './service';
 export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n';
 export {
@@ -40,9 +41,22 @@ export {
     findCapProjectRoot,
     findRootsForPath
 } from './search';
-export { getWebappPath, readUi5Yaml, getAllUi5YamlFileNames, getMockServerConfig, getMockDataPath } from './ui5-config';
+export {
+    getWebappPath,
+    readUi5Yaml,
+    getAllUi5YamlFileNames,
+    getMockServerConfig,
+    getMockDataPath,
+    getPathMappings,
+    type PathMappings
+} from './ui5-config';
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
 export { updatePackageScript, hasUI5CliV3 } from './script';
-export { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from './specification';
+export {
+    getSpecification,
+    getSpecificationModuleFromCache,
+    getSpecificationPath,
+    refreshSpecificationDistTags
+} from './specification';
 export { readFlexChanges } from './flex-changes';

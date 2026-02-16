@@ -1,12 +1,12 @@
 import { join } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
 import type { create, Editor } from 'mem-fs-editor';
+import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
 
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { Inbound } from '@sap-ux/axios-extension';
 import type { DescriptorVariant } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 
 import {
     getVariant,
@@ -16,7 +16,11 @@ import {
     updateVariant,
     isTypescriptSupported,
     filterAndMapInboundsToManifest,
-    readUi5Config
+    readUi5Config,
+    extractCfBuildTask,
+    readManifestFromBuildPath,
+    loadAppVariant,
+    getBaseAppId
 } from '../../../src/base/helper';
 import { readUi5Yaml } from '@sap-ux/project-access';
 
@@ -329,6 +333,193 @@ describe('helper', () => {
             const result = filterAndMapInboundsToManifest([]);
 
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe('extractCfBuildTask', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should return CF build task configuration when found', () => {
+            const mockBuildTask = {
+                target: {
+                    url: '/cf.example',
+                    client: '100'
+                },
+                serviceInstance: 'test-service-instance'
+            };
+
+            const mockUi5Config = {
+                findCustomTask: jest.fn().mockReturnValue({
+                    configuration: mockBuildTask
+                })
+            } as unknown as UI5Config;
+
+            const result = extractCfBuildTask(mockUi5Config);
+
+            expect(mockUi5Config.findCustomTask).toHaveBeenCalledWith('app-variant-bundler-build');
+            expect(result).toEqual(mockBuildTask);
+        });
+
+        test('should throw error when build task configuration is undefined', () => {
+            const mockUi5Config = {
+                findCustomTask: jest.fn().mockReturnValue({
+                    configuration: undefined
+                })
+            } as unknown as UI5Config;
+
+            expect(() => extractCfBuildTask(mockUi5Config)).toThrow('No CF ADP project found');
+            expect(mockUi5Config.findCustomTask).toHaveBeenCalledWith('app-variant-bundler-build');
+        });
+    });
+
+    describe('readManifestFromBuildPath', () => {
+        const mockManifest = {
+            'sap.app': {
+                id: 'test.app',
+                title: 'Test App'
+            }
+        };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should read manifest from build output folder', () => {
+            const cfBuildPath = 'dist';
+            const expectedPath = join(process.cwd(), cfBuildPath, 'manifest.json');
+            const manifestContent = JSON.stringify(mockManifest);
+
+            readFileSyncMock.mockReturnValueOnce(manifestContent);
+
+            const result = readManifestFromBuildPath(cfBuildPath);
+
+            expect(readFileSyncMock).toHaveBeenCalledWith(expectedPath, 'utf-8');
+            expect(result).toEqual(mockManifest);
+        });
+
+        test('should throw error when file does not exist', () => {
+            const cfBuildPath = 'dist';
+            const expectedPath = join(process.cwd(), cfBuildPath, 'manifest.json');
+
+            readFileSyncMock.mockImplementationOnce(() => {
+                const error = new Error('ENOENT: no such file or directory');
+                (error as NodeJS.ErrnoException).code = 'ENOENT';
+                throw error;
+            });
+
+            expect(() => readManifestFromBuildPath(cfBuildPath)).toThrow();
+            expect(readFileSyncMock).toHaveBeenCalledWith(expectedPath, 'utf-8');
+        });
+    });
+
+    describe('loadAppVariant', () => {
+        const mockVariantContent = {
+            layer: 'VENDOR',
+            reference: 'base.app',
+            id: 'my.adaptation',
+            namespace: 'apps/base.app/appVariants/my.adaptation/',
+            content: []
+        };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should load and parse app variant descriptor successfully', async () => {
+            const mockResource = {
+                getString: jest.fn().mockResolvedValue(JSON.stringify(mockVariantContent))
+            };
+
+            const mockRootProject = {
+                byPath: jest.fn().mockResolvedValue(mockResource)
+            } as unknown as ReaderCollection;
+
+            const result = await loadAppVariant(mockRootProject);
+
+            expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
+            expect(mockResource.getString).toHaveBeenCalled();
+            expect(result).toEqual(mockVariantContent);
+        });
+
+        test('should throw error when manifest.appdescr_variant is not found', async () => {
+            const mockRootProject = {
+                byPath: jest.fn().mockResolvedValue(null)
+            } as unknown as ReaderCollection;
+
+            await expect(loadAppVariant(mockRootProject)).rejects.toThrow(
+                'ADP configured but no manifest.appdescr_variant found.'
+            );
+            expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
+        });
+
+        test('should throw error when manifest.appdescr_variant is empty', async () => {
+            const mockResource = {
+                getString: jest.fn().mockResolvedValue('')
+            };
+
+            const mockRootProject = {
+                byPath: jest.fn().mockResolvedValue(mockResource)
+            } as unknown as ReaderCollection;
+
+            await expect(loadAppVariant(mockRootProject)).rejects.toThrow(
+                'ADP configured but manifest.appdescr_variant file is empty.'
+            );
+            expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
+            expect(mockResource.getString).toHaveBeenCalled();
+        });
+
+        test('should throw error when getString throws an error', async () => {
+            const mockError = new Error('File read error');
+            const mockResource = {
+                getString: jest.fn().mockRejectedValue(mockError)
+            };
+
+            const mockRootProject = {
+                byPath: jest.fn().mockResolvedValue(mockResource)
+            } as unknown as ReaderCollection;
+
+            await expect(loadAppVariant(mockRootProject)).rejects.toThrow(
+                'Failed to parse manifest.appdescr_variant: File read error'
+            );
+            expect(mockRootProject.byPath).toHaveBeenCalledWith('/manifest.appdescr_variant');
+            expect(mockResource.getString).toHaveBeenCalled();
+        });
+    });
+
+    describe('getBaseAppId', () => {
+        const mockVariantContent: DescriptorVariant = {
+            id: 'customer.test.variant',
+            reference: 'base.app.id',
+            namespace: 'apps/my.test.app/appVariants',
+            layer: 'CUSTOMER_BASE',
+            content: []
+        };
+
+        test('should return base app id from variant', async () => {
+            readFileSyncMock.mockReturnValue(JSON.stringify(mockVariantContent));
+
+            const result = await getBaseAppId(basePath);
+
+            expect(result).toBe('base.app.id');
+        });
+
+        test('should throw error when reference is missing', async () => {
+            const variantWithoutRef = { ...mockVariantContent, reference: undefined };
+            readFileSyncMock.mockReturnValue(JSON.stringify(variantWithoutRef));
+
+            await expect(getBaseAppId(basePath)).rejects.toThrow(
+                'Failed to get app ID: No reference found in manifest.appdescr_variant'
+            );
+        });
+
+        test('should throw error when variant cannot be read', async () => {
+            readFileSyncMock.mockImplementation(() => {
+                throw new Error('File not found');
+            });
+
+            await expect(getBaseAppId(basePath)).rejects.toThrow('Failed to get app ID: File not found');
         });
     });
 });

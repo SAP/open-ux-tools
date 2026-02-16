@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Areload-middleware"
     },
-    "version": "0.3.5",
+    "version": "0.3.13",
     "author": "@SAP/ux-tools-team",
     "license": "Apache-2.0",
     "main": "dist/index.js",
@@ -18,8 +18,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
@@ -32,11 +32,14 @@
         "!dist/*.map",
         "!dist/**/*.map"
     ],
+    "peerDependencies": {
+        "express": "4"
+    },
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "connect-livereload": "0.6.1",
-        "livereload": "0.9.3",
+        "livereload": "0.10.3",
         "portfinder": "1.0.32"
     },
     "devDependencies": {
@@ -44,8 +47,8 @@
         "@types/express": "4.17.21",
         "@types/livereload": "0.9.5",
         "@types/supertest": "2.0.12",
-        "axios": "1.12.2",
-        "express": "4.21.2",
+        "axios": "1.13.5",
+        "express": "4.22.1",
         "supertest": "7.1.4"
     },
     "engines": {

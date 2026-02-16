@@ -1,0 +1,11 @@
+config:
+    project: 'empty-folder'
+vars:
+    appPath: '{{PROJECT_PATH}}'
+    query: |
+      Create an new Fiori application for my travel agency in {{appPath}}, based on this service:
+      https://sap-ux-mock-services-v4-lrop.cfapps.us10.hana.ondemand.com/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001
+      Note: You MUST not asks for any additional information.
+assert:
+    - type: javascript
+      value: file://../assertions/projectStructure.ts:validate

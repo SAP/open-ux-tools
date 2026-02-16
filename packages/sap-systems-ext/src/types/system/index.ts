@@ -1,8 +1,15 @@
 import type { ExtensionContext } from 'vscode';
 import type { PanelManager, SystemPanel } from '../../panel';
+import type { SapSystemsProvider } from '../../providers';
+import type { ConnectionType } from '@sap-ux/store';
+
+export interface SapSystemsExtContext {
+    vscodeExtContext: ExtensionContext;
+    systemsTreeDataProvider?: SapSystemsProvider;
+}
 
 export interface SystemCommandContext {
-    extContext: ExtensionContext;
+    extContext: SapSystemsExtContext;
     panelManager: PanelManager<SystemPanel>;
 }
 
@@ -24,7 +31,7 @@ export interface SystemConfig {
     url: string;
     client?: string;
     name?: string;
-    type?: string;
+    connectionType?: ConnectionType;
 }
 
 /**

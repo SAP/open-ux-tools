@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import axios from 'axios';
 import * as path from 'node:path';
 import type { AxiosRequestConfig } from 'axios';
-import CFToolsCli = require('@sap/cf-tools/out/src/cli');
+import { Cli } from '@sap/cf-tools';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -17,8 +17,9 @@ import type {
     GetServiceInstanceParams,
     ServiceInstance,
     CfServiceInstance,
-    CfCredentials,
-    MtaYaml
+    MtaYaml,
+    ServiceInfo,
+    CfUi5AppInfo
 } from '../../types';
 import { t } from '../../i18n';
 import { getProjectNameForXsSecurity } from '../project';
@@ -41,18 +42,18 @@ const PARAM_MAP: Map<string, string> = new Map([
 ]);
 
 /**
- * Get the business service keys.
+ * Get the business service info.
  *
  * @param {string} businessService - The business service.
  * @param {CfConfig} config - The CF config.
  * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<ServiceKeys | null>} The service keys.
+ * @returns {Promise<ServiceInfo | null>} The service info.
  */
-export async function getBusinessServiceKeys(
+export async function getBusinessServiceInfo(
     businessService: string,
     config: CfConfig,
     logger: ToolsLogger
-): Promise<ServiceKeys | null> {
+): Promise<ServiceInfo | null> {
     const serviceKeys = await getServiceInstanceKeys(
         {
             spaceGuids: [config.space.GUID],
@@ -82,11 +83,17 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
     };
 
     let url: string;
+    const isBAS = isAppStudio();
 
     if (endpointParts?.[3]) {
-        // Public cloud - use mTLS enabled domain with "cert" prefix
+        // Public cloud
         const region = endpointParts[1];
-        url = `${fdcUrl}cert.cfapps.${region}.hana.ondemand.com`;
+        // Use mTLS enabled domain with "cert" prefix only in BAS, otherwise use regular domain
+        if (isBAS) {
+            url = `${fdcUrl}cert.cfapps.${region}.hana.ondemand.com`;
+        } else {
+            url = `${fdcUrl}cfapps.${region}.hana.ondemand.com`;
+        }
     } else if (endpointParts?.[4]?.endsWith('.cn')) {
         // China has a special URL pattern
         const parts = endpointParts[4].split('.');
@@ -96,9 +103,7 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
         url = `${fdcUrl}sapui5flex.cfapps${endpointParts?.[4]}`;
     }
 
-    // Add authorization token for non-BAS environments or private cloud
-    // For BAS environments with mTLS, the certificate authentication is handled automatically
-    if (!isAppStudio() || !endpointParts?.[3]) {
+    if (!isBAS || !endpointParts?.[3]) {
         options.headers!['Authorization'] = `Bearer ${cfConfig.token}`;
     }
 
@@ -135,6 +140,45 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
     } catch (error) {
         logger?.error(`Getting FDC apps failed. Request url: ${url}. ${error}`);
         throw new Error(t('error.failedToGetFDCApps', { error: error.message }));
+    }
+}
+
+/**
+ * Get ui5AppInfo.json from FDC service.
+ *
+ * @param {string} appId - The application ID.
+ * @param {string[]} appHostIds - The app host IDs.
+ * @param {CfConfig} cfConfig - The CF config.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<CfUi5AppInfo>} The ui5AppInfo.json content.
+ */
+export async function getCfUi5AppInfo(
+    appId: string,
+    appHostIds: string[],
+    cfConfig: CfConfig,
+    logger?: ToolsLogger
+): Promise<CfUi5AppInfo> {
+    const requestArguments = getFDCRequestArguments(cfConfig);
+
+    const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
+    const url = `${requestArguments.url}/api/business-service/ui5appinfo?appId=${encodeURIComponent(
+        appId
+    )}&${appHostIdParams}`;
+
+    logger?.log(`Fetching ui5AppInfo.json from FDC: ${url}`);
+
+    try {
+        const response = await axios.get(url, requestArguments.options);
+
+        if (response.status === 200) {
+            logger?.log('Successfully retrieved ui5AppInfo.json from FDC');
+            return response.data as CfUi5AppInfo;
+        } else {
+            throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
+        }
+    } catch (error) {
+        logger?.error(`Getting ui5AppInfo.json failed. Request url: ${url}. ${error}`);
+        throw new Error(`Failed to get ui5AppInfo.json from FDC: ${error.message}`);
     }
 }
 
@@ -179,7 +223,7 @@ export async function createServiceInstance(
             commandParameters.push('-c', JSON.stringify(xsSecurity));
         }
 
-        await CFToolsCli.Cli.execute(commandParameters);
+        await Cli.execute(commandParameters);
         logger?.log(`Service instance '${serviceInstanceName}' created successfully`);
     } catch (e) {
         logger?.error(e);
@@ -256,19 +300,19 @@ export async function createServices(
  *
  * @param {GetServiceInstanceParams} serviceInstanceQuery - The service instance query.
  * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<ServiceKeys | null>} The service instance keys.
+ * @returns {Promise<ServiceInfo | null>} The service instance keys.
  */
 export async function getServiceInstanceKeys(
     serviceInstanceQuery: GetServiceInstanceParams,
-    logger: ToolsLogger
-): Promise<ServiceKeys | null> {
+    logger?: ToolsLogger
+): Promise<ServiceInfo | null> {
     try {
         const serviceInstances = await getServiceInstance(serviceInstanceQuery);
         if (serviceInstances?.length > 0) {
             // We can use any instance in the list to connect to HTML5 Repo
             logger?.log(`Use '${serviceInstances[0].name}' HTML5 Repo instance`);
             return {
-                credentials: await getOrCreateServiceKeys(serviceInstances[0], logger),
+                serviceKeys: await getOrCreateServiceKeys(serviceInstances[0], logger),
                 serviceInstance: serviceInstances[0]
             };
         }
@@ -313,9 +357,12 @@ async function getServiceInstance(params: GetServiceInstanceParams): Promise<Ser
  *
  * @param {ServiceInstance} serviceInstance - The service instance.
  * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<ServiceKeys | null>} The service instance keys.
+ * @returns {Promise<ServiceKeys[]>} The service instance keys.
  */
-async function getOrCreateServiceKeys(serviceInstance: ServiceInstance, logger: ToolsLogger): Promise<CfCredentials[]> {
+export async function getOrCreateServiceKeys(
+    serviceInstance: ServiceInstance,
+    logger?: ToolsLogger
+): Promise<ServiceKeys[]> {
     const serviceInstanceName = serviceInstance.name;
     try {
         const credentials = await getServiceKeys(serviceInstance.guid);

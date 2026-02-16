@@ -29,7 +29,7 @@ export const MbtPackageVersion = '^1.2.29';
 export const UI5TaskZipperPackage = 'ui5-task-zipper';
 export const UI5TaskZipperPackageVersion = '^3.4.x';
 export const UI5Package = '@ui5/cli';
-export const UI5PackageVersion = '^4.0.16';
+export const UI5PackageVersion = '^4.0.33';
 export const CDSAddMtaParams = ['add', 'mta'];
 export const CDSXSUAAService = 'xsuaa';
 export const CDSHTML5RepoService = 'html5-repo';
@@ -122,3 +122,16 @@ export const undeployMTAScript = (mtaId: string): string =>
 const cannotFindBinary = (bin: string, pkg: string): string => t('error.cannotFindBinary', { bin, pkg });
 export const CDSBinNotFound = cannotFindBinary(CDSExecutable, CDSDKPackage);
 export const MTABinNotFound = cannotFindBinary(MTAExecutable, MTAPackage);
+
+// MTA ID length limits
+export const MAX_MTA_ID_LENGTH = 128;
+export const MAX_MTA_PREFIX_LENGTH = 100;
+export const MAX_MTA_PREFIX_SHORT_LENGTH = 94;
+export const MAX_MTA_PREFIX_SHORTER_LENGTH = 96;
+export const MAX_ABAP_SERVICE_PREFIX_LENGTH = 24;
+export const MAX_ABAP_SERVICE_NAME_LENGTH = 20;
+
+// MTA file operation timing
+// Delay in milliseconds to ensure MTA file operations complete before subsequent reads
+// This is necessary as mta-lib requires files to be fully written to disk before access
+export const MTA_FILE_OPERATION_DELAY_MS = 1000;

@@ -12,7 +12,10 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
      * @param {Editor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
      */
-    constructor(private fs: Editor, private projectPath: string) {}
+    constructor(
+        private readonly fs: Editor,
+        private readonly projectPath: string
+    ) {}
 
     /**
      * Constructs the content for an component usages change based on provided data.
@@ -68,7 +71,7 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
             ChangeType.ADD_COMPONENT_USAGES
         );
 
-        writeChangeToFolder(this.projectPath, compUsagesChange, this.fs);
+        await writeChangeToFolder(this.projectPath, compUsagesChange, this.fs);
 
         if (!('library' in data)) {
             return;
@@ -78,6 +81,6 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
         const libTimestamp = timestamp + 1;
         const refLibChange = getChange(data.variant, libTimestamp, libRefContent, ChangeType.ADD_LIBRARY_REFERENCE);
 
-        writeChangeToFolder(this.projectPath, refLibChange, this.fs);
+        await writeChangeToFolder(this.projectPath, refLibChange, this.fs);
     }
 }

@@ -6,7 +6,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import { isCfInstalled, getServiceKeys, createServiceKey, requestCfApi } from '../../../../src/cf/services/cli';
 import { initI18n, t } from '../../../../src/i18n';
-import type { CfCredentials } from '../../../../src/types';
+import type { ServiceKeys } from '../../../../src/types';
 
 jest.mock('@sap/cf-tools/out/src/cf-local', () => ({
     cfGetInstanceCredentials: jest.fn()
@@ -81,28 +81,30 @@ describe('CF Services CLI', () => {
     describe('getServiceKeys', () => {
         test('should return service instance credentials', async () => {
             const serviceInstanceGuid = 'test-guid-123';
-            const mockCredentials: CfCredentials[] = [
+            const mockCredentials: ServiceKeys[] = [
                 {
-                    name: 'test-service-key',
-                    label: 'test-service',
-                    tags: [],
                     credentials: {
-                        uri: 'https://test-service.com',
+                        name: 'test-service-key',
+                        label: 'test-service',
+                        tags: [],
+                        credentials: {
+                            uri: 'https://test-service.com',
+                            uaa: {
+                                clientid: 'test-client',
+                                clientsecret: 'test-secret',
+                                url: 'https://uaa.test.com'
+                            }
+                        },
                         uaa: {
                             clientid: 'test-client',
                             clientsecret: 'test-secret',
                             url: 'https://uaa.test.com'
-                        }
-                    },
-                    uaa: {
-                        clientid: 'test-client',
-                        clientsecret: 'test-secret',
-                        url: 'https://uaa.test.com'
-                    },
-                    uri: 'https://test-service.com',
-                    endpoints: {
-                        'html5-apps-repo': {
-                            'app_host_id': 'test-app-host-id'
+                        },
+                        uri: 'https://test-service.com',
+                        endpoints: {
+                            'html5-apps-repo': {
+                                'app_host_id': 'test-app-host-id'
+                            }
                         }
                     }
                 }
@@ -117,7 +119,7 @@ describe('CF Services CLI', () => {
                 filters: [
                     {
                         value: serviceInstanceGuid,
-                        key: eFilters.service_instance_guid
+                        key: eFilters.service_instance_guids
                     }
                 ]
             });
@@ -138,7 +140,7 @@ describe('CF Services CLI', () => {
                 filters: [
                     {
                         value: serviceInstanceGuid,
-                        key: eFilters.service_instance_guid
+                        key: eFilters.service_instance_guids
                     }
                 ]
             });
@@ -219,6 +221,20 @@ describe('CF Services CLI', () => {
             const result = await requestCfApi(url);
 
             expect(result).toEqual(mockJsonResponse);
+            expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
+        });
+
+        test('should throw error when response is empty', async () => {
+            const mockResponse = {
+                exitCode: 0,
+                stdout: '',
+                stderr: ''
+            };
+            mockCFToolsCliExecute.mockResolvedValue(mockResponse);
+
+            await expect(requestCfApi(url)).rejects.toThrow(
+                t('error.failedToRequestCFAPI', { error: t('error.emptyCFAPIResponse') })
+            );
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(['curl', url], { env: { 'CF_COLOR': 'false' } });
         });
 

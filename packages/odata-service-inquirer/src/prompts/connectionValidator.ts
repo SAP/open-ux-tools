@@ -50,13 +50,13 @@ interface Validity {
 }
 
 // Cert errors that may be ignored by the ignore cert errors prompt and NODE_TLS_REJECT_UNAUTHORIZED=0 setting
-const ignorableCertErrors = [
+const ignorableCertErrors = new Set([
     ERROR_TYPE.CERT_SELF_SIGNED,
     ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN,
     ERROR_TYPE.CERT_EXPIRED,
     ERROR_TYPE.CERT_UKNOWN_OR_INVALID,
     ERROR_TYPE.INVALID_SSL_CERTIFICATE
-];
+]);
 
 // Makes AxiosRequestConfig url properties required
 interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
@@ -442,6 +442,8 @@ export class ConnectionValidator {
         if (resetValidity) {
             this.resetValidity();
         }
+        // Reset any previous connection errors
+        errorHandler.resetErrorState();
     }
 
     /**
@@ -469,7 +471,7 @@ export class ConnectionValidator {
                 await abapProvider.catalog(odataVerCatalog).listServices();
             } catch (error) {
                 const errorType = ErrorHandler.getErrorType(error?.response?.status ?? error?.code);
-                if (error?.isAxiosError && ignorableCertErrors.includes(errorType)) {
+                if (error?.isAxiosError && ignorableCertErrors.has(errorType)) {
                     LoggerHelper.logger.warn(
                         t('warnings.certificateErrors', { url: axiosConfig?.baseURL, error: errorType })
                     );
@@ -505,8 +507,7 @@ export class ConnectionValidator {
         destination?: Destination;
         odataVersion?: ODataVersion;
     }): Promise<void> {
-        this.resetConnectionState();
-        this.resetValidity();
+        this.resetConnectionState(true);
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
@@ -734,8 +735,7 @@ export class ConnectionValidator {
         servicePath?: string,
         requiredOdataVersion?: ODataVersion
     ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
-        this.resetConnectionState();
-        this.resetValidity();
+        this.resetConnectionState(true);
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest. This function lowercases the origin.
         const destUrl = getDestinationUrlForAppStudio(destination.Name.toLowerCase(), servicePath);
         // Get the destination URL in the portable form <protocol>://<host>:<port>.
@@ -827,11 +827,14 @@ export class ConnectionValidator {
             if (url.origin === 'null') {
                 return t('errors.invalidUrl', { input: serviceUrl });
             }
-            // Dont allow non origin URLs in for re-entrance tickets as the error handling would become complex to analyize.
+            // Dont allow non origin URLs in for re-entrance tickets and system URL's as the error handling would become complex to analyize.
             // The connection may succeed but later we will get auth errors since axios-extension does not validate this.
-            // The new system name would also include the additional paths which would not make sense either.
-            if (this.systemAuthType === 'reentranceTicket' && !(url.pathname.length === 0 || url.pathname === '/')) {
-                return t('prompts.validationMessages.reentranceTicketSystemHostOnly');
+            // The new system name would also include the additional paths which would not make sense and would cause the issue when storing the system.
+            if (
+                (this.systemAuthType === 'reentranceTicket' || isSystem) &&
+                !(url.pathname.length === 0 || url.pathname === '/')
+            ) {
+                return t('prompts.validationMessages.systemUrlOriginOnlyWarning');
             }
         } catch (error) {
             return t('errors.invalidUrl', { input: serviceUrl });
@@ -883,7 +886,7 @@ export class ConnectionValidator {
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
         } else if (ErrorHandler.isCertError(status)) {
             this.validity.reachable = true;
-            this.validity.canSkipCertError = ignorableCertErrors.includes(ErrorHandler.getErrorType(status));
+            this.validity.canSkipCertError = ignorableCertErrors.has(ErrorHandler.getErrorType(status));
             this.validity.authenticated = false;
             return errorHandler.getValidationErrorHelp(status, false) ?? false;
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {
@@ -1061,7 +1064,10 @@ export class ConnectionValidator {
                     this._connectedUserName = username;
                     return { valResult: true };
                 } else if (this.validity.authenticated === false) {
-                    return { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };
+                    return {
+                        valResult: this.getAuthFailureReasonText(status, odataVersion),
+                        errorType: ERROR_TYPE.AUTH
+                    };
                 }
             }
             return { valResult };
@@ -1088,5 +1094,32 @@ export class ConnectionValidator {
         this._validatedUrl = undefined;
         this._destinationUrl = undefined;
         this._destination = undefined;
+    }
+
+    /**
+     * Get the specific authorization reason user message. This may be catalog version specific.
+     *
+     * @param httpStatusCode the http error code returned from a request
+     * @param odataVersion optional, the odata version specific request, for example for specific catalog requests
+     * @returns the text message indicting the authentication or authorization failure speific to an odata catalog request
+     */
+    private getAuthFailureReasonText(httpStatusCode: string | number, odataVersion?: ODataVersion): string {
+        let authFailType;
+        if ([403, '403'].includes(httpStatusCode)) {
+            authFailType = t('texts.authorizationFailed');
+        } else if ([401, '401'].includes(httpStatusCode)) {
+            authFailType = t('texts.authenticationFailed');
+        }
+
+        let authFailureReason;
+        if (odataVersion) {
+            authFailureReason = t('errors.authenticationFailedSpecificCatalog', {
+                odataVersion,
+                authFailType
+            });
+        } else {
+            authFailureReason = t('errors.authenticationFailedAllCatalogs', { authFailType });
+        }
+        return authFailureReason;
     }
 }

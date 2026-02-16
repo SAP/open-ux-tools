@@ -1,0 +1,11 @@
+config:
+    project: 'java-ai-created'
+vars:
+    appPath: '{{APP_PATH}}'
+    query: 'Add controller extension for TravelObjectPage, use name dummy. Application in {{appPath}}'
+assert:
+    - type: javascript
+      value: file://../assertions/snapshots.ts:validate
+      config:
+          snapshot: java-add-page-extension
+          file: webapp/manifest.json

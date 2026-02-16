@@ -68,10 +68,3 @@ export interface BackendMiddlewareConfig {
     options?: Partial<Options>;
     debug?: boolean;
 }
-
-export interface MiddlewareParameters<T> {
-    resources: object;
-    options: {
-        configuration: T;
-    };
-}

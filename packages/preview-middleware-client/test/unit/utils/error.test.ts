@@ -12,7 +12,7 @@ describe('utils/error', () => {
     });
 
     test('getError with object', async () => {
-        const error = getError({error: 'test'});
+        const error = getError({ error: 'test' });
         expect(error.message).toEqual('{"error":"test"}');
     });
 });

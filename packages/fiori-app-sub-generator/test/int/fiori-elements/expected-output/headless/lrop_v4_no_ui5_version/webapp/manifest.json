@@ -1,5 +1,5 @@
 {
-  "_version": "1.76.0",
+  "_version": "1.82.0",
   "sap.app": {
     "id": "testnamepsace.lropv4noui5version",
     "type": "application",
@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:lrop",
-      "version": "2.7.37",
-      "toolsId": "833fb937-594d-4828-9c6d-896199066ba6"
+      "version": "2.8.53",
+      "toolsId": "0b887a1b-c914-4d70-be75-336f82911f2a"
     },
     "dataSources": {
       "annotation": {
@@ -31,7 +31,7 @@
             "annotation"
           ],
           "localUri": "localService/mainService/metadata.xml",
-          "odataVersion": "4.0"
+          "odataVersion": "4.01"
         }
       }
     }
@@ -55,7 +55,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.142.0",
+      "minUI5Version": "1.144.0",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
@@ -170,5 +170,10 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.fe": {
+    "app": {
+      "enableLazyLoading": true
+    }
   }
 }

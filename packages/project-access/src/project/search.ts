@@ -46,7 +46,7 @@ type FileMapAndCache = {
 /**
  * Default folders to exclude from search.
  */
-const excludeFolders = ['.git', 'node_modules', 'dist'];
+const excludeFolders = ['.git', 'node_modules', 'dist', '.adp'];
 /**
  * WorkspaceFolder type guard.
  *
@@ -457,7 +457,7 @@ async function filterLibraries(pathMap: FileMapAndCache, memFs?: Editor): Promis
         try {
             pathMap.files[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
             const manifest = pathMap.files[manifestPath] as Manifest;
-            if (manifest['sap.app'] && manifest['sap.app'].type === 'library') {
+            if (manifest['sap.app']?.type === 'library') {
                 const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath), memFs);
                 const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
                 if (projectRoot && (await fileExists(join(projectRoot, FileName.Ui5Yaml), memFs))) {
@@ -485,7 +485,7 @@ async function filterComponents(pathMap: FileMapAndCache, memFs?: Editor): Promi
         try {
             pathMap.files[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
             const manifest = pathMap.files[manifestPath] as Manifest;
-            if (manifest['sap.app'] && manifest['sap.app'].type === 'component') {
+            if (manifest['sap.app']?.type === 'component') {
                 const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath), memFs);
                 const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
                 if (projectRoot) {
@@ -568,20 +568,24 @@ export async function findFioriArtifacts(options: {
  *
  * @param options - find options
  * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @param options.noTraversal - optional flag to disable folder traversal for given paths
  * @returns - root file paths that may contain a CAP project
  */
 export async function findCapProjects(options: {
     readonly wsFolders: WorkspaceFolder[] | string[];
+    noTraversal?: boolean;
 }): Promise<string[]> {
     const result = new Set<string>();
     const excludeFolders = ['node_modules', 'dist', 'webapp', 'MDKModule', 'gen'];
     const fileNames = [FileName.Pom, FileName.Package, FileName.CapJavaApplicationYaml];
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
+    const noTraversal = options.noTraversal ?? false;
     for (const root of wsRoots) {
         const filesToCheck = await findBy({
             fileNames,
             root,
-            excludeFolders
+            excludeFolders,
+            noTraversal
         });
         const appYamlsToCheck = Array.from(
             new Set(

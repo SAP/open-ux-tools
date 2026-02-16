@@ -1,14 +1,17 @@
 import { parseParameters } from '@sap-ux/adp-tooling';
 import * as inputValidator from '@sap-ux/project-input-validator';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import {
     getInboundIdsPrompt,
     getParameterStringPrompt,
     getExistingFlpConfigInfoPrompt,
-    getIconPrompt
+    getIconPrompt,
+    getConfirmReplacePrompt
 } from '../../../src/prompts/questions';
 import { t } from '../../../src/i18n';
 import { promptNames } from '../../../src';
+import { add } from 'lodash';
 
 const parseParametersMock = parseParameters as jest.Mock;
 
@@ -187,6 +190,38 @@ describe('advanced prompts', () => {
             const prompt = getIconPrompt();
             const trimmedValue = (prompt.filter as Function)('  sap-icon://home  ');
             expect(trimmedValue).toBe('sap-icon://home');
+        });
+    });
+
+    describe('getConfirmReplacePrompt', () => {
+        it('should return a valid confirm replace prompt configuration', () => {
+            const prompt = getConfirmReplacePrompt();
+
+            expect(prompt).toEqual({
+                type: 'confirm',
+                name: promptNames.confirmReplace,
+                message: t('prompts.confirmReplace'),
+                default: false,
+                validate: expect.any(Function),
+                additionalMessages: expect.any(Function)
+            });
+        });
+
+        it('should validate that the value is true', () => {
+            const prompt = getConfirmReplacePrompt();
+
+            expect((prompt.validate as Function)(true)).toBe(true);
+            expect((prompt.validate as Function)(false)).toBe(' ');
+        });
+
+        it('should return the additional message with information severity', () => {
+            const prompt = getConfirmReplacePrompt();
+            const additionalMessage = (prompt.additionalMessages as Function)();
+
+            expect(additionalMessage).toEqual({
+                severity: Severity.information,
+                message: t('additionalMessages.confirmReplaceAdditionalMessage')
+            });
         });
     });
 });

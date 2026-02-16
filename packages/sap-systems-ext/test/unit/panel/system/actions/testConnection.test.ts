@@ -1,14 +1,27 @@
 import type { PanelContext } from '../../../../../src/types';
+import { BackendSystem } from '@sap-ux/store';
 import { testSystemConnection } from '../../../../../src/panel/system/actions/testConnection';
 import * as utils from '../../../../../src/panel/system/utils';
 import { initI18n } from '../../../../../src/utils';
+import { SystemPanelViewType } from '../../../../../src/utils/constants';
 
 jest.mock('../../../../../src/panel/system/utils', () => ({
     ...jest.requireActual('../../../../../src/panel/system/utils'),
     validateSystemInfo: jest.fn(),
     getCatalogServiceCount: jest.fn(),
     createGALink: jest.fn(),
-    getErrorType: jest.fn()
+    getErrorType: jest.fn(),
+    getSystemInfo: jest.fn(),
+    hasServiceMetadata: jest.fn()
+}));
+
+const systemServicePartialUpdateMock = jest.fn();
+
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
+    getService: jest.fn().mockImplementation(() => ({
+        partialUpdate: systemServicePartialUpdateMock
+    }))
 }));
 
 describe('Test Connection Action', () => {
@@ -16,14 +29,19 @@ describe('Test Connection Action', () => {
         await initI18n();
     });
 
-    const backendSystem = {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    const backendSystem = new BackendSystem({
         name: 'Test System',
         systemType: 'OnPrem',
         url: 'https://test-system.example.com',
         client: '100',
         username: 'testuser',
-        password: 'password'
-    };
+        password: 'password',
+        connectionType: 'abap_catalog'
+    });
 
     it('should post message to webview with service summary', async () => {
         jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
@@ -34,8 +52,18 @@ describe('Test Connection Action', () => {
         const postMessageMock = jest.fn();
         const panelContext = {
             postMessage: postMessageMock,
-            isGuidedAnswersEnabled: false
-        } as unknown as PanelContext;
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn(),
+            backendSystem: {
+                ...backendSystem,
+                systemInfo: {
+                    systemId: 'SYS_ID_001',
+                    client: '100'
+                }
+            }
+        } as PanelContext;
 
         await testSystemConnection(panelContext, { type: 'TEST_CONNECTION', payload: { system: backendSystem } });
 
@@ -191,6 +219,162 @@ describe('Test Connection Action', () => {
                         message: 'This SAP system failed to return any services.'
                     },
                     guidedAnswerLink: gaLink
+                }
+            })
+        );
+    });
+
+    it('should store system ID after testing connection', async () => {
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+            v2Request: { count: 2, error: undefined },
+            v4Request: { count: 1, error: undefined }
+        });
+        jest.spyOn(utils, 'getSystemInfo').mockResolvedValue({ systemId: 'SYS_ID_123', client: '100' });
+
+        const panelContext = {
+            postMessage: jest.fn(),
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn(),
+            backendSystem: backendSystem
+        } as PanelContext;
+
+        await testSystemConnection(panelContext, { type: 'TEST_CONNECTION', payload: { system: backendSystem } });
+
+        expect(systemServicePartialUpdateMock).toHaveBeenCalledWith(
+            { url: backendSystem.url, client: backendSystem.client },
+            {
+                systemInfo: { systemId: 'SYS_ID_123', client: '100' }
+            }
+        );
+    });
+
+    it('should not attempt partial update if system ID is not defined', async () => {
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+            v2Request: { count: 2, error: undefined },
+            v4Request: { count: 1, error: undefined }
+        });
+        jest.spyOn(utils, 'getSystemInfo').mockResolvedValue(undefined);
+
+        const panelContext = {
+            postMessage: jest.fn(),
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn(),
+            backendSystem: backendSystem
+        } as PanelContext;
+
+        await testSystemConnection(panelContext, { type: 'TEST_CONNECTION', payload: { system: backendSystem } });
+
+        expect(systemServicePartialUpdateMock).not.toHaveBeenCalled();
+    });
+
+    it('should fail silently if updating system ID fails', async () => {
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+            v2Request: { count: 2, error: undefined },
+            v4Request: { count: 1, error: undefined }
+        });
+        jest.spyOn(utils, 'getSystemInfo').mockResolvedValue({ systemId: 'SYS_ID_123', client: '100' });
+        systemServicePartialUpdateMock.mockRejectedValueOnce(new Error('Update failed'));
+        const panelContext = {
+            postMessage: jest.fn(),
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn(),
+            backendSystem: backendSystem
+        } as PanelContext;
+
+        // test connection should not throw error
+        await expect(
+            testSystemConnection(panelContext, { type: 'TEST_CONNECTION', payload: { system: backendSystem } })
+        ).resolves.not.toThrow();
+    });
+
+    it('should test odata_service connection type successfully', async () => {
+        const odataServiceSystem = new BackendSystem({
+            name: 'OData Service System',
+            systemType: 'OnPrem',
+            url: 'https://test-system.example.com/sap/opu/odata/sap/SERVICE',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service'
+        });
+
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'hasServiceMetadata').mockResolvedValue(true);
+
+        const postMessageMock = jest.fn();
+        const panelContext = {
+            postMessage: postMessageMock,
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn()
+        } as unknown as PanelContext;
+
+        await testSystemConnection(panelContext, {
+            type: 'TEST_CONNECTION',
+            payload: { system: odataServiceSystem }
+        });
+
+        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem);
+        expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
+        expect(postMessageMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'TEST_CONNECTION_STATUS',
+                payload: {
+                    connectionStatus: {
+                        connected: true,
+                        message: 'Service metadata retrieved successfully.'
+                    }
+                }
+            })
+        );
+    });
+
+    it('should handle odata_service connection failure', async () => {
+        const odataServiceSystem = new BackendSystem({
+            name: 'OData Service System',
+            systemType: 'OnPrem',
+            url: 'https://test-system.example.com/sap/opu/odata/sap/SERVICE',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service'
+        });
+
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'hasServiceMetadata').mockRejectedValue(new Error('Metadata not found'));
+
+        const postMessageMock = jest.fn();
+        const panelContext = {
+            postMessage: postMessageMock,
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn()
+        } as unknown as PanelContext;
+
+        await testSystemConnection(panelContext, {
+            type: 'TEST_CONNECTION',
+            payload: { system: odataServiceSystem }
+        });
+
+        expect(utils.hasServiceMetadata).toHaveBeenCalledWith(odataServiceSystem);
+        expect(postMessageMock).toHaveBeenCalledWith(expect.objectContaining({ type: 'TEST_CONNECTION_LOADING' }));
+        expect(postMessageMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'TEST_CONNECTION_STATUS',
+                payload: {
+                    connectionStatus: {
+                        connected: false,
+                        message: 'Service metadata not available.'
+                    }
                 }
             })
         );

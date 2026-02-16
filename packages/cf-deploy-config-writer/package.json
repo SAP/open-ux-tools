@@ -1,7 +1,7 @@
 {
   "name": "@sap-ux/cf-deploy-config-writer",
   "description": "Add or amend Cloud Foundry and ABAP deployment configuration for SAP projects",
-  "version": "0.3.36",
+  "version": "0.3.66",
   "repository": {
     "type": "git",
     "url": "https://github.com/SAP/open-ux-tools.git",
@@ -17,8 +17,8 @@
     "build": "tsc --build",
     "clean": "rimraf --glob dist coverage *.tsbuildinfo",
     "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "jest --runInBand --ci --forceExit --detectOpenHandles --colors",
     "watch": "tsc --watch"
   },
@@ -37,10 +37,10 @@
     "@sap-ux/ui5-config": "workspace:*",
     "@sap-ux/nodejs-utils": "workspace:*",
     "@sap/mta-lib": "1.7.4",
-    "@sap/cf-tools": "3.2.2",
+    "@sap/cf-tools": "3.3.0",
     "semver": "7.5.4",
     "ejs": "3.1.10",
-    "i18next": "25.3.0",
+    "i18next": "25.8.0",
     "mem-fs": "2.1.0",
     "mem-fs-editor": "9.4.0",
     "hasbin": "1.2.3"
@@ -52,9 +52,9 @@
     "@types/hasbin": "1.2.2",
     "@types/fs-extra": "9.0.13",
     "@types/js-yaml": "4.0.9",
-    "@types/semver": "7.5.2",
+    "@types/semver": "7.7.1",
     "memfs": "3.4.13",
-    "js-yaml": "3.14.0",
+    "js-yaml": "3.14.2",
     "fs-extra": "10.0.0",
     "unionfs": "4.4.0"
   },

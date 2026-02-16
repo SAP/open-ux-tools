@@ -1,7 +1,12 @@
 {
     "name": "@sap-ux/xml-odata-annotation-converter",
     "description": "Converter for OData annotations in XML format.",
-    "version": "0.4.2",
+    "version": "0.4.8",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/xml-odata-annotation-converter"
+    },
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",
@@ -12,11 +17,10 @@
         "clean": "rimraf --glob coverage dist *.tsbuildinfo",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
-        "lint": "eslint . --ext .ts,.tsx",
-        "lint:fix": "eslint . --ext .ts --fix",
-        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
-        "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
-        "lint:summary": "eslint . --ext .ts,.tsx -f summary",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "lint:report": "eslint . -f multiple ",
+        "lint:summary": "eslint . -f summary",
         "pre-commit": "lint-staged --quiet",
         "test": "jest --maxWorkers=2",
         "test:update": "node scripts/update-parser-fixtures.mjs",
@@ -37,6 +41,9 @@
         "prettier": "2.5.1",
         "chevrotain": "7.1.1",
         "npm-run-all2": "6.2.0"
+    },
+    "engines": {
+        "node": ">=20.x"
     },
     "eslint-formatter-multiple": {
         "formatters": [

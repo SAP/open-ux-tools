@@ -10,14 +10,13 @@
   "main": "webapp/index.html",
   "dependencies": {},
   "devDependencies": {
-    "@ui5/cli": "^4.0.16",
+    "@ui5/cli": "^4.0.33",
     "@sap/ux-ui5-tooling": "1",
+    "@sap-ux/eslint-plugin-fiori-tools": "^9.0.0",
+    "eslint": "^9",
     "@sapui5/ts-types-esm": "~1.94.0",
-    "ui5-tooling-transpile": "^3.3.7",
-    "typescript": "^5.1.6",
-    "@typescript-eslint/eslint-plugin": "^7.1.1",
-    "@typescript-eslint/parser": "^7.1.1",
-    "@sap-ux/eslint-plugin-fiori-tools": "^0.4.0"
+    "ui5-tooling-transpile": "^3.10.0",
+    "typescript": "^5.9.3"
   },
   "scripts": {
     "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"

@@ -34,7 +34,7 @@ class MetadataConverter {
      *
      * @param metadataService - Metadata service instance.
      */
-    constructor(private metadataService: MetadataService) {}
+    constructor(private readonly metadataService: MetadataService) {}
 
     /**
      * @returns AVT schema.
@@ -73,7 +73,8 @@ class MetadataConverter {
             associations: [],
             singletons: this.singletons,
             associationSets: [],
-            typeDefinitions: []
+            typeDefinitions: [],
+            enumTypes: []
         };
     }
     private convertAction(targetKinds: string[], element: MetadataElement): void {
@@ -137,7 +138,7 @@ class MetadataConverter {
         const oDataVersion = this.metadataService.ODataVersion;
         if (targetKinds.includes('FunctionImport') || targetKinds.includes('ActionImport')) {
             // remark: AVT fills it differently in parseFunctionImport() - but then annotations are not picked up in convertTypes()
-            if (oDataVersion === '4.0') {
+            if (oDataVersion?.startsWith('4')) {
                 const actionImport: RawActionImport = {
                     _type: 'ActionImport',
                     name: element.name,

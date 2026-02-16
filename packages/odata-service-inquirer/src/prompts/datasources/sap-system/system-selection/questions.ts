@@ -120,7 +120,8 @@ export async function getSystemSelectionQuestions(
                 getSystemServiceQuestion(
                     connectValidator,
                     systemSelectionPromptNamespace,
-                    promptOptions?.serviceSelection
+                    promptOptions?.serviceSelection,
+                    promptOptions?.valueHelpDownload?.hide
                 ) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
             )
@@ -138,7 +139,7 @@ export async function getSystemSelectionQuestions(
     } else {
         questions.push(
             ...withCondition(
-                getCfAbapBASQuestions(promptOptions?.serviceSelection) as Question[],
+                getCfAbapBASQuestions(promptOptions) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
             )
         );
@@ -166,9 +167,10 @@ export async function getSystemConnectionQuestions(
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
     const systemChoices = await createSystemChoices(
         destinationFilters,
-        promptOptions?.systemSelection?.includeCloudFoundryAbapEnvChoice
+        promptOptions?.systemSelection?.includeCloudFoundryAbapEnvChoice,
+        promptOptions?.systemSelection?.hideNewSystem
     );
-    const defaultChoiceIndex = findDefaultSystemSelectionIndex(
+    let defaultChoiceIndex = findDefaultSystemSelectionIndex(
         systemChoices,
         promptOptions?.systemSelection?.defaultChoice
     );
@@ -187,7 +189,16 @@ export async function getSystemConnectionQuestions(
             },
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
             choices: shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices,
-            default: shouldOnlyShowDefaultChoice ? 0 : defaultChoiceIndex,
+            default: () => {
+                if (shouldOnlyShowDefaultChoice) {
+                    return 0;
+                }
+                defaultChoiceIndex = findDefaultSystemSelectionIndex(
+                    systemChoices,
+                    promptOptions?.systemSelection?.defaultChoice
+                ); // Recalc to allow default choice to be bound to ref from another prompt
+                return defaultChoiceIndex;
+            },
             validate: async (
                 selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
             ): Promise<ValidationResult> => {
@@ -300,7 +311,9 @@ export async function getSystemConnectionQuestions(
             name: `${systemSelectionPromptNames.systemSelectionCli}`
         });
     }
-    questions.push(...getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace));
+    questions.push(
+        ...getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace, undefined, requiredOdataVersion)
+    );
 
     return questions;
 }

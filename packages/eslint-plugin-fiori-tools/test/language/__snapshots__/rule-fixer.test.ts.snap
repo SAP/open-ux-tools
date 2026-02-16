@@ -1,0 +1,290 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`createJsonFixer DELETE operation should delete a deeply nested object property with preceding comma 1`] = `
+Array [
+  Object {
+    "range": Array [
+      82,
+      83,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+  Object {
+    "range": Array [
+      84,
+      242,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
+exports[`createJsonFixer DELETE operation should delete a deeply nested object property with preceding comma if this is last property 1`] = `
+Array [
+  Object {
+    "range": Array [
+      75,
+      76,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+  Object {
+    "range": Array [
+      77,
+      235,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
+exports[`createJsonFixer DELETE operation should delete a property with trailing comma 1`] = `
+Array [
+  Object {
+    "range": Array [
+      2,
+      34,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
+exports[`createJsonFixer DELETE operation should replace a single property in an object node 1`] = `
+Array [
+  Object {
+    "node": Object {
+      "loc": Object {
+        "end": Object {
+          "column": 18,
+          "line": 4,
+          "offset": 88,
+        },
+        "start": Object {
+          "column": 34,
+          "line": 2,
+          "offset": 35,
+        },
+      },
+      "members": Array [
+        Object {
+          "loc": Object {
+            "end": Object {
+              "column": 34,
+              "line": 3,
+              "offset": 70,
+            },
+            "start": Object {
+              "column": 21,
+              "line": 3,
+              "offset": 57,
+            },
+          },
+          "name": Object {
+            "loc": Object {
+              "end": Object {
+                "column": 27,
+                "line": 3,
+                "offset": 63,
+              },
+              "start": Object {
+                "column": 21,
+                "line": 3,
+                "offset": 57,
+              },
+            },
+            "type": "String",
+            "value": "copy",
+          },
+          "type": "Member",
+          "value": Object {
+            "loc": Object {
+              "end": Object {
+                "column": 34,
+                "line": 3,
+                "offset": 70,
+              },
+              "start": Object {
+                "column": 29,
+                "line": 3,
+                "offset": 65,
+              },
+            },
+            "type": "Boolean",
+            "value": false,
+          },
+        },
+      ],
+      "type": "Object",
+    },
+    "range": Array [
+      0,
+      0,
+    ],
+    "text": "{}",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer INSERT operation should handle special characters in property names 1`] = `
+Array [
+  Object {
+    "range": Array [
+      12,
+      12,
+    ],
+    "text": "
+   \\"@odata.context\\": {
+     \\"value\\": \\"test\\"
+   }",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`createJsonFixer INSERT operation should insert a new property into an empty object 1`] = `
+Array [
+  Object {
+    "range": Array [
+      13,
+      13,
+    ],
+    "text": "
+   \\"flexEnabled\\": true",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`createJsonFixer INSERT operation should insert nested properties for a deep path 1`] = `
+Array [
+  Object {
+    "range": Array [
+      13,
+      13,
+    ],
+    "text": "
+   \\"routing\\": {
+     \\"targets\\": {
+       \\"IncidentsObjectPage\\": {
+         \\"options\\": {
+           \\"settings\\": {
+             \\"controlConfiguration\\": {
+               \\"incidentFlow/@com.sap.vocabularies.UI.v1.LineItem\\": {
+                 \\"tableSettings\\": {
+                   \\"creationMode\\": {
+                     \\"name\\": \\"NewRow\\"
+                   }
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+   },",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`createJsonFixer Operation inference should infer DELETE when no missingSegments and value is undefined 1`] = `
+Array [
+  Object {
+    "range": Array [
+      0,
+      19,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
+exports[`createJsonFixer Operation inference should infer INSERT when missingSegments exist 1`] = `
+Array [
+  Object {
+    "range": Array [
+      12,
+      12,
+    ],
+    "text": "
+   \\"newProp\\": \\"test\\"",
+    "type": "insert",
+  },
+]
+`;
+
+exports[`createJsonFixer Operation inference should infer UPDATE when no missingSegments and value is defined 1`] = `
+Array [
+  Object {
+    "range": Array [
+      12,
+      17,
+    ],
+    "text": "true",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update a boolean value 1`] = `
+Array [
+  Object {
+    "range": Array [
+      28,
+      33,
+    ],
+    "text": "true",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update a number value 1`] = `
+Array [
+  Object {
+    "range": Array [
+      10,
+      12,
+    ],
+    "text": "100",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update a string value 1`] = `
+Array [
+  Object {
+    "range": Array [
+      10,
+      21,
+    ],
+    "text": "\\"New Title\\"",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update an object value 1`] = `
+Array [
+  Object {
+    "range": Array [
+      11,
+      24,
+    ],
+    "text": "{
+  \\"enabled\\": true,
+  \\"count\\": 5
+}",
+    "type": "replace",
+  },
+]
+`;

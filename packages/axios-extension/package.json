@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/axios-extension",
-    "version": "1.24.2",
+    "version": "1.25.11",
     "description": "Extension of the Axios module adding convenience methods to interact with SAP systems especially with OData services.",
     "repository": {
         "type": "git",
@@ -18,8 +18,8 @@
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
@@ -29,12 +29,12 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
-        "axios": "1.12.2",
+        "axios": "1.13.5",
         "detect-content-type": "1.2.0",
-        "fast-xml-parser": "4.4.1",
-        "lodash": "4.17.21",
+        "fast-xml-parser": "5.3.4",
+        "lodash": "4.17.23",
         "open": "7.0.3",
-        "qs": "6.11.0",
+        "qs": "6.14.2",
         "xpath": "0.0.33",
         "@xmldom/xmldom": "0.8.10",
         "https-proxy-agent": "7.0.5",
@@ -42,6 +42,7 @@
         "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
+        "@sap-ux/vocabularies-types": "0.14.5",
         "@sap-ux/project-access": "workspace:*",
         "@types/lodash": "4.14.202",
         "nock": "13.4.0",

@@ -24,7 +24,7 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
                 let answersPreview: string;
                 try {
                     answersPreview = JSON.stringify(responseAction.answers, undefined, 4);
-                } catch (e) {
+                } catch {
                     answersPreview = '{}';
                 }
                 setPreview({
@@ -50,14 +50,16 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
 
     return (
         <AddonPanel key="panel" active={active}>
-            {preview.codeSnippets.map((snippet) => (
-                <Form.Field label={snippet.fileName} key={snippet.fileName}>
-                    <SyntaxHighlighter language={snippet.language ?? 'html'}>{snippet.content}</SyntaxHighlighter>
+            <div>
+                {preview.codeSnippets.map((snippet) => (
+                    <Form.Field label={snippet.fileName} key={snippet.fileName}>
+                        <SyntaxHighlighter language={snippet.language ?? 'html'}>{snippet.content}</SyntaxHighlighter>
+                    </Form.Field>
+                ))}
+                <Form.Field label="Answers">
+                    <SyntaxHighlighter language="json">{preview.answers}</SyntaxHighlighter>
                 </Form.Field>
-            ))}
-            <Form.Field label="Answers">
-                <SyntaxHighlighter language="json">{preview.answers}</SyntaxHighlighter>
-            </Form.Field>
+            </div>
         </AddonPanel>
     );
 };

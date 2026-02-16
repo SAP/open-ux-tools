@@ -3,8 +3,9 @@ import path from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
-import { DirName } from '@sap-ux/project-access';
+import { DirName, getWebappPath } from '@sap-ux/project-access';
 import {
+    FlexLayer,
     TemplateFileName,
     type AnnotationsData,
     type ChangeType,
@@ -12,7 +13,8 @@ import {
     type InboundContent,
     type ManifestChangeProperties,
     type PropertyValueType,
-    ChangeTypeMap
+    ChangeTypeMap,
+    type AdpWriterConfig
 } from '../types';
 import { renderFile } from 'ejs';
 
@@ -32,18 +34,19 @@ interface InboundChange extends ManifestChangeProperties {
  * @param {ManifestChangeProperties} change - The annotation data change that will be written.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} templatesPath - The path to the templates used for generating changes.
- * @returns {void}
+ * @returns {Promise<void>}
  */
-export function writeAnnotationChange(
+export async function writeAnnotationChange(
     projectPath: string,
     timestamp: number,
     annotation: AnnotationsData['annotation'],
     change: ManifestChangeProperties | undefined,
     fs: Editor,
     templatesPath?: string
-): void {
+): Promise<void> {
     try {
-        const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
+        const webappPath = await getWebappPath(projectPath, fs);
+        const changesFolderPath = path.join(webappPath, DirName.Changes);
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
         if (change) {
@@ -76,6 +79,68 @@ export function writeAnnotationChange(
 }
 
 /**
+ * Writes key-user change payloads to the generated adaptation project. Transforms key-user changes to a developer adaptation format.
+ *
+ * @param projectPath - Project root path.
+ * @param config - The writer configuration.
+ * @param fs - Yeoman mem-fs editor.
+ */
+export async function writeKeyUserChanges(projectPath: string, config: AdpWriterConfig, fs: Editor): Promise<void> {
+    const changes = config.keyUserChanges;
+    if (!changes?.length) {
+        return;
+    }
+
+    for (const entry of changes) {
+        if (!entry?.content) {
+            continue;
+        }
+
+        const change = { ...(entry.content as Record<string, unknown>) };
+        if (!change['fileName']) {
+            continue;
+        }
+
+        const transformedChange = transformKeyUserChangeForAdp(change, config.app.id, config.app.layer);
+
+        await writeChangeToFolder(projectPath, transformedChange as unknown as ManifestChangeProperties, fs);
+    }
+}
+
+/**
+ * Transforms a key-user change to a developer adaptation format.
+ *
+ * @param change - The key-user change from the backend.
+ * @param appId - The ID of the newly created Adaptation Project.
+ * @param layer - The layer of the change.
+ * @returns {Record<string, unknown>} The transformed change object.
+ */
+export function transformKeyUserChangeForAdp(
+    change: Record<string, unknown>,
+    appId: string,
+    layer: FlexLayer | undefined
+): Record<string, unknown> {
+    const transformed = { ...change };
+
+    transformed.layer = layer ?? FlexLayer.CUSTOMER_BASE;
+    transformed.reference = appId;
+    transformed.namespace = path.posix.join('apps', appId, DirName.Changes, '/');
+    if (transformed.projectId) {
+        transformed.projectId = appId;
+    }
+    transformed.support ??= {};
+    const supportObject = transformed.support as Record<string, unknown>;
+    supportObject.generator = 'adp-key-user-converter';
+
+    delete transformed.adaptationId;
+    delete transformed.version;
+    delete transformed.context;
+    delete transformed.versionId;
+
+    return transformed;
+}
+
+/**
  * Writes a given change object to a file within a specified folder in the project's 'changes' directory.
  * If an additional subdirectory is specified, the change file is written there.
  *
@@ -83,11 +148,17 @@ export function writeAnnotationChange(
  * @param {ManifestChangeProperties} change - The change data to be written to the file.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} [dir] - An optional subdirectory within the 'changes' directory where the file will be written.
- * @returns {void}
+ * @returns {Promise<void>}
  */
-export function writeChangeToFolder(projectPath: string, change: ManifestChangeProperties, fs: Editor, dir = ''): void {
+export async function writeChangeToFolder(
+    projectPath: string,
+    change: ManifestChangeProperties,
+    fs: Editor,
+    dir = ''
+): Promise<void> {
     try {
-        let targetFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
+        const webappPath = await getWebappPath(projectPath, fs);
+        let targetFolderPath = path.join(webappPath, DirName.Changes);
 
         if (dir) {
             targetFolderPath = path.join(targetFolderPath, dir);
@@ -207,14 +278,20 @@ export function getChangesByType(
  *
  * @param {string} projectPath - The root path of the project.
  * @param {string} inboundId - The inbound ID to search for within change files.
+ * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {InboundChangeData} An object containing the file path and the change object with the matching inbound ID.
  * @throws {Error} Throws an error if the change file cannot be read or if there's an issue accessing the directory.
  */
-export function findChangeWithInboundId(projectPath: string, inboundId: string): InboundChangeData {
+export async function findChangeWithInboundId(
+    projectPath: string,
+    inboundId: string,
+    fs: Editor
+): Promise<InboundChangeData> {
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes);
+    const webappPath = await getWebappPath(projectPath, fs);
+    const pathToInboundChangeFiles = path.join(webappPath, DirName.Changes);
 
     if (!existsSync(pathToInboundChangeFiles)) {
         return {

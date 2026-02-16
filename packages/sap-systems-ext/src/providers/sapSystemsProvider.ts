@@ -114,7 +114,10 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
         try {
             await commands.executeCommand('setContext', 'sap.ux.tools.sapSystems.treeLoading', true);
             const systemService = await getBackendSystemService();
-            systems = await systemService.getAll({ includeSensitiveData: false });
+            systems = await systemService.getAll({
+                includeSensitiveData: false,
+                backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+            });
             return systems;
         } catch (error) {
             SystemsLogger.logger.error(t('error.loadingSystems'));

@@ -8,7 +8,7 @@ import {
     TargetName,
     getExtensionGenPromptOpts
 } from '@sap-ux/deploy-config-generator-shared';
-import { parseTarget, getYUIDetails, registerNamespaces } from './utils';
+import { parseTarget, getYUIDetails } from './utils';
 import {
     getApiHubOptions,
     getEnvApiHubConfig,
@@ -71,12 +71,9 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         this.target = parseTarget(args, opts);
         this.vscode = opts.vscode;
 
-        registerNamespaces(
-            this.rootGeneratorName(),
-            this.genNamespace,
-            this.env.isPackageRegistered.bind(this.env),
-            this.env.lookup.bind(this.env)
-        );
+        if (this.rootGeneratorName()) {
+            this.env.lookup({ packagePatterns: [this.rootGeneratorName()] });
+        }
 
         // Extensions use options.data to pass in the options
         if (this.options.data?.destinationRoot) {
@@ -200,7 +197,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         }
 
         if (this.target) {
-            this._composeWithSubGenerator(this.target, this.answers);
+            await this._composeWithSubGenerator(this.target, this.answers);
         } else {
             DeploymentGenerator.logger?.debug(t('debug.exit'));
             process.exit(0); // only relevant for CLI
@@ -215,10 +212,10 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
      * @param target - the target deployment
      * @param answers - the answers from the prompting
      */
-    private _composeWithSubGenerator(
+    private async _composeWithSubGenerator(
         target: string,
         answers?: AbapDeployConfigAnswersInternal | CfDeployConfigAnswers
-    ): void {
+    ): Promise<void> {
         try {
             const generatorName = target;
             const subGenOpts = this.launchDeployConfigAsSubGenerator
@@ -233,7 +230,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             if (this.apiHubConfig) {
                 (subGenOpts as CfDeployConfigOptions).apiHubConfig = this.apiHubConfig;
             }
-            this.composeWith(generatorNamespace(this.genNamespace, generatorName), subGenOpts);
+            await this.composeWith(generatorNamespace(this.genNamespace, generatorName), subGenOpts);
         } catch (error) {
             DeploymentGenerator.logger?.error(error.message);
         }

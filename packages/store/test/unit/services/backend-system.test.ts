@@ -39,7 +39,10 @@ describe('BackendSystem service', () => {
             jest.spyOn(nodeFs, 'readFileSync').mockReturnValueOnce(
                 '{"systems":{"https://mock.system1.com": {"name": "Mock System","url": "https://mock.system1.com","systemType": "OnPrem"}}}'
             );
-            const existsSyncSpy = jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(false); // migration file does not exist
+            const existsSyncSpy = jest
+                .spyOn(nodeFs, 'existsSync')
+                .mockReturnValueOnce(true) // legacy file exists
+                .mockReturnValueOnce(false); // migration file does not exist
             const writeFileSyncSpy = jest.spyOn(nodeFs, 'writeFileSync');
 
             const service = getInstance(logger);
@@ -52,13 +55,13 @@ describe('BackendSystem service', () => {
             );
             expect(writeFileSyncSpy).toHaveBeenNthCalledWith(
                 2,
-                expect.stringContaining('systems.json'),
-                expect.any(String)
+                expect.stringContaining('.systemsMigrated'),
+                expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
             );
             expect(writeFileSyncSpy).toHaveBeenNthCalledWith(
                 3,
-                expect.stringContaining('.systemsMigrated'),
-                expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+                expect.stringContaining('systems.json'),
+                expect.any(String)
             );
         });
 
@@ -85,7 +88,9 @@ describe('BackendSystem service', () => {
                     '{"systems":{"https://mock.system1.com": {"name": "Mock System","url": "https://mock.system1.com","systemType": "OnPrem"}}}'
                 );
 
-            jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(true); // migration file exists
+            jest.spyOn(nodeFs, 'existsSync')
+                .mockReturnValueOnce(true) // legacy file exists
+                .mockReturnValueOnce(true); // migration file exists
 
             const writeFileSyncSpy = jest.spyOn(nodeFs, 'writeFileSync');
             const service = getInstance(logger);
@@ -119,7 +124,9 @@ describe('BackendSystem service', () => {
             jest.spyOn(nodeFs, 'readFileSync').mockReturnValueOnce(
                 '{"systems":{"https://mock.system1.com": {"name": "Mock System","url": "https://mock.system1.com","systemType": "OnPrem"}}}'
             );
-            jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(false); // migration file does not exist
+            jest.spyOn(nodeFs, 'existsSync')
+                .mockReturnValueOnce(true) // legacy file exists
+                .mockReturnValueOnce(false); // migration file does not exist
             jest.spyOn(nodeFs, 'mkdirSync').mockImplementationOnce(() => {
                 throw new Error('Mock error during mkdirSync');
             });
@@ -130,23 +137,30 @@ describe('BackendSystem service', () => {
                 'The migration of the systems.json file from .fioritools to .saptools failed: Mock error during mkdirSync'
             );
         });
+
+        it('should not attempt migration if legacy file does not exist', () => {
+            jest.spyOn(nodeFs, 'existsSync').mockReturnValueOnce(false); // legacy file does not exist
+            const readFileSyncSpy = jest.spyOn(nodeFs, 'readFileSync');
+            const service = getInstance(logger);
+            expect(service).toBeInstanceOf(SystemService);
+            expect(readFileSyncSpy).not.toHaveBeenCalled();
+        });
     });
 
     describe('delete', () => {
         it('delegates to data provider', async () => {
             const mockSystemDataProvider = jest.spyOn(SystemDataProvider.prototype, 'delete');
             const systemService = new SystemService(logger);
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
+            await systemService.delete(
+                new BackendSystem({
+                    name: 'system',
+                    url: 'some_url',
+                    client: 'some_client',
+                    systemType: 'OnPrem',
+                    connectionType: 'abap_catalog'
+                })
+            );
             expect(mockSystemDataProvider).toHaveBeenCalledTimes(1);
-        });
-
-        it('calls migration only once', async () => {
-            jest.spyOn(SystemDataProvider.prototype, 'delete');
-            const systemService = new SystemService(logger);
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
-            await systemService.delete(new BackendSystem({ name: 'system', url: 'some_url', client: 'some_client' }));
         });
     });
 
@@ -205,7 +219,7 @@ describe('BackendSystem service', () => {
                 new BackendSystemKey({ url: 'url_existing' }),
                 update
             );
-            expect(updatedEntity).toEqual({ ...existingSystem, ...update });
+            expect(updatedEntity).toEqual({ ...existingSystem, ...update, hasSensitiveData: true });
             expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
 
@@ -225,7 +239,7 @@ describe('BackendSystem service', () => {
                 new BackendSystemKey({ url: 'url_existing' }),
                 update
             );
-            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name });
+            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name, hasSensitiveData: true });
             expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
 
@@ -245,7 +259,7 @@ describe('BackendSystem service', () => {
                 new BackendSystemKey({ url: 'url_existing' }),
                 update
             );
-            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name });
+            expect(updatedEntity).toEqual({ ...existingSystem, name: update.name, hasSensitiveData: true });
             expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
     });

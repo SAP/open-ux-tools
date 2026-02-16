@@ -7,7 +7,8 @@ import type {
     AppRouterType,
     CfConfig,
     CFApp,
-    ServiceKeys
+    ServiceInfo,
+    HTML5Content
 } from '@sap-ux/adp-tooling';
 import {
     cfServicesPromptNames,
@@ -20,7 +21,9 @@ import {
     downloadAppContent,
     validateSmartTemplateApplication,
     validateODataEndpoints,
-    getBusinessServiceKeys
+    getBusinessServiceInfo,
+    getOAuthPathsFromXsApp,
+    getBackendUrlsFromServiceKeys
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
@@ -53,9 +56,9 @@ export class CFServicesPrompter {
      */
     private businessServices: string[] = [];
     /**
-     * The keys of the business service.
+     * The info of the business service.
      */
-    private businessServiceKeys: ServiceKeys | null = null;
+    private businessServiceInfo: ServiceInfo | null = null;
     /**
      * The base apps available.
      */
@@ -68,6 +71,10 @@ export class CFServicesPrompter {
      * The manifest.
      */
     private appManifest: Manifest | undefined;
+    /**
+     * The zip entries from the downloaded app content.
+     */
+    private appContentEntries: HTML5Content['entries'] | undefined;
 
     /**
      * Returns the loaded application manifest.
@@ -79,12 +86,43 @@ export class CFServicesPrompter {
     }
 
     /**
-     * Returns the service instance GUID.
+     * Returns the HTML5 repo service instance GUID.
      *
-     * @returns Service instance GUID.
+     * @returns {string} HTML5 repo service instance GUID.
      */
-    public get serviceInstanceGuid(): string {
+    public get html5RepoRuntimeGuid(): string {
         return this.html5RepoServiceInstanceGuid;
+    }
+
+    /**
+     * Returns the business service instance GUID.
+     *
+     * @returns {string | undefined} Business service instance GUID.
+     */
+    public get serviceInstanceGuid(): string | undefined {
+        return this.businessServiceInfo?.serviceInstance?.guid;
+    }
+
+    /**
+     * Returns all backend URLs from service keys endpoints.
+     *
+     * @returns {string[]} Array of backend URLs from all endpoints.
+     */
+    public get backendUrls(): string[] {
+        const serviceKeys = this.businessServiceInfo?.serviceKeys ?? [];
+        return getBackendUrlsFromServiceKeys(serviceKeys);
+    }
+
+    /**
+     * Returns the OAuth paths extracted from xs-app.json routes that have a source property.
+     *
+     * @returns {string[]} Array of path patterns that should receive OAuth Bearer tokens.
+     */
+    public get oauthPaths(): string[] {
+        if (!this.appContentEntries) {
+            return [];
+        }
+        return getOAuthPathsFromXsApp(this.appContentEntries);
     }
 
     /**
@@ -236,9 +274,10 @@ export class CFServicesPrompter {
                     );
                     this.appManifest = manifest;
                     this.html5RepoServiceInstanceGuid = serviceInstanceGuid;
+                    this.appContentEntries = entries;
 
                     await validateSmartTemplateApplication(manifest);
-                    await validateODataEndpoints(entries, this.businessServiceKeys!.credentials, this.logger);
+                    await validateODataEndpoints(entries, this.businessServiceInfo!.serviceKeys, this.logger);
                 } catch (e) {
                     return e.message;
                 }
@@ -266,7 +305,7 @@ export class CFServicesPrompter {
             message: t('prompts.businessServiceLabel'),
             choices: this.businessServices,
             default: (_: CfServicesAnswers) =>
-                this.businessServices.length === 1 ? this.businessServices[0] ?? '' : '',
+                this.businessServices.length === 1 ? (this.businessServices[0] ?? '') : '',
             when: (answers: CfServicesAnswers) => this.isCfLoggedIn && (this.approuter || answers.approuter),
             validate: async (value: string) => {
                 const validationResult = validateEmptyString(value);
@@ -275,12 +314,12 @@ export class CFServicesPrompter {
                 }
 
                 try {
-                    this.businessServiceKeys = await getBusinessServiceKeys(value, cfConfig, this.logger);
-                    if (this.businessServiceKeys === null) {
+                    this.businessServiceInfo = await getBusinessServiceInfo(value, cfConfig, this.logger);
+                    if (this.businessServiceInfo === null) {
                         return t('error.businessServiceDoesNotExist');
                     }
 
-                    this.apps = await getCfApps(this.businessServiceKeys.credentials, cfConfig, this.logger);
+                    this.apps = await getCfApps(this.businessServiceInfo.serviceKeys, cfConfig, this.logger);
                     this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
                 } catch (e) {
                     this.apps = [];

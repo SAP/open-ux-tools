@@ -2,7 +2,7 @@ import { expect } from '@sap-ux-private/playwright';
 
 import { test } from '../../fixture';
 import { ADP_FIORI_ELEMENTS_V4 } from '../../project';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from './test-utils';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
 import { satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V4 });
@@ -83,14 +83,19 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
                     }
                 ],
                 fragments: {
-                    'table-column.fragment.xml': `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
-    <table:Column
-        id="column-[a-z0-9]+"
-        width="10%"
-        header="New Column">
-        <Text id="text-[a-z0-9]+" text="Sample data"/>
-    </table:Column>
-</core:FragmentDefinition>`
+                    'table-column.fragment.xml': new RegExp(
+                        `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">\\s*` +
+                            `<!-- viewName: sap.fe.templates.ListReport.ListReport -->\\s*` +
+                            `<!-- controlType: sap.ui.mdc.Table -->\\s*` +
+                            `<!-- targetAggregation: columns -->\\s*` +
+                            `<table:Column\\s*` +
+                            `id="column-[a-z0-9]+"\\s*` +
+                            `width="10%"\\s*` +
+                            `header="New Column">\\s*` +
+                            `<Text id="text-[a-z0-9]+" text="Sample data"/>\\s*` +
+                            `</table:Column>\\s*` +
+                            `</core:FragmentDefinition>`
+                    )
                 }
             });
 
@@ -233,11 +238,11 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
     );
 
     test(
-        '6: Add Custom Page Action to LR page',
+        '6: Add Custom Page Action to LR page(manifest change)',
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.130.0'
+                description: '<1.120.0'
             }
         },
         async ({ page, previewFrame, ui5Version, projectCopy }) => {
@@ -245,7 +250,8 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
             const dialog = new AdpDialog(previewFrame, ui5Version);
             const editor = new AdaptationEditorShell(page, ui5Version);
             await editor.quickActions.addCustomPageAction.click();
-            await dialog.fillField('Fragment Name', 'test-page-action');
+            await dialog.fillField('Action Id', 'testActionId');
+            await dialog.fillField('Button Text', 'Test Page Action');
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();
 
@@ -255,34 +261,32 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
                 changes: [
                     {
                         fileType: 'change',
-                        changeType: 'addXML',
+                        changeType: 'appdescr_fe_changePageConfiguration',
                         content: {
-                            targetAggregation: 'actions',
-                            fragmentPath: 'fragments/test-page-action.fragment.xml',
-                            index: 1
-                        },
-                        selector: {
-                            id: 'fiori.elements.v4.0::RootEntityList--fe::DynamicPageTitle'
+                            page: 'RootEntityList',
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath: 'content/header/actions/testActionId',
+                                propertyValue: {
+                                    enabled: true,
+                                    press: '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
+                                    text: 'Test Page Action',
+                                    visible: true
+                                }
+                            }
                         }
                     }
-                ],
-                fragments: {
-                    'test-page-action.fragment.xml': `<!-- Use stable and unique IDs!-->
-<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
-    <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
-</core:FragmentDefinition>`
-                }
+                ]
             });
-            await lr.checkControlVisible('New Button');
+            await lr.checkControlVisible('Test Page Action');
         }
     );
     test(
-        '7: Add Custom Table Action to LR page',
+        '7: Add Custom Table Action to LR page(manifest change)',
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.130.0'
+                description: '<1.120.0'
             }
         },
         async ({ page, previewFrame, ui5Version, projectCopy }) => {
@@ -290,7 +294,8 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
             const dialog = new AdpDialog(previewFrame, ui5Version);
             const editor = new AdaptationEditorShell(page, ui5Version);
             await editor.quickActions.addCustomTableAction.click();
-            await dialog.fillField('Fragment Name', 'test-table-action');
+            await dialog.fillField('Action Id', 'testTableActionId');
+            await dialog.fillField('Button Text', 'Test Table Action');
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();
 
@@ -300,26 +305,30 @@ test.describe(`@quick-actions @fe-v4 @list-report`, () => {
                 changes: [
                     {
                         fileType: 'change',
-                        changeType: 'addXML',
+                        changeType: 'appdescr_fe_changePageConfiguration',
                         content: {
-                            targetAggregation: 'actions',
-                            fragmentPath: 'fragments/test-table-action.fragment.xml',
-                            index: 0
-                        },
-                        selector: {
-                            id: 'fiori.elements.v4.0::RootEntityList--fe::table::RootEntity::LineItem'
+                            page: 'RootEntityList',
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath:
+                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/testTableActionId',
+                                propertyValue: {
+                                    enabled: true,
+                                    position: {
+                                        anchor: 'DataFieldForAction::Service.approveRootEntity',
+                                        placement: 'Before'
+                                    },
+                                    press: '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
+                                    text: 'Test Table Action',
+                                    visible: true,
+                                    requiresSelection: false
+                                }
+                            }
                         }
                     }
-                ],
-                fragments: {
-                    'test-table-action.fragment.xml': `<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
-   <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-[a-z0-9]+" >
-        <Button xmlns:m="sap.m" id="btn-[a-z0-9]+" visible="true" text="New Action" />
-    </actiontoolbar:ActionToolbarAction>
-</core:FragmentDefinition>`
-                }
+                ]
             });
-            await lr.checkControlVisible('New Action');
+            await lr.checkControlVisible('Test Table Action');
         }
     );
 

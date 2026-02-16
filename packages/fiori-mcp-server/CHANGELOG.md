@@ -1,200 +1,512 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.29
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/fiori-docs-embeddings@0.4.14
+
+## 0.6.28
+
+### Patch Changes
+
+- Updated dependencies [3795bb2]
+    - @sap-ux/fiori-docs-embeddings@0.4.14
+
+## 0.6.27
+
+### Patch Changes
+
+- Updated dependencies [38e215e]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.26
+
+### Patch Changes
+
+- b8efec5: Update dependency "@modelcontextprotocol/sdk": "1.26.0"
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.25
+
+### Patch Changes
+
+- 32a9147: chore(deps): update dependency @langchain/mcp-adapters to v1.1.2
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.24
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.23
+
+### Patch Changes
+
+- bd48387: Update readme for Self-Signed SSL Certificates
+
+## 0.6.22
+
+### Patch Changes
+
+- Updated dependencies [c3a1e07]
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.21
+
+### Patch Changes
+
+- 6b659e7: feat: add tool annotations for better AI guidance
+
+## 0.6.20
+
+### Patch Changes
+
+- @sap-ux/fiori-docs-embeddings@0.4.12
+- @sap-ux/store@1.5.3
+
+## 0.6.19
+
+### Patch Changes
+
+- Updated dependencies [4eac0a7]
+    - @sap-ux/fiori-docs-embeddings@0.4.12
+
+## 0.6.18
+
+### Patch Changes
+
+- 5d50232: feat: add telemetry tracking for MCP server sessions and handlers
+
+## 0.6.17
+
+### Patch Changes
+
+- 529408b: refactor: adjust telemetry functionalityId reporting
+
+## 0.6.16
+
+### Patch Changes
+
+- Updated dependencies [a686522]
+    - @sap-ux/fiori-docs-embeddings@0.4.11
+
+## 0.6.15
+
+### Patch Changes
+
+- Updated dependencies [be6ea11]
+    - @sap-ux/store@1.5.2
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.14
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.13
+
+### Patch Changes
+
+- Updated dependencies [c99758e]
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.12
+
+### Patch Changes
+
+- 924e26f: fix(deps): update dependency @sap/ux-specification to v1.142.0
+
+## 0.6.11
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/fiori-docs-embeddings@0.4.9
+
+## 0.6.10
+
+### Patch Changes
+
+- f4cf1d2: Update readme to contain description of latest features
+
+## 0.6.9
+
+### Patch Changes
+
+- 5652318: fix(server): downgrade MCP protocol version to '2024-11-05' to better backward compatibility
+
+## 0.6.8
+
+### Patch Changes
+
+- Updated dependencies [c9fd939]
+    - @sap-ux/store@1.5.0
+    - @sap-ux/fiori-docs-embeddings@0.4.9
+
+## 0.6.7
+
+### Patch Changes
+
+- b116439: chore(deps): update dependency @modelcontextprotocol/sdk to v1.25.2
+- d17fb22: chore(deps): update dependency @langchain/core to v1.1.8 [security]
+
+## 0.6.6
+
+### Patch Changes
+
+- 5c34d46: feat(telemetry): enhance telemetry data with MCP client info and do not pass telemetry data when unknownTool
+
+## 0.6.5
+
+### Patch Changes
+
+- Updated dependencies [d667a5e]
+    - @sap-ux/fiori-docs-embeddings@0.4.9
+
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies [e111d0d]
+    - @sap-ux/fiori-docs-embeddings@0.4.8
+
+## 0.6.3
+
+### Patch Changes
+
+- 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
+    - @sap-ux/fiori-docs-embeddings@0.4.7
+
+## 0.6.2
+
+### Patch Changes
+
+- c7f9a60: Log to file instead of STDIO
+    - @sap-ux/fiori-docs-embeddings@0.4.7
+    - @sap-ux/store@1.4.2
+
+## 0.6.1
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+- Updated dependencies [a9471d0]
+    - @sap-ux/fiori-docs-embeddings@0.4.7
+    - @sap-ux/store@1.4.1
+
+## 0.6.0
+
+### Minor Changes
+
+- 5287327: Updated @sap-ux/annotation-converter to version 0.10.9 and @sap-ux/vocabularies-types to version 0.13.2 across multiple packages. These changes ensure that the latest versions with potential fixes and enhancements are used.
+
+### Patch Changes
+
+- @sap-ux/fiori-docs-embeddings@0.4.6
+
+## 0.5.2
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+- Updated dependencies [ba58398]
+    - @sap-ux/store@1.4.0
+    - @sap-ux/fiori-docs-embeddings@0.4.6
+
+## 0.5.1
+
+### Patch Changes
+
+- 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
+- Updated dependencies [4ecfbe2]
+    - @sap-ux/fiori-docs-embeddings@0.4.6
+    - @sap-ux/store@1.3.5
+
+## 0.5.0
+
+### Minor Changes
+
+- 7217d7d: Update to the latest `@sap/ux-specification` version and remove unused code related to the application model and schema parsing.
+
+### Patch Changes
+
+- @sap-ux/fiori-docs-embeddings@0.4.5
+
+## 0.4.11
+
+### Patch Changes
+
+- 63eec1e: fix(fiori-mcp): fix cap service schema and logger errors in stdio
+    - @sap-ux/fiori-docs-embeddings@0.4.5
+
+## 0.4.10
+
+### Patch Changes
+
+- 8e8e7ce: fix(fiori-mcp): add service metadata validation
+
+## 0.4.9
+
+### Patch Changes
+
+- Updated dependencies [037a430]
+    - @sap-ux/store@1.3.4
+    - @sap-ux/fiori-docs-embeddings@0.4.5
+
+## 0.4.8
+
+### Patch Changes
+
+- d08a64c: fix: mcp server load the latest embeddings package on install/ npx
+
+## 0.4.7
+
+### Patch Changes
+
+- 3dd6b06: version bump for mcp sdk and specification
+
+## 0.4.6
+
+### Patch Changes
+
+- 4f7aa43: fix(fiori-mcp): improve non-cap app-gen input schema
+
+## 0.4.5
+
+### Patch Changes
+
+- 9d0c8e0: fix(fiori-mcp): fix missing dependency
+
+## 0.4.4
+
+### Patch Changes
+
+- 66ca93f: chore(fiori-mcp): fix pipeline
+
+## 0.4.3
+
+### Patch Changes
+
+- 00c7a0a: feat: add generate-fiori-ui-application functionality and rename existing generate-fiori-ui-app to generate-fiori-ui-application-cap
+
+## 0.4.2
+
+### Patch Changes
+
+- 597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
+
+## 0.4.1
+
+### Patch Changes
+
+- 9544c24: fix: page creation fails in v2
+
 ## 0.4.0
 
 ### Minor Changes
 
--   bfbdb77: - First integration tests using promptfoo
-    -   Updated input schema for 'execute-functionality' - sometimes input parameters was passed outside of `parameters` property
+- bfbdb77: - First integration tests using promptfoo
+    - Updated input schema for 'execute-functionality' - sometimes input parameters was passed outside of `parameters` property
 
 ## 0.3.3
 
 ### Patch Changes
 
--   f1a2795: fix: Instrumentation key
+- f1a2795: fix: Instrumentation key
 
 ## 0.3.2
 
 ### Patch Changes
 
--   cfe9c13: Add deep link to package and changelog to README.md
--   Updated dependencies [cfe9c13]
-    -   @sap-ux/fiori-docs-embeddings@0.4.2
+- cfe9c13: Add deep link to package and changelog to README.md
+- Updated dependencies [cfe9c13]
+    - @sap-ux/fiori-docs-embeddings@0.4.2
 
 ## 0.3.1
 
 ### Patch Changes
 
--   f7cb5b1: Fix: Pass `layer` and `ui5Version` to the specification API method `exportConfig`.
+- f7cb5b1: Fix: Pass `layer` and `ui5Version` to the specification API method `exportConfig`.
 
 ## 0.3.0
 
 ### Minor Changes
 
--   d895232: - fix: V2 app crash when running `list-functionalities`
-    -   feat: add support for changing flex properties in V2 app
+- d895232: - fix: V2 app crash when running `list-functionalities`
+    - feat: add support for changing flex properties in V2 app
 
 ## 0.2.5
 
 ### Patch Changes
 
--   8b7171e: chore: readme update - how to disable telemetry
+- 8b7171e: chore: readme update - how to disable telemetry
 
 ## 0.2.4
 
 ### Patch Changes
 
--   e75b594: Add Fiori Development portal documentation to embeddings
--   Updated dependencies [e75b594]
-    -   @sap-ux/fiori-docs-embeddings@0.3.0
+- e75b594: Add Fiori Development portal documentation to embeddings
+- Updated dependencies [e75b594]
+    - @sap-ux/fiori-docs-embeddings@0.3.0
 
 ## 0.2.3
 
 ### Patch Changes
 
--   e015869: chore: patch inquirer dependency
+- e015869: chore: patch inquirer dependency
 
 ## 0.2.2
 
 ### Patch Changes
 
--   8a97bcc: fix "Error [ERR_REQUIRE_ESM]" when starting fiori mcp server e.g. Nodejs 22.8.0
+- 8a97bcc: fix "Error [ERR_REQUIRE_ESM]" when starting fiori mcp server e.g. Nodejs 22.8.0
 
 ## 0.2.1
 
 ### Patch Changes
 
--   43a2446: chore: fix Sonar issues
--   Updated dependencies [43a2446]
-    -   @sap-ux/fiori-docs-embeddings@0.1.1
+- 43a2446: chore: fix Sonar issues
+- Updated dependencies [43a2446]
+    - @sap-ux/fiori-docs-embeddings@0.1.1
 
 ## 0.2.0
 
 ### Minor Changes
 
--   b179405: Refactor doc search to return human readable results. Simplify search and doc indexing
+- b179405: Refactor doc search to return human readable results. Simplify search and doc indexing
 
 ### Patch Changes
 
--   Updated dependencies [b179405]
-    -   @sap-ux/fiori-docs-embeddings@0.1.0
+- Updated dependencies [b179405]
+    - @sap-ux/fiori-docs-embeddings@0.1.0
 
 ## 0.1.6
 
 ### Patch Changes
 
--   f038ab8: Refactored `get-functionality-details` to return parameters as JSON Schema, unified with Zod validation (validateWithSchema) and schema conversion (convertion to JSON Schema).
+- f038ab8: Refactored `get-functionality-details` to return parameters as JSON Schema, unified with Zod validation (validateWithSchema) and schema conversion (convertion to JSON Schema).
 
 ## 0.1.5
 
 ### Patch Changes
 
--   5591f68: feat: integrate ux logger utility across the fiori-mcp-server package
+- 5591f68: feat: integrate ux logger utility across the fiori-mcp-server package
 
 ## 0.1.4
 
 ### Patch Changes
 
--   8c01a6f: add hint for AGENTS.md to readme
+- 8c01a6f: add hint for AGENTS.md to readme
 
 ## 0.1.3
 
 ### Patch Changes
 
--   f3768a9: Update MCP to use snake case instead of kebab case in MCP tool names. Rename doc_search to search_docs.
+- f3768a9: Update MCP to use snake case instead of kebab case in MCP tool names. Rename doc_search to search_docs.
 
 ## 0.1.2
 
 ### Patch Changes
 
--   9872384: Upgrade axios module
+- 9872384: Upgrade axios module
 
 ## 0.1.1
 
 ### Patch Changes
 
--   306561e: Fix publishing of embeddings package
+- 306561e: Fix publishing of embeddings package
 
 ## 0.1.0
 
 ### Minor Changes
 
--   a7b6272: Add doc_search tool to Fiori MCP server using data from embeddings module.
+- a7b6272: Add doc_search tool to Fiori MCP server using data from embeddings module.
 
 ## 0.0.11
 
 ### Patch Changes
 
--   @sap-ux/fiori-annotation-api@0.6.20
+- @sap-ux/fiori-annotation-api@0.6.20
 
 ## 0.0.10
 
 ### Patch Changes
 
--   @sap-ux/project-access@1.30.14
--   @sap-ux/telemetry@0.6.20
--   @sap-ux/fiori-annotation-api@0.6.19
+- @sap-ux/project-access@1.30.14
+- @sap-ux/telemetry@0.6.20
+- @sap-ux/fiori-annotation-api@0.6.19
 
 ## 0.0.9
 
 ### Patch Changes
 
--   5b06421: Simplify "generate-fiori-ui-app" input params by removing the "appGenConfig" nesting level and unnecessary properties such as "appGenConfig.telemetryData" and "projectPath".
+- 5b06421: Simplify "generate-fiori-ui-application-cap" input params by removing the "appGenConfig" nesting level and unnecessary properties such as "appGenConfig.telemetryData" and "projectPath".
 
 ## 0.0.8
 
 ### Patch Changes
 
--   Updated dependencies [a6ff2aa]
-    -   @sap-ux/fiori-annotation-api@0.6.18
+- Updated dependencies [a6ff2aa]
+    - @sap-ux/fiori-annotation-api@0.6.18
 
 ## 0.0.7
 
 ### Patch Changes
 
--   e82605e: Move "npm install" outside MCP create app call.
-    Add try catch on telemetry init
+- e82605e: Move "npm install" outside MCP create app call.
+  Add try catch on telemetry init
 
 ## 0.0.6
 
 ### Patch Changes
 
--   ac9a2d0: feat: collect telemetry
+- ac9a2d0: feat: collect telemetry
 
 ## 0.0.5
 
 ### Patch Changes
 
--   cbd2a6f: Use Zod schemas to generate input/output JSON schemas and TypeScript types
+- cbd2a6f: Use Zod schemas to generate input/output JSON schemas and TypeScript types
 
 ## 0.0.4
 
 ### Patch Changes
 
--   a8ca635: `execute-functionality`: Functionality `add-page` - imposible to add Custom Page as `viewName` is ignored.
-    `get-functionality-details`: Functionality `add-page` - provide only `ObjectPage`, `ListReport`, `CustomPage` as valid creation options.
+- a8ca635: `execute-functionality`: Functionality `add-page` - imposible to add Custom Page as `viewName` is ignored.
+  `get-functionality-details`: Functionality `add-page` - provide only `ObjectPage`, `ListReport`, `CustomPage` as valid creation options.
 
 ## 0.0.3
 
 ### Patch Changes
 
--   4fad77a: Regenerate output schema for 'get_functionality_details' tool
+- 4fad77a: Regenerate output schema for 'get_functionality_details' tool
 
 ## 0.0.2
 
 ### Patch Changes
 
--   b2effee: fix CAP preview after generation - do npm install on CAP project and make service path absolute
+- b2effee: fix CAP preview after generation - do npm install on CAP project and make service path absolute
 
 ## 0.0.1
 
 ### Patch Changes
 
--   38ecd39: Initial version of the fiori-mcp-server package
+- 38ecd39: Initial version of the fiori-mcp-server package
 
 ## 0.0.1
 
 ### Patch Changes
 
--   @sap-ux/fiori-annotation-api@0.6.17
--   @sap-ux/project-access@1.30.13
+- @sap-ux/fiori-annotation-api@0.6.17
+- @sap-ux/project-access@1.30.13

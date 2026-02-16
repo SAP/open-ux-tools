@@ -185,14 +185,17 @@
             "runtimeArgs": ["@modelcontextprotocol/inspector", "node", "dist/index.js"],
             "console": "integratedTerminal",
             "skipFiles": ["<node_internals>/**"],
-            "cwd": "${workspaceFolder}/packages/fiori-mcp-server"
+            "cwd": "${workspaceFolder}/packages/fiori-mcp-server",
+            "env":{
+                "LOG_LEVEL": "debug"
+            }
         },
         {
             "type": "node",
             "request": "launch",
             "name": "eslint-plugin-fiori-tools: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false", "--runInBand"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "cwd": "${workspaceFolder}/packages/eslint-plugin-fiori-tools"

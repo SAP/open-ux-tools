@@ -1,17 +1,18 @@
 import Log from 'sap/base/Log';
 
-import { ExternalAction, startPostMessageCommunication } from '@sap-ux-private/control-property-editor-common';
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import { startPostMessageCommunication } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../utils/error';
 
-import { ActionHandler } from './types';
+import type { ActionHandler } from './types';
 
 export class CommunicationService {
     /**
      * Sends an action to the CPE.
      */
     static sendAction: (action: ExternalAction) => void;
-    private static actionHandlers: ActionHandler[] = [];
+    private static readonly actionHandlers: ActionHandler[] = [];
 
     static {
         const { sendAction } = startPostMessageCommunication<ExternalAction>(
