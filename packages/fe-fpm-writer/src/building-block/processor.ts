@@ -8,7 +8,8 @@ import {
     type CustomFilterField,
     type EmbededFragment,
     type RichTextEditorButtonGroups,
-    type ButtonGroupConfig
+    type ButtonGroupConfig,
+    type CustomAction ////todoK
 } from './types';
 import type { Manifest, InternalCustomElement } from '../common/types';
 
