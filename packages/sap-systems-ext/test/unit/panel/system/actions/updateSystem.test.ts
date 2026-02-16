@@ -268,4 +268,66 @@ describe('Test Update System Action', () => {
             { force: false }
         );
     });
+
+    it('should create odata_service system without credentials (no system info retrieval)', async () => {
+        const odataServiceSystem: BackendSystem = {
+            name: 'OData Service System',
+            systemType: 'OnPrem',
+            url: 'https://service.example.com/sap/opu/odata/sap/SERVICE',
+            connectionType: 'odata_service',
+            hasSensitiveData: false
+        };
+
+        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
+        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
+        const getSystemInfoSpy = jest.spyOn(panelUtils, 'getSystemInfo');
+        systemServiceWriteMock.mockResolvedValue(odataServiceSystem);
+        const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Create };
+
+        await expect(
+            updateSystem(panelContext, { type: 'UPDATE_SYSTEM', payload: { system: odataServiceSystem } })
+        ).resolves.toBeUndefined();
+
+        expect(getSystemInfoSpy).not.toHaveBeenCalled();
+        expect(disposePanelMock).toHaveBeenCalled();
+        expect(systemServiceWriteMock).toHaveBeenCalledWith(
+            { ...odataServiceSystem, userDisplayName: undefined },
+            { force: false }
+        );
+    });
+
+    it('should fetch system info for odata_service with credentials', async () => {
+        const odataServiceSystem: BackendSystem = {
+            name: 'OData Service System',
+            systemType: 'OnPrem',
+            url: 'https://service.example.com/sap/opu/odata/sap/SERVICE',
+            username: 'testuser',
+            password: 'password',
+            connectionType: 'odata_service',
+            hasSensitiveData: true
+        };
+
+        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
+        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(odataServiceSystem);
+        jest.spyOn(panelUtils, 'getSystemInfo').mockResolvedValue({ systemId: 'SYS_OD123', client: '' });
+        systemServiceWriteMock.mockResolvedValue(odataServiceSystem);
+        const panelContext = {
+            ...basePanelContext,
+            backendSystem: odataServiceSystem,
+            panelViewType: SystemPanelViewType.View
+        };
+
+        await expect(
+            updateSystem(panelContext, { type: 'UPDATE_SYSTEM', payload: { system: odataServiceSystem } })
+        ).resolves.toBeUndefined();
+
+        expect(updateBackendSystemMock).toHaveBeenCalledWith({
+            ...odataServiceSystem,
+            systemInfo: { systemId: 'SYS_OD123', client: '' }
+        });
+        expect(systemServiceWriteMock).toHaveBeenCalledWith(
+            { ...odataServiceSystem, userDisplayName: 'testuser', systemInfo: { systemId: 'SYS_OD123', client: '' } },
+            { force: true }
+        );
+    });
 });

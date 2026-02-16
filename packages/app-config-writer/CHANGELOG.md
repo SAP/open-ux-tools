@@ -1,5 +1,13 @@
 # @sap-ux/app-config-writer
 
+## 0.6.97
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/ui5-config@0.29.16
+
 ## 0.6.96
 
 ### Patch Changes

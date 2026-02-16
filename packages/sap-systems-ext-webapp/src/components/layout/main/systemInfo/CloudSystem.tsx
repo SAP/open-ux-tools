@@ -45,14 +45,15 @@ export function CloudSystem({
                     <UITextInput
                         name="reentranceTicketUrl"
                         id="reentranceUrl"
-                        defaultValue={systemInfo?.url}
+                        key={`reentranceTicketUrl-${systemInfo?.connectionType}`}
+                        value={systemInfo?.url}
                         onChange={(e) => {
-                            if (setUrl) {
-                                setUrl((e.target as HTMLInputElement).value);
-                            }
+                            setUrl((e.target as HTMLInputElement).value);
                             setIsDetailsUpdated(true);
                         }}
-                        onGetErrorMessage={(value) => getUrlErrorMessage(value, t, setIsDetailsValid)}
+                        onGetErrorMessage={(value) =>
+                            getUrlErrorMessage(value, t, setIsDetailsValid, systemInfo?.connectionType)
+                        }
                     />
                 </div>
             </div>
