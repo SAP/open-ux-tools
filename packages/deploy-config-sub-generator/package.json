@@ -51,7 +51,7 @@
         "@types/hasbin": "1.2.2",
         "@types/inquirer": "8.2.6",
         "@types/js-yaml": "4.0.9",
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs-editor": "7.0.7",
         "@types/yeoman-generator": "5.2.11",
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
