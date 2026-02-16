@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { generateEslintConfig } from '../../../src/eslint-config/index';
+import { generateEslintConfig } from '../../../src/';
 import type { Package } from '@sap-ux/project-access';
 
 describe('generateEslintConfig', () => {

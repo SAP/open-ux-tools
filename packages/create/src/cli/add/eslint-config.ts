@@ -3,6 +3,7 @@ import { generateEslintConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { getProjectType } from '@sap-ux/project-access';
+import { runNpmInstallCommand } from '../../common';
 
 /**
  * Add the "add eslint config" command to a passed command.
@@ -20,13 +21,15 @@ Example:
         .option('-v, --verbose', 'Show verbose information.')
         .option(
             '-c, --config <string>',
-            'The name of the SAP Fiori tools eslint plugin configuration to be used (default is `recommended`).'
+            'The name of the SAP Fiori tools eslint plugin configuration to be used.',
+            'recommended'
         )
+        .option('-n, --skip-install', 'Skip the `npm install` step.')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
-            await addEslintConfig(path || process.cwd(), !!options.simulate, options.config);
+            await addEslintConfig(path || process.cwd(), !!options.simulate, options.config, !!options.skipInstall);
         });
 }
 
@@ -36,8 +39,14 @@ Example:
  * @param basePath - path to application root
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param config - the name of the SAP Fiori tools eslint plugin config to be used
+ * @param skipInstall - if true, skips the `npm install` step after adding the eslint config
  */
-async function addEslintConfig(basePath: string, simulate: boolean, config = 'recommended'): Promise<void> {
+async function addEslintConfig(
+    basePath: string,
+    simulate: boolean,
+    config: string,
+    skipInstall = false
+): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called add eslint-config for path '${basePath}', simulate is '${simulate}'`);
@@ -45,14 +54,21 @@ async function addEslintConfig(basePath: string, simulate: boolean, config = 're
         const fs = await generateEslintConfig(basePath, { logger, config });
         await traceChanges(fs);
         if (!simulate) {
-            fs.commit(() =>
+            fs.commit(() => {
                 logger.info(
                     `Eslint configuration written. Ensure you install the new dependency by executing 'npm install'.`
-                )
-            );
+                );
+                if (skipInstall) {
+                    logger.info(
+                        `\`npm install\` will be skipped. Please make sure to install the dependencies before executing any linting commands.`
+                    );
+                } else {
+                    runNpmInstallCommand(basePath);
+                }
+            });
         }
     } catch (error) {
-        logger.error(`Error while executing add eslint-config '${(error as Error).message}'`);
+        logger.error(`Error while executing add eslint-config. '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
     if ((await getProjectType(basePath)) !== 'EDMXBackend') {
