@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.68
+
+### Patch Changes
+
+- 1a922e7: adds option to prevent root package json updates for cap
+- Updated dependencies [1a922e7]
+    - @sap-ux/cap-config-writer@0.12.63
+
 ## 2.8.67
 
 ### Patch Changes
