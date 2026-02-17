@@ -823,6 +823,117 @@ describe('UI5Config', () => {
             ui5Config.removeCustomTask(customTask.name);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
+
+        test('getAllCustomTasks - empty config', () => {
+            const tasks = ui5Config.getAllCustomTasks();
+            expect(tasks).toEqual([]);
+        });
+
+        test('getAllCustomTasks - single task', () => {
+            ui5Config.addCustomTasks([customTask]);
+            const tasks = ui5Config.getAllCustomTasks();
+            expect(tasks).toHaveLength(1);
+            expect(tasks[0]).toMatchObject(customTask);
+        });
+
+        test('getAllCustomTasks - multiple tasks', () => {
+            const task1 = {
+                name: 'ui5-task-zipper',
+                afterTask: 'generateCachebusterInfo',
+                configuration: {
+                    archiveName: 'my-archive'
+                }
+            };
+            const task2 = {
+                name: 'deploy-to-abap',
+                afterTask: 'generateCachebusterInfo',
+                configuration: {
+                    target: { url: 'http://example.com', client: '001' },
+                    app: { name: 'test', package: '$TMP' }
+                }
+            };
+            const task3 = {
+                name: 'ui5-tooling-transpile-task',
+                afterTask: 'replaceVersion',
+                configuration: {
+                    debug: true,
+                    transpileAsync: true
+                }
+            };
+
+            ui5Config.addCustomTasks([task1, task2, task3]);
+            const tasks = ui5Config.getAllCustomTasks();
+            expect(tasks).toHaveLength(3);
+            expect(tasks[0]).toMatchObject(task1);
+            expect(tasks[1]).toMatchObject(task2);
+            expect(tasks[2]).toMatchObject(task3);
+        });
+
+        test('getAllCustomTasks - with generic type parameter', () => {
+            interface ZipperConfig {
+                archiveName: string;
+                relativePaths?: boolean;
+                additionalFiles?: string[];
+            }
+
+            const zipperTask = {
+                name: 'ui5-task-zipper',
+                afterTask: 'generateCachebusterInfo',
+                configuration: {
+                    archiveName: 'my-archive',
+                    relativePaths: true,
+                    additionalFiles: ['xs-app.json']
+                }
+            };
+
+            ui5Config.addCustomTasks([zipperTask]);
+            const tasks = ui5Config.getAllCustomTasks<ZipperConfig>();
+            expect(tasks).toHaveLength(1);
+            const configuration = tasks[0].configuration!;
+            expect(configuration.archiveName).toBe('my-archive');
+            expect(configuration.relativePaths).toBe(true);
+            expect(configuration.additionalFiles).toContain('xs-app.json');
+        });
+
+        test('should return custom taks from the yaml', async () => {
+            const yamlString = `
+specVersion: '4.0'
+type: application
+builder:
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: https://example.com
+`;
+            const pristineUi5Config = await UI5Config.newInstance(yamlString);
+            const customTasks = pristineUi5Config.getAllCustomTasks();
+            expect(customTasks).toHaveLength(1);
+            expect(customTasks[0].name).toBe('deploy-to-abap');
+        });
+
+        test('should return an empty array if the customTasks field has no value in the yaml', async () => {
+            const yamlString = `
+specVersion: '4.0'
+type: application
+builder:
+  customTasks:
+`;
+            const pristineUi5Config = await UI5Config.newInstance(yamlString);
+            const customTasks = pristineUi5Config.getAllCustomTasks();
+            expect(customTasks).toHaveLength(0);
+        });
+
+        test('should return an empty array if there is no builder key in the yaml', async () => {
+            const yamlString = `
+specVersion: '4.0'
+type: application
+`;
+            const pristineUi5Config = await UI5Config.newInstance(yamlString);
+            const customTasks = pristineUi5Config.getAllCustomTasks();
+            expect(customTasks).toHaveLength(0);
+        });
     });
 
     describe('addAbapDeployTask', () => {
@@ -953,95 +1064,6 @@ describe('UI5Config', () => {
         test('add transpile task', () => {
             ui5Config.addCloudFoundryDeployTask('myTestAppId', true, true);
             expect(ui5Config.toString()).toMatchSnapshot();
-        });
-    });
-
-    describe('hasBuilderKey', () => {
-        test('should return false when builder key does not exist', () => {
-            expect(ui5Config.hasBuilderKey()).toBe(false);
-        });
-
-        test('should return true when builder key exists with customTasks', async () => {
-            const yamlString = `
-specVersion: '4.0'
-type: application
-builder:
-  customTasks:
-    - name: deploy-to-abap
-      afterTask: generateCachebusterInfo
-      configuration:
-        target:
-          url: https://example.com
-`;
-            const configWithBuilder = await UI5Config.newInstance(yamlString);
-            expect(configWithBuilder.hasBuilderKey()).toBe(true);
-        });
-
-        test('should return true when builder key exists with resources', async () => {
-            const yamlString = `
-specVersion: '4.0'
-type: application
-builder:
-  resources:
-    excludes:
-      - "/test/**"
-      - "/localService/**"
-`;
-            const configWithBuilder = await UI5Config.newInstance(yamlString);
-            expect(configWithBuilder.hasBuilderKey()).toBe(true);
-        });
-
-        test('should return false when builder key exists but is empty', async () => {
-            const yamlString = `
-specVersion: '4.0'
-type: application
-builder:
-`;
-            const configWithBuilder = await UI5Config.newInstance(yamlString);
-            expect(configWithBuilder.hasBuilderKey()).toBe(false);
-        });
-
-        test('should return false for config with only server section', async () => {
-            const yamlString = `
-specVersion: '4.0'
-type: application
-server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-`;
-            const configWithoutBuilder = await UI5Config.newInstance(yamlString);
-            expect(configWithoutBuilder.hasBuilderKey()).toBe(false);
-        });
-
-        test('should return true after adding a custom task', () => {
-            ui5Config.addCustomTasks([
-                {
-                    name: 'test-task',
-                    afterTask: 'replaceVersion',
-                    configuration: {}
-                }
-            ]);
-            expect(ui5Config.hasBuilderKey()).toBe(true);
-        });
-
-        test('should return true after adding ABAP deploy task', () => {
-            const target = {
-                url: 'https://example.com',
-                client: '100'
-            };
-            const app: BspApp = {
-                name: 'ZTEST',
-                description: 'Test App',
-                package: 'ZPACKAGE'
-            };
-            ui5Config.addAbapDeployTask(target, app);
-            expect(ui5Config.hasBuilderKey()).toBe(true);
-        });
-
-        test('should return true after adding Cloud Foundry deploy task', () => {
-            ui5Config.addCloudFoundryDeployTask('testArchive');
-            expect(ui5Config.hasBuilderKey()).toBe(true);
         });
     });
 });

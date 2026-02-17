@@ -726,19 +726,6 @@ export class UI5Config {
     }
 
     /**
-     * Determines whether the UI5 configuration document contains the builder key.
-     *
-     * @returns True if the configuration contains builder key at root level otherwise false.
-     */
-    public hasBuilderKey(): boolean {
-        try {
-            return !!this.document.getNode({ path: 'builder' });
-        } catch {
-            return false;
-        }
-    }
-
-    /**
      * Remove a middleware form the UI5 config.
      *
      * @param name name of the middleware that is to be removed
@@ -835,6 +822,22 @@ export class UI5Config {
      */
     public findCustomTask<T extends object = object>(name: string): CustomTask<T> | undefined {
         return this.findCustomActivity<T>(name, 'builder.customTasks');
+    }
+
+    /**
+     * Use this method to get the list of all available custom tasks defined in the ui5.yaml.
+     * If there are not custom tasks the method returns an empty array.
+     *
+     * @returns The list of custom tasks.
+     * @memberof UI5Config
+     */
+    public getAllCustomTasks<T extends object = object>(): Array<CustomTask<T>> {
+        try {
+            const customTaskSequence = this.document.getSequence({ path: 'builder.customTasks' }) as YAMLSeq<YAMLMap>;
+            return customTaskSequence.items.map((item) => item.toJSON());
+        } catch {
+            return [];
+        }
     }
 
     /**
