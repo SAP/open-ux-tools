@@ -224,7 +224,11 @@ export async function createServiceInstance(
             commandParameters.push('-c', JSON.stringify(xsSecurity));
         }
 
-        await Cli.execute(commandParameters);
+        const result = await Cli.execute(commandParameters);
+        if (result && result.exitCode !== 0) {
+            logger?.error(`Service creation failed: ${result.stderr || 'Unknown error'}`);
+            throw new Error(`Service creation failed with code ${result.exitCode}: ${result.stderr || ''}`);
+        }
         logger?.log(`Service instance '${serviceInstanceName}' created successfully`);
     } catch (e) {
         logger?.error(e);
