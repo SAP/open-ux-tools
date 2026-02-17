@@ -10,7 +10,6 @@ import { createJsonFixer } from '../language/rule-fixer';
 import type { FeV4PageType, Table } from '../project-context/linker/fe-v4';
 import type { ParsedApp } from '../project-context/parser';
 import { isLowerThanMinimalUi5Version } from '../utils/version';
-import type { MinUI5Version } from '../project-context/parser/types';
 
 enum PersonalizationProperties {
     column = 'column',
@@ -32,81 +31,11 @@ type MessageId =
     | typeof TABLE_PERSONALIZATION_GROUP;
 
 enum MessageIdByProperty {
-    column = TABLE_PERSONALIZATION_COLUMN,
-    filter = TABLE_PERSONALIZATION_FILTER,
-    sort = TABLE_PERSONALIZATION_SORT,
-    group = TABLE_PERSONALIZATION_GROUP
+    'column' = TABLE_PERSONALIZATION_COLUMN,
+    'filter' = TABLE_PERSONALIZATION_FILTER,
+    'sort' = TABLE_PERSONALIZATION_SORT,
+    'group' = TABLE_PERSONALIZATION_GROUP
 }
-
-const checkPersonalizationValue = (
-    table: Table,
-    page: FeV4PageType,
-    parsedApp: ParsedApp,
-    minUI5Version: MinUI5Version | undefined
-): TablePersonalization[] => {
-    const problems: TablePersonalization[] = [];
-
-    const personalization = table.configuration.personalization.valueInFile;
-    // Check if boolean value
-    if (personalization === true || personalization === undefined) {
-        // Every table personalization setting is enabled
-        return [];
-    }
-    if (personalization === false) {
-        // Every table personalization setting is disabled
-        problems.push({
-            type: TABLE_PERSONALIZATION,
-            pageName: page.targetName,
-            manifest: {
-                uri: parsedApp.manifest.manifestUri,
-                object: parsedApp.manifestObject,
-                propertyPath: table.configuration.personalization.configurationPath
-            }
-        });
-    } else {
-        // Check personalization object properties
-        const tableType = table.configuration.tableType.valueInFile;
-        for (const key in PersonalizationProperties) {
-            const property = key as PersonalizationProperty;
-            if (personalization[property] === false) {
-                if (property === 'group') {
-                    const checkGroupForAnalyticalTable =
-                        tableType === 'AnalyticalTable' &&
-                        minUI5Version &&
-                        !isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 108 });
-                    const checkGroupForResponsiveTable =
-                        tableType === 'ResponsiveTable' &&
-                        minUI5Version &&
-                        !isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 120 });
-                    if (checkGroupForAnalyticalTable || checkGroupForResponsiveTable) {
-                        problems.push({
-                            type: TABLE_PERSONALIZATION,
-                            pageName: page.targetName,
-                            property,
-                            manifest: {
-                                uri: parsedApp.manifest.manifestUri,
-                                object: parsedApp.manifestObject,
-                                propertyPath: [...table.configuration.personalization.configurationPath, property]
-                            }
-                        });
-                    }
-                } else {
-                    problems.push({
-                        type: TABLE_PERSONALIZATION,
-                        pageName: page.targetName,
-                        property,
-                        manifest: {
-                            uri: parsedApp.manifest.manifestUri,
-                            object: parsedApp.manifestObject,
-                            propertyPath: [...table.configuration.personalization.configurationPath, property]
-                        }
-                    });
-                }
-            }
-        }
-    }
-    return problems;
-};
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: TABLE_PERSONALIZATION,
@@ -145,12 +74,7 @@ const rule: FioriRuleDefinition = createFioriRule({
 
             for (const page of app.pages) {
                 for (const table of page.lookup['table'] ?? []) {
-                    const tableProblems = checkPersonalizationValue(
-                        table,
-                        page,
-                        parsedApp,
-                        parsedApp.manifest.minUI5Version
-                    );
+                    const tableProblems = checkPersonalizationValue(table, page, parsedApp);
                     problems.push(...tableProblems);
                 }
             }
@@ -170,11 +94,111 @@ const rule: FioriRuleDefinition = createFioriRule({
                     context,
                     deepestPathResult,
                     node,
-                    operation: 'delete'
+                    operation: 'update',
+                    value: true
                 })
             });
         };
     }
 });
+
+/**
+ *
+ * @param table
+ * @param parsedApp
+ * @param pageName
+ * @returns
+ */
+function checkGroupProperty(table: Table, parsedApp: ParsedApp, pageName: string): TablePersonalization[] {
+    const minUI5Version = parsedApp.manifest.minUI5Version;
+    const tableType = table.configuration.tableType.valueInFile;
+    const checkGroupForAnalyticalTable =
+        tableType === 'AnalyticalTable' &&
+        minUI5Version &&
+        !isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 108 });
+    const checkGroupForResponsiveTable =
+        tableType === 'ResponsiveTable' &&
+        minUI5Version &&
+        !isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 120 });
+    if (checkGroupForAnalyticalTable || checkGroupForResponsiveTable) {
+        return [
+            {
+                type: TABLE_PERSONALIZATION,
+                pageName,
+                property: 'group',
+                rule: {
+                    message: rule.meta?.messages?.[MessageIdByProperty['group']] ?? '',
+                    type: 'suggestion'
+                },
+                manifest: {
+                    uri: parsedApp.manifest.manifestUri,
+                    object: parsedApp.manifestObject,
+                    propertyPath: [...table.configuration.personalization.configurationPath, 'group']
+                }
+            }
+        ];
+    }
+    return [];
+}
+
+/**
+ *
+ * @param table
+ * @param page
+ * @param parsedApp
+ * @returns
+ */
+function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: ParsedApp): TablePersonalization[] {
+    const problems: TablePersonalization[] = [];
+
+    const personalization = table.configuration.personalization.valueInFile;
+    // Check if boolean value
+    if (personalization === true || personalization === undefined) {
+        // Every table personalization setting is enabled
+        return [];
+    }
+    if (personalization === false || Object.keys(personalization).length === 0) {
+        // Every table personalization setting is disabled
+        problems.push({
+            type: TABLE_PERSONALIZATION,
+            pageName: page.targetName,
+            rule: {
+                message: rule.meta?.messages?.[TABLE_PERSONALIZATION] ?? '',
+                type: 'suggestion'
+            },
+            manifest: {
+                uri: parsedApp.manifest.manifestUri,
+                object: parsedApp.manifestObject,
+                propertyPath: table.configuration.personalization.configurationPath
+            }
+        });
+    } else {
+        // Check personalization object properties
+        for (const key in PersonalizationProperties) {
+            const property = key as PersonalizationProperty;
+            if (personalization[property] === false) {
+                if (property === 'group') {
+                    problems.push(...checkGroupProperty(table, parsedApp, page.targetName));
+                } else {
+                    problems.push({
+                        type: TABLE_PERSONALIZATION,
+                        pageName: page.targetName,
+                        property,
+                        rule: {
+                            message: rule.meta?.messages?.[MessageIdByProperty[property]] ?? '',
+                            type: 'suggestion'
+                        },
+                        manifest: {
+                            uri: parsedApp.manifest.manifestUri,
+                            object: parsedApp.manifestObject,
+                            propertyPath: [...table.configuration.personalization.configurationPath, property]
+                        }
+                    });
+                }
+            }
+        }
+    }
+    return problems;
+}
 
 export default rule;
