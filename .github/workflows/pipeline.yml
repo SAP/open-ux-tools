@@ -242,7 +242,7 @@ jobs:
               run: pnpm --filter ${{ env.EXT_PKG }} ide-ext:package
             - name: Create GitHub Release (extension)
               if: env.EXTENSION_UPDATED == 'true'
-              uses: softprops/action-gh-release@v1
+              uses: softprops/action-gh-release@v2
               with:
                   tag_name: ${{ env.EXT_PKG }}@${{ env.EXT_VERSION }}
                   name: ${{ env.EXT_PKG }} v${{ env.EXT_VERSION }}
