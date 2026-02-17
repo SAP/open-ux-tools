@@ -2,6 +2,8 @@
 
 UI5 server middleware that uses `@sap/approuter` to make destinations configured in SAP Cloud Foundry or SAP XS Advanced available for local development. Requests to destination routes are proxied to a local approuter instance via `http-proxy-middleware`.
 
+> **⚠️ Experimental**: This middleware is currently experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions if needed.
+
 ## Prerequisites
 
 - [@ui5/cli](https://ui5.github.io/cli/) 3.0 or later (specVersion 3.0 in `ui5.yaml`)

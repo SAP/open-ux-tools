@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import type { RequestHandler } from 'express';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
@@ -43,9 +44,14 @@ module.exports = async ({
     process.env.WS_ALLOWED_ORIGINS = process.env.WS_ALLOWED_ORIGINS ?? JSON.stringify([{ host: 'localhost' }]);
     process.env.XS_APP_LOG_LEVEL = process.env.XS_APP_LOG_LEVEL ?? (effectiveOptions.debug ? 'DEBUG' : 'ERROR');
 
-    const rootPath = middlewareUtil.getProject().getRootPath() ?? process.cwd();
-    const xsappPath = path.resolve(rootPath, effectiveOptions.xsappJson);
     const project = middlewareUtil.getProject();
+    const rootPath = project.getRootPath() ?? process.cwd();
+    const xsappPath = path.resolve(rootPath, effectiveOptions.xsappJson);
+    if (!fs.existsSync(xsappPath)) {
+        throw new Error(
+            `Backend proxy middleware (CF): xs-app.json not found at "${xsappPath}" (xsappJson: "${effectiveOptions.xsappJson}").`
+        );
+    }
     const sourcePath = project.getSourcePath();
 
     const destinations = resolveDestinations(effectiveOptions, logger);
@@ -66,7 +72,7 @@ module.exports = async ({
 
     const { extensionModules, extensionsRoutes } = loadExtensions(rootPath, effectiveOptions.extensions, logger);
 
-    const freePort = await nextFreePort(effectiveOptions.port);
+    const freePort = await nextFreePort(effectiveOptions.port, logger);
     if (freePort !== effectiveOptions.port) {
         logger.info(
             `Port ${effectiveOptions.port} already in use. Using next free port: ${freePort} for the AppRouter.`

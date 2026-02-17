@@ -67,7 +67,7 @@ export function loadExtensions(
                 }
                 return extensionModule;
             } catch {
-                logger.warn(`Failed to resolve extension "${JSON.stringify(extension)}". Extension will be ignored.`);
+                logger.warn(`Failed to resolve extension "${extension.module}". Extension will be ignored.`);
                 return undefined;
             }
         })
