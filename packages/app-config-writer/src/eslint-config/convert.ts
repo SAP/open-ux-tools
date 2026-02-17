@@ -4,7 +4,7 @@ import { create as createStorage } from 'mem-fs';
 import { join } from 'node:path';
 import { FileName, hasDependency, type Package } from '@sap-ux/project-access';
 import { isLowerThanMinimalVersion } from '../common/package-json';
-import { spawn } from 'node:child_process';
+import crossSpawn from 'cross-spawn';
 
 /**
  * Partial type definition of an eslint configuration file (.eslintrc.json) that is relevant for the conversion.
@@ -158,20 +158,23 @@ async function addFioriToolsToExistingConfig(
  */
 async function runMigrationCommand(basePath: string): Promise<void> {
     return new Promise((resolve, reject) => {
-        const child = spawn('npx', ['--yes', packageName.ESLINT_MIGRATE_CONFIG, '.eslintrc.json'], {
+        const child = crossSpawn('npx', ['--yes', packageName.ESLINT_MIGRATE_CONFIG, '.eslintrc.json'], {
             cwd: basePath,
-            shell: true
+            shell: false,
+            stdio: 'inherit'
         });
 
-        child.on('close', (code) => {
+        child.on('close', (code: number | null) => {
             if (code === 0) {
                 resolve();
             } else {
-                reject(new Error(`Migration command failed with exit code ${code}. ${MIGRATION_ERROR_TEXT}`));
+                reject(
+                    new Error(`Migration command failed with exit code ${code ?? 'unknown'}. ${MIGRATION_ERROR_TEXT}`)
+                );
             }
         });
 
-        child.on('error', (error) => {
+        child.on('error', (error: Error) => {
             reject(new Error(`Migration command failed: ${error.message}. ${MIGRATION_ERROR_TEXT}`));
         });
     });

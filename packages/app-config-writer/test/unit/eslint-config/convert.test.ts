@@ -6,11 +6,11 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { convertEslintConfig } from '../../../src';
 import type { EslintRcJson } from '../../../src/eslint-config/convert';
 import type { Package } from '@sap-ux/project-access';
-import { spawn } from 'node:child_process';
+import crossSpawn from 'cross-spawn';
 import type { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 
-jest.mock('node:child_process');
+jest.mock('cross-spawn');
 
 describe('convertEslintConfig', () => {
     const loggerMock: ToolsLogger = {
@@ -22,14 +22,14 @@ describe('convertEslintConfig', () => {
     let fs: Editor;
     let errorMock: jest.SpyInstance;
     let infoMock: jest.SpyInstance;
-    let spawnMock: jest.MockedFunction<typeof spawn>;
+    let spawnMock: jest.MockedFunction<typeof crossSpawn>;
 
     beforeEach(() => {
         jest.clearAllMocks();
         fs = create(createStorage());
         errorMock = loggerMock.error as unknown as jest.SpyInstance;
         infoMock = loggerMock.info as unknown as jest.SpyInstance;
-        spawnMock = spawn as jest.MockedFunction<typeof spawn>;
+        spawnMock = crossSpawn as jest.MockedFunction<typeof crossSpawn>;
 
         // Default mock for spawn - successful execution
         const mockChildProcess = new EventEmitter() as ChildProcess;
@@ -254,7 +254,8 @@ describe('convertEslintConfig', () => {
 
             expect(spawnMock).toHaveBeenCalledWith('npx', ['--yes', '@eslint/migrate-config', '.eslintrc.json'], {
                 cwd: basePath,
-                shell: true
+                shell: false,
+                stdio: 'inherit'
             });
         });
 
