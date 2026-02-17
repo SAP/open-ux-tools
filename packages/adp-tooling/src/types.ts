@@ -870,6 +870,13 @@ export interface ServiceKeys {
     };
 }
 
+export interface ServiceKeysCredentials {
+    [key: string]: any;
+    uaa: Uaa;
+    uri: string;
+    endpoints: any;
+}
+
 export interface ServiceInfo {
     serviceKeys: ServiceKeys[];
     serviceInstance: ServiceInstance;
@@ -1091,6 +1098,10 @@ export interface CfAdpWriterConfig {
          * Business service instance keys.
          */
         serviceInfo?: ServiceInfo | null;
+        /**
+         * GUID of the BTP space.
+         */
+        spaceGuid: string;
     };
     project: {
         name: string;
@@ -1130,6 +1141,7 @@ export interface CreateCfConfigParams {
     packageJson: Package;
     toolsId: string;
     serviceInfo?: ServiceInfo | null;
+    spaceGuid: string;
 }
 
 export const AppRouterType = {
@@ -1333,4 +1345,21 @@ export interface CfServiceOffering {
         [key: string]: unknown;
     };
     [key: string]: unknown;
+}
+
+/**
+ * VCAP Services entry structure for default-env.json.
+ */
+export interface VcapServiceEntry {
+    label: string;
+    name: string;
+    tags: string[];
+    credentials: ServiceKeys;
+}
+
+/**
+ * VCAP Services structure (keyed by service name).
+ */
+export interface VcapServices {
+    [serviceName: string]: VcapServiceEntry[];
 }

@@ -645,7 +645,8 @@ export default class extends Generator {
             publicVersions,
             packageJson: getPackageInfo(),
             toolsId: this.toolsId,
-            serviceInfo
+            serviceInfo,
+            spaceGuid: this.cfConfig.space.GUID
         });
 
         if (config.options) {

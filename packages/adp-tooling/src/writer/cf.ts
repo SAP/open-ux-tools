@@ -12,12 +12,13 @@ import {
     getServiceInstanceKeys,
     addServeStaticMiddleware,
     addBackendProxyMiddleware,
-    getCfUi5AppInfo
+    getCfUi5AppInfo,
+    getVCAPServicesFromMtaYaml
 } from '../cf';
 import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
 import type { CfAdpWriterConfig, Content, CfUi5AppInfo, CfConfig } from '../types';
-import { getCfVariant, writeCfTemplates, writeCfUI5Yaml } from './project-utils';
+import { getCfVariant, writeCfTemplates, writeCfUI5Yaml, writeDefaultEnvJson } from './project-utils';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
 import { getBaseAppId } from '../base/helper';
 import { runBuild } from '../base/project-builder';
@@ -44,7 +45,7 @@ export async function generateCf(
     const fullConfig = setDefaults(config);
     const { app, cf, ui5, project } = fullConfig;
 
-    await adjustMtaYaml(
+    const mtaYamlContent = await adjustMtaYaml(
         {
             projectPath: basePath,
             adpProjectName: project.name,
@@ -57,6 +58,9 @@ export async function generateCf(
         config.options?.templatePathOverwrite,
         logger
     );
+
+    const vcapServices = await getVCAPServicesFromMtaYaml(mtaYamlContent, cf.spaceGuid, logger);
+    writeDefaultEnvJson(basePath, vcapServices, fs);
 
     if (fullConfig.app.i18nModels) {
         writeI18nModels(basePath, fullConfig.app.i18nModels, fs);

@@ -449,7 +449,7 @@ export async function adjustMtaYaml(
     memFs: Editor,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
-): Promise<void> {
+): Promise<MtaYaml> {
     const timestamp = Date.now().toString();
 
     const mtaYamlPath = path.join(projectPath, 'mta.yaml');
@@ -497,6 +497,7 @@ export async function adjustMtaYaml(
 
     memFs.write(mtaYamlPath, updatedYamlContent);
     logger?.debug(`Adjusted MTA YAML for project ${projectPath}`);
+    return yamlContent;
 }
 
 /**
