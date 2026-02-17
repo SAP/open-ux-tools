@@ -6,25 +6,27 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { ApprouterDestination } from '../types';
 import type { EffectiveOptions, RouteEntry, XsappConfig } from '../config';
 
+/** Options for loading xs-app.json and building route entries */
+export interface LoadXsappAndBuildRoutesOptions {
+    rootPath: string;
+    xsappJsonPath: string;
+    effectiveOptions: EffectiveOptions;
+    sourcePath: string;
+    logger: ToolsLogger;
+    destinations: ApprouterDestination[] | undefined;
+}
+
 /**
  * Load xs-app.json and build the list of route entries (with compiled regex and destination URLs).
  *
- * @param rootPath - Project root path.
- * @param xsappJsonPath - Resolved path to xs-app.json.
- * @param effectiveOptions - Merged options (allowLocalDir, allowServices, appendAuthRoute, etc.).
- * @param sourcePath - Source path for appendAuthRoute.
- * @param logger - Logger instance.
- * @param destinations - Resolved destinations array.
- * @returns xsappConfig (mutated with filtered routes) and routes array.
+ * @param {LoadXsappAndBuildRoutesOptions} options - Options object (rootPath, xsappJsonPath, effectiveOptions, sourcePath, logger, destinations).
+ * @returns {{ xsappConfig: XsappConfig; routes: RouteEntry[] }} xsappConfig (mutated with filtered routes) and routes array.
  */
-export function loadXsappAndBuildRoutes(
-    rootPath: string,
-    xsappJsonPath: string,
-    effectiveOptions: EffectiveOptions,
-    sourcePath: string,
-    logger: ToolsLogger,
-    destinations: ApprouterDestination[] | undefined
-): { xsappConfig: XsappConfig; routes: RouteEntry[] } {
+export function loadXsappAndBuildRoutes(options: LoadXsappAndBuildRoutesOptions): {
+    xsappConfig: XsappConfig;
+    routes: RouteEntry[];
+} {
+    const { rootPath, xsappJsonPath, effectiveOptions, sourcePath, logger, destinations } = options;
     const xsappConfig = JSON.parse(fs.readFileSync(xsappJsonPath, 'utf8')) as XsappConfig;
 
     if (effectiveOptions.disableWelcomeFile) {

@@ -1,6 +1,8 @@
 import type { BackendProxyMiddlewareCfConfig, ApprouterDestination, ApprouterExtension } from '../types';
 
-/** Effective options with defaults applied (used internally) */
+/**
+ * Effective options with defaults applied (used internally)
+ */
 export interface EffectiveOptions extends BackendProxyMiddlewareCfConfig {
     port: number;
     xsappJson: string;
@@ -9,7 +11,9 @@ export interface EffectiveOptions extends BackendProxyMiddlewareCfConfig {
     extensions: ApprouterExtension[];
 }
 
-/** Route entry with compiled regex and resolved destination URL */
+/**
+ * Route entry with compiled regex and resolved destination URL
+ */
 export interface RouteEntry {
     re: RegExp;
     path: string;
@@ -18,25 +22,34 @@ export interface RouteEntry {
     destination?: string;
 }
 
-/** Mime info for response handling */
+/**
+ * Mime info for response handling
+ */
 export interface MimeInfo {
     type: string;
     charset: string;
     contentType: string;
 }
 
-/** Parsed xs-app.json shape (minimal for our use) */
+/**
+ * Single route entry in xs-app.json (minimal shape we use)
+ */
+export interface XsappRoute {
+    source: string;
+    destination?: string;
+    endpoint?: string;
+    localDir?: string;
+    service?: string;
+    authenticationType?: string;
+    target?: string;
+    cacheControl?: string;
+}
+
+/**
+ * Parsed xs-app.json shape (minimal for our use)
+ */
 export interface XsappConfig {
-    routes?: Array<{
-        source: string;
-        destination?: string;
-        endpoint?: string;
-        localDir?: string;
-        service?: string;
-        authenticationType?: string;
-        target?: string;
-        cacheControl?: string;
-    }>;
+    routes?: XsappRoute[];
     welcomeFile?: string;
     authenticationMethod?: string;
     login?: { callbackEndpoint?: string };
@@ -53,8 +66,8 @@ export const DEFAULT_REWRITE_CONTENT_TYPES = [
 /**
  * Merge user configuration with defaults.
  *
- * @param configuration - Configuration from ui5.yaml.
- * @returns Effective options with all defaults applied.
+ * @param {BackendProxyMiddlewareCfConfig} configuration - Configuration from ui5.yaml.
+ * @returns {EffectiveOptions} Effective options with all defaults applied.
  */
 export function mergeEffectiveOptions(configuration: BackendProxyMiddlewareCfConfig): EffectiveOptions {
     return {

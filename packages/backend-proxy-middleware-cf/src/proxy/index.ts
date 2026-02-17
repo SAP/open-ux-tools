@@ -10,10 +10,10 @@ import type { EffectiveOptions, MimeInfo, RouteEntry } from '../config';
 /**
  * Replaces oldUrl with newUrl in text (regex-safe).
  *
- * @param text - Full text to replace in.
- * @param oldUrl - URL to replace (will be escaped for regex).
- * @param newUrl - Replacement URL.
- * @returns Text with URLs replaced.
+ * @param {string} text - Full text to replace in.
+ * @param {string} oldUrl - URL to replace (will be escaped for regex).
+ * @param {string} newUrl - Replacement URL.
+ * @returns {string} Text with URLs replaced.
  */
 export function replaceUrl(text: string, oldUrl: string, newUrl: string): string {
     const escaped = oldUrl.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -24,9 +24,9 @@ export function replaceUrl(text: string, oldUrl: string, newUrl: string): string
 /**
  * Get mime type, charset and content-type header value from pathname and optional Content-Type header.
  *
- * @param pathname - Request path (used when no ctValue).
- * @param ctValue - Content-Type header value.
- * @returns MimeInfo object.
+ * @param {string} pathname - Request path (used when no ctValue).
+ * @param {string | undefined} ctValue - Content-Type header value.
+ * @returns {MimeInfo} MimeInfo object.
  */
 export function getMimeInfo(pathname: string, ctValue: string | undefined): MimeInfo {
     if (ctValue) {
@@ -51,11 +51,11 @@ export function getMimeInfo(pathname: string, ctValue: string | undefined): Mime
 /**
  * Create the response interceptor for the proxy (content-type + URL rewriting).
  *
- * @param routes - Route entries with regex and destination URLs.
- * @param effectiveOptions - Merged options (rewriteContent, rewriteContentTypes, debug).
- * @param baseUri - Base URI of the approuter (for debug log).
- * @param logger - Logger instance.
- * @returns The interceptor function to pass to responseInterceptor().
+ * @param {RouteEntry[]} routes - Route entries with regex and destination URLs.
+ * @param {EffectiveOptions} effectiveOptions - Merged options (rewriteContent, rewriteContentTypes, debug).
+ * @param {string} baseUri - Base URI of the approuter (for debug log).
+ * @param {ToolsLogger} logger - Logger instance.
+ * @returns {ReturnType<typeof responseInterceptor>} The interceptor function to pass to responseInterceptor().
  */
 export function createResponseInterceptor(
     routes: RouteEntry[],

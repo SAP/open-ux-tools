@@ -23,7 +23,7 @@ dotenv.config();
  * @param params - Middleware parameters from UI5 (options, middlewareUtil).
  * @param params.options - Options containing configuration from ui5.yaml.
  * @param params.middlewareUtil - UI5 middleware utilities (getProject, etc.).
- * @returns Promise resolving to the proxy request handler.
+ * @returns {Promise<RequestHandler>} Promise resolving to the proxy request handler.
  */
 module.exports = async ({
     options,
@@ -54,23 +54,23 @@ module.exports = async ({
     }
     const sourcePath = project.getSourcePath();
 
-    const destinations = resolveDestinations(effectiveOptions, logger);
+    const destinations = resolveDestinations(effectiveOptions);
     if (Array.isArray(destinations) && destinations.length > 0) {
         process.env.destinations = JSON.stringify(destinations);
     } else {
         delete process.env.destinations;
     }
 
-    const { xsappConfig, routes } = loadXsappAndBuildRoutes(
+    const { xsappConfig, routes } = loadXsappAndBuildRoutes({
         rootPath,
-        xsappPath,
+        xsappJsonPath: xsappPath,
         effectiveOptions,
         sourcePath,
         logger,
         destinations
-    );
+    });
 
-    const { extensionModules, extensionsRoutes } = loadExtensions(rootPath, effectiveOptions.extensions, logger);
+    const { modules, routes: extensionsRoutes } = loadExtensions(rootPath, effectiveOptions.extensions, logger);
 
     const freePort = await nextFreePort(effectiveOptions.port, logger);
     if (freePort !== effectiveOptions.port) {
@@ -84,7 +84,7 @@ module.exports = async ({
         port: freePort,
         xsappConfig,
         workingDir: rootPath,
-        extensions: extensionModules
+        extensions: modules
     });
 
     const globalKey = 'backend-proxy-middleware-cf' as const;

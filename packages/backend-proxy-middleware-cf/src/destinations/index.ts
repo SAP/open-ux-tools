@@ -8,7 +8,7 @@ import type { EffectiveOptions } from '../config';
 /**
  * Parse destinations from process.env.destinations JSON string.
  *
- * @returns Parsed destinations or undefined if missing/invalid.
+ * @returns {ApprouterDestination[] | undefined} Parsed destinations or undefined if missing/invalid.
  */
 export function parseDestinationsFromEnv(): ApprouterDestination[] | undefined {
     try {
@@ -25,14 +25,10 @@ export function parseDestinationsFromEnv(): ApprouterDestination[] | undefined {
 /**
  * Resolve destinations from config: process.env.destinations, $env:VAR, or array.
  *
- * @param effectiveOptions - Merged configuration options.
- * @param _logger - Logger (unused, for future use).
- * @returns Resolved destinations array or undefined.
+ * @param {EffectiveOptions} effectiveOptions - Merged configuration options.
+ * @returns {ApprouterDestination[] | undefined} Resolved destinations array or undefined.
  */
-export function resolveDestinations(
-    effectiveOptions: EffectiveOptions,
-    _logger: ToolsLogger
-): ApprouterDestination[] | undefined {
+export function resolveDestinations(effectiveOptions: EffectiveOptions): ApprouterDestination[] | undefined {
     let destinations = parseDestinationsFromEnv();
     if (!destinations) {
         const destOpt = effectiveOptions.destinations;
