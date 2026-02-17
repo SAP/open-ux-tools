@@ -25,8 +25,7 @@ export const getUrlErrorMessage = (
             setIsDetailsValid(true);
         }
     } catch {
-        setIsDetailsValid(false);
-        urlMessage = t('validations.systemUrlOriginOnlyWarning');
+        // ignore
     }
     return urlMessage;
 };
