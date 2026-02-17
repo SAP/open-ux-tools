@@ -38,3 +38,19 @@ export async function validateSystemName(newName: string, currentName?: string):
 
     return true;
 }
+
+/**
+ * Validates that the provided URL is valid and only contains the origin (protocol, hostname, and optional port).
+ * This is to ensure that system entries are consistent and to prevent issues with trailing paths when connecting to the system.
+ *
+ * @param url - the URL to validate
+ * @returns true if the URL is valid, otherwise throws an error
+ */
+export function validateSystemUrl(url: string): boolean {
+    try {
+        new URL(url);
+        return true;
+    } catch {
+        throw t('validation.systemUrlInvalid', { url });
+    }
+}
