@@ -32,7 +32,9 @@ describe('Test createEntityChoices', () => {
         const rootEntity: Entity = {
             entitySetName: 'Travel',
             entityPath: 'Travel',
-            entityType: undefined,
+            entityType: {
+                name: 'TravelType'
+            } as EntityType,
             navPropEntities: undefined
         };
 
@@ -44,7 +46,9 @@ describe('Test createEntityChoices', () => {
         const rootEntity: Entity = {
             entitySetName: 'Travel',
             entityPath: 'Travel',
-            entityType: undefined,
+            entityType: {
+                name: 'TravelType'
+            } as EntityType,
             navPropEntities: []
         };
 
@@ -81,13 +85,17 @@ describe('Test createEntityChoices', () => {
                 {
                     entitySetName: 'Booking',
                     entityPath: '_Booking',
-                    entityType: undefined,
+                    entityType: {
+                        name: 'BookingType'
+                    } as EntityType,
                     navPropEntities: []
                 },
                 {
                     entitySetName: 'Agency',
                     entityPath: '_Agency',
-                    entityType: undefined,
+                    entityType: {
+                        name: 'TravelAgencyType'
+                    } as EntityType,
                     navPropEntities: []
                 }
             ]
@@ -192,12 +200,14 @@ describe('Test createEntityChoices', () => {
         const rootEntity: Entity = {
             entitySetName: 'Travel',
             entityPath: 'Travel',
-            entityType: undefined,
+            entityType: {
+                name: 'TravelType'
+            } as EntityType,
             navPropEntities: [
                 {
                     entitySetName: 'Booking',
                     entityPath: '_Booking',
-                    entityType: undefined,
+                    entityType: { name: 'BookingType' } as EntityType,
                     navPropEntities: []
                 }
             ]
@@ -207,7 +217,7 @@ describe('Test createEntityChoices', () => {
             {
                 entitySetName: 'Booking',
                 entityPath: '_Booking',
-                entityType: undefined,
+                entityType: { name: 'BookingType' } as EntityType,
                 page: {
                     contextPath: '/Travel/_Booking'
                 } as unknown as Entity['page']
@@ -225,12 +235,16 @@ describe('Test createEntityChoices', () => {
         const rootEntity: Entity = {
             entitySetName: 'Travel',
             entityPath: 'Travel',
-            entityType: undefined,
+            entityType: {
+                name: 'TravelType'
+            } as EntityType,
             navPropEntities: [
                 {
                     entitySetName: 'Booking',
                     entityPath: '_Booking',
-                    entityType: undefined,
+                    entityType: {
+                        name: 'BookingType'
+                    } as EntityType,
                     navPropEntities: []
                 }
             ]
@@ -240,7 +254,9 @@ describe('Test createEntityChoices', () => {
             {
                 entitySetName: 'Booking',
                 entityPath: '_Booking',
-                entityType: undefined,
+                entityType: {
+                    name: 'BookingType'
+                } as EntityType,
                 page: {
                     routePattern: '/Travel({key})/_Booking({key2}):?query:'
                 } as unknown as Entity['page']
@@ -258,23 +274,31 @@ describe('Test createEntityChoices', () => {
         const rootEntity: Entity = {
             entitySetName: 'Travel',
             entityPath: 'Travel',
-            entityType: undefined,
+            entityType: {
+                name: 'TravelType'
+            } as EntityType,
             navPropEntities: [
                 {
                     entitySetName: 'Booking',
                     entityPath: '_Booking',
-                    entityType: undefined,
+                    entityType: {
+                        name: 'BookingType'
+                    } as EntityType,
                     navPropEntities: [
                         {
                             entitySetName: 'BookingSupplement',
                             entityPath: '_BookSupplement',
-                            entityType: undefined,
+                            entityType: {
+                                name: 'BookingSupplementType'
+                            } as EntityType,
                             navPropEntities: []
                         },
                         {
                             entitySetName: 'Airline',
                             entityPath: '_Carrier',
-                            entityType: undefined,
+                            entityType: {
+                                name: 'AirlineType'
+                            } as EntityType,
                             navPropEntities: []
                         }
                     ]
@@ -306,24 +330,26 @@ describe('Test createEntityChoices', () => {
         const rootEntity: Entity = {
             entitySetName: 'Travel',
             entityPath: 'Travel',
-            entityType: undefined,
+            entityType: {
+                name: 'TravelType'
+            } as EntityType,
             navPropEntities: [
                 {
                     entitySetName: 'Passenger',
                     entityPath: '_Customer',
-                    entityType: undefined,
+                    entityType: { name: 'PassengerType' } as EntityType,
                     navPropEntities: []
                 },
                 {
                     entitySetName: 'TravelAgency',
                     entityPath: '_Agency',
-                    entityType: undefined,
+                    entityType: { name: 'TravelAgencyType' } as EntityType,
                     navPropEntities: []
                 },
                 {
                     entitySetName: 'Booking',
                     entityPath: '_Booking',
-                    entityType: undefined,
+                    entityType: { name: 'BookingType' } as EntityType,
                     navPropEntities: []
                 }
             ]
@@ -361,7 +387,7 @@ describe('Test createEntityChoices', () => {
                 {
                     entitySetName: 'Booking',
                     entityPath: '_Booking',
-                    entityType: undefined,
+                    entityType: { name: 'BookingType' } as EntityType,
                     navPropEntities: []
                 }
             ]

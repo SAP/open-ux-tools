@@ -53,18 +53,6 @@ exports[`Test createEntityChoices should create entity set choices based on app 
     },
     {
       "checked": false,
-      "name": "_Booking/_BookSupplement/_Booking",
-      "value": {
-        "entity": {
-          "defaultSelected": false,
-          "entityPath": "_Booking",
-          "entitySetName": "Booking",
-        },
-        "fullPath": "_Booking/_BookSupplement/_Booking",
-      },
-    },
-    {
-      "checked": false,
       "name": "_Booking/_BookSupplement/_Product",
       "value": {
         "entity": {
@@ -85,18 +73,6 @@ exports[`Test createEntityChoices should create entity set choices based on app 
           "entitySetName": "SupplementText",
         },
         "fullPath": "_Booking/_BookSupplement/_SupplementText",
-      },
-    },
-    {
-      "checked": false,
-      "name": "_Booking/_BookSupplement/_Travel",
-      "value": {
-        "entity": {
-          "defaultSelected": false,
-          "entityPath": "_Travel",
-          "entitySetName": "Travel",
-        },
-        "fullPath": "_Booking/_BookSupplement/_Travel",
       },
     },
     {
@@ -149,66 +125,6 @@ exports[`Test createEntityChoices should create entity set choices based on app 
     },
     {
       "checked": false,
-      "name": "_Booking/_Travel",
-      "value": {
-        "entity": {
-          "defaultSelected": false,
-          "entityPath": "_Travel",
-          "entitySetName": "Travel",
-        },
-        "fullPath": "_Booking/_Travel",
-      },
-    },
-    {
-      "checked": false,
-      "name": "_Booking/_Travel/_Agency",
-      "value": {
-        "entity": {
-          "defaultSelected": false,
-          "entityPath": "_Agency",
-          "entitySetName": "TravelAgency",
-        },
-        "fullPath": "_Booking/_Travel/_Agency",
-      },
-    },
-    {
-      "checked": true,
-      "name": "_Booking/_Travel/_Booking",
-      "value": {
-        "entity": {
-          "defaultSelected": true,
-          "entityPath": "_Booking",
-          "entitySetName": "Booking",
-        },
-        "fullPath": "_Booking/_Travel/_Booking",
-      },
-    },
-    {
-      "checked": false,
-      "name": "_Booking/_Travel/_Currency",
-      "value": {
-        "entity": {
-          "defaultSelected": false,
-          "entityPath": "_Currency",
-          "entitySetName": "Currency",
-        },
-        "fullPath": "_Booking/_Travel/_Currency",
-      },
-    },
-    {
-      "checked": false,
-      "name": "_Booking/_Travel/_Customer",
-      "value": {
-        "entity": {
-          "defaultSelected": false,
-          "entityPath": "_Customer",
-          "entitySetName": "Passenger",
-        },
-        "fullPath": "_Booking/_Travel/_Customer",
-      },
-    },
-    {
-      "checked": false,
       "name": "_Currency",
       "value": {
         "entity": {
@@ -254,7 +170,6 @@ exports[`Test createEntityChoices should create entity set choices based on app 
     "_Customer": "Passenger",
     "_Product": "Supplement",
     "_SupplementText": "SupplementText",
-    "_Travel": "Travel",
   },
 }
 `;

@@ -3,6 +3,8 @@ import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageV4 } from '@sap/ux-specification/dist/types/src/v4';
+import type { Answers, CheckboxChoiceOptions } from 'inquirer';
+import type { EntitySetsFlat } from './odata-query';
 
 export type SemanticKeyFilter = { name: string; type: string; value: string | undefined };
 
@@ -37,6 +39,10 @@ export type AppConfig = {
      * If the system url + client read from the backend config is available from the system store the matching name will be used to pre-select
      */
     systemName?: { value?: string };
+    relatedEntityChoices: {
+        choices: CheckboxChoiceOptions<Answers>[];
+        entitySetsFlat: EntitySetsFlat;
+    };
 };
 
 export const navPropNameExclusions = ['DraftAdministrativeData', 'SiblingEntity'];

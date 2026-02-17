@@ -13,7 +13,7 @@ import { join } from 'node:path';
 import { t } from '../../utils/i18n';
 import { fetchData, type EntitySetsFlat } from '../odata-query';
 import { ODataDownloadGenerator } from '../odata-download-generator';
-import type { SelectedEntityAnswer, SelectedEntityAnswerAsJSONString } from './prompts';
+import type { SelectedEntityAnswer } from './prompts';
 import type { AppConfig, Entity } from '../types';
 import { getSystemNameFromStore } from '../utils';
 import { PromptState } from '../prompt-state';
@@ -90,7 +90,7 @@ function getDefaultSelectionPaths(entityType: EntityType): string[] {
         return PromptState.entityTypeRefFacetCache[entityType.name];
     }
     const refTargetPaths: string[] = [];
-    entityType.annotations.UI?.Facets?.forEach((facet) => {
+    entityType.annotations?.UI?.Facets?.forEach((facet) => {
         if (facet.$Type === UIAnnotationTypes.ReferenceFacet && facet.Target?.type === 'AnnotationPath') {
             const value = facet.Target.value;
             const pathSepIndex = value?.lastIndexOf('/');
@@ -121,28 +121,37 @@ export type Expands = {
  * @param parentPath - The parent path for constructing full paths
  * @param choices - Accumulated choices array
  * @param poEntityPaths - Page object entity paths for pre-selection
+ * @param listPageEntity - The list page entity, used to prevent loops in the entity paths
  * @returns Object containing entity sets flat map and checkbox choices
  */
 function getEntitySelectionChoices(
     rootEntity: Entity,
     parentPath: string = '',
-    choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] = [],
-    poEntityPaths?: string[]
-): { entitySetsFlat: EntitySetsFlat; choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } {
+    choices: CheckboxChoiceOptions<SelectedEntityAnswer>[] = [],
+    poEntityPaths?: string[],
+    listPageEntity?: Entity
+): { entitySetsFlat: EntitySetsFlat; choices: CheckboxChoiceOptions<SelectedEntityAnswer>[] } {
     const entitySetsFlat = {};
     const navEntities = rootEntity.navPropEntities;
-    if (navEntities) {
+    if (navEntities && navEntities.length > 0) {
         // Check the entity types assigned annotations for cross refs to other entities that should be selected by default
-        // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-selectá
+        // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-selected
         const defaultSelectionPaths = rootEntity.entityType ? getDefaultSelectionPaths(rootEntity.entityType) : [];
         for (const navEntity of navEntities) {
             const expandPath = navEntity.entityPath;
+            // For hierarchies this may be ok but we currently do not detect hierarchies
+            // Dont re-include entities that are referenced on the path already (this will need to change wi th hiereachy support)
+            if (navEntity.entityType?.name === listPageEntity?.entityType?.name || parentPath.includes(expandPath)) {
+                // Stop the tree traversal if the current nodes entity type is the same as the list
+                continue;
+            }
             const fullPath = parentPath.concat(`${parentPath ? '/' : ''}${expandPath}`);
 
             if (navEntity.navPropEntities && navEntity.navPropEntities.length > 0) {
                 Object.assign(
                     entitySetsFlat,
-                    getEntitySelectionChoices(navEntity, fullPath, choices, poEntityPaths).entitySetsFlat
+                    getEntitySelectionChoices(navEntity, fullPath, choices, poEntityPaths, listPageEntity ?? rootEntity)
+                        .entitySetsFlat
                 );
             }
             // Create selection choice for each visited entity
@@ -183,7 +192,7 @@ function getEntitySelectionChoices(
 export function createEntityChoices(
     rootEntity: Entity,
     pageObjectEntities?: Entity[]
-): { entitySetsFlat: EntitySetsFlat; choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[] } | undefined {
+): { entitySetsFlat: EntitySetsFlat; choices: CheckboxChoiceOptions<SelectedEntityAnswer>[] } | undefined {
     // Get all PO entity paths for pre-selection
     const poEntityPaths = pageObjectEntities
         ?.map((poEntity) => {

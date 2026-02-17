@@ -24,9 +24,6 @@ export const promptNames = {
 
 const invalidEntityKeyFilterChars = ['.'];
 
-// Temp workaround for checkbox selection issue:
-export type SelectedEntityAnswerAsJSONString = string & Answers;
-
 export type SelectedEntityAnswer = {
     fullPath: string;
     entity: {
@@ -52,13 +49,21 @@ function resetAppConfig(appConfig?: AppConfig): AppConfig {
         if (appConfig.systemName) {
             appConfig.systemName.value = undefined;
         }
+        appConfig.relatedEntityChoices = {
+            choices: [],
+            entitySetsFlat: {}
+        };
         return appConfig;
     }
     return {
         appAccess: undefined,
         referencedEntities: undefined,
         servicePath: undefined,
-        systemName: { value: undefined }
+        systemName: { value: undefined },
+        relatedEntityChoices: {
+            choices: [],
+            entitySetsFlat: {}
+        }
     };
 }
 
@@ -104,7 +109,7 @@ export async function getODataDownloaderPrompts(): Promise<{
 
     // Additional manually selected nav prop entittes
     const relatedEntityChoices: {
-        choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
+        choices: CheckboxChoiceOptions<Answers>[];
         entitySetsFlat: EntitySetsFlat;
     } = {
         choices: [],
@@ -207,7 +212,7 @@ function getAppSelectionPrompt(
  * @returns The checkbox question for entity selection
  */
 function getEntitySelectionPrompt(relatedEntityChoices: {
-    choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
+    choices: CheckboxChoiceOptions<Answers>[];
     entitySetsFlat: EntitySetsFlat;
 }): CheckBoxQuestion<Answers> {
     return {
@@ -248,7 +253,7 @@ function getEntitySelectionPrompt(relatedEntityChoices: {
 function getResetSelectionPrompt(
     appConfig: AppConfig,
     relatedEntityChoices: {
-        choices: CheckboxChoiceOptions<SelectedEntityAnswerAsJSONString>[];
+        choices: CheckboxChoiceOptions<SelectedEntityAnswer>[];
         entitySetsFlat: EntitySetsFlat;
     }
 ): Question {
@@ -381,7 +386,7 @@ function getConfirmDownloadPrompt(
         labelFalse: t('prompts.confirmDownload.labelFalse'),
         default: false,
         guiOptions: {
-            mandatory: true
+            hint: t('prompts.confirmDownload.hint')
         },
         validate: async (download, answers: Answers) => {
             if (download) {

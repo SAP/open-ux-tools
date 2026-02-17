@@ -34,9 +34,10 @@
             }
         },
         "confirmDownload": {
+            "hint": "This controls when the odata query is executed to prevent multiple rapid queries from being executed.",
             "message": "Confirm entity files to be generated",
-            "labelTrue": "Run odata query (files will be generated on finish)",
-            "labelFalse": "Dont generate files",
+            "labelTrue": "Execute the OData query (data files will be generated on finish)",
+            "labelFalse": "Suppress the OData query (prevents multiple queries during selections)",
             "querySuccess": "OData query success. $t(texts.seeLogForDetails)"
         },
         "updateMainServiceMetadata": {

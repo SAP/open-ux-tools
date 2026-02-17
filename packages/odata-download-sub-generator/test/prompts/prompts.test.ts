@@ -1234,7 +1234,6 @@ describe('Test prompts', () => {
             expect(confirmPrompt.type).toBe('confirm');
             expect(confirmPrompt.name).toBe(promptNames.confirmDownload);
             expect(confirmPrompt.default).toBe(false);
-            expect(confirmPrompt.guiOptions?.mandatory).toBe(true);
         });
 
         it('should validate successfully when download is confirmed', async () => {
