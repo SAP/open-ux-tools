@@ -202,6 +202,41 @@ describe('createJsonFixer', () => {
             expect(fixer.replaceTextRange).toHaveBeenCalled();
             expect(result).toMatchSnapshot();
         });
+
+        it('should update the value for a parent node - fixParent = true', () => {
+            const sourceText = `{"parent": {"old": true}}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['parent']);
+            const mockContextWithText = {
+                sourceCode: {
+                    getParent: jest
+                        .fn()
+                        .mockReturnValueOnce({ name: 'parent', type: 'Object', members: [{}] })
+                        .mockReturnValueOnce({ name: 'parent', type: 'Member', value: { range: [0, 1] } }),
+                    text: sourceText,
+                    ast: { body: ast.body }
+                },
+                report: jest.fn()
+            } as unknown as JSONRuleContext<string, unknown[]>;
+
+            const deepestPathResult: DeepestExistingPathResult = {
+                validatedPath: ['parent', 'old'],
+                missingSegments: []
+            };
+
+            const fixer = createMockFixer();
+            const fixerFn = createJsonFixer({
+                context: mockContextWithText,
+                node,
+                deepestPathResult,
+                value: false,
+                fixParent: true
+            });
+
+            const result = fixerFn!(fixer);
+
+            expect(fixer.replaceTextRange).toHaveBeenCalled();
+            expect(result).toMatchSnapshot();
+        });
     });
 
     describe('INSERT operation', () => {
@@ -322,6 +357,46 @@ describe('createJsonFixer', () => {
 
             expect(result).toEqual([]);
             expect(fixer.insertTextBeforeRange).not.toHaveBeenCalled();
+        });
+
+        it('should insert value on a parent node - fixParent = true', () => {
+            const sourceText = `{"parent": {"old": true}}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['parent']);
+            const mockContextWithText = {
+                sourceCode: {
+                    getParent: jest
+                        .fn()
+                        .mockReturnValueOnce({ name: 'parent', type: 'Object', members: [{}] })
+                        .mockReturnValueOnce({
+                            name: { loc: { start: { column: 1 } } },
+                            type: 'Member',
+                            value: { type: 'Object', range: [2, 3], loc: { start: { offset: 400 } }, members: [] }
+                        }),
+                    text: sourceText,
+                    ast: { body: ast.body }
+                },
+                report: jest.fn()
+            } as unknown as JSONRuleContext<string, unknown[]>;
+
+            const deepestPathResult: DeepestExistingPathResult = {
+                validatedPath: ['parent', 'old'],
+                missingSegments: ['newProp']
+            };
+
+            const fixer = createMockFixer();
+            const fixerFn = createJsonFixer({
+                context: mockContextWithText,
+                node,
+                deepestPathResult,
+                value: false,
+                operation: 'insert',
+                fixParent: true
+            });
+
+            const result = fixerFn!(fixer);
+
+            expect(fixer.insertTextBeforeRange).toHaveBeenCalled();
+            expect(result).toMatchSnapshot();
         });
     });
 
@@ -488,6 +563,45 @@ describe('createJsonFixer', () => {
             const result = fixerFn!(fixer);
 
             expect(result).toEqual([]);
+        });
+
+        it('should delete parent object value if fixParent = true', () => {
+            const sourceText = `{"parent": {"old": true}}`;
+            const { node, ast } = createNodeFromJson(sourceText, ['parent']);
+            const mockContextWithText = {
+                sourceCode: {
+                    getParent: jest
+                        .fn()
+                        .mockReturnValueOnce({ name: 'parent', type: 'Object', members: [{}] })
+                        .mockReturnValueOnce({
+                            name: { loc: { start: { offset: 3 } } },
+                            type: 'Member',
+                            value: { loc: { end: { offset: 4 } } }
+                        }),
+                    text: sourceText,
+                    ast: { body: ast.body }
+                },
+                report: jest.fn()
+            } as unknown as JSONRuleContext<string, unknown[]>;
+
+            const deepestPathResult: DeepestExistingPathResult = {
+                validatedPath: ['parent', 'old'],
+                missingSegments: []
+            };
+
+            const fixer = createMockFixer();
+            const fixerFn = createJsonFixer({
+                context: mockContextWithText,
+                node,
+                deepestPathResult,
+                operation: 'delete',
+                fixParent: true
+            });
+
+            const result = fixerFn!(fixer);
+
+            expect(fixer.removeRange).toHaveBeenCalled();
+            expect(result).toMatchSnapshot();
         });
     });
 

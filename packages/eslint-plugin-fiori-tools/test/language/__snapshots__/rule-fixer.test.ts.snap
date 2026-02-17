@@ -55,6 +55,19 @@ Array [
 ]
 `;
 
+exports[`createJsonFixer DELETE operation should delete parent object value if fixParent = true 1`] = `
+Array [
+  Object {
+    "range": Array [
+      0,
+      4,
+    ],
+    "text": "",
+    "type": "remove",
+  },
+]
+`;
+
 exports[`createJsonFixer DELETE operation should replace a single property in an object node 1`] = `
 Array [
   Object {
@@ -194,6 +207,20 @@ Array [
 ]
 `;
 
+exports[`createJsonFixer INSERT operation should insert value on a parent node - fixParent = true 1`] = `
+Array [
+  Object {
+    "range": Array [
+      401,
+      401,
+    ],
+    "text": "
+  \\"newProp\\": false",
+    "type": "insert",
+  },
+]
+`;
+
 exports[`createJsonFixer Operation inference should infer DELETE when no missingSegments and value is undefined 1`] = `
 Array [
   Object {
@@ -284,6 +311,19 @@ Array [
   \\"enabled\\": true,
   \\"count\\": 5
 }",
+    "type": "replace",
+  },
+]
+`;
+
+exports[`createJsonFixer UPDATE operation should update the value for a parent node - fixParent = true 1`] = `
+Array [
+  Object {
+    "range": Array [
+      0,
+      1,
+    ],
+    "text": "false",
     "type": "replace",
   },
 ]
