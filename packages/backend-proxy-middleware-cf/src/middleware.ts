@@ -13,6 +13,7 @@ import { mergeEffectiveOptions } from './config';
 import type { BackendProxyMiddlewareCfConfig } from './types';
 import { createResponseInterceptor, createProxy } from './proxy';
 import { resolveDestinations, nextFreePort } from './destinations';
+import { applyDestinationsToEnv, loadAndApplyEnvOptions } from './env';
 import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
 
 dotenv.config();
@@ -46,19 +47,18 @@ module.exports = async ({
 
     const project = middlewareUtil.getProject();
     const rootPath = project.getRootPath() ?? process.cwd();
-    const xsappPath = path.resolve(rootPath, effectiveOptions.xsappJson);
+    const xsappPath = path.resolve(rootPath, effectiveOptions.xsappJsonPath);
     if (!fs.existsSync(xsappPath)) {
         throw new Error(
             `Backend proxy middleware (CF): xs-app.json not found at "${xsappPath}" (xsappJson: "${effectiveOptions.xsappJson}").`
         );
     }
-    const sourcePath = project.getSourcePath();
 
+    const sourcePath = project.getSourcePath();
     const destinations = resolveDestinations(effectiveOptions);
-    if (Array.isArray(destinations) && destinations.length > 0) {
-        process.env.destinations = JSON.stringify(destinations);
-    } else {
-        delete process.env.destinations;
+    applyDestinationsToEnv(destinations);
+    if (effectiveOptions.envOptionsPath) {
+        loadAndApplyEnvOptions(rootPath, effectiveOptions.envOptionsPath);
     }
 
     const xsappConfig = loadAndPrepareXsappConfig({

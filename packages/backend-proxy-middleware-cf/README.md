@@ -20,7 +20,8 @@ pnpm add -D @sap-ux/backend-proxy-middleware-cf
 |--------|------|---------|-------------|
 | `debug` | `boolean` | `false` | Verbose logging |
 | `port` | `number` | `5000` | Port for the local approuter |
-| `xsappJson` | `string` | `"./xs-app.json"` | Path to the CF-style approuter config (e.g. `xs-app.json`). Destination route sources should match the pattern `/[^/]*\/(.*\/)?[^/]*/` (e.g. `"^/backend/(.*)$"`). |
+| `xsappJsonPath` | `string` | `"./xs-app.json"` | Path to the CF-style approuter config (e.g. `xs-app.json`). Destination route sources should match the pattern `/[^/]*\/(.*\/)?[^/]*/` (e.g. `"^/backend/(.*)$"`). |
+| `envOptionsPath` | `string` | — | Path (relative to project root) to a JSON file. Each top-level key is set on `process.env` (objects/arrays are JSON-stringified) so the approuter can read credentials and services. The key `destinations` is skipped so the middleware's `destinations` config takes precedence. |
 | `destinations` | `array` or `string` | `[]` | List of `{ name, url }` destinations (names must match routes in `xs-app.json`). Or use `"$env:VAR"` to read a JSON string from `process.env[VAR]` (e.g. from a `.env` file). |
 | `allowServices` | `boolean` | `false` | Allow BTP services referenced in `xs-app.json` (requires authenticated BTP session). |
 | `authenticationMethod` | `"none"` \| `"route"` | `"none"` | Authentication for routes |
@@ -51,6 +52,23 @@ server:
 ```
 
 2. Place `xs-app.json` at the path you set in `xsappJson` (e.g. project root). Define routes with a `source` regex and `destination` name that matches an entry in `destinations`.
+
+### Env options file (VCAP_SERVICES, credentials)
+
+To run the approuter with BTP-style credentials (e.g. XSUAA, destinations, HTML5 app repo), point `envOptionsPath` to a JSON file. Each top-level key is applied to `process.env` so the approuter can find them; object and array values are stored as JSON strings. The key `destinations` in the file is ignored so that the middleware's `destinations` from ui5.yaml are used.
+
+Example shape (minimal):
+
+```json
+{
+  "VCAP_SERVICES": {
+    "xsuaa": [{ "label": "xsuaa", "credentials": { "clientid": "...", "clientsecret": "...", "url": "..." } }],
+    "destination": [{ "label": "destination", "credentials": { ... } }]
+  }
+}
+```
+
+You can export a real `VCAP_SERVICES` (and optionally other keys) from your BTP app and save it to a file (e.g. `.env-options.json`); do not commit secrets. In ui5.yaml set `envOptionsPath: ".env-options.json"`.
 
 ### Destinations from .env
 

@@ -30,7 +30,9 @@ export interface BackendProxyMiddlewareCfConfig {
     /** Port to run the underlying approuter on */
     port?: number;
     /** Path to xs-app.json (relative to project root) */
-    xsappJson?: string;
+    xsappJsonPath: string;
+    /** Path to the environment options file (relative to project root) */
+    envOptionsPath?: string;
     /**
      * Destinations: array of { name, url } or "$env:VAR" to read JSON from process.env[VAR] (e.g. from .env).
      * Destination names must match routes in xs-app.json.
