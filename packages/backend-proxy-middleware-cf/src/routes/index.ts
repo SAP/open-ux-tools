@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { BuildRouteEntriesOptions } from '../types';
-import type { PrepareXsappConfigOptions, RouteEntry, XsappConfig } from '../types';
+import type { BuildRouteEntriesOptions, PrepareXsappConfigOptions, RouteEntry, XsappConfig } from '../types';
 
 /**
  * Load xs-app.json and prepare it for the approuter (filter routes, set auth, optionally append auth route).

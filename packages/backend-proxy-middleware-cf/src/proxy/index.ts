@@ -1,11 +1,11 @@
 import mime from 'mime-types';
 import contentType from 'content-type';
+import type { RequestHandler } from 'express';
 import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middleware';
 
-import type { RequestHandler } from 'express';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { EffectiveOptions, MimeInfo, RouteEntry } from '../types';
+import type { CreateProxyOptions, EffectiveOptions, MimeInfo, RouteEntry } from '../types';
 
 /**
  * Replaces oldUrl with newUrl in text (regex-safe).
@@ -114,21 +114,19 @@ export function createResponseInterceptor(
 
 /**
  * Create the proxy middleware that forwards matching requests to the approuter.
+ * Paths are proxied if they match any customRoute (e.g. welcome, login callback) or any destination route.
+ * Builds the path filter and response interceptor internally.
  *
- * @param pathFilter - Function that returns true for paths to proxy.
- * @param baseUri - Target base URI (e.g. http://localhost:port).
- * @param intercept - Response interceptor (from createResponseInterceptor).
- * @param effectiveOptions - Merged options (debug).
- * @param logger - Logger instance.
+ * @param options - customRoutes, routes, baseUri, effectiveOptions, logger.
  * @returns Express request handler (the proxy middleware).
  */
-export function createProxy(
-    pathFilter: (pathname: string) => boolean,
-    baseUri: string,
-    intercept: ReturnType<typeof responseInterceptor>,
-    effectiveOptions: EffectiveOptions,
-    logger: ToolsLogger
-): RequestHandler {
+export function createProxy(options: CreateProxyOptions): RequestHandler {
+    const { customRoutes, routes, baseUri, effectiveOptions, logger } = options;
+    const intercept = createResponseInterceptor(routes, effectiveOptions, baseUri, logger);
+    const pathFilter = (pathname: string): boolean =>
+        customRoutes.some((r) => new RegExp(`^${r}(\\?.*)?$`).test(pathname)) ||
+        routes.some((route) => route.re.test(pathname));
+
     const proxyMiddleware = createProxyMiddleware({
         logger: effectiveOptions.debug ? logger : undefined,
         target: baseUri,

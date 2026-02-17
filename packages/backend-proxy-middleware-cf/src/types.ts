@@ -123,3 +123,17 @@ export interface PrepareXsappConfigOptions {
     effectiveOptions: EffectiveOptions;
     sourcePath: string;
 }
+
+/** Options for creating the proxy middleware. */
+export interface CreateProxyOptions {
+    /** Path patterns to proxy (e.g. '/', '/login/callback', logout endpoint). */
+    customRoutes: string[];
+    /** Route entries from xs-app (regex + destination URL). */
+    routes: RouteEntry[];
+    /** Target base URI (e.g. http://localhost:port). */
+    baseUri: string;
+    /** Merged options (debug, rewriteContent, etc.). */
+    effectiveOptions: EffectiveOptions;
+    /** Logger instance. */
+    logger: ToolsLogger;
+}

@@ -8,10 +8,10 @@ import type { MiddlewareParameters } from '@ui5/server';
 
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 
+import { createProxy } from './proxy';
 import { loadExtensions } from './extensions';
 import { mergeEffectiveOptions } from './config';
 import type { BackendProxyMiddlewareCfConfig } from './types';
-import { createResponseInterceptor, createProxy } from './proxy';
 import { resolveDestinations, nextFreePort } from './destinations';
 import { applyDestinationsToEnv, loadAndApplyEnvOptions } from './env';
 import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
@@ -109,11 +109,11 @@ module.exports = async ({
         customRoutes.push(logoutEndpoint);
     }
 
-    const pathFilter = (pathname: string): boolean =>
-        customRoutes.some((r) => new RegExp(`^${r}(\\?.*)?$`).test(pathname)) ||
-        routes.some((route) => route.re.test(pathname));
-
-    const intercept = createResponseInterceptor(routes, effectiveOptions, baseUri, logger);
-
-    return createProxy(pathFilter, baseUri, intercept, effectiveOptions, logger);
+    return createProxy({
+        customRoutes,
+        routes,
+        baseUri,
+        effectiveOptions,
+        logger
+    });
 };
