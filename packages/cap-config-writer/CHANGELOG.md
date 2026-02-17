@@ -1,5 +1,24 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.65
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.73
+
+## 0.12.64
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.72
+- @sap-ux/project-access@1.35.4
+
+## 0.12.63
+
+### Patch Changes
+
+- 1a922e7: adds option to prevent root package json updates for cap
+
 ## 0.12.62
 
 ### Patch Changes

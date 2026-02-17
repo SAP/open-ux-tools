@@ -4,8 +4,15 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
 import type { UI5Config } from '@sap-ux/ui5-config';
-import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
-import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace, type Manifest } from '@sap-ux/project-access';
+import { type InboundContent, type Inbound, AdaptationProjectType } from '@sap-ux/axios-extension';
+import {
+    getWebappPath,
+    FileName,
+    readUi5Yaml,
+    type ManifestNamespace,
+    type Manifest,
+    getAppType
+} from '@sap-ux/project-access';
 
 import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
 
@@ -157,6 +164,31 @@ export async function getAdpConfig<T = AdpPreviewConfig>(basePath: string, yamlP
     } catch (error) {
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         throw new Error(`No system configuration found in ${basename(ui5ConfigPath)}`);
+    }
+}
+
+/**
+ * Returns the project type for an existing Adaptation project based on the information
+ * inside the ui5.yaml. If the builder key is presented inside the yaml then we are
+ * in a cloudReady project otherwise - onPremise.
+ *
+ * @param {string} basePath - The path to the adaptation project root folder.
+ * @returns {Promise<AdaptationProjectType | undefined>} The project type or undefined in casde the project is
+ * NOT an Adaptation project or an error is thrown from reading the configuration file.
+ */
+export async function getExistingAdpProjectType(basePath: string): Promise<AdaptationProjectType | undefined> {
+    try {
+        const appType = await getAppType(basePath);
+        if (appType !== 'Fiori Adaptation') {
+            return undefined;
+        }
+        const yamlPath = join(basePath, FileName.Ui5Yaml);
+        const ui5Config = await readUi5Config(basePath, yamlPath);
+        return ui5Config.hasBuilderKey() ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
+    } catch {
+        // Expected: Project may not be an ADP project or configuration files may be missing/invalid
+        // Returning undefined allows callers to handle non-ADP projects gracefully
+        return undefined;
     }
 }
 
