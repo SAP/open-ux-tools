@@ -151,4 +151,36 @@ describe('Test the import system command handler', () => {
             expect.objectContaining({ systemPanelViewType: SystemPanelViewType.View })
         );
     });
+
+    it('should import a system with odata_service connection type', async () => {
+        jest.spyOn(vsCodeWindow, 'showOpenDialog').mockResolvedValue([
+            { path: join(__dirname, '../../../fixtures/import/valid-odata-service-test.json') } as vscodeMod.Uri
+        ]);
+        systemServiceReadMock.mockResolvedValue(undefined);
+
+        const handler = importSystemCommandHandler(mockContext);
+        await handler();
+
+        expect(getOrCreateNewPanelSpy).toHaveBeenCalledWith(
+            'https://odata.service.test.url.com/sap/opu/odata/sap/SERVICE_NAME',
+            expect.any(Function)
+        );
+    });
+
+    it('should default to abap_catalog connection type when not specified', async () => {
+        jest.spyOn(vsCodeWindow, 'showOpenDialog').mockResolvedValue([
+            { path: join(__dirname, '../../../fixtures/import/existing-test.json') } as vscodeMod.Uri
+        ]);
+        systemServiceReadMock.mockResolvedValue(undefined);
+
+        const handler = importSystemCommandHandler(mockContext);
+        await handler();
+
+        expect(getOrCreateNewPanelSpy).toHaveBeenCalled();
+        const createPanelFn = getOrCreateNewPanelSpy.mock.calls[0][1];
+        const panel = createPanelFn();
+
+        // Access the backendSystem property through the protected/private API
+        expect((panel as any).backendSystem?.connectionType).toBe('abap_catalog');
+    });
 });

@@ -1,10 +1,14 @@
 import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
-export const FLEX_ENABLED = 'sap-flex-enabled';
-export const DISABLE_COPY_TO_CLIPBOARD = 'sap-disable-copy-to-clipboard';
-export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const ANCHOR_BAR_VISIBLE = 'sap-anchor-bar-visible';
+export const FLEX_ENABLED = 'sap-flex-enabled';
+export const COPY_TO_CLIPBOARD = 'sap-copy-to-clipboard';
+export const ENABLE_EXPORT = 'sap-enable-export';
+export const ENABLE_PASTE = 'sap-enable-paste';
+export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
+export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
+export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -16,7 +20,11 @@ export interface WidthIncludingColumnHeaderDiagnostic {
         reference: AnnotationReference;
     };
 }
-
+export interface AnchorBarVisible {
+    type: typeof ANCHOR_BAR_VISIBLE;
+    pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
 export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
@@ -45,21 +53,49 @@ export interface CreationModeForTable {
     recommendedValue?: string;
 }
 
-export interface DisableCopyToClipboard {
-    type: typeof DISABLE_COPY_TO_CLIPBOARD;
+export interface CopyToClipboard {
+    type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;
 }
 
-export interface AnchorBarVisible {
-    type: typeof ANCHOR_BAR_VISIBLE;
+export interface EnableExport {
+    type: typeof ENABLE_EXPORT;
     pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
+export interface EnablePaste {
+    type: typeof ENABLE_PASTE;
+    pageName: string;
+    manifest: ManifestPropertyDiagnosticData;
+}
+
+export type StatePreservationModeMessageId =
+    | 'invalidMode'
+    | 'recommendPersistenceForFCL'
+    | 'recommendDiscoveryForNonFCL';
+
+export interface StatePreservationMode {
+    type: typeof STATE_PRESERVATION_MODE;
+    manifest: ManifestPropertyDiagnosticData;
+    messageId: StatePreservationModeMessageId;
+    recommendedValue?: string;
+    value?: string;
+}
+
+export interface TableColumnVerticalAlignment {
+    type: typeof TABLE_COLUMN_VERTICAL_ALIGNMENT;
     manifest: ManifestPropertyDiagnosticData;
 }
 
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
+    | AnchorBarVisible
     | FlexEnabled
-    | DisableCopyToClipboard
+    | CopyToClipboard
     | CreationModeForTable
-    | AnchorBarVisible;
+    | EnableExport
+    | EnablePaste
+    | StatePreservationMode
+    | TableColumnVerticalAlignment;

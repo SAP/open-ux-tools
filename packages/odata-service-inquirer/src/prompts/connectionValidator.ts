@@ -442,6 +442,8 @@ export class ConnectionValidator {
         if (resetValidity) {
             this.resetValidity();
         }
+        // Reset any previous connection errors
+        errorHandler.resetErrorState();
     }
 
     /**
@@ -505,8 +507,7 @@ export class ConnectionValidator {
         destination?: Destination;
         odataVersion?: ODataVersion;
     }): Promise<void> {
-        this.resetConnectionState();
-        this.resetValidity();
+        this.resetConnectionState(true);
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
@@ -734,8 +735,7 @@ export class ConnectionValidator {
         servicePath?: string,
         requiredOdataVersion?: ODataVersion
     ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
-        this.resetConnectionState();
-        this.resetValidity();
+        this.resetConnectionState(true);
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest. This function lowercases the origin.
         const destUrl = getDestinationUrlForAppStudio(destination.Name.toLowerCase(), servicePath);
         // Get the destination URL in the portable form <protocol>://<host>:<port>.
@@ -827,11 +827,14 @@ export class ConnectionValidator {
             if (url.origin === 'null') {
                 return t('errors.invalidUrl', { input: serviceUrl });
             }
-            // Dont allow non origin URLs in for re-entrance tickets as the error handling would become complex to analyize.
+            // Dont allow non origin URLs in for re-entrance tickets and system URL's as the error handling would become complex to analyize.
             // The connection may succeed but later we will get auth errors since axios-extension does not validate this.
-            // The new system name would also include the additional paths which would not make sense either.
-            if (this.systemAuthType === 'reentranceTicket' && !(url.pathname.length === 0 || url.pathname === '/')) {
-                return t('prompts.validationMessages.reentranceTicketSystemHostOnly');
+            // The new system name would also include the additional paths which would not make sense and would cause the issue when storing the system.
+            if (
+                (this.systemAuthType === 'reentranceTicket' || isSystem) &&
+                !(url.pathname.length === 0 || url.pathname === '/')
+            ) {
+                return t('prompts.validationMessages.systemUrlOriginOnlyWarning');
             }
         } catch (error) {
             return t('errors.invalidUrl', { input: serviceUrl });

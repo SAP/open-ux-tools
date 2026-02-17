@@ -1,7 +1,8 @@
 {
     "labels": {
-        "name": "System Name",
+        "name": "Connection Name",
         "type": "System Type",
+        "connectionType": "Connection Type",
         "authenticationType": "Authentication Type",
         "url": "URL",
         "client": "Client",
@@ -14,13 +15,20 @@
         "typeOptions": "Click to display the list of options."
     },
     "validations": {
-        "urlPathWarning": "The provided URL must not contain a path."
+        "systemUrlOriginOnlyWarning": "System URLs must only contain the hostname and may also include the port, for example, 'https://abc.com:123/'."
     },
     "titles": {
         "sapSystemDetails": "SAP System Details",
         "newSapSystem": "New SAP System",
         "onPremSystem": "ABAP On Premise",
-        "btpSystem": "ABAP Environment on SAP Business Technology Platform"
+        "btpSystem": "ABAP Environment on SAP Business Technology Platform",
+        "genericHost": "Generic Host",
+        "catalog": "Catalog",
+        "serviceUrl": "Service URL"
+    },
+    "options": {
+        "abapCatalog": "ABAP Catalog",
+        "serviceUrlEndpoint": "Service URL Endpoint"
     },
     "systemStatus": {
         "infoLoading": "Loading System Information...",
@@ -32,7 +40,6 @@
         },
         "increaseLogLevel": "You might need to increase the log level to <b>Debug</b>."
     },
-
     "dialog": {
         "titleConfirmSave": "Save Confirmation",
         "subtextConfirmSave": "The SAP system has not been validated by testing the connection. Are you sure you want to save?",

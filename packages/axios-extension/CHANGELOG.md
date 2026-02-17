@@ -1,5 +1,55 @@
 # @sap-ux/axios-extension
 
+## 1.25.13
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+
+## 1.25.12
+
+### Patch Changes
+
+- bda7356: fix(deps): update dependency qs to v6.14.2 [security]
+
+## 1.25.11
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/btp-utils@1.1.8
+
+## 1.25.10
+
+### Patch Changes
+
+- Updated dependencies [9f11dd2]
+    - @sap-ux/feature-toggle@0.3.6
+    - @sap-ux/btp-utils@1.1.7
+
+## 1.25.9
+
+### Patch Changes
+
+- 89175fe: fix(deps): update dependency fast-xml-parser to v5 [security]
+
+## 1.25.8
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/btp-utils@1.1.6
+
+## 1.25.7
+
+### Patch Changes
+
+- 0492325: feat(generator-adp): Developer taking over Key-User changes
+
 ## 1.25.6
 
 ### Patch Changes

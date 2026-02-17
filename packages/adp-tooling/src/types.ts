@@ -1,11 +1,17 @@
 import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { AxiosRequestConfig, OperationsType } from '@sap-ux/axios-extension';
+import type {
+    AdaptationProjectType,
+    AxiosRequestConfig,
+    KeyUserChangeContent,
+    OperationsType
+} from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
+import type { SupportedProject } from './source';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -32,18 +38,33 @@ export interface ToolsSupport {
  */
 type AbapTarget = DestinationAbapTarget | Pick<UrlAbapTarget, 'url' | 'client' | 'scp'>;
 
-export interface AdpPreviewConfig {
+/**
+ * Configuration for ADP preview using ABAP target connection.
+ */
+export interface AdpPreviewConfigWithTarget {
     target: AbapTarget;
+    /**
+     * If set to true then certification validation errors are ignored.
+     */
+    ignoreCertErrors?: boolean;
+}
+
+/**
+ * Configuration for ADP preview using CF build output path.
+ */
+export interface AdpPreviewConfigWithBuildPath {
+    /**
+     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
+     */
+    cfBuildPath: string;
 
     /**
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
-    /**
-     * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
-     */
-    cfBuildPath?: string;
 }
+
+export type AdpPreviewConfig = AdpPreviewConfigWithTarget | AdpPreviewConfigWithBuildPath;
 
 export interface OnpremApp {
     /** Application variant id. */
@@ -109,6 +130,10 @@ export interface AdpWriterConfig {
          */
         templatePathOverwrite?: string;
     };
+    /**
+     * Optional: Key-user changes to be written to the project.
+     */
+    keyUserChanges?: KeyUserChangeContent[];
 }
 
 /**
@@ -118,6 +143,7 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
+    storeCredentials?: boolean;
     application: SourceApplication;
     fioriId?: string;
     ach?: string;
@@ -133,6 +159,7 @@ export interface AttributesAnswers {
     enableTypeScript: boolean;
     addDeployConfig?: boolean;
     addFlpConfig?: boolean;
+    importKeyUserChanges?: boolean;
 }
 
 export interface SourceApplication {
@@ -143,11 +170,12 @@ export interface SourceApplication {
     fileType: string;
     bspUrl: string;
     bspName: string;
+    cloudDevAdaptationStatus: string;
 }
 
-export interface FlexUISupportedSystem {
-    isUIFlex: boolean;
-    isOnPremise: boolean;
+export interface FlexUICapability {
+    isUIFlexSupported: boolean;
+    isDtaFolderDeploymentSupported: boolean;
 }
 
 export interface UI5Version {
@@ -187,6 +215,7 @@ export interface Endpoint extends Partial<Destination> {
     Credentials?: { username?: string; password?: string };
     UserDisplayName?: string;
     Scp?: boolean;
+    SystemType?: string;
 }
 
 export interface ChangeInboundNavigation {
@@ -745,6 +774,8 @@ export interface CustomConfig {
     adp: {
         environment: OperationsType;
         support: ToolsSupport;
+        projectType?: AdaptationProjectType;
+        supportedProject?: SupportedProject;
     };
 }
 
@@ -876,6 +907,15 @@ export interface BusinessServiceResource {
     label: string;
 }
 
+export interface CfUi5AppInfo {
+    asyncHints?: {
+        libs?: Array<{
+            name: string;
+            html5AppName?: string;
+            url?: { url: string };
+        }>;
+    };
+}
 /**
  * Cloud Foundry ADP UI5 YAML Types
  */
@@ -1050,13 +1090,17 @@ export interface CfAdpWriterConfig {
          */
         serviceInstanceGuid?: string;
         /**
-         * Backend URL from service instance keys.
+         * Backend URLs from service instance keys.
          */
-        backendUrl?: string;
+        backendUrls?: string[];
         /**
          * OAuth paths extracted from xs-app.json routes that have a source property.
          */
         oauthPaths?: string[];
+        /**
+         * Business service instance keys.
+         */
+        serviceInfo?: ServiceInfo | null;
     };
     project: {
         name: string;
@@ -1088,13 +1132,14 @@ export interface CreateCfConfigParams {
     manifest: Manifest;
     html5RepoRuntimeGuid: string;
     serviceInstanceGuid?: string;
-    backendUrl?: string;
+    backendUrls?: string[];
     oauthPaths?: string[];
     projectPath: string;
     addStandaloneApprouter?: boolean;
     publicVersions: UI5Version;
     packageJson: Package;
     toolsId: string;
+    serviceInfo?: ServiceInfo | null;
 }
 
 export const AppRouterType = {

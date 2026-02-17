@@ -6,11 +6,13 @@ import { useTranslation } from 'react-i18next';
 
 import '../../../../styles/SystemMain.scss';
 import { ServiceKey } from './ServiceKey';
+import { getUrlErrorMessage } from './utils';
 
 interface CloudSystemProps {
     systemInfo?: BackendSystem;
     setUrl: (url: string | undefined) => void;
     setIsDetailsUpdated: (isUpdated: boolean) => void;
+    setIsDetailsValid: (isValid: boolean) => void;
 }
 
 /**
@@ -20,9 +22,15 @@ interface CloudSystemProps {
  * @param props.systemInfo - the system information
  * @param props.setUrl - function to set the URL
  * @param props.setIsDetailsUpdated - function to set the details updated flag
+ * @param props.setIsDetailsValid - function to set the details valid flag
  * @returns - the cloud system JSX element
  */
-export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonly<CloudSystemProps>): ReactElement {
+export function CloudSystem({
+    systemInfo,
+    setUrl,
+    setIsDetailsUpdated,
+    setIsDetailsValid
+}: Readonly<CloudSystemProps>): ReactElement {
     const { t } = useTranslation();
 
     let cloudComponent = <div></div>;
@@ -37,13 +45,15 @@ export function CloudSystem({ systemInfo, setUrl, setIsDetailsUpdated }: Readonl
                     <UITextInput
                         name="reentranceTicketUrl"
                         id="reentranceUrl"
-                        defaultValue={systemInfo?.url}
+                        key={`reentranceTicketUrl-${systemInfo?.connectionType}`}
+                        value={systemInfo?.url}
                         onChange={(e) => {
-                            if (setUrl) {
-                                setUrl((e.target as HTMLInputElement).value);
-                            }
+                            setUrl((e.target as HTMLInputElement).value);
                             setIsDetailsUpdated(true);
                         }}
+                        onGetErrorMessage={(value) =>
+                            getUrlErrorMessage(value, t, setIsDetailsValid, systemInfo?.connectionType)
+                        }
                     />
                 </div>
             </div>

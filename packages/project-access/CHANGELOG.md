@@ -1,5 +1,70 @@
 # @sap-ux/project-access
 
+## 1.35.4
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+
+## 1.35.3
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+
+## 1.35.2
+
+### Patch Changes
+
+- d2b772d: Fix `loadGlobalCdsModule` failing to load global CDS module for CDS versions >= 9.7.0
+
+## 1.35.1
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+
+## 1.35.0
+
+### Minor Changes
+
+- a5ecd7f: Moved the minimal set of helper functions needed for getTableCapabilitiesByEntitySet into project-access, added that new capability aggregator, and refactored odata-service-inquirer and inquirer-common to use the new API.
+
+## 1.34.7
+
+### Patch Changes
+
+- 467e6aa: Fixed: `getSpecification` fails with `ENOENT: no such file or directory, open '/home/user/.fioritools/specification-dist-tags.json'"` if .fioritools does not exist before the call.
+
+## 1.34.6
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/ui5-config@0.29.15
+
+## 1.34.5
+
+### Patch Changes
+
+- 89175fe: fix(deps): update dependency fast-xml-parser to v5 [security]
+
+## 1.34.4
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/ui5-config@0.29.14
+
+## 1.34.3
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
 ## 1.34.2
 
 ### Patch Changes

@@ -41,6 +41,8 @@ import type {
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { getVariantNamespace } from '../utils/project';
+import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * ABAP deploy config generator.
@@ -56,6 +58,7 @@ export default class extends DeploymentGenerator {
     private configExists: boolean;
     private answers: AbapDeployConfigAnswersInternal;
     private projectType: DeployProjectType;
+    private adpProjectType?: AdaptationProjectType;
     private isAdp: boolean;
 
     /**
@@ -68,6 +71,7 @@ export default class extends DeploymentGenerator {
         super(args, opts);
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
         this.launchStandaloneFromYui = opts.launchStandaloneFromYui;
+        this.adpProjectType = opts.adpProjectType;
 
         this.appWizard = opts.appWizard || AppWizard.create(opts);
         this.vscode = opts.vscode;
@@ -92,6 +96,11 @@ export default class extends DeploymentGenerator {
 
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();
+            // NOTE: This _initializing() method is called here when the generator is started as standalone generator.
+            // In the writing phase the same method is called when the generator is started as a sub-generator.
+            // This casues the adpProjectType field to be overriden with undefined in case the generator is started as
+            // sub-generator, that's why we leave the initialization out of the _initializing() method.
+            this.adpProjectType = await getExistingAdpProjectType(this.destinationRoot());
         }
     }
 
@@ -178,16 +187,17 @@ export default class extends DeploymentGenerator {
                 shouldValidatePackageType: this.isAdp,
                 shouldValidateFormatAndSpecialCharacters: this.isAdp
             };
+            const hideIfOnPremise = this.adpProjectType === AdaptationProjectType.ON_PREMISE;
             const promptOptions: AbapDeployConfigPromptOptions = {
-                ui5AbapRepo: { hideIfOnPremise: this.isAdp },
-                transportInputChoice: { hideIfOnPremise: this.isAdp },
+                ui5AbapRepo: { hideIfOnPremise },
+                transportInputChoice: { hideIfOnPremise },
                 packageAutocomplete: {
                     additionalValidation: packageAdditionalValidation
                 },
                 packageManual: {
                     additionalValidation: packageAdditionalValidation
                 },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: this.isAdp } }
+                adpProjectType: this.adpProjectType
             };
             const indexGenerationAllowed = this.indexGenerationAllowed && !this.isAdp;
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
@@ -287,7 +297,8 @@ export default class extends DeploymentGenerator {
         if (this.abort || this.answers.overwrite === false) {
             return;
         }
-        const namespace = await getVariantNamespace(this.destinationPath(), !!this.answers.isAbapCloud, this.fs);
+        const isCloudAdpProject = this.adpProjectType === AdaptationProjectType.CLOUD_READY;
+        const namespace = await getVariantNamespace(this.destinationPath(), isCloudAdpProject, this.fs);
         await generateAbapDeployConfig(
             this.destinationPath(),
             {

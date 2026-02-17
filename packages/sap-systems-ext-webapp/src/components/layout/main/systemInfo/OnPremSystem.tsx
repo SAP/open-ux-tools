@@ -6,6 +6,7 @@ import { BasicAuthCreds } from './BasicAuthCreds';
 import { useTranslation } from 'react-i18next';
 
 import '../../../../styles/SystemMain.scss';
+import { getUrlErrorMessage } from './utils';
 
 interface OnPremSystemProps {
     systemInfo?: BackendSystem;
@@ -41,21 +42,6 @@ export function OnPremSystem({
 }: Readonly<OnPremSystemProps>): ReactElement {
     const { t } = useTranslation();
 
-    const getUrlErrorMessage = (value: string): string | undefined => {
-        let urlMessage: string | undefined;
-        try {
-            const url = new URL(value);
-            if (url.pathname && url.pathname !== '/') {
-                setIsDetailsValid(false);
-                urlMessage = t('validations.urlPathWarning');
-            }
-            setIsDetailsValid(true);
-        } catch {
-            // ignore
-        }
-        return urlMessage;
-    };
-
     return (
         <div>
             <div className="store-text-field">
@@ -65,12 +51,15 @@ export function OnPremSystem({
                 <UITextInput
                     name="systemUrl"
                     id="sysUrl"
-                    defaultValue={systemInfo?.url}
+                    key={`systemUrl-${systemInfo?.connectionType}`} // force re-render so validation is ran if connection type changes
+                    value={systemInfo?.url}
                     onChange={(e) => {
                         setUrl((e.target as HTMLInputElement).value);
                         setIsDetailsUpdated(true);
                     }}
-                    onGetErrorMessage={(value) => getUrlErrorMessage(value)}
+                    onGetErrorMessage={(value) =>
+                        getUrlErrorMessage(value, t, setIsDetailsValid, systemInfo?.connectionType)
+                    }
                 />
             </div>
             <div className="store-text-field">
@@ -78,7 +67,7 @@ export function OnPremSystem({
                 <UITextInput
                     name="systemClient"
                     id="sysClient"
-                    defaultValue={systemInfo?.client}
+                    value={systemInfo?.client}
                     onChange={(e) => {
                         if (setClient) {
                             setClient((e.target as HTMLInputElement).value);

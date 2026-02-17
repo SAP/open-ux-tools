@@ -5,14 +5,16 @@ import {
     getPromptsForAddAnnotationsToOData,
     getAdpConfig,
     ManifestService,
-    getVariant
+    getVariant,
+    isCFEnvironment,
+    type AdpPreviewConfigWithTarget
 } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-service-writer';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpProject } from '../../validation/validation';
+import { validateAdpAppType } from '../../validation/validation';
 import { FileName } from '@sap-ux/project-access';
 
 let loginAttempts = 3;
@@ -26,6 +28,7 @@ export function addAnnotationsToOdataCommand(cmd: Command): void {
     cmd.command('annotations [path]')
         .description(
             `Adds an annotation to the OData Source of the base application in an adaptation project.\n
+            This command is not supported for Cloud Foundry projects.\n
 Example:
     \`npx --yes @sap-ux/create@latest add annotations\``
         )
@@ -49,9 +52,13 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         if (!basePath) {
             basePath = process.cwd();
         }
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for Cloud Foundry projects.');
+        }
+
         const variant = await getVariant(basePath);
-        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
+        const { target, ignoreCertErrors = false } = await getAdpConfig<AdpPreviewConfigWithTarget>(basePath, yamlPath);
         const provider = await createAbapServiceProvider(
             target,
             {

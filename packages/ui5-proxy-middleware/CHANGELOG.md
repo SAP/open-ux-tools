@@ -1,5 +1,40 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.17
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+
+## 1.6.16
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+
+## 1.6.15
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/ui5-config@0.29.15
+
+## 1.6.14
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/ui5-config@0.29.14
+
+## 1.6.13
+
+### Patch Changes
+
+- c707af1: fix(deps): update dependency dotenv to v16.6.1
+
 ## 1.6.12
 
 ### Patch Changes

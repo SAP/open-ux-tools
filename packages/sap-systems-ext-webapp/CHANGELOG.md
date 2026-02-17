@@ -1,5 +1,41 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.1.0
+
+### Minor Changes
+
+- 9f94937: support adding full service urls as a new connection type
+
+## 0.0.12
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
+## 0.0.11
+
+### Patch Changes
+
+- 8f56f6b: Restrict the input of non-origin URLs for ABAP on Cloud systems
+
+## 0.0.10
+
+### Patch Changes
+
+- 3ffe28e: fix input background styling when Chrome autofill is applied
+
+## 0.0.9
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
+## 0.0.8
+
+### Patch Changes
+
+- fc67b03: reword the readme
+
 ## 0.0.7
 
 ### Patch Changes

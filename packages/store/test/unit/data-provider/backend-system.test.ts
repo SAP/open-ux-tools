@@ -192,6 +192,135 @@ describe('Backend system data provider', () => {
         ).resolves.toEqual([sys1, sys2]);
     });
 
+    it('getAll returns only the relevant abap_catalog connectionType systems by default', async () => {
+        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
+        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
+            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
+        });
+        const sys1: BackendSystem = Object.freeze({
+            name: 'sys1',
+            url: 'url1',
+            client: 'client',
+            username: 'user',
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
+        });
+        const sys2: BackendSystem = Object.freeze({
+            name: 'sys2',
+            url: 'url2',
+            client: 'client',
+            username: 'user',
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'odata_service'
+        });
+        const sys3: BackendSystem = Object.freeze({
+            name: 'sys3',
+            url: 'url3',
+            client: 'client',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapCloud,
+            connectionType: 'abap_catalog'
+        });
+        mockHybridStore.readAll.mockResolvedValueOnce({ sys1: sys1, sys2: sys2, sys3: sys3 });
+        await expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1, sys3]);
+    });
+
+    it('getAll returns the systems based on the array of connection types provided', async () => {
+        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
+        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
+            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
+        });
+        const sys1: BackendSystem = Object.freeze({
+            name: 'sys1',
+            url: 'url1',
+            client: 'client',
+            username: 'user',
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog'
+        });
+        const sys2: BackendSystem = Object.freeze({
+            name: 'sys2',
+            url: 'url2',
+            client: 'client',
+            username: 'user',
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'odata_service'
+        });
+        const sys3: BackendSystem = Object.freeze({
+            name: 'sys3',
+            url: 'url3',
+            client: 'client',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapCloud,
+            connectionType: 'abap_catalog'
+        });
+        const sys4: BackendSystem = Object.freeze({
+            name: 'sys4',
+            url: 'url4',
+            hasSensitiveData: false,
+            systemType: SystemType.Generic,
+            connectionType: 'generic_host'
+        });
+        mockHybridStore.readAll.mockResolvedValueOnce({ sys1: sys1, sys2: sys2, sys3: sys3, sys4: sys4 });
+        await expect(
+            new SystemDataProvider(logger).getAll({
+                backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+            })
+        ).resolves.toEqual([sys1, sys2, sys3]);
+    });
+
+    it('getAll returns only backend systems matching the systemId/client', async () => {
+        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => true);
+        jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
+            return JSON.stringify({ backendSystemMigrationV1: new Date().toISOString() });
+        });
+        const sys1: BackendSystem = Object.freeze({
+            name: 'sys1',
+            url: 'url1',
+            client: 'client',
+            username: 'user',
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog',
+            systemInfo: { systemId: 'ID123', client: '999' }
+        });
+        const sys2: BackendSystem = Object.freeze({
+            name: 'sys2',
+            url: 'url2',
+            client: 'client',
+            username: 'user',
+            password: 'pass',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapOnPrem,
+            connectionType: 'abap_catalog',
+            systemInfo: { systemId: 'ID456', client: '000' }
+        });
+        const sys3: BackendSystem = Object.freeze({
+            name: 'sys3',
+            url: 'url3',
+            client: 'client',
+            hasSensitiveData: true,
+            systemType: SystemType.AbapCloud,
+            connectionType: 'abap_catalog',
+            systemInfo: { systemId: 'ID123', client: '999' }
+        });
+        mockHybridStore.readAll.mockResolvedValueOnce({ sys1: sys1, sys2: sys2, sys3: sys3 });
+        await expect(
+            new SystemDataProvider(logger).getAll({
+                backendSystemFilter: { systemInfo: { systemId: 'ID123', client: '999' } }
+            })
+        ).resolves.toEqual([sys1, sys3]);
+    });
+
     it('getAll performs necessary migration to add hasSensitveData', async () => {
         jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => false);
         const sys1: BackendSystem = {

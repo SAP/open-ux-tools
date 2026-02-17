@@ -250,6 +250,25 @@ async function generate<T extends {}>(
     }
     fs.writeJSON(packagePath, packageJson);
 
+    if (feApp.service.capService) {
+        const settings: CapProjectSettings = {
+            appRoot: basePath,
+            packageName: feApp.package.name ?? '',
+            appId: feApp.app.id,
+            sapux: feApp.appOptions?.sapux,
+            enableCdsUi5Plugin: feApp.appOptions?.addCdsUi5Plugin,
+            enableTypescript: feApp.appOptions?.typescript,
+            disableRootPackageJsonUpdates: feApp.appOptions?.disableCapRootPkgJsonUpdates
+        };
+        // apply cap updates when service is cap
+        await applyCAPUpdates(fs, feApp.service.capService, settings);
+    }
+
+    if (feApp.appOptions?.addAnnotations) {
+        await writeAnnotations(basePath, feApp, fs, log);
+    }
+
+    // OPA tests must be generated last since they depend on other parts of the app, such as annotations, being in place
     if (addTest) {
         const opaConfig = getOpaConfig(
             {
@@ -258,23 +277,6 @@ async function generate<T extends {}>(
             feApp.app.flpAppId
         );
         await generateOPAFiles(basePath, opaConfig, fs, log);
-    }
-
-    if (feApp.service.capService) {
-        const settings: CapProjectSettings = {
-            appRoot: basePath,
-            packageName: feApp.package.name ?? '',
-            appId: feApp.app.id,
-            sapux: feApp.appOptions?.sapux,
-            enableCdsUi5Plugin: feApp.appOptions?.addCdsUi5Plugin,
-            enableTypescript: feApp.appOptions?.typescript
-        };
-        // apply cap updates when service is cap
-        await applyCAPUpdates(fs, feApp.service.capService, settings);
-    }
-
-    if (feApp.appOptions?.addAnnotations) {
-        await writeAnnotations(basePath, feApp, fs, log);
     }
     return fs;
 }

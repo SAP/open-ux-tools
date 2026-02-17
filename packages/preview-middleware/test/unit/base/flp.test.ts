@@ -23,6 +23,7 @@ import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
 jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
@@ -1294,6 +1295,7 @@ describe('FlpSandbox', () => {
 
     describe('cds-plugin-ui5', () => {
         let server!: SuperTest<Test>;
+        const baseUrl = '/ui5.patched.router.base';
         const mockConfig = {
             flp: {
                 apps: [
@@ -1356,25 +1358,37 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
 
             const app = express();
-            app.use([
-                function (req: EnhancedRequest, _res: Response, next: NextFunction) {
-                    req['ui5-patched-router'] = { baseUrl: '/ui5-patched-router-base' };
-                    next();
-                },
-                flp.router
-            ]);
+            // Middleware to inject baseUrl
+            app.use((req: EnhancedRequest, _res: Response, next: NextFunction) => {
+                req['ui5-patched-router'] = { baseUrl };
+                next();
+            });
+
+            // Mount router at baseUrl path instead of root
+            app.use(baseUrl, flp.router);
 
             server = await supertest(app);
         });
 
         test('rta', async () => {
-            const response = await server.get('/my/rta.html').expect(302);
-            expect(response.header.location).toContain('ui5-patched-router-base');
+            await server.get(`${baseUrl}/my/rta.html`).expect(302);
+            const response = await server
+                .get(
+                    `${baseUrl}/my/rta.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true`
+                )
+                .expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('cpe', async () => {
+            const response = await server.get(`${baseUrl}/my/editor.html`).expect(200);
+            expect(response.text).toMatchSnapshot();
         });
 
         test('test/flp.html', async () => {
-            const response = await server.get(`/test/flp.html#app-preview`).expect(302);
-            expect(response.header.location).toContain('ui5-patched-router-base');
+            await server.get(`${baseUrl}/test/flp.html`).expect(302);
+            const response = await server.get(`${baseUrl}/test/flp.html?sap-ui-xx-viewCache=false`).expect(200);
+            expect(response.text).toMatchSnapshot();
         });
     });
 });
@@ -1472,7 +1486,7 @@ describe('initAdp', () => {
                 sync: syncSpy,
                 onChangeRequest: jest.fn(),
                 addApis: jest.fn(),
-                isCloudProject: true
+                projectType: AdaptationProjectType.CLOUD_READY
             } as unknown as adpTooling.AdpPreview;
         });
         const config = {
@@ -1520,7 +1534,7 @@ describe('initAdp', () => {
                 sync: syncSpy,
                 onChangeRequest: jest.fn(),
                 addApis: jest.fn(),
-                isCloudProject: false
+                projectType: AdaptationProjectType.ON_PREMISE
             } as unknown as adpTooling.AdpPreview;
         });
 

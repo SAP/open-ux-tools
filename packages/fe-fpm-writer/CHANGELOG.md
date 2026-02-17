@@ -1,5 +1,123 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.42.9
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.16
+
+## 0.42.8
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/fiori-annotation-api@0.9.15
+
+## 0.42.7
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/fiori-annotation-api@0.9.14
+
+## 0.42.6
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/fiori-annotation-api@0.9.13
+
+## 0.42.5
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.12
+- @sap-ux/project-access@1.35.1
+
+## 0.42.4
+
+### Patch Changes
+
+- Updated dependencies [3795bb2]
+    - @sap-ux/fiori-annotation-api@0.9.11
+
+## 0.42.3
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/fiori-annotation-api@0.9.10
+
+## 0.42.2
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/fiori-annotation-api@0.9.9
+
+## 0.42.1
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/fiori-annotation-api@0.9.8
+
+## 0.42.0
+
+### Minor Changes
+
+- 8064811: feat(fpm-writer): Form building block
+
+## 0.41.6
+
+### Patch Changes
+
+- Updated dependencies [89175fe]
+    - @sap-ux/project-access@1.34.5
+    - @sap-ux/fiori-annotation-api@0.9.7
+
+## 0.41.5
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/fiori-annotation-api@0.9.6
+    - @sap-ux/project-access@1.34.4
+
+## 0.41.4
+
+### Patch Changes
+
+- 1c6288d: Edit i18n text titles for RTE Button Groups
+
+## 0.41.3
+
+### Patch Changes
+
+- Updated dependencies [6d71400]
+    - @sap-ux/fiori-annotation-api@0.9.5
+    - @sap-ux/project-access@1.34.3
+
+## 0.41.2
+
+### Patch Changes
+
+- 22fbaef: Add titles to RTE button groups options
+
+## 0.41.1
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/fiori-annotation-api@0.9.4
+
 ## 0.41.0
 
 ### Minor Changes

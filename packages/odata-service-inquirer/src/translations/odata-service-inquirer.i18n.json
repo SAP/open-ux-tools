@@ -60,7 +60,7 @@
             "warningCertificateValidationDisabled": "Certificate validation has been disabled by the user.",
             "annotationsNotFound": "Annotations not found for the specified service.",
             "backendSystemExistsWarning": "A saved system connection entry: \"{{- backendName}}\" already exists with the same URL and client. Please reuse the existing entry or remove it, using the systems panel, before adding a new connection.",
-            "reentranceTicketSystemHostOnly": "ABAP cloud system urls must only contain the hostname, for example, 'https://123.abc.com'"
+            "systemUrlOriginOnlyWarning": "System URLs must only contain the hostname and may also include the port, for example, 'https://abc.com:123/'."
         },
         "warnings": {
             "nonUIServiceTypeWarningMessage": "Services of service type: {{serviceType}} or without a service type are not intended to be used for generating SAP Fiori UI applications.",
@@ -140,7 +140,8 @@
             "noDraftEnabledEntitiesError": "The CAP service you have chosen does not have any entities that are draft enabled. To generate an OData V4 SAP Fiori application using this floorplan for a CAP project, the entity selected must be draft enabled.",
             "mainEntityParameterFoundInfo": "The selected entity '{{entityName}}' requires a parameter which is set by the application filters. Navigation entities are not supported.",
             "noEntitiesError": "$t(errors.noRelevantEntities)",
-            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an analytical list page application. The service must contain aggregate-based entities for this template."
+            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an analytical list page application. The service must contain aggregate-based entities for this template.",
+            "requiredError": "Please select a main entity to continue."
         },
         "navigationEntitySelection": {
             "message": "Navigation Entity",
@@ -159,6 +160,7 @@
         "tableType": {
             "message": "Table Type",
             "hint": "Defines the table type for the list report page.",
+            "requiredError": "Please select a table type to continue.",
             "choiceNone": "$t(texts.choiceNameNone)",
             "choiceGrid": "Grid",
             "choiceAnalytical": "Analytical",
@@ -233,9 +235,9 @@
         "urlRedirect": "The service URL is redirecting.",
         "certValidationRequired": "Certificate validation is required to continue.",
         "exitingGeneration": "Exiting generation. Exit: {{exitReason}}.",
-        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}.",
-        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails).",
-        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}.",
+        "serviceMetadataError": "An error occurred when reading the service metadata for service: {{- servicePath}}. Error: {{errorText}}",
+        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\", \"errorText\": \"{{errorText}}\" }) $t(texts.seeLogForDetails)",
+        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\", \"errorText\": \"{{errorText}}\" })",
         "serviceTypeRequestError": "An error occurred when retrieving the service type: {{- error}}.",
         "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
         "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}: {{error}}.",
@@ -264,7 +266,8 @@
         "noExternalServiceMetdataFetched": "No external service metadata was fetched. $t(texts.seeLogForDetails)",
         "missingServices": "OData V{{odataVersion}} services are not available.",
         "specifiedServicesNotAvailable_one": "The required OData service: {{-service}} is not available from the {{odataVersion}}services catalog. Please ensure the service is available.",
-        "specifiedServicesNotAvailable_other": "The required OData services are not available from the {{odataVersion}}services catalog. Please ensure the services are available. $t(texts.seeLogForDetails)"
+        "specifiedServicesNotAvailable_other": "The required OData services are not available from the {{odataVersion}}services catalog. Please ensure the services are available. $t(texts.seeLogForDetails)",
+        "storedSystemUrlPathNotSupported": "The stored cloud system URL '{{- systemUrl}}' contains a path which is not supported for reentrance ticket authentication. The path is ignored for this connection."
     },
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",

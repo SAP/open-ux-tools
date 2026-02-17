@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-library-writer"
     },
-    "version": "0.6.44",
+    "version": "0.6.56",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -38,11 +38,11 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.10",
-        "i18next": "25.3.0",
-        "lodash": "4.17.21",
+        "i18next": "25.8.0",
+        "lodash": "4.17.23",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "semver": "7.5.4"
+        "semver": "7.7.3"
     },
     "devDependencies": {
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
@@ -52,6 +52,6 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
         "fs-extra": "10.0.0",
-        "@types/semver": "7.5.2"
+        "@types/semver": "7.7.1"
     }
 }

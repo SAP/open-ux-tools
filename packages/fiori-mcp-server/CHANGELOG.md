@@ -1,5 +1,139 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.29
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/fiori-docs-embeddings@0.4.14
+
+## 0.6.28
+
+### Patch Changes
+
+- Updated dependencies [3795bb2]
+    - @sap-ux/fiori-docs-embeddings@0.4.14
+
+## 0.6.27
+
+### Patch Changes
+
+- Updated dependencies [38e215e]
+    - @sap-ux/store@1.5.5
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.26
+
+### Patch Changes
+
+- b8efec5: Update dependency "@modelcontextprotocol/sdk": "1.26.0"
+- Updated dependencies [83e3b70]
+    - @sap-ux/store@1.5.4
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.25
+
+### Patch Changes
+
+- 32a9147: chore(deps): update dependency @langchain/mcp-adapters to v1.1.2
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.24
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.23
+
+### Patch Changes
+
+- bd48387: Update readme for Self-Signed SSL Certificates
+
+## 0.6.22
+
+### Patch Changes
+
+- Updated dependencies [c3a1e07]
+    - @sap-ux/fiori-docs-embeddings@0.4.13
+
+## 0.6.21
+
+### Patch Changes
+
+- 6b659e7: feat: add tool annotations for better AI guidance
+
+## 0.6.20
+
+### Patch Changes
+
+- @sap-ux/fiori-docs-embeddings@0.4.12
+- @sap-ux/store@1.5.3
+
+## 0.6.19
+
+### Patch Changes
+
+- Updated dependencies [4eac0a7]
+    - @sap-ux/fiori-docs-embeddings@0.4.12
+
+## 0.6.18
+
+### Patch Changes
+
+- 5d50232: feat: add telemetry tracking for MCP server sessions and handlers
+
+## 0.6.17
+
+### Patch Changes
+
+- 529408b: refactor: adjust telemetry functionalityId reporting
+
+## 0.6.16
+
+### Patch Changes
+
+- Updated dependencies [a686522]
+    - @sap-ux/fiori-docs-embeddings@0.4.11
+
+## 0.6.15
+
+### Patch Changes
+
+- Updated dependencies [be6ea11]
+    - @sap-ux/store@1.5.2
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.14
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.13
+
+### Patch Changes
+
+- Updated dependencies [c99758e]
+    - @sap-ux/fiori-docs-embeddings@0.4.10
+
+## 0.6.12
+
+### Patch Changes
+
+- 924e26f: fix(deps): update dependency @sap/ux-specification to v1.142.0
+
+## 0.6.11
+
+### Patch Changes
+
+- Updated dependencies [32f8644]
+    - @sap-ux/store@1.5.1
+    - @sap-ux/fiori-docs-embeddings@0.4.9
+
 ## 0.6.10
 
 ### Patch Changes

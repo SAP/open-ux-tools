@@ -1,4 +1,4 @@
-import type { BackendSerializableKeys, ServiceOptions } from '../types';
+import type { ServiceOptions } from '../types';
 import type { BackendProviderRetrievalOptions, BackendSystemFilter, DataProvider, DataProviderConstructor } from '.';
 import type { DataAccess } from '../data-access';
 import type { Logger } from '@sap-ux/logger';
@@ -6,7 +6,7 @@ import { getHybridStore } from '../data-access/hybrid';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { Entities } from './constants';
 import { ConnectionType } from '../types';
-import { getBackendSystemType, getSapToolsDirectory } from '../utils';
+import { getBackendSystemType, getSapToolsDirectory, isMatch } from '../utils';
 import { join } from 'node:path';
 import { readFileSync, writeFileSync } from 'node:fs';
 
@@ -68,13 +68,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
             });
         }
 
-        const systemList = Object.values(systems);
-
-        if (!backendSystemFilter) {
-            return systemList;
-        }
-
-        return this.applyFilters(systemList, backendSystemFilter);
+        return this.applyFilters(Object.values(systems), backendSystemFilter);
     }
 
     /**
@@ -96,9 +90,11 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
      * Applies filter objects to a list of backend systems.
      */
     private applyFilters(systems: BackendSystem[], filters: BackendSystemFilter = {}): BackendSystem[] {
-        return systems.filter((system) =>
-            Object.entries(filters).every(([key, value]) => system[key as BackendSerializableKeys] === value)
-        );
+        if (!filters.connectionType) {
+            // unless a filter for connectionType is explicitly provided, default to filtering by the ABAP Catalog type as this is what existing consumers expect
+            filters.connectionType = 'abap_catalog';
+        }
+        return systems.filter((system) => isMatch(system, filters));
     }
 
     /**

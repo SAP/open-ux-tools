@@ -1,5 +1,54 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.9
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+
+## 1.7.8
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+
+## 1.7.7
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+
+## 1.7.6
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/ui5-config@0.29.15
+
+## 1.7.5
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/ui5-config@0.29.14
+
+## 1.7.4
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
+## 1.7.3
+
+### Patch Changes
+
+- be6ea11: fix(deps): update dependency i18next to v25.8.0
+    - @sap-ux/ui5-config@0.29.13
+
 ## 1.7.2
 
 ### Patch Changes

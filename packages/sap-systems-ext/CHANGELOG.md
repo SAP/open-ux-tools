@@ -1,5 +1,35 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.0
+
+### Minor Changes
+
+- 9f94937: support adding full service urls as a new connection type
+
+## 0.2.4
+
+### Patch Changes
+
+- 38e215e: chore(deps): update dependency @zowe/secrets-for-zowe-sdk to v8.29.4
+
+## 0.2.3
+
+### Patch Changes
+
+- 8f56f6b: Restrict the input of non-origin URLs for ABAP on Cloud systems
+
+## 0.2.2
+
+### Patch Changes
+
+- 3ffe28e: fix input background styling when Chrome autofill is applied
+
+## 0.2.1
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
 ## 0.2.0
 
 ### Minor Changes

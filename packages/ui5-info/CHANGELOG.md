@@ -1,5 +1,30 @@
 # @sap-ux/ui5-info
 
+## 0.13.12
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+
+## 0.13.11
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+
+## 0.13.10
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/logger@0.8.1
+
+## 0.13.9
+
+### Patch Changes
+
+- 6d71400: Changes to support v4.01 odata services
+
 ## 0.13.8
 
 ### Patch Changes

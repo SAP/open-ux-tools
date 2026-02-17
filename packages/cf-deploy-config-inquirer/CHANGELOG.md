@@ -1,5 +1,140 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.89
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/inquirer-common@0.11.7
+
+## 0.5.88
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.6
+
+## 0.5.87
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.5
+
+## 0.5.86
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.4
+
+## 0.5.85
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.3
+
+## 0.5.84
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/btp-utils@1.1.8
+
+## 0.5.83
+
+### Patch Changes
+
+- Updated dependencies [1ad56d1]
+    - @sap-ux/inquirer-common@0.11.1
+
+## 0.5.82
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/inquirer-common@0.11.0
+
+## 0.5.81
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.26
+
+## 0.5.80
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.25
+
+## 0.5.79
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.24
+
+## 0.5.78
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/inquirer-common@0.10.23
+
+## 0.5.77
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+- Updated dependencies [9f11dd2]
+    - @sap-ux/inquirer-common@0.10.22
+    - @sap-ux/btp-utils@1.1.7
+
+## 0.5.76
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.21
+
+## 0.5.75
+
+### Patch Changes
+
+- Updated dependencies [ea7a16c]
+    - @sap-ux/inquirer-common@0.10.20
+    - @sap-ux/logger@0.8.1
+    - @sap-ux/btp-utils@1.1.6
+
+## 0.5.74
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.19
+
+## 0.5.73
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.18
+
+## 0.5.72
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.17
+
+## 0.5.71
+
+### Patch Changes
+
+- d11943d: fix(deps): update dependency i18next to v25.8.0
+- Updated dependencies [d11943d]
+    - @sap-ux/inquirer-common@0.10.16
+
+## 0.5.70
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.10.15
+
 ## 0.5.69
 
 ### Patch Changes
