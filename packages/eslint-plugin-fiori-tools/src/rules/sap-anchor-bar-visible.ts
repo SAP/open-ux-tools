@@ -2,6 +2,7 @@ import type { FioriRuleDefinition } from '../types';
 import { ANCHOR_BAR_VISIBLE, type AnchorBarVisible } from '../language/diagnostics';
 import { createFioriRule } from '../language/rule-factory';
 import type { MemberNode } from '@humanwhocodes/momoa';
+import { createJsonFixer } from '../language/rule-fixer';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: ANCHOR_BAR_VISIBLE,
@@ -15,7 +16,8 @@ const rule: FioriRuleDefinition = createFioriRule({
         messages: {
             [ANCHOR_BAR_VISIBLE]:
                 'The "anchorBarVisible" property should not be configured in manifest settings. Remove this property from the Object Page header configuration.'
-        }
+        },
+        fixable: 'code'
     },
 
     check(context) {
@@ -33,9 +35,8 @@ const rule: FioriRuleDefinition = createFioriRule({
                 const manifest = parsedApp.manifestObject;
 
                 // Navigate to the target in the manifest
-                const sapUi5 = manifest['sap.ui5'] as any;
-                const target = sapUi5?.routing?.targets?.[page.targetName];
-                const anchorBarVisible = target?.options?.settings?.content?.header?.anchorBarVisible;
+                const target = manifest['sap.ui5']?.routing?.targets?.[page.targetName];
+                const anchorBarVisible: unknown = (target as any)?.options?.settings?.content?.header?.anchorBarVisible;
 
                 // Check if anchorBarVisible is configured (regardless of value)
                 if (anchorBarVisible !== undefined) {
@@ -64,11 +65,17 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJsonVisitorHandler: (context) =>
+    createJsonVisitorHandler: (context, diagnostic, deepestPathResult) =>
         function report(node: MemberNode): void {
             context.report({
                 node,
-                messageId: ANCHOR_BAR_VISIBLE
+                messageId: ANCHOR_BAR_VISIBLE,
+                fix: createJsonFixer({
+                    context,
+                    deepestPathResult,
+                    node,
+                    operation: 'delete'
+                })
             });
         }
 });
