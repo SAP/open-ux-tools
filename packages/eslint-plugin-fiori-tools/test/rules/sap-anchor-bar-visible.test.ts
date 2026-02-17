@@ -1,12 +1,7 @@
 import { RuleTester } from 'eslint';
 import anchorBarVisibleRule from '../../src/rules/sap-anchor-bar-visible';
 import { meta, languages } from '../../src/index';
-import {
-    getManifestAsCode,
-    setup,
-    V4_MANIFEST,
-    V4_MANIFEST_PATH
-} from '../test-helper';
+import { getManifestAsCode, setup, V4_MANIFEST, V4_MANIFEST_PATH } from '../test-helper';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
