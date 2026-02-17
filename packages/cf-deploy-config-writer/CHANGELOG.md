@@ -1,5 +1,81 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.68
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/nodejs-utils@0.2.15
+
+## 0.3.67
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/project-access@1.35.4
+
+## 0.3.66
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+
+## 0.3.65
+
+### Patch Changes
+
+- c21f1b6: Ensure mta service-name is handled
+
+## 0.3.64
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+
+## 0.3.63
+
+### Patch Changes
+
+- 14e0ab4: Ensure service-name is only added when destinations are being added by cf-writer
+
+## 0.3.62
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/project-access@1.35.1
+    - @sap-ux/nodejs-utils@0.2.14
+
+## 0.3.61
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+
+## 0.3.60
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+
+## 0.3.59
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/nodejs-utils@0.2.13
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-config@0.29.15
+
 ## 0.3.58
 
 ### Patch Changes

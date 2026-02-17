@@ -6,9 +6,14 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import { type UI5FlexLayer } from '@sap-ux/project-access';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { AbapServiceProvider, LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
+import type {
+    AbapServiceProvider,
+    AdaptationProjectType,
+    LayeredRepositoryService,
+    MergedAppDescriptor
+} from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
 import type {
@@ -31,6 +36,8 @@ import {
     isV4DescriptorChange
 } from './change-handler';
 import { addCustomFragment } from './descriptor-change-handler';
+import { getExistingAdpProjectType } from '../base/helper';
+import path from 'node:path';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
 
@@ -63,7 +70,7 @@ export class AdpPreview {
 
     private lrep: LayeredRepositoryService | undefined;
     private descriptorVariantId: string | undefined;
-    private isCloud: boolean | undefined;
+    private projectTypeValue?: AdaptationProjectType;
 
     /**
      * @returns merged manifest.
@@ -103,14 +110,10 @@ export class AdpPreview {
     }
 
     /**
-     * @returns {boolean} true if the project is an ABAP cloud project, false otherwise.
+     * @returns {AdaptationProjectType | undefined} The project type.
      */
-    get isCloudProject(): boolean {
-        if (this.isCloud !== undefined) {
-            return this.isCloud;
-        } else {
-            throw new Error('Not initialized');
-        }
+    get projectType(): AdaptationProjectType | undefined {
+        return this.projectTypeValue;
     }
 
     /**
@@ -135,7 +138,7 @@ export class AdpPreview {
      * @returns {Promise<UI5FlexLayer>} The UI5 flex layer for which editing is enabled.
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        if (this.config.cfBuildPath) {
+        if ('cfBuildPath' in this.config) {
             return this.initCfBuildMode(descriptorVariant);
         }
 
@@ -151,8 +154,7 @@ export class AdpPreview {
         this.lrep = this.provider.getLayeredRepository();
         // fetch a merged descriptor from the backend
         await this.lrep.getCsrfToken();
-        // check if the project is an ABAP cloud project
-        this.isCloud = await this.provider.isAbapCloud();
+        this.projectTypeValue = await getExistingAdpProjectType(path.resolve());
 
         await this.sync();
         return descriptorVariant.layer;
@@ -166,7 +168,7 @@ export class AdpPreview {
      */
     private async initCfBuildMode(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
         this.descriptorVariantId = descriptorVariant.id;
-        this.isCloud = false;
+        this.projectTypeValue = undefined;
         this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);
         return descriptorVariant.layer;
     }
@@ -176,7 +178,7 @@ export class AdpPreview {
      * The descriptor is refreshed only if the global flag is set to true.
      */
     async sync(): Promise<void> {
-        if (this.config.cfBuildPath) {
+        if ('cfBuildPath' in this.config) {
             return;
         }
         if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {

@@ -1,5 +1,117 @@
 # @sap-ux/inquirer-common
 
+## 0.11.7
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/telemetry@0.6.74
+    - @sap-ux/odata-service-writer@0.29.19
+
+## 0.11.6
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.72
+- @sap-ux/odata-service-writer@0.29.19
+- @sap-ux/project-access@1.35.4
+- @sap-ux/telemetry@0.6.73
+
+## 0.11.5
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.71
+- @sap-ux/telemetry@0.6.72
+
+## 0.11.4
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/fiori-generator-shared@0.13.70
+    - @sap-ux/odata-service-writer@0.29.18
+    - @sap-ux/telemetry@0.6.71
+
+## 0.11.3
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/fiori-generator-shared@0.13.69
+    - @sap-ux/odata-service-writer@0.29.17
+    - @sap-ux/telemetry@0.6.70
+
+## 0.11.2
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/btp-utils@1.1.8
+    - @sap-ux/telemetry@0.6.69
+    - @sap-ux/ui5-info@0.13.12
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/odata-service-writer@0.29.16
+    - @sap-ux/project-access@1.35.1
+
+## 0.11.1
+
+### Patch Changes
+
+- 1ad56d1: Fix for previous errors shown as info under services selection prompt
+
+## 0.11.0
+
+### Minor Changes
+
+- a5ecd7f: Moved the minimal set of helper functions needed for getTableCapabilitiesByEntitySet into project-access, added that new capability aggregator, and refactored odata-service-inquirer and inquirer-common to use the new API.
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/fiori-generator-shared@0.13.67
+    - @sap-ux/odata-service-writer@0.29.15
+    - @sap-ux/telemetry@0.6.68
+
+## 0.10.26
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.66
+- @sap-ux/odata-service-writer@0.29.14
+- @sap-ux/telemetry@0.6.67
+
+## 0.10.25
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.65
+- @sap-ux/telemetry@0.6.66
+
+## 0.10.24
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.64
+- @sap-ux/telemetry@0.6.65
+
+## 0.10.23
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/odata-service-writer@0.29.13
+    - @sap-ux/ui5-info@0.13.11
+    - @sap-ux/telemetry@0.6.64
+
 ## 0.10.22
 
 ### Patch Changes

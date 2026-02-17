@@ -1,5 +1,52 @@
 # @sap-ux/project-input-validator
 
+## 0.6.56
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+
+## 0.6.55
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+
+## 0.6.54
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+
+## 0.6.53
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.1
+
+## 0.6.52
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+
+## 0.6.51
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+
+## 0.6.50
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+
 ## 0.6.49
 
 ### Patch Changes

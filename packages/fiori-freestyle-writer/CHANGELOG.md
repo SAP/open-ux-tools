@@ -1,5 +1,137 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.53
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.73
+- @sap-ux/odata-service-writer@0.29.19
+- @sap-ux/cap-config-writer@0.12.65
+
+## 2.5.52
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/odata-service-writer@0.29.19
+    - @sap-ux/ui5-application-writer@1.7.9
+    - @sap-ux/cap-config-writer@0.12.64
+    - @sap-ux/ui5-test-writer@0.7.69
+
+## 2.5.51
+
+### Patch Changes
+
+- 1a922e7: adds option to prevent root package json updates for cap
+- Updated dependencies [1a922e7]
+    - @sap-ux/cap-config-writer@0.12.63
+
+## 2.5.50
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.71
+- @sap-ux/ui5-config@0.29.16
+- @sap-ux/cap-config-writer@0.12.62
+
+## 2.5.49
+
+### Patch Changes
+
+- @sap-ux/cap-config-writer@0.12.61
+- @sap-ux/fiori-generator-shared@0.13.70
+- @sap-ux/odata-service-writer@0.29.18
+- @sap-ux/ui5-application-writer@1.7.8
+- @sap-ux/ui5-test-writer@0.7.68
+
+## 2.5.48
+
+### Patch Changes
+
+- @sap-ux/cap-config-writer@0.12.60
+- @sap-ux/fiori-generator-shared@0.13.69
+- @sap-ux/odata-service-writer@0.29.17
+- @sap-ux/ui5-application-writer@1.7.8
+- @sap-ux/ui5-test-writer@0.7.67
+
+## 2.5.47
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/fiori-generator-shared@0.13.68
+    - @sap-ux/odata-service-writer@0.29.16
+    - @sap-ux/ui5-application-writer@1.7.8
+    - @sap-ux/cap-config-writer@0.12.59
+    - @sap-ux/ui5-test-writer@0.7.66
+
+## 2.5.46
+
+### Patch Changes
+
+- 2bffca7: Refactor eslint config to use mjs extension in project templates
+- Updated dependencies [2bffca7]
+    - @sap-ux/ui5-application-writer@1.7.7
+    - @sap-ux/ui5-test-writer@0.7.65
+
+## 2.5.45
+
+### Patch Changes
+
+- 8c61352: fiori project templates clean eslint warning re @typescript-eslint/no-empty-function
+
+## 2.5.44
+
+### Patch Changes
+
+- @sap-ux/cap-config-writer@0.12.58
+- @sap-ux/fiori-generator-shared@0.13.67
+- @sap-ux/odata-service-writer@0.29.15
+- @sap-ux/ui5-application-writer@1.7.6
+- @sap-ux/ui5-test-writer@0.7.64
+
+## 2.5.43
+
+### Patch Changes
+
+- @sap-ux/cap-config-writer@0.12.57
+- @sap-ux/fiori-generator-shared@0.13.66
+- @sap-ux/odata-service-writer@0.29.14
+- @sap-ux/ui5-application-writer@1.7.6
+- @sap-ux/ui5-test-writer@0.7.63
+
+## 2.5.42
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.65
+- @sap-ux/ui5-config@0.29.15
+- @sap-ux/cap-config-writer@0.12.56
+
+## 2.5.41
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.64
+- @sap-ux/ui5-config@0.29.15
+- @sap-ux/cap-config-writer@0.12.55
+
+## 2.5.40
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/cap-config-writer@0.12.54
+    - @sap-ux/fiori-generator-shared@0.13.63
+    - @sap-ux/odata-service-writer@0.29.13
+    - @sap-ux/ui5-application-writer@1.7.6
+    - @sap-ux/ui5-config@0.29.15
+    - @sap-ux/ui5-test-writer@0.7.62
+
 ## 2.5.39
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-info",
     "description": "SAP Fiori UI5 info",
-    "version": "0.13.10",
+    "version": "0.13.12",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -21,7 +21,8 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global"
+        "unlink": "pnpm unlink --global",
+        "update-fallbacks": "node scripts/update-fallbacks.js"
     },
     "files": [
         "LICENSE",
@@ -32,11 +33,11 @@
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "axios": "1.12.2",
-        "semver": "7.5.4"
+        "axios": "1.13.5",
+        "semver": "7.7.3"
     },
     "devDependencies": {
-        "@types/semver": "7.5.4",
+        "@types/semver": "7.7.1",
         "mock-spawn": "0.2.6",
         "nock": "13.4.0"
     },

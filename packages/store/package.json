@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/store",
-    "version": "1.5.3",
+    "version": "1.5.6",
     "description": "NPM module for storing persistent data",
     "repository": {
         "type": "git",
@@ -32,7 +32,7 @@
         "reflect-metadata": "0.1.13"
     },
     "optionalDependencies": {
-        "@zowe/secrets-for-zowe-sdk": "8.1.2"
+        "@zowe/secrets-for-zowe-sdk": "8.29.4"
     },
     "devDependencies": {
         "@types/pluralize": "0.0.30",

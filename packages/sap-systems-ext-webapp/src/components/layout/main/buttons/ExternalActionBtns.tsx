@@ -1,5 +1,5 @@
 import React from 'react';
-import type { BackendSystem, SystemType } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import type { ReactElement } from 'react';
 import { UIDefaultButton, UiIcons } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +23,8 @@ interface ExternalActionBtnsProps {
 export function ExternalActionBtns({ systemInfo, systemUnSaved }: Readonly<ExternalActionBtnsProps>): ReactElement {
     const { t } = useTranslation();
     // show export button only if the system is on-prem
-    const showExport = (systemInfo?.systemType as SystemType) === 'OnPrem';
+    const showExport = systemInfo?.systemType === 'OnPrem';
+    const showFioriProjectBtn = systemInfo?.connectionType === 'abap_catalog';
     return (
         <div>
             {!systemUnSaved && (
@@ -43,19 +44,21 @@ export function ExternalActionBtns({ systemInfo, systemUnSaved }: Readonly<Exter
                             </UIDefaultButton>
                         </div>
                     )}
-                    <div>
-                        <UIDefaultButton
-                            className="action-btn"
-                            id="fioriProjectBtn"
-                            iconProps={{ iconName: UiIcons.Lightning }}
-                            onClick={(): void => {
-                                if (systemInfo?.name) {
-                                    actions.createFioriProject(systemInfo);
-                                }
-                            }}>
-                            {t('buttons.createFioriApp')}
-                        </UIDefaultButton>
-                    </div>
+                    {showFioriProjectBtn && (
+                        <div>
+                            <UIDefaultButton
+                                className="action-btn"
+                                id="fioriProjectBtn"
+                                iconProps={{ iconName: UiIcons.Lightning }}
+                                onClick={(): void => {
+                                    if (systemInfo?.name) {
+                                        actions.createFioriProject(systemInfo);
+                                    }
+                                }}>
+                                {t('buttons.createFioriApp')}
+                            </UIDefaultButton>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

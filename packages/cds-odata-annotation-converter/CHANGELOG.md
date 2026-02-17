@@ -1,5 +1,31 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.7.6
+
+### Patch Changes
+
+- Updated dependencies [1fa3bb7]
+    - @sap-ux/odata-vocabularies@0.4.25
+    - @sap-ux/cds-annotation-parser@0.2.30
+
+## 0.7.5
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/odata-vocabularies@0.4.24
+    - @sap-ux/cds-annotation-parser@0.2.29
+
+## 0.7.4
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+- Updated dependencies [3795bb2]
+    - @sap-ux/cds-annotation-parser@0.2.28
+    - @sap-ux/odata-annotation-core@0.2.14
+    - @sap-ux/odata-vocabularies@0.4.23
+
 ## 0.7.3
 
 ### Patch Changes

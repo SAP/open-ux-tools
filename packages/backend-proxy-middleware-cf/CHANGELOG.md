@@ -1,5 +1,115 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.55
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/adp-tooling@0.18.65
+
+## 0.0.54
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/project-access@1.35.4
+
+## 0.0.53
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.63
+
+## 0.0.52
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+- Updated dependencies [346f09c]
+    - @sap-ux/adp-tooling@0.18.62
+    - @sap-ux/project-access@1.35.3
+
+## 0.0.51
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/adp-tooling@0.18.61
+
+## 0.0.50
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/adp-tooling@0.18.60
+    - @sap-ux/project-access@1.35.1
+
+## 0.0.49
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.59
+
+## 0.0.48
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/adp-tooling@0.18.58
+
+## 0.0.47
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/adp-tooling@0.18.57
+
+## 0.0.46
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.56
+
+## 0.0.45
+
+### Patch Changes
+
+- Updated dependencies [df61c3a]
+    - @sap-ux/adp-tooling@0.18.55
+
+## 0.0.44
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.54
+
+## 0.0.43
+
+### Patch Changes
+
+- Updated dependencies [8a56942]
+    - @sap-ux/adp-tooling@0.18.53
+
+## 0.0.42
+
+### Patch Changes
+
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/adp-tooling@0.18.52
+
+## 0.0.41
+
+### Patch Changes
+
+- Updated dependencies [f1e6ed6]
+    - @sap-ux/adp-tooling@0.18.51
+
 ## 0.0.40
 
 ### Patch Changes

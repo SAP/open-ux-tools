@@ -1,5 +1,56 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.50
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+
+## 0.0.49
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+
+## 0.0.48
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+
+## 0.0.47
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-info@0.13.12
+    - @sap-ux/project-access@1.35.1
+
+## 0.0.46
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+
+## 0.0.45
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+
+## 0.0.44
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+- Updated dependencies [ad321ab]
+    - @sap-ux/project-access@1.34.6
+    - @sap-ux/ui5-info@0.13.11
+
 ## 0.0.43
 
 ### Patch Changes

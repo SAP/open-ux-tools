@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-vocabularies"
     },
-    "version": "0.4.22",
+    "version": "0.4.25",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -33,10 +33,13 @@
     },
     "devDependencies": {
         "@types/prettier": "2.7.1",
-        "axios": "1.12.2",
+        "axios": "1.13.5",
         "npm-run-all2": "6.2.0",
         "prettier": "2.5.1",
         "ts-node": "10.9.2"
+    },
+    "engines": {
+        "node": ">=20.x"
     },
     "files": [
         "dist/**"

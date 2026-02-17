@@ -164,7 +164,7 @@ describe('UI5 templates', () => {
         );
         expect(fs.read(join(projectDir, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(projectDir, 'tsconfig.json'))).toMatchSnapshot();
-        expect(fs.read(join(projectDir, 'eslint.config.js'))).toMatchSnapshot();
+        expect(fs.read(join(projectDir, 'eslint.config.mjs'))).toMatchSnapshot();
         return new Promise((resolve) => {
             // write out the files for debugging
             if (debug) {
