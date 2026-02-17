@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.27.5
+
+### Patch Changes
+
+- a22d236: fix(deps): update dependency sanitize-html to v2.17.0
+
 ## 1.27.4
 
 ### Patch Changes

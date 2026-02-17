@@ -11,7 +11,7 @@ import {
     compareSystems,
     shouldStoreSystemInfo
 } from '../../../utils';
-import { getSystemInfo, updateSystemStatus, validateSystemName } from '../utils';
+import { getSystemInfo, updateSystemStatus, validateSystemName, validateSystemUrl } from '../utils';
 import {
     SystemAction,
     SystemActionStatus,
@@ -47,6 +47,8 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
 
     try {
         await validateSystemName(backendSystem.name, context.backendSystem?.name);
+        validateSystemUrl(backendSystem.url);
+
         const newPanelMsg = await updateHandler(context, backendSystem, systemExistsInStore);
         await saveSystem(backendSystem, systemExistsInStore, context.panelViewType);
         if (newPanelMsg) {
@@ -187,8 +189,7 @@ async function saveSystem(
     // ensure the user display name is set to the username
     const newBackendSystem: BackendSystem = {
         ...backendSystem,
-        userDisplayName: backendSystem.username,
-        connectionType: 'abap_catalog' // can be hardcoded until we support adding more types
+        userDisplayName: backendSystem.username
     };
     const systemService = await getBackendSystemService();
     await systemService.write(newBackendSystem, {
