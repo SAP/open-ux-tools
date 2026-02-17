@@ -1,3 +1,5 @@
+import type { ToolsLogger } from '@sap-ux/logger';
+
 /**
  * Destination configuration for approuter (name must match routes in xs-app.json).
  */
@@ -98,4 +100,24 @@ export interface XsappConfig {
     authenticationMethod?: string;
     login?: { callbackEndpoint?: string };
     logout?: { logoutEndpoint?: string };
+}
+
+/**
+ * Options for building RouteEntry[] from a prepared xsappConfig
+ */
+export interface BuildRouteEntriesOptions {
+    xsappConfig: XsappConfig;
+    destinations: ApprouterDestination[] | undefined;
+    effectiveOptions: EffectiveOptions;
+    logger: ToolsLogger;
+}
+
+/**
+ * Options for loading and preparing xs-app.json (no destinations needed)
+ */
+export interface PrepareXsappConfigOptions {
+    rootPath: string;
+    xsappJsonPath: string;
+    effectiveOptions: EffectiveOptions;
+    sourcePath: string;
 }

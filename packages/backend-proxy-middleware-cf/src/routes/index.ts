@@ -1,33 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { ToolsLogger } from '@sap-ux/logger';
-
-import type { ApprouterDestination } from '../types';
-import type { EffectiveOptions, RouteEntry, XsappConfig } from '../types';
-
-/** Options for loading and preparing xs-app.json (no destinations needed) */
-export interface PrepareXsappConfigOptions {
-    rootPath: string;
-    xsappJsonPath: string;
-    effectiveOptions: EffectiveOptions;
-    sourcePath: string;
-}
-
-/** Options for building RouteEntry[] from a prepared xsappConfig */
-export interface BuildRouteEntriesOptions {
-    xsappConfig: XsappConfig;
-    destinations: ApprouterDestination[] | undefined;
-    effectiveOptions: EffectiveOptions;
-    logger: ToolsLogger;
-}
+import type { BuildRouteEntriesOptions } from '../types';
+import type { PrepareXsappConfigOptions, RouteEntry, XsappConfig } from '../types';
 
 /**
  * Load xs-app.json and prepare it for the approuter (filter routes, set auth, optionally append auth route).
  * Mutates and returns the config; does not build RouteEntry[].
  *
- * @param options - rootPath, xsappJsonPath, effectiveOptions, sourcePath.
- * @returns The loaded and mutated XsappConfig.
+ * @param {PrepareXsappConfigOptions} options - rootPath, xsappJsonPath, effectiveOptions, sourcePath.
+ * @returns {XsappConfig} The loaded and mutated XsappConfig.
  */
 export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): XsappConfig {
     const { rootPath, xsappJsonPath, effectiveOptions, sourcePath } = options;

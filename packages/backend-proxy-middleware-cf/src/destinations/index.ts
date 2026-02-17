@@ -2,8 +2,7 @@ import portfinder from 'portfinder';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { EffectiveOptions } from '../types';
-import type { ApprouterDestination } from '../types';
+import type { EffectiveOptions, ApprouterDestination } from '../types';
 
 /**
  * Parse destinations from process.env.destinations JSON string.
@@ -53,9 +52,9 @@ export function resolveDestinations(effectiveOptions: EffectiveOptions): Approut
 /**
  * Returns the next free port starting from basePort.
  *
- * @param basePort - Base port to start searching from.
- * @param logger - Optional logger to warn if portfinder fails and basePort is used.
- * @returns A free port number.
+ * @param {number} basePort - Base port to start searching from.
+ * @param {ToolsLogger | undefined} logger - Optional logger to warn if portfinder fails and basePort is used.
+ * @returns {Promise<number>} A free port number.
  */
 export async function nextFreePort(basePort: number, logger?: ToolsLogger): Promise<number> {
     try {
