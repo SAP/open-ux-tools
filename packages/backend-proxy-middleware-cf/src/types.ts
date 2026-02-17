@@ -61,7 +61,6 @@ export interface BackendProxyMiddlewareCfConfig {
 /** Effective options with defaults applied. */
 export interface EffectiveOptions extends BackendProxyMiddlewareCfConfig {
     port: number;
-    xsappJson: string;
     destinations: ApprouterDestination[] | string;
     rewriteContentTypes: string[];
     extensions: ApprouterExtension[];

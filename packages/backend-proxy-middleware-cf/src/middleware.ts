@@ -47,11 +47,9 @@ module.exports = async ({
 
     const project = middlewareUtil.getProject();
     const rootPath = project.getRootPath() ?? process.cwd();
-    const xsappPath = path.resolve(rootPath, effectiveOptions.xsappJsonPath);
-    if (!fs.existsSync(xsappPath)) {
-        throw new Error(
-            `Backend proxy middleware (CF): xs-app.json not found at "${xsappPath}" (xsappJson: "${effectiveOptions.xsappJson}").`
-        );
+    const xsappJsonPath = path.resolve(rootPath, effectiveOptions.xsappJsonPath);
+    if (!fs.existsSync(xsappJsonPath)) {
+        throw new Error(`xs-app.json not found at "${xsappJsonPath}"`);
     }
 
     const sourcePath = project.getSourcePath();
@@ -63,7 +61,7 @@ module.exports = async ({
 
     const xsappConfig = loadAndPrepareXsappConfig({
         rootPath,
-        xsappJsonPath: xsappPath,
+        xsappJsonPath,
         effectiveOptions,
         sourcePath
     });

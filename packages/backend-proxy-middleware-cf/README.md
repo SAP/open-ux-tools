@@ -45,13 +45,13 @@ server:
         authenticationMethod: "none"
         debug: true
         port: 1091
-        xsappJson: "xs-app.json"
+        xsappJsonPath: "xs-app.json"
         destinations:
           - name: "backend"
             url: "https://your-backend.example/path"
 ```
 
-2. Place `xs-app.json` at the path you set in `xsappJson` (e.g. project root). Define routes with a `source` regex and `destination` name that matches an entry in `destinations`.
+2. Place `xs-app.json` at the path you set in `xsappJsonPath` (e.g. project root). Define routes with a `source` regex and `destination` name that matches an entry in `destinations`.
 
 ### Env options file (VCAP_SERVICES, credentials)
 
