@@ -23,14 +23,8 @@ const TABLE_PERSONALIZATION_FILTER = 'sap-table-personalization-filter';
 const TABLE_PERSONALIZATION_SORT = 'sap-table-personalization-sort';
 const TABLE_PERSONALIZATION_GROUP = 'sap-table-personalization-group';
 
-type MessageId =
-    | typeof TABLE_PERSONALIZATION
-    | typeof TABLE_PERSONALIZATION_COLUMN
-    | typeof TABLE_PERSONALIZATION_FILTER
-    | typeof TABLE_PERSONALIZATION_SORT
-    | typeof TABLE_PERSONALIZATION_GROUP;
-
 enum MessageIdByProperty {
+    '' = TABLE_PERSONALIZATION,
     'column' = TABLE_PERSONALIZATION_COLUMN,
     'filter' = TABLE_PERSONALIZATION_FILTER,
     'sort' = TABLE_PERSONALIZATION_SORT,
@@ -82,20 +76,17 @@ const rule: FioriRuleDefinition = createFioriRule({
         return problems;
     },
     createJsonVisitorHandler: (context, diagnostic, deepestPathResult) => {
-        let messageId: MessageId = TABLE_PERSONALIZATION;
-        if (diagnostic.property) {
-            messageId = MessageIdByProperty[diagnostic.property];
-        }
         return function report(node: MemberNode): void {
             context.report({
                 node,
-                messageId,
+                messageId: MessageIdByProperty[diagnostic.property ?? ''],
                 fix: createJsonFixer({
                     context,
                     deepestPathResult,
                     node,
                     operation: 'update',
-                    value: true
+                    value: true,
+                    fixParent: !!diagnostic.property
                 })
             });
         };
