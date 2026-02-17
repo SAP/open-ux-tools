@@ -1,19 +1,19 @@
 import fs from 'node:fs';
+import dotenv from 'dotenv';
 import path from 'node:path';
+import createApprouter from '@sap/approuter';
 import type { RequestHandler } from 'express';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareParameters } from '@ui5/server';
-import dotenv from 'dotenv';
 
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import createApprouter from '@sap/approuter';
 
-import type { BackendProxyMiddlewareCfConfig } from './types';
-import { mergeEffectiveOptions } from './config';
-import { resolveDestinations, nextFreePort } from './destinations';
-import { loadXsappAndBuildRoutes } from './routes';
 import { loadExtensions } from './extensions';
+import { mergeEffectiveOptions } from './config';
+import type { BackendProxyMiddlewareCfConfig } from './types';
 import { createResponseInterceptor, createProxy } from './proxy';
+import { resolveDestinations, nextFreePort } from './destinations';
+import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
 
 dotenv.config();
 
@@ -61,13 +61,17 @@ module.exports = async ({
         delete process.env.destinations;
     }
 
-    const { xsappConfig, routes } = loadXsappAndBuildRoutes({
+    const xsappConfig = loadAndPrepareXsappConfig({
         rootPath,
         xsappJsonPath: xsappPath,
         effectiveOptions,
-        sourcePath,
-        logger,
-        destinations
+        sourcePath
+    });
+    const routes = buildRouteEntries({
+        xsappConfig,
+        destinations,
+        effectiveOptions,
+        logger
     });
 
     const { modules, routes: extensionsRoutes } = loadExtensions(rootPath, effectiveOptions.extensions, logger);

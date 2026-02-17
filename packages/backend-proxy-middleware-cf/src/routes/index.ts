@@ -6,27 +6,31 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { ApprouterDestination } from '../types';
 import type { EffectiveOptions, RouteEntry, XsappConfig } from '../config';
 
-/** Options for loading xs-app.json and building route entries */
-export interface LoadXsappAndBuildRoutesOptions {
+/** Options for loading and preparing xs-app.json (no destinations needed) */
+export interface PrepareXsappConfigOptions {
     rootPath: string;
     xsappJsonPath: string;
     effectiveOptions: EffectiveOptions;
     sourcePath: string;
-    logger: ToolsLogger;
+}
+
+/** Options for building RouteEntry[] from a prepared xsappConfig */
+export interface BuildRouteEntriesOptions {
+    xsappConfig: XsappConfig;
     destinations: ApprouterDestination[] | undefined;
+    effectiveOptions: EffectiveOptions;
+    logger: ToolsLogger;
 }
 
 /**
- * Load xs-app.json and build the list of route entries (with compiled regex and destination URLs).
+ * Load xs-app.json and prepare it for the approuter (filter routes, set auth, optionally append auth route).
+ * Mutates and returns the config; does not build RouteEntry[].
  *
- * @param {LoadXsappAndBuildRoutesOptions} options - Options object (rootPath, xsappJsonPath, effectiveOptions, sourcePath, logger, destinations).
- * @returns {{ xsappConfig: XsappConfig; routes: RouteEntry[] }} xsappConfig (mutated with filtered routes) and routes array.
+ * @param options - rootPath, xsappJsonPath, effectiveOptions, sourcePath.
+ * @returns The loaded and mutated XsappConfig.
  */
-export function loadXsappAndBuildRoutes(options: LoadXsappAndBuildRoutesOptions): {
-    xsappConfig: XsappConfig;
-    routes: RouteEntry[];
-} {
-    const { rootPath, xsappJsonPath, effectiveOptions, sourcePath, logger, destinations } = options;
+export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): XsappConfig {
+    const { rootPath, xsappJsonPath, effectiveOptions, sourcePath } = options;
     const xsappConfig = JSON.parse(fs.readFileSync(xsappJsonPath, 'utf8')) as XsappConfig;
 
     if (effectiveOptions.disableWelcomeFile) {
@@ -35,7 +39,6 @@ export function loadXsappAndBuildRoutes(options: LoadXsappAndBuildRoutesOptions)
 
     xsappConfig.authenticationMethod = effectiveOptions.authenticationMethod;
 
-    const routes: RouteEntry[] = [];
     const xsappRoutes = xsappConfig.routes ?? [];
     /* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- boolean OR for route inclusion */
     xsappConfig.routes = xsappRoutes.filter((route) => {
@@ -59,11 +62,28 @@ export function loadXsappAndBuildRoutes(options: LoadXsappAndBuildRoutesOptions)
         });
     }
 
-    const destList = Array.isArray(destinations) ? destinations : [];
-    for (const route of xsappConfig.routes) {
-        if (xsappConfig.authenticationMethod?.toLowerCase() === 'none') {
+    if (xsappConfig.authenticationMethod?.toLowerCase() === 'none') {
+        for (const route of xsappConfig.routes) {
             route.authenticationType = 'none';
         }
+    }
+
+    return xsappConfig;
+}
+
+/**
+ * Build the list of route entries (compiled regex + resolved destination URLs) from a prepared xsappConfig.
+ * Does not read files or mutate xsappConfig.
+ *
+ * @param {BuildRouteEntriesOptions} options - xsappConfig, destinations, effectiveOptions, logger.
+ * @returns {RouteEntry[]} Route entries for the proxy.
+ */
+export function buildRouteEntries(options: BuildRouteEntriesOptions): RouteEntry[] {
+    const { xsappConfig, destinations, effectiveOptions, logger } = options;
+    const routes: RouteEntry[] = [];
+    const destList = Array.isArray(destinations) ? destinations : [];
+
+    for (const route of xsappConfig.routes ?? []) {
         const routeMatch = route.source.match(/[^/]*\/(.*\/)?[^/]*/);
         if (routeMatch) {
             const url = destList.find((d) => d.name === route.destination)?.url;
@@ -81,5 +101,5 @@ export function loadXsappAndBuildRoutes(options: LoadXsappAndBuildRoutesOptions)
         }
     }
 
-    return { xsappConfig, routes };
+    return routes;
 }

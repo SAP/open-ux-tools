@@ -1,5 +1,5 @@
-import contentType from 'content-type';
 import mime from 'mime-types';
+import contentType from 'content-type';
 import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middleware';
 
 import type { RequestHandler } from 'express';

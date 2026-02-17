@@ -2,8 +2,8 @@ import portfinder from 'portfinder';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { ApprouterDestination } from '../types';
 import type { EffectiveOptions } from '../config';
+import type { ApprouterDestination } from '../types';
 
 /**
  * Parse destinations from process.env.destinations JSON string.
