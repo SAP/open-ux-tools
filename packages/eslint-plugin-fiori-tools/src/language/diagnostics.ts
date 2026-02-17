@@ -21,6 +21,11 @@ export interface WidthIncludingColumnHeaderDiagnostic {
     };
 }
 
+interface Rule {
+    message: string;
+    type: 'suggestion' | 'problem' | 'layout';
+}
+
 export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
@@ -86,6 +91,7 @@ export interface TablePersonalization {
     property?: PersonalizationProperty;
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;
+    rule: Rule;
 }
 
 export interface TableColumnVerticalAlignment {
