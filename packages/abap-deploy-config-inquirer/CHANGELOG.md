@@ -1,5 +1,62 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.7.1
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/nodejs-utils@0.2.15
+    - @sap-ux/system-access@0.6.53
+
+## 1.7.0
+
+### Minor Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/inquirer-common@0.11.6
+
+## 1.6.99
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/fiori-generator-shared@0.13.71
+    - @sap-ux/system-access@0.6.51
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/inquirer-common@0.11.5
+
+## 1.6.98
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.11
+- @sap-ux/fiori-generator-shared@0.13.70
+- @sap-ux/inquirer-common@0.11.4
+- @sap-ux/system-access@0.6.50
+
+## 1.6.97
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.11
+- @sap-ux/fiori-generator-shared@0.13.69
+- @sap-ux/inquirer-common@0.11.3
+- @sap-ux/system-access@0.6.50
+
 ## 1.6.96
 
 ### Patch Changes

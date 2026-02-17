@@ -1,5 +1,68 @@
 # @sap-ux/adp-tooling
 
+## 0.18.65
+
+### Patch Changes
+
+- dd2131c: Axios upgrade from bas-sdk
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/nodejs-utils@0.2.15
+    - @sap-ux/system-access@0.6.53
+    - @sap-ux/odata-service-writer@0.29.19
+
+## 0.18.64
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/odata-service-writer@0.29.19
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/inquirer-common@0.11.6
+    - @sap-ux/project-input-validator@0.6.56
+
+## 0.18.63
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/system-access@0.6.51
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/inquirer-common@0.11.5
+
+## 0.18.62
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/inquirer-common@0.11.4
+    - @sap-ux/odata-service-writer@0.29.18
+    - @sap-ux/project-input-validator@0.6.55
+    - @sap-ux/system-access@0.6.50
+
+## 0.18.61
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/inquirer-common@0.11.3
+    - @sap-ux/odata-service-writer@0.29.17
+    - @sap-ux/project-input-validator@0.6.54
+    - @sap-ux/system-access@0.6.50
+
 ## 0.18.60
 
 ### Patch Changes

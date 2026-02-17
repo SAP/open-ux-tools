@@ -1,5 +1,51 @@
 # @sap-ux/inquirer-common
 
+## 0.11.7
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/telemetry@0.6.74
+    - @sap-ux/odata-service-writer@0.29.19
+
+## 0.11.6
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.72
+- @sap-ux/odata-service-writer@0.29.19
+- @sap-ux/project-access@1.35.4
+- @sap-ux/telemetry@0.6.73
+
+## 0.11.5
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.71
+- @sap-ux/telemetry@0.6.72
+
+## 0.11.4
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/fiori-generator-shared@0.13.70
+    - @sap-ux/odata-service-writer@0.29.18
+    - @sap-ux/telemetry@0.6.71
+
+## 0.11.3
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/fiori-generator-shared@0.13.69
+    - @sap-ux/odata-service-writer@0.29.17
+    - @sap-ux/telemetry@0.6.70
+
 ## 0.11.2
 
 ### Patch Changes

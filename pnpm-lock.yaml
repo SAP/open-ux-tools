@@ -6,9 +6,9 @@ settings:
 
 overrides:
   '@storybook/manager-api>store2': 2.14.4
-  '@sap/bas-sdk>axios': ^1.13.5
   '@sap-ux/ui5-config>axios': ^1.13.5
   '@sap/service-provider-apis>axios': ^1.13.5
+  '@sap/subaccount-destination-service-provider>@sap/bas-sdk': ^3.13.3
   esbuild@<=0.24.2: '>=0.25.0'
   fast-xml-parser@>=4.3.6 <=5.3.3: '>=5.3.4'
   lodash@>=4.0.0 <=4.17.22: '>=4.17.23'
@@ -237,8 +237,8 @@ importers:
         specifier: 5.0.2
         version: 5.0.2(@types/react@16.14.55)(react@16.14.0)
       sanitize-html:
-        specifier: 2.12.1
-        version: 2.12.1
+        specifier: 2.17.0
+        version: 2.17.0
     devDependencies:
       '@babel/core':
         specifier: 7.28.0
@@ -292,8 +292,8 @@ importers:
         specifier: 16.9.24
         version: 16.9.24
       '@types/sanitize-html':
-        specifier: 2.11.0
-        version: 2.11.0
+        specifier: 2.16.0
+        version: 2.16.0
       '@types/uuid':
         specifier: 3.4.11
         version: 3.4.11
@@ -421,6 +421,12 @@ importers:
       '@sap-ux/abap-deploy-config-writer':
         specifier: workspace:*
         version: link:../abap-deploy-config-writer
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -786,6 +792,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/ui5-application-writer':
+        specifier: workspace:*
+        version: link:../ui5-application-writer
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -875,8 +884,8 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       qs:
-        specifier: 6.14.1
-        version: 6.14.1
+        specifier: 6.14.2
+        version: 6.14.2
       xpath:
         specifier: 0.0.33
         version: 0.0.33
@@ -1016,8 +1025,8 @@ importers:
   packages/btp-utils:
     dependencies:
       '@sap/bas-sdk':
-        specifier: 3.13.2
-        version: 3.13.2
+        specifier: 3.13.3
+        version: 3.13.3
       '@sap/cf-tools':
         specifier: 3.3.0
         version: 3.3.0
@@ -1469,6 +1478,9 @@ importers:
       '@sap-ux/app-config-writer':
         specifier: workspace:*
         version: link:../app-config-writer
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
@@ -1481,6 +1493,9 @@ importers:
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
@@ -1496,6 +1511,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@sap/cf-tools':
+        specifier: 3.3.0
+        version: 3.3.0
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -1756,8 +1774,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@sap/bas-sdk':
-        specifier: 3.13.2
-        version: 3.13.2
+        specifier: 3.13.3
+        version: 3.13.3
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -3374,8 +3392,8 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       '@sap/bas-sdk':
-        specifier: 3.13.2
-        version: 3.13.2
+        specifier: 3.13.3
+        version: 3.13.3
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -4042,8 +4060,8 @@ importers:
         specifier: 9.22.5
         version: 9.22.5(react-dom@16.14.0)(react@16.14.0)
       sanitize-html:
-        specifier: 2.12.1
-        version: 2.12.1
+        specifier: 2.17.0
+        version: 2.17.0
       uuid:
         specifier: 3.4.0
         version: 3.4.0
@@ -4091,8 +4109,8 @@ importers:
         specifier: 9.21.29
         version: 9.21.29
       '@types/sanitize-html':
-        specifier: 2.11.0
-        version: 2.11.0
+        specifier: 2.16.0
+        version: 2.16.0
       '@types/uuid':
         specifier: 3.4.11
         version: 3.4.11
@@ -4400,8 +4418,8 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
       '@sap/subaccount-destination-service-provider':
-        specifier: 2.9.1
-        version: 2.9.1(typescript@5.9.3)
+        specifier: 2.14.1
+        version: 2.14.1(typescript@5.9.3)
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -14236,6 +14254,16 @@ packages:
       winston-transport: 4.7.0
     dev: true
 
+  /@sap-ux/logger@0.7.2:
+    resolution: {integrity: sha512-1VrGrFykTa/HMxCFOI674zU+EZQD4EUgDjw21/ua7gTb0PO9tM/NFhuFUsnoXCDQ/3Gg1SMfW/VA1hZ7LjpqGw==}
+    engines: {node: '>=20.x'}
+    dependencies:
+      chalk: 4.1.2
+      lodash: 4.17.23
+      winston: 3.11.0
+      winston-transport: 4.7.0
+    dev: true
+
   /@sap-ux/logger@0.8.0:
     resolution: {integrity: sha512-GFkFfg8s0y4qRU0nUiQuoCwZCITs+f2t+9HQrNscdSSxKfesPx4aTTVjVjxBbXOKVGwRqind65JULSPrYZy83Q==}
     engines: {node: '>=20.x'}
@@ -14309,11 +14337,11 @@ packages:
       - debug
     dev: false
 
-  /@sap-ux/store@1.1.3(typescript@5.9.3):
-    resolution: {integrity: sha512-uF/Q/OaAVNqBY0axt+K+k4FQUjbHYAoewPikdm8fkKeBmjWK94MsqY+12TDZ+HEsQlZRgXgmxQOY2jSxeFyDIA==}
+  /@sap-ux/store@1.4.0(typescript@5.9.3):
+    resolution: {integrity: sha512-YdsVm4x6WZTwayZvDr9cRIjMLHUM4KPbUhBX82uYT2Fa/VK+TdYz/vyTpD9/AQwgOBFPdiuiJdG/uZVMIFziYw==}
     engines: {node: '>=20.x'}
     dependencies:
-      '@sap-ux/logger': 0.7.0
+      '@sap-ux/logger': 0.7.2
       i18next: 25.3.0(typescript@5.9.3)
       pluralize: 8.0.0
       reflect-metadata: 0.1.13
@@ -14398,24 +14426,8 @@ packages:
       lodash: 4.17.23
       yaml: 2.2.2
 
-  /@sap/bas-sdk@3.12.0:
-    resolution: {integrity: sha512-7PHLhBtJYNAYkgCuLz8TPHuIYhqlKZxqyT0MAtF05bNLKOLpcMhX3OG0FyypVWmjhGo9qKeG78NTlmMHOMcsQg==}
-    dependencies:
-      axios: 1.13.5(debug@4.4.3)
-      cross-spawn: 7.0.5
-      fs-extra: 11.2.0
-      jwt-decode: 4.0.0
-      lodash: 4.17.23
-      url-join: 4.0.1
-      ws: 8.17.1
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - utf-8-validate
-    dev: true
-
-  /@sap/bas-sdk@3.13.2:
-    resolution: {integrity: sha512-tuWNJ6Y3e9EjrYJoxub9PsHIson+mWj01zIxoT/SpVx/LQUHPY2i7o7GrP4C54tDILUPAG3EBT3RBIS+NVtNuQ==}
+  /@sap/bas-sdk@3.13.3:
+    resolution: {integrity: sha512-HLOwEc6z/Dyu5qR7mSwhRSjz0KbRBPZGL8FIAVwvGP/6JHU0tc6UDMQRHBV6NoyrNXdGSYzbPlS9y2uPWlmuow==}
     dependencies:
       axios: 1.13.5(debug@4.4.3)
       cross-spawn: 7.0.6
@@ -14428,7 +14440,6 @@ packages:
       - bufferutil
       - debug
       - utf-8-validate
-    dev: false
 
   /@sap/cds-compiler@4.8.0:
     resolution: {integrity: sha512-C8IkzNfdMIzG136K/VvOmG65d8UnR9lcZF5q/c//Jp2/RZIZvwFvO5HHPre19+YWhuwJXbIMb3kc5x9CW9ZLNw==}
@@ -14464,13 +14475,23 @@ packages:
     transitivePeerDependencies:
       - debug
 
-  /@sap/subaccount-destination-service-provider@2.9.1(typescript@5.9.3):
-    resolution: {integrity: sha512-YE6TPP71k5g7UpEBtc7e0QyV6j3TGWQA5A8DFBYhynpoXPjRwBBr9rGv1q6kr5gdQrfOA8ybvIeWi6I+BTx2aw==}
+  /@sap/service-provider-apis@2.7.1:
+    resolution: {integrity: sha512-xdL/m04grQWX0Mai0Gx/kQUgrBhHSfbjxZN6hXdJqKKhfU19HC8+iw/UfVZheGaHgfck7D0oyP/U8yRwGUpnlQ==}
+    dependencies:
+      axios: 1.13.5(debug@4.4.3)
+      lodash: 4.17.23
+      xml2js: 0.6.2
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
+  /@sap/subaccount-destination-service-provider@2.14.1(typescript@5.9.3):
+    resolution: {integrity: sha512-P23fwTlPcaG3Y8s4ykMM+b6KrC59/fldxAFAYub9gge+5BBVp5O+JSogswcBuwXPw6KhuXbvWrKIBR4oc32AIg==}
     dependencies:
       '@sap-ux/logger': 0.7.0
-      '@sap-ux/store': 1.1.3(typescript@5.9.3)
-      '@sap/bas-sdk': 3.12.0
-      '@sap/service-provider-apis': 2.5.1
+      '@sap-ux/store': 1.4.0(typescript@5.9.3)
+      '@sap/bas-sdk': 3.13.3
+      '@sap/service-provider-apis': 2.7.1
       stream-json: 1.9.1
       vkbeautify: 0.99.3
     transitivePeerDependencies:
@@ -15565,7 +15586,7 @@ packages:
       '@storybook/client-logger': 7.6.20
       '@storybook/core-events': 7.6.20
       '@storybook/global': 5.0.0
-      qs: 6.14.1
+      qs: 6.14.2
       telejson: 7.2.0
       tiny-invariant: 1.3.3
     dev: true
@@ -15723,7 +15744,7 @@ packages:
       dequal: 2.0.3
       lodash: 4.17.23
       memoizerific: 1.11.3
-      qs: 6.14.1
+      qs: 6.14.2
       synchronous-promise: 2.0.17
       ts-dedent: 2.2.0
       util-deprecate: 1.0.2
@@ -15829,7 +15850,7 @@ packages:
     dependencies:
       '@storybook/client-logger': 7.6.20
       memoizerific: 1.11.3
-      qs: 6.14.1
+      qs: 6.14.2
     dev: true
 
   /@storybook/theming@7.6.20(react-dom@16.14.0)(react@16.14.0):
@@ -16734,8 +16755,8 @@ packages:
     dev: true
     optional: true
 
-  /@types/sanitize-html@2.11.0:
-    resolution: {integrity: sha512-7oxPGNQHXLHE48r/r/qjn7q0hlrs3kL7oZnGj0Wf/h9tj/6ibFyRkNbsDxaBBZ4XUZ0Dx5LGCyDJ04ytSofacQ==}
+  /@types/sanitize-html@2.16.0:
+    resolution: {integrity: sha512-l6rX1MUXje5ztPT0cAFtUayXF06DqPhRyfVXareEN5gGCFaP/iwsxIyKODr9XDhfxPpN6vXUFNfo5kZMXCxBtw==}
     dependencies:
       htmlparser2: 8.0.1
     dev: true
@@ -19325,7 +19346,7 @@ packages:
       http-errors: 2.0.1
       iconv-lite: 0.4.24
       on-finished: 2.4.1
-      qs: 6.14.1
+      qs: 6.14.2
       raw-body: 2.5.3
       type-is: 1.6.18
       unpipe: 1.0.0
@@ -19342,7 +19363,7 @@ packages:
       http-errors: 2.0.1
       iconv-lite: 0.7.2
       on-finished: 2.4.1
-      qs: 6.14.1
+      qs: 6.14.2
       raw-body: 3.0.2
       type-is: 2.0.1
     transitivePeerDependencies:
@@ -22705,7 +22726,7 @@ packages:
       once: 1.4.0
       parseurl: 1.3.3
       proxy-addr: 2.0.7
-      qs: 6.14.1
+      qs: 6.14.2
       range-parser: 1.2.1
       router: 2.2.0
       send: 1.2.0
@@ -23346,7 +23367,6 @@ packages:
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.1
-    dev: false
 
   /fs-extra@7.0.1:
     resolution: {integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==}
@@ -23597,7 +23617,7 @@ packages:
       basic-ftp: 5.0.5
       data-uri-to-buffer: 6.0.2
       debug: 4.4.3
-      fs-extra: 11.2.0
+      fs-extra: 11.3.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -23837,7 +23857,7 @@ packages:
       extend: 3.0.2
       gaxios: 7.1.3
       google-auth-library: 10.5.0
-      qs: 6.14.1
+      qs: 6.14.2
       url-template: 2.0.8
     transitivePeerDependencies:
       - supports-color
@@ -27497,11 +27517,11 @@ packages:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
-    dev: true
 
   /nanoid@3.3.8:
     resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    dev: true
 
   /napi-build-utils@2.0.0:
     resolution: {integrity: sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA==}
@@ -29453,6 +29473,7 @@ packages:
       nanoid: 3.3.8
       picocolors: 1.1.1
       source-map-js: 1.2.0
+    dev: true
 
   /postcss@8.5.6:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
@@ -29461,7 +29482,6 @@ packages:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
-    dev: true
 
   /postgres-array@2.0.0:
     resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
@@ -30169,6 +30189,12 @@ packages:
 
   /qs@6.14.1:
     resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
+    engines: {node: '>=0.6'}
+    dependencies:
+      side-channel: 1.1.0
+
+  /qs@6.14.2:
+    resolution: {integrity: sha512-V/yCWTTF7VJ9hIh18Ugr2zhJMP01MY7c5kh4J870L7imm6/DIzBsNLTXzMwUA3yZ5b/KBqLx8Kp3uRvd7xSe3Q==}
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.1.0
@@ -31350,15 +31376,15 @@ packages:
     dependencies:
       truncate-utf8-bytes: 1.0.2
 
-  /sanitize-html@2.12.1:
-    resolution: {integrity: sha512-Plh+JAn0UVDpBRP/xEjsk+xDCoOvMBwQUf/K+/cBAVuTbtX8bj2VB7S1sL1dssVpykqp0/KPSesHrqXtokVBpA==}
+  /sanitize-html@2.17.0:
+    resolution: {integrity: sha512-dLAADUSS8rBwhaevT12yCezvioCA+bmUTPH/u57xKPT8d++voeYE6HeluA/bPbQ15TwDBG2ii+QZIEmYx8VdxA==}
     dependencies:
       deepmerge: 4.3.1
       escape-string-regexp: 4.0.0
       htmlparser2: 8.0.1
       is-plain-object: 5.0.0
       parse-srcset: 1.0.2
-      postcss: 8.4.31
+      postcss: 8.5.6
     dev: false
 
   /sass-embedded-all-unknown@1.97.3:
@@ -32223,11 +32249,11 @@ packages:
   /source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
     engines: {node: '>=0.10.0'}
+    dev: true
 
   /source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /source-map-support@0.5.13:
     resolution: {integrity: sha512-SHSKFHadjVA5oR4PPqhtAVdcBWwRYVd6g6cAXnIbRiIwc2EhPrTuKUBdSLvlEKyIP3GCf89fltvcZiP9MMFA1w==}
@@ -32817,7 +32843,7 @@ packages:
       formidable: 3.5.4
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.14.1
+      qs: 6.14.2
       semver: 7.7.1
     transitivePeerDependencies:
       - supports-color
@@ -33579,7 +33605,7 @@ packages:
   /typed-rest-client@1.8.11:
     resolution: {integrity: sha512-5UvfMpd1oelmUPRbbaVnq+rHP7ng2cE4qoQkQeAqxRL6PklkxsM0g32/HL0yfvruK6ojQ5x8EE+HF4YV6DtuCA==}
     dependencies:
-      qs: 6.14.1
+      qs: 6.14.2
       tunnel: 0.0.6
       underscore: 1.13.6
     dev: true
@@ -33789,7 +33815,7 @@ packages:
     engines: {node: '>= 0.8.0'}
     requiresBuild: true
     dependencies:
-      qs: 6.14.1
+      qs: 6.14.2
     dev: true
     optional: true
 
@@ -33944,7 +33970,7 @@ packages:
     dependencies:
       bluebird: 3.7.2
       duplexer2: 0.1.4
-      fs-extra: 11.2.0
+      fs-extra: 11.3.2
       graceful-fs: 4.2.11
       node-int64: 0.4.0
     dev: true
@@ -34045,7 +34071,7 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       punycode: 1.4.1
-      qs: 6.14.1
+      qs: 6.14.2
 
   /urlpattern-polyfill@10.0.0:
     resolution: {integrity: sha512-H/A06tKD7sS1O1X2SshBVeA5FLycRpjqiBeqGKmBwBDBy28EnRjORxTNe269KSSr5un5qyWi1iL61wLxpd+ZOg==}
@@ -34819,7 +34845,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: false
 
   /ws@8.19.0:
     resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}

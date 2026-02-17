@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Setting defaults mergeUi5 resolves correct manifest version for UI5 >= 1.100 1`] = `
+Object {
+  "descriptorVersion": "1.82.0",
+  "framework": "SAPUI5",
+  "frameworkUrl": "https://ui5.sap.com",
+  "localVersion": "1.199.0",
+  "minUI5Version": "1.199.0",
+  "typesPackage": "@sapui5/types",
+  "typesVersion": "~1.199.0",
+  "ui5Libs": Array [
+    "sap.m",
+    "sap.ui.core",
+  ],
+  "ui5Theme": "sap_fiori_3",
+  "version": "1.199.0",
+}
+`;

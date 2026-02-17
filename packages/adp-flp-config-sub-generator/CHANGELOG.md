@@ -1,5 +1,72 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.177
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/adp-tooling@0.18.65
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/flp-config-inquirer@0.4.124
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/system-access@0.6.53
+
+## 0.1.176
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/flp-config-inquirer@0.4.123
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/inquirer-common@0.11.6
+
+## 0.1.175
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/adp-tooling@0.18.63
+    - @sap-ux/fiori-generator-shared@0.13.71
+    - @sap-ux/system-access@0.6.51
+    - @sap-ux/flp-config-inquirer@0.4.122
+    - @sap-ux/inquirer-common@0.11.5
+
+## 0.1.174
+
+### Patch Changes
+
+- 346f09c: feat: support reuse libraries in adaptation project for CF
+- Updated dependencies [346f09c]
+    - @sap-ux/adp-tooling@0.18.62
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/flp-config-inquirer@0.4.121
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/fiori-generator-shared@0.13.70
+    - @sap-ux/inquirer-common@0.11.4
+    - @sap-ux/system-access@0.6.50
+
+## 0.1.173
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/adp-tooling@0.18.61
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/fiori-generator-shared@0.13.69
+    - @sap-ux/flp-config-inquirer@0.4.120
+    - @sap-ux/inquirer-common@0.11.3
+    - @sap-ux/system-access@0.6.50
+
 ## 0.1.172
 
 ### Patch Changes

@@ -1,5 +1,50 @@
 # @sap-ux/preview-middleware
 
+## 0.23.122
+
+### Patch Changes
+
+- dd2131c: Axios upgrade from bas-sdk
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/adp-tooling@0.18.65
+    - @sap-ux/system-access@0.6.53
+
+## 0.23.121
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+- Updated dependencies [e7f58d7]
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+
+## 0.23.120
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.63
+- @sap-ux/system-access@0.6.51
+
+## 0.23.119
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/adp-tooling@0.18.62
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/system-access@0.6.50
+
+## 0.23.118
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/adp-tooling@0.18.61
+    - @sap-ux/system-access@0.6.50
+
 ## 0.23.117
 
 ### Patch Changes
