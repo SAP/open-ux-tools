@@ -4,7 +4,7 @@ import path from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { ApprouterDestination } from '../types';
-import type { EffectiveOptions, RouteEntry, XsappConfig } from '../config';
+import type { EffectiveOptions, RouteEntry, XsappConfig } from '../types';
 
 /** Options for loading and preparing xs-app.json (no destinations needed) */
 export interface PrepareXsappConfigOptions {

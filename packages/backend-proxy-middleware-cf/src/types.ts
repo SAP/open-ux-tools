@@ -53,3 +53,49 @@ export interface BackendProxyMiddlewareCfConfig {
     /** Disable welcome file handling from xs-app.json */
     disableWelcomeFile?: boolean;
 }
+
+/** Effective options with defaults applied. */
+export interface EffectiveOptions extends BackendProxyMiddlewareCfConfig {
+    port: number;
+    xsappJson: string;
+    destinations: ApprouterDestination[] | string;
+    rewriteContentTypes: string[];
+    extensions: ApprouterExtension[];
+}
+
+/** Route entry with compiled regex and resolved destination URL. */
+export interface RouteEntry {
+    re: RegExp;
+    path: string;
+    url?: string;
+    source: string;
+    destination?: string;
+}
+
+/** Mime info for response handling. */
+export interface MimeInfo {
+    type: string;
+    charset: string;
+    contentType: string;
+}
+
+/** Single route entry in xs-app.json (minimal shape we use). */
+export interface XsappRoute {
+    source: string;
+    destination?: string;
+    endpoint?: string;
+    localDir?: string;
+    service?: string;
+    authenticationType?: string;
+    target?: string;
+    cacheControl?: string;
+}
+
+/** Parsed xs-app.json shape (minimal for our use). */
+export interface XsappConfig {
+    routes?: XsappRoute[];
+    welcomeFile?: string;
+    authenticationMethod?: string;
+    login?: { callbackEndpoint?: string };
+    logout?: { logoutEndpoint?: string };
+}

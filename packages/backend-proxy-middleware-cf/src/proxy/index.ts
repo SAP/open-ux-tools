@@ -5,7 +5,7 @@ import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middlewar
 import type { RequestHandler } from 'express';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { EffectiveOptions, MimeInfo, RouteEntry } from '../config';
+import type { EffectiveOptions, MimeInfo, RouteEntry } from '../types';
 
 /**
  * Replaces oldUrl with newUrl in text (regex-safe).

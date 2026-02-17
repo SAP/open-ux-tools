@@ -2,7 +2,7 @@ import portfinder from 'portfinder';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { EffectiveOptions } from '../config';
+import type { EffectiveOptions } from '../types';
 import type { ApprouterDestination } from '../types';
 
 /**
