@@ -13,7 +13,7 @@ import type { MimeInfo, RouteEntry } from '../types';
  * @returns {string} Text with URLs replaced.
  */
 export function replaceUrl(text: string, oldUrl: string, newUrl: string): string {
-    const escaped = oldUrl.replaceAll(new RegExp(String.raw`[-/\^$*+?.()|[\]{}]`, 'g'), String.raw`\$&`);
+    const escaped = oldUrl.replaceAll(/[-/\\^$*+?.()|[\]{}]/g, String.raw`\$&`);
     const regex = new RegExp(escaped, 'gi');
     return text.replace(regex, newUrl);
 }
