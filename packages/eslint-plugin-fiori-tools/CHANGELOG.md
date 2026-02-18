@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.6.0
+
+### Minor Changes
+
+- 552c106: Fix: check table paste functionality is enabled on object pages only.
+
 ## 9.5.11
 
 ### Patch Changes
