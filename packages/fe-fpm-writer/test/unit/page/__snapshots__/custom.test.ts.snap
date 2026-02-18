@@ -73,14 +73,14 @@ exports[`CustomPage Typescript controller latest version with minimal input 1`] 
 "import Controller from \\"sap/fe/core/PageController\\";
 
 /**
- * @namespace my.test.App.ext.customPage
+ * @namespace my.test.App.ext.view
  */
 export default class CustomPage extends Controller {
 
     /**
      * Called when a controller is instantiated and its View controls (if available) are already created.
      * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-     * @memberOf my.test.App.ext.customPage.CustomPage
+     * @memberOf my.test.App.ext.view.CustomPage
      */
     // public onInit(): void {
     //     super.onInit(); // needs to be called to properly initialize the page controller
@@ -89,7 +89,7 @@ export default class CustomPage extends Controller {
     /**
      * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
      * (NOT before the first rendering! onInit() is used for that one!).
-     * @memberOf my.test.App.ext.customPage.CustomPage
+     * @memberOf my.test.App.ext.view.CustomPage
      */
     // public  onBeforeRendering(): void {
     //
@@ -98,7 +98,7 @@ export default class CustomPage extends Controller {
     /**
      * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
      * This hook is the same one that SAPUI5 controls get after being rendered.
-     * @memberOf my.test.App.ext.customPage.CustomPage
+     * @memberOf my.test.App.ext.view.CustomPage
      */
     // public  onAfterRendering(): void {
     //
@@ -106,7 +106,7 @@ export default class CustomPage extends Controller {
 
     /**
      * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-     * @memberOf my.test.App.ext.customPage.CustomPage
+     * @memberOf my.test.App.ext.view.CustomPage
      */
     // public onExit(): void {
     //
@@ -118,14 +118,14 @@ exports[`CustomPage Typescript controller lower UI5 version(1.84) 1`] = `
 "import Controller from 'sap/ui/core/mvc/Controller'; /** If UI5 version 1.94 or newer can be used, the change the base controller to sap/fe/core/PageController to get full FEv4 FPM support */
 
 /**
- * @namespace my.test.App.ext.customPage
+ * @namespace my.test.App.ext.view
  */
 export default class CustomPage extends Controller {
 
     /**
      * Called when a controller is instantiated and its View controls (if available) are already created.
      * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-     * @memberOf my.test.App.ext.customPage.CustomPage
+     * @memberOf my.test.App.ext.view.CustomPage
      */
     // public onInit(): void {
     //    super.onInit(); // needs to be called to properly initialize the page controller
@@ -134,7 +134,7 @@ export default class CustomPage extends Controller {
     /**
      * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
      * (NOT before the first rendering! onInit() is used for that one!).
-     * @memberOf my.test.App.ext.customPage.CustomPage
+     * @memberOf my.test.App.ext.view.CustomPage
      */
     // public  onBeforeRendering(): void {
     //
@@ -143,7 +143,7 @@ export default class CustomPage extends Controller {
     /**
      * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
      * This hook is the same one that SAPUI5 controls get after being rendered.
-     * @memberOf my.test.App.ext.customPage.CustomPage
+     * @memberOf my.test.App.ext.view.CustomPage
      */
     // public  onAfterRendering(): void {
     //
@@ -151,7 +151,7 @@ export default class CustomPage extends Controller {
 
     /**
      * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-     * @memberOf my.test.App.ext.customPage.CustomPage
+     * @memberOf my.test.App.ext.view.CustomPage
      */
     // public onExit(): void {
     //
@@ -400,7 +400,7 @@ Object {
 
 exports[`CustomPage generateCustomPage: different versions or target folder latest version with contextPath 2`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
     <Page id=\\"CustomPage\\" title=\\"{i18n>CustomPageTitle}\\">
         <content></content>
     </Page>
@@ -415,11 +415,11 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
     function(PageController) {
         'use strict';
 
-        return PageController.extend('my.test.App.ext.customPage.CustomPage', {
+        return PageController.extend('my.test.App.ext.view.CustomPage', {
             /**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onInit: function () {
             //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
@@ -428,7 +428,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
             /**
              * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
              * (NOT before the first rendering! onInit() is used for that one!).
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onBeforeRendering: function() {
             //
@@ -437,7 +437,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
             /**
              * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
              * This hook is the same one that SAPUI5 controls get after being rendered.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onAfterRendering: function() {
             //
@@ -445,7 +445,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
 
             /**
              * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onExit: function() {
             //
@@ -501,7 +501,7 @@ Object {
 
 exports[`CustomPage generateCustomPage: different versions or target folder latest version with entitySet and lower UI5 version 2`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
     <Page id=\\"CustomPage\\" title=\\"{i18n>CustomPageTitle}\\">
         <content></content>
     </Page>
@@ -516,11 +516,11 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
     function(PageController) {
         'use strict';
 
-        return PageController.extend('my.test.App.ext.customPage.CustomPage', {
+        return PageController.extend('my.test.App.ext.view.CustomPage', {
             /**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onInit: function () {
             //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
@@ -529,7 +529,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
             /**
              * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
              * (NOT before the first rendering! onInit() is used for that one!).
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onBeforeRendering: function() {
             //
@@ -538,7 +538,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
             /**
              * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
              * This hook is the same one that SAPUI5 controls get after being rendered.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onAfterRendering: function() {
             //
@@ -546,7 +546,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
 
             /**
              * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onExit: function() {
             //
@@ -603,7 +603,7 @@ Object {
 
 exports[`CustomPage generateCustomPage: different versions or target folder latest version with minimal input 2`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
     <Page id=\\"CustomPage\\" title=\\"{i18n>CustomPageTitle}\\">
         <content></content>
     </Page>
@@ -618,11 +618,11 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
     function(PageController) {
         'use strict';
 
-        return PageController.extend('my.test.App.ext.customPage.CustomPage', {
+        return PageController.extend('my.test.App.ext.view.CustomPage', {
             /**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onInit: function () {
             //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
@@ -631,7 +631,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
             /**
              * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
              * (NOT before the first rendering! onInit() is used for that one!).
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onBeforeRendering: function() {
             //
@@ -640,7 +640,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
             /**
              * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
              * This hook is the same one that SAPUI5 controls get after being rendered.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onAfterRendering: function() {
             //
@@ -648,7 +648,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
 
             /**
              * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onExit: function() {
             //
@@ -691,7 +691,7 @@ Object {
             "settings": Object {
               "contextPath": "/RootEntity",
               "navigation": Object {},
-              "viewName": "my.test.App.ext.view.CustomPage",
+              "viewName": "my.test.App.ext.different.CustomPage",
             },
           },
           "type": "Component",
@@ -837,7 +837,7 @@ Object {
             "settings": Object {
               "contextPath": "/RootEntity",
               "navigation": Object {},
-              "viewName": "my.test.App.ext.view.CustomPage",
+              "viewName": "my.test.App.ext.different.CustomPage",
             },
           },
           "type": "Component",
@@ -893,7 +893,7 @@ Object {
 
 exports[`CustomPage generateCustomPage: different versions or target folder with older but supported UI5 version 2`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
     <Page id=\\"CustomPage\\" title=\\"{i18n>CustomPageTitle}\\">
         <content></content>
     </Page>
@@ -908,11 +908,11 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
     function(PageController) {
         'use strict';
 
-        return PageController.extend('my.test.App.ext.customPage.CustomPage', {
+        return PageController.extend('my.test.App.ext.view.CustomPage', {
             /**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onInit: function () {
             //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
@@ -921,7 +921,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
             /**
              * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
              * (NOT before the first rendering! onInit() is used for that one!).
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onBeforeRendering: function() {
             //
@@ -930,7 +930,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
             /**
              * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
              * This hook is the same one that SAPUI5 controls get after being rendered.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onAfterRendering: function() {
             //
@@ -938,7 +938,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
 
             /**
              * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.view.CustomPage
              */
             //  onExit: function() {
             //
@@ -1050,7 +1050,7 @@ Object {
 `;
 
 exports[`CustomPage generateCustomPage: only page, no others should generate a custom page with pageBuildingBlockTitle enabled 1`] = `
-"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
     <macros:Page id=\\"Page\\" title=\\"Test Page Title\\"/>
 </mvc:View>"
 `;

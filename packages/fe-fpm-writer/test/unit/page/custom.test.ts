@@ -91,8 +91,8 @@ describe('CustomPage', () => {
             await generateCustomPage(target, minimalInput, fs);
             //check
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.controller.js'))).toMatchSnapshot();
         });
 
         test('latest version with minimal input, plus optional page id', async () => {
@@ -120,8 +120,8 @@ describe('CustomPage', () => {
             await generateCustomPage(target, testInput, fs);
             //check
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.controller.js'))).toMatchSnapshot();
         });
 
         test('latest version with contextPath', async () => {
@@ -133,8 +133,8 @@ describe('CustomPage', () => {
             await generateCustomPage(target, localInput, fs);
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.controller.js'))).toMatchSnapshot();
         });
 
         test('with older but supported UI5 version', async () => {
@@ -143,8 +143,8 @@ describe('CustomPage', () => {
             await generateCustomPage(target, { ...minimalInput, minUI5Version: '1.84' }, fs);
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.controller.js'))).toMatchSnapshot();
         });
 
         test('with older but supported UI5 version, plus optional page id', async () => {
@@ -303,13 +303,13 @@ describe('CustomPage', () => {
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
             await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs);
 
-            const viewXmlPath = join(target, 'webapp/ext/customPage/CustomPage.view.xml');
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
             expect(fs.exists(viewXmlPath)).toBe(true);
             const viewXml = fs.read(viewXmlPath).toString();
             expect(viewXml).toContain('macros:Page');
             expect(viewXml).toContain('Test Page Title');
 
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.view.xml'))).toMatchSnapshot();
         });
 
         test('should log a warning when min ui5 version is not met for page building block feature', async () => {
@@ -331,7 +331,7 @@ describe('CustomPage', () => {
             );
 
             // page macros should not be added
-            const viewXmlPath = join(target, 'webapp/ext/customPage/CustomPage.view.xml');
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
             expect(fs.exists(viewXmlPath)).toBe(true);
             const viewXml = fs.read(viewXmlPath).toString();
             expect(viewXml).not.toContain('macros:Page');
@@ -388,7 +388,7 @@ describe('CustomPage', () => {
             //act
             await generateCustomPage(target, minimalInput, fs);
             //check
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.ts'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.controller.ts'))).toMatchSnapshot();
         });
 
         test('lower UI5 version(1.84)', async () => {
@@ -398,7 +398,7 @@ describe('CustomPage', () => {
             //act
             await generateCustomPage(target, testInput, fs);
             //check
-            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.ts'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/view/CustomPage.controller.ts'))).toMatchSnapshot();
         });
     });
 
