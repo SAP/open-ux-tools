@@ -11,14 +11,14 @@ import { runNpmInstallCommand } from '../../common';
 export function addConvertEslintCommand(cmd: Command): void {
     cmd.command('eslint-config [path]')
         .description(
-            `Executed in the root folder of an app, it converts the eslint configuration of the respective app to flat config format (eslint version 9).\n
+            `Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (ESLint version 9).\n
 Examples:
     \`npx --yes @sap-ux/create@latest convert eslint-config\``
         )
         .option('-v, --verbose', 'Show verbose information.')
         .option(
             '-c, --config <string>',
-            'The name of the SAP Fiori tools eslint plugin configuration to be used.',
+            'The name of the SAP Fiori tools ESLint plugin configuration to be used.',
             'recommended'
         )
         .option('-n, --skip-install', 'Skip the `npm install` step.')
@@ -46,11 +46,11 @@ async function convertEslintConfig(basePath: string, config: string, skipInstall
         await traceChanges(fs);
         fs.commit(() => {
             logger.info(
-                `Eslint configuration converted. Ensure you install the new dependency by executing 'npm install'.`
+                `ESlint configuration converted. Ensure you install the new dependency by executing 'npm install'.`
             );
             if (skipInstall) {
                 logger.info(
-                    `\`npm install\` will be skipped. Please make sure to install the dependencies before executing any linting commands.`
+                    `\`npm install\` was skipped. Ensure you install the dependencies before executing any linting commands.`
                 );
             } else {
                 runNpmInstallCommand(basePath);

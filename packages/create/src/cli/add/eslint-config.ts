@@ -13,7 +13,7 @@ import { runNpmInstallCommand } from '../../common';
 export function addAddEslintConfigCommand(cmd: Command): void {
     cmd.command('eslint-config [path]')
         .description(
-            `Add an \`eslint\` configuration to a project including the SAP Fiori tools lint plugin (\`@sap-ux/eslint-plugin-fiori-tools\`).\n
+            `Add an ESLint configuration to a project including the SAP Fiori tools lint plugin (\`@sap-ux/eslint-plugin-fiori-tools\`).\n
 Example:
     \`npx --yes @sap-ux/create@latest add eslint-config\``
         )
@@ -56,7 +56,7 @@ async function addEslintConfig(
         if (!simulate) {
             fs.commit(() => {
                 logger.info(
-                    `Eslint configuration written. Ensure you install the new dependency by executing 'npm install'.`
+                    `ESlint configuration written. Ensure you install the new dependency by executing 'npm install'.`
                 );
                 if (skipInstall) {
                     logger.info(

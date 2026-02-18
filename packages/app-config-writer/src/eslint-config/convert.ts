@@ -29,7 +29,7 @@ const packageName = {
     ESLINT_PLUGIN_FIORI_CUSTOM: 'eslint-plugin-fiori-custom'
 } as const;
 
-const MIGRATION_ERROR_TEXT = `Migration to eslint version 9 failed. Please check if you can find more details above. You might want to check the official eslint documentation on how to migrate to version 9: https://eslint.org/docs/latest/use/migrate-to-9.0.0#flat-config or delete the existing eslint \`devDependency\` and run \`create add eslint\` to get a flat config eslint.config.mjs where you can transfer your old eslint config manually.`;
+const MIGRATION_ERROR_TEXT = `Migration to eslint version 9 failed. Check if there are error messages above. You can also delete the existing eslint \`devDependency\` and run \`create add eslint\` to create a eslint.config.mjs file with the flat config where you can transfer your old eslint config manually.\` For more information, see [https://eslint.org/docs/latest/use/migrate-to-9.0.0#flat-config](Migrate to v9.x).`;
 
 /**
  * Converts an eslint config to flat config format (eslint version 9).
@@ -80,13 +80,13 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
     }
     if (!hasDependency(packageJson, 'eslint')) {
         logger?.error(
-            `Did not find 'esLint' dependency in package.json at path '${packageJsonPath}. You might want to use the \`add eslint-config\` command instead.'`
+            `Did not find ESLint dependency in package.json at path '${packageJsonPath}. You might want to use the \`add eslint-config\` command instead.'`
         );
         return false;
     }
     if (!isLowerThanMinimalVersion(packageJson, 'eslint', '9.0.0')) {
         logger?.error(
-            `EsLint version is already 9.0.0 or higher in this project. Found 'eslint' dependency with version '${packageJson.devDependencies?.eslint}' in package.json at path '${packageJsonPath}'`
+            `ESLint version is already 9.0.0 or higher in this project. Found ESLint dependency with version '${packageJson.devDependencies?.eslint}' in package.json at path '${packageJsonPath}'`
         );
         return false;
     }
