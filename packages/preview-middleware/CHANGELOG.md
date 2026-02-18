@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.123
+
+### Patch Changes
+
+- 849529f: fix: Missing additional info for adaptation projects with local IDs
+
 ## 0.23.122
 
 ### Patch Changes
