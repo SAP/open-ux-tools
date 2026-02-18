@@ -99,7 +99,7 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
             service: v4Service
         } as FioriElementsApp<FPMSettings>;
         const fs = await generate(testPath, config);
-        const viewXmlPath = join(testPath, 'webapp/ext/main/Main.view.xml');
+        const viewXmlPath = join(testPath, 'webapp/ext/view/Main.view.xml');
         const viewXml = fs.read(viewXmlPath).toString();
 
         expect(viewXml).toContain('My Custom Page');
@@ -125,7 +125,7 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
         } as FioriElementsApp<FPMSettings>;
 
         const fs = await generate(testPath, config);
-        const viewXmlPath = join(testPath, 'webapp/ext/main/Main.view.xml');
+        const viewXmlPath = join(testPath, 'webapp/ext/view/Main.view.xml');
         const viewXml = fs.read(viewXmlPath).toString();
 
         expect(viewXml).toContain('<Page id="Main" title="{i18n>MainTitle}">');
