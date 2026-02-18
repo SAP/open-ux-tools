@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.19
+
+### Patch Changes
+
+- 227e704: Fix detection of sap.fe.macros.Table for newer UI5 versions.
+
+## 0.18.18
+
+### Patch Changes
+
+- 849529f: fix: Missing additional info for adaptation projects with local IDs
+
 ## 0.18.17
 
 ### Patch Changes
