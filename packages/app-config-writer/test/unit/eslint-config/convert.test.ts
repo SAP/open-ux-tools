@@ -2,6 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { convertEslintConfig } from '../../../src';
 import type { EslintRcJson } from '../../../src/eslint-config/convert';
@@ -21,17 +22,57 @@ describe('convertEslintConfig', () => {
     } as Partial<ToolsLogger> as ToolsLogger;
     let fs: Editor;
     let errorMock: jest.SpyInstance;
-    let infoMock: jest.SpyInstance;
+    let debugMock: jest.SpyInstance;
     let spawnMock: jest.MockedFunction<typeof crossSpawn>;
+
+    /**
+     * Helper function to set up fixture data in memory for tests.
+     * Loads fixture files from disk and copies them into the in-memory file system.
+     * This prevents tests from reading/writing to actual fixture files on disk.
+     *
+     * @param fileSystem - optional file system instance to populate (defaults to the shared fs instance)
+     */
+    const setupFixtures = (fileSystem: Editor = fs) => {
+        const existingConfigBase = join(__dirname, '../../fixtures/eslint-config/existing-config');
+        const missingConfigBase = join(__dirname, '../../fixtures/eslint-config/missing-config');
+
+        // Load fixture files from disk and copy to in-memory fs
+        const existingConfigPackageJson = JSON.parse(
+            readFileSync(join(existingConfigBase, 'package.json'), 'utf-8')
+        ) as Package;
+        const existingConfigEslintRc = JSON.parse(
+            readFileSync(join(existingConfigBase, '.eslintrc.json'), 'utf-8')
+        ) as EslintRcJson;
+        const missingConfigPackageJson = JSON.parse(
+            readFileSync(join(missingConfigBase, 'package.json'), 'utf-8')
+        ) as Package;
+
+        // Setup existing-config fixtures in memory
+        fileSystem.writeJSON(join(existingConfigBase, 'package.json'), existingConfigPackageJson);
+        fileSystem.writeJSON(join(existingConfigBase, '.eslintrc.json'), existingConfigEslintRc);
+
+        // Setup missing-config fixtures in memory
+        fileSystem.writeJSON(join(missingConfigBase, 'package.json'), missingConfigPackageJson);
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
         fs = create(createStorage());
         errorMock = loggerMock.error as unknown as jest.SpyInstance;
-        infoMock = loggerMock.info as unknown as jest.SpyInstance;
+        debugMock = loggerMock.debug as unknown as jest.SpyInstance;
         spawnMock = crossSpawn as jest.MockedFunction<typeof crossSpawn>;
 
-        // Default mock for spawn - successful execution
+        // Setup fixtures in memory BEFORE mocking commit
+        setupFixtures();
+
+        // Mock fs.commit to prevent writing to disk in tests
+        jest.spyOn(fs, 'commit').mockImplementation((callback?: any) => {
+            if (callback) {
+                setImmediate(callback);
+            }
+            return Promise.resolve();
+        });
+
         const mockChildProcess = new EventEmitter() as ChildProcess;
         spawnMock.mockReturnValue(mockChildProcess);
         // Trigger close event with exit code 0 after a short delay
@@ -60,7 +101,7 @@ describe('convertEslintConfig', () => {
             } catch (error) {
                 expect(error.message).toContain('The prerequisites are not met');
                 expect(errorMock).toHaveBeenCalledWith(
-                    expect.stringContaining("Did not find 'esLint' dependency in package.json")
+                    expect.stringContaining('Did not find ESLint dependency in package.json')
                 );
             }
         });
@@ -97,7 +138,7 @@ describe('convertEslintConfig', () => {
             } catch (error) {
                 expect(error.message).toContain('The prerequisites are not met');
                 expect(errorMock).toHaveBeenCalledWith(
-                    expect.stringContaining('EsLint version is already 9.0.0 or higher in this project')
+                    expect.stringContaining('ESLint version is already 9.0.0 or higher in this project')
                 );
             }
         });
@@ -116,7 +157,7 @@ describe('convertEslintConfig', () => {
             } catch (error) {
                 expect(error.message).toContain('The prerequisites are not met');
                 expect(errorMock).toHaveBeenCalledWith(
-                    expect.stringContaining('EsLint version is already 9.0.0 or higher in this project')
+                    expect.stringContaining('ESLint version is already 9.0.0 or higher in this project')
                 );
             }
         });
@@ -163,7 +204,7 @@ describe('convertEslintConfig', () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            expect(infoMock).toHaveBeenCalledWith(expect.stringContaining('Added SAP Fiori tools plugin'));
+            expect(debugMock).toHaveBeenCalledWith(expect.stringContaining('Applied SAP Fiori tools settings'));
         });
 
         test('should handle .eslintrc.json with string extends', async () => {
@@ -372,14 +413,6 @@ describe('convertEslintConfig', () => {
     });
 
     describe('File system handling', () => {
-        test('should work without fs option (creates new fs)', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            const result = await convertEslintConfig(basePath, { logger: loggerMock });
-
-            expect(result).toBeDefined();
-            expect(result.readJSON).toBeDefined();
-        });
-
         test('should work without logger option', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             const result = await convertEslintConfig(basePath, { fs });
@@ -390,6 +423,18 @@ describe('convertEslintConfig', () => {
         test('should work with provided fs instance', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             const customFs = create(createStorage());
+
+            // Load fixtures into custom fs
+            setupFixtures(customFs);
+
+            // Mock commit on custom fs
+            jest.spyOn(customFs, 'commit').mockImplementation((callback?: any) => {
+                if (callback) {
+                    setImmediate(callback);
+                }
+                return Promise.resolve();
+            });
+
             const result = await convertEslintConfig(basePath, { logger: loggerMock, fs: customFs });
 
             expect(result).toBe(customFs);
