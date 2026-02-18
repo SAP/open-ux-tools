@@ -128,6 +128,7 @@ export async function getAbapQuestions({
                 serviceProvider,
                 type: projectType
             },
+            adpProjectType: promptOptions.adpProjectType,
             ui5AbapRepo: {
                 default: deployAppConfig?.name,
                 ...promptOptions?.ui5AbapRepo
@@ -144,8 +145,7 @@ export async function getAbapQuestions({
                 ...promptOptions?.packageAutocomplete
             },
             overwriteAbapConfig: { hide: !showOverwriteQuestion },
-            transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false },
-            targetSystem: promptOptions?.targetSystem
+            transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false }
         },
         logger as unknown as Logger,
         getHostEnvironment() !== hostEnvironment.cli
