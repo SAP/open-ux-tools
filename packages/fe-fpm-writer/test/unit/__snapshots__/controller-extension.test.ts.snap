@@ -18,7 +18,7 @@ Object {
             "controllerNames": Array [
               "my.test.App.ext.controller.LRExtension2",
               "my.test.App.ext.controller.LRExtension",
-              "my.test.App.ext.view.LRExtension3",
+              "my.test.App.ext.controller.LRExtension3",
             ],
           },
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
@@ -65,7 +65,6 @@ Object {
             "controllerNames": Array [
               "my.test.App.ext.controller.LRExtension2",
               "my.test.App.ext.controller.LRExtension",
-              "my.test.App.ext.view.LRExtension2",
             ],
           },
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
@@ -111,7 +110,7 @@ Object {
           "sap.fe.templates.ListReport.ListReportController": Object {
             "controllerNames": Array [
               "my.test.App.ext.controller.LRExtension",
-              "my.test.App.ext.view.Dummy",
+              "my.test.App.ext.controller.Dummy",
             ],
           },
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
@@ -155,10 +154,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ListReport.ListReportController": Object {
-            "controllerNames": Array [
-              "my.test.App.ext.controller.LRExtension",
-              "my.test.App.ext.view.LRExtension",
-            ],
+            "controllerName": "my.test.App.ext.controller.LRExtension",
           },
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
             "controllerNames": Array [
@@ -201,7 +197,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ListReport.ListReportController": Object {
-            "controllerName": "my.test.App.ext.view.Dummy",
+            "controllerName": "my.test.App.ext.controller.Dummy",
           },
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
             "controllerNames": Array [
@@ -250,7 +246,7 @@ Object {
             "controllerNames": Array [
               "my.test.App.ext.controller.OPExtension",
               "my.test.App.ext.controller.OPExtension2",
-              "my.test.App.ext.view.OPExtensionNew",
+              "my.test.App.ext.controller.OPExtensionNew",
             ],
           },
           "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
@@ -291,10 +287,10 @@ Object {
             "controllerName": "my.test.App.ext.controller.LRExtension",
           },
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerName": "my.test.App.ext.controller.OPExtension2",
             "controllerNames": Array [
               "my.test.App.ext.controller.OPExtension",
               "my.test.App.ext.controller.OPExtension2",
-              "my.test.App.ext.view.OPExtension2",
             ],
           },
           "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
@@ -335,7 +331,7 @@ Object {
             "controllerName": "my.test.App.ext.controller.LRExtension",
           },
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
-            "controllerName": "my.test.App.ext.view.Dummy",
+            "controllerName": "my.test.App.ext.controller.Dummy",
           },
           "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
             "controllerName": "my.test.App.ext.controller.OPBookingExtension",
@@ -372,7 +368,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ListReport.ListReportController": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -428,7 +424,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -484,7 +480,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ListReport.ListReportController": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -540,7 +536,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "my.project.ext.view.Test": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -596,7 +592,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ListReport.ListReportController#my.test.App::TestListReport": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -667,7 +663,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ListReport.ListReportController": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -724,7 +720,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -781,7 +777,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ListReport.ListReportController": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -838,7 +834,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "my.project.ext.view.Test": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -895,7 +891,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ListReport.ListReportController": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -952,7 +948,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ListReport.ListReportController#dummy.project::BookingSupplementObjectPage": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },
@@ -1009,7 +1005,7 @@ Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
           "sap.fe.templates.ObjectPage.ObjectPageController": Object {
-            "controllerName": "my.test.App.ext.view.NewExtension",
+            "controllerName": "my.test.App.ext.controller.NewExtension",
           },
         },
       },

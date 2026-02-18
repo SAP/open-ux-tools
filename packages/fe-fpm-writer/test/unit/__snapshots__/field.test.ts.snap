@@ -7,7 +7,7 @@ Object {
     "anchor": "Dummy",
     "placement": "Before",
   },
-  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
 }
 `;
 
@@ -17,14 +17,14 @@ Object {
   "position": Object {
     "placement": "Before",
   },
-  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
 }
 `;
 
 exports[`CustomField Test 'position' property. Create without position 1`] = `
 Object {
   "label": "New Custom Field",
-  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
 }
 `;
 
@@ -172,7 +172,7 @@ Object {
           "anchor": "DummyField",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
       },
     },
   },
@@ -219,7 +219,7 @@ Object {
           "anchor": "DummyField",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
       },
     },
   },
@@ -246,7 +246,7 @@ Object {
                   "anchor": "NewDummyFacet",
                   "placement": "Before",
                 },
-                "template": "sapux.fe.fpm.writer.test.ext.view.DummyField",
+                "template": "sapux.fe.fpm.writer.test.extensions.custom.DummyField",
               },
             },
           },
@@ -300,7 +300,7 @@ Object {
           "anchor": "DummyField",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+        "template": "sapux.fe.fpm.writer.test.ext.newCustomField.NewCustomField",
       },
     },
   },
@@ -325,7 +325,7 @@ Object {
           "anchor": "DummyField",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
       },
     },
   },
@@ -356,7 +356,7 @@ Object {
           "anchor": "DummyField",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
       },
     },
   },
@@ -381,7 +381,7 @@ Object {
           "anchor": "DummyField",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
       },
     },
   },
@@ -406,7 +406,7 @@ Object {
           "anchor": "DummyField",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomFieldFragment",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomFieldFragment",
       },
     },
   },
@@ -437,7 +437,7 @@ Object {
           "anchor": "DummyField",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomField",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomField",
       },
     },
   },

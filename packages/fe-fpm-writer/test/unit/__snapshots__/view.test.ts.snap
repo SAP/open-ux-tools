@@ -136,7 +136,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
 }
@@ -158,7 +158,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
 }
@@ -181,7 +181,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
 }
@@ -197,7 +197,7 @@ exports[`CustomView with existing handler 1`] = `
 Object {
   "sap.ui.controllerExtensions": Object {
     "sap.fe.templates.ListReport.ListReportController": Object {
-      "controllerName": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "controllerName": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   },
 }
@@ -213,7 +213,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
 }
@@ -233,7 +233,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
   "showCounts": false,
@@ -261,7 +261,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
   "showCounts": false,
@@ -285,7 +285,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
   "showCounts": false,
@@ -296,7 +296,7 @@ exports[`CustomView with new handler 1`] = `
 Object {
   "sap.ui.controllerExtensions": Object {
     "sap.fe.templates.ListReport.ListReportController": Object {
-      "controllerName": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "controllerName": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   },
 }
@@ -312,7 +312,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
 }
@@ -348,7 +348,7 @@ exports[`CustomView with new handler and new table fragment (all properties) 1`]
 Object {
   "sap.ui.controllerExtensions": Object {
     "sap.fe.templates.ListReport.ListReportController": Object {
-      "controllerName": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "controllerName": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   },
 }
@@ -364,7 +364,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
 }
@@ -403,7 +403,7 @@ Object {
     Object {
       "key": "viewKey",
       "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomView",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
   ],
 }
