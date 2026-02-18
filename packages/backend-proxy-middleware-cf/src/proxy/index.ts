@@ -136,13 +136,7 @@ export function createProxy(options: CreateProxyOptions): RequestHandler {
         autoRewrite: true,
         xfwd: true,
         on: {
-            proxyReq: (
-                proxyReq,
-                req: Record<string, unknown> & {
-                    headers: Record<string, string | string[] | undefined>;
-                },
-                res: Record<string, unknown>
-            ) => {
+            proxyReq: (proxyReq, req, res: Record<string, unknown>) => {
                 const xfp = req.headers['x-forwarded-proto'];
                 if (typeof xfp === 'string' && xfp.indexOf(',') !== -1) {
                     const proto = xfp.split(',')[0];
@@ -150,7 +144,7 @@ export function createProxy(options: CreateProxyOptions): RequestHandler {
                     proxyReq.setHeader('x-forwarded-proto', proto);
                 }
                 if ((req as { 'ui5-middleware-index'?: { url: string } })['ui5-middleware-index']?.url === '/') {
-                    (res as Record<string, unknown>)['backend-proxy-middleware-cf'] = { redirected: true };
+                    res['backend-proxy-middleware-cf'] = { redirected: true };
                     const baseUrl =
                         (req as { 'ui5-patched-router'?: { baseUrl: string } })['ui5-patched-router']?.baseUrl ?? '/';
                     (res as { redirect: (u: string) => void }).redirect(`${baseUrl !== '/' ? baseUrl : ''}${req.url}`);
