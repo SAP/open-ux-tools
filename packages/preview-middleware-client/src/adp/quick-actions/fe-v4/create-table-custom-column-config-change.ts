@@ -8,8 +8,8 @@ import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import Table from 'sap/ui/mdc/Table';
-import { getV4AppComponent } from '../../../utils/fe-v4';
-import { getLineItemAnnotation, getPropertyPath, MacroTable } from './utils';
+import { getV4AppComponent, isMacroTable } from '../../../utils/fe-v4';
+import { getLineItemAnnotation, getPropertyPath } from './utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { isA } from '../../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
@@ -102,7 +102,7 @@ export class AddTableCustomColumnQuickAction
 function findAnchor(table: UI5Element): string {
     const macroTable = table.getParent();
     let anchor: string = '';
-    if (macroTable && isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable)) {
+    if (isMacroTable(macroTable)) {
         let metaPath = '';
         if (macroTable.metaPath.includes('LineItem')) {
             metaPath = macroTable.metaPath;

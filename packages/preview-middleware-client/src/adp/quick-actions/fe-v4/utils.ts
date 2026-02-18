@@ -1,9 +1,8 @@
-import { getControlById, isA } from '../../../utils/core';
+import { getControlById } from '../../../utils/core';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { getV4AppComponent, getPageName, getReference } from '../../../utils/fe-v4';
-import TableAPI from 'sap/fe/macros/table/TableAPI';
+import { getV4AppComponent, getPageName, getReference, isMacroTable } from '../../../utils/fe-v4';
 import UI5Element from 'sap/ui/core/Element';
 
 export async function executeToggleAction(
@@ -79,11 +78,6 @@ export function generateRoutePattern(sourceRoutePattern: string, navProperty: st
     return parts.join('');
 }
 
-export type MacroTable = TableAPI & {
-    metaPath: string;
-    contextPath: string;
-};
-
 /**
  * Get LineItem annotation - tries to use design-time helper if available, falls back to local implementation.
  *
@@ -111,7 +105,7 @@ export function getLineItemAnnotation(table: UI5Element): string | undefined {
 export function getPropertyPath(table: UI5Element, property: 'actions' | 'columns' = 'actions'): string | undefined {
     const macroTable = table.getParent();
     const configPath = '';
-    if (macroTable && isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable)) {
+    if (isMacroTable(macroTable)) {
         const lineItemAnnotation = getLineItemAnnotation(macroTable);
 
         const navigationPath = macroTable.metaPath.split(macroTable.getProperty('contextPath'))[1];
@@ -156,11 +150,7 @@ export function getPropertyPath(table: UI5Element, property: 'actions' | 'column
  */
 function getLineItemAnnotationForTable(macroTable: UI5Element): string | undefined {
     let lineItemAnnotation: string | undefined = '';
-    if (
-        macroTable &&
-        (isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable) ||
-            isA<MacroTable>('sap.fe.macros.Table', macroTable))
-    ) {
+    if (isMacroTable(macroTable)) {
         const presentation = macroTable.getModel()?.getMetaModel()?.getObject(macroTable.metaPath);
 
         // default line item annotation

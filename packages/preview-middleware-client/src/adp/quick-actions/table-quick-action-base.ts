@@ -26,7 +26,7 @@ import {
     TREE_TABLE_TYPE
 } from './control-types';
 import { isVariantManagementEnabledOPPage } from './fe-v2/utils';
-import TableAPI from 'sap/fe/macros/table/TableAPI';
+import { isMacroTable, MacroTable } from '../../utils/fe-v4';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
@@ -154,12 +154,9 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
                 ) as IconTabFilter | undefined;
             if (filterItem) {
                 filterItem.getContent().forEach((content) => {
-                    if (isA<TableAPI>('sap.fe.macros.Table', content)) {
-                        const { metaPath, contextPath } = content as TableAPI & {
-                            metaPath: string;
-                            contextPath: string;
-                        };
-                        const path = metaPath.startsWith(contextPath) ? metaPath : `${contextPath}${metaPath}`; 
+                    if (isMacroTable(content)) {
+                        const { metaPath, contextPath } = content;
+                        const path = metaPath.startsWith(contextPath) ? metaPath : `${contextPath}${metaPath}`;
                         customTabTableBuildingBlockMap[path] = key;
                     }
                 });
@@ -405,18 +402,12 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             enabled: true,
             children: []
         };
-        if (this.options.validateTableColumns && isA<MdcTable>(MDC_TABLE_TYPE, table)) {
-            const macroTable = table.getParent() as TableAPI & {
-                metaPath: string;
-                contextPath: string;
-            };
-            const { metaPath, contextPath } = macroTable;
-            const finalPath = metaPath.startsWith(contextPath) ? metaPath : `${contextPath}${metaPath}`; 
+        if (this.options.validateTableColumns && isMacroTable(table.getParent())) {
+            const { metaPath, contextPath } = table.getParent() as MacroTable;
+            const finalPath = metaPath.startsWith(contextPath) ? metaPath : `${contextPath}${metaPath}`;
             if (customViewTableBuildingBlockMap?.[finalPath]) {
                 child.enabled = false;
-                child.tooltip = this.context.resourceBundle.getText(
-                    'CUSTOM_COLUMNS_NOT_SUPPORTED'
-                );  
+                child.tooltip = this.context.resourceBundle.getText('CUSTOM_COLUMNS_NOT_SUPPORTED');
                 return child;
             }
         }

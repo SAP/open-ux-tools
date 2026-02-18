@@ -1,6 +1,6 @@
 import UI5Element from 'sap/ui/core/Element';
 import { getPropertyPath } from '../../../../src/adp/quick-actions/fe-v4/utils';
-import type { MacroTable } from '../../../../src/adp/quick-actions/fe-v4/utils';
+import { MacroTable } from '../../../../src/utils/fe-v4';
 
 describe('getActionsPropertyPath', () => {
     let mockTable: MacroTable;
