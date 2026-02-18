@@ -2,11 +2,11 @@
 
 ## Rule Details
 
-This rule checks if the `enablePaste` property set to `false` in `tableSettings` in the `manifest.json` file for OData V4 applications. This property sets whether to enable the "Export" button in tables.
+This rule checks if the `enablePaste` property set to `false` in `tableSettings` in the `manifest.json` file for OData V4 applications. This property sets whether to enable the "Paste" button in Object Page tables.
 
 ### Why Was This Rule Introduced?
 
-The export functionality should not be hidden from the preview.
+The paste functionality should not be hidden from the preview.
 
 ### Warning Message
 
@@ -20,7 +20,7 @@ The export functionality should not be hidden from the preview.
 }
 ```
 
-The `enablePaste` property is set to `false` which hides the "Export" button.
+The `enablePaste` property is set to `false` which hides the "Paste" button.
 
 #### Correct Manifest File
 
@@ -36,7 +36,7 @@ The `enablePaste` property is correctly set to `true` or omitted from  `tableSet
 
 ## How to Fix
 
-To fix the warning, remove it from the `manifest.json` file. The "Export" button is shown by default.
+To fix the warning, remove it from the `manifest.json` file. The "Paste" button is shown by default.
 
 ## Bug Report
 

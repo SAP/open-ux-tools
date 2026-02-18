@@ -416,7 +416,7 @@ export class ChangeService extends EventTarget {
         index: number,
         pendingChanges: PendingChange[]
     ): Promise<void> {
-        setAdditionalChangeInfo(command?.getPreparedChange?.());
+        setAdditionalChangeInfo(command?.getPreparedChange?.(), this.options.rta.getRootControlInstance());
         const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
         if (pendingChange) {
             pendingChanges.push(pendingChange);
