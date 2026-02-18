@@ -36,7 +36,7 @@
     // Allow Renovate to continue updating PRs after GitHub Actions bot commits
     // This is needed for the update-ui5manifest-version workflow which adds
     // additional changes (test fixtures, changesets) to Renovate PRs
-    gitIgnoredAuthors: ['kranthie-sap'],
+    gitIgnoredAuthors: ['84985584+kranthie-sap@users.noreply.github.com'],
 
     ignorePaths: [
         '**/templates/**',

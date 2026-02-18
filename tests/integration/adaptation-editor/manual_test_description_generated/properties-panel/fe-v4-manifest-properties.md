@@ -80,7 +80,6 @@
      - Property name `Selection Limit` and its value is `200`
      - Property name `Selection Mode` and its value is `Multi`
      - Property name `Show Counts` and its value is `false`
-     - Property name `Threshold` and its value is `30`
      - Property name `Type` and its value is `Responsive Table`
      - Property name `Width Including Column Header` and its value is `false`
 
