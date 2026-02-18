@@ -31,7 +31,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
-        "@vscode-logging/logger": "2.0.0",
+        "@vscode-logging/logger": "2.0.8",
         "i18next": "25.8.0",
         "logform": "2.4.0",
         "mem-fs": "2.1.0",
