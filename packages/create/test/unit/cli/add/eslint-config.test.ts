@@ -114,7 +114,11 @@ describe('Test command add eslint-config', () => {
 
             // Result check
             expect(getProjectTypeSpy).toHaveBeenCalledWith(appRoot);
-            expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('Eslint configuration written'));
+            expect(loggerMock.info).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    "ESlint configuration written. Ensure you install the new dependency by executing 'npm install'."
+                )
+            );
             // Should not show CAP-specific messages
             const infoMockCalls = (loggerMock.info as jest.Mock).mock.calls;
             const hasCapMessage = infoMockCalls.some((call) =>
