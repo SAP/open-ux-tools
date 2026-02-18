@@ -105,7 +105,7 @@ Options:
 
 ## [`add eslint-config`](#add-eslint-config)
 
-Add an `eslint` configuration to a project including the SAP Fiori tools lint plugin (`@sap-ux/eslint-plugin-fiori-tools`).
+Add an ESLint configuration to a project including the SAP Fiori tools lint plugin (`@sap-ux/eslint-plugin-fiori-tools`).
 
 Example:
 
@@ -304,7 +304,7 @@ Options:
 
 ## [`convert eslint-config`](#convert-eslint-config)
 
-Executed in the root folder of an app, it converts the eslint configuration of the respective app to flat config format (eslint version 9).
+Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (ESLint version 9).
 
 Examples:
 
@@ -312,7 +312,7 @@ Examples:
 
 Options:
 - `-v, --verbose` - Show verbose information.
-- `-c, --config <string>` - The name of the SAP Fiori tools eslint plugin configuration to be used. _(default: `recommended`)_
+- `-c, --config <string>` - The name of the SAP Fiori tools ESLint plugin configuration to be used. _(default: `recommended`)_
 - `-n, --skip-install` - Skip the `npm install` step.
 
 --------------------------------
