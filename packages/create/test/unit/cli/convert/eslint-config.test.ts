@@ -48,7 +48,11 @@ describe('Test command convert eslint-config', () => {
         // Result check
         expect(logLevelSpy).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('Eslint configuration converted'));
+        expect(loggerMock.info).toHaveBeenCalledWith(
+            expect.stringContaining(
+                "ESlint configuration converted. Ensure you install the new dependency by executing 'npm install'."
+            )
+        );
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
@@ -92,8 +96,12 @@ describe('Test command convert eslint-config', () => {
         // Result check
         expect(logLevelSpy).not.toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('Eslint configuration converted'));
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('`npm install` will be skipped'));
+        expect(loggerMock.info).toHaveBeenCalledWith(
+            expect.stringContaining(
+                "ESlint configuration converted. Ensure you install the new dependency by executing 'npm install'."
+            )
+        );
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('`npm install` was skipped'));
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
@@ -108,7 +116,11 @@ describe('Test command convert eslint-config', () => {
 
         // Result check
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('Eslint configuration converted'));
+        expect(loggerMock.info).toHaveBeenCalledWith(
+            expect.stringContaining(
+                "ESlint configuration converted. Ensure you install the new dependency by executing 'npm install'."
+            )
+        );
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
         expect(runNpmInstallSpy).toHaveBeenCalledWith(appRoot);
@@ -129,8 +141,12 @@ describe('Test command convert eslint-config', () => {
         // Result check
         expect(logLevelSpy).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('Eslint configuration converted'));
-        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('`npm install` will be skipped'));
+        expect(loggerMock.info).toHaveBeenCalledWith(
+            expect.stringContaining(
+                "ESlint configuration converted. Ensure you install the new dependency by executing 'npm install'."
+            )
+        );
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('`npm install` was skipped'));
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
         expect(runNpmInstallSpy).not.toHaveBeenCalled();
