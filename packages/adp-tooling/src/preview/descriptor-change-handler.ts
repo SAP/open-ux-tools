@@ -90,6 +90,9 @@ export function addCustomFragment(basePath: string, change: AppDescriptorV4Chang
             const fullPath = join(basePath, fragmentPath);
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', config.path);
             const text = fs.read(fragmentTemplatePath);
+            // Safe: Template files are from our own codebase (templates/rta/), config.path is from getConfig()
+            // which only returns predefined paths (customFragmentConfig or customColumnFragmentConfig).
+            // Template data comes from controlled config.getData() which only generates UUIDs for IDs.
             const template = render(text, {
                 viewName: undefined,
                 controlType: undefined,
