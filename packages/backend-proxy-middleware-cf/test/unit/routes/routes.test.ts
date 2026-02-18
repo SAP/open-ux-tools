@@ -78,7 +78,7 @@ describe('routes', () => {
 
             expect(result.routes).toHaveLength(1);
             expect(result.routes![0]).toMatchObject({
-                source: '^/([^.]+\\.html?(?:\\?.*)?)$',
+                source: String.raw`^/([^.]+\\.html?(?:\?.*)?)$`,
                 localDir: 'webapp',
                 target: '$1',
                 cacheControl: 'no-store',

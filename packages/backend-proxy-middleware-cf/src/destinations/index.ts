@@ -35,7 +35,7 @@ export function resolveDestinations(effectiveOptions: EffectiveOptions): Approut
             const key = destOpt.substring(5).trim();
             if (key && key in process.env) {
                 try {
-                    destinations = JSON.parse(process.env[key]!) as ApprouterDestination[];
+                    destinations = JSON.parse(process.env[key] as string) as ApprouterDestination[];
                 } catch (error) {
                     throw new Error(`No valid destinations JSON in .env at '${key}': ${String(error)}`);
                 }

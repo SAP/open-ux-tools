@@ -35,7 +35,7 @@ export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): X
     ) {
         const relativeSourcePath = path.relative(rootPath, sourcePath);
         xsappConfig.routes.push({
-            source: '^/([^.]+\\.html?(?:\\?.*)?)$',
+            source: String.raw`^/([^.]+\\.html?(?:\?.*)?)$`,
             localDir: relativeSourcePath,
             target: '$1',
             cacheControl: 'no-store',
@@ -65,7 +65,7 @@ export function buildRouteEntries(options: BuildRouteEntriesOptions): RouteEntry
     const destList = Array.isArray(destinations) ? destinations : [];
 
     for (const route of xsappConfig.routes ?? []) {
-        const routeMatch = route.source.match(/[^/]*\/(.*\/)?[^/]*/);
+        const routeMatch = /[^/]*\/(.*\/)?[^/]*/.exec(route.source);
         if (routeMatch) {
             const url = destList.find((d) => d.name === route.destination)?.url;
             routes.push({

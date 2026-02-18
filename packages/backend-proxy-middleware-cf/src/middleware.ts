@@ -26,10 +26,10 @@ dotenv.config();
  * @param params.middlewareUtil - UI5 middleware utilities (getProject, etc.).
  * @returns {Promise<RequestHandler>} Promise resolving to the proxy request handler.
  */
-module.exports = async ({
+async function backendProxyMiddlewareCf({
     options,
     middlewareUtil
-}: MiddlewareParameters<BackendProxyMiddlewareCfConfig>): Promise<RequestHandler> => {
+}: MiddlewareParameters<BackendProxyMiddlewareCfConfig>): Promise<RequestHandler> {
     const configuration = options.configuration;
     if (!configuration) {
         throw new Error('Backend proxy middleware (CF) has no configuration.');
@@ -92,7 +92,7 @@ module.exports = async ({
     const globalKey = 'backend-proxy-middleware-cf' as const;
     const g = globalThis as unknown as Record<string, { approuters?: unknown[] } | undefined>;
     if (typeof g[globalKey]?.approuters === 'object') {
-        g[globalKey].approuters!.push(approuter);
+        g[globalKey].approuters?.push(approuter);
     }
 
     const subdomain = effectiveOptions.subdomain;
@@ -114,4 +114,6 @@ module.exports = async ({
         effectiveOptions,
         logger
     });
-};
+}
+
+module.exports = backendProxyMiddlewareCf;

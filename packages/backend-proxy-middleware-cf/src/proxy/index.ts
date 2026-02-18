@@ -16,7 +16,7 @@ import type { CreateProxyOptions, EffectiveOptions, MimeInfo, RouteEntry } from 
  * @returns {string} Text with URLs replaced.
  */
 export function replaceUrl(text: string, oldUrl: string, newUrl: string): string {
-    const escaped = oldUrl.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const escaped = oldUrl.replaceAll(new RegExp(String.raw`[-/\^$*+?.()|[\]{}]`, 'g'), String.raw`\$&`);
     const regex = new RegExp(escaped, 'gi');
     return text.replace(regex, newUrl);
 }
@@ -79,7 +79,7 @@ export function createResponseInterceptor(
             if (effectiveOptions.debug) {
                 logger.info(`${req.method} ${url} -> ${baseUri}${url} [${proxyRes.statusCode}]`);
             }
-            const pathname = url.match(/^[^?]*/)?.[0] ?? url;
+            const pathname = /^[^?]*/.exec(url)?.[0] ?? url;
             const {
                 type,
                 charset,
@@ -92,7 +92,7 @@ export function createResponseInterceptor(
                 route?.path &&
                 route.url &&
                 effectiveOptions.rewriteContent &&
-                effectiveOptions.rewriteContentTypes.indexOf(type?.toLowerCase()) >= 0
+                effectiveOptions.rewriteContentTypes.includes(type?.toLowerCase() ?? '')
             ) {
                 const encoding = (charset ?? 'utf8') as BufferEncoding;
                 let data = responseBuffer.toString(encoding);
@@ -124,7 +124,7 @@ export function createProxy(options: CreateProxyOptions): RequestHandler {
     const { customRoutes, routes, baseUri, effectiveOptions, logger } = options;
     const intercept = createResponseInterceptor(routes, effectiveOptions, baseUri, logger);
     const pathFilter = (pathname: string): boolean =>
-        customRoutes.some((r) => new RegExp(`^${r}(\\?.*)?$`).test(pathname)) ||
+        customRoutes.some((r) => new RegExp(String.raw`^${r}(\?.*)?$`).test(pathname)) ||
         routes.some((route) => route.re.test(pathname));
 
     const proxyMiddleware = createProxyMiddleware({
@@ -147,7 +147,7 @@ export function createProxy(options: CreateProxyOptions): RequestHandler {
                     res['backend-proxy-middleware-cf'] = { redirected: true };
                     const baseUrl =
                         (req as { 'ui5-patched-router'?: { baseUrl: string } })['ui5-patched-router']?.baseUrl ?? '/';
-                    (res as { redirect: (u: string) => void }).redirect(`${baseUrl !== '/' ? baseUrl : ''}${req.url}`);
+                    (res as { redirect: (u: string) => void }).redirect(`${baseUrl === '/' ? '' : baseUrl}${req.url}`);
                 } else {
                     const patched = (req as unknown as { 'ui5-patched-router'?: { originalUrl: string } })[
                         'ui5-patched-router'
