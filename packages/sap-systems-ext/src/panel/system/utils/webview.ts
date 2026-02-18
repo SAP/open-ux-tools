@@ -37,7 +37,7 @@ export async function createWebviewPanel(
     if (onMessage) {
         webviewPanel.webview.onDidReceiveMessage((action) => {
             onMessage(action).catch((e) => {
-                SystemsLogger.logger.error(t('error.systemInfo', { error: e }));
+                SystemsLogger.logger.error(t('error.connectionInfo', { error: e }));
             });
         });
     }

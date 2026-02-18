@@ -108,10 +108,10 @@ async function updateHandler(
     // Scenario 1: User is creating a new system or importing a system
     if (panelViewType === SystemPanelViewType.Create || panelViewType === SystemPanelViewType.Import) {
         if (systemExistsInStore) {
-            throw t('error.systemKeyExists');
+            throw t('error.keyExists');
         }
         context.disposePanel();
-        newPanelMsg = t('info.systemSaved', { system: newSystem.name });
+        newPanelMsg = t('info.connectionSaved', { system: newSystem.name });
     }
 
     // Scenario 2: User is updating an existing system
@@ -122,12 +122,12 @@ async function updateHandler(
             context.updateBackendSystem(newSystem);
             await context.postMessage(
                 updateSystemStatus({
-                    message: t('info.systemInfoUpdated'),
+                    message: t('info.connectionInfoUpdated'),
                     updateSuccess: true
                 })
             );
         } else {
-            throw t('error.systemKeyExists');
+            throw t('error.keyExists');
         }
     }
 
@@ -160,7 +160,7 @@ async function postSavingError(
 ): Promise<void> {
     postMessage(
         updateSystemStatus({
-            message: t('error.systemUpdateFailure', { error: errorMsg }),
+            message: t('error.updateFailure', { error: errorMsg }),
             updateSuccess: false
         })
     );
@@ -195,7 +195,7 @@ async function saveSystem(
     await systemService.write(newBackendSystem, {
         force: systemExistsInStore
     });
-    const i18nKey = systemPanelViewType === SystemPanelViewType.Create ? 'info.systemSaved' : 'info.systemUpdated';
+    const i18nKey = systemPanelViewType === SystemPanelViewType.Create ? 'info.connectionSaved' : 'info.systemUpdated';
 
     window.showInformationMessage(t(i18nKey, geti18nOpts(backendSystem.name)));
 

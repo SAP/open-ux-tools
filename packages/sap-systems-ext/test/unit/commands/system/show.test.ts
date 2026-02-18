@@ -72,7 +72,7 @@ describe('Test the show system command handler', () => {
         await handler({ url: 'https://example.com', client: '100' });
 
         expect(showErrorMessageSpy).toHaveBeenCalledWith(
-            'System [https://example.com/100] not found in the secure store. Please ensure the system is saved correctly.'
+            'Connection [https://example.com/100] not found in the secure store. Please ensure the system is saved correctly.'
         );
     });
 
@@ -93,7 +93,7 @@ describe('Test the show system command handler', () => {
         const handler = showSystemsCommandHandler(mockContext);
         await handler({ url: 'https://example.com', client: '100' });
 
-        expect(showErrorMessageSpy).toHaveBeenCalledWith('Error executing command to view system details.');
+        expect(showErrorMessageSpy).toHaveBeenCalledWith('Error executing command to view connection details.');
     });
 
     it('should pick a system when no system is provided', async () => {

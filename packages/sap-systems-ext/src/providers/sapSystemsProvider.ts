@@ -120,7 +120,7 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
             });
             return systems;
         } catch (error) {
-            SystemsLogger.logger.error(t('error.loadingSystems'));
+            SystemsLogger.logger.error(t('error.loadingConnections'));
             SystemsLogger.logger.debug((error as Error).message);
             return [];
         } finally {

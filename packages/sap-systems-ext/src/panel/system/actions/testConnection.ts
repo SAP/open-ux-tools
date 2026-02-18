@@ -56,7 +56,7 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
             await storeSystemInfo(context, system);
         }
     } catch (e) {
-        SystemsLogger.logger.error(t('error.systemInfoUpdate', { error: (e as Error).message }));
+        SystemsLogger.logger.error(t('error.connectionInfoUpdate', { error: (e as Error).message }));
     }
 }
 

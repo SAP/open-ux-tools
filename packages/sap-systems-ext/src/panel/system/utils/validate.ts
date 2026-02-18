@@ -33,7 +33,7 @@ export async function validateSystemName(newName: string, currentName?: string):
     );
 
     if (nameExists) {
-        throw t('validation.systemNameExists');
+        throw t('validation.connectionNameExists');
     }
 
     return true;
@@ -51,6 +51,6 @@ export function validateSystemUrl(url: string): boolean {
         new URL(url);
         return true;
     } catch {
-        throw t('validation.systemUrlInvalid', { url });
+        throw t('validation.urlInvalid', { url });
     }
 }

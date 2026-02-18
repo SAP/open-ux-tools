@@ -71,7 +71,7 @@ describe('Test the delete system command handler', () => {
         await handler({ url: 'https://example.com', client: '100' });
 
         expect(deleteAndDisposeSpy).toHaveBeenCalledWith(expect.any(String));
-        expect(showInformationMessageSpy).toHaveBeenCalledWith('System [Test System] deleted.');
+        expect(showInformationMessageSpy).toHaveBeenCalledWith('Connection [Test System] deleted.');
     });
 
     it('should show a warning message if the deletion of the specific system is not successful', async () => {
@@ -95,7 +95,7 @@ describe('Test the delete system command handler', () => {
         const handler = deleteSystemCommandHandler(mockContext);
         await handler({ url: 'https://example.com', client: '100' });
 
-        expect(showWarningMessageSpy).toHaveBeenCalledWith('Error deleting system: [Test System].');
+        expect(showWarningMessageSpy).toHaveBeenCalledWith('Error deleting connection: [Test System].');
     });
 
     it('should show an error message if the system does not exist', async () => {
@@ -108,7 +108,7 @@ describe('Test the delete system command handler', () => {
         await handler({ url: 'https://nonexistent.com', client: '200' });
 
         expect(showErrorMessageSpy).toHaveBeenCalledWith(
-            'System [https://nonexistent.com/200] not found in the secure store. Please ensure the system is saved correctly.'
+            'Connection [https://nonexistent.com/200] not found in the secure store. Please ensure the system is saved correctly.'
         );
     });
 

@@ -159,7 +159,7 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'Failed to update system information: System (URL + Client) already exists',
+                message: 'Failed to update connection information: Connection (URL + Client) already exists',
                 updateSuccess: false
             }
         });
@@ -196,7 +196,7 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'System information updated.',
+                message: 'Connection information updated.',
                 updateSuccess: true
             }
         });
@@ -223,7 +223,7 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'Failed to update system information: System (URL + Client) already exists',
+                message: 'Failed to update connection information: Connection (URL + Client) already exists',
                 updateSuccess: false
             }
         });
@@ -242,7 +242,7 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'Failed to update system information: Validation Error',
+                message: 'Failed to update connection information: Validation Error',
                 updateSuccess: false
             }
         });
@@ -362,7 +362,7 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: "Failed to update system information: The URL 'invalid url' provided is invalid",
+                message: "Failed to update connection information: The URL 'invalid url' provided is invalid",
                 updateSuccess: false
             }
         });

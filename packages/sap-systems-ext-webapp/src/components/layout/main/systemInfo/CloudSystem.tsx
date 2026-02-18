@@ -1,7 +1,7 @@
 import React from 'react';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ReactElement } from 'react';
-import { UITextInput } from '@sap-ux/ui-components';
+import { UITextInput, UITooltip, UITooltipUtils } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import '../../../../styles/SystemMain.scss';
@@ -32,6 +32,7 @@ export function CloudSystem({
     setIsDetailsValid
 }: Readonly<CloudSystemProps>): ReactElement {
     const { t } = useTranslation();
+    const tooltipContent = <div className="url-tooltip">{systemInfo?.url}</div>;
 
     let cloudComponent = <div></div>;
 
@@ -42,19 +43,21 @@ export function CloudSystem({
                     <label className="store-detail-label">
                         {t('labels.url')} <span className="mandatory-asterisk">*</span>
                     </label>
-                    <UITextInput
-                        name="reentranceTicketUrl"
-                        id="reentranceUrl"
-                        key={`reentranceTicketUrl-${systemInfo?.connectionType}`}
-                        value={systemInfo?.url}
-                        onChange={(e) => {
-                            setUrl((e.target as HTMLInputElement).value);
-                            setIsDetailsUpdated(true);
-                        }}
-                        onGetErrorMessage={(value) =>
-                            getUrlErrorMessage(value, t, setIsDetailsValid, systemInfo?.connectionType)
-                        }
-                    />
+                    <UITooltip tooltipProps={UITooltipUtils.renderContent(tooltipContent)}>
+                        <UITextInput
+                            name="reentranceTicketUrl"
+                            id="reentranceUrl"
+                            key={`reentranceTicketUrl-${systemInfo?.connectionType}`}
+                            value={systemInfo?.url}
+                            onChange={(e) => {
+                                setUrl((e.target as HTMLInputElement).value);
+                                setIsDetailsUpdated(true);
+                            }}
+                            onGetErrorMessage={(value) =>
+                                getUrlErrorMessage(value, t, setIsDetailsValid, systemInfo?.connectionType)
+                            }
+                        />
+                    </UITooltip>
                 </div>
             </div>
         );

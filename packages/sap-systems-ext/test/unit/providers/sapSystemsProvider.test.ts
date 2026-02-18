@@ -97,7 +97,7 @@ describe('Test the SAP Systems provider', () => {
                 tooltip: 'https://system-a.com Client: 100',
                 collapsibleState: 0,
                 command: {
-                    title: 'Open System Details',
+                    title: 'Open Connection Manager for SAP Systems',
                     command: 'sap.ux.tools.sapSystems.show',
                     arguments: [{ url: 'https://system-a.com', client: '100' }, false]
                 },
@@ -115,7 +115,7 @@ describe('Test the SAP Systems provider', () => {
                 tooltip: 'https://system-b.com',
                 collapsibleState: 0,
                 command: {
-                    title: 'Open System Details',
+                    title: 'Open Connection Manager for SAP Systems',
                     command: 'sap.ux.tools.sapSystems.show',
                     arguments: [{ url: 'https://system-b.com', client: undefined }, false]
                 },
