@@ -3515,7 +3515,7 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       fast-xml-parser:
-        specifier: ^5.3.6
+        specifier: 5.3.6
         version: 5.3.6
       findit2:
         specifier: 2.2.3
