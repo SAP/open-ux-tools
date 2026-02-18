@@ -150,11 +150,13 @@ describe('ODataDownloadGenerator', () => {
                         },
                         referencedEntities: {
                             listEntity: { entitySetName: 'Travel', semanticKeys: [], entityPath: 'Travel' }
+                        },
+                        relatedEntityChoices: {
+                            entitySetsFlat: { Travel: 'Travel' }
                         }
                     },
                     odataQueryResult: {
-                        odata: [{ TravelID: '1' }],
-                        entitySetsFlat: { Travel: 'Travel' }
+                        odata: [{ TravelID: '1' }]
                     },
                     odataServiceAnswers: {
                         servicePath: '/sap/opu/odata4/sap/travel',
@@ -201,9 +203,12 @@ describe('ODataDownloadGenerator', () => {
                         },
                         referencedEntities: {
                             listEntity: { entitySetName: 'Travel', semanticKeys: [], entityPath: 'Travel' }
+                        },
+                        relatedEntityChoices: {
+                            entitySetsFlat: {}
                         }
                     },
-                    odataQueryResult: { odata: [{ TravelID: '1' }], entitySetsFlat: {} },
+                    odataQueryResult: { odata: [{ TravelID: '1' }] },
                     odataServiceAnswers: {
                         servicePath: '/sap/opu/odata4/sap/travel/',
                         metadata: '<metadata/>'
@@ -251,9 +256,12 @@ describe('ODataDownloadGenerator', () => {
                         },
                         referencedEntities: {
                             listEntity: { entitySetName: 'Travel', semanticKeys: [], entityPath: 'Travel' }
+                        },
+                        relatedEntityChoices: {
+                            entitySetsFlat: {}
                         }
                     },
-                    odataQueryResult: { odata: [], entitySetsFlat: {} },
+                    odataQueryResult: { odata: [] },
                     odataServiceAnswers: {
                         servicePath: '/sap/opu/odata4/sap/travel',
                         metadata: '<metadata/>'
@@ -294,9 +302,12 @@ describe('ODataDownloadGenerator', () => {
                         },
                         referencedEntities: {
                             listEntity: { entitySetName: 'Travel', semanticKeys: [], entityPath: 'Travel' }
+                        },
+                        relatedEntityChoices: {
+                            entitySetsFlat: {}
                         }
                     },
-                    odataQueryResult: { odata: [], entitySetsFlat: {} },
+                    odataQueryResult: { odata: [] },
                     odataServiceAnswers: {
                         servicePath: '/sap/opu/odata4/sap/travel',
                         metadata: '<edmx:Edmx><edmx:DataServices></edmx:DataServices></edmx:Edmx>'
@@ -366,9 +377,12 @@ describe('ODataDownloadGenerator', () => {
                         },
                         referencedEntities: {
                             listEntity: { entitySetName: 'Travel', semanticKeys: [], entityPath: 'Travel' }
+                        },
+                        relatedEntityChoices: {
+                            entitySetsFlat: {}
                         }
                     },
-                    odataQueryResult: { odata: [], entitySetsFlat: {} },
+                    odataQueryResult: { odata: [] },
                     odataServiceAnswers: {
                         // Service path with trailing slash
                         servicePath: '/sap/opu/odata4/sap/travel/',

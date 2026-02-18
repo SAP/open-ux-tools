@@ -87,14 +87,14 @@ export function createQueryFromEntities(
                     if (filterRangeParts.length === 1) {
                         // Single value
                         filters.push({
-                            [key.name]: filterPart
+                            [key.name]: filterPart.trim()
                         });
                     } else if (filterRangeParts.length === 2) {
                         // Range
                         filters.push({
                             [key.name]: {
-                                ge: filterRangeParts[0],
-                                le: filterRangeParts[1]
+                                ge: filterRangeParts[0].trim(),
+                                le: filterRangeParts[1].trim()
                             }
                         });
                     }
@@ -133,7 +133,7 @@ export function createQueryFromEntities(
     }
     const queryString = buildQuery(queryInput);
     const query = `${mainEntity.entitySetName}${queryString}`;
-    ODataDownloadGenerator.logger.info(`Query for odata: ${query}`);
+    ODataDownloadGenerator.logger.debug(`Query for odata: ${query}`);
     return { query };
 }
 /**
@@ -167,7 +167,13 @@ export async function fetchData(
  */
 async function executeQuery(odataService: ODataService, query: string): Promise<{ entityData?: []; error?: string }> {
     try {
-        const data = await odataService?.get(query);
+        ODataDownloadGenerator.logger.info(`OData query request: ${odataService.defaults.baseURL}${query}`);
+        ODataDownloadGenerator.logger.info(
+            `OData query request headers: ${JSON.stringify(odataService.defaults.headers)}`
+        );
+        const data = await odataService.get(query);
+        const odataCount = data?.data?.match(/"@odata\.count":(\d+)/)?.[1];
+        ODataDownloadGenerator.logger.info(`OData query records count: ${odataCount}`);
         // Process the result set into individual entity data for files
         return { entityData: data?.odata() };
     } catch (error) {

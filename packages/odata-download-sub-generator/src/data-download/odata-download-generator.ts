@@ -51,7 +51,7 @@ export class ODataDownloadGenerator extends Generator {
         /**
          * The downloaded entity odata as JSON
          */
-        entityOData?: { odata: []; entitySetsFlat: EntitySetsFlat };
+        entityOData?: [];
         /**
          * The downloaded value help odata as JSON
          */
@@ -69,13 +69,17 @@ export class ODataDownloadGenerator extends Generator {
          */
         mainServiceName?: string;
         /**
-         *
+         * Should the main service metadata be updated
          */
         updateMainServiceMetadata?: boolean;
         /**
-         *
+         * The main service metadata
          */
         mainServiceMetadata?: string;
+        /**
+         * Entity property to entity set map, used to create output files
+         */
+        entityPropertyToEntitySet?: EntitySetsFlat;
     } = {};
 
     /**
@@ -141,7 +145,8 @@ export class ODataDownloadGenerator extends Generator {
                 questions
             } = await getODataDownloaderPrompts();
             const promptAnswers = (await this.prompt(questions)) as Record<string, unknown>;
-            this.state.entityOData = odataQueryResult;
+            this.state.entityOData = odataQueryResult.odata;
+            this.state.entityPropertyToEntitySet = application.relatedEntityChoices.entitySetsFlat;
             this.state.appRootPath = application.appAccess?.getAppRoot();
             this.state.mainServicePath = odataServiceAnswers.servicePath;
             this.state.mainServiceName = application.appAccess?.app.mainService;
@@ -184,14 +189,14 @@ export class ODataDownloadGenerator extends Generator {
     }
 
     async writing(): Promise<void> {
-        if (this.state.entityOData?.odata && this.state.appEntities) {
+        if (this.state.entityOData && this.state.entityPropertyToEntitySet && this.state.appEntities) {
             try {
                 // Set target dir to mock data path
                 this.destinationRoot(join(this.state.appRootPath!));
 
                 const entityFileData = createEntitySetData(
-                    this.state.entityOData.odata,
-                    this.state.entityOData.entitySetsFlat,
+                    this.state.entityOData,
+                    this.state.entityPropertyToEntitySet,
                     this.state.appEntities.listEntity.entitySetName
                 );
                 ODataDownloadGenerator.logger.info(

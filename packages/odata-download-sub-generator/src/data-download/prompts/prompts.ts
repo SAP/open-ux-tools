@@ -34,37 +34,23 @@ export type SelectedEntityAnswer = {
 };
 
 /**
- * Reset the values of the passed app config reference otherwise create a new object reference.
- * Reset any caches.
+ * Reset the values of the passed app config reference or initialises a new reference.
+ * Preserves the original object references. Reset any caches.
  *
  * @param appConfig - The app configuration to reset
  * @returns A null state app config
  */
-function resetAppConfig(appConfig?: AppConfig): AppConfig {
+function resetAppConfig(appConfig: AppConfig): AppConfig {
     PromptState.resetServiceCaches();
-    if (appConfig) {
-        appConfig.appAccess = undefined;
-        appConfig.referencedEntities = undefined;
-        appConfig.servicePath = undefined;
-        if (appConfig.systemName) {
-            appConfig.systemName.value = undefined;
-        }
-        appConfig.relatedEntityChoices = {
-            choices: [],
-            entitySetsFlat: {}
-        };
-        return appConfig;
+    appConfig.appAccess = undefined;
+    appConfig.referencedEntities = undefined;
+    appConfig.servicePath = undefined;
+    if (appConfig.systemName) {
+        appConfig.systemName.value = undefined;
     }
-    return {
-        appAccess: undefined,
-        referencedEntities: undefined,
-        servicePath: undefined,
-        systemName: { value: undefined },
-        relatedEntityChoices: {
-            choices: [],
-            entitySetsFlat: {}
-        }
-    };
+    appConfig.relatedEntityChoices.choices = [];
+    appConfig.relatedEntityChoices.entitySetsFlat = {};
+    return appConfig;
 }
 
 /**
@@ -76,13 +62,22 @@ export async function getODataDownloaderPrompts(): Promise<{
     questions: Question[];
     answers: {
         application: AppConfig;
-        odataQueryResult: { odata: []; entitySetsFlat: EntitySetsFlat };
+        odataQueryResult: { odata: [] };
         odataServiceAnswers: Partial<OdataServiceAnswers>;
     };
 }> {
     const selectSourceQuestions: Question[] = [];
     // Local state
-    const appConfig: AppConfig = resetAppConfig();
+    const appConfig: AppConfig = {
+        appAccess: undefined,
+        referencedEntities: undefined,
+        servicePath: undefined,
+        systemName: { value: undefined },
+        relatedEntityChoices: {
+            choices: [],
+            entitySetsFlat: {}
+        }
+    };
     const servicePaths: string[] = [];
     let keyPrompts: InputQuestion[] = [];
 
@@ -107,22 +102,13 @@ export async function getODataDownloaderPrompts(): Promise<{
         ODataDownloadGenerator.logger as Logger
     );
 
-    // Additional manually selected nav prop entittes
-    const relatedEntityChoices: {
-        choices: CheckboxChoiceOptions<Answers>[];
-        entitySetsFlat: EntitySetsFlat;
-    } = {
-        choices: [],
-        entitySetsFlat: {}
-    };
-    const odataQueryResult: { odata: []; entitySetsFlat: EntitySetsFlat } = {
-        odata: [],
-        entitySetsFlat: relatedEntityChoices.entitySetsFlat
+    const odataQueryResult: { odata: [] } = {
+        odata: []
     };
 
-    const resetSelectionPrompt = getResetSelectionPrompt(appConfig, relatedEntityChoices);
+    const resetSelectionPrompt = getResetSelectionPrompt(appConfig, appConfig.relatedEntityChoices);
 
-    const relatedEntitySelectionQuestion: CheckBoxQuestion = getEntitySelectionPrompt(relatedEntityChoices);
+    const relatedEntitySelectionQuestion: CheckBoxQuestion = getEntitySelectionPrompt(appConfig.relatedEntityChoices);
 
     // Generate the max size of key parts allowed
     keyPrompts = getKeyPrompts(5, appConfig);
@@ -261,24 +247,26 @@ function getResetSelectionPrompt(
     let previousReset;
     const toggleSelectionPrompt = {
         when: () => {
-            if (appConfig.servicePath !== previousServicePath && appConfig.referencedEntities?.listEntity) {
-                const entityChoices = createEntityChoices(
-                    appConfig.referencedEntities.listEntity,
-                    appConfig.referencedEntities.pageObjectEntities
-                );
-                if (entityChoices) {
-                    relatedEntityChoices.choices = entityChoices.choices;
-                    Object.assign(relatedEntityChoices.entitySetsFlat, entityChoices.entitySetsFlat);
-                    previousServicePath = appConfig.servicePath;
+            if (appConfig.servicePath !== previousServicePath) {
+                if (appConfig.referencedEntities?.listEntity) {
+                    const entityChoices = createEntityChoices(
+                        appConfig.referencedEntities.listEntity,
+                        appConfig.referencedEntities.pageObjectEntities
+                    );
+                    if (entityChoices) {
+                        relatedEntityChoices.choices = entityChoices.choices;
+                        Object.assign(relatedEntityChoices.entitySetsFlat, entityChoices.entitySetsFlat);
+                    }
                 }
+                previousServicePath = appConfig.servicePath;
             }
             return relatedEntityChoices.choices.length > 0;
         },
         name: promptNames.toggleSelection,
         type: 'confirm',
-        message: 'Reset selection',
-        labelTrue: 'Clear selected',
-        labelFalse: 'Restore default selection',
+        message: t('prompts.toggleSelection.message'),
+        labelTrue: t('prompts.toggleSelection.labelTrue'),
+        labelFalse: t('prompts.toggleSelection.labelFalse'),
         default: false,
         validate: (reset: boolean) => {
             // Dont apply a reset unless the value was changed as this validate function is triggered by any earlier prompt inputs
@@ -346,7 +334,7 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
                             return t('prompts.entityKey.validation.invalidBooleanValue');
                         }
                     } else {
-                        keyRef.value = keyValue;
+                        keyRef.value = keyValue.trim();
                     }
                 }
                 return true;
@@ -390,6 +378,12 @@ function getConfirmDownloadPrompt(
         },
         validate: async (download, answers: Answers) => {
             if (download) {
+                const hasKeyInput = Object.entries(answers).find(
+                    ([key, value]) => key.startsWith('entityKeyIdx:') && !!value?.trim()
+                );
+                if (!hasKeyInput) {
+                    return t('prompts.confirmDownload.validation.keyRequired');
+                }
                 result = await getData(odataServiceAnswers, appConfig, answers[promptNames.relatedEntitySelection]);
                 if (typeof result === 'string') {
                     return result;

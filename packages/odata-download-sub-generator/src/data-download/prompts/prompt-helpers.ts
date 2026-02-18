@@ -117,7 +117,7 @@ export type Expands = {
 /**
  * Creates a query expand config that can be used to build the query and display entities with their full paths.
  *
- * @param rootEntity - The root entity to build choices from
+ * @param currentEntity - The root entity to build choices from
  * @param parentPath - The parent path for constructing full paths
  * @param choices - Accumulated choices array
  * @param poEntityPaths - Page object entity paths for pre-selection
@@ -125,22 +125,24 @@ export type Expands = {
  * @returns Object containing entity sets flat map and checkbox choices
  */
 function getEntitySelectionChoices(
-    rootEntity: Entity,
+    currentEntity: Entity,
     parentPath: string = '',
     choices: CheckboxChoiceOptions<SelectedEntityAnswer>[] = [],
     poEntityPaths?: string[],
     listPageEntity?: Entity
 ): { entitySetsFlat: EntitySetsFlat; choices: CheckboxChoiceOptions<SelectedEntityAnswer>[] } {
     const entitySetsFlat = {};
-    const navEntities = rootEntity.navPropEntities;
+    const navEntities = currentEntity.navPropEntities;
     if (navEntities && navEntities.length > 0) {
         // Check the entity types assigned annotations for cross refs to other entities that should be selected by default
         // Reference entities of the parent have a path of the nav property entity which we are iterating next so we can pre-selected
-        const defaultSelectionPaths = rootEntity.entityType ? getDefaultSelectionPaths(rootEntity.entityType) : [];
+        const defaultSelectionPaths = currentEntity.entityType
+            ? getDefaultSelectionPaths(currentEntity.entityType)
+            : [];
         for (const navEntity of navEntities) {
             const expandPath = navEntity.entityPath;
             // For hierarchies this may be ok but we currently do not detect hierarchies
-            // Dont re-include entities that are referenced on the path already (this will need to change wi th hiereachy support)
+            // Dont re-include entities that are referenced on the path already (this will need to change with hiereachy support)
             if (navEntity.entityType?.name === listPageEntity?.entityType?.name || parentPath.includes(expandPath)) {
                 // Stop the tree traversal if the current nodes entity type is the same as the list
                 continue;
@@ -150,8 +152,13 @@ function getEntitySelectionChoices(
             if (navEntity.navPropEntities && navEntity.navPropEntities.length > 0) {
                 Object.assign(
                     entitySetsFlat,
-                    getEntitySelectionChoices(navEntity, fullPath, choices, poEntityPaths, listPageEntity ?? rootEntity)
-                        .entitySetsFlat
+                    getEntitySelectionChoices(
+                        navEntity,
+                        fullPath,
+                        choices,
+                        poEntityPaths,
+                        listPageEntity ?? currentEntity
+                    ).entitySetsFlat
                 );
             }
             // Create selection choice for each visited entity
@@ -261,7 +268,7 @@ export async function getSpecification(appAccess: ApplicationAccess): Promise<Sp
         ODataDownloadGenerator.logger.debug(
             `@sap/ux-specification from module cache API version is: ${version}. API version '24' at least is required.`
         );
-        return t('specficationApiVersionOutdated', { specApiVersion: version });
+        return t('prompts.appSelection.validation.specficationApiVersionOutdated', { specApiVersion: version });
     }
     return specification;
 }

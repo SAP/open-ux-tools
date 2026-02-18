@@ -7,6 +7,7 @@ import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabular
 import { FioriElementsVersion, PageTypeV4, type Specification } from '@sap/ux-specification/dist/types/src';
 import type { PagesV4 } from '@sap/ux-specification/dist/types/src/v4';
 import deepmerge from 'deepmerge';
+import { t } from '../utils/i18n';
 import { ODataDownloadGenerator } from './odata-download-generator';
 import type { EntitySetsFlat } from './odata-query';
 import type { Entity, ReferencedEntities, SemanticKeyFilter } from './types';
@@ -253,9 +254,7 @@ export async function getEntityModel(
             });
 
             if (!entities?.listEntity) {
-                ODataDownloadGenerator.logger.info(
-                    'No list entity defined. A main list entity is required for data downloading.'
-                );
+                ODataDownloadGenerator.logger.info(t('info.noListEntityDefined'));
                 return undefined;
             }
             entities.pageObjectEntities = pageObjectEntities;

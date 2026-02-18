@@ -7,8 +7,8 @@
         "loggingInitialised": "Logger has been configure with level: {{logLevel}}",
         "noServiceEntityData": "No service entity data to write.",
         "noValueHelpData": "No Value Help service data to write.",
-        "entityFilesToBeGenerated": "The following entity files will be created: {{entities}}"
-
+        "entityFilesToBeGenerated": "The following entity files will be created: {{entities}}",
+        "noListEntityDefined": "No list entity defined. A main list entity is required for data downloading."
     },
     "texts": {
         "seeLogForDetails": "For more information, view the logs."
@@ -24,6 +24,11 @@
         "relatedEntitySelection": {
             "message": "Select entities for data download (pre-selected entities are referenced by the application)"
         },
+        "toggleSelection": {
+            "message": "Reset selection",
+            "labelTrue": "Clear selected",
+            "labelFalse": "Restore default selection"
+        },
         "entityKey": {
             "message": "Enter values for: {{keyName}}",
             "hint": "For range selection use '-' between values. Use commas to select non-contiguous values.",
@@ -38,7 +43,10 @@
             "message": "Confirm entity files to be generated",
             "labelTrue": "Execute the OData query (data files will be generated on finish)",
             "labelFalse": "Suppress the OData query (prevents multiple queries during selections)",
-            "querySuccess": "OData query success. $t(texts.seeLogForDetails)"
+            "querySuccess": "OData query success. $t(texts.seeLogForDetails)",
+            "validation": {
+                "keyRequired": "Please enter at least one key field value to run the odata query"
+            }
         },
         "updateMainServiceMetadata": {
             "message": "Update local metadata file from backend (remote service metadata is always used for data download):"

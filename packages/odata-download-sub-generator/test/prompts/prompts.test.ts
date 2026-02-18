@@ -1240,14 +1240,14 @@ describe('Test prompts', () => {
             const mockResult = { odataQueryResult: [{ id: 1 }, { id: 2 }] };
             (promptHelpers.getData as jest.Mock).mockResolvedValue(mockResult);
 
-            const result = await confirmPrompt.validate!(true, {} as Answers);
+            const result = await confirmPrompt.validate!(true, { 'entityKeyIdx:1': 'keyVal123' } as Answers);
 
             expect(result).toBe(true);
             expect(promptHelpers.getData).toHaveBeenCalled();
         });
 
         it('should not fetch data when download is not confirmed', async () => {
-            const result = await confirmPrompt.validate!(false, {} as Answers);
+            const result = await confirmPrompt.validate!(false, { 'entityKeyIdx:1': 'keyVal123' } as Answers);
 
             expect(result).toBe(true);
             expect(promptHelpers.getData).not.toHaveBeenCalled();
@@ -1256,7 +1256,7 @@ describe('Test prompts', () => {
         it('should return error message when data fetch fails', async () => {
             (promptHelpers.getData as jest.Mock).mockResolvedValue('Error fetching data');
 
-            const result = await confirmPrompt.validate!(true, {} as Answers);
+            const result = await confirmPrompt.validate!(true, { 'entityKeyIdx:1': 'keyVal123' } as Answers);
 
             expect(result).toBe('Error fetching data');
         });
@@ -1265,7 +1265,7 @@ describe('Test prompts', () => {
             const mockResult = { odataQueryResult: [{ id: 1 }, { id: 2 }, { id: 3 }] };
             (promptHelpers.getData as jest.Mock).mockResolvedValue(mockResult);
 
-            await confirmPrompt.validate!(true, {} as Answers);
+            await confirmPrompt.validate!(true, { 'entityKeyIdx:1': 'keyVal123' } as Answers);
             const additionalMessageResult = confirmPrompt.additionalMessages!(true);
             const additionalMessage =
                 additionalMessageResult instanceof Promise ? await additionalMessageResult : additionalMessageResult;
@@ -1278,6 +1278,18 @@ describe('Test prompts', () => {
             const additionalMessage = confirmPrompt.additionalMessages!(false);
 
             expect(additionalMessage).toBeUndefined();
+        });
+
+        it('should return error message when no entity key value is provided', async () => {
+            const result = await confirmPrompt.validate!(true, {} as Answers);
+
+            expect(result).toBe('Please enter at least one key field value to run the odata query');
+        });
+
+        it('should return error message when entity key value is empty string', async () => {
+            const result = await confirmPrompt.validate!(true, { 'entityKeyIdx:0': '   ' } as Answers);
+
+            expect(result).toBe('Please enter at least one key field value to run the odata query');
         });
     });
 
