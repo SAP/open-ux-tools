@@ -57,6 +57,9 @@ function getConfig(
     // - controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem#qualifier/columns/columnId
     // - controlConfiguration/navigationPath/@com.sap.vocabularies.UI.v1.LineItem/columns/columnId
     // - controlConfiguration/navigationPath/@com.sap.vocabularies.UI.v1.LineItem#qualifier/columns/columnId
+    // Safe: propertyPath comes from AppDescriptorV4Change which is validated manifest content.
+    // The pattern is bounded: fixed prefix "controlConfiguration/", optional navigation segment,
+    // annotation term, optional qualifier, "/columns/", and column ID - no nested quantifiers.
     const isCustomColumnPropertyPath =
         /^controlConfiguration\/(?:[^/@]+\/)?@[^/]+\.LineItem(?:#[^/]+)?\/columns\/[^/]+$/.test(propertyPath);
 
