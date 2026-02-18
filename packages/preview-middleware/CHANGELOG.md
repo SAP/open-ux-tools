@@ -1,5 +1,31 @@
 # @sap-ux/preview-middleware
 
+## 0.23.123
+
+### Patch Changes
+
+- 849529f: fix: Missing additional info for adaptation projects with local IDs
+
+## 0.23.122
+
+### Patch Changes
+
+- dd2131c: Axios upgrade from bas-sdk
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/adp-tooling@0.18.65
+    - @sap-ux/system-access@0.6.53
+
+## 0.23.121
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+- Updated dependencies [e7f58d7]
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+
 ## 0.23.120
 
 ### Patch Changes

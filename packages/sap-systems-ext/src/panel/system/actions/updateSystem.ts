@@ -11,7 +11,7 @@ import {
     compareSystems,
     shouldStoreSystemInfo
 } from '../../../utils';
-import { getSystemInfo, updateSystemStatus, validateSystemName } from '../utils';
+import { getSystemInfo, updateSystemStatus, validateSystemName, validateSystemUrl } from '../utils';
 import {
     SystemAction,
     SystemActionStatus,
@@ -47,6 +47,8 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
 
     try {
         await validateSystemName(backendSystem.name, context.backendSystem?.name);
+        validateSystemUrl(backendSystem.url);
+
         const newPanelMsg = await updateHandler(context, backendSystem, systemExistsInStore);
         await saveSystem(backendSystem, systemExistsInStore, context.panelViewType);
         if (newPanelMsg) {

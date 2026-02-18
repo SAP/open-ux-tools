@@ -1,5 +1,20 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.74
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.53
+
+## 0.2.73
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+
 ## 0.2.72
 
 ### Patch Changes
