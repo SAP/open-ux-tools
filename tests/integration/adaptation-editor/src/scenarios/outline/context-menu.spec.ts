@@ -8,7 +8,7 @@ test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
 test.describe(`@outline @context-menu`, () => {
     test(
-        '1: Trigger Add Fragment at OverflowToolbar node via context menu',
+        '1: Trigger Add Fragment at Create node via context menu',
         {
             annotation: {
                 type: 'skipUI5Version',
@@ -20,11 +20,11 @@ test.describe(`@outline @context-menu`, () => {
             await editor.reloadCompleted();
             const dialog = new AdpDialog(previewFrame, ui5Version);
 
-            await editor.outlinePanel.clickOnNode('OverflowToolbar', 'right');
+            await editor.outlinePanel.clickOnNode('Create', 'right');
             await editor.outlinePanel.clickOnContextMenu('Add: Fragment');
-            await dialog.fillField('Fragment Name', 'toolbar-fragment');
+            await dialog.fillField('Fragment Name', 'create-tooltip-fragment');
             await dialog.createButton.click();
-            await editor.toolbar.saveAndReloadButton.click();
+            await editor.toolbar.saveButton.click();
             await expect(editor.toolbar.saveButton).toBeDisabled();
             await editor.reloadCompleted();
 
@@ -34,9 +34,9 @@ test.describe(`@outline @context-menu`, () => {
                         fileType: 'change',
                         changeType: 'addXML',
                         content: {
-                            targetAggregation: 'content',
-                            index: 10,
-                            fragmentPath: 'fragments/toolbar-fragment.fragment.xml'
+                            targetAggregation: 'tooltip',
+                            index: 0,
+                            fragmentPath: 'fragments/create-tooltip-fragment.fragment.xml'
                         }
                     }
                 ]

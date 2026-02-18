@@ -1,5 +1,69 @@
 # @sap-ux/create
 
+## 0.15.2
+
+### Patch Changes
+
+- Updated dependencies [849529f]
+    - @sap-ux/preview-middleware@0.23.123
+    - @sap-ux/app-config-writer@0.6.100
+
+## 0.15.1
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/preview-middleware@0.23.122
+    - @sap-ux/adp-tooling@0.18.65
+    - @sap-ux/app-config-writer@0.6.100
+    - @sap-ux/abap-deploy-config-inquirer@1.7.1
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/flp-config-inquirer@0.4.124
+    - @sap-ux/nodejs-utils@0.2.15
+    - @sap-ux/system-access@0.6.53
+    - @sap-ux/odata-service-writer@0.29.19
+    - @sap-ux/cap-config-writer@0.12.65
+    - @sap-ux/abap-deploy-config-writer@0.2.74
+
+## 0.15.0
+
+### Minor Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/abap-deploy-config-inquirer@1.7.0
+    - @sap-ux/preview-middleware@0.23.121
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/app-config-writer@0.6.99
+    - @sap-ux/flp-config-inquirer@0.4.123
+    - @sap-ux/odata-service-writer@0.29.19
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/abap-deploy-config-writer@0.2.73
+    - @sap-ux/mockserver-config-writer@0.9.51
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/cap-config-writer@0.12.64
+
+## 0.14.65
+
+### Patch Changes
+
+- Updated dependencies [1a922e7]
+    - @sap-ux/cap-config-writer@0.12.63
+
+## 0.14.64
+
+### Patch Changes
+
+- edc7b52: feat: add new command to add eslint config to a project
+- Updated dependencies [edc7b52]
+    - @sap-ux/app-config-writer@0.6.98
+
 ## 0.14.63
 
 ### Patch Changes

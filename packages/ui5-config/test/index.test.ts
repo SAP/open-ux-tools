@@ -955,4 +955,93 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
+
+    describe('hasBuilderKey', () => {
+        test('should return false when builder key does not exist', () => {
+            expect(ui5Config.hasBuilderKey()).toBe(false);
+        });
+
+        test('should return true when builder key exists with customTasks', async () => {
+            const yamlString = `
+specVersion: '4.0'
+type: application
+builder:
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: https://example.com
+`;
+            const configWithBuilder = await UI5Config.newInstance(yamlString);
+            expect(configWithBuilder.hasBuilderKey()).toBe(true);
+        });
+
+        test('should return true when builder key exists with resources', async () => {
+            const yamlString = `
+specVersion: '4.0'
+type: application
+builder:
+  resources:
+    excludes:
+      - "/test/**"
+      - "/localService/**"
+`;
+            const configWithBuilder = await UI5Config.newInstance(yamlString);
+            expect(configWithBuilder.hasBuilderKey()).toBe(true);
+        });
+
+        test('should return false when builder key exists but is empty', async () => {
+            const yamlString = `
+specVersion: '4.0'
+type: application
+builder:
+`;
+            const configWithBuilder = await UI5Config.newInstance(yamlString);
+            expect(configWithBuilder.hasBuilderKey()).toBe(false);
+        });
+
+        test('should return false for config with only server section', async () => {
+            const yamlString = `
+specVersion: '4.0'
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+`;
+            const configWithoutBuilder = await UI5Config.newInstance(yamlString);
+            expect(configWithoutBuilder.hasBuilderKey()).toBe(false);
+        });
+
+        test('should return true after adding a custom task', () => {
+            ui5Config.addCustomTasks([
+                {
+                    name: 'test-task',
+                    afterTask: 'replaceVersion',
+                    configuration: {}
+                }
+            ]);
+            expect(ui5Config.hasBuilderKey()).toBe(true);
+        });
+
+        test('should return true after adding ABAP deploy task', () => {
+            const target = {
+                url: 'https://example.com',
+                client: '100'
+            };
+            const app: BspApp = {
+                name: 'ZTEST',
+                description: 'Test App',
+                package: 'ZPACKAGE'
+            };
+            ui5Config.addAbapDeployTask(target, app);
+            expect(ui5Config.hasBuilderKey()).toBe(true);
+        });
+
+        test('should return true after adding Cloud Foundry deploy task', () => {
+            ui5Config.addCloudFoundryDeployTask('testArchive');
+            expect(ui5Config.hasBuilderKey()).toBe(true);
+        });
+    });
 });
