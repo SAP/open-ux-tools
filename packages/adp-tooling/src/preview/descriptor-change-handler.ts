@@ -52,7 +52,13 @@ function getConfig(
     const propertyPath = change.content.entityPropertyChange.propertyPath;
 
     const isCustomSectionPropertyPath = propertyPath.startsWith('content/body/sections/');
-    const isCustomColumnPropertyPath = /LineItem(?:#[^/]+)?\/columns\/[^/]+$/.test(propertyPath);
+    // Pattern matches:
+    // - controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/columns/columnId
+    // - controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem#qualifier/columns/columnId
+    // - controlConfiguration/navigationPath/@com.sap.vocabularies.UI.v1.LineItem/columns/columnId
+    // - controlConfiguration/navigationPath/@com.sap.vocabularies.UI.v1.LineItem#qualifier/columns/columnId
+    const isCustomColumnPropertyPath =
+        /^controlConfiguration\/(?:[^/@]+\/)?@[^/]+\.LineItem(?:#[^/]+)?\/columns\/[^/]+$/.test(propertyPath);
 
     if (isCustomSectionPropertyPath) {
         return customFragmentConfig;
