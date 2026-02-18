@@ -57,6 +57,10 @@ export async function convertEslintConfig(
     }
 
     await addFioriToolsToExistingConfig(basePath, fs, options.config, logger);
+    // @eslint/migrate-config does not support mem-fs, so the changes to the eslint config file have to be committed before running the migration command.
+    fs.commit(() => {
+        logger?.debug(`Write in-memory changes to disk before running migration command.`);
+    });
     await runMigrationCommand(basePath);
     await updatePackageJson(basePath, fs);
 
@@ -146,7 +150,7 @@ async function addFioriToolsToExistingConfig(
     }
 
     fs.writeJSON(eslintrcPath, eslintConfig);
-    logger?.info(`Added SAP Fiori tools plugin to ${eslintrcPath}`);
+    logger?.debug(`Applied SAP Fiori tools settings to ${eslintrcPath}`);
 }
 
 /**
