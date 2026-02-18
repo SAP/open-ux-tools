@@ -1,51 +1,28 @@
-import mime from 'mime-types';
-import contentType from 'content-type';
 import type { RequestHandler } from 'express';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middleware';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { CreateProxyOptions, EffectiveOptions, MimeInfo, RouteEntry } from '../types';
+import type { CreateProxyOptions, EffectiveOptions, RouteEntry } from '../types';
+import { createPathFilter, getMimeInfo, getRequestOrigin, replaceUrl } from './utils';
 
 /**
- * Replaces oldUrl with newUrl in text (regex-safe).
- *
- * @param {string} text - Full text to replace in.
- * @param {string} oldUrl - URL to replace (will be escaped for regex).
- * @param {string} newUrl - Replacement URL.
- * @returns {string} Text with URLs replaced.
+ * Request in proxyReq callback, extended with UI5 server middleware properties.
  */
-export function replaceUrl(text: string, oldUrl: string, newUrl: string): string {
-    const escaped = oldUrl.replaceAll(new RegExp(String.raw`[-/\^$*+?.()|[\]{}]`, 'g'), String.raw`\$&`);
-    const regex = new RegExp(escaped, 'gi');
-    return text.replace(regex, newUrl);
+interface ProxyReqRequest extends IncomingMessage {
+    'ui5-middleware-index'?: { url: string };
+    'ui5-patched-router'?: { baseUrl?: string; originalUrl?: string };
 }
 
 /**
- * Get mime type, charset and content-type header value from pathname and optional Content-Type header.
- *
- * @param {string} pathname - Request path (used when no ctValue).
- * @param {string | undefined} ctValue - Content-Type header value.
- * @returns {MimeInfo} MimeInfo object.
+ * Response in proxyReq/proxyRes callbacks, extended with redirect and our middleware metadata.
  */
-export function getMimeInfo(pathname: string, ctValue: string | undefined): MimeInfo {
-    if (ctValue) {
-        const parsed = contentType.parse(ctValue);
-        const type = parsed.type ?? 'application/octet-stream';
-        const charset = parsed.parameters?.charset ?? (mime.charset(type) as string) ?? 'utf-8';
-        return {
-            type,
-            charset,
-            contentType: contentType.format({ type, parameters: parsed.parameters })
-        };
-    }
-    const type = mime.lookup(pathname) || 'application/octet-stream';
-    const charset = (mime.charset(type) as string | false) || 'utf-8';
-    return {
-        type,
-        charset,
-        contentType: `${type}; charset=${charset}`
-    };
+interface ProxyReqResponse extends ServerResponse {
+    /** Express response redirect (added by UI5 tooling). */
+    redirect(url: string): void;
+    /** Set by this middleware when a redirect was already sent. */
+    'backend-proxy-middleware-cf'?: { redirected?: boolean };
 }
 
 /**
@@ -63,69 +40,51 @@ export function createResponseInterceptor(
     baseUri: string,
     logger: ToolsLogger
 ): ReturnType<typeof responseInterceptor> {
-    return responseInterceptor(
-        async (
-            responseBuffer,
-            proxyRes,
-            req: {
-                url?: string;
-                method?: string;
-                headers: Record<string, string | string[] | undefined>;
-                baseUrl?: string;
-            },
-            res
-        ) => {
-            const url = req.url ?? '';
-            if (effectiveOptions.debug) {
-                logger.info(`${req.method} ${url} -> ${baseUri}${url} [${proxyRes.statusCode}]`);
-            }
-            const pathname = /^[^?]*/.exec(url)?.[0] ?? url;
-            const {
-                type,
-                charset,
-                contentType: ct
-            } = getMimeInfo(pathname, proxyRes.headers['content-type'] as string | undefined);
-            res.setHeader('content-type', ct);
-
-            const route = routes.find((r) => r.re.test(url));
-            if (
-                route?.path &&
-                route.url &&
-                effectiveOptions.rewriteContent &&
-                effectiveOptions.rewriteContentTypes.includes(type?.toLowerCase() ?? '')
-            ) {
-                const encoding = (charset ?? 'utf8') as BufferEncoding;
-                let data = responseBuffer.toString(encoding);
-                const referrer =
-                    (req.headers.referrer as string) ??
-                    (req.headers.referer as string) ??
-                    `${String((req.headers['x-forwarded-proto'] ?? 'https').toString().split(',')[0])}://${req.headers['x-forwarded-host'] ?? ''}${req.baseUrl ?? ''}`;
-                const referrerUrl = new URL(route.path, referrer).toString();
-                data = replaceUrl(data, `https://${route.url.slice(8)}`, referrerUrl);
-                if (route.url.startsWith('https://')) {
-                    data = replaceUrl(data, `http://${route.url.slice(8)}`, referrerUrl);
-                }
-                return Buffer.from(data);
-            }
-            return responseBuffer;
+    return responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+        const url = req.url ?? '';
+        if (effectiveOptions.debug) {
+            logger.info(`${req.method} ${url} -> ${baseUri}${url} [${proxyRes.statusCode}]`);
         }
-    );
+        const pathname = /^[^?]*/.exec(url)?.[0] ?? url;
+        const {
+            type,
+            charset,
+            contentType: ct
+        } = getMimeInfo(pathname, proxyRes.headers['content-type'] as string | undefined);
+        res.setHeader('content-type', ct);
+
+        const route = routes.find((routeEntry) => routeEntry.re.test(url));
+        if (route?.path && route.url && effectiveOptions?.rewriteContentTypes?.includes(type?.toLowerCase() ?? '')) {
+            const encoding = (charset ?? 'utf8') as BufferEncoding;
+            let data = responseBuffer.toString(encoding);
+
+            const referrer =
+                (req.headers.referrer as string) ?? (req.headers.referer as string) ?? getRequestOrigin(req);
+            const referrerUrl = new URL(route.path, referrer).toString();
+
+            data = replaceUrl(data, `https://${route.url.slice(8)}`, referrerUrl);
+            if (route.url.startsWith('https://')) {
+                data = replaceUrl(data, `http://${route.url.slice(8)}`, referrerUrl);
+            }
+
+            return Buffer.from(data);
+        }
+        return responseBuffer;
+    });
 }
 
 /**
  * Create the proxy middleware that forwards matching requests to the approuter.
  * Paths are proxied if they match any customRoute (e.g. welcome, login callback) or any destination route.
- * Builds the path filter and response interceptor internally.
  *
- * @param options - customRoutes, routes, baseUri, effectiveOptions, logger.
- * @returns Express request handler (the proxy middleware).
+ * @param {CreateProxyOptions} options - customRoutes, routes, baseUri, effectiveOptions, logger.
+ * @returns {RequestHandler} Express request handler (the proxy middleware).
  */
 export function createProxy(options: CreateProxyOptions): RequestHandler {
     const { customRoutes, routes, baseUri, effectiveOptions, logger } = options;
+
     const intercept = createResponseInterceptor(routes, effectiveOptions, baseUri, logger);
-    const pathFilter = (pathname: string): boolean =>
-        customRoutes.some((r) => new RegExp(String.raw`^${r}(\?.*)?$`).test(pathname)) ||
-        routes.some((route) => route.re.test(pathname));
+    const pathFilter = createPathFilter(customRoutes, routes);
 
     const proxyMiddleware = createProxyMiddleware({
         logger: effectiveOptions.debug ? logger : undefined,
@@ -136,40 +95,33 @@ export function createProxy(options: CreateProxyOptions): RequestHandler {
         autoRewrite: true,
         xfwd: true,
         on: {
-            proxyReq: (proxyReq, req, res: Record<string, unknown>) => {
+            proxyReq: (proxyReq, req: ProxyReqRequest, res: ProxyReqResponse) => {
                 const xfp = req.headers['x-forwarded-proto'];
-                if (typeof xfp === 'string' && xfp.indexOf(',') !== -1) {
+                if (typeof xfp === 'string' && xfp.includes(',')) {
                     const proto = xfp.split(',')[0];
                     req.headers['x-forwarded-proto'] = proto;
                     proxyReq.setHeader('x-forwarded-proto', proto);
                 }
-                if ((req as { 'ui5-middleware-index'?: { url: string } })['ui5-middleware-index']?.url === '/') {
+
+                if (req['ui5-middleware-index']?.url === '/') {
                     res['backend-proxy-middleware-cf'] = { redirected: true };
-                    const baseUrl =
-                        (req as { 'ui5-patched-router'?: { baseUrl: string } })['ui5-patched-router']?.baseUrl ?? '/';
-                    (res as { redirect: (u: string) => void }).redirect(`${baseUrl === '/' ? '' : baseUrl}${req.url}`);
+                    const baseUrl = req['ui5-patched-router']?.baseUrl ?? '/';
+                    res.redirect(`${baseUrl === '/' ? '' : baseUrl}${req.url ?? ''}`);
                 } else {
-                    const patched = (req as unknown as { 'ui5-patched-router'?: { originalUrl: string } })[
-                        'ui5-patched-router'
-                    ];
-                    if (patched?.originalUrl) {
-                        proxyReq.setHeader('x-forwarded-path', patched.originalUrl);
+                    const originalUrl = req['ui5-patched-router']?.originalUrl;
+                    if (originalUrl) {
+                        proxyReq.setHeader('x-forwarded-path', originalUrl);
                     }
                 }
             },
-            proxyRes: async (proxyRes, req, res) => {
-                const resRecord = res as Record<string, { redirected?: boolean }>;
-                if (!resRecord['backend-proxy-middleware-cf']?.redirected) {
-                    return (intercept as unknown as (p: unknown, r: unknown, s: unknown) => Promise<Buffer>)(
-                        proxyRes,
-                        req,
-                        res
-                    );
+            proxyRes: async (proxyRes, req, res: ProxyReqResponse) => {
+                if (!res['backend-proxy-middleware-cf']?.redirected) {
+                    return intercept(proxyRes, req, res);
                 }
                 return undefined;
             }
         }
     });
 
-    return proxyMiddleware as unknown as RequestHandler;
+    return proxyMiddleware;
 }

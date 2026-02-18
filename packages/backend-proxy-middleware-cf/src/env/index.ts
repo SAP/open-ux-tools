@@ -31,6 +31,7 @@ export function loadAndApplyEnvOptions(rootPath: string, envOptionsPath: string)
     if (!fs.existsSync(resolvedPath)) {
         throw new Error(`Env options file not found at "${resolvedPath}" (envOptionsPath: "${envOptionsPath}").`);
     }
+
     let options: Record<string, unknown>;
     try {
         const content = fs.readFileSync(resolvedPath, 'utf8');

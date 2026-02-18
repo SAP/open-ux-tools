@@ -1,7 +1,7 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { mergeEffectiveOptions } from '../../../src/config';
-import { replaceUrl, getMimeInfo, createResponseInterceptor, createProxy } from '../../../src/proxy';
+import { createResponseInterceptor, createProxy } from '../../../src/proxy';
 
 type InterceptorCallback = (
     responseBuffer: Buffer,
@@ -34,33 +34,6 @@ jest.mock('http-proxy-middleware', () => ({
 }));
 
 describe('proxy', () => {
-    describe('replaceUrl', () => {
-        test('replaces oldUrl with newUrl in text', () => {
-            expect(replaceUrl('base is https://host/path', 'https://host/path', 'http://local')).toBe(
-                'base is http://local'
-            );
-        });
-
-        test('returns text unchanged when oldUrl does not appear in text', () => {
-            expect(replaceUrl('hello', 'https://other.example', 'x')).toBe('hello');
-        });
-    });
-
-    describe('getMimeInfo', () => {
-        test('uses Content-Type header when provided', () => {
-            const result = getMimeInfo('/x', 'text/html; charset=utf-8');
-            expect(result.type).toBe('text/html');
-            expect(result.charset).toBe('utf-8');
-            expect(result.contentType).toContain('text/html');
-        });
-
-        test('uses pathname when ctValue is undefined', () => {
-            const result = getMimeInfo('/index.html', undefined);
-            expect(result.type).toBe('text/html');
-            expect(result.contentType).toContain('charset=');
-        });
-    });
-
     describe('createResponseInterceptor', () => {
         const logger = { info: jest.fn() } as unknown as ToolsLogger;
 

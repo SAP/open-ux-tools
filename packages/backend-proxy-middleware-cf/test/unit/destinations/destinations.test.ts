@@ -32,10 +32,23 @@ describe('destinations', () => {
             delete process.env.destinations;
         });
 
+        test('returns array from process.env.destinations when set', () => {
+            process.env.destinations = JSON.stringify([{ name: 'backend', url: 'http://localhost:8080' }]);
+            expect(resolveDestinations(mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }))).toEqual([
+                { name: 'backend', url: 'http://localhost:8080' }
+            ]);
+            delete process.env.destinations;
+        });
+
         test('returns array from effectiveOptions when no env destinations', () => {
             const dests = [{ name: 'backend', url: 'http://localhost:8080' }];
             const opts = mergeEffectiveOptions({ xsappJsonPath: './xs-app.json', destinations: dests });
             expect(resolveDestinations(opts)).toEqual(dests);
+        });
+
+        test('returns undefined when no env destinations and effectiveOptions.destinations is undefined', () => {
+            const opts = mergeEffectiveOptions({ xsappJsonPath: './xs-app.json', destinations: undefined });
+            expect(resolveDestinations(opts)).toBeUndefined();
         });
 
         test('throws when $env:VAR is set but variable not in process.env', () => {

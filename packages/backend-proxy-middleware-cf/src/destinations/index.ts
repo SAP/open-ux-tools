@@ -28,25 +28,30 @@ export function parseDestinationsFromEnv(): ApprouterDestination[] | undefined {
  * @returns {ApprouterDestination[] | undefined} Resolved destinations array or undefined.
  */
 export function resolveDestinations(effectiveOptions: EffectiveOptions): ApprouterDestination[] | undefined {
-    let destinations = parseDestinationsFromEnv();
-    if (!destinations) {
-        const destOpt = effectiveOptions.destinations;
-        if (typeof destOpt === 'string' && destOpt.startsWith('$env:')) {
-            const key = destOpt.substring(5).trim();
-            if (key && key in process.env) {
-                try {
-                    destinations = JSON.parse(process.env[key] as string) as ApprouterDestination[];
-                } catch (error) {
-                    throw new Error(`No valid destinations JSON in .env at '${key}': ${String(error)}`);
-                }
-            } else {
-                throw new Error(`No variable for 'destinations' with name '${key}' found in process.env.`);
-            }
-        } else if (Array.isArray(destOpt)) {
-            destinations = destOpt;
+    const destFromEnv = parseDestinationsFromEnv();
+    if (destFromEnv) {
+        return destFromEnv;
+    }
+
+    const destOpt = effectiveOptions.destinations;
+    if (typeof destOpt === 'string' && destOpt.startsWith('$env:')) {
+        const key = destOpt.substring(5).trim();
+        if (!key || !(key in process.env)) {
+            throw new Error(`No variable for 'destinations' with name '${key}' found in process.env.`);
+        }
+
+        try {
+            return JSON.parse(process.env[key] as string) as ApprouterDestination[];
+        } catch (error) {
+            throw new Error(`No valid destinations JSON in .env at '${key}': ${String(error)}`);
         }
     }
-    return destinations;
+
+    if (Array.isArray(destOpt)) {
+        return destOpt;
+    }
+
+    return undefined;
 }
 
 /**
