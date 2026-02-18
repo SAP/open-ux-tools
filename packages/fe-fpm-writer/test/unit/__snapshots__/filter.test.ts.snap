@@ -24,13 +24,13 @@ Object {
                       "label": "Test Custom Filter",
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.view.NewCustomFilter",
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
                     },
                     "NewCustomFilter2": Object {
                       "label": "Test Custom Filter 2",
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.view.NewCustomFilter2",
+                      "template": "myTestApp.ext.newCustomFilter2.NewCustomFilter2",
                     },
                   },
                 },
@@ -84,7 +84,7 @@ Object {
                       "label": "Test Custom Filter",
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.view.NewCustomFilter",
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
                     },
                   },
                 },
@@ -142,7 +142,7 @@ Object {
                       },
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.view.NewCustomFilter",
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
                     },
                   },
                 },
@@ -186,7 +186,7 @@ Object {
                       },
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.view.NewCustomFilter",
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
                     },
                   },
                 },
@@ -227,7 +227,7 @@ Object {
                       "label": "Test Custom Filter",
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.view.NewCustomFilter",
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
                     },
                   },
                 },
@@ -433,7 +433,23 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                 case \\"2\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
             }
-        }
+        },
+		filterItems2: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
     };
 });
 "
@@ -458,7 +474,23 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                 case \\"2\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
             }
-        }
+        },
+		filterItems2: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
     };
 });
 "
@@ -488,7 +520,7 @@ Object {
                       "label": "Test Custom Filter",
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.view.NewCustomFilter",
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
                     },
                   },
                 },
@@ -510,8 +542,8 @@ exports[`CustomFilter generateCustomFilter specific target folder, event handler
         <ComboBox
             id=\\"testID\\"
             width=\\"100%\\"
-            core:require=\\"{handler: 'myTestApp/ext/view/NewCustomFilter'}\\"
-            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.view.NewCustomFilter.filterItems' }}\\"
+            core:require=\\"{handler: 'myTestApp/ext/newCustomFilter/NewCustomFilter'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
         >
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
@@ -572,7 +604,7 @@ Object {
                       "label": "Test Custom Filter",
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.view.NewCustomFilter",
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
                     },
                   },
                 },
@@ -631,7 +663,7 @@ Object {
                       "label": "Test Custom Filter",
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.view.NewCustomFilter",
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
                     },
                   },
                 },
