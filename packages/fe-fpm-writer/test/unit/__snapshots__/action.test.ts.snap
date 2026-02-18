@@ -260,7 +260,7 @@ Object {
                   "actions": Object {
                     "MyCustomAction": Object {
                       "enabled": true,
-                      "press": "my.test.App.ext.MyCustomAction.onPress",
+                      "press": "my.test.App.ext.view.MyCustomAction.onPress",
                       "text": "My custom action text",
                       "visible": true,
                     },
@@ -477,7 +477,7 @@ Object {
                   "actions": Object {
                     "MyCustomAction": Object {
                       "enabled": true,
-                      "press": "my.test.App.ext.MyCustomAction.onPress",
+                      "press": "my.test.App.ext.view.MyCustomAction.onPress",
                       "text": "My custom action text",
                       "visible": true,
                     },

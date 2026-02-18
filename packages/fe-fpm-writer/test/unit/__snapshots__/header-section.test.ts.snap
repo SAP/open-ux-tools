@@ -5,7 +5,7 @@ Object {
   "flexSettings": Object {
     "designtime": "Default",
   },
-  "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
+  "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
   "position": Object {
     "anchor": "Dummy",
     "placement": "Before",
@@ -13,8 +13,8 @@ Object {
   "requestGroupId": "Decoration",
   "stashed": false,
   "subTitle": "Custom Header section subtitle",
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+  "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
   "type": "XMLFragment",
 }
@@ -32,8 +32,8 @@ Object {
   "requestGroupId": "Decoration",
   "stashed": false,
   "subTitle": "Custom Header section subtitle",
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+  "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
 }
 `;
@@ -43,7 +43,7 @@ Object {
   "flexSettings": Object {
     "designtime": "Default",
   },
-  "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
+  "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
   "position": Object {
     "anchor": "Dummy",
     "placement": "Before",
@@ -51,8 +51,8 @@ Object {
   "requestGroupId": "Decoration",
   "stashed": false,
   "subTitle": "Custom Header section subtitle",
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+  "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
   "type": "XMLFragment",
 }
@@ -70,8 +70,8 @@ Object {
   "requestGroupId": "Decoration",
   "stashed": false,
   "subTitle": "Custom Header section subtitle",
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+  "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
 }
 `;
@@ -81,7 +81,7 @@ Object {
   "flexSettings": Object {
     "designtime": "Default",
   },
-  "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
+  "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
   "position": Object {
     "anchor": "Dummy",
     "placement": "Before",
@@ -89,8 +89,8 @@ Object {
   "requestGroupId": "Decoration",
   "stashed": false,
   "subTitle": "Custom Header section subtitle",
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+  "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
   "type": "XMLFragment",
 }
@@ -108,8 +108,8 @@ Object {
   "requestGroupId": "Decoration",
   "stashed": false,
   "subTitle": "Custom Header section subtitle",
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+  "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
 }
 `;
@@ -128,8 +128,8 @@ Object {
         "requestGroupId": "Decoration",
         "stashed": false,
         "subTitle": "Custom Header section subtitle",
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.different.NewCustomHeaderSectionEdit",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+        "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
         "title": "New Custom Header Section",
       },
     },
@@ -216,7 +216,7 @@ Object {
         "flexSettings": Object {
           "designtime": "Default",
         },
-        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
+        "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
         "requestGroupId": "Decoration",
         "stashed": false,
         "subTitle": "Custom Header section subtitle",
@@ -270,7 +270,7 @@ Object {
         "requestGroupId": "Decoration",
         "stashed": false,
         "subTitle": "Custom Header section subtitle",
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
         "title": "New Custom Header Section",
       },
     },
@@ -320,8 +320,8 @@ Object {
         "requestGroupId": "Decoration",
         "stashed": false,
         "subTitle": "Custom Header section subtitle",
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+        "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
         "title": "New Custom Header Section",
       },
     },
@@ -371,8 +371,8 @@ Object {
         "requestGroupId": "Decoration",
         "stashed": false,
         "subTitle": "Custom Header section subtitle",
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+        "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
         "title": "New Custom Header Section",
       },
     },
@@ -452,8 +452,8 @@ Object {
         "requestGroupId": "Decoration",
         "stashed": false,
         "subTitle": "Custom Header section subtitle",
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSection",
+        "templateEdit": "sapux.fe.fpm.writer.test.ext.view.NewCustomHeaderSectionEdit",
         "title": "New Custom Header Section",
       },
     },

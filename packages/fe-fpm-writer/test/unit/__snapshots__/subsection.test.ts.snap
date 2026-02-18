@@ -22,7 +22,7 @@ Object {
               "anchor": "DummyFacet",
               "placement": "After",
             },
-            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
             "title": "New Custom Sub Section",
           },
         },
@@ -44,7 +44,7 @@ Object {
               "anchor": "DummyFacet",
               "placement": "After",
             },
-            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
             "title": "New Custom Sub Section",
           },
         },
@@ -70,7 +70,7 @@ Object {
 
 exports[`SubCustomSection generateCustomSubSection Test 'position' property. Create with anchor - 1.85 ui5 1`] = `
 Object {
-  "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+  "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
   "position": Object {
     "anchor": "Dummy",
     "placement": "Before",
@@ -86,14 +86,14 @@ Object {
     "anchor": "Dummy",
     "placement": "Before",
   },
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
   "title": "New Custom Sub Section",
 }
 `;
 
 exports[`SubCustomSection generateCustomSubSection Test 'position' property. Create without anchor - 1.85 ui5 1`] = `
 Object {
-  "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+  "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
   "position": Object {
     "placement": "Before",
   },
@@ -107,14 +107,14 @@ Object {
   "position": Object {
     "placement": "Before",
   },
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
   "title": "New Custom Sub Section",
 }
 `;
 
 exports[`SubCustomSection generateCustomSubSection Test 'position' property. Create without position - 1.85 ui5 1`] = `
 Object {
-  "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+  "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
   "title": "New Custom Sub Section",
   "type": "XMLFragment",
 }
@@ -122,7 +122,7 @@ Object {
 
 exports[`SubCustomSection generateCustomSubSection Test 'position' property. Create without position - latest ui5 1`] = `
 Object {
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
   "title": "New Custom Sub Section",
 }
 `;
@@ -134,7 +134,7 @@ Object {
       "DummyParentFacet": Object {
         "subSections": Object {
           "NewCustomSubSection": Object {
-            "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
             "position": Object {
               "anchor": "DummyFacet",
               "placement": "After",
@@ -188,7 +188,7 @@ Object {
               "anchor": "DummyFacet",
               "placement": "After",
             },
-            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
             "title": "New Custom Sub Section",
           },
         },
@@ -237,7 +237,7 @@ Object {
               "anchor": "DummyFacet",
               "placement": "After",
             },
-            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSubSection",
             "title": "New Custom Sub Section",
           },
         },

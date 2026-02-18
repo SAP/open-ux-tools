@@ -2,7 +2,7 @@
 
 exports[`CustomSection generateCustomSection Test 'position' property. Create with anchor - 1.85 ui5 1`] = `
 Object {
-  "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+  "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
   "position": Object {
     "anchor": "Dummy",
     "placement": "Before",
@@ -18,14 +18,14 @@ Object {
     "anchor": "Dummy",
     "placement": "Before",
   },
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
   "title": "New Custom Section",
 }
 `;
 
 exports[`CustomSection generateCustomSection Test 'position' property. Create without anchor - 1.85 ui5 1`] = `
 Object {
-  "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+  "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
   "position": Object {
     "placement": "Before",
   },
@@ -39,14 +39,14 @@ Object {
   "position": Object {
     "placement": "Before",
   },
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
   "title": "New Custom Section",
 }
 `;
 
 exports[`CustomSection generateCustomSection Test 'position' property. Create without position - 1.85 ui5 1`] = `
 Object {
-  "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+  "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
   "title": "New Custom Section",
   "type": "XMLFragment",
 }
@@ -54,7 +54,7 @@ Object {
 
 exports[`CustomSection generateCustomSection Test 'position' property. Create without position - latest ui5 1`] = `
 Object {
-  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+  "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
   "title": "New Custom Section",
 }
 `;
@@ -212,7 +212,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -257,7 +257,7 @@ Object {
         "title": "Custom Title",
       },
       "NewCustomSection": Object {
-        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
@@ -311,7 +311,7 @@ Object {
         "title": "Custom Title",
       },
       "NewCustomSection": Object {
-        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "name": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
@@ -369,7 +369,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -422,7 +422,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -475,7 +475,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -528,7 +528,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -581,7 +581,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -610,7 +610,7 @@ Object {
                   "anchor": "NewDummyFacet",
                   "placement": "Before",
                 },
-                "template": "sapux.fe.fpm.writer.test.extensions.custom.DummySection",
+                "template": "sapux.fe.fpm.writer.test.ext.view.DummySection",
                 "title": "Dummy Section",
               },
             },
@@ -672,7 +672,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -705,7 +705,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -738,7 +738,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -763,7 +763,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSectionFragment",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSectionFragment",
         "title": "New Custom Section",
       },
     },
@@ -796,7 +796,7 @@ Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.ext.view.NewCustomSection",
         "title": "New Custom Section",
       },
     },
