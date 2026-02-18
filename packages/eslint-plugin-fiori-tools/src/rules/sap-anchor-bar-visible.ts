@@ -10,12 +10,12 @@ const rule: FioriRuleDefinition = createFioriRule({
         type: 'suggestion',
         docs: {
             recommended: true,
-            description: 'Anchor Bar Visible should not be configured in manifest settings for Object Page headers',
+            description: 'Anchor Bar Visible should not be set to false in manifest settings for Object Page headers',
             url: 'https://ui5.sap.com/#/topic/d2ef0099542d44dc868719d908e576d0'
         },
         messages: {
             [ANCHOR_BAR_VISIBLE]:
-                'The "anchorBarVisible" property should not be configured in manifest settings. Remove this property from the Object Page header configuration.'
+                'The "anchorBarVisible" property should not be set to false in manifest settings. Remove this property from the Object Page header configuration.'
         },
         fixable: 'code'
     },
@@ -38,8 +38,8 @@ const rule: FioriRuleDefinition = createFioriRule({
                 const target = manifest['sap.ui5']?.routing?.targets?.[page.targetName];
                 const anchorBarVisible: unknown = (target as any)?.options?.settings?.content?.header?.anchorBarVisible;
 
-                // Check if anchorBarVisible is configured (regardless of value)
-                if (anchorBarVisible !== undefined) {
+                // Check if anchorBarVisible is set to false
+                if (anchorBarVisible === false) {
                     problems.push({
                         type: ANCHOR_BAR_VISIBLE,
                         pageName: page.targetName,
