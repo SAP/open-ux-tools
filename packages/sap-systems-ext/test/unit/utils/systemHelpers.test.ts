@@ -44,7 +44,7 @@ describe('Test the system helpers', () => {
 
         const result = await confirmPrompt(ConfirmationPromptType.Overwrite, 'Test System');
         expect(showWarningMessageSpy).toHaveBeenCalledWith(
-            'A connection already exists with name [Test System]. Do you want to overwrite?',
+            'Connection already exists with name [Test System]. Do you want to overwrite?',
             { modal: true },
             'Yes',
             'No'

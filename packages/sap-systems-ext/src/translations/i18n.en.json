@@ -13,7 +13,7 @@
         "yes": "Yes",
         "no": "No",
         "delete": "Delete [{{- system}}]? Your Fiori application may not run locally anymore.",
-        "overwrite": "A connection already exists with name [{{- system}}]. Do you want to overwrite?"
+        "overwrite": "Connection already exists with name [{{- system}}]. Do you want to overwrite?"
     },
     "info": {
         "numServices": "This SAP System [{{- system}}] returned {{v2}} OData V2 and {{v4}} OData V4 services.",
