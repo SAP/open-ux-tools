@@ -60,6 +60,9 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
 
+            - name: Build project
+              run: pnpm build
+
             - name: Run update script (fixtures & fallbacks)
               run: node scripts/update-ui5manifest-version.js
 
