@@ -66,7 +66,7 @@ export async function loadAndApplyEnvOptions(
         options = loadEnvOptionsFromFile(rootPath, envOptionsPath);
     } else {
         const mtaPath = path.join(path.resolve(rootPath, '..'), 'mta.yaml');
-        const spaceGuid = (await getSpaceGuidFromUi5Yaml(rootPath, logger)) as string | undefined;
+        const spaceGuid = await getSpaceGuidFromUi5Yaml(rootPath, logger);
 
         if (!spaceGuid) {
             throw new Error('No space GUID (from config or ui5.yaml). Skipping CF env options.');

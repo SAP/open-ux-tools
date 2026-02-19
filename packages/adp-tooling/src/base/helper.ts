@@ -123,7 +123,7 @@ export async function getSpaceGuidFromUi5Yaml(rootPath: string, logger?: ToolsLo
     try {
         const ui5Config = await readUi5Config(rootPath, 'ui5.yaml');
         const buildTask = extractCfBuildTask(ui5Config);
-        return buildTask?.space ?? undefined;
+        return buildTask?.space;
     } catch {
         logger?.warn('Could not read space from ui5.yaml (app-variant-bundler-build).');
         return undefined;
