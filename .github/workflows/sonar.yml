@@ -13,7 +13,7 @@ jobs:
       actions: read # Required to download artifacts
     steps:
       - name: 'Checkout project'
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ${{ github.event.workflow_run.head_repository.full_name }}
           ref: ${{ github.event.workflow_run.head_branch }}
@@ -43,7 +43,7 @@ jobs:
 
       - name: 'Run SonarCloud scan'
         if: github.event_name == 'workflow_run'
-        uses: SonarSource/sonarqube-scan-action@v6.0.0
+        uses: SonarSource/sonarqube-scan-action@v7.0.0
         with:
           args: >
             ${{ github.event.workflow_run.event == 'pull_request' && format('{0}{1}', '-Dsonar.scm.revision=', github.event.workflow_run.head_sha) || '' }}

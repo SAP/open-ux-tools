@@ -72,7 +72,8 @@
     },
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection.",
-        "systemNameExists": "System name is already in use"
+        "systemNameExists": "System name is already in use",
+        "systemUrlInvalid": "The URL '{{- url}}' provided is invalid"
     },
     "telemetry": {
         "unknownOs": "Unknown",
