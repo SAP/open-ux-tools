@@ -100,16 +100,21 @@ function cleanRoutePath(source: string): string {
     while (path.includes('//')) {
         path = path.replaceAll('//', '/');
     }
+    // Remove trailing slash to ensure proper path matching
+    path = path.replace(/\/$/, '');
     return path;
 }
 
 /**
- * Process a route and add its cleaned path to the destination mapping.
+ * Process a route and extract path and pathRewrite from source and target.
  *
- * @param {XsApp['routes'][number]} route - The route object from xs-app.json.
- * @param {Map<string, Set<string>>} destinationToPaths - Map to store destination to paths mapping.
+ * @param {XsAppRoute} route - The route object from xs-app.json.
+ * @param {Map<string, { paths: Set<string>; pathRewrite?: string }>} destinationToPaths - Map to store destination info.
  */
-function processRouteForDestination(route: XsAppRoute, destinationToPaths: Map<string, Set<string>>): void {
+function processRouteForDestination(
+    route: XsAppRoute,
+    destinationToPaths: Map<string, { paths: Set<string>; pathRewrite?: string }>
+): void {
     const destination = route.destination as string | undefined;
     const service = route.service;
 
@@ -120,20 +125,30 @@ function processRouteForDestination(route: XsAppRoute, destinationToPaths: Map<s
     const path = cleanRoutePath(route.source);
     if (path) {
         if (!destinationToPaths.has(destination)) {
-            destinationToPaths.set(destination, new Set<string>());
+            destinationToPaths.set(destination, { paths: new Set<string>() });
         }
-        destinationToPaths.get(destination)!.add(path);
+
+        const destInfo = destinationToPaths.get(destination)!;
+        destInfo.paths.add(path);
+
+        // Extract pathRewrite from target if available
+        if (route.target && typeof route.target === 'string') {
+            const pathRewrite = cleanRoutePath(route.target);
+            if (pathRewrite && !destInfo.pathRewrite) {
+                destInfo.pathRewrite = pathRewrite;
+            }
+        }
     }
 }
 
 /**
- * Extract destination to paths mapping from xs-app.json routes.
+ * Extract destination to paths mapping from xs-app.json routes with pathRewrite info.
  *
  * @param {string} xsAppPath - Path to xs-app.json file.
- * @returns {Map<string, Set<string>>} Map of destination names to path sets.
+ * @returns {Map<string, { paths: Set<string>; pathRewrite?: string }>} Map of destination names to path info.
  */
-function extractDestinationToPathsMap(xsAppPath: string): Map<string, Set<string>> {
-    const destinationToPaths = new Map<string, Set<string>>();
+function extractDestinationToPathsMap(xsAppPath: string): Map<string, { paths: Set<string>; pathRewrite?: string }> {
+    const destinationToPaths = new Map<string, { paths: Set<string>; pathRewrite?: string }>();
 
     try {
         const xsAppContent = readFileSync(xsAppPath, 'utf8');
@@ -157,12 +172,12 @@ function extractDestinationToPathsMap(xsAppPath: string): Map<string, Set<string
  *
  * @param {ServiceKeys[]} serviceKeys - The service keys containing endpoints with destinations.
  * @param {string} basePath - Path to the .adp/reuse folder containing xs-app.json files.
- * @returns {Array<{ url: string; paths: string[] }>} Array of URL-to-paths mappings.
+ * @returns {Array<{ url: string; paths: string[]; pathRewrite?: string }>} Array of URL-to-paths mappings with optional pathRewrite.
  */
 export function getBackendUrlsWithPaths(
     serviceKeys: ServiceKeys[],
     basePath: string
-): Array<{ url: string; paths: string[] }> {
+): Array<{ url: string; paths: string[]; pathRewrite?: string }> {
     const destinationToUrl = extractDestinationToUrlMap(serviceKeys);
 
     const reuseXsAppPath = join(basePath, '.adp', 'reuse', 'xs-app.json');
@@ -181,13 +196,19 @@ export function getBackendUrlsWithPaths(
 
     const result = [];
 
-    for (const [destination, paths] of destinationToPaths.entries()) {
+    for (const [destination, pathInfo] of destinationToPaths.entries()) {
         const url = destinationToUrl.get(destination);
         if (url) {
-            result.push({
+            const entry: { url: string; paths: string[]; pathRewrite?: string } = {
                 url,
-                paths: Array.from(paths)
-            });
+                paths: Array.from(pathInfo.paths)
+            };
+
+            if (pathInfo.pathRewrite) {
+                entry.pathRewrite = pathInfo.pathRewrite;
+            }
+
+            result.push(entry);
         }
     }
 
