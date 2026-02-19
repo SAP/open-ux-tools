@@ -7,10 +7,12 @@ import {
     hasApprouter,
     getMtaServices,
     getResources,
-    readMta
+    readMta,
+    buildVcapServicesFromResources
 } from '../../../../src/cf/project/mta';
 import { initI18n, t } from '../../../../src/i18n';
 import { requestCfApi } from '../../../../src/cf/services/cli';
+import { getServiceKeyCredentialsWithTags } from '../../../../src/cf/services/api';
 import { getRouterType } from '../../../../src/cf/project/yaml';
 import { getYamlContent } from '../../../../src/cf/project/yaml-loader';
 
@@ -26,9 +28,16 @@ jest.mock('../../../../src/cf/services/cli', () => ({
     requestCfApi: jest.fn()
 }));
 
+jest.mock('../../../../src/cf/services/api', () => ({
+    getServiceKeyCredentialsWithTags: jest.fn()
+}));
+
 const mockRequestCfApi = requestCfApi as jest.MockedFunction<typeof requestCfApi>;
 const mockGetRouterType = getRouterType as jest.MockedFunction<typeof getRouterType>;
 const mockGetYamlContent = getYamlContent as jest.MockedFunction<typeof getYamlContent>;
+const mockGetServiceKeyCredentialsWithTags = getServiceKeyCredentialsWithTags as jest.MockedFunction<
+    typeof getServiceKeyCredentialsWithTags
+>;
 
 const mtaProjectPath = '/test/project';
 const mtaFilePath = '/test/mta.yaml';
@@ -370,6 +379,72 @@ describe('MTA Project Functions', () => {
             const result = await readMta(projectPath, mockLogger);
 
             expect(result).toEqual(['service1']);
+        });
+    });
+
+    describe('buildVcapServicesFromResources', () => {
+        const spaceGuid = 'space-guid-123';
+
+        test('returns empty object when resources is undefined or empty', async () => {
+            const resultUndefined = await buildVcapServicesFromResources(undefined, spaceGuid, mockLogger);
+            expect(resultUndefined).toEqual({});
+            expect(mockGetServiceKeyCredentialsWithTags).not.toHaveBeenCalled();
+
+            const resultEmpty = await buildVcapServicesFromResources([], spaceGuid, mockLogger);
+            expect(resultEmpty).toEqual({});
+            expect(mockGetServiceKeyCredentialsWithTags).not.toHaveBeenCalled();
+        });
+
+        test('skips resources without service or service-name and excludes html5-apps-repo and portal', async () => {
+            const resources = [
+                { name: 'r1', parameters: { service: 'xsuaa', 'service-name': 'my-xsuaa', 'service-plan': 'app' } },
+                { name: 'r2', parameters: { service: 'xsuaa' } },
+                { name: 'r3', parameters: { 'service-name': 'only-name' } },
+                { name: 'r4', parameters: { service: 'html5-apps-repo', 'service-name': 'repo', 'service-plan': '' } },
+                { name: 'r5', parameters: { service: 'portal', 'service-name': 'p', 'service-plan': '' } }
+            ];
+
+            const mockCreds = {
+                label: 'xsuaa',
+                name: 'my-xsuaa',
+                tags: [],
+                plan: 'app',
+                credentials: {}
+            };
+            mockGetServiceKeyCredentialsWithTags.mockResolvedValue(mockCreds as never);
+
+            const result = await buildVcapServicesFromResources(resources as never, spaceGuid, mockLogger);
+
+            expect(mockGetServiceKeyCredentialsWithTags).toHaveBeenCalledTimes(1);
+            expect(mockGetServiceKeyCredentialsWithTags).toHaveBeenCalledWith(
+                spaceGuid,
+                'xsuaa',
+                'my-xsuaa',
+                'app',
+                mockLogger
+            );
+            expect(result).toEqual({ xsuaa: [mockCreds] });
+        });
+
+        test('throws when getServiceKeyCredentialsWithTags returns data without credentials', async () => {
+            const resources = [
+                {
+                    name: 'r1',
+                    parameters: { service: 'xsuaa', 'service-name': 'my-xsuaa', 'service-plan': 'app' }
+                }
+            ];
+
+            mockGetServiceKeyCredentialsWithTags.mockResolvedValue({
+                label: 'xsuaa',
+                name: 'my-xsuaa',
+                tags: [],
+                plan: 'app',
+                credentials: undefined
+            });
+
+            await expect(buildVcapServicesFromResources(resources as never, spaceGuid, mockLogger)).rejects.toThrow(
+                "Credentials and tags for service 'xsuaa' ('my-xsuaa') not found"
+            );
         });
     });
 });
