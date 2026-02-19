@@ -1,5 +1,5 @@
 import type { TreeDataProvider, Command, ExtensionContext, Event } from 'vscode';
-import type { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem, ConnectionType } from '@sap-ux/store';
 import { commands, TreeItem, TreeItemCollapsibleState, Uri, EventEmitter } from 'vscode';
 import { t, getDisplayName, getBackendSystemService } from '../utils';
 import { SystemCommands } from '../utils/constants';
@@ -9,6 +9,7 @@ interface SapSystemTreeItem extends TreeItem {
     name: string;
     url: string;
     client?: string;
+    connectionType?: ConnectionType;
 }
 
 /**
@@ -36,7 +37,12 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
 
         return systems
             .map((s: BackendSystem) => {
-                return { name: getDisplayName(s), url: s.url, client: s.client } as SapSystemTreeItem;
+                return {
+                    name: getDisplayName(s),
+                    url: s.url,
+                    client: s.client,
+                    connectionType: s.connectionType
+                } as SapSystemTreeItem;
             })
             ?.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' }));
     }
@@ -53,7 +59,7 @@ export class SapSystemsProvider implements TreeDataProvider<TreeItem> {
         const systemTreeItem = {
             ...item,
             ...props,
-            contextValue: 'sapSystem'
+            contextValue: `sapSystem-${system.connectionType}`
         };
 
         return systemTreeItem;
