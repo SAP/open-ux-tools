@@ -981,6 +981,9 @@ importers:
 
   packages/backend-proxy-middleware-cf:
     dependencies:
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger

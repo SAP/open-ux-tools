@@ -61,7 +61,7 @@ export interface BackendProxyMiddlewareCfConfig {
 /** Effective options with defaults applied. */
 export interface EffectiveOptions extends BackendProxyMiddlewareCfConfig {
     port: number;
-    destinations: ApprouterDestination[] | string;
+    destinations: ApprouterDestination[];
     rewriteContentTypes: string[];
     extensions: ApprouterExtension[];
 }
@@ -108,7 +108,6 @@ export interface XsappConfig {
  */
 export interface BuildRouteEntriesOptions {
     xsappConfig: XsappConfig;
-    destinations: ApprouterDestination[] | undefined;
     effectiveOptions: EffectiveOptions;
     logger: ToolsLogger;
 }
@@ -133,6 +132,4 @@ export interface CreateProxyOptions {
     baseUri: string;
     /** Merged options (debug, rewriteContent, etc.). */
     effectiveOptions: EffectiveOptions;
-    /** Logger instance. */
-    logger: ToolsLogger;
 }

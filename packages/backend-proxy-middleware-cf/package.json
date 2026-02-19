@@ -31,6 +31,7 @@
     ],
     "dependencies": {
         "@sap/approuter": "^20.8.0",
+        "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "content-type": "^1.0.5",
         "dotenv": "^16.4.5",

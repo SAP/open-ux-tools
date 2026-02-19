@@ -12,8 +12,8 @@ import { createProxy } from './proxy';
 import { loadExtensions } from './extensions';
 import { mergeEffectiveOptions } from './config';
 import type { BackendProxyMiddlewareCfConfig } from './types';
-import { resolveDestinations, nextFreePort } from './destinations';
-import { applyDestinationsToEnv, loadAndApplyEnvOptions } from './env';
+import { nextFreePort } from './utils';
+import { loadAndApplyEnvOptions } from './env';
 import { buildRouteEntries, loadAndPrepareXsappConfig } from './routes';
 
 dotenv.config();
@@ -52,13 +52,9 @@ async function backendProxyMiddlewareCf({
         throw new Error(`xs-app.json not found at "${xsappJsonPath}"`);
     }
 
-    const sourcePath = project.getSourcePath();
-    const destinations = resolveDestinations(effectiveOptions);
-    applyDestinationsToEnv(destinations);
-    if (effectiveOptions.envOptionsPath) {
-        loadAndApplyEnvOptions(rootPath, effectiveOptions.envOptionsPath);
-    }
+    await loadAndApplyEnvOptions(rootPath, effectiveOptions, logger);
 
+    const sourcePath = project.getSourcePath();
     const xsappConfig = loadAndPrepareXsappConfig({
         rootPath,
         xsappJsonPath,
@@ -67,7 +63,6 @@ async function backendProxyMiddlewareCf({
     });
     const routes = buildRouteEntries({
         xsappConfig,
-        destinations,
         effectiveOptions,
         logger
     });
@@ -97,8 +92,9 @@ async function backendProxyMiddlewareCf({
 
     const subdomain = effectiveOptions.subdomain;
     const baseUri = subdomain ? `http://${subdomain}.localhost:${freePort}` : `http://localhost:${freePort}`;
+    const callbackEndpoint = xsappConfig.login?.callbackEndpoint ?? '/login/callback';
 
-    const customRoutes: string[] = [...extensionsRoutes, xsappConfig.login?.callbackEndpoint ?? '/login/callback'];
+    const customRoutes: string[] = [...extensionsRoutes, callbackEndpoint];
     if (!effectiveOptions.disableWelcomeFile) {
         customRoutes.unshift('/');
     }
@@ -107,13 +103,15 @@ async function backendProxyMiddlewareCf({
         customRoutes.push(logoutEndpoint);
     }
 
-    return createProxy({
-        customRoutes,
-        routes,
-        baseUri,
-        effectiveOptions,
+    return createProxy(
+        {
+            customRoutes,
+            routes,
+            baseUri,
+            effectiveOptions
+        },
         logger
-    });
+    );
 }
 
 module.exports = backendProxyMiddlewareCf;

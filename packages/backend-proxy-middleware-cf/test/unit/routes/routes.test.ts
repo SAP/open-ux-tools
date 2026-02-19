@@ -99,12 +99,14 @@ describe('routes', () => {
                 routes: [{ source: '^/api/(.*)$', destination: 'api' }],
                 authenticationMethod: 'none'
             };
-            const destinations = [{ name: 'api', url: '/api' }];
 
             const result = buildRouteEntries({
                 xsappConfig,
-                destinations,
-                effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json', debug: true }),
+                effectiveOptions: mergeEffectiveOptions({
+                    xsappJsonPath: './xs-app.json',
+                    debug: true,
+                    destinations: [{ name: 'api', url: '/api' }]
+                }),
                 logger
             });
 
@@ -118,7 +120,6 @@ describe('routes', () => {
         test('returns empty array when xsappConfig has no routes', () => {
             const result = buildRouteEntries({
                 xsappConfig: { routes: [] },
-                destinations: [],
                 effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
                 logger
             });

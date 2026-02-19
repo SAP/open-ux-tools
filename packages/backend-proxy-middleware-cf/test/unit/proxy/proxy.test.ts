@@ -117,7 +117,7 @@ describe('proxy', () => {
     });
 
     describe('createProxy', () => {
-        const logger = { info: jest.fn() } as unknown as ToolsLogger;
+        const logger = { info: jest.fn(), debug: jest.fn() } as unknown as ToolsLogger;
 
         beforeEach(() => {
             capturedProxyOptions = null;
@@ -131,13 +131,15 @@ describe('proxy', () => {
                 source: '^/api/',
                 destination: 'backend'
             };
-            const handler = createProxy({
-                customRoutes: ['/', '/login/callback'],
-                routes: [route],
-                baseUri: 'http://localhost:5000',
-                effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
+            const handler = createProxy(
+                {
+                    customRoutes: ['/', '/login/callback'],
+                    routes: [route],
+                    baseUri: 'http://localhost:5000',
+                    effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' })
+                },
                 logger
-            });
+            );
             expect(typeof handler).toBe('function');
             expect(capturedProxyOptions).not.toBeNull();
             expect(capturedProxyOptions!.target).toBe('http://localhost:5000');
@@ -150,13 +152,15 @@ describe('proxy', () => {
         });
 
         test('proxyReq normalizes x-forwarded-proto when it contains a comma', () => {
-            createProxy({
-                customRoutes: [],
-                routes: [],
-                baseUri: 'http://localhost:5000',
-                effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
+            createProxy(
+                {
+                    customRoutes: [],
+                    routes: [],
+                    baseUri: 'http://localhost:5000',
+                    effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' })
+                },
                 logger
-            });
+            );
             const setHeader = jest.fn();
             const proxyReq = { setHeader };
             const req = { headers: { 'x-forwarded-proto': 'https,http' as string } };
@@ -169,13 +173,15 @@ describe('proxy', () => {
         });
 
         test('proxyReq sets redirected and calls res.redirect when ui5-middleware-index url is /', () => {
-            createProxy({
-                customRoutes: [],
-                routes: [],
-                baseUri: 'http://localhost:5000',
-                effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
+            createProxy(
+                {
+                    customRoutes: [],
+                    routes: [],
+                    baseUri: 'http://localhost:5000',
+                    effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' })
+                },
                 logger
-            });
+            );
             const proxyReq = { setHeader: jest.fn() };
             const req = {
                 headers: {},
@@ -193,13 +199,15 @@ describe('proxy', () => {
         });
 
         test('proxyReq sets x-forwarded-path when ui5-patched-router originalUrl is set', () => {
-            createProxy({
-                customRoutes: [],
-                routes: [],
-                baseUri: 'http://localhost:5000',
-                effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
+            createProxy(
+                {
+                    customRoutes: [],
+                    routes: [],
+                    baseUri: 'http://localhost:5000',
+                    effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' })
+                },
                 logger
-            });
+            );
             const setHeader = jest.fn();
             const proxyReq = { setHeader };
             const req = {
@@ -215,13 +223,15 @@ describe('proxy', () => {
         });
 
         test('proxyRes invokes interceptor and returns buffer when response is not redirected', async () => {
-            createProxy({
-                customRoutes: [],
-                routes: [],
-                baseUri: 'http://localhost:5000',
-                effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
+            createProxy(
+                {
+                    customRoutes: [],
+                    routes: [],
+                    baseUri: 'http://localhost:5000',
+                    effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' })
+                },
                 logger
-            });
+            );
             const proxyRes = { statusCode: 200, headers: {} };
             const req = { url: '/api/foo', headers: {}, baseUrl: '' };
             const res = {};
@@ -232,13 +242,15 @@ describe('proxy', () => {
         });
 
         test('proxyRes returns undefined when response was redirected', async () => {
-            createProxy({
-                customRoutes: [],
-                routes: [],
-                baseUri: 'http://localhost:5000',
-                effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' }),
+            createProxy(
+                {
+                    customRoutes: [],
+                    routes: [],
+                    baseUri: 'http://localhost:5000',
+                    effectiveOptions: mergeEffectiveOptions({ xsappJsonPath: './xs-app.json' })
+                },
                 logger
-            });
+            );
             const proxyRes = {};
             const req = {};
             const res = { 'backend-proxy-middleware-cf': { redirected: true } };

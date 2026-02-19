@@ -77,11 +77,12 @@ export function createResponseInterceptor(
  * Create the proxy middleware that forwards matching requests to the approuter.
  * Paths are proxied if they match any customRoute (e.g. welcome, login callback) or any destination route.
  *
- * @param {CreateProxyOptions} options - customRoutes, routes, baseUri, effectiveOptions, logger.
+ * @param {CreateProxyOptions} options - customRoutes, routes, baseUri, effectiveOptions.
+ * @param {ToolsLogger} logger - Logger instance.
  * @returns {RequestHandler} Express request handler (the proxy middleware).
  */
-export function createProxy(options: CreateProxyOptions): RequestHandler {
-    const { customRoutes, routes, baseUri, effectiveOptions, logger } = options;
+export function createProxy(options: CreateProxyOptions, logger: ToolsLogger): RequestHandler {
+    const { customRoutes, routes, baseUri, effectiveOptions } = options;
 
     const intercept = createResponseInterceptor(routes, effectiveOptions, baseUri, logger);
     const pathFilter = createPathFilter(customRoutes, routes);

@@ -1,10 +1,10 @@
 import fs from 'node:fs';
 
-import type { BackendProxyMiddlewareCfConfig } from '../../src/types';
 import { createProxy } from '../../src/proxy';
+import { nextFreePort } from '../../src/utils';
 import { loadExtensions } from '../../src/extensions';
 import { loadAndApplyEnvOptions } from '../../src/env';
-import { nextFreePort, resolveDestinations } from '../../src/destinations';
+import type { BackendProxyMiddlewareCfConfig } from '../../src/types';
 import { loadAndPrepareXsappConfig, buildRouteEntries } from '../../src/routes';
 
 jest.mock('node:fs', () => ({
@@ -12,16 +12,14 @@ jest.mock('node:fs', () => ({
     existsSync: jest.fn()
 }));
 
-jest.mock('../../src/destinations', () => ({
-    ...jest.requireActual('../../src/destinations'),
-    resolveDestinations: jest.fn(),
+jest.mock('../../src/utils', () => ({
+    ...jest.requireActual('../../src/utils'),
     nextFreePort: jest.fn()
 }));
 
 jest.mock('../../src/env', () => ({
     ...jest.requireActual('../../src/env'),
-    applyDestinationsToEnv: jest.fn(),
-    loadAndApplyEnvOptions: jest.fn()
+    loadAndApplyEnvOptions: jest.fn().mockResolvedValue([])
 }));
 
 jest.mock('../../src/routes', () => ({
@@ -46,7 +44,6 @@ const existsSyncMock = fs.existsSync as jest.Mock;
 const nextFreePortMock = nextFreePort as jest.Mock;
 const loadExtensionsMock = loadExtensions as jest.Mock;
 const buildRouteEntriesMock = buildRouteEntries as jest.Mock;
-const resolveDestinationsMock = resolveDestinations as jest.Mock;
 const loadAndApplyEnvOptionsMock = loadAndApplyEnvOptions as jest.Mock;
 const loadAndPrepareXsappConfigMock = loadAndPrepareXsappConfig as jest.Mock;
 
@@ -66,7 +63,7 @@ describe('middleware', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         existsSyncMock.mockReturnValue(true);
-        resolveDestinationsMock.mockReturnValue([]);
+        loadAndApplyEnvOptionsMock.mockResolvedValue([]);
         nextFreePortMock.mockResolvedValue(5000);
         loadAndPrepareXsappConfigMock.mockReturnValue({
             routes: [],
@@ -106,15 +103,16 @@ describe('middleware', () => {
 
         expect(typeof handler).toBe('function');
         expect(createProxyMock).toHaveBeenCalledTimes(1);
-        const [proxyOptions] = createProxyMock.mock.calls[0] as [
-            { baseUri: string; customRoutes: string[]; routes: unknown[]; effectiveOptions: unknown; logger: unknown }
+        const [proxyOptions, loggerArg] = createProxyMock.mock.calls[0] as [
+            { baseUri: string; customRoutes: string[]; routes: unknown[]; effectiveOptions: unknown },
+            unknown
         ];
         expect(proxyOptions.baseUri).toBe('http://localhost:5000');
         expect(proxyOptions.customRoutes).toContain('/');
         expect(proxyOptions.customRoutes).toContain('/login/callback');
         expect(proxyOptions.routes).toEqual([]);
         expect(proxyOptions.effectiveOptions).toBeDefined();
-        expect(proxyOptions.logger).toBeDefined();
+        expect(loggerArg).toBeDefined();
     });
 
     test('should apply subdomain, envOptionsPath, logout and globalThis correctly', async () => {
@@ -137,7 +135,11 @@ describe('middleware', () => {
             middlewareUtil: { getProject }
         });
 
-        expect(loadAndApplyEnvOptionsMock).toHaveBeenCalledWith(rootPath, './adp/default-env.json');
+        expect(loadAndApplyEnvOptionsMock).toHaveBeenCalledWith(
+            rootPath,
+            expect.objectContaining({ envOptionsPath: './adp/default-env.json', destinations: [] }),
+            expect.any(Object)
+        );
         const [proxyOptions] = createProxyMock.mock.calls[0] as [{ baseUri: string; customRoutes: string[] }];
         expect(proxyOptions.baseUri).toBe('http://myapp.localhost:5000');
         expect(proxyOptions.customRoutes).toContain('/logout');

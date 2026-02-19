@@ -56,13 +56,13 @@ export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): X
  * Build the list of route entries (compiled regex + resolved destination URLs) from a prepared xsappConfig.
  * Does not read files or mutate xsappConfig.
  *
- * @param {BuildRouteEntriesOptions} options - xsappConfig, destinations, effectiveOptions, logger.
+ * @param {BuildRouteEntriesOptions} options - xsappConfig, effectiveOptions, logger.
  * @returns {RouteEntry[]} Route entries for the proxy.
  */
 export function buildRouteEntries(options: BuildRouteEntriesOptions): RouteEntry[] {
-    const { xsappConfig, destinations, effectiveOptions, logger } = options;
+    const { xsappConfig, effectiveOptions, logger } = options;
     const routes: RouteEntry[] = [];
-    const destList = Array.isArray(destinations) ? destinations : [];
+    const destList = Array.isArray(effectiveOptions.destinations) ? effectiveOptions.destinations : [];
 
     for (const route of xsappConfig.routes ?? []) {
         const routeMatch = /[^/]*\/(.*\/)?[^/]*/.exec(route.source);
@@ -74,10 +74,10 @@ export function buildRouteEntries(options: BuildRouteEntriesOptions): RouteEntry
                 path: routeMatch[1],
                 url
             });
+
             if (effectiveOptions.debug) {
-                logger.debug(
-                    `Adding destination "${route.destination ?? route.endpoint ?? ''}" proxying to ${route.source}`
-                );
+                const destination = route.destination ?? route.endpoint ?? '';
+                logger.debug(`Adding destination "${destination}" proxying to ${route.source}`);
             }
         }
     }
