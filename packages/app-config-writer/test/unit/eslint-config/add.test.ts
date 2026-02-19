@@ -64,7 +64,7 @@ describe('generateEslintConfig', () => {
             const packageJson = fs.readJSON(packageJsonPath) as Package;
 
             expect(packageJson.devDependencies).toBeDefined();
-            expect(packageJson.devDependencies?.eslint).toBe('^9.0.0');
+            expect(packageJson.devDependencies?.eslint).toBe('^9');
             expect(packageJson.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^9.0.0');
         });
 
@@ -76,7 +76,7 @@ describe('generateEslintConfig', () => {
             const packageJson = fs.readJSON(packageJsonPath) as Package;
 
             expect(packageJson.scripts).toBeDefined();
-            expect(packageJson.scripts?.lint).toBe('eslint .');
+            expect(packageJson.scripts?.lint).toBe('eslint ./');
         });
 
         test('should preserve existing devDependencies', async () => {

@@ -117,7 +117,7 @@ export async function applyOptionalFeatures(
     ui5App: Ui5App,
     fs: Editor,
     basePath: string,
-    tmplPath: string,
+    tmplPath: string = join(__dirname, '../templates'),
     ui5Configs: UI5Config[]
 ): Promise<void> {
     if (ui5App.appOptions) {
@@ -127,6 +127,21 @@ export async function applyOptionalFeatures(
             }
         }
     }
+}
+
+export async function addEslintFeature(basePath: string, fs: Editor): Promise<void> {
+    const input = {
+        tmplPath: join(__dirname, '../templates'),
+        basePath: basePath,
+        fs: fs,
+        ui5Configs: [] as UI5Config[],
+        ui5App: {
+            app: {
+                id: 'dummy' // the app config is not used for eslint configuration, so dummy values are sufficient
+            }
+        }
+    } satisfies FeatureInput;
+    await copyTemplates('eslint', input);
 }
 
 /**
