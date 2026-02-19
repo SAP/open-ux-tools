@@ -869,32 +869,6 @@ describe('UI5Config', () => {
             expect(tasks[2]).toMatchObject(task3);
         });
 
-        test('getAllCustomTasks - with generic type parameter', () => {
-            interface ZipperConfig {
-                archiveName: string;
-                relativePaths?: boolean;
-                additionalFiles?: string[];
-            }
-
-            const zipperTask = {
-                name: 'ui5-task-zipper',
-                afterTask: 'generateCachebusterInfo',
-                configuration: {
-                    archiveName: 'my-archive',
-                    relativePaths: true,
-                    additionalFiles: ['xs-app.json']
-                }
-            };
-
-            ui5Config.addCustomTasks([zipperTask]);
-            const tasks = ui5Config.getAllCustomTasks<ZipperConfig>();
-            expect(tasks).toHaveLength(1);
-            const configuration = tasks[0].configuration!;
-            expect(configuration.archiveName).toBe('my-archive');
-            expect(configuration.relativePaths).toBe(true);
-            expect(configuration.additionalFiles).toContain('xs-app.json');
-        });
-
         test('should return custom taks from the yaml', async () => {
             const yamlString = `
 specVersion: '4.0'

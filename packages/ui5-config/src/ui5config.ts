@@ -831,7 +831,7 @@ export class UI5Config {
      * @returns The list of custom tasks.
      * @memberof UI5Config
      */
-    public getAllCustomTasks<T extends object = object>(): Array<CustomTask<T>> {
+    public getAllCustomTasks(): Array<CustomTask> {
         try {
             const customTaskSequence = this.document.getSequence({ path: 'builder.customTasks' }) as YAMLSeq<YAMLMap>;
             return customTaskSequence.items.map((item) => item.toJSON());
