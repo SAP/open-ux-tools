@@ -159,6 +159,50 @@ export default class CustomPage extends Controller {
 }"
 `;
 
+exports[`CustomPage Typescript controller should generate files in ext/view folder with correct manifest viewName path 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.core": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "TestObjectPage",
+          "pattern": ":?query:",
+          "target": "TestObjectPage",
+        },
+        Object {
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
+        },
+      ],
+      "targets": Object {
+        "RootEntityCustomPage": Object {
+          "id": "RootEntityCustomPage",
+          "name": "sap.fe.core.fpm",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/RootEntity",
+              "navigation": Object {},
+              "viewName": "my.test.App.ext.view.CustomPage",
+            },
+          },
+          "type": "Component",
+        },
+        "TestObjectPage": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomPage generateCustomPage: different navigations inbound navigation defined as array (for FCL) 1`] = `
 Object {
   "config": Object {

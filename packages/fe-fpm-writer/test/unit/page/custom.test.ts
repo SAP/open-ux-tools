@@ -400,6 +400,33 @@ describe('CustomPage', () => {
             //check
             expect(fs.read(join(target, 'webapp/ext/view/CustomPage.controller.ts'))).toMatchSnapshot();
         });
+
+        test('should generate files in ext/view folder with correct manifest viewName path', async () => {
+            const target = join(testDir, 'typescript-ext-view');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            //act
+            await generateCustomPage(target, minimalInput, fs);
+            //check
+            const manifestPath = join(target, 'webapp/manifest.json');
+            const targetName = 'RootEntityCustomPage'; // entity + page name
+
+            // Verify viewName uses ext.view namespace (critical for OPA test compatibility)
+            const manifest = fs.readJSON(manifestPath);
+            expect((manifest as any)['sap.ui5'].routing.targets[targetName].options.settings.viewName).toBe(
+                'my.test.App.ext.view.CustomPage'
+            );
+
+            // Verify files are in ext/view folder (not ext/main which breaks OPA tests)
+            expect(fs.exists(join(target, 'webapp/ext/view/CustomPage.controller.ts'))).toBe(true);
+            expect(fs.exists(join(target, 'webapp/ext/view/CustomPage.view.xml'))).toBe(true);
+
+            // Verify view.xml has correct controllerName
+            const viewXml = fs.read(join(target, 'webapp/ext/view/CustomPage.view.xml'));
+            expect(viewXml).toContain('controllerName="my.test.App.ext.view.CustomPage"');
+
+            // Snapshot the full manifest to catch any regressions
+            expect(manifest).toMatchSnapshot();
+        });
     });
 
     test('Add library dependency `sap.fe.core`', async () => {
