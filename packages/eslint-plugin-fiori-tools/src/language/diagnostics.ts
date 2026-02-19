@@ -83,8 +83,15 @@ export interface StatePreservationMode {
 }
 
 export type PersonalizationProperty = 'column' | 'filter' | 'sort' | 'group';
+export type PersonalizationMessageId =
+    | 'sap-table-personalization'
+    | 'sap-table-personalization-column'
+    | 'sap-table-personalization-filter'
+    | 'sap-table-personalization-sort'
+    | 'sap-table-personalization-group';
 export interface TablePersonalization {
     type: typeof TABLE_PERSONALIZATION;
+    messageId: PersonalizationMessageId;
     property?: PersonalizationProperty;
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;

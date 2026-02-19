@@ -1,5 +1,6 @@
 import type { FioriRuleDefinition } from '../types';
 import {
+    type PersonalizationMessageId,
     type PersonalizationProperty,
     TABLE_PERSONALIZATION,
     type TablePersonalization
@@ -11,25 +12,22 @@ import type { FeV4PageType, Table } from '../project-context/linker/fe-v4';
 import type { ParsedApp } from '../project-context/parser';
 import { isLowerThanMinimalUi5Version } from '../utils/version';
 
-enum PersonalizationProperties {
-    column = 'column',
-    filter = 'filter',
-    group = 'group',
-    sort = 'sort'
-}
+const PersonalizationProperties = ['column', 'filter', 'group', 'sort'];
 
 const TABLE_PERSONALIZATION_COLUMN = 'sap-table-personalization-column';
 const TABLE_PERSONALIZATION_FILTER = 'sap-table-personalization-filter';
 const TABLE_PERSONALIZATION_SORT = 'sap-table-personalization-sort';
 const TABLE_PERSONALIZATION_GROUP = 'sap-table-personalization-group';
 
-enum MessageIdByProperty {
-    '' = TABLE_PERSONALIZATION,
-    'column' = TABLE_PERSONALIZATION_COLUMN,
-    'filter' = TABLE_PERSONALIZATION_FILTER,
-    'sort' = TABLE_PERSONALIZATION_SORT,
-    'group' = TABLE_PERSONALIZATION_GROUP
-}
+const MessageIdByProperty: {
+    [key: string]: PersonalizationMessageId;
+} = {
+    ['']: TABLE_PERSONALIZATION,
+    column: TABLE_PERSONALIZATION_COLUMN,
+    filter: TABLE_PERSONALIZATION_FILTER,
+    sort: TABLE_PERSONALIZATION_SORT,
+    group: TABLE_PERSONALIZATION_GROUP
+};
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: TABLE_PERSONALIZATION,
@@ -118,6 +116,7 @@ function checkGroupProperty(table: Table, parsedApp: ParsedApp, pageName: string
                 type: TABLE_PERSONALIZATION,
                 pageName,
                 property: 'group',
+                messageId: MessageIdByProperty['group'],
                 manifest: {
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
@@ -150,6 +149,7 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
         problems.push({
             type: TABLE_PERSONALIZATION,
             pageName: page.targetName,
+            messageId: MessageIdByProperty[''],
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
@@ -158,7 +158,7 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
         });
     } else {
         // Check personalization object properties
-        for (const key in PersonalizationProperties) {
+        for (const key of PersonalizationProperties) {
             const property = key as PersonalizationProperty;
             if (personalization[property] === false) {
                 if (property === 'group') {
@@ -168,6 +168,7 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
                         type: TABLE_PERSONALIZATION,
                         pageName: page.targetName,
                         property,
+                        messageId: MessageIdByProperty[property],
                         manifest: {
                             uri: parsedApp.manifest.manifestUri,
                             object: parsedApp.manifestObject,

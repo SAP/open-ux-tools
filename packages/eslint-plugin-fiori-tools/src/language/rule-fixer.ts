@@ -119,7 +119,7 @@ export function createJsonFixer<MessageIds extends string, RuleOptions extends u
         // Parent member node (contains value)
         const parentMemberNode: AnyNode | undefined =
             parentObjectNode && context.sourceCode.getParent(parentObjectNode);
-        fixNode = fixParent && parentMemberNode?.type === 'Member' ? parentMemberNode : node;
+        fixNode = parentMemberNode?.type === 'Member' ? parentMemberNode : node;
     }
 
     return (fixer: RuleTextEditor) => {
