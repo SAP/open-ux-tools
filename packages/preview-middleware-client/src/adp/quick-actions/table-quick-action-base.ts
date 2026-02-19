@@ -144,15 +144,11 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
 
         const customTabs = Object.keys(iconTabBarFilterMap).filter((key) => /^fe::CustomTab::\d+$/.test(key));
         for (const key of customTabs) {
-            const filterItem = this.iconTabBar
-                ?.getItems()
-                .find(
-                    (item) =>
-                        isManagedObject(item) &&
-                        isA<IconTabFilter>('sap.m.IconTabFilter', item) &&
-                        item.getKey() === key
-                ) as IconTabFilter | undefined;
-            if (filterItem) {
+            const items = (this.iconTabBar?.getItems() ?? []) as unknown as ManagedObject[];
+            const filterItem = items.find(
+                (item) => isA<IconTabFilter>('sap.m.IconTabFilter', item) && item.getKey() === key
+            );
+            if (filterItem && isA<IconTabFilter>('sap.m.IconTabFilter', filterItem)) {
                 filterItem.getContent().forEach((content) => {
                     if (isMacroTable(content)) {
                         const { metaPath, contextPath } = content;
@@ -402,8 +398,9 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             enabled: true,
             children: []
         };
-        if (this.options.validateTableColumns && isMacroTable(table.getParent())) {
-            const { metaPath, contextPath } = table.getParent() as MacroTable;
+        const macroTable = isMacroTable(table.getParent()) ? (table.getParent() as MacroTable) : undefined;
+        if (this.options.validateTableColumns && macroTable) {
+            const { metaPath, contextPath } = macroTable;
             const finalPath = metaPath.startsWith(contextPath) ? metaPath : `${contextPath}${metaPath}`;
             if (customViewTableBuildingBlockMap?.[finalPath]) {
                 child.enabled = false;

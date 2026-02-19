@@ -132,7 +132,10 @@ function findAnchor(table: UI5Element): string {
             SemanticObject?: string;
             Target?: { $AnnotationPath: string };
         }[];
-        const lastColumn = filteredColumns[filteredColumns.length - 1];
+        const lastColumn = filteredColumns.at(-1);
+        if (!lastColumn) {
+            return '';
+        }
         if (lastColumn.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAction') {
             anchor = `DataFieldForAction::${lastColumn.Action}`;
         } else if (lastColumn.$Type === 'com.sap.vocabularies.UI.v1.DataField') {
