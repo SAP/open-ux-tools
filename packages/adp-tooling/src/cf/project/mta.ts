@@ -9,7 +9,7 @@ import { requestCfApi } from '../services/cli';
 import { getRouterType } from './yaml';
 import { getYamlContent } from './yaml-loader';
 
-const EXCLUDED_SERVICES_VCAP = ['html5-apps-repo', 'portal'];
+const EXCLUDED_SERVICES_VCAP = new Set(['html5-apps-repo', 'portal']);
 
 /**
  * Builds VCAP_SERVICES by resolving MTA resources to service key credentials.
@@ -30,7 +30,7 @@ export async function buildVcapServicesFromResources(
         const serviceInstanceName = resource.parameters?.['service-name'];
         const servicePlan = resource.parameters?.['service-plan'];
 
-        if (!serviceName || !serviceInstanceName || EXCLUDED_SERVICES_VCAP.includes(serviceName)) {
+        if (!serviceName || !serviceInstanceName || EXCLUDED_SERVICES_VCAP.has(serviceName)) {
             continue;
         }
 

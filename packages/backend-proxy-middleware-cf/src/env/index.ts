@@ -37,7 +37,7 @@ function loadEnvOptionsFromFile(rootPath: string, envOptionsPath: string): AppRo
 function applyToProcessEnv(options: AppRouterEnvOptions): void {
     const envOptions = {
         ...options,
-        ...(options.destinations !== undefined ? { destinations: JSON.stringify(options.destinations) } : {}),
+        ...(options.destinations ? { destinations: JSON.stringify(options.destinations) } : {}),
         ...(options.VCAP_SERVICES ? { VCAP_SERVICES: JSON.stringify(options.VCAP_SERVICES) } : {})
     };
     process.env = Object.assign(process.env, envOptions);
@@ -70,11 +70,13 @@ export async function loadAndApplyEnvOptions(
 
         if (!spaceGuid) {
             throw new Error('No space GUID (from config or ui5.yaml). Skipping CF env options.');
-        } else if (!fs.existsSync(mtaPath)) {
-            throw new Error(`mta.yaml not found at "${mtaPath}", skipping CF env options.`);
-        } else {
+        }
+
+        if (fs.existsSync(mtaPath)) {
             const mtaYaml = getYamlContent(mtaPath);
             options = await getAppRouterEnvOptions(mtaYaml, spaceGuid, effectiveOptions.destinations, logger);
+        } else {
+            throw new Error(`mta.yaml not found at "${mtaPath}", skipping CF env options.`);
         }
     }
 
