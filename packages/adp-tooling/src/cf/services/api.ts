@@ -19,8 +19,7 @@ import type {
     CfServiceInstance,
     MtaYaml,
     ServiceInfo,
-    CfUi5AppInfo,
-    VcapServices
+    CfUi5AppInfo
 } from '../../types';
 import { t } from '../../i18n';
 import { getProjectNameForXsSecurity } from '../project';
@@ -55,7 +54,7 @@ export async function getBusinessServiceInfo(
     config: CfConfig,
     logger: ToolsLogger
 ): Promise<ServiceInfo | null> {
-    const serviceKeys = await getServiceInstanceKeys(
+    const serviceKeys = await getOrCreateServiceInstanceKeys(
         {
             spaceGuids: [config.space.GUID],
             names: [businessService]
@@ -259,6 +258,7 @@ export async function getServiceNameByTags(spaceGuid: string, tags: string[]): P
  * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string[]} initialServices - The initial services.
  * @param {string} timestamp - The timestamp.
+ * @param {string} spaceGuid - The space GUID.
  * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>} The promise.
@@ -267,6 +267,7 @@ export async function createServices(
     yamlContent: MtaYaml,
     initialServices: string[],
     timestamp: string,
+    spaceGuid: string,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
 ): Promise<void> {
@@ -296,81 +297,15 @@ export async function createServices(
                     }
                 );
             }
-        }
-    }
-}
-
-/**
- * Gets service tags for a given service name.
- *
- * @param {string} spaceGuid - The space GUID.
- * @param {string} serviceName - The service name (e.g., 'xsuaa', 'hana').
- * @returns {Promise<string[]>} The service tags.
- */
-export async function getServiceTags(spaceGuid: string, serviceName: string): Promise<string[]> {
-    const json: CfAPIResponse<CfServiceOffering> = await requestCfApi<CfAPIResponse<CfServiceOffering>>(
-        `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}&names=${serviceName}`
-    );
-    const serviceOffering = json?.resources?.find((resource: CfServiceOffering) => resource.name === serviceName);
-    return serviceOffering?.tags ?? [];
-}
-
-/**
- * Gets VCAP_SERVICES structure from MTA YAML resources.
- * Creates service keys and returns credentials in VCAP_SERVICES format for default-env.json.
- *
- * @param {MtaYaml} mtaYaml - The MTA YAML content.
- * @param {string} spaceGuid - The space GUID.
- * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<VcapServices>} The VCAP_SERVICES structure.
- */
-export async function getVCAPServicesFromMtaYaml(
-    mtaYaml: MtaYaml,
-    spaceGuid: string,
-    logger?: ToolsLogger
-): Promise<VcapServices> {
-    const result: VcapServices = {};
-    const resources = mtaYaml.resources ?? [];
-
-    for (const resource of resources) {
-        const serviceName = resource.parameters?.service;
-        const serviceInstanceName = resource.parameters?.['service-name'];
-
-        if (!serviceName || !serviceInstanceName || !['xsuaa', 'destination'].includes(serviceName ?? '')) {
-            continue;
-        }
-
-        try {
-            const tags = await getServiceTags(spaceGuid, serviceName);
-
-            const serviceInstances = await getServiceInstance({
-                names: [serviceInstanceName],
-                spaceGuids: [spaceGuid]
-            });
-
-            if (serviceInstances.length === 0) {
-                logger?.warn(`Service instance '${serviceInstanceName}' not found, skipping`);
-                continue;
-            }
-
-            const credentials = await getOrCreateServiceKeys(serviceInstances[0], logger);
-
-            result[serviceName] = [
+            await getOrCreateServiceInstanceKeys(
                 {
-                    label: serviceName,
-                    name: serviceInstanceName,
-                    tags,
-                    credentials: credentials?.[0]
-                }
-            ];
-        } catch (e) {
-            logger?.warn(
-                `Failed to get credentials for service '${serviceName}' (instance: '${serviceInstanceName}'): ${e.message}`
+                    spaceGuids: [spaceGuid],
+                    names: [resource.parameters?.['service-name'] ?? '']
+                },
+                logger
             );
         }
     }
-
-    return result;
 }
 
 /**
@@ -380,7 +315,7 @@ export async function getVCAPServicesFromMtaYaml(
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<ServiceInfo | null>} The service instance keys.
  */
-export async function getServiceInstanceKeys(
+export async function getOrCreateServiceInstanceKeys(
     serviceInstanceQuery: GetServiceInstanceParams,
     logger?: ToolsLogger
 ): Promise<ServiceInfo | null> {

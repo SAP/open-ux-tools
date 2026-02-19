@@ -34,6 +34,7 @@ interface AdjustMtaYamlParams {
     businessSolutionName: string;
     businessService: string;
     serviceKeys?: ServiceKeys[];
+    spaceGuid: string;
 }
 
 /**
@@ -444,12 +445,13 @@ export async function adjustMtaYaml(
         appRouterType,
         businessSolutionName,
         businessService,
-        serviceKeys
+        serviceKeys,
+        spaceGuid
     }: AdjustMtaYamlParams,
     memFs: Editor,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
-): Promise<MtaYaml> {
+): Promise<void> {
     const timestamp = Date.now().toString();
 
     const mtaYamlPath = path.join(projectPath, 'mta.yaml');
@@ -489,7 +491,7 @@ export async function adjustMtaYaml(
     adjustMtaYamlOwnModule(yamlContent, adpProjectName);
     // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
     adjustMtaYamlFlpModule(yamlContent, mtaProjectName, businessService);
-    await createServices(yamlContent, initialServices, timestamp, templatePathOverwrite, logger);
+    await createServices(yamlContent, initialServices, timestamp, spaceGuid, templatePathOverwrite, logger);
 
     const updatedYamlContent = yaml.dump(yamlContent, {
         lineWidth: -1 // Disable line wrapping to keep URLs on single lines
@@ -497,7 +499,6 @@ export async function adjustMtaYaml(
 
     memFs.write(mtaYamlPath, updatedYamlContent);
     logger?.debug(`Adjusted MTA YAML for project ${projectPath}`);
-    return yamlContent;
 }
 
 /**

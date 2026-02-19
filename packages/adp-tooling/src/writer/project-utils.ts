@@ -2,14 +2,7 @@ import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
-import type {
-    CloudApp,
-    AdpWriterConfig,
-    TypesConfig,
-    CfAdpWriterConfig,
-    DescriptorVariant,
-    VcapServices
-} from '../types';
+import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -191,23 +184,6 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
         throw new Error(`Could not write ui5.yaml file. Reason: ${e.message}`);
-    }
-}
-
-/**
- * Writes a default env.json file for CF project within .adp folder in the project directory.
- *
- * @param {string} projectPath - The root path of the project.
- * @param {VcapServices} vcapServices - The VCAP_SERVICES content to be included in the default-env.json file.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- * @returns {void}
- */
-export function writeDefaultEnvJson(projectPath: string, vcapServices: VcapServices, fs: Editor): void {
-    try {
-        const defaultEnvJsonPath = join(projectPath, '.adp', 'default-env.json');
-        fs.write(defaultEnvJsonPath, JSON.stringify(vcapServices, null, 2));
-    } catch (e) {
-        throw new Error(`Could not write env.json file. Reason: ${e.message}`);
     }
 }
 

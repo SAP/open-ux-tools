@@ -1346,20 +1346,3 @@ export interface CfServiceOffering {
     };
     [key: string]: unknown;
 }
-
-/**
- * VCAP Services entry structure for default-env.json.
- */
-export interface VcapServiceEntry {
-    label: string;
-    name: string;
-    tags: string[];
-    credentials: ServiceKeys;
-}
-
-/**
- * VCAP Services structure (keyed by service name).
- */
-export interface VcapServices {
-    [serviceName: string]: VcapServiceEntry[];
-}

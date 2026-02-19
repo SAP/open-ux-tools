@@ -9,16 +9,15 @@ import { readUi5Yaml } from '@sap-ux/project-access';
 import {
     adjustMtaYaml,
     getAppHostIds,
-    getServiceInstanceKeys,
+    getOrCreateServiceInstanceKeys,
     addServeStaticMiddleware,
     addBackendProxyMiddleware,
-    getCfUi5AppInfo,
-    getVCAPServicesFromMtaYaml
+    getCfUi5AppInfo
 } from '../cf';
 import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
 import type { CfAdpWriterConfig, Content, CfUi5AppInfo, CfConfig } from '../types';
-import { getCfVariant, writeCfTemplates, writeCfUI5Yaml, writeDefaultEnvJson } from './project-utils';
+import { getCfVariant, writeCfTemplates, writeCfUI5Yaml } from './project-utils';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
 import { getBaseAppId } from '../base/helper';
 import { runBuild } from '../base/project-builder';
@@ -45,22 +44,20 @@ export async function generateCf(
     const fullConfig = setDefaults(config);
     const { app, cf, ui5, project } = fullConfig;
 
-    const mtaYamlContent = await adjustMtaYaml(
+    await adjustMtaYaml(
         {
             projectPath: basePath,
             adpProjectName: project.name,
             appRouterType: cf.approuter,
             businessSolutionName: cf.businessSolutionName ?? '',
             businessService: cf.businessService,
-            serviceKeys: cf.serviceInfo?.serviceKeys
+            serviceKeys: cf.serviceInfo?.serviceKeys,
+            spaceGuid: cf.space.GUID
         },
         fs,
         config.options?.templatePathOverwrite,
         logger
     );
-
-    const vcapServices = await getVCAPServicesFromMtaYaml(mtaYamlContent, cf.spaceGuid, logger);
-    writeDefaultEnvJson(basePath, vcapServices, fs);
 
     if (fullConfig.app.i18nModels) {
         writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
@@ -139,15 +136,18 @@ export async function generateCfConfig(
 
     const ui5Config = await readUi5Yaml(basePath, yamlPath);
 
-    const bundlerTask = ui5Config.findCustomTask<{ serviceInstanceName?: string }>('app-variant-bundler-build');
+    const bundlerTask = ui5Config.findCustomTask<{ space?: string; serviceInstanceName?: string }>(
+        'app-variant-bundler-build'
+    );
     const serviceInstanceName = bundlerTask?.configuration?.serviceInstanceName;
     if (!serviceInstanceName) {
         throw new Error('No serviceInstanceName found in app-variant-bundler-build configuration');
     }
 
-    const serviceInfo = await getServiceInstanceKeys(
+    const serviceInfo = await getOrCreateServiceInstanceKeys(
         {
-            names: [serviceInstanceName]
+            names: [serviceInstanceName],
+            spaceGuids: [bundlerTask?.configuration?.space ?? '']
         },
         logger
     );
