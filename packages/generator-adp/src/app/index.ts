@@ -93,10 +93,6 @@ export default class extends Generator {
     private isCli: boolean;
 
     /**
-     * A boolean flag indicating whether node_modules should be installed after project generation.
-     */
-    private readonly shouldInstallDeps: boolean;
-    /**
      * A boolean flag indicating whether an extension project should be created.
      */
     private shouldCreateExtProject: boolean;
@@ -211,7 +207,6 @@ export default class extends Generator {
     constructor(args: string | string[], opts: AdpGeneratorOptions) {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
-        this.shouldInstallDeps = opts.shouldInstallDeps ?? true;
         this.toolsLogger = new ToolsLogger();
         this.vscode = opts.vscode;
         this._setupLogging();
@@ -441,7 +436,7 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
-        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
+        if (this.options.skipInstall || this.shouldCreateExtProject) {
             return;
         }
 

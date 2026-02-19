@@ -192,7 +192,7 @@ export class FlpSandbox {
             },
             this.logger
         );
-        this.addStandardRoutes();
+        this.addStandardRoutes(this.rta);
 
         if (this.cardGenerator?.path) {
             this.cardGenerator.path = this.cardGenerator.path.startsWith('/')
@@ -467,12 +467,14 @@ export class FlpSandbox {
      * @param req the request
      * @param res the response
      * @param next the next function
+     * @param rta
      * @private
      */
     private async flpGetHandler(
         req: EnhancedRequest | connect.IncomingMessage,
         res: Response | http.ServerResponse,
-        next: NextFunction
+        next: NextFunction,
+        rta: RtaConfig | undefined
     ): Promise<void> {
         // connect API (karma test runner) has no request query property
         if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
@@ -505,15 +507,24 @@ export class FlpSandbox {
             );
             this.checkDeleteConnectors(ui5Version.major, ui5Version.minor, ui5Version.isCdn);
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
-            const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
+            const html = render(
+                await this.generateSandboxForEditor(
+                    req as EnhancedRequest,
+                    rta ?? ({} as RtaConfig),
+                    rta?.endpoints[0] ?? ({} as RtaEditor)
+                ),
+                this.templateConfig
+            );
             this.sendResponse(res, 'text/html', 200, html);
         }
     }
 
     /**
      * Add routes for html and scripts required for a local FLP.
+     *
+     * @param rta
      */
-    private addStandardRoutes(): void {
+    private addStandardRoutes(rta: RtaConfig | undefined): void {
         // register static client sources
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
@@ -525,7 +536,7 @@ export class FlpSandbox {
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                await this.flpGetHandler(req, res, next);
+                await this.flpGetHandler(req, res, next, rta);
             }
         );
     }
@@ -549,7 +560,7 @@ export class FlpSandbox {
                 next: NextFunction
             ) => {
                 this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
-                await this.flpGetHandler(req, res, next);
+                await this.flpGetHandler(req, res, next, undefined);
             }
         );
     }
@@ -618,8 +629,8 @@ export class FlpSandbox {
      */
     private getSandboxTemplate(ui5Version: Ui5Version): string {
         this.logger.info(
-            `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
-                ui5Version.label ? `-${ui5Version.label}` : ''
+            // eslint-disable-next-line prettier/prettier
+            `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
         const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';

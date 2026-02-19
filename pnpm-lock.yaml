@@ -2457,6 +2457,9 @@ importers:
       '@lancedb/lancedb':
         specifier: 0.22.0
         version: 0.22.0(apache-arrow@18.1.0)
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/fiori-docs-embeddings':
         specifier: workspace:*
         version: link:../fiori-docs-embeddings
@@ -34825,7 +34828,7 @@ packages:
       debug: 4.3.7
       execa: 5.1.1
       github-username: 6.0.0
-      lodash: 4.17.23
+      lodash: 4.17.21
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
       minimist: 1.2.8
       pacote: 15.2.0

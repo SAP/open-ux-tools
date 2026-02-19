@@ -23,10 +23,6 @@ export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
      * Telemetry data to be send after deployment configuration has been added
      */
     telemetryData?: TelemetryData;
-    /**
-     * A boolean flag indicating whether node_modules should be installed after project generation.
-     */
-    shouldInstallDeps?: boolean;
 }
 
 /**
