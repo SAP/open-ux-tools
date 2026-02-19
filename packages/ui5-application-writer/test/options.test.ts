@@ -1,4 +1,5 @@
 import { generate, addEslintFeature } from '../src';
+import type { Package } from '@sap-ux/project-access';
 import { join } from 'node:path';
 import { removeSync } from 'fs-extra';
 import type { Ui5App } from '../src';
@@ -206,13 +207,13 @@ describe('UI5 templates', () => {
         expect(eslintConfig).toContain('fioriTools.configs.recommended');
 
         // Verify that package.json was updated with eslint dependencies and script
-        const updatedPackageJson = fs.readJSON(packageJsonPath) as any;
-        expect(updatedPackageJson.scripts.lint).toBe('eslint ./');
-        expect(updatedPackageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools']).toBe('^9.0.0');
-        expect(updatedPackageJson.devDependencies['eslint']).toBe('^9');
+        const updatedPackageJson = fs.readJSON(packageJsonPath) as Package;
+        expect(updatedPackageJson?.scripts?.lint).toBe('eslint ./');
+        expect(updatedPackageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^9.0.0');
+        expect(updatedPackageJson?.devDependencies?.['eslint']).toBe('^9');
         // Verify existing dependencies are preserved
-        expect(updatedPackageJson.devDependencies['@ui5/cli']).toBe('^3.0.0');
-        expect(updatedPackageJson.scripts.start).toBe('fiori run');
+        expect(updatedPackageJson?.devDependencies?.['@ui5/cli']).toBe('^3.0.0');
+        expect(updatedPackageJson?.scripts?.start).toBe('fiori run');
 
         return new Promise((resolve) => {
             // write out the files for debugging
