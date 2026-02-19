@@ -1,5 +1,6 @@
 import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
+import type { SourceLocation } from '@eslint/core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const FLEX_ENABLED = 'sap-flex-enabled';
 export const COPY_TO_CLIPBOARD = 'sap-copy-to-clipboard';
@@ -21,15 +22,11 @@ export interface WidthIncludingColumnHeaderDiagnostic {
     };
 }
 
-interface Rule {
-    message: string;
-    type: 'suggestion' | 'problem' | 'layout';
-}
-
 export interface ManifestPropertyDiagnosticData {
     uri: string;
     object: Manifest;
     propertyPath: string[];
+    loc?: SourceLocation;
 }
 
 export interface FlexEnabled {
@@ -91,7 +88,6 @@ export interface TablePersonalization {
     property?: PersonalizationProperty;
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;
-    rule: Rule;
 }
 
 export interface TableColumnVerticalAlignment {

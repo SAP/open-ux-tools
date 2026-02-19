@@ -77,7 +77,8 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
     createJsonVisitorHandler: (context, diagnostic, deepestPathResult) => {
         return function report(node: MemberNode): void {
-            context.report({
+            diagnostic.manifest.loc = node.loc;
+            return context.report({
                 node,
                 messageId: MessageIdByProperty[diagnostic.property ?? ''],
                 fix: createJsonFixer({
@@ -117,10 +118,6 @@ function checkGroupProperty(table: Table, parsedApp: ParsedApp, pageName: string
                 type: TABLE_PERSONALIZATION,
                 pageName,
                 property: 'group',
-                rule: {
-                    message: rule.meta?.messages?.[MessageIdByProperty['group']] ?? '',
-                    type: 'suggestion'
-                },
                 manifest: {
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,
@@ -153,10 +150,6 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
         problems.push({
             type: TABLE_PERSONALIZATION,
             pageName: page.targetName,
-            rule: {
-                message: rule.meta?.messages?.[TABLE_PERSONALIZATION] ?? '',
-                type: 'suggestion'
-            },
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
@@ -175,10 +168,6 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
                         type: TABLE_PERSONALIZATION,
                         pageName: page.targetName,
                         property,
-                        rule: {
-                            message: rule.meta?.messages?.[MessageIdByProperty[property]] ?? '',
-                            type: 'suggestion'
-                        },
                         manifest: {
                             uri: parsedApp.manifest.manifestUri,
                             object: parsedApp.manifestObject,
