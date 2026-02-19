@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.1
+
+### Patch Changes
+
+- ff31574: fix(sap-systems): url-validation
+
 ## 0.3.0
 
 ### Minor Changes
