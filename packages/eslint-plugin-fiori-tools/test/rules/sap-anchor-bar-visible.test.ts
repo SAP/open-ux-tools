@@ -43,6 +43,43 @@ ruleTester.run(TEST_NAME, anchorBarVisibleRule, {
                 ])
             },
             []
+        ),
+        createValidTest(
+            {
+                name: 'Form Entry Object Page - both visible and anchorBarVisible are false (valid exception)',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'CategoriesObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'visible'
+                        ],
+                        value: false
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'CategoriesObjectPage',
+                            'options',
+                            'settings',
+                            'content',
+                            'header',
+                            'anchorBarVisible'
+                        ],
+                        value: false
+                    }
+                ])
+            },
+            []
         )
     ],
 
@@ -94,7 +131,7 @@ ruleTester.run(TEST_NAME, anchorBarVisibleRule, {
         ),
         createInvalidTest(
             {
-                name: 'anchorBarVisible is true - should also report',
+                name: 'Form Entry Object Page - anchorBarVisible is false but visible is not false - should report',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
@@ -102,14 +139,14 @@ ruleTester.run(TEST_NAME, anchorBarVisibleRule, {
                             'sap.ui5',
                             'routing',
                             'targets',
-                            'IncidentsObjectPage',
+                            'CategoriesObjectPage',
                             'options',
                             'settings',
                             'content',
                             'header',
                             'anchorBarVisible'
                         ],
-                        value: true
+                        value: false
                     }
                 ]),
                 output: getManifestAsCode(V4_MANIFEST, [
@@ -118,7 +155,7 @@ ruleTester.run(TEST_NAME, anchorBarVisibleRule, {
                             'sap.ui5',
                             'routing',
                             'targets',
-                            'IncidentsObjectPage',
+                            'CategoriesObjectPage',
                             'options',
                             'settings',
                             'content',
@@ -130,7 +167,7 @@ ruleTester.run(TEST_NAME, anchorBarVisibleRule, {
                 errors: [
                     {
                         messageId: 'sap-anchor-bar-visible',
-                        line: 144,
+                        line: 164,
                         column: 19
                     }
                 ]

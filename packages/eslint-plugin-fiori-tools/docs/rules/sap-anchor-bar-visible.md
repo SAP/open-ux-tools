@@ -92,6 +92,33 @@ The `anchorBarVisible` property is set to `true`, which is allowed.
 
 The `anchorBarVisible` property is not configured, which is also acceptable.
 
+#### Correct Manifest Configuration (Form Entry Object Page)
+
+```json
+{
+  "sap.ui5": {
+    "routing": {
+      "targets": {
+        "FormEntryObjectPage": {
+          "options": {
+            "settings": {
+              "content": {
+                "header": {
+                  "visible": false,
+                  "anchorBarVisible": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Form Entry Object Pages are allowed to have both `visible: false` and `anchorBarVisible: false` as this is the recommended pattern for data entry pages.
+
 ## How to Fix
 
 To fix the warning, either remove the `anchorBarVisible` property entirely or set it to `true`. The rule provides an automatic fix that removes the property when it's set to `false`.
@@ -102,4 +129,4 @@ If you encounter an issue with this rule, please open a [GitHub issue](https://g
 
 ## Further Reading
 
-- [UI5 Object Page Documentation](https://ui5.sap.com/#/topic/d2ef0099542d44dc868719d908e576d0)
+- [UI5 Form Entry Object Page](https://ui5.sap.com/#/topic/533f7e7f59854cb08ce8074814ae83c5)

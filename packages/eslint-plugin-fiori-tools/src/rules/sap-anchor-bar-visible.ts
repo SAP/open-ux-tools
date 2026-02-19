@@ -10,12 +10,13 @@ const rule: FioriRuleDefinition = createFioriRule({
         type: 'suggestion',
         docs: {
             recommended: true,
-            description: 'Anchor Bar Visible should not be set to false in manifest settings for Object Page headers',
+            description:
+                'Anchor Bar Visible should not be set to false in manifest settings for Object Page headers (except Form Entry Object Pages)',
             url: 'https://ui5.sap.com/#/topic/d2ef0099542d44dc868719d908e576d0'
         },
         messages: {
             [ANCHOR_BAR_VISIBLE]:
-                'The "anchorBarVisible" property should not be set to false in manifest settings. Remove this property from the Object Page header configuration.'
+                'The "anchorBarVisible" property should not be set to false in manifest settings. Remove this property from the Object Page header configuration. Exception: Form Entry Object Pages can have both "visible" and "anchorBarVisible" set to false.'
         },
         fixable: 'code'
     },
@@ -36,10 +37,13 @@ const rule: FioriRuleDefinition = createFioriRule({
 
                 // Navigate to the target in the manifest
                 const target = manifest['sap.ui5']?.routing?.targets?.[page.targetName];
-                const anchorBarVisible: unknown = (target as any)?.options?.settings?.content?.header?.anchorBarVisible;
+                const header = (target as any)?.options?.settings?.content?.header;
+                const anchorBarVisible: unknown = header?.anchorBarVisible;
+                const headerVisible: unknown = header?.visible;
 
                 // Check if anchorBarVisible is set to false
-                if (anchorBarVisible === false) {
+                // Exception: Form Entry Object Pages can have both visible: false and anchorBarVisible: false
+                if (anchorBarVisible === false && headerVisible !== false) {
                     problems.push({
                         type: ANCHOR_BAR_VISIBLE,
                         pageName: page.targetName,
