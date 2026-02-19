@@ -1,5 +1,18 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.72
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/odata-service-writer@0.29.20
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/annotation-generator@0.4.24
+    - @sap-ux/cap-config-writer@0.12.66
+    - @sap-ux/fe-fpm-writer@0.42.10
+    - @sap-ux/ui5-application-writer@1.7.9
+    - @sap-ux/ui5-test-writer@0.7.70
+
 ## 2.8.71
 
 ### Patch Changes

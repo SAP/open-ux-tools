@@ -19,7 +19,7 @@ jobs:
         timeout-minutes: 45
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
             - name: Setup pnpm
@@ -37,7 +37,7 @@ jobs:
                   restore-keys: |
                       ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: ${{ matrix.node-version }}
             - name: Install pnpm modules
@@ -120,7 +120,7 @@ jobs:
             changes: ${{ steps.changesetVersion.outputs.changes }} # map step output to job output
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
@@ -139,7 +139,7 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
             - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: 20.x
             - name: Install pnpm modules
@@ -169,7 +169,7 @@ jobs:
         needs: version
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
             - name: Setup pnpm
               uses: pnpm/action-setup@v4.1.0
               with:
@@ -185,7 +185,7 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
             - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: 20.x
             - name: Install pnpm modules
@@ -242,7 +242,7 @@ jobs:
               run: pnpm --filter ${{ env.EXT_PKG }} ide-ext:package
             - name: Create GitHub Release (extension)
               if: env.EXTENSION_UPDATED == 'true'
-              uses: softprops/action-gh-release@v1
+              uses: softprops/action-gh-release@v2
               with:
                   tag_name: ${{ env.EXT_PKG }}@${{ env.EXT_VERSION }}
                   name: ${{ env.EXT_PKG }} v${{ env.EXT_VERSION }}
