@@ -17,7 +17,7 @@
     },
     "info": {
         "numServices": "This SAP System [{{- system}}] returned {{v2}} OData V2 and {{v4}} OData V4 services.",
-        "refreshingSystems": "Refreshing stored systems view.",
+        "refreshingConnections": "Refreshing stored connections view.",
         "connectionInfoUpdated": "Connection information updated.",
         "connectionDeleted": "Connection [{{- system}}] deleted.",
         "connectionExported": "Connection [{{- system}}] exported.",
@@ -28,7 +28,7 @@
         "serviceRequestCheckLogs": "{{- url}} returned service data. Check the debug logs for the full metadata."
     },
     "warn": {
-        "deletionCancelled": "Deletion cancelled for system: [{{- system}}].",
+        "deletionCancelled": "Deletion cancelled for connection: [{{- system}}].",
         "importCancelled": "Import cancelled."
     },
     "error": {
@@ -36,16 +36,15 @@
         "importConfigFailed": "Failed to import connection configuration.",
         "noConnectionsDefined": "No connections defined in configuration file: {{- filePath}}",
         "incompleteConfig": "Connection configuration is incomplete. A URL is required.",
-        "loadingConnections": "Failed to load stored systems.",
-        "unknownAction": "Unknown action type: {{- actionType}}",
-        "connectionNotFound": "Connection [{{- backendKey}}] not found in the secure store. Please ensure the system is saved correctly.",
+        "loadingConnections": "Failed to load stored connections.",
+        "connectionNotFound": "Connection [{{- backendKey}}] not found in the secure store. Please ensure the connection is saved correctly.",
         "exportFailure": "Failed to export connection information: {{- error}}.",
         "connectionInfo": "Error during processing of connection information: {{- error}}",
         "keyExists": "Connection (URL + Client) already exists",
         "updateFailure": "Failed to update connection information: {{- error}}",
         "noServices": "This SAP system failed to return any services.",
         "cert": {
-            "urlValidation": "The system URL is using {{certError}} security certificate.",
+            "urlValidation": "The connection URL is using {{certError}} security certificate.",
             "expired": "an expired",
             "selfSigned": "a self-signed",
             "unknownOrInvalid": "an unknown or invalid",
@@ -61,7 +60,6 @@
         "noFileSelected": "No file selected for import.",
         "panelActionDispatch": "Error dispatching panel action: {{- error}}",
         "noneSelected": "No SAP system selected.",
-        "testConnection": "An error occurred when testing the connection: {{- error}}",
         "systemInfoUpdate": "Failed to add the system information to the backend system: {{- error}}",
         "serviceRequest": "An error occurred while requesting the service metadata: {{- error}}"
     },

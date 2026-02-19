@@ -108,7 +108,7 @@ describe('Test the delete system command handler', () => {
         await handler({ url: 'https://nonexistent.com', client: '200' });
 
         expect(showErrorMessageSpy).toHaveBeenCalledWith(
-            'Connection [https://nonexistent.com/200] not found in the secure store. Please ensure the system is saved correctly.'
+            'Connection [https://nonexistent.com/200] not found in the secure store. Please ensure the connection is saved correctly.'
         );
     });
 
@@ -128,7 +128,7 @@ describe('Test the delete system command handler', () => {
         const handler = deleteSystemCommandHandler(mockContext);
         await handler({ url: 'https://example.com', client: '100' });
 
-        expect(showWarningMessageSpy).toHaveBeenCalledWith('Deletion cancelled for system: [Test System].');
+        expect(showWarningMessageSpy).toHaveBeenCalledWith('Deletion cancelled for connection: [Test System].');
         expect(systemServiceDeleteMock).not.toHaveBeenCalled();
     });
 });

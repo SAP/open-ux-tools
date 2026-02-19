@@ -138,7 +138,7 @@ async function updateHandler(
         context.disposePanel();
         const systemService = await getBackendSystemService();
         await systemService.delete(context.backendSystem);
-        newPanelMsg = t('info.systemUpdated', { system: newSystem.name });
+        newPanelMsg = t('info.connectionUpdated', { system: newSystem.name });
     }
 
     return newPanelMsg;
@@ -195,7 +195,8 @@ async function saveSystem(
     await systemService.write(newBackendSystem, {
         force: systemExistsInStore
     });
-    const i18nKey = systemPanelViewType === SystemPanelViewType.Create ? 'info.connectionSaved' : 'info.systemUpdated';
+    const i18nKey =
+        systemPanelViewType === SystemPanelViewType.Create ? 'info.connectionSaved' : 'info.connectionUpdated';
 
     window.showInformationMessage(t(i18nKey, geti18nOpts(backendSystem.name)));
 

@@ -72,7 +72,7 @@ describe('Test the show system command handler', () => {
         await handler({ url: 'https://example.com', client: '100' });
 
         expect(showErrorMessageSpy).toHaveBeenCalledWith(
-            'Connection [https://example.com/100] not found in the secure store. Please ensure the system is saved correctly.'
+            'Connection [https://example.com/100] not found in the secure store. Please ensure the connection is saved correctly.'
         );
     });
 
