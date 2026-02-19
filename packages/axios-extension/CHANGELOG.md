@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.25.14
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+
 ## 1.25.13
 
 ### Patch Changes

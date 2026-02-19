@@ -1,5 +1,26 @@
 # @sap-ux/preview-middleware
 
+## 0.23.125
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/adp-tooling@0.18.66
+    - @sap-ux/system-access@0.6.54
+
+## 0.23.124
+
+### Patch Changes
+
+- 227e704: Fix detection of sap.fe.macros.Table for newer UI5 versions.
+
+## 0.23.123
+
+### Patch Changes
+
+- 849529f: fix: Missing additional info for adaptation projects with local IDs
+
 ## 0.23.122
 
 ### Patch Changes
