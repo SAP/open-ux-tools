@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.18.90",
+    "version": "0.18.91",
     "description": "SAP Fiori environment check",
     "repository": {
         "type": "git",
@@ -44,7 +44,7 @@
     },
     "devDependencies": {
         "@types/archiver": "5.3.4",
-        "@types/minimist": "1.2.2",
+        "@types/minimist": "1.2.5",
         "@types/prompts": "2.4.4",
         "@types/vscode": "1.73.1"
     },

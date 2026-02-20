@@ -13,14 +13,13 @@
         ':label(renovate)',
         ':rebaseStalePrs',
         ':semanticCommits',
-        ':semanticPrefixChore',
+        ':semanticPrefixFixDepsChoreOthers',
         ':timezone(America/Los_Angeles)',
         ':updateNotScheduled',
         'workarounds:typesNodeVersioning'
     ],
 
-    enabledManagers: ['npm', 'github-actions'
-    ],
+    enabledManagers: ['npm', 'github-actions'],
     branchPrefix: 'chore/renovate/',
     platformCommit: 'enabled',
 
@@ -28,8 +27,7 @@
         dependencyDashboardApproval: true
     },
     dependencyDashboardAutoclose: true,
-    dependencyDashboardLabels: ['renovate-dashboard'
-    ],
+    dependencyDashboardLabels: ['renovate-dashboard'],
     dependencyDashboardTitle: 'Renovate Dependency Dashboard',
 
     assigneesFromCodeOwners: true,
@@ -71,6 +69,11 @@
     ignoreDeps: ['@sap-ux-private/playwright'],
 
     packageRules: [
+        // Override: devDependencies should also use 'fix' (not just runtime deps)
+        {
+            matchDepTypes: ['devDependencies'],
+            semanticCommitType: 'fix'
+        },
         {
             matchPackageNames: ['@ui5/manifest'],
             groupName: 'dependencies [@ui5/manifest]',

@@ -6,7 +6,7 @@
     "private": true,
     "devDependencies": {
         "@changesets/cli": "2.29.8",
-        "@eslint/eslintrc": "3.3.0",
+        "@eslint/eslintrc": "3.3.3",
         "@eslint/js": "9.22.0",
         "@playwright/test": "1.56.1",
         "@types/jest": "30.0.0",
@@ -83,9 +83,10 @@
             "@sap/service-provider-apis>axios": "^1.13.5",
             "@sap/subaccount-destination-service-provider>@sap/bas-sdk": "^3.13.3",
             "esbuild@<=0.24.2": ">=0.25.0",
-            "fast-xml-parser@>=4.3.6 <=5.3.3": ">=5.3.4",
-            "lodash@>=4.0.0 <=4.17.22": ">=4.17.23",
-            "mta-local": "1.0.4",
+            "@aws-sdk/xml-builder>fast-xml-parser": "^5.3.6",
+            "@sap-ux/project-access@<=1.35.4>fast-xml-parser": "^5.3.6",
+            "lodash": ">=4.17.23",
+            "mta-local": "1.0.8",
             "router>path-to-regexp": "0.1.12",
             "router@^2.0.0>path-to-regexp": "8.2.0",
             "tar@<7.5.7": ">=7.5.7"

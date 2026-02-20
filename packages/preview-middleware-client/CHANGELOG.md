@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.20
+
+### Patch Changes
+
+- 88c68c9: fix(deps): update dependency @ui5/cli to v4.0.44
+
 ## 0.18.19
 
 ### Patch Changes
