@@ -116,17 +116,17 @@ server:
       afterMiddleware: compression
       configuration:
         backends:
-          - url: https://assetbase-service.cfapps.eu10.hana.ondemand.com
+          - url: https://my-backend.example.com
             paths:
-              - /resources/com/sap/apm/reusablecontrols/ui/api/foundation
-            pathRewrite: /api/foundation
+              - /resources/my/app/ui/api/example
+            pathRewrite: /api/example
 ```
 
 **How it works:**
-- **Request from app:** `/resources/com/sap/apm/reusablecontrols/ui/api/foundation/v1/TechnicalObjectService/$metadata`
-- **Matched path:** `/resources/com/sap/apm/reusablecontrols/ui/api/foundation`
-- **Path rewriting:** `/api/foundation`
-- **Forwarded to backend:** `/api/foundation/v1/TechnicalObjectService/$metadata`
+- **Request from app:** `/resources/my/app/ui/api/example/v1/ExampleService/$metadata`
+- **Matched path:** `/resources/my/app/ui/api/example`
+- **Path rewriting:** `/api/example`
+- **Forwarded to backend:** `/api/example/v1/ExampleService/$metadata`
 
 Without `pathRewrite`, the matched path prefix is simply removed:
 - **Request:** `/odata/v4/service/EntitySet`
