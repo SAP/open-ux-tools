@@ -27,7 +27,7 @@
         "express": "4.22.1",
         "jest-dev-server": "10.0.0",
         "npm-run-all2": "6.2.0",
-        "portfinder": "1.0.32",
+        "portfinder": "1.0.38",
         "semver": "7.7.4"
     },
     "devDependencies": {
