@@ -1,5 +1,61 @@
 # @sap-ux/adp-tooling
 
+## 0.18.67
+
+### Patch Changes
+
+- d1b13c4: fix: rewrite URLs based on xs-app.json in backend-proxy-middleware-cf
+
+## 0.18.66
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/odata-service-writer@0.29.20
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/inquirer-common@0.11.8
+    - @sap-ux/system-access@0.6.54
+    - @sap-ux/project-input-validator@0.6.57
+
+## 0.18.65
+
+### Patch Changes
+
+- dd2131c: Axios upgrade from bas-sdk
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/nodejs-utils@0.2.15
+    - @sap-ux/system-access@0.6.53
+    - @sap-ux/odata-service-writer@0.29.19
+
+## 0.18.64
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/odata-service-writer@0.29.19
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/inquirer-common@0.11.6
+    - @sap-ux/project-input-validator@0.6.56
+
+## 0.18.63
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/system-access@0.6.51
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/inquirer-common@0.11.5
+
 ## 0.18.62
 
 ### Patch Changes

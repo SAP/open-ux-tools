@@ -1,5 +1,66 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.179
+
+### Patch Changes
+
+- Updated dependencies [d1b13c4]
+    - @sap-ux/adp-tooling@0.18.67
+    - @sap-ux/flp-config-inquirer@0.4.126
+
+## 0.1.178
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/adp-tooling@0.18.66
+    - @sap-ux/inquirer-common@0.11.8
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/flp-config-inquirer@0.4.125
+    - @sap-ux/system-access@0.6.54
+
+## 0.1.177
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/adp-tooling@0.18.65
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/flp-config-inquirer@0.4.124
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/system-access@0.6.53
+
+## 0.1.176
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/flp-config-inquirer@0.4.123
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/inquirer-common@0.11.6
+
+## 0.1.175
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/adp-tooling@0.18.63
+    - @sap-ux/fiori-generator-shared@0.13.71
+    - @sap-ux/system-access@0.6.51
+    - @sap-ux/flp-config-inquirer@0.4.122
+    - @sap-ux/inquirer-common@0.11.5
+
 ## 0.1.174
 
 ### Patch Changes

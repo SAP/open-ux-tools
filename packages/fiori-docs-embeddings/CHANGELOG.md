@@ -1,5 +1,11 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.15
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+
 ## 0.4.14
 
 ### Patch Changes

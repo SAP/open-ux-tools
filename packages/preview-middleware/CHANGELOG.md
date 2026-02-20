@@ -1,5 +1,60 @@
 # @sap-ux/preview-middleware
 
+## 0.23.126
+
+### Patch Changes
+
+- Updated dependencies [d1b13c4]
+    - @sap-ux/adp-tooling@0.18.67
+
+## 0.23.125
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/adp-tooling@0.18.66
+    - @sap-ux/system-access@0.6.54
+
+## 0.23.124
+
+### Patch Changes
+
+- 227e704: Fix detection of sap.fe.macros.Table for newer UI5 versions.
+
+## 0.23.123
+
+### Patch Changes
+
+- 849529f: fix: Missing additional info for adaptation projects with local IDs
+
+## 0.23.122
+
+### Patch Changes
+
+- dd2131c: Axios upgrade from bas-sdk
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/adp-tooling@0.18.65
+    - @sap-ux/system-access@0.6.53
+
+## 0.23.121
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+- Updated dependencies [e7f58d7]
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+
+## 0.23.120
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.63
+- @sap-ux/system-access@0.6.51
+
 ## 0.23.119
 
 ### Patch Changes

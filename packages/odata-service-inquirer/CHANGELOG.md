@@ -1,5 +1,52 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.18.5
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+- Updated dependencies [d57cc47]
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/inquirer-common@0.11.8
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/project-input-validator@0.6.57
+    - @sap-ux/telemetry@0.6.75
+
+## 2.18.4
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/nodejs-utils@0.2.15
+    - @sap-ux/telemetry@0.6.74
+
+## 2.18.3
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/telemetry@0.6.73
+    - @sap-ux/inquirer-common@0.11.6
+    - @sap-ux/project-input-validator@0.6.56
+
+## 2.18.2
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/fiori-generator-shared@0.13.71
+    - @sap-ux/telemetry@0.6.72
+    - @sap-ux/inquirer-common@0.11.5
+
 ## 2.18.1
 
 ### Patch Changes

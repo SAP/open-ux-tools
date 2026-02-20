@@ -1,5 +1,73 @@
 # @sap-ux/generator-adp
 
+## 0.9.3
+
+### Patch Changes
+
+- Updated dependencies [d1b13c4]
+    - @sap-ux/adp-tooling@0.18.67
+
+## 0.9.2
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/odata-service-writer@0.29.20
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/adp-tooling@0.18.66
+    - @sap-ux/inquirer-common@0.11.8
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/system-access@0.6.54
+    - @sap-ux/project-input-validator@0.6.57
+    - @sap-ux/telemetry@0.6.75
+
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/adp-tooling@0.18.65
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/system-access@0.6.53
+    - @sap-ux/telemetry@0.6.74
+    - @sap-ux/odata-service-writer@0.29.19
+
+## 0.9.0
+
+### Minor Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/odata-service-writer@0.29.19
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/telemetry@0.6.73
+    - @sap-ux/inquirer-common@0.11.6
+    - @sap-ux/project-input-validator@0.6.56
+
+## 0.8.18
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/adp-tooling@0.18.63
+    - @sap-ux/fiori-generator-shared@0.13.71
+    - @sap-ux/system-access@0.6.51
+    - @sap-ux/telemetry@0.6.72
+    - @sap-ux/inquirer-common@0.11.5
+
 ## 0.8.17
 
 ### Patch Changes

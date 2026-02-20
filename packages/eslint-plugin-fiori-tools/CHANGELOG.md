@@ -1,5 +1,34 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.6.1
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/fiori-annotation-api@0.9.17
+
+## 9.6.0
+
+### Minor Changes
+
+- 552c106: Fix: check table paste functionality is enabled on object pages only.
+
+## 9.5.11
+
+### Patch Changes
+
+- Updated dependencies [1fa3bb7]
+    - @sap-ux/odata-vocabularies@0.4.25
+    - @sap-ux/fiori-annotation-api@0.9.16
+
+## 9.5.10
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/fiori-annotation-api@0.9.15
+
 ## 9.5.9
 
 ### Patch Changes

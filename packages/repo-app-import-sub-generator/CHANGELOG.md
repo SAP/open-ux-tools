@@ -1,5 +1,79 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.251
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/odata-service-inquirer@2.18.5
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/fiori-elements-writer@2.8.72
+    - @sap-ux/inquirer-common@0.11.8
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/system-access@0.6.54
+    - @sap-ux/abap-deploy-config-writer@0.2.75
+    - @sap-ux/launch-config@0.10.64
+    - @sap-ux/project-input-validator@0.6.57
+
+## 0.3.250
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.71
+- @sap-ux/odata-service-inquirer@2.18.4
+
+## 0.3.249
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/odata-service-inquirer@2.18.4
+    - @sap-ux/system-access@0.6.53
+    - @sap-ux/fiori-elements-writer@2.8.70
+    - @sap-ux/abap-deploy-config-writer@0.2.74
+
+## 0.3.248
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/odata-service-inquirer@2.18.3
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/abap-deploy-config-writer@0.2.73
+    - @sap-ux/fiori-elements-writer@2.8.69
+    - @sap-ux/launch-config@0.10.63
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/inquirer-common@0.11.6
+    - @sap-ux/project-input-validator@0.6.56
+
+## 0.3.247
+
+### Patch Changes
+
+- Updated dependencies [1a922e7]
+    - @sap-ux/fiori-elements-writer@2.8.68
+    - @sap-ux/odata-service-inquirer@2.18.2
+
+## 0.3.246
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/fiori-generator-shared@0.13.71
+    - @sap-ux/odata-service-inquirer@2.18.2
+    - @sap-ux/system-access@0.6.51
+    - @sap-ux/abap-deploy-config-writer@0.2.72
+    - @sap-ux/inquirer-common@0.11.5
+    - @sap-ux/fiori-elements-writer@2.8.67
+
 ## 0.3.245
 
 ### Patch Changes

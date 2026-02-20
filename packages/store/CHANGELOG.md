@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.5.6
+
+### Patch Changes
+
+- 9f94937: support adding full service urls as a new connection type
+
 ## 1.5.5
 
 ### Patch Changes

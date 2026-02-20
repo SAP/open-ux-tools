@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.35.5
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+
+## 1.35.4
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+
 ## 1.35.3
 
 ### Patch Changes

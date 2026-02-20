@@ -1,5 +1,64 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.72
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/odata-service-writer@0.29.20
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/annotation-generator@0.4.24
+    - @sap-ux/cap-config-writer@0.12.66
+    - @sap-ux/fe-fpm-writer@0.42.10
+    - @sap-ux/ui5-application-writer@1.7.9
+    - @sap-ux/ui5-test-writer@0.7.70
+
+## 2.8.71
+
+### Patch Changes
+
+- @sap-ux/ui5-application-writer@1.7.9
+- @sap-ux/annotation-generator@0.4.23
+- @sap-ux/fe-fpm-writer@0.42.9
+
+## 2.8.70
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.73
+- @sap-ux/odata-service-writer@0.29.19
+- @sap-ux/cap-config-writer@0.12.65
+
+## 2.8.69
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/odata-service-writer@0.29.19
+    - @sap-ux/ui5-application-writer@1.7.9
+    - @sap-ux/fe-fpm-writer@0.42.8
+    - @sap-ux/annotation-generator@0.4.22
+    - @sap-ux/cap-config-writer@0.12.64
+    - @sap-ux/ui5-test-writer@0.7.69
+
+## 2.8.68
+
+### Patch Changes
+
+- 1a922e7: adds option to prevent root package json updates for cap
+- Updated dependencies [1a922e7]
+    - @sap-ux/cap-config-writer@0.12.63
+
+## 2.8.67
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.71
+- @sap-ux/ui5-config@0.29.16
+- @sap-ux/cap-config-writer@0.12.62
+
 ## 2.8.66
 
 ### Patch Changes

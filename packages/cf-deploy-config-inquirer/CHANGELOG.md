@@ -1,5 +1,31 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.90
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.8
+
+## 0.5.89
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/inquirer-common@0.11.7
+
+## 0.5.88
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.6
+
+## 0.5.87
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.5
+
 ## 0.5.86
 
 ### Patch Changes

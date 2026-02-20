@@ -1,5 +1,67 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies [d1b13c4]
+    - @sap-ux/adp-tooling@0.18.67
+
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/adp-tooling@0.18.66
+    - @sap-ux/abap-deploy-config-inquirer@1.7.2
+    - @sap-ux/deploy-config-generator-shared@0.1.93
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/abap-deploy-config-writer@0.2.75
+
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/adp-tooling@0.18.65
+    - @sap-ux/abap-deploy-config-inquirer@1.7.1
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/deploy-config-generator-shared@0.1.92
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/abap-deploy-config-writer@0.2.74
+
+## 0.2.0
+
+### Minor Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+- Updated dependencies [e7f58d7]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/abap-deploy-config-inquirer@1.7.0
+    - @sap-ux/adp-tooling@0.18.64
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/deploy-config-generator-shared@0.1.91
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/abap-deploy-config-writer@0.2.73
+    - @sap-ux/project-access@1.35.4
+
+## 0.1.148
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.6.99
+- @sap-ux/deploy-config-generator-shared@0.1.90
+- @sap-ux/fiori-generator-shared@0.13.71
+- @sap-ux/ui5-config@0.29.16
+- @sap-ux/abap-deploy-config-writer@0.2.72
+
 ## 0.1.147
 
 ### Patch Changes
