@@ -238,8 +238,8 @@ importers:
         specifier: 5.0.2
         version: 5.0.2(@types/react@16.14.55)(react@16.14.0)
       sanitize-html:
-        specifier: 2.17.0
-        version: 2.17.0
+        specifier: 2.17.1
+        version: 2.17.1
     devDependencies:
       '@babel/core':
         specifier: 7.29.0
@@ -4061,8 +4061,8 @@ importers:
         specifier: 9.22.5
         version: 9.22.5(react-dom@16.14.0)(react@16.14.0)
       sanitize-html:
-        specifier: 2.17.0
-        version: 2.17.0
+        specifier: 2.17.1
+        version: 2.17.1
       uuid:
         specifier: 3.4.0
         version: 3.4.0
@@ -29591,8 +29591,8 @@ packages:
     dependencies:
       truncate-utf8-bytes: 1.0.2
 
-  /sanitize-html@2.17.0:
-    resolution: {integrity: sha512-dLAADUSS8rBwhaevT12yCezvioCA+bmUTPH/u57xKPT8d++voeYE6HeluA/bPbQ15TwDBG2ii+QZIEmYx8VdxA==}
+  /sanitize-html@2.17.1:
+    resolution: {integrity: sha512-ehFCW+q1a4CSOWRAdX97BX/6/PDEkCqw7/0JXZAGQV57FQB3YOkTa/rrzHPeJ+Aghy4vZAFfWMYyfxIiB7F/gw==}
     dependencies:
       deepmerge: 4.3.1
       escape-string-regexp: 4.0.0
