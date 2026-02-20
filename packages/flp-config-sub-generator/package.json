@@ -39,7 +39,7 @@
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "inquirer": "8.2.7",
         "yeoman-generator": "5.10.0"
     },

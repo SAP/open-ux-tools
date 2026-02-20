@@ -34,7 +34,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "inquirer-autocomplete-prompt": "2.0.1",
         "lodash": "4.17.23",
         "semver": "7.7.4"

@@ -40,7 +40,7 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "hasbin": "1.2.3",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
