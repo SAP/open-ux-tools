@@ -43,7 +43,7 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prettify-xml": "1.2.0",
-        "semver": "7.7.3"
+        "semver": "7.7.4"
     },
     "devDependencies": {
         "@sap-ux/axios-extension": "workspace:*",

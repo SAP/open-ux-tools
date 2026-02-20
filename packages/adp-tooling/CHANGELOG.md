@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.67
+
+### Patch Changes
+
+- d1b13c4: fix: rewrite URLs based on xs-app.json in backend-proxy-middleware-cf
+
 ## 0.18.66
 
 ### Patch Changes

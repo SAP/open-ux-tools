@@ -845,7 +845,10 @@ export interface InboundChange {
  */
 export interface XsAppRoute {
     source: string;
+    target?: string;
+    destination?: string;
     endpoint?: string;
+    service?: string;
     [key: string]: unknown;
 }
 
