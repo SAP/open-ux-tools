@@ -48,6 +48,6 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.7.1",
         "@ui5/manifest": "1.82.0",
-        "vscode-uri": "3.0.7"
+        "vscode-uri": "3.1.0"
     }
 }
