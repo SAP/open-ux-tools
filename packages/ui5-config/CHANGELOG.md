@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.19
+
+### Patch Changes
+
+- d92cd35: fix(deps): update dependency ajv to v8.18.0 [security]
+
 ## 0.29.18
 
 ### Patch Changes
