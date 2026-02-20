@@ -11,7 +11,9 @@
         "noListEntityDefined": "No list entity defined. A main list entity is required for data downloading."
     },
     "texts": {
-        "seeLogForDetails": "For more information, view the logs."
+        "seeLogForDetails": "For more information, view the logs.",
+        "rows_one": "{{count}} row",
+        "rows_other": "{{count}} rows"
     },
     "prompts": {
         "appSelection": {
@@ -38,12 +40,11 @@
                 "invalidBooleanValue": "Invalid boolean value entered. Please enter true or false."
             }
         },
-        "confirmDownload": {
-            "hint": "This controls when the odata query is executed to prevent multiple rapid queries from being executed.",
-            "message": "Confirm entity files to be generated",
+        "skipDataDownload": {
+            "message": "If data download is not required select this option and proceed to Value Help download",
             "labelTrue": "Execute the OData query (data files will be generated on finish)",
             "labelFalse": "Suppress the OData query (prevents multiple queries during selections)",
-            "querySuccess": "OData query success. $t(texts.seeLogForDetails)",
+            "querySuccess": "OData query success. $t(texts.rows, {\"count\": \"{{count}}\") returned. $t(texts.seeLogForDetails)",
             "validation": {
                 "keyRequired": "Please enter at least one key field value to run the odata query"
             }

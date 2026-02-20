@@ -10,7 +10,7 @@ import { parse } from '@sap-ux/edmx-parser';
 import type { CheckBoxQuestion } from '@sap-ux/inquirer-common';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
 import type { CheckboxChoiceOptions } from 'inquirer';
-import merge from 'lodash/merge';
+import deepmerge from 'deepmerge';
 import { join } from 'node:path';
 import { t } from '../../utils/i18n';
 import { PromptState } from '../prompt-state';
@@ -44,7 +44,9 @@ export function getValueHelpSelectionPrompt(
                 return true;
             }
             const valueHelpMetadata = await getExternalServiceMetadata(selectedValueHelps, abapServiceProvider);
-            merge(valueHelpData, valueHelpMetadata);
+            const merged = deepmerge(valueHelpData, valueHelpMetadata);
+            valueHelpData.length = 0;
+            valueHelpData.push(...merged);
 
             await getExternalServiceEntityData(valueHelpData, abapServiceProvider);
 

@@ -1,9 +1,7 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { createApplicationAccess } from '@sap-ux/project-access';
-import type { Answers } from 'inquirer';
 import {
     getODataDownloaderPrompts,
     promptNames,
@@ -18,6 +16,29 @@ jest.mock('@sap-ux/odata-service-inquirer');
 jest.mock('@sap-ux/project-access');
 jest.mock('../../src/data-download/prompts/prompt-helpers');
 jest.mock('../../src/data-download/utils');
+
+// Helper to create mock entity choice
+const createMockChoice = (
+    name: string,
+    entityPath: string,
+    entitySetName: string,
+    options: { checked?: boolean; defaultSelected?: boolean } = {}
+) => ({
+    name,
+    value: {
+        fullPath: entityPath,
+        entity: { entityPath, entitySetName, defaultSelected: options.defaultSelected }
+    } as SelectedEntityAnswer,
+    checked: options.checked ?? false
+});
+
+// Helper to create standard list entity
+const createListEntity = (semanticKeys: Array<{ name: string; type: string; value: string | undefined }> = []) => ({
+    entitySetName: 'TestSet',
+    semanticKeys,
+    entityPath: 'TestSet',
+    entityType: undefined
+});
 
 describe('Test prompts', () => {
     beforeEach(() => {
@@ -66,7 +87,7 @@ describe('Test prompts', () => {
             expect(allPromptNames).toContain('serviceSelection');
             expect(allPromptNames).toContain(promptNames.toggleSelection);
             expect(allPromptNames).toContain(promptNames.relatedEntitySelection);
-            expect(allPromptNames).toContain(promptNames.confirmDownload);
+            expect(allPromptNames).toContain(promptNames.skipDataDownload);
             // Verify key prompts exist
             const keyPrompts = result.questions.filter((q: any) => q.name?.startsWith('entityKeyIdx:'));
             expect(keyPrompts.length).toBe(5);
@@ -526,25 +547,156 @@ describe('Test prompts', () => {
             }
         });
 
-        it('should validate and update checked state', () => {
-            const mockChoices = [
-                {
-                    name: 'Entity1',
-                    value: {
-                        fullPath: 'to_Entity1',
-                        entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set' }
-                    } as SelectedEntityAnswer,
-                    checked: false
-                }
-            ];
+        it.each([
+            { skipValue: ['skipDownload'], expected: false, desc: 'not show when skipDataDownload is selected' },
+            { skipValue: [], expected: true, desc: 'show when skipDataDownload is not selected' }
+        ])('should $desc', async ({ skipValue, expected }) => {
+            const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+            (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
+                choices: mockChoices,
+                entitySetsFlat: {}
+            });
 
-            // Inject choices into the prompt (simulating runtime state)
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+            appConfig.servicePath = '/test/service';
+            appConfig.referencedEntities = { listEntity: createListEntity() };
+            appConfig.relatedEntityChoices.choices = mockChoices;
+
+            const freshEntityPrompt = result.questions.find(
+                (q: any) => q.name === promptNames.relatedEntitySelection
+            ) as CheckBoxQuestion;
+
+            const whenFn = freshEntityPrompt.when;
+            if (typeof whenFn === 'function') {
+                const shouldShow = await whenFn({ [promptNames.skipDataDownload]: skipValue });
+                expect(shouldShow).toBe(expected);
+            }
+        });
+
+        it('should validate and update checked state', async () => {
+            const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
             (entitySelectionPrompt.choices as any) = mockChoices;
 
             const selectedEntities = [mockChoices[0].value];
-            const result = entitySelectionPrompt.validate!(selectedEntities);
+            const result = await entitySelectionPrompt.validate!(selectedEntities);
 
             expect(result).toBe(true);
+        });
+
+        it('should return error when no key input provided', async () => {
+            const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+            const result = await getODataDownloaderPrompts();
+            result.answers.application.relatedEntityChoices.choices = mockChoices;
+
+            const freshEntityPrompt = result.questions.find(
+                (q: any) => q.name === promptNames.relatedEntitySelection
+            ) as CheckBoxQuestion;
+
+            const selectedEntities = [mockChoices[0].value];
+            const validateResult = await freshEntityPrompt.validate!(selectedEntities, {
+                [promptNames.relatedEntitySelection]: selectedEntities
+            });
+
+            expect(typeof validateResult).toBe('string');
+            expect(validateResult).toContain('key');
+        });
+
+        it('should call getData when key input is provided and update odataQueryResult', async () => {
+            jest.useFakeTimers();
+            const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+            const mockQueryResult = { odataQueryResult: [{ id: 1 }, { id: 2 }] };
+            (promptHelpers.getData as jest.Mock).mockResolvedValue(mockQueryResult);
+
+            const result = await getODataDownloaderPrompts();
+            result.answers.application.relatedEntityChoices.choices = mockChoices;
+
+            const freshEntityPrompt = result.questions.find(
+                (q: any) => q.name === promptNames.relatedEntitySelection
+            ) as CheckBoxQuestion;
+
+            const selectedEntities = [mockChoices[0].value];
+            const validatePromise = freshEntityPrompt.validate!(selectedEntities, {
+                [promptNames.relatedEntitySelection]: selectedEntities,
+                'entityKeyIdx:0': 'testKey'
+            });
+
+            jest.advanceTimersByTime(1000);
+            const validateResult = await validatePromise;
+
+            expect(validateResult).toBe(true);
+            expect(promptHelpers.getData).toHaveBeenCalled();
+            expect(result.answers.odataQueryResult.odata).toEqual(mockQueryResult.odataQueryResult);
+
+            jest.useRealTimers();
+        });
+
+        it('should return error string when getData returns error', async () => {
+            jest.useFakeTimers();
+            const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+            const errorMessage = 'Connection failed';
+            (promptHelpers.getData as jest.Mock).mockResolvedValue(errorMessage);
+
+            const result = await getODataDownloaderPrompts();
+            result.answers.application.relatedEntityChoices.choices = mockChoices;
+
+            const freshEntityPrompt = result.questions.find(
+                (q: any) => q.name === promptNames.relatedEntitySelection
+            ) as CheckBoxQuestion;
+
+            const selectedEntities = [mockChoices[0].value];
+            const validatePromise = freshEntityPrompt.validate!(selectedEntities, {
+                [promptNames.relatedEntitySelection]: selectedEntities,
+                'entityKeyIdx:0': 'testKey'
+            });
+
+            jest.advanceTimersByTime(1000);
+            expect(await validatePromise).toBe(errorMessage);
+            jest.useRealTimers();
+        });
+
+        describe('additionalMessages', () => {
+            it('should return undefined when no result available', async () => {
+                const result = await getODataDownloaderPrompts();
+                const freshEntityPrompt = result.questions.find(
+                    (q: any) => q.name === promptNames.relatedEntitySelection
+                ) as CheckBoxQuestion;
+
+                const additionalMessagesFn = (freshEntityPrompt as any).additionalMessages;
+                expect(additionalMessagesFn).toBeDefined();
+                expect(additionalMessagesFn()).toBeUndefined();
+            });
+
+            it('should return success message with row count after successful validation', async () => {
+                jest.useFakeTimers();
+                const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+                const mockQueryResult = { odataQueryResult: [{ id: 1 }, { id: 2 }, { id: 3 }] };
+                (promptHelpers.getData as jest.Mock).mockResolvedValue(mockQueryResult);
+
+                const result = await getODataDownloaderPrompts();
+                result.answers.application.relatedEntityChoices.choices = mockChoices;
+
+                const freshEntityPrompt = result.questions.find(
+                    (q: any) => q.name === promptNames.relatedEntitySelection
+                ) as CheckBoxQuestion;
+
+                const selectedEntities = [mockChoices[0].value];
+                const validatePromise = freshEntityPrompt.validate!(selectedEntities, {
+                    [promptNames.relatedEntitySelection]: selectedEntities,
+                    'entityKeyIdx:0': 'testKey'
+                });
+                jest.advanceTimersByTime(1000);
+                await validatePromise;
+
+                const message = (freshEntityPrompt as any).additionalMessages();
+                expect(message).toBeDefined();
+                expect(message.message).toEqual(
+                    'OData query success. 3 rows returned. For more information, view the logs.'
+                );
+                expect(message.severity).toBeDefined();
+
+                jest.useRealTimers();
+            });
         });
     });
 
@@ -577,44 +729,16 @@ describe('Test prompts', () => {
             expect(result2).toBe(true);
         });
 
-        it('should clear all selections when reset is true (first call)', async () => {
-            // Set up mock choices that createEntityChoices will return
-            const mockChoices = [
-                {
-                    name: 'Entity1',
-                    value: {
-                        fullPath: 'to_Entity1',
-                        entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set', defaultSelected: true }
-                    } as SelectedEntityAnswer,
-                    checked: true
-                },
-                {
-                    name: 'Entity2',
-                    value: {
-                        fullPath: 'to_Entity2',
-                        entity: { entityPath: 'to_Entity2', entitySetName: 'Entity2Set', defaultSelected: false }
-                    } as SelectedEntityAnswer,
-                    checked: true
-                }
-            ];
-
+        // Helper to setup reset prompt test with mock choices
+        const setupResetPromptTest = async (mockChoices: ReturnType<typeof createMockChoice>[]) => {
             (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
                 choices: mockChoices,
                 entitySetsFlat: {}
             });
-
-            // Get fresh prompts and configure appConfig
             const result = await getODataDownloaderPrompts();
             const appConfig = result.answers.application;
             appConfig.servicePath = '/test/service';
-            appConfig.referencedEntities = {
-                listEntity: {
-                    entitySetName: 'TestSet',
-                    semanticKeys: [],
-                    entityPath: 'TestSet',
-                    entityType: undefined
-                }
-            };
+            appConfig.referencedEntities = { listEntity: createListEntity() };
 
             const freshResetPrompt = result.questions.find(
                 (q: any) => q.name === promptNames.toggleSelection
@@ -625,440 +749,144 @@ describe('Test prompts', () => {
             if (typeof whenFn === 'function') {
                 await whenFn({});
             }
+            return { freshResetPrompt, mockChoices };
+        };
 
-            // Now call validate with reset=true
-            const validateResult = freshResetPrompt.validate!(true);
+        it('should clear all selections when reset is true (first call)', async () => {
+            const mockChoices = [
+                createMockChoice('Entity1', 'to_Entity1', 'Entity1Set', { checked: true, defaultSelected: true }),
+                createMockChoice('Entity2', 'to_Entity2', 'Entity2Set', { checked: true, defaultSelected: false })
+            ];
+            const { freshResetPrompt } = await setupResetPromptTest(mockChoices);
 
-            expect(validateResult).toBe(true);
-            // All choices should be unchecked when reset is true
+            expect(freshResetPrompt.validate!(true)).toBe(true);
             expect(mockChoices[0].checked).toBe(false);
             expect(mockChoices[1].checked).toBe(false);
         });
 
         it('should restore default selection when reset is false (first call)', async () => {
-            // Set up mock choices with defaultSelected values
             const mockChoices = [
-                {
-                    name: 'Entity1',
-                    value: {
-                        fullPath: 'to_Entity1',
-                        entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set', defaultSelected: true }
-                    } as SelectedEntityAnswer,
-                    checked: false
-                },
-                {
-                    name: 'Entity2',
-                    value: {
-                        fullPath: 'to_Entity2',
-                        entity: { entityPath: 'to_Entity2', entitySetName: 'Entity2Set', defaultSelected: false }
-                    } as SelectedEntityAnswer,
-                    checked: true
-                },
-                {
-                    name: 'Entity3',
-                    value: {
-                        fullPath: 'to_Entity3',
-                        entity: { entityPath: 'to_Entity3', entitySetName: 'Entity3Set', defaultSelected: true }
-                    } as SelectedEntityAnswer,
-                    checked: false
-                }
+                createMockChoice('Entity1', 'to_Entity1', 'Entity1Set', { checked: false, defaultSelected: true }),
+                createMockChoice('Entity2', 'to_Entity2', 'Entity2Set', { checked: true, defaultSelected: false }),
+                createMockChoice('Entity3', 'to_Entity3', 'Entity3Set', { checked: false, defaultSelected: true })
             ];
+            const { freshResetPrompt } = await setupResetPromptTest(mockChoices);
 
-            (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
-                choices: mockChoices,
-                entitySetsFlat: {}
-            });
-
-            const result = await getODataDownloaderPrompts();
-            const appConfig = result.answers.application;
-            appConfig.servicePath = '/test/service';
-            appConfig.referencedEntities = {
-                listEntity: {
-                    entitySetName: 'TestSet',
-                    semanticKeys: [],
-                    entityPath: 'TestSet',
-                    entityType: undefined
-                }
-            };
-
-            const freshResetPrompt = result.questions.find(
-                (q: any) => q.name === promptNames.toggleSelection
-            ) as ConfirmQuestion;
-
-            // Trigger the when function to load choices
-            const whenFn = freshResetPrompt.when;
-            if (typeof whenFn === 'function') {
-                await whenFn({});
-            }
-
-            // Call validate with reset=false to restore defaults
-            const validateResult = freshResetPrompt.validate!(false);
-
-            expect(validateResult).toBe(true);
-            // Choices should be restored to their defaultSelected values
-            expect(mockChoices[0].checked).toBe(true); // defaultSelected: true
-            expect(mockChoices[1].checked).toBe(false); // defaultSelected: false
-            expect(mockChoices[2].checked).toBe(true); // defaultSelected: true
+            expect(freshResetPrompt.validate!(false)).toBe(true);
+            expect(mockChoices[0].checked).toBe(true);
+            expect(mockChoices[1].checked).toBe(false);
+            expect(mockChoices[2].checked).toBe(true);
         });
 
         it('should not modify choices when reset value is unchanged (same as previous)', async () => {
             const mockChoices = [
-                {
-                    name: 'Entity1',
-                    value: {
-                        fullPath: 'to_Entity1',
-                        entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set', defaultSelected: true }
-                    } as SelectedEntityAnswer,
-                    checked: true
-                }
+                createMockChoice('Entity1', 'to_Entity1', 'Entity1Set', { checked: true, defaultSelected: true })
             ];
+            const { freshResetPrompt } = await setupResetPromptTest(mockChoices);
 
-            (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
-                choices: mockChoices,
-                entitySetsFlat: {}
-            });
-
-            const result = await getODataDownloaderPrompts();
-            const appConfig = result.answers.application;
-            appConfig.servicePath = '/test/service';
-            appConfig.referencedEntities = {
-                listEntity: {
-                    entitySetName: 'TestSet',
-                    semanticKeys: [],
-                    entityPath: 'TestSet',
-                    entityType: undefined
-                }
-            };
-
-            const freshResetPrompt = result.questions.find(
-                (q: any) => q.name === promptNames.toggleSelection
-            ) as ConfirmQuestion;
-
-            // Trigger the when function to load choices
-            const whenFn = freshResetPrompt.when;
-            if (typeof whenFn === 'function') {
-                await whenFn({});
-            }
-
-            // First call with true - this sets previousReset to true and clears selections
             freshResetPrompt.validate!(true);
-            expect(mockChoices[0].checked).toBe(false); // cleared
+            expect(mockChoices[0].checked).toBe(false);
 
-            // Manually set checked back to true to verify no change on second call
             mockChoices[0].checked = true;
-
-            // Second call with same value (true) - should not modify choices
-            const result2 = freshResetPrompt.validate!(true);
-
-            expect(result2).toBe(true);
+            expect(freshResetPrompt.validate!(true)).toBe(true);
             expect(mockChoices[0].checked).toBe(true); // unchanged because reset === previousReset
         });
 
         it('should toggle between clear and restore on alternating calls', async () => {
             const mockChoices = [
-                {
-                    name: 'Entity1',
-                    value: {
-                        fullPath: 'to_Entity1',
-                        entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set', defaultSelected: true }
-                    } as SelectedEntityAnswer,
-                    checked: false
-                },
-                {
-                    name: 'Entity2',
-                    value: {
-                        fullPath: 'to_Entity2',
-                        entity: { entityPath: 'to_Entity2', entitySetName: 'Entity2Set', defaultSelected: false }
-                    } as SelectedEntityAnswer,
-                    checked: true
-                }
+                createMockChoice('Entity1', 'to_Entity1', 'Entity1Set', { checked: false, defaultSelected: true }),
+                createMockChoice('Entity2', 'to_Entity2', 'Entity2Set', { checked: true, defaultSelected: false })
             ];
+            const { freshResetPrompt } = await setupResetPromptTest(mockChoices);
 
-            (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
-                choices: mockChoices,
-                entitySetsFlat: {}
-            });
-
-            const result = await getODataDownloaderPrompts();
-            const appConfig = result.answers.application;
-            appConfig.servicePath = '/test/service';
-            appConfig.referencedEntities = {
-                listEntity: {
-                    entitySetName: 'TestSet',
-                    semanticKeys: [],
-                    entityPath: 'TestSet',
-                    entityType: undefined
-                }
-            };
-
-            const freshResetPrompt = result.questions.find(
-                (q: any) => q.name === promptNames.toggleSelection
-            ) as ConfirmQuestion;
-
-            // Trigger the when function to load choices
-            const whenFn = freshResetPrompt.when;
-            if (typeof whenFn === 'function') {
-                await whenFn({});
-            }
-
-            // First call: reset=true -> clear all
             freshResetPrompt.validate!(true);
             expect(mockChoices[0].checked).toBe(false);
             expect(mockChoices[1].checked).toBe(false);
 
-            // Second call: reset=false -> restore defaults
             freshResetPrompt.validate!(false);
-            expect(mockChoices[0].checked).toBe(true); // defaultSelected: true
-            expect(mockChoices[1].checked).toBe(false); // defaultSelected: false
+            expect(mockChoices[0].checked).toBe(true);
+            expect(mockChoices[1].checked).toBe(false);
 
-            // Third call: reset=true again -> clear all
             freshResetPrompt.validate!(true);
             expect(mockChoices[0].checked).toBe(false);
             expect(mockChoices[1].checked).toBe(false);
         });
 
         it('should handle choices with undefined defaultSelected', async () => {
-            const mockChoices = [
-                {
-                    name: 'Entity1',
-                    value: {
-                        fullPath: 'to_Entity1',
-                        entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set' } // no defaultSelected
-                    } as SelectedEntityAnswer,
-                    checked: true
-                }
-            ];
+            const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set', { checked: true })];
+            const { freshResetPrompt } = await setupResetPromptTest(mockChoices);
 
-            (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
-                choices: mockChoices,
-                entitySetsFlat: {}
-            });
-
-            const result = await getODataDownloaderPrompts();
-            const appConfig = result.answers.application;
-            appConfig.servicePath = '/test/service';
-            appConfig.referencedEntities = {
-                listEntity: {
-                    entitySetName: 'TestSet',
-                    semanticKeys: [],
-                    entityPath: 'TestSet',
-                    entityType: undefined
-                }
-            };
-
-            const freshResetPrompt = result.questions.find(
-                (q: any) => q.name === promptNames.toggleSelection
-            ) as ConfirmQuestion;
-
-            // Trigger the when function to load choices
-            const whenFn = freshResetPrompt.when;
-            if (typeof whenFn === 'function') {
-                await whenFn({});
-            }
-
-            // Restore defaults - undefined defaultSelected should result in falsy (unchecked)
             freshResetPrompt.validate!(false);
-            expect(mockChoices[0].checked).toBe(undefined); // defaultSelected is undefined
+            expect(mockChoices[0].checked).toBe(undefined);
         });
 
         it('should handle empty choices array', async () => {
-            (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
-                choices: [],
-                entitySetsFlat: {}
-            });
-
-            const result = await getODataDownloaderPrompts();
-            const appConfig = result.answers.application;
-            appConfig.servicePath = '/test/service';
-            appConfig.referencedEntities = {
-                listEntity: {
-                    entitySetName: 'TestSet',
-                    semanticKeys: [],
-                    entityPath: 'TestSet',
-                    entityType: undefined
-                }
-            };
-
-            const freshResetPrompt = result.questions.find(
-                (q: any) => q.name === promptNames.toggleSelection
-            ) as ConfirmQuestion;
-
-            // Trigger the when function to load choices
-            const whenFn = freshResetPrompt.when;
-            if (typeof whenFn === 'function') {
-                await whenFn({});
-            }
-
-            // Should not throw and should return true
-            const validateResult = freshResetPrompt.validate!(true);
-            expect(validateResult).toBe(true);
+            const { freshResetPrompt } = await setupResetPromptTest([]);
+            expect(freshResetPrompt.validate!(true)).toBe(true);
         });
 
         describe('when function', () => {
-            it('should return false when no choices available', async () => {
-                const result = await getODataDownloaderPrompts();
-                const freshResetPrompt = result.questions.find(
-                    (q: any) => q.name === promptNames.toggleSelection
-                ) as ConfirmQuestion;
-
-                const whenFn = freshResetPrompt.when;
-                if (typeof whenFn === 'function') {
-                    const shouldShow = await whenFn({});
-                    expect(shouldShow).toBe(false);
+            // Helper to setup when function test
+            const setupWhenTest = async (mockChoices: ReturnType<typeof createMockChoice>[] | null = null) => {
+                if (mockChoices) {
+                    (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
+                        choices: mockChoices,
+                        entitySetsFlat: {}
+                    });
                 }
-            });
-
-            it('should return true when choices are available', async () => {
-                const mockChoices = [
-                    {
-                        name: 'Entity1',
-                        value: {
-                            fullPath: 'to_Entity1',
-                            entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set' }
-                        } as SelectedEntityAnswer,
-                        checked: false
-                    }
-                ];
-
-                (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
-                    choices: mockChoices,
-                    entitySetsFlat: {}
-                });
-
                 const result = await getODataDownloaderPrompts();
                 const appConfig = result.answers.application;
-                appConfig.servicePath = '/test/service';
-                appConfig.referencedEntities = {
-                    listEntity: {
-                        entitySetName: 'TestSet',
-                        semanticKeys: [],
-                        entityPath: 'TestSet',
-                        entityType: undefined
-                    }
-                };
-
+                if (mockChoices) {
+                    appConfig.servicePath = '/test/service';
+                    appConfig.referencedEntities = { listEntity: createListEntity() };
+                }
                 const freshResetPrompt = result.questions.find(
                     (q: any) => q.name === promptNames.toggleSelection
                 ) as ConfirmQuestion;
+                return { freshResetPrompt, appConfig, whenFn: freshResetPrompt.when as Function };
+            };
 
-                const whenFn = freshResetPrompt.when;
-                if (typeof whenFn === 'function') {
-                    const shouldShow = await whenFn({});
-                    expect(shouldShow).toBe(true);
-                }
+            it('should return false when no choices available', async () => {
+                const { whenFn } = await setupWhenTest();
+                expect(await whenFn({})).toBe(false);
+            });
+
+            it.each([
+                { skipValue: undefined, expected: true, desc: 'true when choices are available' },
+                { skipValue: ['skipDownload'], expected: false, desc: 'false when skipDataDownload is selected' },
+                { skipValue: [], expected: true, desc: 'true when skipDataDownload is empty array' }
+            ])('should return $desc', async ({ skipValue, expected }) => {
+                const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+                const { whenFn } = await setupWhenTest(mockChoices);
+                const answers = skipValue !== undefined ? { [promptNames.skipDataDownload]: skipValue } : {};
+                expect(await whenFn(answers)).toBe(expected);
             });
 
             it('should load entity choices when service path changes', async () => {
-                const mockChoices = [
-                    {
-                        name: 'Entity1',
-                        value: {
-                            fullPath: 'to_Entity1',
-                            entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set' }
-                        } as SelectedEntityAnswer,
-                        checked: false
-                    }
-                ];
+                const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+                const { whenFn, appConfig } = await setupWhenTest(mockChoices);
 
-                (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
-                    choices: mockChoices,
-                    entitySetsFlat: { TestSet: {} }
-                });
-
-                const result = await getODataDownloaderPrompts();
-                const appConfig = result.answers.application;
-                appConfig.servicePath = '/test/service';
-                appConfig.referencedEntities = {
-                    listEntity: {
-                        entitySetName: 'TestSet',
-                        semanticKeys: [],
-                        entityPath: 'TestSet',
-                        entityType: undefined
-                    }
-                };
-
-                const freshResetPrompt = result.questions.find(
-                    (q: any) => q.name === promptNames.toggleSelection
-                ) as ConfirmQuestion;
-
-                const whenFn = freshResetPrompt.when;
-                if (typeof whenFn === 'function') {
-                    await whenFn({});
-                    expect(promptHelpers.createEntityChoices).toHaveBeenCalledWith(
-                        appConfig.referencedEntities?.listEntity,
-                        appConfig.referencedEntities?.pageObjectEntities
-                    );
-                }
+                await whenFn({});
+                expect(promptHelpers.createEntityChoices).toHaveBeenCalledWith(
+                    appConfig.referencedEntities?.listEntity,
+                    appConfig.referencedEntities?.pageObjectEntities
+                );
             });
 
             it('should not reload choices when service path is unchanged', async () => {
-                const mockChoices = [
-                    {
-                        name: 'Entity1',
-                        value: {
-                            fullPath: 'to_Entity1',
-                            entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set' }
-                        } as SelectedEntityAnswer,
-                        checked: false
-                    }
-                ];
+                const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+                const { whenFn } = await setupWhenTest(mockChoices);
 
-                (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
-                    choices: mockChoices,
-                    entitySetsFlat: {}
-                });
+                await whenFn({});
+                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
 
-                const result = await getODataDownloaderPrompts();
-                const appConfig = result.answers.application;
-                appConfig.servicePath = '/test/service';
-                appConfig.referencedEntities = {
-                    listEntity: {
-                        entitySetName: 'TestSet',
-                        semanticKeys: [],
-                        entityPath: 'TestSet',
-                        entityType: undefined
-                    }
-                };
-
-                const freshResetPrompt = result.questions.find(
-                    (q: any) => q.name === promptNames.toggleSelection
-                ) as ConfirmQuestion;
-
-                const whenFn = freshResetPrompt.when;
-                if (typeof whenFn === 'function') {
-                    // First call - should load choices
-                    await whenFn({});
-                    expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
-
-                    // Second call with same service path - should not reload
-                    await whenFn({});
-                    expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
-                }
+                await whenFn({});
+                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
             });
 
             it('should reload choices when service path changes', async () => {
-                const mockChoices1 = [
-                    {
-                        name: 'Entity1',
-                        value: {
-                            fullPath: 'to_Entity1',
-                            entity: { entityPath: 'to_Entity1', entitySetName: 'Entity1Set' }
-                        } as SelectedEntityAnswer,
-                        checked: false
-                    }
-                ];
-
-                const mockChoices2 = [
-                    {
-                        name: 'Entity2',
-                        value: {
-                            fullPath: 'to_Entity2',
-                            entity: { entityPath: 'to_Entity2', entitySetName: 'Entity2Set' }
-                        } as SelectedEntityAnswer,
-                        checked: false
-                    }
-                ];
-
+                const mockChoices1 = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+                const mockChoices2 = [createMockChoice('Entity2', 'to_Entity2', 'Entity2Set')];
                 (promptHelpers.createEntityChoices as jest.Mock)
                     .mockReturnValueOnce({ choices: mockChoices1, entitySetsFlat: {} })
                     .mockReturnValueOnce({ choices: mockChoices2, entitySetsFlat: {} });
@@ -1066,32 +894,19 @@ describe('Test prompts', () => {
                 const result = await getODataDownloaderPrompts();
                 const appConfig = result.answers.application;
                 appConfig.servicePath = '/test/service1';
-                appConfig.referencedEntities = {
-                    listEntity: {
-                        entitySetName: 'TestSet',
-                        semanticKeys: [],
-                        entityPath: 'TestSet',
-                        entityType: undefined
-                    }
-                };
+                appConfig.referencedEntities = { listEntity: createListEntity() };
 
                 const freshResetPrompt = result.questions.find(
                     (q: any) => q.name === promptNames.toggleSelection
                 ) as ConfirmQuestion;
+                const whenFn = freshResetPrompt.when as Function;
 
-                const whenFn = freshResetPrompt.when;
-                if (typeof whenFn === 'function') {
-                    // First call
-                    await whenFn({});
-                    expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
+                await whenFn({});
+                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
 
-                    // Change service path
-                    appConfig.servicePath = '/test/service2';
-
-                    // Second call with different service path - should reload
-                    await whenFn({});
-                    expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(2);
-                }
+                appConfig.servicePath = '/test/service2';
+                await whenFn({});
+                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(2);
             });
         });
     });
@@ -1118,6 +933,105 @@ describe('Test prompts', () => {
             keyPrompts.forEach((prompt, index) => {
                 expect(prompt.name).toBe(`entityKeyIdx:${index}`);
                 expect(prompt.type).toBe('input');
+            });
+        });
+
+        describe('when function', () => {
+            it('should not show when skipDataDownload is selected', async () => {
+                const result = await getODataDownloaderPrompts();
+                const appConfig = result.answers.application;
+                appConfig.referencedEntities = {
+                    listEntity: {
+                        entitySetName: 'TestSet',
+                        semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                        entityPath: 'TestSet',
+                        entityType: undefined
+                    }
+                };
+
+                const freshKeyPrompts = result.questions.filter((q: any) =>
+                    q.name?.startsWith('entityKeyIdx:')
+                ) as InputQuestion[];
+                const keyPrompt = freshKeyPrompts[0];
+
+                const whenFn = keyPrompt.when;
+                if (typeof whenFn === 'function') {
+                    const shouldShow = await whenFn({ [promptNames.skipDataDownload]: ['skipDownload'] });
+                    expect(shouldShow).toBe(false);
+                }
+            });
+
+            it('should show when skipDataDownload is not selected and semantic key exists', async () => {
+                const result = await getODataDownloaderPrompts();
+                const appConfig = result.answers.application;
+                appConfig.referencedEntities = {
+                    listEntity: {
+                        entitySetName: 'TestSet',
+                        semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                        entityPath: 'TestSet',
+                        entityType: undefined
+                    }
+                };
+
+                const freshKeyPrompts = result.questions.filter((q: any) =>
+                    q.name?.startsWith('entityKeyIdx:')
+                ) as InputQuestion[];
+                const keyPrompt = freshKeyPrompts[0];
+
+                const whenFn = keyPrompt.when;
+                if (typeof whenFn === 'function') {
+                    const shouldShow = await whenFn({ [promptNames.skipDataDownload]: [] });
+                    expect(shouldShow).toBe(true);
+                }
+            });
+
+            it('should show when skipDataDownload is undefined and semantic key exists', async () => {
+                const result = await getODataDownloaderPrompts();
+                const appConfig = result.answers.application;
+                appConfig.referencedEntities = {
+                    listEntity: {
+                        entitySetName: 'TestSet',
+                        semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                        entityPath: 'TestSet',
+                        entityType: undefined
+                    }
+                };
+
+                const freshKeyPrompts = result.questions.filter((q: any) =>
+                    q.name?.startsWith('entityKeyIdx:')
+                ) as InputQuestion[];
+                const keyPrompt = freshKeyPrompts[0];
+
+                const whenFn = keyPrompt.when;
+                if (typeof whenFn === 'function') {
+                    const shouldShow = await whenFn({});
+                    expect(shouldShow).toBe(true);
+                }
+            });
+
+            it('should not show when semantic key does not exist for index', async () => {
+                const result = await getODataDownloaderPrompts();
+                const appConfig = result.answers.application;
+                appConfig.referencedEntities = {
+                    listEntity: {
+                        entitySetName: 'TestSet',
+                        semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                        entityPath: 'TestSet',
+                        entityType: undefined
+                    }
+                };
+
+                const freshKeyPrompts = result.questions.filter((q: any) =>
+                    q.name?.startsWith('entityKeyIdx:')
+                ) as InputQuestion[];
+                // Second key prompt - no semantic key at index 1
+                const keyPrompt = freshKeyPrompts[1];
+
+                const whenFn = keyPrompt.when;
+                if (typeof whenFn === 'function') {
+                    const shouldShow = await whenFn({});
+                    expect(shouldShow).toBe(false);
+                }
             });
         });
 
@@ -1213,8 +1127,8 @@ describe('Test prompts', () => {
         });
     });
 
-    describe('Confirm Download Prompt', () => {
-        let confirmPrompt: ConfirmQuestion;
+    describe('Skip Data Download Prompt', () => {
+        let skipDownloadPrompt: CheckBoxQuestion;
 
         beforeEach(async () => {
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
@@ -1224,72 +1138,49 @@ describe('Test prompts', () => {
             });
 
             const result = await getODataDownloaderPrompts();
-            confirmPrompt = result.questions.find(
-                (q: any) => q.name === promptNames.confirmDownload
-            ) as ConfirmQuestion;
+            skipDownloadPrompt = result.questions.find(
+                (q: any) => q.name === promptNames.skipDataDownload
+            ) as CheckBoxQuestion;
         });
 
         it('should have correct configuration', () => {
-            expect(confirmPrompt).toBeDefined();
-            expect(confirmPrompt.type).toBe('confirm');
-            expect(confirmPrompt.name).toBe(promptNames.confirmDownload);
-            expect(confirmPrompt.default).toBe(false);
+            expect(skipDownloadPrompt).toBeDefined();
+            expect(skipDownloadPrompt.type).toBe('checkbox');
+            expect(skipDownloadPrompt.name).toBe(promptNames.skipDataDownload);
+            expect(skipDownloadPrompt.default).toBe(false);
         });
 
-        it('should validate successfully when download is confirmed', async () => {
-            const mockResult = { odataQueryResult: [{ id: 1 }, { id: 2 }] };
-            (promptHelpers.getData as jest.Mock).mockResolvedValue(mockResult);
-
-            const result = await confirmPrompt.validate!(true, { 'entityKeyIdx:1': 'keyVal123' } as Answers);
-
-            expect(result).toBe(true);
-            expect(promptHelpers.getData).toHaveBeenCalled();
+        it('should show when metadata is available', async () => {
+            const whenFn = skipDownloadPrompt.when;
+            if (typeof whenFn === 'function') {
+                const shouldShow = whenFn({});
+                expect(shouldShow).toBe(true);
+            }
         });
 
-        it('should not fetch data when download is not confirmed', async () => {
-            const result = await confirmPrompt.validate!(false, { 'entityKeyIdx:1': 'keyVal123' } as Answers);
+        it('should not show when metadata is not available', async () => {
+            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
 
-            expect(result).toBe(true);
-            expect(promptHelpers.getData).not.toHaveBeenCalled();
+            const result = await getODataDownloaderPrompts();
+            const prompt = result.questions.find(
+                (q: any) => q.name === promptNames.skipDataDownload
+            ) as CheckBoxQuestion;
+
+            const whenFn = prompt.when;
+            if (typeof whenFn === 'function') {
+                const shouldShow = whenFn({});
+                expect(shouldShow).toBe(false);
+            }
         });
 
-        it('should return error message when data fetch fails', async () => {
-            (promptHelpers.getData as jest.Mock).mockResolvedValue('Error fetching data');
-
-            const result = await confirmPrompt.validate!(true, { 'entityKeyIdx:1': 'keyVal123' } as Answers);
-
-            expect(result).toBe('Error fetching data');
-        });
-
-        it('should show success message with row count', async () => {
-            const mockResult = { odataQueryResult: [{ id: 1 }, { id: 2 }, { id: 3 }] };
-            (promptHelpers.getData as jest.Mock).mockResolvedValue(mockResult);
-
-            await confirmPrompt.validate!(true, { 'entityKeyIdx:1': 'keyVal123' } as Answers);
-            const additionalMessageResult = confirmPrompt.additionalMessages!(true);
-            const additionalMessage =
-                additionalMessageResult instanceof Promise ? await additionalMessageResult : additionalMessageResult;
-
-            expect(additionalMessage).toBeDefined();
-            expect((additionalMessage as any)?.severity).toBe(Severity.information);
-        });
-
-        it('should not show additional message when download not confirmed', async () => {
-            const additionalMessage = confirmPrompt.additionalMessages!(false);
-
-            expect(additionalMessage).toBeUndefined();
-        });
-
-        it('should return error message when no entity key value is provided', async () => {
-            const result = await confirmPrompt.validate!(true, {} as Answers);
-
-            expect(result).toBe('Please enter at least one key field value to run the odata query');
-        });
-
-        it('should return error message when entity key value is empty string', async () => {
-            const result = await confirmPrompt.validate!(true, { 'entityKeyIdx:0': '   ' } as Answers);
-
-            expect(result).toBe('Please enter at least one key field value to run the odata query');
+        it('should have skip download choice', () => {
+            const choices = skipDownloadPrompt.choices;
+            expect(Array.isArray(choices)).toBe(true);
+            expect((choices as any)[0].value).toBe('skipDownload');
+            expect((choices as any)[0].checked).toBe(false);
         });
     });
 
@@ -1372,7 +1263,7 @@ describe('Test prompts', () => {
             expect(promptNames.appSelection).toBe('appSelection');
             expect(promptNames.toggleSelection).toBe('toggleSelection');
             expect(promptNames.relatedEntitySelection).toBe('relatedEntitySelection');
-            expect(promptNames.confirmDownload).toBe('confirmDownload');
+            expect(promptNames.skipDataDownload).toBe('skipDataDownload');
             expect(promptNames.updateMainServiceMetadata).toBe('updateMainServiceMetadata');
         });
     });

@@ -54,13 +54,11 @@
         "@sap-devx/yeoman-ui-types": "1.16.9",
         "i18next": "25.8.0",
         "inquirer": "8.2.7",
-        "lodash": "4.17.23",
         "prettify-xml": "1.2.0",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
         "@types/inquirer": "8.2.6",
-        "@types/lodash": "4.14.202",
         "@types/yeoman-generator": "5.2.14",
         "rimraf": "5.0.5"
     },

@@ -14,11 +14,19 @@ import { getEntityModel } from '../utils';
 import { createEntityChoices, getData, getServiceDetails, getSpecification } from './prompt-helpers';
 import { PromptState } from '../prompt-state';
 
+let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+const debouncedGetData = (...args: Parameters<typeof getData>): Promise<Awaited<ReturnType<typeof getData>>> => {
+    return new Promise((resolve) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(async () => resolve(await getData(...args)), 1000);
+    });
+};
+
 export const promptNames = {
     appSelection: 'appSelection',
     toggleSelection: 'toggleSelection',
     relatedEntitySelection: 'relatedEntitySelection',
-    confirmDownload: 'confirmDownload',
+    skipDataDownload: 'skipDataDownload',
     updateMainServiceMetadata: 'updateMainServiceMetadata'
 };
 
@@ -79,7 +87,7 @@ export async function getODataDownloaderPrompts(): Promise<{
         }
     };
     const servicePaths: string[] = [];
-    let keyPrompts: InputQuestion[] = [];
+    const keyPrompts: InputQuestion[] = getKeyPrompts(5, appConfig);
 
     const appSelectionQuestion = getAppSelectionPrompt(appConfig, servicePaths, keyPrompts);
 
@@ -108,19 +116,21 @@ export async function getODataDownloaderPrompts(): Promise<{
 
     const resetSelectionPrompt = getResetSelectionPrompt(appConfig, appConfig.relatedEntityChoices);
 
-    const relatedEntitySelectionQuestion: CheckBoxQuestion = getEntitySelectionPrompt(appConfig.relatedEntityChoices);
-
-    // Generate the max size of key parts allowed
-    keyPrompts = getKeyPrompts(5, appConfig);
+    const relatedEntitySelectionQuestion: CheckBoxQuestion = getEntitySelectionPrompt(
+        appConfig.relatedEntityChoices,
+        systemSelectionQuestions.answers,
+        appConfig,
+        odataQueryResult
+    );
 
     selectSourceQuestions.push(
         appSelectionQuestion,
         ...(systemSelectionQuestions.prompts as Question[]),
         getUpdateMainServiceMetadataPrompt(systemSelectionQuestions.answers, appConfig),
+        getSkipDataDownloadPrompt(systemSelectionQuestions.answers),
         ...keyPrompts,
         resetSelectionPrompt,
-        relatedEntitySelectionQuestion,
-        getConfirmDownloadPrompt(systemSelectionQuestions.answers, appConfig, odataQueryResult)
+        relatedEntitySelectionQuestion
     );
     return {
         questions: selectSourceQuestions,
@@ -195,16 +205,25 @@ function getAppSelectionPrompt(
  * @param relatedEntityChoices - Object containing choices and entitySetsFlat
  * @param relatedEntityChoices.choices - The checkbox choices for entity selection
  * @param relatedEntityChoices.entitySetsFlat - Map of entity paths to entity set names
+ * @param odataServiceAnswers
+ * @param appConfig
+ * @param odataQueryResult
+ * @param odataQueryResult.odata
  * @returns The checkbox question for entity selection
  */
-function getEntitySelectionPrompt(relatedEntityChoices: {
-    choices: CheckboxChoiceOptions<Answers>[];
-    entitySetsFlat: EntitySetsFlat;
-}): CheckBoxQuestion<Answers> {
+function getEntitySelectionPrompt(
+    relatedEntityChoices: {
+        choices: CheckboxChoiceOptions<Answers>[];
+        entitySetsFlat: EntitySetsFlat;
+    },
+    odataServiceAnswers: Partial<OdataServiceAnswers>,
+    appConfig: AppConfig,
+    odataQueryResult: { odata: undefined | [] }
+): CheckBoxQuestion<Answers> {
+    let result: { odataQueryResult: [] } | string;
     return {
-        when: async (): Promise<boolean> => {
-            return relatedEntityChoices.choices.length > 0;
-        },
+        when: async (answers): Promise<boolean> =>
+            relatedEntityChoices.choices.length > 0 && !answers?.[promptNames.skipDataDownload]?.[0],
         name: promptNames.relatedEntitySelection,
         type: 'checkbox',
         guiOptions: {
@@ -212,7 +231,7 @@ function getEntitySelectionPrompt(relatedEntityChoices: {
         },
         message: t('prompts.relatedEntitySelection.message'),
         choices: () => relatedEntityChoices.choices,
-        validate: (selectedEntities): boolean => {
+        validate: async (selectedEntities, answers: Answers): Promise<boolean | string> => {
             // Set `checked` to avoid deselection when re-running `default`.
             selectedEntities.forEach((selectedEntity) => {
                 const selectedEntityChoice = relatedEntityChoices.choices.find(
@@ -222,7 +241,35 @@ function getEntitySelectionPrompt(relatedEntityChoices: {
                     selectedEntityChoice.checked = true;
                 }
             });
+            if (answers) {
+                const hasKeyInput = Object.entries(answers).find(
+                    ([key, value]) => key.startsWith('entityKeyIdx:') && !!value?.trim()
+                );
+                if (!hasKeyInput) {
+                    return t('prompts.skipDataDownload.validation.keyRequired');
+                }
+                result = await debouncedGetData(
+                    odataServiceAnswers,
+                    appConfig,
+                    answers[promptNames.relatedEntitySelection]
+                );
+                if (typeof result === 'string') {
+                    return result;
+                }
+                odataQueryResult.odata = result.odataQueryResult;
+            }
             return true;
+        },
+        additionalMessages: () => {
+            if (result && typeof result !== 'string') {
+                return {
+                    message: t('prompts.skipDataDownload.querySuccess', {
+                        count: result.odataQueryResult.length
+                    }),
+                    severity: Severity.information
+                };
+            }
+            return undefined;
         }
     };
 }
@@ -246,7 +293,7 @@ function getResetSelectionPrompt(
     let previousServicePath;
     let previousReset;
     const toggleSelectionPrompt = {
-        when: () => {
+        when: (answers) => {
             if (appConfig.servicePath !== previousServicePath) {
                 if (appConfig.referencedEntities?.listEntity) {
                     const entityChoices = createEntityChoices(
@@ -260,7 +307,7 @@ function getResetSelectionPrompt(
                 }
                 previousServicePath = appConfig.servicePath;
             }
-            return relatedEntityChoices.choices.length > 0;
+            return relatedEntityChoices.choices.length > 0 && !answers?.[promptNames.skipDataDownload]?.[0];
         },
         name: promptNames.toggleSelection,
         type: 'confirm',
@@ -296,7 +343,9 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
 
     const getEntityKeyInputPrompt = (keypart: number): InputQuestion =>
         ({
-            when: async () => !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name,
+            when: async (answers) =>
+                !answers?.[promptNames.skipDataDownload]?.[0] &&
+                !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name,
             name: `entityKeyIdx:${keypart}`,
             message: () =>
                 t('prompts.entityKey.message', {
@@ -352,58 +401,25 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
  * Gets the confirm download prompt that triggers data fetch.
  *
  * @param odataServiceAnswers - The OData service answers
- * @param appConfig - The application configuration
- * @param odataQueryResult - Object to store the query result
- * @param odataQueryResult.odata - The OData result array
  * @returns The confirm download question
  */
-function getConfirmDownloadPrompt(
-    odataServiceAnswers: Partial<OdataServiceAnswers>,
-    appConfig: AppConfig,
-    odataQueryResult: { odata: undefined | [] }
-): Question {
-    let result: { odataQueryResult: [] } | string;
+function getSkipDataDownloadPrompt(odataServiceAnswers: Partial<OdataServiceAnswers>): Question {
     return {
         when: () => {
             return !!odataServiceAnswers.metadata;
         },
-        name: promptNames.confirmDownload,
-        type: 'confirm',
-        message: t('prompts.confirmDownload.message'),
-        labelTrue: t('prompts.confirmDownload.labelTrue'),
-        labelFalse: t('prompts.confirmDownload.labelFalse'),
+        name: promptNames.skipDataDownload,
+        type: 'checkbox',
+        message: t('prompts.skipDataDownload.message'),
         default: false,
-        guiOptions: {
-            hint: t('prompts.confirmDownload.hint')
-        },
-        validate: async (download, answers: Answers) => {
-            if (download) {
-                const hasKeyInput = Object.entries(answers).find(
-                    ([key, value]) => key.startsWith('entityKeyIdx:') && !!value?.trim()
-                );
-                if (!hasKeyInput) {
-                    return t('prompts.confirmDownload.validation.keyRequired');
-                }
-                result = await getData(odataServiceAnswers, appConfig, answers[promptNames.relatedEntitySelection]);
-                if (typeof result === 'string') {
-                    return result;
-                }
-                odataQueryResult.odata = result.odataQueryResult;
+        choices: [
+            {
+                name: 'Skip data download',
+                value: 'skipDownload',
+                checked: false
             }
-            return true;
-        },
-        additionalMessages: (runQuery: boolean) => {
-            if (runQuery && result && typeof result !== 'string') {
-                return {
-                    message: t('prompts.confirmDownload.querySuccess', {
-                        rowsReturned: result.odataQueryResult.length
-                    }),
-                    severity: Severity.information
-                };
-            }
-            return undefined;
-        }
-    } as ConfirmQuestion;
+        ]
+    } as CheckBoxQuestion;
 }
 
 /**

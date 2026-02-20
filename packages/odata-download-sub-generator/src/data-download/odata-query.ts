@@ -167,8 +167,10 @@ export async function fetchData(
  */
 async function executeQuery(odataService: ODataService, query: string): Promise<{ entityData?: []; error?: string }> {
     try {
-        ODataDownloadGenerator.logger.info(`OData query request: ${odataService.defaults.baseURL}${query}`);
         ODataDownloadGenerator.logger.info(
+            `OData query request: ${encodeURI(odataService.defaults.baseURL + query).replaceAll("'", '%27')}`
+        );
+        ODataDownloadGenerator.logger.debug(
             `OData query request headers: ${JSON.stringify(odataService.defaults.headers)}`
         );
         const data = await odataService.get(query);
