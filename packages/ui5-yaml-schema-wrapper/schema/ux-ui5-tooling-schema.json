@@ -23,7 +23,7 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "middleware-config-schema.json"
+                                                    "$ref": "preview-middleware-schema.json"
                                                 }
                                             }
                                         }
@@ -39,7 +39,135 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "middleware-config-schema.json"
+                                                    "$ref": "preview-middleware-schema.json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "backend-proxy-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "backend-proxy-middleware-schema.json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "backend-proxy-middleware-cf"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "backend-proxy-middleware-cf-schema.json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "reload-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "reload-middleware-schema.json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "fiori-tools-appreload"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "reload-middleware-schema.json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "fiori-tools-servestatic"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "serve-static-middleware-schema.json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "serve-static-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "serve-static-middleware-schema.json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "ui5-proxy-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "ui5-proxy-middleware-schema.json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "fiori-tools-proxy"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "$ref": "fiori-tools-proxy-schema.json"
                                                 }
                                             }
                                         }

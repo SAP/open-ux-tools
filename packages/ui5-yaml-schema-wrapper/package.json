@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui5-yaml-schema-wrapper",
-    "description": "UI5 YAML schema wrapper with preview-middleware configuration support",
+    "description": "UI5 YAML schema wrapper with middleware configuration support for preview-middleware, backend-proxy-middleware, reload-middleware, serve-static-middleware, and ui5-proxy-middleware",
     "version": "0.1.0",
     "repository": {
         "type": "git",
@@ -15,7 +15,7 @@
     "scripts": {
         "build": "tsx scripts/generate-schema.ts",
         "watch": "tsx scripts/generate-schema.ts",
-        "clean": "rimraf --glob dist schema/middleware-config-schema.json *.tsbuildinfo",
+        "clean": "rimraf --glob dist schema/*-schema.json *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",

@@ -6,12 +6,12 @@ import addFormats from 'ajv-formats';
 
 describe('YAML Schema Validation', () => {
     const schemaDir = join(__dirname, '..', 'schema');
-    const middlewareSchemaPath = join(schemaDir, 'middleware-config-schema.json');
+    const previewMiddlewareSchemaPath = join(schemaDir, 'preview-middleware-schema.json');
     const validYamlPath = join(__dirname, 'sample-ui5.yaml');
     const invalidYamlPath = join(__dirname, 'sample-ui5-invalid.yaml');
 
     let ajv: Ajv;
-    let middlewareSchema: any;
+    let previewMiddlewareSchema: any;
 
     beforeAll(() => {
         // Setup AJV with middleware schema
@@ -21,7 +21,7 @@ describe('YAML Schema Validation', () => {
         });
         addFormats(ajv);
 
-        middlewareSchema = JSON.parse(readFileSync(middlewareSchemaPath, 'utf-8'));
+        previewMiddlewareSchema = JSON.parse(readFileSync(previewMiddlewareSchemaPath, 'utf-8'));
     });
 
     test('valid ui5.yaml should pass middleware configuration validation', () => {
@@ -32,7 +32,7 @@ describe('YAML Schema Validation', () => {
             (mw: any) => mw.name === 'preview-middleware'
         );
 
-        const validate = ajv.compile(middlewareSchema);
+        const validate = ajv.compile(previewMiddlewareSchema);
         const valid = validate(previewMiddleware.configuration);
 
         if (!valid) {
@@ -81,7 +81,7 @@ describe('YAML Schema Validation', () => {
 
         expect(previewMiddleware).toBeDefined();
 
-        const validate = ajv.compile(middlewareSchema);
+        const validate = ajv.compile(previewMiddlewareSchema);
         const valid = validate(previewMiddleware.configuration);
 
         // The invalid configuration has:

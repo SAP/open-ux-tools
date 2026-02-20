@@ -2,20 +2,20 @@
 
 specVersion: '3.0'
 metadata:
-  name: test-app-invalid
+    name: test-app-invalid
 type: application
 server:
-  customMiddleware:
-    - name: preview-middleware
-      afterMiddleware: compression
-      configuration:
-        flp:
-          path: /test/flpSandbox.html
-          intent:
-            object: myapp
-            action: display
-          invalidProperty: "This should cause a validation error"
-        test:
-          - framework: InvalidFramework  # Should be OPA5, QUnit, or Testsuite
-            path: /test/test.html
-        unknownProperty: "This is not a valid MiddlewareConfig property"
+    customMiddleware:
+        - name: preview-middleware
+          afterMiddleware: compression
+          configuration:
+              flp:
+                  path: /test/flpSandbox.html
+                  intent:
+                      object: myapp
+                      action: display
+                  invalidProperty: 'This should cause a validation error'
+              test:
+                  - framework: InvalidFramework # Should be OPA5, QUnit, or Testsuite
+                    path: /test/test.html
+              unknownProperty: 'This is not a valid MiddlewareConfig property'

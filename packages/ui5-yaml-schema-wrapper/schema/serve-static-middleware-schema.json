@@ -1,0 +1,170 @@
+{
+    "additionalProperties": false,
+    "type": "object",
+    "properties": {
+        "paths": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/PathConfig"
+            }
+        },
+        "acceptRanges": {
+            "description": "Enable or disable accepting ranged requests, defaults to true.\nDisabling this will not send Accept-Ranges and ignore the contents of the Range request header.",
+            "type": "boolean"
+        },
+        "cacheControl": {
+            "description": "Enable or disable setting Cache-Control response header, defaults to true.\nDisabling this will ignore the immutable and maxAge options.",
+            "type": "boolean"
+        },
+        "dotfiles": {
+            "description": "Set how \"dotfiles\" are treated when encountered. A dotfile is a file or directory that begins with a dot (\".\").\nNote this check is done on the path itself without checking if the path actually exists on the disk.\nIf root is specified, only the dotfiles above the root are checked (i.e. the root itself can be within a dotfile when when set to \"deny\").\nThe default value is 'ignore'.\n'allow' No special treatment for dotfiles\n'deny' Send a 403 for any request for a dotfile\n'ignore' Pretend like the dotfile does not exist and call next()",
+            "type": "string"
+        },
+        "etag": {
+            "description": "Enable or disable etag generation, defaults to true.",
+            "type": "boolean"
+        },
+        "extensions": {
+            "description": "Set file extension fallbacks. When set, if a file is not found, the given extensions will be added to the file name and search for.\nThe first that exists will be served. Example: ['html', 'htm'].\nThe default value is false.",
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "const": false,
+                    "type": "boolean"
+                }
+            ]
+        },
+        "fallthrough": {
+            "description": "Let client errors fall-through as unhandled requests, otherwise forward a client error.\nThe default value is true.",
+            "type": "boolean"
+        },
+        "immutable": {
+            "description": "Enable or disable the immutable directive in the Cache-Control response header.\nIf enabled, the maxAge option should also be specified to enable caching. The immutable directive will prevent supported clients from making conditional requests during the life of the maxAge option to check if the file has changed.",
+            "type": "boolean"
+        },
+        "index": {
+            "description": "By default this module will send \"index.html\" files in response to a request on a directory.\nTo disable this set false or to supply a new index pass a string or an array in preferred order.",
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "type": ["string", "boolean"]
+                }
+            ]
+        },
+        "lastModified": {
+            "description": "Enable or disable Last-Modified header, defaults to true. Uses the file system's last modified value.",
+            "type": "boolean"
+        },
+        "maxAge": {
+            "description": "Provide a max-age in milliseconds for http caching, defaults to 0. This can also be a string accepted by the ms module.",
+            "type": ["string", "number"]
+        },
+        "redirect": {
+            "description": "Redirect to trailing \"/\" when the pathname is a dir. Defaults to true.",
+            "type": "boolean"
+        },
+        "setHeaders": {
+            "description": "Function to set custom headers on response. Alterations to the headers need to occur synchronously.\nThe function is called as fn(res, path, stat), where the arguments are:\nres the response object\npath the file path that is being sent\nstat the stat object of the file that is being sent",
+            "type": "object",
+            "additionalProperties": false
+        }
+    },
+    "definitions": {
+        "PathConfig": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string"
+                },
+                "src": {
+                    "type": "string"
+                },
+                "keepCacheBusterInUrl": {
+                    "type": "boolean"
+                },
+                "acceptRanges": {
+                    "description": "Enable or disable accepting ranged requests, defaults to true.\nDisabling this will not send Accept-Ranges and ignore the contents of the Range request header.",
+                    "type": "boolean"
+                },
+                "cacheControl": {
+                    "description": "Enable or disable setting Cache-Control response header, defaults to true.\nDisabling this will ignore the immutable and maxAge options.",
+                    "type": "boolean"
+                },
+                "dotfiles": {
+                    "description": "Set how \"dotfiles\" are treated when encountered. A dotfile is a file or directory that begins with a dot (\".\").\nNote this check is done on the path itself without checking if the path actually exists on the disk.\nIf root is specified, only the dotfiles above the root are checked (i.e. the root itself can be within a dotfile when when set to \"deny\").\nThe default value is 'ignore'.\n'allow' No special treatment for dotfiles\n'deny' Send a 403 for any request for a dotfile\n'ignore' Pretend like the dotfile does not exist and call next()",
+                    "type": "string"
+                },
+                "etag": {
+                    "description": "Enable or disable etag generation, defaults to true.",
+                    "type": "boolean"
+                },
+                "extensions": {
+                    "description": "Set file extension fallbacks. When set, if a file is not found, the given extensions will be added to the file name and search for.\nThe first that exists will be served. Example: ['html', 'htm'].\nThe default value is false.",
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "const": false,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                "fallthrough": {
+                    "description": "Let client errors fall-through as unhandled requests, otherwise forward a client error.\nThe default value is true.",
+                    "type": "boolean"
+                },
+                "immutable": {
+                    "description": "Enable or disable the immutable directive in the Cache-Control response header.\nIf enabled, the maxAge option should also be specified to enable caching. The immutable directive will prevent supported clients from making conditional requests during the life of the maxAge option to check if the file has changed.",
+                    "type": "boolean"
+                },
+                "index": {
+                    "description": "By default this module will send \"index.html\" files in response to a request on a directory.\nTo disable this set false or to supply a new index pass a string or an array in preferred order.",
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "type": ["string", "boolean"]
+                        }
+                    ]
+                },
+                "lastModified": {
+                    "description": "Enable or disable Last-Modified header, defaults to true. Uses the file system's last modified value.",
+                    "type": "boolean"
+                },
+                "maxAge": {
+                    "description": "Provide a max-age in milliseconds for http caching, defaults to 0. This can also be a string accepted by the ms module.",
+                    "type": ["string", "number"]
+                },
+                "redirect": {
+                    "description": "Redirect to trailing \"/\" when the pathname is a dir. Defaults to true.",
+                    "type": "boolean"
+                },
+                "setHeaders": {
+                    "description": "Function to set custom headers on response. Alterations to the headers need to occur synchronously.\nThe function is called as fn(res, path, stat), where the arguments are:\nres the response object\npath the file path that is being sent\nstat the stat object of the file that is being sent",
+                    "type": "object",
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}
