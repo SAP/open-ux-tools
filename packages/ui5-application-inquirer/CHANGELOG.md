@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.16.31
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-info@0.13.13
+    - @sap-ux/project-input-validator@0.6.58
+
 ## 0.16.30
 
 ### Patch Changes

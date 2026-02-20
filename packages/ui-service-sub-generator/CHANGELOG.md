@@ -1,5 +1,19 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.188
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/ui-service-inquirer@0.2.125
+    - @sap-ux/telemetry@0.6.76
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/system-access@0.6.54
+
 ## 0.1.187
 
 ### Patch Changes

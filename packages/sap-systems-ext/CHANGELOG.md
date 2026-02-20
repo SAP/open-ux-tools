@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.2
+
+### Patch Changes
+
+- e5bc3ca: fix(deps): update dependency vscode-uri to v3.1.0
+
 ## 0.3.1
 
 ### Patch Changes

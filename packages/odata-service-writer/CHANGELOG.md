@@ -1,5 +1,16 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.21
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-config@0.29.18
+    - @sap-ux/mockserver-config-writer@0.9.53
+
 ## 0.29.20
 
 ### Patch Changes

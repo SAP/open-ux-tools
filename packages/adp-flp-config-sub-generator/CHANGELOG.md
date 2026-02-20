@@ -1,5 +1,21 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.180
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/flp-config-inquirer@0.4.127
+    - @sap-ux/adp-tooling@0.18.68
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/system-access@0.6.54
+
 ## 0.1.179
 
 ### Patch Changes
