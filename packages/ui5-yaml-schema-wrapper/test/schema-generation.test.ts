@@ -44,8 +44,8 @@ describe('Schema Generation', () => {
             const schema = JSON.parse(content);
             expect(schema.type).toBe('object');
             expect(schema.properties).toBeDefined();
-            expect(schema.properties.url).toBeDefined();
-            expect(schema.properties.paths).toBeDefined();
+            expect(schema.properties.backends).toBeDefined();
+            expect(schema.properties.credentials).toBeDefined();
         });
 
         test('reload-middleware-schema.json should exist and be valid', () => {

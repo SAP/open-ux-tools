@@ -1,296 +1,306 @@
 {
-    "description": "Middleware configuration.",
-    "type": "object",
-    "properties": {
-        "flp": {
-            "$ref": "#/definitions/Partial<FlpConfig>"
-        },
-        "test": {
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/TestConfig"
-            }
-        },
+  "description": "Middleware configuration.",
+  "type": "object",
+  "properties": {
+    "flp": {
+      "$ref": "#/definitions/Partial<FlpConfig>"
+    },
+    "test": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TestConfig"
+      }
+    },
+    "rta": {
+      "deprecated": "use editors.rta instead.",
+      "$ref": "#/definitions/InternalRtaConfig"
+    },
+    "editors": {
+      "type": "object",
+      "properties": {
         "rta": {
-            "deprecated": "use editors.rta instead.",
-            "$ref": "#/definitions/InternalRtaConfig"
+          "$ref": "#/definitions/RtaConfig"
+        },
+        "cardGenerator": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "adp": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/AdpPreviewConfigWithTarget"
+        },
+        {
+          "$ref": "#/definitions/AdpPreviewConfigWithBuildPath"
+        }
+      ]
+    },
+    "debug": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Partial<FlpConfig>": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "intent": {
+          "description": "Intent object consisting of an object and an action.",
+          "$ref": "#/definitions/Intent"
+        },
+        "libs": {
+          "description": "Optional: if set to true then a locate-reuse-libs script will be attached to the html",
+          "type": "boolean"
+        },
+        "apps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/App"
+          }
+        },
+        "theme": {
+          "type": "string"
+        },
+        "init": {
+          "description": "Optional: allows to specify a custom init script executed in addition to the default one",
+          "type": "string"
+        },
+        "enhancedHomePage": {
+          "description": "Optional: if set to true then the new FLP homepage will be enabled",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Intent": {
+      "description": "Intent object consisting of an object and an action.",
+      "type": "object",
+      "properties": {
+        "object": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "App": {
+      "description": "Configuration for additional applications",
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string"
+        },
+        "local": {
+          "description": "Either a local path to a folder containing the application or the componentId of a remote app",
+          "type": "string"
+        },
+        "componentId": {
+          "description": "Optional component id if it differs from the manifest (e.g. for adaptation projects)",
+          "type": "string"
+        },
+        "intent": {
+          "description": "Intent object consisting of an object and an action.",
+          "$ref": "#/definitions/Intent"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TestConfig": {
+      "description": "Configration for the virtual test pages endpoints.",
+      "type": "object",
+      "properties": {
+        "framework": {
+          "enum": [
+            "OPA5",
+            "QUnit",
+            "Testsuite"
+          ],
+          "type": "string"
+        },
+        "path": {
+          "description": "Path hosting the main test page",
+          "type": "string"
+        },
+        "init": {
+          "description": "Path to the init script",
+          "type": "string"
+        },
+        "pattern": {
+          "description": "Pattern to match the test files",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "InternalRtaConfig": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "enum": [
+            "CUSTOMER_BASE",
+            "VENDOR"
+          ],
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "additionalProperties": {},
+          "properties": {
+            "baseId": {
+              "type": "string"
+            },
+            "projectId": {
+              "type": "string"
+            },
+            "scenario": {
+              "type": "string"
+            },
+            "appName": {
+              "type": "string"
+            }
+          }
         },
         "editors": {
-            "type": "object",
-            "properties": {
-                "rta": {
-                    "$ref": "#/definitions/RtaConfig"
-                },
-                "cardGenerator": {
-                    "type": "object",
-                    "properties": {
-                        "path": {
-                            "type": "string"
-                        }
-                    },
-                    "additionalProperties": false
-                }
-            },
-            "additionalProperties": false
-        },
-        "adp": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/AdpPreviewConfigWithTarget"
-                },
-                {
-                    "$ref": "#/definitions/AdpPreviewConfigWithBuildPath"
-                }
-            ]
-        },
-        "debug": {
-            "type": "boolean"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RtaEditor"
+          }
         }
+      },
+      "additionalProperties": false
     },
-    "additionalProperties": false,
-    "definitions": {
-        "Partial<FlpConfig>": {
-            "type": "object",
-            "properties": {
-                "path": {
-                    "type": "string"
-                },
-                "intent": {
-                    "description": "Intent object consisting of an object and an action.",
-                    "$ref": "#/definitions/Intent"
-                },
-                "libs": {
-                    "description": "Optional: if set to true then a locate-reuse-libs script will be attached to the html",
-                    "type": "boolean"
-                },
-                "apps": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/App"
-                    }
-                },
-                "theme": {
-                    "type": "string"
-                },
-                "init": {
-                    "description": "Optional: allows to specify a custom init script executed in addition to the default one",
-                    "type": "string"
-                },
-                "enhancedHomePage": {
-                    "description": "Optional: if set to true then the new FLP homepage will be enabled",
-                    "type": "boolean"
-                }
-            },
-            "additionalProperties": false
+    "RtaEditor": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
         },
-        "Intent": {
-            "description": "Intent object consisting of an object and an action.",
-            "type": "object",
-            "properties": {
-                "object": {
-                    "type": "string"
-                },
-                "action": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": false
+        "developerMode": {
+          "type": "boolean"
         },
-        "App": {
-            "description": "Configuration for additional applications",
-            "type": "object",
-            "properties": {
-                "target": {
-                    "type": "string"
-                },
-                "local": {
-                    "description": "Either a local path to a folder containing the application or the componentId of a remote app",
-                    "type": "string"
-                },
-                "componentId": {
-                    "description": "Optional component id if it differs from the manifest (e.g. for adaptation projects)",
-                    "type": "string"
-                },
-                "intent": {
-                    "description": "Intent object consisting of an object and an action.",
-                    "$ref": "#/definitions/Intent"
-                }
-            },
-            "additionalProperties": false
+        "pluginScript": {
+          "type": "string"
         },
-        "TestConfig": {
-            "description": "Configration for the virtual test pages endpoints.",
-            "type": "object",
-            "properties": {
-                "framework": {
-                    "enum": ["OPA5", "QUnit", "Testsuite"],
-                    "type": "string"
-                },
-                "path": {
-                    "description": "Path hosting the main test page",
-                    "type": "string"
-                },
-                "init": {
-                    "description": "Path to the init script",
-                    "type": "string"
-                },
-                "pattern": {
-                    "description": "Pattern to match the test files",
-                    "type": "string"
-                }
+        "generator": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "RtaConfig": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "options": {
+          "type": "object",
+          "additionalProperties": {},
+          "properties": {
+            "baseId": {
+              "type": "string"
             },
-            "additionalProperties": false
-        },
-        "InternalRtaConfig": {
-            "type": "object",
-            "properties": {
-                "layer": {
-                    "enum": ["CUSTOMER_BASE", "VENDOR"],
-                    "type": "string"
-                },
-                "options": {
-                    "type": "object",
-                    "additionalProperties": {},
-                    "properties": {
-                        "baseId": {
-                            "type": "string"
-                        },
-                        "projectId": {
-                            "type": "string"
-                        },
-                        "scenario": {
-                            "type": "string"
-                        },
-                        "appName": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "editors": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/RtaEditor"
-                    }
-                }
+            "projectId": {
+              "type": "string"
             },
-            "additionalProperties": false
-        },
-        "RtaEditor": {
-            "type": "object",
-            "properties": {
-                "path": {
-                    "type": "string"
-                },
-                "developerMode": {
-                    "type": "boolean"
-                },
-                "pluginScript": {
-                    "type": "string"
-                },
-                "generator": {
-                    "type": "string"
-                }
+            "scenario": {
+              "type": "string"
             },
-            "additionalProperties": false
-        },
-        "RtaConfig": {
-            "additionalProperties": false,
-            "type": "object",
-            "properties": {
-                "options": {
-                    "type": "object",
-                    "additionalProperties": {},
-                    "properties": {
-                        "baseId": {
-                            "type": "string"
-                        },
-                        "projectId": {
-                            "type": "string"
-                        },
-                        "scenario": {
-                            "type": "string"
-                        },
-                        "appName": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "layer": {
-                    "enum": ["CUSTOMER_BASE", "VENDOR"],
-                    "type": "string"
-                },
-                "endpoints": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/RtaEditor"
-                    }
-                }
+            "appName": {
+              "type": "string"
             }
+          }
         },
-        "AdpPreviewConfigWithTarget": {
-            "description": "Configuration for ADP preview using ABAP target connection.",
-            "type": "object",
-            "properties": {
-                "target": {
-                    "$ref": "#/definitions/AbapTarget"
-                },
-                "ignoreCertErrors": {
-                    "description": "If set to true then certification validation errors are ignored.",
-                    "type": "boolean"
-                }
-            },
-            "additionalProperties": false
+        "layer": {
+          "enum": [
+            "CUSTOMER_BASE",
+            "VENDOR"
+          ],
+          "type": "string"
         },
-        "AbapTarget": {
-            "description": "Reduce the options exposed as target configuration.",
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/DestinationAbapTarget"
-                },
-                {
-                    "$ref": "#/definitions/Pick<UrlAbapTarget,\"url\"|\"client\"|\"scp\">"
-                }
-            ]
-        },
-        "DestinationAbapTarget": {
-            "type": "object",
-            "properties": {
-                "destination": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": false
-        },
-        "Pick<UrlAbapTarget,\"url\"|\"client\"|\"scp\">": {
-            "type": "object",
-            "properties": {
-                "url": {
-                    "type": "string"
-                },
-                "client": {
-                    "type": "string"
-                },
-                "scp": {
-                    "type": "boolean"
-                }
-            },
-            "additionalProperties": false
-        },
-        "AdpPreviewConfigWithBuildPath": {
-            "description": "Configuration for ADP preview using CF build output path.",
-            "type": "object",
-            "properties": {
-                "cfBuildPath": {
-                    "description": "For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.",
-                    "type": "string"
-                },
-                "ignoreCertErrors": {
-                    "description": "If set to true then certification validation errors are ignored.",
-                    "type": "boolean"
-                }
-            },
-            "additionalProperties": false
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RtaEditor"
+          }
         }
+      }
     },
-    "$schema": "http://json-schema.org/draft-07/schema#"
+    "AdpPreviewConfigWithTarget": {
+      "description": "Configuration for ADP preview using ABAP target connection.",
+      "type": "object",
+      "properties": {
+        "target": {
+          "$ref": "#/definitions/AbapTarget"
+        },
+        "ignoreCertErrors": {
+          "description": "If set to true then certification validation errors are ignored.",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AbapTarget": {
+      "description": "Reduce the options exposed as target configuration.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/DestinationAbapTarget"
+        },
+        {
+          "$ref": "#/definitions/Pick<UrlAbapTarget,\"url\"|\"client\"|\"scp\">"
+        }
+      ]
+    },
+    "DestinationAbapTarget": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Pick<UrlAbapTarget,\"url\"|\"client\"|\"scp\">": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "client": {
+          "type": "string"
+        },
+        "scp": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AdpPreviewConfigWithBuildPath": {
+      "description": "Configuration for ADP preview using CF build output path.",
+      "type": "object",
+      "properties": {
+        "cfBuildPath": {
+          "description": "For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.",
+          "type": "string"
+        },
+        "ignoreCertErrors": {
+          "description": "If set to true then certification validation errors are ignored.",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
 }

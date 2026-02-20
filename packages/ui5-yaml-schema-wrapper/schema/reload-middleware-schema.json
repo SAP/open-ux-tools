@@ -1,198 +1,198 @@
 {
-    "type": "object",
-    "properties": {
-        "path": {
-            "anyOf": [
-                {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "type": "string"
-                }
-            ]
+  "type": "object",
+  "properties": {
+    "path": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
-        "https": {
-            "$ref": "#/definitions/HttpsOptions"
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "https": {
+      "$ref": "#/definitions/HttpsOptions"
+    },
+    "connectOptions": {
+      "$ref": "#/definitions/Options"
+    },
+    "port": {
+      "description": "Sets server port number: Defaults to 35729",
+      "type": "number"
+    },
+    "noListen": {
+      "type": "boolean"
+    },
+    "exts": {
+      "description": "File Extensions to watch",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "extraExts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "exclusions": {
+      "description": "Extensions to not watch",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RegExp"
+      }
+    },
+    "applyCSSLive": {
+      "type": "boolean"
+    },
+    "applyImgLive": {
+      "type": "boolean"
+    },
+    "originalPath": {
+      "type": "string"
+    },
+    "overrideURL": {
+      "type": "string"
+    },
+    "usePolling": {
+      "type": "boolean"
+    },
+    "delay": {
+      "description": "ms to delay browser refresh",
+      "type": "number"
+    },
+    "debug": {
+      "description": "Logs debug messages to console",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "HttpsOptions": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
         },
-        "connectOptions": {
-            "$ref": "#/definitions/Options"
+        "cert": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Options": {
+      "type": "object",
+      "properties": {
+        "ignore": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileMatcher"
+          }
+        },
+        "excludeList": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileMatcher"
+          }
+        },
+        "include": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileMatcher"
+          }
+        },
+        "html": {
+          "type": "object",
+          "additionalProperties": false
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Rule"
+          }
+        },
+        "disableCompression": {
+          "type": "boolean"
+        },
+        "hostname": {
+          "type": "string"
         },
         "port": {
-            "description": "Sets server port number: Defaults to 35729",
-            "type": "number"
+          "type": "number"
         },
-        "noListen": {
-            "type": "boolean"
+        "src": {
+          "type": "string"
         },
-        "exts": {
-            "description": "File Extensions to watch",
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "extraExts": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "exclusions": {
-            "description": "Extensions to not watch",
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/RegExp"
-            }
-        },
-        "applyCSSLive": {
-            "type": "boolean"
-        },
-        "applyImgLive": {
-            "type": "boolean"
-        },
-        "originalPath": {
+        "plugins": {
+          "type": "array",
+          "items": {
             "type": "string"
-        },
-        "overrideURL": {
-            "type": "string"
-        },
-        "usePolling": {
-            "type": "boolean"
-        },
-        "delay": {
-            "description": "ms to delay browser refresh",
-            "type": "number"
-        },
-        "debug": {
-            "description": "Logs debug messages to console",
-            "type": "boolean"
+          }
         }
+      },
+      "additionalProperties": false
     },
-    "additionalProperties": false,
-    "definitions": {
-        "HttpsOptions": {
-            "type": "object",
-            "properties": {
-                "key": {
-                    "type": "string"
-                },
-                "cert": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": false
+    "FileMatcher": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/RegExp"
         },
-        "Options": {
-            "type": "object",
-            "properties": {
-                "ignore": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/FileMatcher"
-                    }
-                },
-                "excludeList": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/FileMatcher"
-                    }
-                },
-                "include": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/FileMatcher"
-                    }
-                },
-                "html": {
-                    "type": "object",
-                    "additionalProperties": false
-                },
-                "rules": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Rule"
-                    }
-                },
-                "disableCompression": {
-                    "type": "boolean"
-                },
-                "hostname": {
-                    "type": "string"
-                },
-                "port": {
-                    "type": "number"
-                },
-                "src": {
-                    "type": "string"
-                },
-                "plugins": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            },
-            "additionalProperties": false
-        },
-        "FileMatcher": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/RegExp"
-                },
-                {
-                    "type": "string"
-                }
-            ]
-        },
-        "RegExp": {
-            "type": "object",
-            "properties": {
-                "source": {
-                    "type": "string"
-                },
-                "global": {
-                    "type": "boolean"
-                },
-                "ignoreCase": {
-                    "type": "boolean"
-                },
-                "multiline": {
-                    "type": "boolean"
-                },
-                "lastIndex": {
-                    "type": "number"
-                },
-                "flags": {
-                    "type": "string"
-                },
-                "sticky": {
-                    "type": "boolean"
-                },
-                "unicode": {
-                    "type": "boolean"
-                },
-                "dotAll": {
-                    "type": "boolean"
-                }
-            },
-            "additionalProperties": false
-        },
-        "Rule": {
-            "type": "object",
-            "properties": {
-                "match": {
-                    "$ref": "#/definitions/RegExp"
-                },
-                "fn": {
-                    "type": "object",
-                    "additionalProperties": false
-                }
-            },
-            "additionalProperties": false
+        {
+          "type": "string"
         }
+      ]
     },
-    "$schema": "http://json-schema.org/draft-07/schema#"
+    "RegExp": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "global": {
+          "type": "boolean"
+        },
+        "ignoreCase": {
+          "type": "boolean"
+        },
+        "multiline": {
+          "type": "boolean"
+        },
+        "lastIndex": {
+          "type": "number"
+        },
+        "flags": {
+          "type": "string"
+        },
+        "sticky": {
+          "type": "boolean"
+        },
+        "unicode": {
+          "type": "boolean"
+        },
+        "dotAll": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "match": {
+          "$ref": "#/definitions/RegExp"
+        },
+        "fn": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
 }
