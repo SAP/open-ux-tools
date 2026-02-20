@@ -53,7 +53,7 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "yeoman-generator": "5.10.0",
         "uuid": "10.0.0"
     },

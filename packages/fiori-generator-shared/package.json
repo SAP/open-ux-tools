@@ -32,7 +32,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@vscode-logging/logger": "2.0.8",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "logform": "2.4.0",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
