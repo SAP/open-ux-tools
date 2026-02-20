@@ -12,6 +12,7 @@
             }
         },
         "rta": {
+            "deprecated": "use editors.rta instead.",
             "$ref": "#/definitions/InternalRtaConfig"
         },
         "editors": {

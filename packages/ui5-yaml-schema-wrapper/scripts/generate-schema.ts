@@ -6,7 +6,8 @@ const settings: TJS.PartialArgs = {
     required: false,
     noExtraProps: true,
     skipLibCheck: true,
-    ignoreErrors: true
+    ignoreErrors: true,
+    validationKeywords: ['deprecated']
 };
 
 const compilerOptions = {
