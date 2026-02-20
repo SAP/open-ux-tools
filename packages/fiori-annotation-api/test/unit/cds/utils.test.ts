@@ -1,5 +1,5 @@
-import { pathToFileURL } from 'url';
-import { join } from 'path';
+import { pathToFileURL } from 'node:url';
+import { join } from 'node:path';
 
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 

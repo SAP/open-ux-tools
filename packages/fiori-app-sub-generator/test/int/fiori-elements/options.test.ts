@@ -1,8 +1,8 @@
 import * as btpUtils from '@sap-ux/btp-utils';
 import '@sap-ux/jest-file-matchers';
-import { readdirSync, readFileSync } from 'fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ApiHubConfig, Project, Service, State } from '../../../src/types';
 import { ApiHubType, FloorplanFE } from '../../../src/types';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, originalCwd, runWritingPhaseGen } from '../test-utils';
@@ -40,11 +40,8 @@ describe('Optional settings', () => {
                 cleanTestDir(testDir);
             }
             process.chdir(originalCwd);
-        } catch {
-            () => {
-                // Needed for lint
-            };
-        }
+            // eslint-disable-next-line no-empty
+        } catch {}
     });
 
     beforeEach(() => {
@@ -58,24 +55,9 @@ describe('Optional settings', () => {
         });
     });
 
-    it('Code Assist', async () => {
-        testProjectName = 'lrop_v2_code_assist';
-        const expectedOutputPath = getExpectedOutputPath(testProjectName);
+    // Code Assist test removed - functionality deprecated and hidden
 
-        const testFEState: Partial<State> = cloneDeep({
-            ...defaultFEState,
-            project: Object.assign({}, project, {
-                name: testProjectName,
-                enableCodeAssist: true
-            }) as Project
-        });
-
-        await runWritingPhaseGen(testFEState);
-        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
-        cleanTestDir(join(testDir, testProjectName));
-    });
-
-    it('Eslint', async () => {
+    it('Add FLP Config to OData proxy project, without OData service (LCAP)', async () => {
         testProjectName = 'lrop_v2_eslint';
         const expectedOutputPath = getExpectedOutputPath(testProjectName);
 

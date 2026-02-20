@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { applyCAPUpdates } from '../../../src/cap-writer';
 import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types';
 import type { Editor } from 'mem-fs-editor';
@@ -175,5 +175,39 @@ describe('Test applyCAPUpdates updates files correctly', () => {
             'int-test': 'test command',
             start: 'start command'
         });
+    });
+
+    test('applyCAPUpdates should not update root package.json when disableRootPackageJsonUpdates is true but should still enable cds-ui5-plugin', async () => {
+        const testCapProject = 'test-cap-package-sapux';
+        const testOutput = join(__dirname, '../test-inputs', testCapProject);
+        const testProjectName = 'test-cap-app1';
+
+        const capService: CapServiceCdsInfo = {
+            ...capInfo,
+            projectPath: testOutput,
+            capType: 'Node.js'
+        };
+
+        const settings: CapProjectSettings = {
+            appRoot: join(__dirname, '../cap-writer/test-inputs', testCapProject),
+            packageName: testProjectName,
+            appId: `${testProjectName}-id`,
+            sapux: true,
+            enableCdsUi5Plugin: true,
+            disableRootPackageJsonUpdates: true
+        };
+
+        await applyCAPUpdates(fs, capService, settings);
+
+        const packageJsonPath = join(capService.projectPath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+
+        // watch script should NOT be added to root package.json when disableRootPackageJsonUpdates is true
+        const scripts = packageJson.scripts;
+        expect(scripts).toBeUndefined();
+
+        // sapux array should NOT be added to root package.json when disableRootPackageJsonUpdates is true
+        const sapUxArray = packageJson.sapux;
+        expect(sapUxArray).toBeUndefined();
     });
 });

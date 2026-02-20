@@ -1,4 +1,6 @@
-# @sap-ux/inquirer-common
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/inquirer-common/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/inquirer-common)
+
+# [`@sap-ux/inquirer-common`](https://github.com/SAP/open-ux-tools/tree/main/packages/inquirer-common)
 
 Commonly used shared functionality that supports prompting. Currently used by inquirer modules for example `@sap-ux/ui5-application-inquirer`, `@sap-ux/ui5-library-inquirer`. For example, choice searching and UI5 choice grouping. Add functionality that may be used by multiple prompting modules to prompte re-use.
 

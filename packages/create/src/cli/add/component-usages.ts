@@ -4,12 +4,13 @@ import {
     getVariant,
     ChangeType,
     getPromptsForAddComponentUsages,
+    isCFEnvironment,
     type ComponentUsagesData,
     type AddComponentUsageAnswers,
     type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpProject } from '../../validation/validation';
+import { validateAdpAppType } from '../../validation/validation';
 import { promptYUIQuestions } from '../../common';
 
 /**
@@ -19,8 +20,12 @@ import { promptYUIQuestions } from '../../common';
  */
 export function addComponentUsagesCommand(cmd: Command): void {
     cmd.command('component-usages [path]')
-        .description('Add component usages to an adaptation project, updating the manifest accordingly.')
-        .option('-s, --simulate', 'simulate only do not write or install')
+        .description(
+            `Add the component usages to an adaptation project.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add component-usages\``
+        )
+        .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .action(async (path, options) => {
             await addComponentUsages(path, !!options.simulate);
         });
@@ -38,7 +43,10 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
         if (!basePath) {
             basePath = process.cwd();
         }
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for CF projects.');
+        }
 
         const variant = await getVariant(basePath);
 

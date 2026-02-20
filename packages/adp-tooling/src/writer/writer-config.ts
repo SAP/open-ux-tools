@@ -1,7 +1,20 @@
+import { join } from 'node:path';
+
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { type AbapServiceProvider, AdaptationProjectType, type KeyUserChangeContent } from '@sap-ux/axios-extension';
 
+import type {
+    AdpWriterConfig,
+    AttributesAnswers,
+    CfAdpWriterConfig,
+    CloudApp,
+    ConfigAnswers,
+    CreateCfConfigParams,
+    CustomConfig,
+    OnpremApp,
+    UI5Version
+} from '../types';
 import {
     getFormattedVersion,
     getLatestVersion,
@@ -10,10 +23,10 @@ import {
     getVersionToBeUsed,
     shouldSetMinUI5Version
 } from '../ui5';
-import { FlexLayer } from '../types';
 import { getProviderConfig } from '../abap';
-import { getCustomConfig } from './project-utils';
-import type { AdpWriterConfig, AttributesAnswers, CloudApp, ConfigAnswers, OnpremApp, UI5Version } from '../types';
+import { AppRouterType, FlexLayer } from '../types';
+import { t } from '../i18n';
+import { getSupportedProject } from '../source';
 
 export interface ConfigOptions {
     /**
@@ -44,14 +57,29 @@ export interface ConfigOptions {
      * System UI5 Version.
      */
     systemVersion: string | undefined;
+
     /**
      * The application manifest.
      */
     manifest: Manifest | undefined;
+
+    /**
+     * The Adaptation project type.
+     */
+    projectType?: AdaptationProjectType;
+
     /**
      * Logger instance for debugging and error reporting.
      */
     logger: ToolsLogger;
+    /**
+     * The tools ID.
+     */
+    toolsId: string;
+    /**
+     * Optional: Key-user changes to be written to the project.
+     */
+    keyUserChanges?: KeyUserChangeContent[];
 }
 
 /**
@@ -77,19 +105,21 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         provider,
         publicVersions,
         systemVersion,
-        manifest
+        manifest,
+        projectType,
+        toolsId,
+        keyUserChanges
     } = options;
 
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
     const target = await getProviderConfig(configAnswers.system, logger);
-    const customConfig = getCustomConfig(operationsType, packageJson);
 
-    const isCloudProject = await provider.isAbapCloud();
+    const isCloudSystem = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
-    const ui5Version = isCloudProject
+    const ui5Version = isCloudSystem
         ? getLatestVersion(publicVersions)
         : getVersionToBeUsed(attributeAnswers.ui5Version, isCustomerBase, publicVersions);
 
@@ -110,7 +140,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         fioriId
     };
 
-    if (isCloudProject) {
+    const supportedProject = await getSupportedProject(provider);
+    if (projectType === AdaptationProjectType.CLOUD_READY) {
         const lrep = provider.getLayeredRepository();
         const { activeLanguages: languages } = await lrep.getSystemInfo();
 
@@ -125,12 +156,24 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     return {
         app,
         ui5,
-        customConfig,
+        customConfig: {
+            adp: {
+                environment: operationsType,
+                support: {
+                    id: packageJson.name ?? '',
+                    version: packageJson.version ?? '',
+                    toolsId
+                },
+                projectType,
+                supportedProject
+            }
+        },
         target,
         options: {
             fioriTools: true,
             enableTypeScript
-        }
+        },
+        keyUserChanges
     };
 }
 
@@ -152,5 +195,65 @@ export function getUi5Config(
         version: getFormattedVersion(ui5Version),
         frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version),
         shouldSetMinVersion: shouldSetMinUI5Version(systemVersion)
+    };
+}
+
+/**
+ * Create CF configuration from batch objects.
+ *
+ * @param {CreateCfConfigParams} params - The configuration parameters containing batch objects.
+ * @returns {CfAdpWriterConfig} The CF configuration.
+ */
+export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
+    const baseApp = params.cfServicesAnswers.baseApp;
+
+    if (!baseApp) {
+        throw new Error(t('errors.baseAppRequired'));
+    }
+
+    const ui5Version = getLatestVersion(params.publicVersions);
+
+    return {
+        app: {
+            id: baseApp.appId,
+            title: params.attributeAnswers.title,
+            layer: params.layer,
+            namespace: params.attributeAnswers.namespace,
+            manifest: params.manifest
+        },
+        baseApp,
+        cf: {
+            url: params.cfConfig.url,
+            org: params.cfConfig.org,
+            space: params.cfConfig.space,
+            html5RepoRuntimeGuid: params.html5RepoRuntimeGuid,
+            approuter: params.cfServicesAnswers.approuter ?? AppRouterType.MANAGED,
+            businessService: params.cfServicesAnswers.businessService ?? '',
+            businessSolutionName: params.cfServicesAnswers.businessSolutionName,
+            serviceInstanceGuid: params.serviceInstanceGuid,
+            backendUrls: params.backendUrls,
+            oauthPaths: params.oauthPaths,
+            serviceInfo: params.serviceInfo
+        },
+        project: {
+            name: params.attributeAnswers.projectName,
+            path: params.projectPath,
+            folder: join(params.projectPath, params.attributeAnswers.projectName)
+        },
+        customConfig: {
+            adp: {
+                support: {
+                    id: params.packageJson?.name ?? '',
+                    version: params.packageJson?.version ?? '',
+                    toolsId: params.toolsId ?? ''
+                }
+            }
+        } as CustomConfig,
+        ui5: {
+            version: ui5Version
+        },
+        options: {
+            addStandaloneApprouter: params.cfServicesAnswers.approuter === AppRouterType.STANDALONE
+        }
     };
 }

@@ -1,4 +1,6 @@
-# @sap-ux/fiori-annotation-api
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-annotation-api/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-annotation-api)
+
+# [`@sap-ux/fiori-annotation-api`](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-annotation-api)
 
 Provides high level design time API for working with OData services in context of SAP Fiori Elements. It uses the same data types for annotations and metadata as SAP Fiori Elements runtime and provides abstraction over service definition languages.
 
@@ -32,4 +34,3 @@ See usage in [`test/unit/fiori-service.test.ts`](test/unit/fiori-service.test.ts
 
 ## Keywords
 OData Fiori annotations
-

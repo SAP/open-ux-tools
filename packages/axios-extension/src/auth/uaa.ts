@@ -1,8 +1,8 @@
 import open = require('open');
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
-import http from 'http';
-import type { AddressInfo } from 'net';
+import http from 'node:http';
+import type { AddressInfo } from 'node:net';
 import qs from 'qs';
 import type { Logger } from '@sap-ux/logger';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
@@ -24,7 +24,10 @@ export class Uaa {
      * @param serviceInfo service Information
      * @param log logger
      */
-    constructor(serviceInfo: ServiceInfo, protected log: Logger) {
+    constructor(
+        serviceInfo: ServiceInfo,
+        protected log: Logger
+    ) {
         this.validatePropertyExists(serviceInfo.uaa.clientid, 'Client ID missing');
         this.validatePropertyExists(serviceInfo.uaa.clientsecret, 'Client Secret missing');
         this.validatePropertyExists(serviceInfo.uaa.url, 'UAA URL missing');

@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`create-controller-extension getFunctionalityDetails getFunctionalityDetails 1`] = `
+Object {
+  "description": "Add new controller extension by creating javascript or typescript file and updates manifest.json with entry. Controller extensions allow users to extensiate default behaviour with custom controllers code.",
+  "functionalityId": "create-controller-extension",
+  "name": "Add new controller extension by creating javascript or typescript file and updates manifest.json with entry",
+  "parameters": Object {
+    "additionalProperties": false,
+    "properties": Object {
+      "controllerName": Object {
+        "description": "Name of new controller extension file",
+        "pattern": "^[A-Za-z][A-Za-z0-9_-]*$",
+        "type": "string",
+      },
+      "pageId": Object {
+        "description": "If controller extension should be assigned for specific page, then pageId should be provided",
+        "enum": Array [
+          "TravelList",
+          "TravelObjectPage",
+        ],
+        "type": "string",
+      },
+      "pageType": Object {
+        "default": "ListReport",
+        "description": "Type of page",
+        "enum": Array [
+          "ListReport",
+          "ObjectPage",
+        ],
+        "type": "string",
+      },
+    },
+    "required": Array [
+      "pageType",
+      "controllerName",
+    ],
+    "type": "object",
+  },
+}
+`;

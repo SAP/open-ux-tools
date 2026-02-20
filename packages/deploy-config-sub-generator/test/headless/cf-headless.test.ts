@@ -1,13 +1,14 @@
 import hasbin from 'hasbin';
-import * as childProcess from 'child_process';
+import * as childProcess from 'node:child_process';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
-import { readdirSync, writeFileSync } from 'fs';
+import { readdirSync, writeFileSync } from 'node:fs';
 import { copy, existsSync } from 'fs-extra';
-import { readFile, rename } from 'fs/promises';
+import { readFile, rename } from 'node:fs/promises';
 import { rimraf } from 'rimraf';
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
-import { DeployTarget, type TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { hostEnvironment, DeployTarget } from '@sap-ux/fiori-generator-shared';
+import type { AppConfig, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import {
     INPUT_APP_DIR_CF,
     INPUT_APP_NAME_BASE,
@@ -21,9 +22,8 @@ import {
     ignoreMatcherOpts
 } from './fixtures/constants';
 import { runHeadlessGen } from './utils';
-import Generator from 'yeoman-generator';
 import { generatorNamespace, initI18n } from '../../src/utils';
-import type { AppConfig } from '@sap-ux/fiori-generator-shared';
+import HeadlessGenerator from '../../src/headless';
 
 expect.extend({ toMatchFolder });
 
@@ -43,7 +43,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./mockMta').MockMta
     };
 });
@@ -65,15 +65,16 @@ describe('Test headless generator', () => {
     jest.setTimeout(1200000);
 
     beforeAll(async () => {
+        jest.restoreAllMocks();
         jest.spyOn(hasbin, 'sync').mockReturnValue(true);
-        rimraf.sync(OUTPUT_DIR);
+        rimraf.rimrafSync(OUTPUT_DIR);
         await copy(INPUT_APP_DIR_CF, OUTPUT_DIR);
         // This is a hack to ensure it only returns CLI in all situations
         process.stdin.isTTY = true;
     });
 
     beforeEach(() => {
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
+        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 }) as any);
     });
 
     afterEach(() => {
@@ -85,11 +86,12 @@ describe('Test headless generator', () => {
         try {
             if (readdirSync(OUTPUT_DIR).length === 0) {
                 console.log('Removing test output folder');
-                rimraf.sync(OUTPUT_DIR);
+                rimraf.rimrafSync(OUTPUT_DIR);
             }
         } catch {
             // do nothing
         }
+        jest.resetAllMocks();
     });
 
     it('Test: Headless deploy-config', async () => {
@@ -105,7 +107,7 @@ describe('Test headless generator', () => {
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/.gitignore`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/webapp/manifest.json`, 'utf-8')).toMatchSnapshot();
-        rimraf.sync(join(OUTPUT_DIR, testAppName));
+        rimraf.rimrafSync(join(OUTPUT_DIR, testAppName));
     });
 
     it('Test: Headless deploy-config TypeScript - Headless Script', async () => {
@@ -120,7 +122,7 @@ describe('Test headless generator', () => {
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/.gitignore`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/webapp/manifest.json`, 'utf-8')).toMatchSnapshot();
-        rimraf.sync(join(OUTPUT_DIR, testAppName));
+        rimraf.rimrafSync(join(OUTPUT_DIR, testAppName));
     });
 
     it('Test: Headless deploy-config - addToManagedAppRouter ', async () => {
@@ -133,7 +135,7 @@ describe('Test headless generator', () => {
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/.gitignore`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/xs-security.json`, 'utf-8')).toMatchSnapshot();
-        rimraf.sync(join(OUTPUT_DIR, testAppName));
+        rimraf.rimrafSync(join(OUTPUT_DIR, testAppName));
     });
 
     it('Test: Headless deploy-config - addToManagedAppRouter inside a cap project', async () => {
@@ -155,7 +157,7 @@ describe('Test headless generator', () => {
         expect(
             await readFile(`${OUTPUT_DIR}/${INPUT_CAP_APP_NAME}/app/${testAppName}/package.json`, 'utf-8')
         ).toMatchSnapshot();
-        rimraf.sync(join(OUTPUT_DIR, INPUT_CAP_APP_NAME));
+        rimraf.rimrafSync(join(OUTPUT_DIR, INPUT_CAP_APP_NAME));
     });
 
     it('Test: Headless deploy-config - addMTADestination inside a cap project', async () => {
@@ -180,7 +182,7 @@ describe('Test headless generator', () => {
         expect(
             await readFile(`${OUTPUT_DIR}/${INPUT_CAP_DEST_APP_NAME}/app/${testAppName}/package.json`, 'utf-8')
         ).toMatchSnapshot();
-        rimraf.sync(join(OUTPUT_DIR, INPUT_CAP_DEST_APP_NAME));
+        rimraf.rimrafSync(join(OUTPUT_DIR, INPUT_CAP_DEST_APP_NAME));
     });
 
     it('Test: Headless deploy-config - addMTADestination inside a cap java project', async () => {
@@ -207,7 +209,7 @@ describe('Test headless generator', () => {
         expect(
             await readFile(`${OUTPUT_DIR}/${INPUT_CAP_JAVA_DEST_APP_NAME}/app/${testAppName}/package.json`, 'utf-8')
         ).toMatchSnapshot();
-        rimraf.sync(join(OUTPUT_DIR, INPUT_CAP_JAVA_DEST_APP_NAME));
+        rimraf.rimrafSync(join(OUTPUT_DIR, INPUT_CAP_JAVA_DEST_APP_NAME));
     });
 
     it('Test: Headless deploy-config - localAppChanges inside an existing CAP project', async () => {
@@ -215,7 +217,7 @@ describe('Test headless generator', () => {
 
         await runHeadlessGen(INPUT_LCAP_CHANGES, DeployTarget.CF, join(OUTPUT_DIR, INPUT_LCAP_CHANGES, 'app'));
         expect(join(OUTPUT_DIR, INPUT_LCAP_CHANGES)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
-        rimraf.sync(join(OUTPUT_DIR, INPUT_LCAP_CHANGES));
+        rimraf.rimrafSync(join(OUTPUT_DIR, INPUT_LCAP_CHANGES));
     });
 
     it('Test: Headless deploy-config - localAppChanges flag is ignored if set to true when parent is non-CAP', async () => {
@@ -239,7 +241,7 @@ describe('Test headless generator', () => {
         expect(
             await readFile(`${OUTPUT_DIR}/${INPUT_PARENT_APP}/${testAppName}/webapp/manifest.json`, 'utf-8')
         ).toMatchSnapshot();
-        rimraf.sync(join(OUTPUT_DIR, INPUT_PARENT_APP));
+        rimraf.rimrafSync(join(OUTPUT_DIR, INPUT_PARENT_APP));
     });
 
     it('Test: Headless deploy-config - pass app config as file path and options', async () => {
@@ -254,7 +256,7 @@ describe('Test headless generator', () => {
         const lcapTestProjectSrc = join(INPUT_APP_DIR_CF, INPUT_LCAP_CHANGES);
         const lcapTestProjectDest = join(OUTPUT_DIR, INPUT_LCAP_CHANGES);
         if (existsSync(lcapTestProjectDest)) {
-            rimraf.sync(lcapTestProjectDest);
+            rimraf.rimrafSync(lcapTestProjectDest);
         }
         await copy(lcapTestProjectSrc, lcapTestProjectDest);
         // Create the app config file with absolute target folder property
@@ -270,7 +272,7 @@ describe('Test headless generator', () => {
         const expectedOutputPath = join(__dirname, '/expected-output', INPUT_LCAP_CHANGES);
         expect(join(OUTPUT_DIR, INPUT_LCAP_CHANGES)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
         expect(existsSync(appConfigFilePathTest)).toBeFalsy();
-        rimraf.sync(join(OUTPUT_DIR, INPUT_LCAP_CHANGES));
+        rimraf.rimrafSync(join(OUTPUT_DIR, INPUT_LCAP_CHANGES));
     });
 
     it('Test: Headless deploy-config - telemetry is sent', async () => {
@@ -284,14 +286,16 @@ describe('Test headless generator', () => {
         // Dont run the expensive phases that are not under test, prompting is run but doesnt prompt since `launchDeployConfigAsSubGenerator` is true
         jest.spyOn(CFGen.prototype, 'writing').mockImplementation(jest.fn());
         jest.spyOn(CFGen.prototype, 'initializing').mockImplementation(jest.fn());
-        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
+        const composeWithSpy = jest
+            .spyOn(HeadlessGenerator.prototype as any, 'composeWith')
+            .mockResolvedValue(undefined);
         await runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR);
 
         expect(composeWithSpy).toHaveBeenCalledWith(
             expect.stringMatching(generatorNamespace('gen:test', 'cf')),
             expect.objectContaining({ telemetryData: expect.objectContaining(expectedTelemetryProperties) })
         );
-        rimraf.sync(join(OUTPUT_DIR, testAppName));
+        rimraf.rimrafSync(join(OUTPUT_DIR, testAppName));
     });
 
     it('Test: Headless deploy-config - should throw an exception if appConfig is missing', async () => {
@@ -300,6 +304,6 @@ describe('Test headless generator', () => {
         await expect(runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR)).rejects.toThrow(
             'Please provide one of the following: 1) The first argument of the file path to the application config file, 2) The first argument of the application config file as a JSON string, or 3) The option `appconfig` as a JSON object.'
         );
-        rimraf.sync(join(OUTPUT_DIR, testAppName));
+        rimraf.rimrafSync(join(OUTPUT_DIR, testAppName));
     });
 });

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 import * as hasbin from 'hasbin';
 import { create as createStorage } from 'mem-fs';
@@ -9,7 +9,7 @@ import { type CFBaseConfig, generateBaseConfig } from '../../src';
 import { RouterModuleType } from '../../src/types';
 import { MTABinNotFound } from '../../src/constants';
 import type { Editor } from 'mem-fs-editor';
-import fs from 'fs';
+import fs from 'node:fs';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),

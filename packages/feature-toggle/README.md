@@ -1,4 +1,6 @@
-# @sap-ux/feature-toggle
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/feature-toggle/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/feature-toggle)
+
+# [`@sap-ux/feature-toggle`](https://github.com/SAP/open-ux-tools/tree/main/packages/feature-toggle)
 
 This module can be used for accessing and managing feature toggles in Fiori tools.
 

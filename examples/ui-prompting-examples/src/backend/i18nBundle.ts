@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { I18nBundle, NewI18nEntry } from '@sap-ux/i18n';
 

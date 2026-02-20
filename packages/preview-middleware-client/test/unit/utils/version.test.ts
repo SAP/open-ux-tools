@@ -10,11 +10,11 @@ import { CommunicationService } from 'open/ux/preview/client/cpe/communication-s
 describe('utils/version', () => {
     test('getUi5Version with lib sap.m', async () => {
         const versionInfoLoadMock = jest.spyOn(VersionInfo, 'load').mockResolvedValueOnce({
-            name: 'sap.m',
-            version: '1.124.11'
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.m', version: '1.124.11' }]
         });
         const version = await getUi5Version('sap.m');
-        expect(versionInfoLoadMock).toHaveBeenCalledWith({ library: 'sap.m' });
+        expect(versionInfoLoadMock).toHaveBeenCalledWith();
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(124);
         expect(version.patch).toEqual(11);
@@ -23,17 +23,17 @@ describe('utils/version', () => {
     test('getUi5Version with fallback to sap.ui.core', async () => {
         const versionInfoLoadMock = jest.spyOn(VersionInfo, 'load');
         versionInfoLoadMock.mockResolvedValueOnce({
-            name: 'sap.ui.core',
-            version: '1.124.11'
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.124.11' }]
         });
         const version = await getUi5Version();
-        expect(versionInfoLoadMock).toHaveBeenCalledWith({ library: 'sap.ui.core' });
+        expect(versionInfoLoadMock).toHaveBeenCalledWith();
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(124);
         expect(version.patch).toEqual(11);
     });
 
-    test('getUi5Version fallback to 1.130.0', async () => {
+    test('getUi5Version fallback to 1.130.9', async () => {
         jest.spyOn(CommunicationService, 'sendAction');
         const version = await getUi5Version();
         expect(version.major).toEqual(1);
@@ -41,7 +41,7 @@ describe('utils/version', () => {
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'SAPUI5 Version Retrieval Failed',
-                description: `Could not get the SAPUI5 version of the application. Using 1.130.0 as fallback.`,
+                description: `Could not get the SAPUI5 version of the application. Using 1.130.9 as fallback.`,
                 type: MessageBarType.error
             })
         );
@@ -49,11 +49,16 @@ describe('utils/version', () => {
 
     test('getUi5Version for snapshot', async () => {
         const versionInfoLoadMock = jest.spyOn(VersionInfo, 'load').mockResolvedValueOnce({
-            name: 'sap.ui.core',
-            version: '1.128.0-SNAPSHOT'
+            name: 'SAPUI5 Distribution',
+            libraries: [
+                {
+                    name: 'sap.ui.core',
+                    version: '1.128.0-SNAPSHOT'
+                }
+            ]
         });
         const version = await getUi5Version();
-        expect(versionInfoLoadMock).toHaveBeenCalledWith({ library: 'sap.ui.core' });
+        expect(versionInfoLoadMock).toHaveBeenCalledWith();
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(128);
     });

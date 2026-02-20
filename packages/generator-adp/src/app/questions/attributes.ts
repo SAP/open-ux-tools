@@ -18,39 +18,39 @@ import type {
     TargetFolderPromptOptions,
     EnableTypeScriptPromptOptions,
     AddDeployConfigPromptOptions,
-    AddFlpConfigPromptOptions
+    AddFlpConfigPromptOptions,
+    OptionalPromptsConfig,
+    ImportKeyUserChangesPromptOptions
 } from '../types';
 import { t } from '../../utils/i18n';
-import { attributePromptNames } from '../types';
+import { attributePromptNames, SystemType } from '../types';
 import { getProjectNameTooltip } from './helper/tooltip';
 import { getVersionAdditionalMessages } from './helper/additional-messages';
-import { updateWizardSteps, getDeployPage, updateFlpWizardSteps } from '../../utils/steps';
+import { updateWizardSteps, getDeployPage, updateFlpWizardSteps, getKeyUserImportPage } from '../../utils/steps';
 import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
-
-interface Config {
-    isCloudProject: boolean;
-    layer: FlexLayer;
-    ui5Versions: string[];
-    isVersionDetected: boolean;
-    prompts: YeomanUiSteps;
-}
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Returns all project attribute prompts, filtering based on promptOptions.
  *
  * @param {string} path - The project base path.
- * @param {Config} config - Configuration values needed for conditional prompt logic.
+ * @param {OptionalPromptsConfig} config - Configuration values needed for conditional prompt logic.
  * @param {AttributePromptOptions} [promptOptions] - Optional settings to control visibility and defaults.
  * @returns {AttributesQuestion[]} An array of prompt objects for basic info input.
  */
-export function getPrompts(path: string, config: Config, promptOptions?: AttributePromptOptions): AttributesQuestion[] {
-    const { isVersionDetected, ui5Versions, isCloudProject, layer, prompts } = config;
+export function getPrompts(
+    path: string,
+    config: OptionalPromptsConfig,
+    promptOptions?: AttributePromptOptions
+): AttributesQuestion[] {
+    const { isVersionDetected, ui5Versions, systemType, projectType, layer, prompts, isCfEnv = false } = config;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
     const keyedPrompts: Record<attributePromptNames, AttributesQuestion> = {
         [attributePromptNames.projectName]: getProjectNamePrompt(
             path,
             isCustomerBase,
+            isCfEnv,
             promptOptions?.[attributePromptNames.projectName]
         ),
         [attributePromptNames.title]: getApplicationTitlePrompt(promptOptions?.[attributePromptNames.title]),
@@ -59,7 +59,7 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
             promptOptions?.[attributePromptNames.namespace]
         ),
         [attributePromptNames.targetFolder]: getTargetFolderPrompt(promptOptions?.[attributePromptNames.targetFolder]),
-        [attributePromptNames.ui5Version]: getUi5VersionPrompt(ui5Versions, isVersionDetected, isCloudProject),
+        [attributePromptNames.ui5Version]: getUi5VersionPrompt(ui5Versions, isVersionDetected, systemType),
         [attributePromptNames.ui5ValidationCli]: getUi5VersionValidationPromptForCli(),
         [attributePromptNames.enableTypeScript]: getEnableTypeScriptPrompt(
             promptOptions?.[attributePromptNames.enableTypeScript]
@@ -70,8 +70,12 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
         ),
         [attributePromptNames.addFlpConfig]: getFlpConfigPrompt(
             prompts,
-            isCloudProject,
+            projectType,
             promptOptions?.[attributePromptNames.addFlpConfig]
+        ),
+        [attributePromptNames.importKeyUserChanges]: getImportKeyUserChangesPrompt(
+            prompts,
+            promptOptions?.[attributePromptNames.importKeyUserChanges]
         )
     };
 
@@ -90,10 +94,16 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
  *
  * @param {string} path - The base project path.
  * @param {boolean} isCustomerBase - Whether the layer is CUSTOMER_BASE.
+ * @param {boolean} isCfEnv - Whether the project is in a CF environment.
  * @param {ProjectNamePromptOptions} [_] - Optional prompt options.
  * @returns {AttributesQuestion} The prompt configuration for project name.
  */
-function getProjectNamePrompt(path: string, isCustomerBase: boolean, _?: ProjectNamePromptOptions): AttributesQuestion {
+function getProjectNamePrompt(
+    path: string,
+    isCustomerBase: boolean,
+    isCfEnv: boolean,
+    _?: ProjectNamePromptOptions
+): AttributesQuestion {
     return {
         type: 'input',
         name: attributePromptNames.projectName,
@@ -105,7 +115,7 @@ function getProjectNamePrompt(path: string, isCustomerBase: boolean, _?: Project
             hint: getProjectNameTooltip(isCustomerBase)
         },
         validate: (value: string, answers: AttributesAnswers) =>
-            validateProjectName(value, answers.targetFolder || path, isCustomerBase),
+            validateProjectName(value, answers.targetFolder || path, isCustomerBase, isCfEnv),
         store: false
     } as InputQuestion<AttributesAnswers>;
 }
@@ -193,19 +203,19 @@ function getTargetFolderPrompt(options?: TargetFolderPromptOptions): AttributesQ
  *
  * @param {string[]} ui5Versions - Array of available UI5 versions.
  * @param {boolean} isVersionDetected - Whether a UI5 version was detected from the system.
- * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
+ * @param {boolean} systemType - The system type.
  * @returns {AttributesQuestion} The prompt configuration for UI5 version.
  */
 function getUi5VersionPrompt(
     ui5Versions: string[],
     isVersionDetected: boolean,
-    isCloudProject: boolean
+    systemType?: SystemType
 ): AttributesQuestion {
     return {
         type: 'list',
         name: attributePromptNames.ui5Version,
         message: t('prompts.ui5VersionLabel'),
-        when: !isCloudProject,
+        when: systemType !== SystemType.CLOUD_READY,
         choices: ui5Versions,
         guiOptions: {
             applyDefaultWhenDirty: true,
@@ -287,13 +297,13 @@ export function getAddDeployConfigPrompt(prompts: YeomanUiSteps, _?: AddDeployCo
  * Creates the Add FLP Config confirm prompt.
  *
  * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
- * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
+ * @param {boolean} projectType - The project type.
  * @param {AddFlpConfigPromptOptions} options - Optional prompt options to control visibility.
  * @returns {AttributesQuestion} The prompt configuration for Add FLP config confirmation.
  */
 export function getFlpConfigPrompt(
     prompts: YeomanUiSteps,
-    isCloudProject: boolean,
+    projectType?: AdaptationProjectType,
     options?: AddFlpConfigPromptOptions
 ): AttributesQuestion {
     return {
@@ -304,9 +314,35 @@ export function getFlpConfigPrompt(
         guiOptions: {
             breadcrumb: true
         },
-        when: () => isCloudProject,
+        when: () => projectType === AdaptationProjectType.CLOUD_READY,
         validate: (value: boolean, answers: AttributesAnswers) => {
             updateFlpWizardSteps(!!options?.hasBaseAppInbounds, prompts, answers.projectName, value);
+            return true;
+        }
+    } as ConfirmQuestion<AttributesAnswers>;
+}
+
+/**
+ * Creates the Import Key User Changes confirm prompt.
+ *
+ * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
+ * @param {ImportKeyUserChangesPromptOptions} options - Optional prompt options.
+ * @returns {AttributesQuestion} The prompt configuration for copying key user changes.
+ */
+function getImportKeyUserChangesPrompt(
+    prompts: YeomanUiSteps,
+    options?: ImportKeyUserChangesPromptOptions
+): AttributesQuestion {
+    return {
+        type: 'confirm',
+        name: attributePromptNames.importKeyUserChanges,
+        message: t('prompts.importKeyUserChangesLabel'),
+        default: options?.default ?? false,
+        guiOptions: {
+            breadcrumb: true
+        },
+        validate: (value: boolean) => {
+            updateWizardSteps(prompts, getKeyUserImportPage(), t('yuiNavSteps.projectAttributesName'), value);
             return true;
         }
     } as ConfirmQuestion<AttributesAnswers>;

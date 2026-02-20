@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { CdsEnvironment, NewI18nEntry } from '../../types';
 import { getI18nConfiguration, getCapI18nFolder } from '../../utils';
 import { tryAddJsonTexts } from './json';

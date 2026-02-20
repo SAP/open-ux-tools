@@ -134,7 +134,7 @@ describe('Setting defaults', () => {
                 framework: 'SAPUI5',
                 frameworkUrl: 'https://ui5.sap.com',
                 version: '1.80.0',
-                localVersion: '1.80.0',
+                localVersion: '1.84.54',
                 minUI5Version: '1.80.0',
                 descriptorVersion: '1.24.0',
                 typesVersion: '~1.80.0',
@@ -153,7 +153,7 @@ describe('Setting defaults', () => {
                 framework: 'SAPUI5',
                 frameworkUrl: 'https://ui5.unreleased.sap.com',
                 version: 'snapshot-1.80',
-                localVersion: '1.80.0',
+                localVersion: '1.84.54',
                 minUI5Version: 'snapshot-1.80',
                 descriptorVersion: '1.24.0',
                 typesVersion: '~1.80.0',
@@ -179,24 +179,6 @@ describe('Setting defaults', () => {
                 descriptorVersion: '1.22.0',
                 typesVersion: '~1.78.0',
                 typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
-                ui5Theme: 'sap_fiori_3',
-                ui5Libs: defaultUI5Libs
-            }
-        },
-        // 9 - Test that ui5 versions >= 1.100 resolve to the correct manifest version
-        {
-            input: {
-                version: '1.199.0'
-            },
-            expected: {
-                framework: 'SAPUI5',
-                frameworkUrl: 'https://ui5.sap.com',
-                version: '1.199.0',
-                localVersion: '1.199.0',
-                minUI5Version: '1.199.0',
-                descriptorVersion: '1.76.0',
-                typesVersion: `~1.199.0`,
-                typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -228,7 +210,7 @@ describe('Setting defaults', () => {
                 framework: 'SAPUI5',
                 frameworkUrl: 'https://ui5.sap.com',
                 version: '1.28.0',
-                localVersion: '1.76.0',
+                localVersion: '1.84.54',
                 minUI5Version: '1.28.0',
                 descriptorVersion: '1.12.0',
                 typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`,
@@ -260,6 +242,13 @@ describe('Setting defaults', () => {
 
     test.each(testData)('mergeUi5 testData index: $#', async (test) => {
         expect(mergeUi5(test.input)).toEqual(test.expected);
+    });
+
+    // Test case 9 - UI5 version >= 1.100 resolves to correct manifest version
+    // This uses snapshot because the descriptorVersion changes when @ui5/manifest is updated
+    it('mergeUi5 resolves correct manifest version for UI5 >= 1.100', () => {
+        const input = { version: '1.199.0' };
+        expect(mergeUi5(input)).toMatchSnapshot();
     });
 
     it('merge Ui5App.package settings with defaults', async () => {

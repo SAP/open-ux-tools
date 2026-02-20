@@ -1,3 +1,4 @@
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
     setAppMode,
     setUndoRedoEnablement,
@@ -5,12 +6,11 @@ import {
     undo,
     redo,
     save,
-    ExternalAction,
     reloadApplication,
     applicationModeChanged
 } from '@sap-ux-private/control-property-editor-common';
-import { ActionSenderFunction, SubscribeFunction } from './types';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type { ActionSenderFunction, SubscribeFunction } from './types';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
  * A Class of RtaService
@@ -18,7 +18,7 @@ import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 export class RtaService {
     /**
      *
-     * @param options ui5 adaptation options.
+     * @param rta Runtime Authoring Instance
      */
     constructor(private readonly rta: RuntimeAuthoring) {}
 
@@ -54,7 +54,7 @@ export class RtaService {
             });
 
             this.rta.attachStop(() => {
-                // eslint-disable-next-line fiori-custom/sap-no-location-reload
+                // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-location-reload
                 location.reload();
             });
             this.rta.attachStart(() => {

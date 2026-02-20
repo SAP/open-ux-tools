@@ -9,8 +9,8 @@ import inquirer from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
-import { promisify } from 'util';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
 
 const sampleAppPath = join(__dirname, '../sample/fe-app');
 const testAppPath = join(__dirname, '../test-output/fe-app', `${Date.now()}`);

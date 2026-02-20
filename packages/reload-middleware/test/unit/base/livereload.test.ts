@@ -5,7 +5,7 @@ import livereload from 'livereload';
 import * as connectLivereload from 'connect-livereload';
 import portfinder from 'portfinder';
 import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from '../../../src/base/constants';
-import { join } from 'path';
+import { join } from 'node:path';
 import { watchManifestChanges } from '../../../src/base/livereload';
 
 jest.mock('connect-livereload', () => ({

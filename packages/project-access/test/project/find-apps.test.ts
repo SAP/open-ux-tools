@@ -1,4 +1,4 @@
-import { basename, dirname, join } from 'path';
+import { basename, dirname, join } from 'node:path';
 import type { CapProjectType, WorkspaceFolder } from '../../src';
 import {
     findAllApps,
@@ -341,6 +341,14 @@ describe('Test findCapProjects()', () => {
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements')
         ].sort();
         expect(capProjects).toEqual(expectedProjects);
+    });
+    test('Find CAP projects, noTraversal: true', async () => {
+        const capProjects = await findCapProjects({
+            wsFolders: [join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix/app')],
+            noTraversal: true
+        });
+
+        expect(capProjects).toEqual([]);
     });
 });
 

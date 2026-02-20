@@ -10,7 +10,8 @@ import {
     YUI_EXTENSION_ID,
     YUI_MIN_VER_FILES_GENERATED_MSG,
     sendTelemetry,
-    TelemetryHelper
+    TelemetryHelper,
+    setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from '@sap-ux/abap-deploy-config-inquirer';
 import { generate as generateAbapDeployConfig } from '@sap-ux/abap-deploy-config-writer';
@@ -32,7 +33,6 @@ import { initI18n } from '../utils/i18n';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { AbapDeployConfigOptions } from './types';
 import type {
@@ -41,6 +41,8 @@ import type {
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { getVariantNamespace } from '../utils/project';
+import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * ABAP deploy config generator.
@@ -56,6 +58,8 @@ export default class extends DeploymentGenerator {
     private configExists: boolean;
     private answers: AbapDeployConfigAnswersInternal;
     private projectType: DeployProjectType;
+    private adpProjectType?: AdaptationProjectType;
+    private isAdp: boolean;
 
     /**
      * Constructor for the ABAP deploy config generator.
@@ -67,6 +71,7 @@ export default class extends DeploymentGenerator {
         super(args, opts);
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
         this.launchStandaloneFromYui = opts.launchStandaloneFromYui;
+        this.adpProjectType = opts.adpProjectType;
 
         this.appWizard = opts.appWizard || AppWizard.create(opts);
         this.vscode = opts.vscode;
@@ -87,13 +92,15 @@ export default class extends DeploymentGenerator {
             watchTelemetrySettingStore: false
         });
 
-        // hack to suppress yeoman's overwrite prompt when files already exist
-        // required when running the deploy config generator in standalone mode
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
+
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();
+            // NOTE: This _initializing() method is called here when the generator is started as standalone generator.
+            // In the writing phase the same method is called when the generator is started as a sub-generator.
+            // This casues the adpProjectType field to be overriden with undefined in case the generator is started as
+            // sub-generator, that's why we leave the initialization out of the _initializing() method.
+            this.adpProjectType = await getExistingAdpProjectType(this.destinationRoot());
         }
     }
 
@@ -174,24 +181,25 @@ export default class extends DeploymentGenerator {
         }
         if (!this.launchDeployConfigAsSubGenerator) {
             const appType = await getAppType(this.destinationPath());
-            const isAdp = appType === 'Fiori Adaptation';
+            this.isAdp = appType === 'Fiori Adaptation';
             const packageAdditionalValidation = {
-                shouldValidatePackageForStartingPrefix: isAdp,
-                shouldValidatePackageType: isAdp,
-                shouldValidateFormatAndSpecialCharacters: isAdp
+                shouldValidatePackageForStartingPrefix: this.isAdp,
+                shouldValidatePackageType: this.isAdp,
+                shouldValidateFormatAndSpecialCharacters: this.isAdp
             };
+            const hideIfOnPremise = this.adpProjectType === AdaptationProjectType.ON_PREMISE;
             const promptOptions: AbapDeployConfigPromptOptions = {
-                ui5AbapRepo: { hideIfOnPremise: isAdp },
-                transportInputChoice: { hideIfOnPremise: isAdp },
+                ui5AbapRepo: { hideIfOnPremise },
+                transportInputChoice: { hideIfOnPremise },
                 packageAutocomplete: {
                     additionalValidation: packageAdditionalValidation
                 },
                 packageManual: {
                     additionalValidation: packageAdditionalValidation
                 },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: isAdp } }
+                adpProjectType: this.adpProjectType
             };
-            const indexGenerationAllowed = this.indexGenerationAllowed && !isAdp;
+            const indexGenerationAllowed = this.indexGenerationAllowed && !this.isAdp;
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
                 appRootPath: this.destinationRoot(),
                 connectedSystem: this.options.connectedSystem,
@@ -227,9 +235,9 @@ export default class extends DeploymentGenerator {
                 client: this.answers.client,
                 destination: this.answers.destination
             }));
-        this.answers.isS4HC =
-            this.options.isS4HC ||
-            this.answers.isS4HC ||
+        this.answers.isAbapCloud =
+            this.options.isAbapCloud ||
+            this.answers.isAbapCloud ||
             (await determineS4HCFromTarget({
                 url: this.answers.url,
                 client: this.answers.client,
@@ -289,7 +297,8 @@ export default class extends DeploymentGenerator {
         if (this.abort || this.answers.overwrite === false) {
             return;
         }
-        const namespace = await getVariantNamespace(this.destinationPath(), !!this.answers.isS4HC);
+        const isCloudAdpProject = this.adpProjectType === AdaptationProjectType.CLOUD_READY;
+        const namespace = await getVariantNamespace(this.destinationPath(), isCloudAdpProject, this.fs);
         await generateAbapDeployConfig(
             this.destinationPath(),
             {
@@ -298,7 +307,7 @@ export default class extends DeploymentGenerator {
                     client: this.answers.client,
                     scp: this.answers.scp,
                     destination: this.answers.destination,
-                    authenticationType: this.answers.isS4HC ? AuthenticationType.ReentranceTicket : undefined // only reentrance ticket is relevant for writing to deploy config
+                    authenticationType: this.answers.isAbapCloud ? AuthenticationType.ReentranceTicket : undefined
                 },
                 app: {
                     name: this.answers.ui5AbapRepo,
@@ -311,7 +320,8 @@ export default class extends DeploymentGenerator {
             } as AbapDeployConfig,
             {
                 baseFile: this.options.base,
-                deployFile: this.options.config
+                deployFile: this.options.config,
+                addBuildToUndeployScript: !this.isAdp
             },
             this.fs
         );

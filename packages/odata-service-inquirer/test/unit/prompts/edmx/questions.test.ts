@@ -1,9 +1,9 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { TableType } from '@sap-ux/fiori-elements-writer';
-import type { ConfirmQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
@@ -14,7 +14,7 @@ import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../
 import * as Types from '../../../../src/types';
 import { EntityPromptNames } from '../../../../src/types';
 import { PromptState } from '../../../../src/utils';
-import { join } from 'path';
+import { join } from 'node:path';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 
@@ -152,9 +152,15 @@ describe('Test entity prompts', () => {
             message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
             severity: Severity.warning
         });
-        // validate is currently used to warn about no entities, although perhaps we shoudld be using additionalMessages
-        const validateResult = (mainEntityPrompt.validate as Function)();
+        // validate is currently used to warn about no entities, although perhaps we should be using additionalMessages
+        // Pass a mock entity value to test entity choices validation
+        const mockEntity = { entitySetName: 'TestEntity', entitySetType: 'TestType' } as EntityAnswer;
+        const validateResult = (mainEntityPrompt.validate as Function)(mockEntity);
         expect(validateResult).toBe(true);
+
+        // Test validation when no value is provided (user deleted the field)
+        const validateResultNull = (mainEntityPrompt.validate as Function)(null);
+        expect(validateResultNull).toBe(t('prompts.mainEntitySelection.requiredError'));
 
         const navEntityPrompt = questions.find(
             (question) => question.name === EntityPromptNames.navigationEntity
@@ -362,12 +368,58 @@ describe('Test entity prompts', () => {
             severity: Severity.information
         });
 
-        // If the user has already selected a table type, return it
+        // Test TreeTable default message for entity with recursive hierarchy
+        const metadataV4WithHierarchyRecursiveHierarchy = await readFile(
+            join(__dirname, '../test-data/metadataV4WithHierarchyRecursiveHierarchy.xml'),
+            'utf8'
+        );
+        const questionsWithHierarchy = getEntitySelectionQuestions(
+            metadataV4WithHierarchyRecursiveHierarchy,
+            'lrop',
+            false
+        );
+        const tableTypeWithHierarchy = questionsWithHierarchy.find(
+            (question) => question.name === EntityPromptNames.tableType
+        ) as ListQuestion;
+        // Simulate prevAnswers with mainEntity that has recursive hierarchy
+        const hierarchyEntity = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'P_SADL_HIER_UUID_D_COMPNY_ROOT',
+                entitySetType: 'SAP__self.P_SADL_HIER_UUID_D_COMPNY_ROOTType'
+            }
+        };
+        expect((tableTypeWithHierarchy.default as Function)(hierarchyEntity)).toEqual('TreeTable');
+        expect((tableTypeWithHierarchy.additionalMessages as Function)('TreeTable')).toEqual({
+            message: t('prompts.tableType.treeTableDefault'),
+            severity: Severity.information
+        });
+
+        // Test tableType validation with valid value
+        const tableTypeValidateResult = (tableType.validate as Function)('ResponsiveTable');
+        expect(tableTypeValidateResult).toBe(true);
+
+        // Test tableType validation when no value is provided (user deleted the field)
+        const tableTypeValidateResultNull = (tableType.validate as Function)(null);
+        expect(tableTypeValidateResultNull).toBe(t('prompts.tableType.requiredError'));
+
+        // Test with undefined
+        const tableTypeValidateResultUndefined = (tableType.validate as Function)(undefined);
+        expect(tableTypeValidateResultUndefined).toBe(t('prompts.tableType.requiredError'));
+
+        // If the user has already selected a table type for the same entity, return it
+        // First call establishes the entity
+        (tableType.default as Function)({
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SEPMRA_C_PD_Product',
+                entitySetType: 'SEPMRA_C_PD_ProductType'
+            }
+        });
+        // Second call with same entity and existing table type should preserve user choice
         const prevAnswersWithTableType = {
             [EntityPromptNames.tableType]: 'GridTable',
             [EntityPromptNames.mainEntity]: {
-                entitySetName: 'Customer',
-                entitySetType: 'com.c_salesordermanage_sd_aggregate.Customer'
+                entitySetName: 'SEPMRA_C_PD_Product', // Same entity as above
+                entitySetType: 'SEPMRA_C_PD_ProductType'
             }
         };
         expect((tableType.default as Function)(prevAnswersWithTableType)).toEqual('GridTable');
@@ -384,10 +436,17 @@ describe('Test entity prompts', () => {
         // If no prevAnswers, default to ResponsiveTable
         expect((tableType.default as Function)()).toEqual('ResponsiveTable');
 
-        // For ALP, use AnalyticalTable as default
+        // For ALP with entity that has complete analytical transformations, use AnalyticalTable as default
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'alp', false);
         tableType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
-        expect((tableType.default as Function)({})).toEqual('AnalyticalTable');
+        expect(
+            (tableType.default as Function)({
+                [EntityPromptNames.mainEntity]: {
+                    entitySetName: 'SalesOrderItem',
+                    entitySetType: 'com.c_salesordermanage_sd_aggregate.SalesOrderItemType'
+                }
+            })
+        ).toEqual('AnalyticalTable');
 
         const hierarchyQualifier = questions.find(
             (question) => question.name === EntityPromptNames.hierarchyQualifier
@@ -405,6 +464,34 @@ describe('Test entity prompts', () => {
         expect((hierarchyQualifier.validate as Function)('')).toEqual(
             t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning')
         );
+
+        // Test qualifier auto-population functionality
+        const questionsWithQualifier = getEntitySelectionQuestions(
+            metadataV4WithHierarchyRecursiveHierarchy,
+            'lrop',
+            false
+        );
+        const hierarchyQualifierWithAutoPopulation = questionsWithQualifier.find(
+            (question) => question.name === EntityPromptNames.hierarchyQualifier
+        ) as InputQuestion;
+
+        // Test that the default function auto-populates with qualifier from metadata
+        const mockAnswersWithQualifiedEntity = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'P_SADL_HIER_UUID_D_COMPNY_ROOT'
+            }
+        };
+        expect((hierarchyQualifierWithAutoPopulation.default as Function)(mockAnswersWithQualifiedEntity)).toBe(
+            'I_SADL_HIER_UUID_COMPANY_NODE'
+        );
+
+        // Test that the default function returns empty string when no qualifier found
+        const mockAnswersWithoutQualifier = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SomeOtherEntity'
+            }
+        };
+        expect((hierarchyQualifierWithAutoPopulation.default as Function)(mockAnswersWithoutQualifier)).toBe('');
     });
 
     test('should skip navigation entity prompt when metadata contains a valid parameterised main entity', async () => {

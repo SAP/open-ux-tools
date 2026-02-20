@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
+    "../../types/mem-fs-editor.d.ts",
     "src",
     "src/**/*.json"
   ],
@@ -9,6 +10,9 @@
     "outDir": "dist"
   },
   "references": [
+    {
+      "path": "../axios-extension"
+    },
     {
       "path": "../btp-utils"
     },
@@ -38,6 +42,9 @@
     },
     {
       "path": "../project-access"
+    },
+    {
+      "path": "../store"
     },
     {
       "path": "../telemetry"

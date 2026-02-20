@@ -6,6 +6,7 @@ import { PromptState } from './prompt-state';
 import LoggerHelper from '../logger-helper';
 import { getDisplayName, isAbapEnvironmentOnBtp, type Destinations } from '@sap-ux/btp-utils';
 import {
+    promptNames,
     ClientChoiceValue,
     PackageInputChoices,
     TargetSystemType,
@@ -17,7 +18,7 @@ import {
 } from '../types';
 import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
 import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
-import { getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
+import { getBackendSystemDisplayName, getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 /**
@@ -38,32 +39,6 @@ function getDestinationChoices(destinations: Destinations = {}): AbapSystemChoic
             };
         });
     return systemChoices;
-}
-
-/**
- * Returns the display name for the backend system.
- *
- * @param options options for display name
- * @param options.backendSystem backend system
- * @param options.includeUserName include user name in the display name
- * @returns backend display name
- */
-function getBackendDisplayName({
-    backendSystem,
-    includeUserName = true
-}: {
-    backendSystem: BackendSystem;
-    includeUserName?: boolean;
-}): string {
-    const userDisplayName = includeUserName && backendSystem.userDisplayName ? `${backendSystem.userDisplayName}` : '';
-    const systemDisplayName = getSystemDisplayName(
-        backendSystem.name,
-        userDisplayName,
-        !!backendSystem.serviceKeys,
-        backendSystem.authenticationType === AuthenticationType.ReentranceTicket
-    );
-
-    return systemDisplayName;
 }
 
 /**
@@ -102,12 +77,12 @@ async function getBackendTargetChoices(
             }
             return {
                 name: isDefault
-                    ? `${getBackendDisplayName({ backendSystem: system })} (Source system)`
-                    : getBackendDisplayName({ backendSystem: system }) ?? '',
+                    ? `${getBackendSystemDisplayName(system)} (Source system)`
+                    : (getBackendSystemDisplayName(system) ?? ''),
                 value: system.url,
                 isDefault,
-                scp: !!system.serviceKeys,
-                isS4HC: system.authenticationType === AuthenticationType.ReentranceTicket,
+                scp: !!system.serviceKeys, // legacy service key store entries
+                isAbapCloud: system.authenticationType === AuthenticationType.ReentranceTicket,
                 client: system.client
             };
         });
@@ -123,13 +98,14 @@ async function getBackendTargetChoices(
             name: `${getSystemDisplayName(
                 systemName,
                 user,
-                target.scp,
-                target.authenticationType === AuthenticationType.ReentranceTicket
+                target.scp || target.authenticationType === AuthenticationType.ReentranceTicket
+                    ? 'ABAPCloud'
+                    : undefined // scp is retained for legacy apps yamls that contain this value
             )} (Source system)`,
             value: target.url,
             isDefault: true,
             scp: target.scp,
-            isS4HC: target.authenticationType === AuthenticationType.ReentranceTicket,
+            isAbapCloud: target.authenticationType === AuthenticationType.ReentranceTicket,
             client: target.client
         });
     }
@@ -275,7 +251,7 @@ export async function getPackageChoices(
         packages = await queryPackages(input, systemConfig, backendTarget);
 
         morePackageResultsMsg =
-            packages && packages.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
+            packages?.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
                 ? t('prompts.config.package.packageAutocomplete.sourceMessage', { numResults: packages.length })
                 : morePackageResultsMsg;
 
@@ -290,4 +266,49 @@ export async function getPackageChoices(
         packages: packages ?? [],
         morePackageResultsMsg
     };
+}
+
+/**
+ * Simple utility to get the keys which have different values between two answer objects.
+ *
+ * @param prevAnswers - previous answers
+ * @param newAnswers - new answers
+ * @returns - list of keys which have different values
+ */
+function getKeysWithDifferentValues(
+    prevAnswers: AbapDeployConfigAnswersInternal,
+    newAnswers: AbapDeployConfigAnswersInternal
+): string[] {
+    const keys = new Set<keyof AbapDeployConfigAnswersInternal>([
+        ...(Object.keys(prevAnswers) as (keyof AbapDeployConfigAnswersInternal)[]),
+        ...(Object.keys(newAnswers) as (keyof AbapDeployConfigAnswersInternal)[])
+    ]);
+
+    return [...keys].filter((key) => prevAnswers[key] !== newAnswers[key]);
+}
+
+/**
+ * Determines whether to run the validation based on changed answers.
+ * The description change does not require re-validation.
+ *
+ * @param prevAnswers - previous answers
+ * @param newAnswers - new answers
+ * @returns - whether to validate the package again
+ */
+export function shouldRunValidation(
+    prevAnswers: AbapDeployConfigAnswersInternal,
+    newAnswers: AbapDeployConfigAnswersInternal
+): boolean {
+    if (Object.keys(prevAnswers).length === 0) {
+        // first time validation if no cache
+        return true;
+    }
+
+    const keys = getKeysWithDifferentValues(prevAnswers, newAnswers);
+    // if no value has change or only the description has changed, no need to validate the package
+    if (keys.length === 0 || (keys.length === 1 && keys[0] === promptNames.description)) {
+        return false;
+    }
+
+    return true;
 }

@@ -1,5 +1,5 @@
 import { findCapProjectRoot, findRootsForPath, getCapProjectType } from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import { t } from '../i18n';
 import { validateProjectFolder } from '../ui5/validators';
 import { validateWindowsPathLength } from './validators';

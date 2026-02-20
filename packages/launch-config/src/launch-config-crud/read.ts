@@ -1,10 +1,10 @@
 import { DirName } from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { LaunchConfig, LaunchConfigInfo, LaunchJSON } from '../types';
 import { LAUNCH_JSON_FILE } from '../types';
 import { parse } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
 
 /**

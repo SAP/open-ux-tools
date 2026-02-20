@@ -1,0 +1,151 @@
+# sap-ux-sap-systems-ext
+
+## 0.3.3
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 0.3.2
+
+### Patch Changes
+
+- e5bc3ca: fix(deps): update dependency vscode-uri to v3.1.0
+
+## 0.3.1
+
+### Patch Changes
+
+- ff31574: fix(sap-systems): url-validation
+
+## 0.3.0
+
+### Minor Changes
+
+- 9f94937: support adding full service urls as a new connection type
+
+## 0.2.4
+
+### Patch Changes
+
+- 38e215e: chore(deps): update dependency @zowe/secrets-for-zowe-sdk to v8.29.4
+
+## 0.2.3
+
+### Patch Changes
+
+- 8f56f6b: Restrict the input of non-origin URLs for ABAP on Cloud systems
+
+## 0.2.2
+
+### Patch Changes
+
+- 3ffe28e: fix input background styling when Chrome autofill is applied
+
+## 0.2.1
+
+### Patch Changes
+
+- a90c3e7: restrict input of non origin urls for new systems, adjust validation messages
+
+## 0.2.0
+
+### Minor Changes
+
+- c9fd939: update backend systems with system info from adt api
+
+## 0.1.4
+
+### Patch Changes
+
+- a9471d0: fix sonar issues
+
+## 0.1.3
+
+### Patch Changes
+
+- 7b02fb9: fix refresh command
+
+## 0.1.2
+
+### Patch Changes
+
+- ba58398: adds mandatory props to backend systems and migrates existing
+
+## 0.1.1
+
+### Patch Changes
+
+- 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
+
+## 0.1.0
+
+### Minor Changes
+
+- bdf6eb7: Update extension name and readme
+
+## 0.0.11
+
+### Patch Changes
+
+- 7ac21d6: fix for sap systems extension
+
+## 0.0.10
+
+### Patch Changes
+
+- caff0ca: fix for saving systems
+
+## 0.0.9
+
+### Patch Changes
+
+- 452e49a: correct publisher
+
+## 0.0.8
+
+### Patch Changes
+
+- fea04a4: Adjust cloud system component rendering logic, adjust log message. Add log message when testing connection, service summary include catalog results log.
+
+## 0.0.7
+
+### Patch Changes
+
+- f1a2795: fix: Instrumentation key
+
+## 0.0.6
+
+### Patch Changes
+
+- b0b210b: change to draft release for extensions
+
+## 0.0.5
+
+### Patch Changes
+
+- 4b00366: testing pipeline config
+
+## 0.0.4
+
+### Patch Changes
+
+- 931505d: test config update
+
+## 0.0.3
+
+### Patch Changes
+
+- 7ab5311: config test
+
+## 0.0.2
+
+### Patch Changes
+
+- 7677587: pipeline test
+
+## 0.0.1
+
+### Patch Changes
+
+- cc65eec: adds new vscode sap systems extension

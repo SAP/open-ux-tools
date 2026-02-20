@@ -2,13 +2,13 @@ import { render } from 'ejs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { CustomTableColumn, InternalCustomTableColumn } from './types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion, validateBasePath } from '../common/validate';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { extendJSON } from '../common/file';
+import { copyTpl, extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils';
@@ -70,10 +70,10 @@ function enhanceConfig(
 /**
  * Add a custom column to an existing UI5 application.
  *
- * @returns {Promise<Editor>} the updated mem-fs editor instance
  * @param {string} basePath - the base path
  * @param {CustomTableColumn} customColumn - the custom column configuration
  * @param {Promise<Editor>} [fs] - the mem-fs editor instance
+ * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
 export async function generateCustomColumn(
     basePath: string,
@@ -91,6 +91,12 @@ export async function generateCustomColumn(
     // merge with defaults
     const completeColumn = enhanceConfig(fs, customColumn, manifestPath, manifest);
 
+    // add fragment
+    const viewPath = join(completeColumn.path, `${completeColumn.fragmentFile ?? completeColumn.name}.fragment.xml`);
+    if (completeColumn.control || !fs.exists(viewPath)) {
+        copyTpl(fs, getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
+    }
+
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.minUI5Version);
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn, {});
@@ -99,12 +105,6 @@ export async function generateCustomColumn(
         content: filledTemplate,
         tabInfo: customColumn.tabInfo
     });
-
-    // add fragment
-    const viewPath = join(completeColumn.path, `${completeColumn.fragmentFile ?? completeColumn.name}.fragment.xml`);
-    if (completeColumn.control || !fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
-    }
 
     return fs;
 }

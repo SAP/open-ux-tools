@@ -1,8 +1,8 @@
 import { tryAddPropertiesTexts } from '../../../../src/write/cap/properties';
 import * as csv from '../../../../src/write/cap/csv';
 import * as utils from '../../../../src/utils';
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 

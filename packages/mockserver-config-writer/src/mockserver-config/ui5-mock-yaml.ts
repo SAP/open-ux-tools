@@ -1,4 +1,4 @@
-import { join, posix, relative, sep } from 'path';
+import { join, posix, relative, sep } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware, DataSourceConfig } from '@sap-ux/ui5-config';
@@ -60,12 +60,14 @@ export async function enhanceYaml(
     const dataSourcesConfig: DataSourceConfig[] = [];
     for (const dataSource in dataSources) {
         const localUri = dataSources[dataSource].settings?.localUri;
+        const resolveExternalServiceReferences = config?.resolveExternalServiceReferences?.[dataSource];
         dataSourcesConfig.push({
             serviceName: dataSource,
             servicePath: dataSources[dataSource].uri,
             metadataPath: localUri
                 ? `.${posix.sep}${relative(basePath, join(webappPath, localUri)).replaceAll(sep, posix.sep)}`
-                : undefined
+                : undefined,
+            resolveExternalServiceReferences
         });
     }
 

@@ -3,9 +3,9 @@
     "version": "0.0.1",
     "private": true,
     "devDependencies": {
-        "@sap-ux/ui5-middleware-fe-mockserver": "^2.1.75",
-        "@sap-ux/ui5-proxy-middleware": "1.1.24",
-        "@ui5/cli": "3"
+        "@sap-ux/ui5-middleware-fe-mockserver": "^2.3.19",
+        "@sap-ux/ui5-proxy-middleware": "1.6.4",
+        "@ui5/cli": "4.0.33"
     },
     "scripts": {
         "build": "cd ../../.. && pnpm build",

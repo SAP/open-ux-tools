@@ -2,7 +2,7 @@ import type { CapRuntime, CapServiceCdsInfo } from '../../../src';
 import memFs from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import editor, { type Editor } from 'mem-fs-editor';
-import { dirname, join } from 'path';
+import { dirname, join } from 'node:path';
 import { updateRootPackageJson, updateAppPackageJson } from '../../../src/cap-writer/package-json';
 import type { Package } from '@sap-ux/project-access';
 import * as ProjectAccessMock from '@sap-ux/project-access';

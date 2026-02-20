@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 import type { Manifest, Package } from '../types';
 import parseJsonError from 'json-parse-even-better-errors';

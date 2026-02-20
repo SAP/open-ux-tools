@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { type Logger } from '@sap-ux/logger';
@@ -17,9 +17,7 @@ import { t } from '../i18n';
  * @returns file system reference
  */
 export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     if (logger) {
         LoggerHelper.logger = logger;
     }

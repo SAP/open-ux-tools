@@ -1,9 +1,10 @@
 import type Generator from 'yeoman-generator';
-import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
-import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
+import type { AdaptationDescriptor, AdaptationProjectType } from '@sap-ux/axios-extension';
+import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
     /**
@@ -36,6 +37,8 @@ export enum configPromptNames {
     systemValidationCli = 'systemValidationCli',
     username = 'username',
     password = 'password',
+    storeCredentials = 'storeCredentials',
+    projectType = 'projectType',
     application = 'application',
     appValidationCli = 'appValidationCli',
     fioriId = 'fioriId',
@@ -68,6 +71,15 @@ export interface PasswordPromptOptions {
     hide?: boolean;
 }
 
+export interface StoreCredentialsPromptOptions {
+    hide?: boolean;
+}
+
+export interface ProjectTypePromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
 export interface ApplicationPromptOptions {
     default?: string;
     hide?: boolean;
@@ -94,6 +106,8 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.systemValidationCli]: CliValidationPromptOptions;
     [configPromptNames.username]: UsernamePromptOptions;
     [configPromptNames.password]: PasswordPromptOptions;
+    [configPromptNames.storeCredentials]: StoreCredentialsPromptOptions;
+    [configPromptNames.projectType]: ProjectTypePromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
     [configPromptNames.appValidationCli]: CliValidationPromptOptions;
     [configPromptNames.fioriId]: FioriIdPromptOptions;
@@ -110,7 +124,8 @@ export enum attributePromptNames {
     ui5ValidationCli = 'ui5ValidationCli',
     enableTypeScript = 'enableTypeScript',
     addDeployConfig = 'addDeployConfig',
-    addFlpConfig = 'addFlpConfig'
+    addFlpConfig = 'addFlpConfig',
+    importKeyUserChanges = 'importKeyUserChanges'
 }
 
 export type AttributesQuestion = YUIQuestion<AttributesAnswers>;
@@ -136,6 +151,7 @@ export interface TargetFolderPromptOptions {
 
 export interface UI5VersionPromptOptions {
     default?: string;
+    hide?: boolean;
 }
 
 export interface EnableTypeScriptPromptOptions {
@@ -151,6 +167,11 @@ export interface AddFlpConfigPromptOptions {
     hasBaseAppInbounds?: boolean;
 }
 
+export interface ImportKeyUserChangesPromptOptions {
+    hide?: boolean;
+    default?: boolean;
+}
+
 export type AttributePromptOptions = Partial<{
     [attributePromptNames.projectName]: ProjectNamePromptOptions;
     [attributePromptNames.title]: ApplicationTitlePromptOptions;
@@ -161,7 +182,87 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
     [attributePromptNames.addDeployConfig]: AddDeployConfigPromptOptions;
     [attributePromptNames.addFlpConfig]: AddFlpConfigPromptOptions;
+    [attributePromptNames.importKeyUserChanges]: ImportKeyUserChangesPromptOptions;
 }>;
+
+export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
+
+/**
+ * Enumeration of prompt names used in the key-user import.
+ */
+export enum keyUserPromptNames {
+    keyUserSystem = 'keyUserSystem',
+    keyUserUsername = 'keyUserUsername',
+    keyUserPassword = 'keyUserPassword',
+    keyUserAdaptation = 'keyUserAdaptation'
+}
+
+export interface KeyUserSystemPromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface KeyUserUsernamePromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface KeyUserPasswordPromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface KeyUserAdaptationPromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+/**
+ * Options for the key-user import inquirer & the prompts.
+ */
+export type KeyUserImportPromptOptions = Partial<{
+    [keyUserPromptNames.keyUserSystem]: KeyUserSystemPromptOptions;
+    [keyUserPromptNames.keyUserUsername]: KeyUserUsernamePromptOptions;
+    [keyUserPromptNames.keyUserPassword]: KeyUserPasswordPromptOptions;
+    [keyUserPromptNames.keyUserAdaptation]: KeyUserAdaptationPromptOptions;
+}>;
+
+export interface KeyUserImportAnswers {
+    keyUserSystem: string;
+    keyUserUsername?: string;
+    keyUserPassword?: string;
+    keyUserAdaptation: AdaptationDescriptor;
+}
+
+export enum targetEnvPromptNames {
+    targetEnv = 'targetEnv'
+}
+
+export const TargetEnv = { ABAP: 'ABAP', CF: 'CF' } as const;
+
+export type TargetEnv = (typeof TargetEnv)[keyof typeof TargetEnv];
+
+export type TargetEnvAnswers = { targetEnv: TargetEnv };
+
+export type TargetEnvQuestion = YUIQuestion<TargetEnvAnswers>;
+
+export type ProjectLocationAnswers = { projectLocation: string };
+
+export enum cfLoginPromptNames {
+    cfLoggedInMainMessage = 'cfLoggedInMainMessage',
+    cfLoggedApiEndpointMessage = 'cfLoggedApiEndpointMessage',
+    cfLoggedInOrganizationMessage = 'cfLoggedInOrganizationMessage',
+    cfLoggedInSpaceMessage = 'cfLoggedInSpaceMessage',
+    cfLoggedInEndingMessage = 'cfLoggedInEndingMessage',
+    cfExternalLogin = 'cfExternalLogin',
+    cfExternalLoginSuccessMessage = 'cfExternalLoginSuccessMessage'
+}
+
+export type CFLoginAnswers = {
+    [K in cfLoginPromptNames]?: string;
+};
+
+export type CFLoginQuestion = YUIQuestion<CFLoginAnswers>;
 
 export interface ExtensionProjectData {
     destination: {
@@ -193,4 +294,19 @@ export interface JsonInput {
     targetFolder?: string;
     projectName?: string;
     namespace?: string;
+    projectType?: AdaptationProjectType;
+}
+
+export enum SystemType {
+    CLOUD_READY = 'cloudReady',
+    ON_PREM = 'onPremise'
+}
+export interface OptionalPromptsConfig {
+    projectType?: AdaptationProjectType;
+    systemType?: SystemType;
+    layer: FlexLayer;
+    ui5Versions: string[];
+    isVersionDetected: boolean;
+    prompts: YeomanUiSteps;
+    isCfEnv?: boolean;
 }

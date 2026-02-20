@@ -1,5 +1,5 @@
 import { getMetadataFileQuestion } from '../../../../src/prompts/datasources/metadata-file';
-import path from 'path';
+import path from 'node:path';
 import { OdataVersion } from '../../../../src/index';
 import { t, initI18nOdataServiceInquirer } from '../../../../src/i18n';
 import { PromptState } from '../../../../src/utils';

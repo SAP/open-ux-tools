@@ -4,9 +4,9 @@ jest.mock('crypto', () => ({
 
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
-import * as crypto from 'crypto';
-import * as path from 'path';
-import * as fs from 'fs';
+import * as crypto from 'node:crypto';
+import * as path from 'node:path';
+import * as fs from 'node:fs';
 import {
     addAnnotationFile,
     addXmlFragment,
@@ -170,6 +170,7 @@ describe('change-handler', () => {
             mockFs.read.mockReturnValue(realTemplateContent);
 
             addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                viewName: 'name',
                 targetAggregation: 'content',
                 controlType: 'sampleType'
             });
@@ -178,10 +179,10 @@ describe('change-handler', () => {
             expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
 "<!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!-- viewName: name -->
     <!-- controlType: sampleType -->
     <!-- targetAggregation: content --> 
-    <!--  add your xml here -->
-
+    <!-- add your xml here -->
 </core:FragmentDefinition>
 "
 `);
@@ -196,6 +197,7 @@ describe('change-handler', () => {
             mockFs.read.mockReturnValue(realTemplateContent);
 
             addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                viewName: 'name',
                 targetAggregation: 'content',
                 controlType: 'sampleType'
             });
@@ -491,6 +493,44 @@ id="<%- ids.customActionButton %>"`);
                 );
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
                     "
+                    id=\\"toolbarAction-30303030\\"
+                    id=\\"btn-30303030\\""
+                `);
+
+                expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
+            });
+
+            it('should create fragment with both additional info properties and templateName', () => {
+                mockFs.exists.mockReturnValue(false);
+                mockFs.read.mockReturnValue(`
+<!-- viewName: <%= viewName %> -->
+<!-- controlType: <%= controlType %> -->
+<!-- targetAggregation: <%= targetAggregation %> -->
+id="<%- ids.customToolbarAction %>"
+id="<%- ids.customActionButton %>"`);
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    viewName: 'name',
+                    targetAggregation: 'content',
+                    controlType: 'sampleType',
+                    templateName: `TABLE_ACTION`
+                });
+
+                expect(mockFs.read).toHaveBeenCalled();
+                expect(
+                    (mockFs.read.mock.calls[0][0] as string)
+                        .replace(/\\/g, '/')
+                        .endsWith('templates/rta/common/v4-table-action.xml')
+                ).toBe(true);
+
+                expect(mockFs.write).toHaveBeenCalled();
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/Share.fragment.xml"`
+                );
+                expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+                    "
+                    <!-- viewName: name -->
+                    <!-- controlType: sampleType -->
+                    <!-- targetAggregation: content -->
                     id=\\"toolbarAction-30303030\\"
                     id=\\"btn-30303030\\""
                 `);

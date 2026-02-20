@@ -73,10 +73,11 @@ export class AbapServiceProviderManager {
      * @returns - system config
      */
     private static getSystemConfig(backendTarget?: BackendTarget): SystemConfig {
+        const { url, client, destination } = PromptState.abapDeployConfig ?? backendTarget?.abapTarget ?? {};
         return {
-            url: PromptState.abapDeployConfig.url ?? backendTarget?.abapTarget.url,
-            client: PromptState.abapDeployConfig.client ?? backendTarget?.abapTarget.client,
-            destination: PromptState.abapDeployConfig.destination ?? backendTarget?.abapTarget.destination
+            url,
+            client,
+            destination
         };
     }
 
@@ -169,7 +170,7 @@ export class AbapServiceProviderManager {
             } as UrlAbapTarget;
 
             if (
-                PromptState.abapDeployConfig.isS4HC ??
+                PromptState.abapDeployConfig.isAbapCloud ??
                 backendTarget?.abapTarget.authenticationType === AuthenticationType.ReentranceTicket
             ) {
                 abapTarget.authenticationType = AuthenticationType.ReentranceTicket;

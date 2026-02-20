@@ -1,12 +1,20 @@
 import type { Editor } from 'mem-fs-editor';
-import { existsSync, readdirSync, readFileSync } from 'fs';
-import { join, isAbsolute, relative, basename, dirname } from 'path';
+import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
 import type { UI5Config } from '@sap-ux/ui5-config';
-import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
-import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace } from '@sap-ux/project-access';
+import { type InboundContent, type Inbound, AdaptationProjectType } from '@sap-ux/axios-extension';
+import {
+    getWebappPath,
+    FileName,
+    readUi5Yaml,
+    type ManifestNamespace,
+    type Manifest,
+    getAppType
+} from '@sap-ux/project-access';
 
-import type { DescriptorVariant, AdpPreviewConfig } from '../types';
+import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
 
 /**
  * Get the app descriptor variant.
@@ -87,6 +95,57 @@ export function extractAdpConfig(ui5Conf: UI5Config): AdpPreviewConfig | undefin
 }
 
 /**
+ * Extracts the CF build task from the UI5 configuration.
+ *
+ * @param {UI5Config} ui5Conf - The UI5 configuration.
+ * @returns {UI5YamlCustomTaskConfiguration} The CF build task.
+ */
+export function extractCfBuildTask(ui5Conf: UI5Config): UI5YamlCustomTaskConfiguration {
+    const buildTask =
+        ui5Conf.findCustomTask<UI5YamlCustomTaskConfiguration>('app-variant-bundler-build')?.configuration;
+
+    if (!buildTask) {
+        throw new Error('No CF ADP project found');
+    }
+
+    return buildTask;
+}
+
+/**
+ * Read the manifest from the build output folder.
+ *
+ * @param {string} cfBuildPath - The path to the build output folder.
+ * @returns {Manifest} The manifest.
+ */
+export function readManifestFromBuildPath(cfBuildPath: string): Manifest {
+    const distPath = join(process.cwd(), cfBuildPath);
+    const manifestPath = join(distPath, 'manifest.json');
+    return JSON.parse(readFileSync(manifestPath, 'utf-8')) as Manifest;
+}
+
+/**
+ * Load and parse the app variant descriptor.
+ *
+ * @param {ReaderCollection} rootProject - The root project.
+ * @returns {Promise<DescriptorVariant>} The parsed descriptor variant.
+ */
+export async function loadAppVariant(rootProject: ReaderCollection): Promise<DescriptorVariant> {
+    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
+    if (!appVariant) {
+        throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    }
+    try {
+        const content = await appVariant.getString();
+        if (!content || content.trim() === '') {
+            throw new Error('ADP configured but manifest.appdescr_variant file is empty.');
+        }
+        return JSON.parse(content) as DescriptorVariant;
+    } catch (e) {
+        throw new Error(`Failed to parse manifest.appdescr_variant: ${e.message}`);
+    }
+}
+
+/**
  * Convenience wrapper that reads the ui5.yaml and directly returns the ADP preview configuration.
  * Throws if the configuration cannot be found.
  *
@@ -94,17 +153,42 @@ export function extractAdpConfig(ui5Conf: UI5Config): AdpPreviewConfig | undefin
  * @param yamlPath  Relative or absolute path to the ui5.yaml file
  * @returns The `AdpPreviewConfig` object if found, otherwise throws an error.
  */
-export async function getAdpConfig(basePath: string, yamlPath: string): Promise<AdpPreviewConfig> {
+export async function getAdpConfig<T = AdpPreviewConfig>(basePath: string, yamlPath: string): Promise<T> {
     try {
         const ui5Conf = await readUi5Config(basePath, yamlPath);
         const adp = extractAdpConfig(ui5Conf);
         if (!adp) {
             throw new Error('Could not extract ADP configuration from ui5.yaml');
         }
-        return adp;
+        return adp as T;
     } catch (error) {
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         throw new Error(`No system configuration found in ${basename(ui5ConfigPath)}`);
+    }
+}
+
+/**
+ * Returns the project type for an existing Adaptation project based on the information
+ * inside the ui5.yaml. If the builder key is presented inside the yaml then we are
+ * in a cloudReady project otherwise - onPremise.
+ *
+ * @param {string} basePath - The path to the adaptation project root folder.
+ * @returns {Promise<AdaptationProjectType | undefined>} The project type or undefined in casde the project is
+ * NOT an Adaptation project or an error is thrown from reading the configuration file.
+ */
+export async function getExistingAdpProjectType(basePath: string): Promise<AdaptationProjectType | undefined> {
+    try {
+        const appType = await getAppType(basePath);
+        if (appType !== 'Fiori Adaptation') {
+            return undefined;
+        }
+        const yamlPath = join(basePath, FileName.Ui5Yaml);
+        const ui5Config = await readUi5Config(basePath, yamlPath);
+        return ui5Config.hasBuilderKey() ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
+    } catch {
+        // Expected: Project may not be an ADP project or configuration files may be missing/invalid
+        // Returning undefined allows callers to handle non-ADP projects gracefully
+        return undefined;
     }
 }
 
@@ -146,18 +230,41 @@ export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNam
     if (!inbounds || inbounds.length === 0) {
         return undefined;
     }
-    const filteredInbounds = inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
-        // Skip if hideLauncher is true
-        if (!inbound?.content || inbound.content.hideLauncher === true) {
+    const filteredInbounds = inbounds.reduce(
+        (acc: { [key: string]: InboundContent }, inbound) => {
+            // Skip if hideLauncher is true
+            if (!inbound?.content || inbound.content.hideLauncher === true) {
+                return acc;
+            }
+            const { semanticObject, action } = inbound.content;
+            if (semanticObject && action) {
+                const key = `${semanticObject}-${action}`;
+                acc[key] = inbound.content;
+            }
             return acc;
-        }
-        const { semanticObject, action } = inbound.content;
-        if (semanticObject && action) {
-            const key = `${semanticObject}-${action}`;
-            acc[key] = inbound.content;
-        }
-        return acc;
-    }, {} as { [key: string]: InboundContent });
+        },
+        {} as { [key: string]: InboundContent }
+    );
 
     return Object.keys(filteredInbounds).length === 0 ? undefined : filteredInbounds;
+}
+
+/**
+ * Get base application ID from variant.
+ *
+ * @param basePath - path to application root
+ * @returns App ID (reference)
+ */
+export async function getBaseAppId(basePath: string): Promise<string> {
+    try {
+        const variant = await getVariant(basePath);
+
+        if (!variant.reference) {
+            throw new Error('No reference found in manifest.appdescr_variant');
+        }
+
+        return variant.reference;
+    } catch (error) {
+        throw new Error(`Failed to get app ID: ${(error as Error).message}`);
+    }
 }

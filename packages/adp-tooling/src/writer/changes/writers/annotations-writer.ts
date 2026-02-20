@@ -1,4 +1,4 @@
-import path, { isAbsolute } from 'path';
+import path, { isAbsolute } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
@@ -80,6 +80,6 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
         if (data.isCommand) {
             change = getChange(variant, timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
         }
-        writeAnnotationChange(this.projectPath, timestamp, data.annotation, change, this.fs, this.templatesPath);
+        await writeAnnotationChange(this.projectPath, timestamp, data.annotation, change, this.fs, this.templatesPath);
     }
 }

@@ -1,5 +1,5 @@
-import { join, resolve } from 'path';
-import { unlinkSync } from 'fs';
+import { join, resolve } from 'node:path';
+import { unlinkSync } from 'node:fs';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 import { t, generatorNamespace, abapChoice, cfChoice } from '../utils';
 import { DeployTarget } from '@sap-ux/fiori-generator-shared';
@@ -74,7 +74,7 @@ export default class extends DeploymentGenerator {
 
         if (deployConfigOpts && this.deployTarget) {
             const subGen = this.deployTarget === DeployTarget.CF ? cfChoice.name : abapChoice.name;
-            this.composeWith(generatorNamespace(this.genNamespace, subGen), {
+            await this.composeWith(generatorNamespace(this.genNamespace, subGen), {
                 arguments: this.args,
                 ...Object.assign(this.options, deployConfigOpts, {
                     telemetryData: additionalTelemetryData

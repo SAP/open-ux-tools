@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 
@@ -6,7 +6,7 @@ import { getCDSCompilerFacade } from '../setup';
 import { toAbsoluteUriString } from '../../src';
 import { toAnnotationFile, toTarget, toTargetMap } from '../../src/transforms/annotation-file';
 
-import { pathToFileURL } from 'url';
+import { pathToFileURL } from 'node:url';
 import type { MetadataElementMap, CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import type { MetadataElement } from '@sap-ux/odata-annotation-core-types';
 import { createMetadataCollector } from '@sap/ux-cds-compiler-facade';

@@ -1,19 +1,26 @@
-import { join } from 'path';
-import { readFileSync } from 'fs';
-import { v4 as uuidv4 } from 'uuid';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
-import type { CloudApp, AdpWriterConfig, CustomConfig, TypesConfig } from '../types';
+
+import {
+    type CloudApp,
+    type AdpWriterConfig,
+    type TypesConfig,
+    type CfAdpWriterConfig,
+    type DescriptorVariant
+} from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
     hasDeployConfig,
     enhanceUI5YamlWithCustomConfig,
     enhanceUI5YamlWithCustomTask,
-    enhanceUI5YamlWithTranspileMiddleware
+    enhanceUI5YamlWithTranspileMiddleware,
+    enhanceUI5YamlWithCfCustomTask,
+    enhanceUI5YamlWithFioriToolsMiddleware
 } from './options';
 
 import type { Package } from '@sap-ux/project-access';
-import type { OperationsType } from '@sap-ux/axios-extension';
 import { UI5Config, UI5_DEFAULT, getEsmTypesVersion, getTypesPackage, getTypesVersion } from '@sap-ux/ui5-config';
 
 /**
@@ -63,25 +70,36 @@ export function getTypes(ui5Version?: string): TypesConfig {
 }
 
 /**
- * Constructs a custom configuration object for the Adaptation Project (ADP).
+ * Get the variant for the CF project.
  *
- * @param {OperationsType} environment - The operations type ('P' for on-premise or 'C' for cloud ready).
- * @param {object} pkg - The parsed contents of `package.json`.
- * @param {string} pkg.name - The name of the tool or package generating the config.
- * @param {string} pkg.version - The version of the tool generating the config.
- * @returns {CustomConfig} The generated ADP custom configuration object.
+ * @param {CfAdpWriterConfig} config - The CF configuration.
+ * @returns {DescriptorVariant} The variant for the CF project.
  */
-export function getCustomConfig(environment: OperationsType, { name: id, version }: Package): CustomConfig {
-    return {
-        adp: {
-            environment,
-            support: {
-                id: id ?? '',
-                version: version ?? '',
-                toolsId: uuidv4()
+export function getCfVariant(config: CfAdpWriterConfig): DescriptorVariant {
+    const { app, ui5 } = config;
+    const variant: DescriptorVariant = {
+        layer: app.layer,
+        reference: app.id,
+        id: app.namespace,
+        namespace: 'apps/' + app.id + '/appVariants/' + app.namespace + '/',
+        content: [
+            {
+                changeType: 'appdescr_ui5_setMinUI5Version',
+                content: {
+                    minUI5Version: ui5.version
+                }
+            },
+            {
+                changeType: 'appdescr_app_setTitle',
+                content: {},
+                texts: {
+                    i18n: 'i18n/i18n.properties'
+                }
             }
-        }
+        ]
     };
+
+    return variant;
 }
 
 /**
@@ -136,10 +154,38 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
         const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
         ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
-        enhanceUI5YamlWithCustomConfig(ui5Config, data);
+        enhanceUI5YamlWithCustomConfig(ui5Config, data.customConfig);
         enhanceUI5YamlWithTranspileMiddleware(ui5Config, data);
         enhanceUI5Yaml(ui5Config, data);
         enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
+
+        fs.write(ui5ConfigPath, ui5Config.toString());
+    } catch (e) {
+        throw new Error(`Could not write ui5.yaml file. Reason: ${e.message}`);
+    }
+}
+
+/**
+ * Writes a ui5.yaml file for CF project within a specified folder in the project directory.
+ *
+ * @param {string} projectPath - The root path of the project.
+ * @param {CfAdpWriterConfig} data - The data to be populated in the template file.
+ * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @returns {void}
+ */
+export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfig, fs: Editor): Promise<void> {
+    try {
+        const ui5ConfigPath = join(projectPath, 'ui5.yaml');
+        const baseUi5ConfigContent = fs.read(ui5ConfigPath);
+        const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
+        ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
+        enhanceUI5YamlWithCustomConfig(ui5Config, data.customConfig);
+        /** Builder task */
+        enhanceUI5YamlWithCfCustomTask(ui5Config, data);
+
+        /** Middlewares */
+        // Add fiori-tools-proxy and fiori-tools-preview for local development
+        enhanceUI5YamlWithFioriToolsMiddleware(ui5Config);
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
@@ -167,5 +213,69 @@ export async function writeUI5DeployYaml(projectPath: string, data: AdpWriterCon
         }
     } catch (e) {
         throw new Error(`Could not write ui5-deploy.yaml file. Reason: ${e.message}`);
+    }
+}
+
+/**
+ * Write CF-specific templates and configuration files.
+ *
+ * @param {string} basePath - The base path.
+ * @param {DescriptorVariant} variant - The descriptor variant.
+ * @param {CfAdpWriterConfig} config - The CF configuration.
+ * @param {Editor} fs - The memfs editor instance.
+ */
+export async function writeCfTemplates(
+    basePath: string,
+    variant: DescriptorVariant,
+    config: CfAdpWriterConfig,
+    fs: Editor
+): Promise<void> {
+    const baseTmplPath = join(__dirname, '../../templates');
+    const templatePath = config.options?.templatePathOverwrite ?? baseTmplPath;
+    const { app, project, options } = config;
+
+    fs.copyTpl(
+        join(templatePath, 'project/webapp/manifest.appdescr_variant'),
+        join(project.folder, 'webapp', 'manifest.appdescr_variant'),
+        { app: variant }
+    );
+
+    fs.copyTpl(join(templatePath, 'cf/package.json'), join(project.folder, 'package.json'), {
+        module: project.name
+    });
+
+    fs.copyTpl(join(templatePath, 'cf/ui5.yaml'), join(project.folder, 'ui5.yaml'), {
+        module: project.name
+    });
+
+    fs.copyTpl(join(templatePath, 'cf/i18n/i18n.properties'), join(project.folder, 'webapp/i18n/i18n.properties'), {
+        module: project.name,
+        moduleTitle: app.title,
+        appVariantId: app.namespace,
+        i18nGuid: config.app.i18nDescription
+    });
+
+    fs.copy(join(templatePath, 'cf/_gitignore'), join(project.folder, '.gitignore'));
+
+    if (options?.addStandaloneApprouter) {
+        fs.copyTpl(
+            join(templatePath, 'cf/approuter/package.json'),
+            join(basePath, `${project.name}-approuter/package.json`),
+            {
+                projectName: project.name
+            }
+        );
+
+        fs.copyTpl(
+            join(templatePath, 'cf/approuter/xs-app.json'),
+            join(basePath, `${project.name}-approuter/xs-app.json`),
+            {}
+        );
+    }
+
+    if (!fs.exists(join(basePath, 'xs-security.json'))) {
+        fs.copyTpl(join(templatePath, 'cf/xs-security.json'), join(basePath, 'xs-security.json'), {
+            projectName: project.name
+        });
     }
 }

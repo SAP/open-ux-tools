@@ -1,10 +1,11 @@
 import nock from 'nock';
-import * as fs from 'fs';
-import { join } from 'path';
+import * as fs from 'node:fs';
+import { join } from 'node:path';
 import express from 'express';
 import { renderFile } from 'ejs';
 import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { SuperTest, Test } from 'supertest';
 
@@ -19,6 +20,7 @@ import * as manifestService from '../../../src/base/abap/manifest-service';
 import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import { addXmlFragment, tryFixChange, addControllerExtension } from '../../../src/preview/change-handler';
 import { addCustomSectionFragment } from '../../../src/preview/descriptor-change-handler';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -70,7 +72,6 @@ jest.mock('ejs', () => ({
 }));
 
 const renderFileMock = renderFile as jest.Mock;
-
 const tryFixChangeMock = tryFixChange as jest.Mock;
 const addXmlFragmentMock = addXmlFragment as jest.Mock;
 const addControllerExtensionMock = addControllerExtension as jest.Mock;
@@ -164,6 +165,7 @@ describe('AdaptationProject', () => {
             nock.cleanAll();
         });
         test('default (no) config', async () => {
+            jest.spyOn(helper, 'getExistingAdpProjectType').mockResolvedValue(AdaptationProjectType.ON_PREMISE);
             const adp = new AdpPreview(
                 {
                     target: {
@@ -188,13 +190,11 @@ describe('AdaptationProject', () => {
                 'the.original.app': mockMergedDescriptor.url,
                 'app.variant1': '/webapp'
             });
-            expect(adp.isCloudProject).toBeFalsy();
+            expect(adp.projectType).toBe(AdaptationProjectType.ON_PREMISE);
         });
 
         test('cloud project', async () => {
-            nock(backend)
-                .get('/sap/bc/adt/ato/settings')
-                .replyWithFile(200, join(__dirname, '..', '..', 'mockResponses/atoSettingsS4C.xml'));
+            jest.spyOn(helper, 'getExistingAdpProjectType').mockResolvedValue(AdaptationProjectType.CLOUD_READY);
             nock(backend)
                 .get('/sap/bc/adt/discovery')
                 .replyWithFile(200, join(__dirname, '..', '..', 'mockResponses/discovery.xml'));
@@ -222,7 +222,7 @@ describe('AdaptationProject', () => {
                 'the.original.app': mockMergedDescriptor.url,
                 'app.variant1': '/webapp'
             });
-            expect(adp.isCloudProject).toEqual(true);
+            expect(adp.projectType).toEqual(AdaptationProjectType.CLOUD_READY);
         });
 
         test('error on property access before init', async () => {
@@ -239,10 +239,33 @@ describe('AdaptationProject', () => {
 
             expect(() => adp.descriptor).toThrow();
             expect(() => adp.resources).toThrow();
-            expect(() => adp.isCloudProject).toThrow();
             await expect(() => adp.sync()).rejects.toEqual(Error('Not initialized'));
         });
+
+        test('should initialize with cfBuildPath mode', async () => {
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    },
+                    cfBuildPath: 'dist'
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            const parsedVariant = JSON.parse(descriptorVariant);
+            const layer = await adp.init(parsedVariant);
+
+            expect(layer).toBe(parsedVariant.layer);
+            expect(adp.projectType).toBeUndefined();
+            expect(adp['descriptorVariantId']).toBe(parsedVariant.id);
+            expect(adp['routesHandler']).toBeDefined();
+            expect(adp['provider']).toBeUndefined();
+        });
     });
+
     describe('sync', () => {
         let secondCall: boolean = false;
         beforeAll(() => {
@@ -271,6 +294,29 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
+        });
+
+        test('should return early when cfBuildPath is set', async () => {
+            // Create a separate nock scope for this test to avoid interfering with other tests
+            const testBackend = 'https://test-backend.example';
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: testBackend
+                    },
+                    cfBuildPath: 'dist'
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            const parsedVariant = JSON.parse(descriptorVariant);
+            await adp.init(parsedVariant);
+
+            // sync should return immediately without making any backend calls
+            // Since cfBuildPath is set, sync should return early
+            await adp.sync();
         });
 
         test('updates merged descriptor', async () => {
@@ -889,6 +935,7 @@ describe('AdaptationProject', () => {
                 expect(e.message).toEqual(errorMsg);
             }
         });
+
         test('GET /adp/api/annotation', async () => {
             const response = await server.get('/adp/api/annotation').send().expect(200);
 
@@ -900,7 +947,6 @@ describe('AdaptationProject', () => {
 
         test('GET /adp/api/annotation => Metadata fetch error', async () => {
             jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 getDataSourceMetadata: jest.fn().mockRejectedValue(new Error('Metadata fetch error')),
                 getManifestDataSources: jest.fn().mockReturnValue({
                     mainService: {
@@ -929,6 +975,51 @@ describe('AdaptationProject', () => {
             expect(message).toMatchInlineSnapshot(
                 `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\",\\"metadataReadErrorMsg\\":\\"Metadata: Metadata fetch error\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\",\\"metadataReadErrorMsg\\":\\"Metadata: Metadata fetch error\\"}}}"`
             );
+        });
+    });
+
+    describe('addApis - cfBuildPath mode', () => {
+        let cfBuildPathServer: SuperTest<Test>;
+        beforeAll(async () => {
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    },
+                    cfBuildPath: 'dist'
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+            await adp.init(JSON.parse(descriptorVariant));
+            jest.spyOn(helper, 'getVariant').mockResolvedValue({
+                content: [],
+                id: 'adp/project',
+                layer: 'VENDOR',
+                namespace: 'test',
+                reference: 'adp/project'
+            });
+
+            jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
+                target: {
+                    destination: 'testDestination'
+                },
+                ignoreCertErrors: false
+            });
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+
+            const app = express();
+            app.use(express.json());
+            adp.addApis(app);
+            cfBuildPathServer = supertest(app);
+        });
+
+        test('GET /adp/api/annotation should return empty annotationDataSourceMap in cfBuildPath mode', async () => {
+            const response = await cfBuildPathServer.get('/adp/api/annotation').send().expect(200);
+
+            const message = response.text;
+            expect(message).toMatchInlineSnapshot(`"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{}}"`);
         });
     });
 });

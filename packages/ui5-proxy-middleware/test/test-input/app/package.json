@@ -9,10 +9,5 @@
     "scripts": {
         "build": "ui5 build",
         "start": "ui5 serve"
-    },
-    "ui5": {
-        "dependencies": [
-            "@sap-ux/ui5-proxy-middleware"
-        ]
     }
 }

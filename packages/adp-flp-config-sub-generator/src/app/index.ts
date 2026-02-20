@@ -1,8 +1,13 @@
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
-import path, { join } from 'path';
-import { type AxiosError, type AbapServiceProvider, isAxiosError } from '@sap-ux/axios-extension';
+import { join, basename } from 'node:path';
+import {
+    type AxiosError,
+    type AbapServiceProvider,
+    isAxiosError,
+    AdaptationProjectType
+} from '@sap-ux/axios-extension';
 import {
     getVariant,
     getAdpConfig,
@@ -12,8 +17,9 @@ import {
     SystemLookup,
     getBaseAppInbounds,
     type InternalInboundNavigation,
-    type AdpPreviewConfig,
-    type DescriptorVariant
+    type AdpPreviewConfigWithTarget,
+    type DescriptorVariant,
+    getExistingAdpProjectType
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
@@ -23,16 +29,18 @@ import {
     getAdpFlpInboundsWriterConfig,
     getTileSettingsQuestions,
     type FLPConfigAnswers,
-    type TileSettingsAnswers
+    type TileSettingsAnswers,
+    tilePromptNames,
+    tileActions
 } from '@sap-ux/flp-config-inquirer';
-import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts, MessageType, type IPrompt } from '@sap-devx/yeoman-ui-types';
 import {
     DefaultLogger,
     TelemetryHelper,
     sendTelemetry,
     isCli,
     type ILogWrapper,
-    type YeomanEnvironment
+    setYeomanEnvConflicterForce
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName, getAppType } from '@sap-ux/project-access';
@@ -66,7 +74,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     private authenticationRequired: boolean = false;
     // Flag to determine if the generator was aborted
     private abort: boolean = false;
-    private ui5Yaml: AdpPreviewConfig;
+    private ui5Yaml: AdpPreviewConfigWithTarget;
     private credentials: CredentialsAnswers;
     private inbounds?: ManifestNamespace.Inbound;
     private layer: UI5FlexLayer;
@@ -102,9 +110,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         await initI18n();
 
         // Force the generator to overwrite existing files without additional prompting
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
+        setYeomanEnvConflicterForce(this.env, this.options.force);
 
         this._setupFLPConfigPage();
 
@@ -127,20 +133,27 @@ export default class AdpFlpConfigGenerator extends Generator {
     }
 
     public async prompting(): Promise<void> {
-        if (this.authenticationRequired) {
+        // If authentication was already prompted it should not be skipped as this leads to issues with Yeoman UI navigation
+        const credentialsPrompted = getFromCache<boolean>(this.appWizard, 'credentialsPrompted', this.logger);
+        if (this.authenticationRequired || credentialsPrompted) {
             await this._promptAuthentication();
         }
         if (this.abort) {
             return;
         }
         if (!this.launchAsSubGen) {
-            await this._validateProject();
+            await this._validateCloudProject();
             if (this.abort) {
                 return;
             }
         }
 
         this.tileSettingsAnswers = await this._promptTileActions();
+
+        if (this.tileSettingsAnswers?.[tilePromptNames.tileHandlingAction] === tileActions.REPLACE) {
+            this._setupReplacePage();
+        }
+
         const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
             this.inbounds,
             getAdpFlpConfigPromptOptions(this.tileSettingsAnswers as TileSettingsAnswers, this.inbounds, this.variant)
@@ -156,9 +169,10 @@ export default class AdpFlpConfigGenerator extends Generator {
             const config = getAdpFlpInboundsWriterConfig(
                 this.answers,
                 this.layer,
-                this.tileSettingsAnswers as TileSettingsAnswers
+                this.tileSettingsAnswers as TileSettingsAnswers,
+                this.inbounds
             );
-            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation, this.fs);
+            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation[], this.fs);
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
             throw new Error(t('error.updatingApp'));
@@ -197,7 +211,7 @@ export default class AdpFlpConfigGenerator extends Generator {
                 try {
                     this.provider = await getAbapServiceProvider(this.ui5Yaml, this.toolsLogger, this.credentials);
                     this.inbounds = await getBaseAppInbounds(this.appId, this.provider);
-                    addToCache(this.appWizard, { provider: this.provider }, this.logger);
+                    addToCache(this.appWizard, { provider: this.provider, credentialsPrompted: true }, this.logger);
                 } catch (error) {
                     if (!isAxiosError(error)) {
                         this.logger.error(`Base application inbounds fetching failed: ${error}`);
@@ -239,6 +253,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             );
 
             const errorHelp = this._getErrorHandlerMessage(error);
+
             if (errorHelp) {
                 this._abortExecution(
                     typeof errorHelp === 'string'
@@ -260,11 +275,34 @@ export default class AdpFlpConfigGenerator extends Generator {
         if (!this.launchAsSubGen) {
             this.prompts.splice(0, 0, [
                 {
-                    name: t('yuiNavSteps.flpConfigName', { projectName: path.basename(this.projectRootPath) }),
+                    name: t('yuiNavSteps.flpConfigName'),
                     description: ''
                 }
             ]);
         }
+    }
+
+    /**
+     * Sets up the FLP configuration page to display current tile entries.
+     */
+    private _setupReplacePage(): void {
+        const tileEntries = this.inbounds
+            ? Object.values(this.inbounds).map((inboundData) => {
+                  const title = inboundData.title ?? '';
+                  const navigationIntent = `${inboundData.semanticObject}-${inboundData.action}`;
+                  return t('yuiNavSteps.flpConfigReplaceTile', { navigationIntent, title });
+              })
+            : [];
+
+        const pages = this.prompts['items'] as IPrompt[];
+        const flpConfigPageIndex = pages.findIndex((p) => p.name === t('yuiNavSteps.flpConfigName'));
+
+        this.prompts.splice(flpConfigPageIndex, 1, [
+            {
+                name: t('yuiNavSteps.flpConfigName'),
+                description: t('yuiNavSteps.flpConfigReplaceCurrentTiles', { currentTiles: tileEntries.join('\n') })
+            }
+        ]);
     }
 
     /**
@@ -279,7 +317,29 @@ export default class AdpFlpConfigGenerator extends Generator {
                     this.prompts.setCallback(fn);
                 }
             };
+            return;
         }
+        this.prompts = this.options.prompts as Prompts;
+    }
+
+    /**
+     * Sets the tile settings prompts based on the current state of the generator.
+     */
+    private _setTileSettingsPrompts(): void {
+        if (this.launchAsSubGen) {
+            return;
+        }
+
+        const pages = this.prompts['items'] as IPrompt[];
+        const credentialsPageIndex = pages.findIndex((p) => p.name === t('yuiNavSteps.flpCredentialsName'));
+        this.prompts.splice(credentialsPageIndex + 1, 0, [
+            {
+                name: t('yuiNavSteps.tileSettingsName'),
+                description: t('yuiNavSteps.tileSettingsDescr', {
+                    projectName: basename(this.projectRootPath)
+                })
+            }
+        ]);
     }
 
     /**
@@ -318,10 +378,15 @@ export default class AdpFlpConfigGenerator extends Generator {
     /**
      * Retrieves the error handler message for the provided error.
      *
-     * @param {Error | AxiosError} error - The error to handle.
+     * @param {AxiosError} error - The error to handle.
      * @returns {ValidationLink | string | undefined} The validation link or error message.
      */
-    private _getErrorHandlerMessage(error: Error | AxiosError): ValidationLink | string | undefined {
+    private _getErrorHandlerMessage(error: AxiosError): ValidationLink | string | undefined {
+        // If `system_info` endpoint returns 404, the system is not cloud ready
+        // `system_info` endpoint needs to be called before `isAbapCloud`, because `isAbapCloud` silently catches the errors
+        if (error.status === 404) {
+            return t('error.projectNotCloudReady');
+        }
         const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/adp-flp-config');
         return errorHandler.getValidationErrorHelp(error);
     }
@@ -365,6 +430,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         if (!this.inbounds) {
             return undefined;
         }
+
         this._setTileSettingsPrompts();
         const existingFlpConfig = !this.launchAsSubGen && flpConfigurationExists(this.variant);
         const promptOptions = {
@@ -373,40 +439,30 @@ export default class AdpFlpConfigGenerator extends Generator {
             }
         };
         const tileSettingsPrompts = getTileSettingsQuestions(promptOptions);
+
         return this.prompt(tileSettingsPrompts);
     }
 
     /**
-     * Sets the tile settings prompts based on the current state of the generator.
-     */
-    private _setTileSettingsPrompts(): void {
-        if (this.launchAsSubGen) {
-            return;
-        }
-        const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
-        this.prompts.splice(promptsIndex, 0, [
-            {
-                name: t('yuiNavSteps.tileSettingsName', {
-                    projectName: path.basename(this.projectRootPath)
-                }),
-                description: ''
-            }
-        ]);
-    }
-
-    /**
-     * Validates the project type and cloud readiness.
+     * Validates the project type.
      *
      * @throws {Error} If the project is not supported or not cloud ready.
      */
-    private async _validateProject(): Promise<void> {
+    private async _validateProjectType(): Promise<void> {
         const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
-        if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
+        if (!isFioriAdaptation || (await isCFEnvironment(this.projectRootPath))) {
             this._abortExecution(t('error.projectNotSupported'));
-            return;
         }
-        const isCloud = await this.provider.isAbapCloud();
-        if (!isCloud) {
+    }
+
+    /**
+     * Validates the project is cloud ready.
+     *
+     * @throws {Error} If the project is not supported or not cloud ready.
+     */
+    private async _validateCloudProject(): Promise<void> {
+        const projectType = await getExistingAdpProjectType(this.projectRootPath);
+        if (projectType !== AdaptationProjectType.CLOUD_READY) {
             this._abortExecution(t('error.projectNotCloudReady'));
         }
     }
@@ -417,7 +473,12 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @returns {Promise<void>} A promise that resolves when the initialization is complete.
      */
     private async _initializeStandAloneGenerator(): Promise<void> {
-        this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
+        await this._validateProjectType();
+
+        this.ui5Yaml = await getAdpConfig<AdpPreviewConfigWithTarget>(
+            this.projectRootPath,
+            join(this.projectRootPath, FileName.Ui5Yaml)
+        );
         this.variant = await getVariant(this.projectRootPath, this.fs);
         this.appId = this.variant.reference;
         this.layer = this.variant.layer;

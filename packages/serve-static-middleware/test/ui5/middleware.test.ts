@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import express from 'express';
 import supertest from 'supertest';
 import * as serveStaticMiddleware from '../../src/ui5/middleware';
@@ -86,14 +86,28 @@ describe('Start server with serve-static-middleware', () => {
 
     test('keepCacheBusterInUrl (cache buster URL)', async () => {
         const server = await getTestServer({
-            paths: [{ path: '/resources', src: join(localUI5Path, 'resources'), fallthrough: false, keepCacheBusterInUrl: true }]
+            paths: [
+                {
+                    path: '/resources',
+                    src: join(localUI5Path, 'resources'),
+                    fallthrough: false,
+                    keepCacheBusterInUrl: true
+                }
+            ]
         });
         expect(await server.get(CACHEBUSTER_CORE)).toMatchObject({ status: 404 });
     });
 
     test('keepCacheBusterInUrl (normal URL)', async () => {
         const server = await getTestServer({
-            paths: [{ path: '/resources', src: join(localUI5Path, 'resources'), fallthrough: false, keepCacheBusterInUrl: true }]
+            paths: [
+                {
+                    path: '/resources',
+                    src: join(localUI5Path, 'resources'),
+                    fallthrough: false,
+                    keepCacheBusterInUrl: true
+                }
+            ]
         });
         expect(await server.get(CORE)).toMatchObject({ status: 200 });
     });

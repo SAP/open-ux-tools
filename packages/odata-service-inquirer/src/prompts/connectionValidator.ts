@@ -50,13 +50,13 @@ interface Validity {
 }
 
 // Cert errors that may be ignored by the ignore cert errors prompt and NODE_TLS_REJECT_UNAUTHORIZED=0 setting
-const ignorableCertErrors = [
+const ignorableCertErrors = new Set([
     ERROR_TYPE.CERT_SELF_SIGNED,
     ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN,
     ERROR_TYPE.CERT_EXPIRED,
     ERROR_TYPE.CERT_UKNOWN_OR_INVALID,
     ERROR_TYPE.INVALID_SSL_CERTIFICATE
-];
+]);
 
 // Makes AxiosRequestConfig url properties required
 interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
@@ -343,6 +343,9 @@ export class ConnectionValidator {
 
             if (isSystem) {
                 await this.createSystemConnection({ axiosConfig, url, odataVersion });
+                const systemInfo = await (this.serviceProvider as AbapServiceProvider).getSystemInfo();
+                this._connectedUserName = systemInfo?.userName;
+                this._connectedSystemName = systemInfo?.systemID;
             } else {
                 // Full service URL
                 await this.createOdataServiceConnection(axiosConfig, url.pathname);
@@ -383,7 +386,8 @@ export class ConnectionValidator {
             ignoreCertErrors: ignoreCertError,
             cookies: '',
             baseURL: url.origin,
-            url: url.pathname
+            url: url.pathname,
+            logger: LoggerHelper.logger
         };
 
         if (username && password) {
@@ -438,6 +442,8 @@ export class ConnectionValidator {
         if (resetValidity) {
             this.resetValidity();
         }
+        // Reset any previous connection errors
+        errorHandler.resetErrorState();
     }
 
     /**
@@ -465,7 +471,7 @@ export class ConnectionValidator {
                 await abapProvider.catalog(odataVerCatalog).listServices();
             } catch (error) {
                 const errorType = ErrorHandler.getErrorType(error?.response?.status ?? error?.code);
-                if (error?.isAxiosError && ignorableCertErrors.includes(errorType)) {
+                if (error?.isAxiosError && ignorableCertErrors.has(errorType)) {
                     LoggerHelper.logger.warn(
                         t('warnings.certificateErrors', { url: axiosConfig?.baseURL, error: errorType })
                     );
@@ -486,7 +492,6 @@ export class ConnectionValidator {
      * @param connectConfig.serviceInfo the service info
      * @param connectConfig.odataVersion the odata version to restrict the catalog requests if only a specific version is required
      * @param connectConfig.destination the destination to connect with
-     * @param connectConfig.refreshToken
      * @throws an error if the connection attempt fails, callers should handle the error
      */
     private async createSystemConnection({
@@ -494,21 +499,18 @@ export class ConnectionValidator {
         url,
         serviceInfo,
         destination,
-        odataVersion,
-        refreshToken
+        odataVersion
     }: {
         axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
         url?: URL;
         serviceInfo?: ServiceInfo;
         destination?: Destination;
         odataVersion?: ODataVersion;
-        refreshToken?: string;
     }): Promise<void> {
-        this.resetConnectionState();
-        this.resetValidity();
+        this.resetConnectionState(true);
 
         if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
-            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo, refreshToken);
+            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
         } else if (destination) {
             // Assumption: the destination configured URL is a valid URL, will be needed later for basic auth error handling
             this._validatedUrl = getDestinationUrlForAppStudio(destination.Name);
@@ -610,7 +612,7 @@ export class ConnectionValidator {
     }
 
     /**
-     * Get the service provider for the Abap on Cloud environment.
+     * Get the service provider for the Abap Cloud environment.
      *
      * @param url the system url
      * @param serviceInfo the service info
@@ -625,7 +627,8 @@ export class ConnectionValidator {
         if (this.systemAuthType === 'reentranceTicket' && url) {
             return createForAbapOnCloud({
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
-                url: new URL(url.pathname, url.origin).toString()
+                url: new URL(url.pathname, url.origin).toString(),
+                logger: LoggerHelper.logger
             });
         }
 
@@ -634,7 +637,8 @@ export class ConnectionValidator {
                 environment: AbapCloudEnvironment.Standalone,
                 service: serviceInfo,
                 refreshToken,
-                refreshTokenChangedCb: this.refreshTokenChangedCb.bind(this)
+                refreshTokenChangedCb: this.refreshTokenChangedCb.bind(this),
+                logger: LoggerHelper.logger
             });
         }
 
@@ -648,14 +652,9 @@ export class ConnectionValidator {
      *
      * @param serviceInfo the service info containing the UAA details
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
-     * @param refreshToken the refresh token for the Abap on Cloud environment, will be used to avoid re-authentication while the token is valid
      * @returns true if the system is reachable and authenticated, if required, false if not, or an error message string
      */
-    public async validateServiceInfo(
-        serviceInfo: ServiceInfo,
-        odataVersion?: ODataVersion,
-        refreshToken?: string
-    ): Promise<ValidationResult> {
+    public async validateServiceInfo(serviceInfo: ServiceInfo, odataVersion?: ODataVersion): Promise<ValidationResult> {
         if (!serviceInfo) {
             return false;
         }
@@ -668,7 +667,7 @@ export class ConnectionValidator {
         }
         try {
             this.systemAuthType = 'serviceKey';
-            await this.createSystemConnection({ serviceInfo, odataVersion, refreshToken });
+            await this.createSystemConnection({ serviceInfo, odataVersion });
             // Cache the user info
             this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).user();
             this._serviceInfo = serviceInfo;
@@ -736,8 +735,7 @@ export class ConnectionValidator {
         servicePath?: string,
         requiredOdataVersion?: ODataVersion
     ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
-        this.resetConnectionState();
-        this.resetValidity();
+        this.resetConnectionState(true);
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest. This function lowercases the origin.
         const destUrl = getDestinationUrlForAppStudio(destination.Name.toLowerCase(), servicePath);
         // Get the destination URL in the portable form <protocol>://<host>:<port>.
@@ -819,6 +817,9 @@ export class ConnectionValidator {
             this.validity.urlFormat = false;
             return false;
         }
+        if (systemAuthType) {
+            this.systemAuthType = systemAuthType;
+        }
         let url: URL;
         try {
             // Check if the url is valid
@@ -826,13 +827,19 @@ export class ConnectionValidator {
             if (url.origin === 'null') {
                 return t('errors.invalidUrl', { input: serviceUrl });
             }
+            // Dont allow non origin URLs in for re-entrance tickets and system URL's as the error handling would become complex to analyize.
+            // The connection may succeed but later we will get auth errors since axios-extension does not validate this.
+            // The new system name would also include the additional paths which would not make sense and would cause the issue when storing the system.
+            if (
+                (this.systemAuthType === 'reentranceTicket' || isSystem) &&
+                !(url.pathname.length === 0 || url.pathname === '/')
+            ) {
+                return t('prompts.validationMessages.systemUrlOriginOnlyWarning');
+            }
         } catch (error) {
             return t('errors.invalidUrl', { input: serviceUrl });
         }
 
-        if (systemAuthType) {
-            this.systemAuthType = systemAuthType;
-        }
         try {
             if (!forceReValidation && this.isUrlValidated(serviceUrl)) {
                 return this.validity.reachable ?? false;
@@ -879,7 +886,7 @@ export class ConnectionValidator {
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
         } else if (ErrorHandler.isCertError(status)) {
             this.validity.reachable = true;
-            this.validity.canSkipCertError = ignorableCertErrors.includes(ErrorHandler.getErrorType(status));
+            this.validity.canSkipCertError = ignorableCertErrors.has(ErrorHandler.getErrorType(status));
             this.validity.authenticated = false;
             return errorHandler.getValidationErrorHelp(status, false) ?? false;
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {
@@ -1057,7 +1064,10 @@ export class ConnectionValidator {
                     this._connectedUserName = username;
                     return { valResult: true };
                 } else if (this.validity.authenticated === false) {
-                    return { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };
+                    return {
+                        valResult: this.getAuthFailureReasonText(status, odataVersion),
+                        errorType: ERROR_TYPE.AUTH
+                    };
                 }
             }
             return { valResult };
@@ -1084,5 +1094,32 @@ export class ConnectionValidator {
         this._validatedUrl = undefined;
         this._destinationUrl = undefined;
         this._destination = undefined;
+    }
+
+    /**
+     * Get the specific authorization reason user message. This may be catalog version specific.
+     *
+     * @param httpStatusCode the http error code returned from a request
+     * @param odataVersion optional, the odata version specific request, for example for specific catalog requests
+     * @returns the text message indicting the authentication or authorization failure speific to an odata catalog request
+     */
+    private getAuthFailureReasonText(httpStatusCode: string | number, odataVersion?: ODataVersion): string {
+        let authFailType;
+        if ([403, '403'].includes(httpStatusCode)) {
+            authFailType = t('texts.authorizationFailed');
+        } else if ([401, '401'].includes(httpStatusCode)) {
+            authFailType = t('texts.authenticationFailed');
+        }
+
+        let authFailureReason;
+        if (odataVersion) {
+            authFailureReason = t('errors.authenticationFailedSpecificCatalog', {
+                odataVersion,
+                authFailType
+            });
+        } else {
+            authFailureReason = t('errors.authenticationFailedAllCatalogs', { authFailType });
+        }
+        return authFailureReason;
     }
 }

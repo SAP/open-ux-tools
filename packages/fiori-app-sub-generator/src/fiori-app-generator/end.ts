@@ -16,7 +16,7 @@ import {
     getService
 } from '@sap-ux/store';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ApiHubConfig } from '../types';
 import { ApiHubType } from '../types';
 import { buildSapClientParam, generateLaunchConfig, runHooks, t } from '../utils';
@@ -147,8 +147,15 @@ export async function runPostGenerationTasks(
             entityName: 'system'
         });
         // No need to await, we cannot recover anyway
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        storeService.write(service.backendSystem);
+
+        storeService.write(service.backendSystem, { force: true }).catch((error) => {
+            logger.error(
+                t('logMessages.backendSystemSaveError', {
+                    system: service.backendSystem?.name,
+                    error: error.message
+                })
+            );
+        });
     }
 
     // Display info message if using a cap service as it is not otherwise shown when a top level dir is not created

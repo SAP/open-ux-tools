@@ -3,11 +3,14 @@ import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock, sapMock } from 'mock/window';
+import NewsContainer from 'sap/cux/home/NewsContainer';
+import NewsAndPagesContainer from 'sap/cux/home/NewsAndPagesContainer';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
 import { Window } from 'types/global';
 import * as apiHandler from '../../../src/adp/api-handler';
+import MyHomeController from '../../../src/flp/homepage/controller/MyHome.controller';
 import {
     init,
     loadI18nResourceBundle,
@@ -227,7 +230,10 @@ describe('flp/init', () => {
         });
 
         test('nothing configured', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.118.1' }]
+            });
             CommunicationService.sendAction = jest.fn();
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toHaveBeenCalled();
@@ -240,7 +246,10 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.76.0' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+            });
 
             // testing the nested callbacks
             const mockService = {
@@ -269,7 +278,10 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.71.60' }]
+            });
 
             // testing the nested callbacks
             const mockService = {
@@ -304,7 +316,10 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 1.120.9', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.9' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.120.9' }]
+            });
 
             await init({ customInit: customInit });
 
@@ -314,7 +329,10 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 2.0.0', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '2.0.0' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '2.0.0' }]
+            });
 
             await init({ customInit: customInit });
 
@@ -324,7 +342,10 @@ describe('flp/init', () => {
         });
 
         test('custom init module configured & ui5 version is legacy-free', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0-legacy-free' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }]
+            });
 
             await init({});
 
@@ -338,7 +359,10 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
 
-            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.84.50' });
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.84.50' }]
+            });
 
             const reloadComplete = new Promise((resolve) => {
                 // Mocking `sap.ui.require` to throw the correct error structure
@@ -347,6 +371,7 @@ describe('flp/init', () => {
                         callback({}); // WorkspaceConnector
                         return;
                     }
+                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                     await callback(() => Promise.reject('Reload triggered'));
                     resolve(undefined);
                 });
@@ -380,7 +405,10 @@ describe('flp/init', () => {
         });
 
         test('cardGenerator mode is enabled', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.124.50' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.124.50' }]
+            });
             const mockComponentInstance = {} as Component;
             const mockService = {
                 attachAppLoaded: jest.fn().mockImplementation((callback: (event: any) => void) => {
@@ -405,11 +433,66 @@ describe('flp/init', () => {
         });
 
         test('enhancedHomePage mode is enabled', async () => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.130.0' });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.106.0' }]
+            });
             await init({ enhancedHomePage: true });
 
             expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
             expect(sapMock.ushell.Container.init).toHaveBeenCalledWith('cdm');
+        });
+
+        test('enhancedHomePage view - use new NewsContainer control when available', (done) => {
+            const mockPage = {
+                insertContent: jest.fn()
+            };
+
+            const controller = new MyHomeController('testController');
+            controller.getView = jest.fn().mockReturnValue({
+                getId: jest.fn().mockReturnValue('testView'),
+                byId: jest.fn().mockReturnValue(mockPage)
+            });
+
+            controller.onInit();
+            setTimeout(() => {
+                expect(mockPage.insertContent).toHaveBeenCalled();
+                const insertedContainer = mockPage.insertContent.mock.calls[0][0];
+
+                // Verify it's an instance of NewsContainer (when available)
+                expect(insertedContainer).toBeInstanceOf(NewsContainer);
+                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
+                done();
+            });
+        });
+
+        test('enhancedHomePage view - fallback to NewsAndPagesContainer control when NewsContainer is not available', (done) => {
+            jest.doMock('sap/cux/home/NewsContainer', () => {
+                throw new Error('NewsContainer not found');
+            });
+
+            const mockPage = {
+                insertContent: jest.fn()
+            };
+
+            const controller = new MyHomeController('testController');
+            controller.getView = jest.fn().mockReturnValue({
+                getId: jest.fn().mockReturnValue('testView'),
+                byId: jest.fn().mockReturnValue(mockPage)
+            });
+
+            controller.onInit();
+            setTimeout(() => {
+                expect(mockPage.insertContent).toHaveBeenCalled();
+                const insertedContainer = mockPage.insertContent.mock.calls[0][0];
+
+                // Verify it's an instance of NewsAndPagesContainer (fallback when NewsContainer unavailable)
+                expect(insertedContainer).toBeInstanceOf(NewsAndPagesContainer);
+                expect(mockPage.insertContent).toHaveBeenCalledWith(insertedContainer, 0);
+
+                jest.dontMock('sap/cux/home/NewsContainer');
+                done();
+            });
         });
     });
 });

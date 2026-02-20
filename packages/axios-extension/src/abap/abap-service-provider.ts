@@ -1,19 +1,30 @@
+import { join as joinPosix } from 'node:path/posix';
+
+import { ODataVersion } from '../base/odata-service';
 import { ServiceProvider } from '../base/service-provider';
+import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
+import { AppIndexService } from './app-index-service';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
-import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
-import { AppIndexService } from './app-index-service';
-import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import type { AbapCDSView, AtoSettings, BusinessObject } from './types';
+import type {
+    AbapCDSView,
+    AtoSettings,
+    BusinessObject,
+    ExternalService,
+    ExternalServiceReference,
+    SystemInfo
+} from './types';
 import { TenantType } from './types';
+import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
+
 import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator';
-import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
 import type { GeneratorEntry } from './adt-catalog/generators/types';
+import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
+import { type AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
+import { SystemInfoService } from './adt-catalog/services/systeminfo-service';
+import { UI5VersionService } from './ui5-version-service';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -27,13 +38,36 @@ export class AbapServiceProvider extends ServiceProvider {
     protected _publicUrl: string;
 
     /**
+     * The connected system info
+     */
+    protected _systemInfo: SystemInfo | undefined;
+
+    /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
      * The function returns a promise because it may be required to fetch the information from the backend.
      *
      * @returns the username
      */
-    public user(): Promise<string | undefined> {
-        return Promise.resolve(this.defaults.auth?.username);
+    public async user(): Promise<string | undefined> {
+        return (await Promise.resolve(this.defaults.auth?.username)) || (await this.getSystemInfo())?.userName;
+    }
+
+    /**
+     * Get user information.
+     *
+     * @returns user name or undefined
+     */
+    public async getSystemInfo(): Promise<SystemInfo | undefined> {
+        if (this._systemInfo) {
+            return this._systemInfo;
+        }
+        try {
+            const systemInfoService = this.createService<SystemInfoService>('', SystemInfoService);
+            this._systemInfo = await systemInfoService.getSystemInfo();
+        } catch (error) {
+            this.log.error(`An error occurred retrieving system info: ${error}`);
+        }
+        return this._systemInfo;
     }
 
     /**
@@ -213,6 +247,19 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
+     * Creates a singleton instance of the UI5 version service using lazy initialization.
+     *
+     * @returns The instance to the UI5 version service.
+     */
+    public getUI5VersionService(): UI5VersionService {
+        const path = UI5VersionService.PATH;
+        if (!this.services[path]) {
+            this.services[path] = this.createService<UI5VersionService>(path, UI5VersionService);
+        }
+        return this.services[path] as UI5VersionService;
+    }
+
+    /**
      * Create a UI Service generator for the given referenced object.
      *
      * @param referencedObject - referenced object (business object or abap cds view)
@@ -248,6 +295,46 @@ export class AbapServiceProvider extends ServiceProvider {
         generator.setContentType(this.getContentType(config));
         generator.configure(config, packageName || '$TMP');
         return generator;
+    }
+
+    /**
+     * Collects ValueListReferences annotation values from the service metadata and annotation files.
+     *
+     * @param references - Service references for which metadata should be fetched.
+     * @returns A list of ValueListReferences found in the metadata and annotations.
+     */
+    public async fetchExternalServices(references: ExternalServiceReference[]): Promise<ExternalService[]> {
+        const valueListReferences: ExternalService[] = [];
+        const allPromises = references.map(async (reference) => {
+            const { serviceRootPath, value } = reference;
+            const externalServicePath = joinPosix(serviceRootPath, value).replace('/$metadata', '');
+            const externalService = this.service(externalServicePath);
+            try {
+                const data = await externalService.metadata();
+                if (reference.type === 'value-list') {
+                    valueListReferences.push({
+                        type: 'value-list',
+                        path: externalServicePath,
+                        target: reference.target,
+                        metadata: data
+                    });
+                } else if (reference.type === 'code-list') {
+                    valueListReferences.push({
+                        type: 'code-list',
+                        path: externalServicePath,
+                        metadata: data
+                    });
+                }
+            } catch (error) {
+                this.log.warn(
+                    `Could not fetch value list reference metadata from ${externalServicePath}, ${error.message}`
+                );
+            }
+        });
+
+        await Promise.allSettled(allPromises);
+
+        return valueListReferences;
     }
 
     /**

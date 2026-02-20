@@ -17,6 +17,11 @@ export interface ProviderConfiguration {
      * https://datatracker.ietf.org/doc/html/rfc6265#section-4.2
      */
     cookies: string;
+
+    /**
+     * Allow a logger to be set by calls to provider creation
+     */
+    logger?: Logger;
 }
 
 export interface ServiceProviderExtension {
@@ -40,7 +45,19 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
     protected readonly services: { [path: string]: Service } = {};
 
     /**
+     *
+     * @param providerConfig
+     */
+    constructor(providerConfig?: AxiosRequestConfig & Partial<ProviderConfiguration>) {
+        super(providerConfig);
+        if (providerConfig?.logger) {
+            this._log = providerConfig.logger;
+        }
+    }
+
+    /**
      * Set the logger for the service provider. Loggers may need to be restored after serialization/deserialization since they contain circular references.
+     * Note calling this will overwrite loggers sets via ProviderConfiguration.
      *
      * @param logger - Logger instance to be set
      */
@@ -73,15 +90,21 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
     /**
      * Create an axios configuration for a new service instance.
      *
+     * **IMPORTANT:**
+     * This method intentionally mutates Axios instance defaults.
+     * Changing this behaviour (e.g. making defaults immutable) will break
+     * Axios header merging and interceptor resolution.
+     *
      * @param path path of the service relative to the service provider
      * @returns axios config
      */
     protected generateServiceConfig(path: string): AxiosRequestConfig {
         const config = Object.assign({}, this.defaults);
+        const headers = Object.assign(this.defaults.headers?.common ?? {}, { Cookie: this.cookies.toString() });
         return {
             ...config,
             baseURL: this.defaults.baseURL + path,
-            headers: this.defaults.headers?.common ?? {}
+            headers
         };
     }
 

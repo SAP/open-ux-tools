@@ -1,6 +1,6 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import hasbin = require('hasbin');
-import { platform } from 'os';
+import { platform } from 'node:os';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import {
     DeploymentGenerator,

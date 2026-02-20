@@ -401,4 +401,28 @@ describe('Select', () => {
         expect(input).toBeDefined();
         expect(onChangeFn).toHaveBeenCalledWith('select', 'testValue1');
     });
+
+    it('displays disabled option with tooltip in Select component', async () => {
+        const onChangeFn = jest.fn();
+        const propmtsWithDisabled = {
+            ...props,
+            choices: [
+                { name: 'testText0', value: 'testValue0' },
+                { name: 'testText1', value: 'testValue1', disabled: true, title: 'Option is disabled' }
+            ]
+        };
+        render(<Select {...propmtsWithDisabled} onChange={onChangeFn} />);
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+
+        // Open dropdown
+        const button = document.getElementsByClassName('ms-Button')[0];
+        fireEvent.click(button);
+
+        const options = screen.queryAllByRole('option');
+        expect(options).toHaveLength(2);
+
+        expect(options[1].textContent).toBe('testText1');
+        expect(options[1].title).toBe('Option is disabled');
+    });
 });

@@ -1,5 +1,5 @@
 import * as projectAccess from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
 import { create as createStorage } from 'mem-fs';
@@ -12,7 +12,7 @@ import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./mockMta').MockMta
     };
 });
@@ -34,7 +34,7 @@ describe('CF Writer', () => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
         unitTestFs = create(createStorage());
-        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 } as any));
+        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 }) as any);
         isAppStudioMock.mockReturnValue(false);
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
     });

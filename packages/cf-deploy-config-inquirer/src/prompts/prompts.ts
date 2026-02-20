@@ -119,7 +119,7 @@ function getOverwritePrompt(): CfDeployConfigQuestions {
 
 /**
  *
- * @returns A list question object with the available router options, defaulting to `None`.
+ * @returns A list question object with the available router options, defaulting to `Managed`.
  */
 function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
     return {
@@ -129,7 +129,7 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
             mandatory: true,
             breadcrumb: t('prompts.generateDeploymentRouterOptionsMessage')
         },
-        default: () => RouterModuleType.None, // Should always be the preferred choice
+        default: () => RouterModuleType.Managed, // Should always be the preferred choice
         message: () => t('prompts.generateDeploymentRouterOptionsMessage'),
         additionalMessages: (selectedRouter: RouterModuleType) => {
             let additionalMessage;
@@ -143,7 +143,6 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
         },
 
         choices: [
-            { name: t('prompts.routerType.none'), value: RouterModuleType.None },
             { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },
             { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront }
         ]

@@ -6,13 +6,13 @@ import type { LiveReloadOptions, HttpsOptions, ConnectLivereloadOptions } from '
 import { getAvailablePort } from './utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
-import { promises } from 'fs';
-import { extname } from 'path';
+import { promises } from 'node:fs';
+import { extname } from 'node:path';
 import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from './constants';
 
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
-    // eslint-disable-next-line no-var
+
     var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
 }
 

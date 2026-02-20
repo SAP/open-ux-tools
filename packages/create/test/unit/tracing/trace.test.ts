@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { promises } from 'fs';
+import { join } from 'node:path';
+import { promises } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { traceChanges } from '../../../src/tracing';

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { writeAnnotations } from '../../src/writeAnnotations';
 import { TemplateType } from '../../src/types';
 import { generateAnnotations } from '@sap-ux/annotation-generator';

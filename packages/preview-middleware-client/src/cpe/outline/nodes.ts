@@ -10,7 +10,7 @@ import type { ControlTreeIndex } from '../types';
 import { getOverlay } from '../utils';
 
 import { isEditable } from './editable';
-import { ChangeService } from '../changes';
+import type { ChangeService } from '../changes';
 import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4';
 
 interface AdditionalData {
@@ -31,7 +31,7 @@ function getAdditionalData(id: string): AdditionalData {
     }
 
     const metadata = control.getMetadata();
-    let details: AdditionalData = {};
+    const details: AdditionalData = {};
 
     const technicalName = metadata.getElementName();
     if (technicalName) {
@@ -55,9 +55,14 @@ function getAdditionalData(id: string): AdditionalData {
  * @returns An array of children nodes, or an empty array if none are found
  */
 function getChildren(current: OutlineViewNode): OutlineViewNode[] {
-    return (current.elements ?? []).flatMap((element: OutlineViewNode) =>
-        element.type === 'aggregation' ? element.elements ?? [] : []
-    );
+    return (current.elements ?? []).flatMap((element: OutlineViewNode) => {
+        if (element.type === 'aggregation') {
+            return element.elements ?? [];
+        } else if (element.type === 'extensionPoint') {
+            return [element];
+        }
+        return [];
+    });
 }
 
 /**
@@ -173,7 +178,7 @@ export async function transformNodes(
             if (isAdp && isExtPoint) {
                 const { defaultContent = [], createdControls = [] } = current.extensionPointInfo;
 
-                let children: OutlineNode[] = [];
+                const children: OutlineNode[] = [];
                 // We can combine both because there can only be either defaultContent or createdControls for one extension point node.
                 [...defaultContent, ...createdControls].forEach((id: string) => {
                     addChildToExtensionPoint(id, children, changeService);

@@ -52,7 +52,7 @@ function toMaxLength(comment: CommentLine, commaIndex: number, colonIndex: numbe
         value
     } = comment;
     return {
-        value: parseInt(value.slice(commaIndex + 1, colonIndex === -1 ? undefined : colonIndex), 10),
+        value: Number.parseInt(value.slice(commaIndex + 1, colonIndex === -1 ? undefined : colonIndex), 10),
         range: Range.create(
             start.line,
             start.character + commaIndex + 1,

@@ -96,7 +96,6 @@ export interface AppConfig {
         readonly localUI5Version?: string;
         readonly sapux?: boolean;
         readonly skipAnnotations?: boolean;
-        readonly enableCodeAssist?: boolean;
         readonly enableEslint?: boolean;
         readonly enableTypeScript?: boolean;
     };

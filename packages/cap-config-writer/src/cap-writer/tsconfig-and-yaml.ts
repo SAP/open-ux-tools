@@ -2,7 +2,7 @@ import { FileName } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { YamlDocument, yamlDocumentToYamlString } from '@sap-ux/yaml';
 import type { Logger } from '@sap-ux/logger';
-import { join } from 'path';
+import { join } from 'node:path';
 import { t } from '../i18n';
 
 /**

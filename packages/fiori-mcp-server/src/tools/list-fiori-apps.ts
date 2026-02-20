@@ -1,7 +1,7 @@
 import { findFioriArtifacts, getProjectType } from '@sap-ux/project-access';
 import type { AllAppResults, ProjectType } from '@sap-ux/project-access';
 import type { FioriApp, ListFioriAppsInput, ListFioriAppsOutput } from '../types';
-import { basename } from 'path';
+import { basename } from 'node:path';
 
 /**
  * Scans the provided workspace paths for Fiori applications and returns

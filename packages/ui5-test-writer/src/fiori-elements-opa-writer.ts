@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -7,6 +7,8 @@ import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './typ
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
 import { FileName, DirName } from '@sap-ux/project-access';
+import type { Logger } from '@sap-ux/logger';
+import { getFeatureData } from './utils/modelUtils';
 
 /**
  * Reads the manifest for an app.
@@ -261,13 +263,15 @@ function writePageObject(
  * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
  * @param fs - an optional reference to a mem-fs editor
+ * @param log - optional logger instance
  * @returns Reference to a mem-fs-editor
  */
-export function generateOPAFiles(
+export async function generateOPAFiles(
     basePath: string,
     opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
-    fs?: Editor
-): Editor {
+    fs?: Editor,
+    log?: Logger
+): Promise<Editor> {
     const editor = fs ?? create(createStorage());
 
     const manifest = readManifest(editor, basePath);
@@ -310,12 +314,19 @@ export function generateOPAFiles(
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
+
+    // Access ux-specification to get feature data for OPA test generation
+    const { filterBarItems, tableColumns } = await getFeatureData(basePath, editor, log);
+
     const journeyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
-        hideFilterBar: config.hideFilterBar
+        hideFilterBar: config.hideFilterBar,
+        filterBarItems: filterBarItems,
+        tableColumns: tableColumns
     };
+
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),
         join(testOutDirPath, `integration/${config.opaJourneyFileName}.js`),

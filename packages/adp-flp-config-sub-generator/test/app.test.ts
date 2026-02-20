@@ -1,5 +1,5 @@
-import { join } from 'path';
-import fs from 'fs';
+import { join } from 'node:path';
+import fs from 'node:fs';
 import fsextra from 'fs-extra';
 
 import type { YUIQuestion, CredentialsAnswers } from '@sap-ux/inquirer-common';
@@ -12,7 +12,7 @@ import * as Logger from '@sap-ux/logger';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as inquirerCommon from '@sap-ux/inquirer-common';
 import * as projectAccess from '@sap-ux/project-access';
-import type { AbapServiceProvider, InboundContent } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, type AbapServiceProvider, type InboundContent } from '@sap-ux/axios-extension';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 
 import adpFlpConfigGenerator from '../src/app';
@@ -46,7 +46,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
         getSystemByName: jest.fn().mockResolvedValue({
             name: 'testDestination'
         }) as unknown as sysAccess.AbapTarget
-    }))
+    })),
+    getExistingAdpProjectType: jest.fn()
 }));
 jest.mock('@sap-ux/inquirer-common', () => ({
     ...jest.requireActual('@sap-ux/inquirer-common'),
@@ -55,11 +56,10 @@ jest.mock('@sap-ux/inquirer-common', () => ({
         () =>
             ({
                 getValidationErrorHelp: () => 'Network Error'
-            } as unknown as inquirerCommon.ErrorHandler)
+            }) as unknown as inquirerCommon.ErrorHandler
     )
 }));
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
     TelemetryHelper: {
@@ -84,10 +84,7 @@ const loggerMock: ToolsLogger = {
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('FLPConfigGenerator Integration Tests', () => {
-    jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValue(false);
-    jest.spyOn(sysAccess, 'createAbapServiceProvider').mockResolvedValue({
-        isAbapCloud: jest.fn().mockReturnValue(true)
-    } as unknown as AbapServiceProvider);
+    jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValue(false);
     const generatorPath = join(__dirname, '../../src/app/index.ts');
     const testOutputDir = join(__dirname, 'test-output');
     const credentialsPrompts = {
@@ -139,9 +136,9 @@ describe('FLPConfigGenerator Integration Tests', () => {
         setHeaderTitle: jest.fn(),
         showInformation: showInformationSpy
     };
-    jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockResolvedValue(
-        credentialsPrompts as unknown as YUIQuestion<CredentialsAnswers>[]
-    );
+    const getCredentialsPromptsSpy = jest
+        .spyOn(inquirerCommon, 'getCredentialsPrompts')
+        .mockResolvedValue(credentialsPrompts as unknown as YUIQuestion<CredentialsAnswers>[]);
     const vsCodeMessageSpy = jest.fn();
     const vscode = {
         window: {
@@ -151,6 +148,8 @@ describe('FLPConfigGenerator Integration Tests', () => {
     jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
     jest.spyOn(adpTooling, 'getBaseAppInbounds').mockResolvedValue(inbounds);
     const generateInboundConfigSpy = jest.spyOn(adpTooling, 'generateInboundConfig');
+    const getExistingAdpProjectTypeMock = adpTooling.getExistingAdpProjectType as jest.Mock;
+    getExistingAdpProjectTypeMock.mockResolvedValue(AdaptationProjectType.CLOUD_READY);
 
     beforeEach(async () => {
         answers = {
@@ -163,7 +162,8 @@ describe('FLPConfigGenerator Integration Tests', () => {
             action: 'testAction',
             title: 'testTitle',
             subTitle: 'testSubTitle',
-            additionalParameters: '{"param1":"test1","param2":"test2"}'
+            additionalParameters: '{"param1":"test1","param2":"test2"}',
+            confirmReplace: true
         };
     });
 
@@ -225,15 +225,17 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
         expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
-            expect.objectContaining({
-                inboundId: 'customer.baseAppSo-baseAppAction',
-                semanticObject: 'baseAppSo',
-                action: 'baseAppAction',
-                title: 'testTitle',
-                subTitle: 'testSubTitle',
-                icon: 'sap-icon://baseAppIcon',
-                additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
-            }),
+            expect.arrayContaining([
+                {
+                    inboundId: 'customer.display-bank',
+                    semanticObject: 'baseAppSo',
+                    action: 'baseAppAction',
+                    title: 'baseAppTitle',
+                    subTitle: 'baseAppSubTitle',
+                    icon: 'sap-icon://baseAppIcon',
+                    additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
+                }
+            ]),
             expect.anything()
         );
     });
@@ -286,15 +288,17 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
         expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
-            expect.objectContaining({
-                inboundId: 'customer.testSo_New-testAct_New',
-                semanticObject: 'testSo_New',
-                action: 'testAct_New',
-                title: 'testTitle',
-                subTitle: 'testSubTitle',
-                icon: 'sap-icon://baseAppIcon',
-                additionalParameters: '{"param1":"test1","param2":"test2"}'
-            }),
+            [
+                expect.objectContaining({
+                    inboundId: 'customer.testSo_New-testAct_New',
+                    semanticObject: 'testSo_New',
+                    action: 'testAct_New',
+                    title: 'testTitle',
+                    subTitle: 'testSubTitle',
+                    icon: 'sap-icon://baseAppIcon',
+                    additionalParameters: '{"param1":"test1","param2":"test2"}'
+                })
+            ],
             expect.anything()
         );
     });
@@ -351,15 +355,17 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
         expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
-            expect.objectContaining({
-                inboundId: 'customer.testSo_New-testAct_New',
-                semanticObject: 'testSo_New',
-                action: 'testAct_New',
-                title: 'testTitle_New',
-                subTitle: 'testSubTitle_New',
-                icon: 'sap-icon://Icon_New',
-                additionalParameters: '{"param1":"test1","param2":"test2"}'
-            }),
+            [
+                expect.objectContaining({
+                    inboundId: 'customer.testSo_New-testAct_New',
+                    semanticObject: 'testSo_New',
+                    action: 'testAct_New',
+                    title: 'testTitle_New',
+                    subTitle: 'testSubTitle_New',
+                    icon: 'sap-icon://Icon_New',
+                    additionalParameters: '{"param1":"test1","param2":"test2"}'
+                })
+            ],
             expect.anything()
         );
     });
@@ -416,6 +422,19 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('should generate FLP configuration successfully - use provider from wizard cache', async () => {
+        const mockPrompts = {
+            items: [
+                {
+                    name: 'Tile settings',
+                    description: 'Configure the tile settings for the application'
+                },
+                {
+                    name: 'SAP Fiori Launchpad Configuration',
+                    description: ''
+                }
+            ],
+            splice: jest.fn()
+        };
         const testPath = join(testOutputDir, 'test_project1');
         fs.mkdirSync(testPath, { recursive: true });
         fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
@@ -429,10 +448,11 @@ describe('FLPConfigGenerator Integration Tests', () => {
         const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
         jest.spyOn(adpTooling, 'getBaseAppInbounds');
         const createAbapServiceProviderSpy = jest.spyOn(sysAccess, 'createAbapServiceProvider');
-        jest.spyOn(appWizardCache, 'getFromCache').mockImplementationOnce(() => {
-            return {
-                isAbapCloud: jest.fn().mockReturnValue(true)
-            } as unknown as AbapServiceProvider;
+        jest.spyOn(appWizardCache, 'getFromCache').mockImplementationOnce((_, property, __) => {
+            if (property === 'credentialsPrompted') {
+                return false;
+            }
+            return {} as unknown as AbapServiceProvider;
         });
 
         const runContext = yeomanTest
@@ -451,7 +471,8 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 loggerMock,
                 launchAsSubGen: true,
                 inbounds: inbounds,
-                layer: adpTooling.FlexLayer.CUSTOMER_BASE
+                layer: adpTooling.FlexLayer.CUSTOMER_BASE,
+                prompts: mockPrompts
             })
             .withPrompts(answers);
         await expect(runContext.run()).resolves.not.toThrow();
@@ -466,17 +487,59 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(createAbapServiceProviderSpy).not.toHaveBeenCalled();
         expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
-            expect.objectContaining({
-                inboundId: 'customer.baseAppSo-baseAppAction',
-                semanticObject: 'baseAppSo',
-                action: 'baseAppAction',
-                title: 'testTitle',
-                subTitle: 'testSubTitle',
-                icon: 'sap-icon://baseAppIcon',
-                additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
-            }),
+            [
+                expect.objectContaining({
+                    inboundId: 'customer.display-bank',
+                    semanticObject: 'baseAppSo',
+                    action: 'baseAppAction',
+                    title: 'baseAppTitle',
+                    subTitle: 'baseAppSubTitle',
+                    icon: 'sap-icon://baseAppIcon',
+                    additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
+                })
+            ],
             expect.anything()
         );
+    });
+
+    it('should add credentials step in Yeoman UI if already prompted', async () => {
+        const testPath = join(testOutputDir, 'test_project1');
+        fs.mkdirSync(testPath, { recursive: true });
+        fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
+        const testProjectPath = join(testPath, 'app.variant1');
+
+        jest.spyOn(appWizardCache, 'getFromCache')
+            .mockImplementationOnce(() => {
+                return {} as unknown as AbapServiceProvider;
+            })
+            .mockImplementationOnce(() => true);
+
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                loggerMock,
+                launchAsSubGen: false
+            })
+            .withPrompts(answers);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+        expect(getCredentialsPromptsSpy).toHaveBeenCalled();
     });
 
     it('should generate FLP configuration successfully - VS Code', async () => {
@@ -561,7 +624,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('Should result in an error message if the project is a CF project', async () => {
-        jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValueOnce(true);
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'
@@ -593,7 +656,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('Should result in an error message if the project is a CF project and use the logger in case of CLI', async () => {
-        jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValueOnce(true);
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockResolvedValueOnce(true);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'
@@ -632,9 +695,48 @@ describe('FLPConfigGenerator Integration Tests', () => {
             }
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
-        jest.spyOn(sysAccess, 'createAbapServiceProvider').mockResolvedValueOnce({
-            isAbapCloud: jest.fn().mockReturnValueOnce(false)
-        } as unknown as AbapServiceProvider);
+        getExistingAdpProjectTypeMock.mockResolvedValue(AdaptationProjectType.ON_PREMISE);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await initI18n();
+        await runContext.run();
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.projectNotCloudReady'));
+    });
+
+    it('Should handle 404 error when fetching base app inbounds', async () => {
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        jest.spyOn(adpTooling, 'getBaseAppInbounds').mockRejectedValueOnce({
+            isAxiosError: true,
+            status: 404,
+            response: {
+                status: 404
+            },
+            request: {
+                path: '/test/path'
+            }
+        });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
         const testProjectPath = join(__dirname, 'fixtures/app.variant1');
 
         const runContext = yeomanTest
@@ -931,6 +1033,71 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await runContext.run();
         expect(callbackResult).toEqual('Network Error');
+    });
+
+    it('Should show projectNotCloudReady error after authentication when base app inbounds request fails with 404', async () => {
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue(destinationList);
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        jest.spyOn(adpTooling, 'getBaseAppInbounds')
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                response: {
+                    status: 401
+                }
+            })
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                status: 404,
+                response: {
+                    status: 404
+                },
+                request: {
+                    path: '/test/path'
+                }
+            });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+        let callbackResult: string | boolean = '';
+        jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
+            async (
+                callback?: inquirerCommon.AdditionalValidation
+            ): Promise<inquirerCommon.YUIQuestion<inquirerCommon.CredentialsAnswers>[]> => {
+                callbackResult = (await callback?.({ username: 'testUsername', password: 'testPassword' })) as string;
+                return Promise.resolve([
+                    {
+                        username: 'testUsername'
+                    } as unknown as inquirerCommon.InputQuestion,
+                    {
+                        password: 'testPassword'
+                    } as unknown as inquirerCommon.PasswordQuestion
+                ]);
+            }
+        );
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await initI18n();
+        await runContext.run();
+        expect(callbackResult).toEqual(t('error.projectNotCloudReady'));
     });
 
     it('Should pass authentication successfully', async () => {

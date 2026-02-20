@@ -2,13 +2,13 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomFilter, InternalCustomFilter, PageOptions } from './types';
-import { join } from 'path';
+import { join } from 'node:path';
 import { render } from 'ejs';
 import { validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
-import { getJsonSpace } from '../common/file';
+import { copyTpl, getJsonSpace } from '../common/file';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
 import type { FilterField } from '../building-block/types';
 import type { ManifestNamespace } from '@sap-ux/project-access';
@@ -82,7 +82,7 @@ export async function generateCustomFilter(basePath: string, filterConfig: Custo
     // create a fragment file
     const fragmentPath = join(config.path, `${config.fragmentFile}.fragment.xml`);
     if (!fs.exists(fragmentPath)) {
-        fs.copyTpl(getTemplatePath(`filter/fragment.xml`), fragmentPath, config);
+        copyTpl(fs, getTemplatePath(`filter/fragment.xml`), fragmentPath, config);
     }
 
     return fs;

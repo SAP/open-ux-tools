@@ -253,7 +253,7 @@ export function parseEnumTypeDefinition(name: string, raw: EnumTypeBase): EnumTy
         enumType.values = Object.keys(raw)
             .filter((key) => !isValidKey(key))
             .map((key) => {
-                const value = parseInt(raw[key], 10);
+                const value = Number.parseInt(raw[key], 10);
                 const enumValue: EnumValue = {
                     kind: ENUM_VALUE_KIND,
                     name: key,

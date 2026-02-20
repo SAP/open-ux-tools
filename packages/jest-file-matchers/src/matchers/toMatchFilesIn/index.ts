@@ -1,6 +1,6 @@
 import { toMatchFile } from '../toMatchFileSnapshot';
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import minimatch = require('minimatch');
 import type { Filter, MatcherOptions } from '../types';
 import { extractMessage } from '../utils';

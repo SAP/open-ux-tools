@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import * as utils from '../../../src/common/utils';
 import { create as createFS } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';

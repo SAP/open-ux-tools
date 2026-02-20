@@ -1,6 +1,6 @@
 import type { UI5Version } from '../types';
 import { fetchInternalVersions } from './fetch';
-import { isFeatureSupportedVersion, removeTimestampFromVersion, addSnapshot, buildSystemVersionLabel } from './format';
+import { isFeatureSupportedVersion, addSnapshot, buildSystemVersionLabel, formatUi5Version } from './format';
 import { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../base/constants';
 
 export interface VersionLabels {
@@ -49,8 +49,8 @@ export function shouldSetMinUI5Version(systemVersion?: string): boolean {
     }
 
     const versionParts = systemVersion.split('.');
-    const minorVersion = versionParts.length > 1 ? parseInt(versionParts[1], 10) : NaN;
-    return !isNaN(minorVersion) && minorVersion >= 90;
+    const minorVersion = versionParts.length > 1 ? Number.parseInt(versionParts[1], 10) : Number.NaN;
+    return !Number.isNaN(minorVersion) && minorVersion >= 90;
 }
 
 /**
@@ -84,7 +84,7 @@ export function getVersionLabels(version: string | undefined, publicVersions: UI
     let systemLatestLabel = '';
     if (version) {
         const latestVersion = getLatestVersion(publicVersions);
-        formattedVersion = removeTimestampFromVersion(version);
+        formattedVersion = formatUi5Version(version);
         systemSnapshotLabel = addSnapshot(version, latestVersion);
         systemLatestLabel = formattedVersion === latestVersion ? LATEST_VERSION : '';
     }
@@ -99,7 +99,10 @@ export function getVersionLabels(version: string | undefined, publicVersions: UI
  */
 export function checkSystemVersionPattern(version: string | undefined): string | undefined {
     const pattern = /^[1-9]\.\d{1,3}\.\d{1,2}\.*/;
-    return version && pattern.test(version) ? removeTimestampFromVersion(version) : undefined;
+    if (!version || !pattern.test(version)) {
+        return undefined;
+    }
+    return formatUi5Version(version);
 }
 
 /**
@@ -126,13 +129,13 @@ export async function getInternalVersions(latestVersion: string): Promise<string
 export async function getHigherVersions(version: string, publicVersions: UI5Version): Promise<string[]> {
     const latestVersion = publicVersions?.latest?.version;
     const radix = 10;
-    const [_, baselineMinor, baselineMicro] = version.split('.').map((part) => parseInt(part, radix));
+    const [_, baselineMinor, baselineMicro] = version.split('.').map((part) => Number.parseInt(part, radix));
 
     const higherVersions = Object.keys(publicVersions)
         .filter((key) => key !== 'latest')
         .map((key) => publicVersions[key]['version'])
         .filter((ver: string) => {
-            const [, minor, micro] = ver.split('.').map((part) => parseInt(part, radix));
+            const [, minor, micro] = ver.split('.').map((part) => Number.parseInt(part, radix));
             return minor > baselineMinor || (minor === baselineMinor && micro > baselineMicro);
         });
 
@@ -159,14 +162,21 @@ export async function getRelevantVersions(
     isCustomerBase: boolean,
     publicVersions: UI5Version
 ): Promise<string[]> {
-    const version = checkSystemVersionPattern(systemVersion);
+    let formattedVersion = '',
+        systemSnapshotLabel = '',
+        systemLatestLabel = '';
     const latestPublicVersion = publicVersions?.latest?.version;
     let versions: string[] = [];
-    const { formattedVersion, systemSnapshotLabel, systemLatestLabel } = getVersionLabels(version, publicVersions);
+    if (systemVersion) {
+        ({ formattedVersion, systemSnapshotLabel, systemLatestLabel } = getVersionLabels(
+            systemVersion,
+            publicVersions
+        ));
+    }
 
     if (!isCustomerBase) {
         versions = await getInternalVersions(latestPublicVersion);
-        if (version) {
+        if (formattedVersion) {
             const regex = new RegExp(`${formattedVersion} `, 'g');
             versions = versions.map((v) =>
                 v.replace(regex, `${formattedVersion}${systemSnapshotLabel} ${CURRENT_SYSTEM_VERSION}`)
@@ -174,8 +184,12 @@ export async function getRelevantVersions(
             versions.unshift(buildSystemVersionLabel(formattedVersion, systemSnapshotLabel, systemLatestLabel));
         }
         versions.unshift(SNAPSHOT_VERSION, SNAPSHOT_UNTESTED_VERSION);
-    } else if (version && systemSnapshotLabel === '') {
+    } else if (formattedVersion && systemSnapshotLabel === '') {
         versions = await getHigherVersions(formattedVersion, publicVersions);
+        if (!versions.length && formattedVersion !== latestPublicVersion) {
+            versions = [`${formattedVersion} ${CURRENT_SYSTEM_VERSION}`, `${latestPublicVersion} ${LATEST_VERSION}`];
+            return [...new Set(versions)];
+        }
         versions.unshift(buildSystemVersionLabel(formattedVersion, systemSnapshotLabel, systemLatestLabel));
     } else {
         versions = [`${latestPublicVersion} ${LATEST_VERSION}`];

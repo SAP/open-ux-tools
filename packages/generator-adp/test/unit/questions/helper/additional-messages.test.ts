@@ -1,24 +1,29 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
-import type { SourceApplication } from '@sap-ux/adp-tooling';
+import type { FlexUICapability, SourceApplication } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import {
     getAppAdditionalMessages,
     getSystemAdditionalMessages,
-    getVersionAdditionalMessages
+    getVersionAdditionalMessages,
+    getTargetEnvAdditionalMessages
 } from '../../../../src/app/questions/helper/additional-messages';
-import { t } from '../../../../src/utils/i18n';
+import { initI18n, t } from '../../../../src/utils/i18n';
 
 describe('additional-messages', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
+
     describe('getSystemAdditionalMessages', () => {
         it('should return undefined if flexUISystem is undefined', () => {
-            const result = getSystemAdditionalMessages(undefined, false);
+            const result = getSystemAdditionalMessages(undefined, undefined);
             expect(result).toBeUndefined();
         });
 
         it('should return CLOUD_READY info message for cloud project', () => {
-            const result = getSystemAdditionalMessages(undefined, true);
+            const result = getSystemAdditionalMessages({} as FlexUICapability, AdaptationProjectType.CLOUD_READY);
             expect(result).toEqual({
                 message: `${t('prompts.projectTypeLabel')}: ${AdaptationProjectType.CLOUD_READY}`,
                 severity: Severity.information
@@ -26,15 +31,21 @@ describe('additional-messages', () => {
         });
 
         it('should return not deployable and not flex enabled error if not on-premise and not UIFlex', () => {
-            const result = getSystemAdditionalMessages({ isOnPremise: false, isUIFlex: false }, false);
+            const result = getSystemAdditionalMessages(
+                { isDtaFolderDeploymentSupported: false, isUIFlexSupported: false },
+                AdaptationProjectType.ON_PREMISE
+            );
             expect(result).toEqual({
                 message: t('error.notDeployableNotFlexEnabledSystemError'),
-                severity: Severity.error
+                severity: Severity.warning
             });
         });
 
         it('should return not deployable system error if not on-premise but UIFlex is true', () => {
-            const result = getSystemAdditionalMessages({ isOnPremise: false, isUIFlex: true }, false);
+            const result = getSystemAdditionalMessages(
+                { isDtaFolderDeploymentSupported: false, isUIFlexSupported: true },
+                AdaptationProjectType.ON_PREMISE
+            );
             expect(result).toEqual({
                 message: t('error.notDeployableSystemError'),
                 severity: Severity.error
@@ -42,7 +53,10 @@ describe('additional-messages', () => {
         });
 
         it('should return not flex enabled warning if on-premise but UIFlex is false', () => {
-            const result = getSystemAdditionalMessages({ isOnPremise: true, isUIFlex: false }, false);
+            const result = getSystemAdditionalMessages(
+                { isDtaFolderDeploymentSupported: true, isUIFlexSupported: false },
+                AdaptationProjectType.ON_PREMISE
+            );
             expect(result).toEqual({
                 message: t('error.notFlexEnabledError'),
                 severity: Severity.warning
@@ -50,7 +64,10 @@ describe('additional-messages', () => {
         });
 
         it('should return ON_PREMISE info if on-premise and UIFlex is true', () => {
-            const result = getSystemAdditionalMessages({ isOnPremise: true, isUIFlex: true }, false);
+            const result = getSystemAdditionalMessages(
+                { isDtaFolderDeploymentSupported: true, isUIFlexSupported: true },
+                AdaptationProjectType.ON_PREMISE
+            );
             expect(result).toEqual({
                 message: `${t('prompts.projectTypeLabel')}: ${AdaptationProjectType.ON_PREMISE}`,
                 severity: Severity.information
@@ -136,6 +153,33 @@ describe('additional-messages', () => {
                 message: t('validators.ui5VersionNotDetectedError'),
                 severity: Severity.warning
             });
+        });
+
+        it('should return undefined when version is detected', () => {
+            const result = getVersionAdditionalMessages(true);
+            expect(result).toBeUndefined();
+        });
+    });
+
+    describe('getTargetEnvAdditionalMessages', () => {
+        const mockCfConfig = {
+            url: 'https://test.cf.com',
+            org: { Name: 'test-org' },
+            space: { Name: 'test-space' }
+        };
+
+        it('should return information when CF selected and logged in', () => {
+            const result = getTargetEnvAdditionalMessages('CF', true, mockCfConfig);
+
+            expect(result).toEqual({
+                message: 'You are logged in to Cloud Foundry: https://test.cf.com / test-org / test-space.',
+                severity: Severity.information
+            });
+        });
+
+        it('should return undefined when not CF environment', () => {
+            const result = getTargetEnvAdditionalMessages('ABAP', true, mockCfConfig);
+            expect(result).toBeUndefined();
         });
     });
 });

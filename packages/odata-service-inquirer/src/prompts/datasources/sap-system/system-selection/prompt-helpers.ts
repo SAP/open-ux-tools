@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { type BackendSystemKey, type BackendSystem, SystemService } from '@sap-ux/store';
+import { type BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types';
@@ -18,6 +18,8 @@ import { convertODataVersionType, PromptState, removeCircularFromServiceProvider
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import type { ValidationResult } from '../../../types';
+import { getBackendSystemDisplayName } from '@sap-ux/fiori-generator-shared';
+import { getAllBackendSystems, getBackendSystemService } from '../../../../utils/store';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -50,7 +52,9 @@ export async function connectWithBackendSystem(
     // Create a new connection with the selected system
     PromptState.resetConnectedSystem();
     let connectValResult: ValidationResult = false;
-    const backendSystem = await new SystemService(LoggerHelper.logger).read(backendKey);
+
+    const backendService = await getBackendSystemService();
+    const backendSystem = await backendService.read(backendKey);
 
     if (backendSystem) {
         // Backend systems validation supports using a cached service provider to prevent re-authentication (e.g. re-opening a browser window)
@@ -60,7 +64,14 @@ export async function connectWithBackendSystem(
         }
         // Assumption: non-BAS systems are BackendSystems
         if (backendSystem.authenticationType === 'reentranceTicket') {
-            connectValResult = await connectionValidator.validateUrl(backendSystem.url, {
+            // Since we previously allowed paths in the stored backend system URLs for Cloud systems, we need to strip them (only use origin in the validator).
+            const backendSystemUrl = new URL(backendSystem.url);
+            if (backendSystemUrl.pathname !== '/') {
+                LoggerHelper.logger.warn(
+                    t('warnings.storedSystemUrlPathNotSupported', { systemUrl: backendSystem.url })
+                );
+            }
+            connectValResult = await connectionValidator.validateUrl(backendSystemUrl.origin, {
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion),
                 systemAuthType: 'reentranceTicket'
@@ -68,8 +79,7 @@ export async function connectWithBackendSystem(
         } else if (backendSystem.serviceKeys) {
             connectValResult = await connectionValidator.validateServiceInfo(
                 backendSystem.serviceKeys as ServiceInfo,
-                convertODataVersionType(requiredOdataVersion),
-                backendSystem.refreshToken
+                convertODataVersionType(requiredOdataVersion)
             );
         } else if (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) {
             let errorType;
@@ -85,11 +95,7 @@ export async function connectWithBackendSystem(
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
             // We log the error in case there is another issue (unresolveable) with the stored backend configuration.
-            if (
-                errorType === ERROR_TYPE.AUTH &&
-                typeof backendSystem.username === 'string' &&
-                typeof backendSystem.password === 'string'
-            ) {
+            if (errorType === ERROR_TYPE.AUTH) {
                 LoggerHelper.logger.error(
                     t('errors.storedSystemConnectionError', {
                         systemName: backendSystem.name,
@@ -154,34 +160,6 @@ export async function connectWithDestination(
 }
 
 /**
- * Creates and returns a display name for the system, appending the system type and user display name if available.
- *
- * @param system the backend system to create a display name for
- * @returns the display name for the system
- */
-export function getBackendSystemDisplayName(system: BackendSystem): string {
-    const userDisplayName = system.userDisplayName ? ` [${system.userDisplayName}]` : '';
-    const systemTypeName = getBackendSystemTypeName(system.systemType);
-    return `${system.name}${systemTypeName}${userDisplayName}`;
-}
-
-/**
- * Returns the formatted system type name for the given backend system.
- *
- * @param systemType the system type to get the name for
- * @returns system type name formatted as a string, e.g. " (BTP)" or " (S4HC)".
- */
-function getBackendSystemTypeName(systemType?: string): string {
-    let systemTypeName = ''; // for on prem we do not show the system type
-    if (systemType === 'S4HC') {
-        systemTypeName = ` (${t('texts.systemTypeS4HC')})`;
-    } else if (systemType === 'BTP') {
-        systemTypeName = ` (${t('texts.systemTypeBTP')})`;
-    }
-    return systemTypeName;
-}
-
-/**
  * Matches the destination against the provided filters. Returns true if the destination matches any filters, false otherwise.
  *
  * @param destination the destination to match against the filters
@@ -222,11 +200,13 @@ function matchesFilters(destination: Destination, filters?: Partial<DestinationF
  *
  * @param destinationFilters the filters to apply to the destination choices
  * @param includeCloudFoundryAbapEnvChoice whether to include the Cloud Foundry ABAP environment choice in the list
+ * @param hideNewSystem - if true it will prevent adding the 'New System' option to the list
  * @returns a list of choices for the system selection prompt
  */
 export async function createSystemChoices(
     destinationFilters?: Partial<DestinationFilters>,
-    includeCloudFoundryAbapEnvChoice = false
+    includeCloudFoundryAbapEnvChoice = false,
+    hideNewSystem = false
 ): Promise<ListChoiceOptions<SystemSelectionAnswerType>[]> {
     let systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[] = [];
     let newSystemChoice: ListChoiceOptions<SystemSelectionAnswerType> | undefined;
@@ -266,7 +246,11 @@ export async function createSystemChoices(
             };
         }
     } else {
-        const backendSystems = await new SystemService(LoggerHelper.logger).getAll({ includeSensitiveData: false });
+        const backendSystems = await getAllBackendSystems(false);
+
+        // Cache the backend systems
+        PromptState.backendSystemsCache = backendSystems;
+
         systemChoices = backendSystems.map((system) => {
             return {
                 name: getBackendSystemDisplayName(system),
@@ -276,10 +260,12 @@ export async function createSystemChoices(
                 } as SystemSelectionAnswerType
             };
         });
-        newSystemChoice = {
-            name: t('prompts.systemSelection.newSystemChoiceLabel'),
-            value: { type: 'newSystemChoice', system: NewSystemChoice } as SystemSelectionAnswerType
-        };
+        if (!hideNewSystem) {
+            newSystemChoice = {
+                name: t('prompts.systemSelection.newSystemChoiceLabel'),
+                value: { type: 'newSystemChoice', system: NewSystemChoice } as SystemSelectionAnswerType
+            };
+        }
     }
     systemChoices.sort(({ name: nameA }, { name: nameB }) =>
         nameA!.localeCompare(nameB!, undefined, { numeric: true, caseFirst: 'lower' })
@@ -299,24 +285,25 @@ export async function createSystemChoices(
  */
 export function findDefaultSystemSelectionIndex(
     systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[],
-    defaultChoice: string | undefined
+    defaultChoice: string | { value?: string } | undefined
 ): number {
-    if (!defaultChoice) {
+    const choice = typeof defaultChoice === 'string' ? defaultChoice : defaultChoice?.value;
+    if (!choice) {
         return -1;
     }
-    const defaultChoiceIndex = systemChoices.findIndex((choice) => {
-        const { type: systemType, system } = choice.value as SystemSelectionAnswerType;
+    const defaultChoiceIndex = systemChoices.findIndex((systemChoice) => {
+        const { type: systemType, system } = systemChoice.value as SystemSelectionAnswerType;
         if (systemType === 'destination') {
-            return (system as Destination).Name === defaultChoice;
+            return (system as Destination).Name === choice;
         }
         if (systemType === 'backendSystem') {
-            return (system as BackendSystem).name === defaultChoice;
+            return (system as BackendSystem).name === choice;
         }
         if (systemType === 'newSystemChoice') {
-            return defaultChoice === NewSystemChoice;
+            return choice === NewSystemChoice;
         }
         if (systemType === 'cfAbapEnvService') {
-            return defaultChoice === CfAbapEnvServiceChoice;
+            return choice === CfAbapEnvServiceChoice;
         }
     });
     return defaultChoiceIndex;

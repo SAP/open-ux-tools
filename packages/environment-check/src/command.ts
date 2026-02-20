@@ -1,14 +1,14 @@
-import { spawn } from 'child_process';
-import os from 'os';
+import { spawn } from 'node:child_process';
+import os from 'node:os';
 /**
  * npm command is platform depending: Winows 'npm.cmd', Mac 'npm'
  */
-export const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
+export const npmCommand = process.platform.startsWith('win') ? 'npm.cmd' : 'npm';
 
 /**
  * Platform specific config for spawn to execute commands
  */
-const spawnOptions = /^win/.test(process.platform)
+const spawnOptions = process.platform.startsWith('win')
     ? { windowsVerbatimArguments: true, shell: true, cwd: os.homedir() }
     : { cwd: os.homedir() };
 

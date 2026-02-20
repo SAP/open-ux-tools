@@ -1,10 +1,10 @@
 import type { ParseOptions } from 'commander';
-import { join } from 'path';
+import { join } from 'node:path';
 import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
 import * as cliArchive from '../../../src/cli/archive';
 import { mockedUi5RepoService, mockedLrepService, mockedProvider } from '../../__mocks__';
 import { Command } from 'commander';
-import fs from 'fs';
+import fs from 'node:fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import ProcessEnv = NodeJS.ProcessEnv;
 

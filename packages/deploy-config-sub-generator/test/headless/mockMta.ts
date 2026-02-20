@@ -1,5 +1,5 @@
-import { join } from 'path';
-import * as fs from 'fs';
+import { join } from 'node:path';
+import * as fs from 'node:fs';
 import yaml, { dump } from 'js-yaml';
 import type { Mta, mta } from '@sap/mta-lib';
 

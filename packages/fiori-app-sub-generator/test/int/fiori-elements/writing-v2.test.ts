@@ -1,8 +1,8 @@
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { readdirSync } from 'fs';
+import { readdirSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Project, Service, State } from '../../../src/types';
 import { ApiHubType, FloorplanFE } from '../../../src/types';
 import {
@@ -14,6 +14,7 @@ import {
     runWritingPhaseGen
 } from '../test-utils';
 import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
+import { url } from 'node:inspector';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
@@ -46,11 +47,8 @@ describe('Generate v2 apps', () => {
             }
             console.log(`Restoring cwd: ${originalCwd}`);
             process.chdir(originalCwd);
-        } catch {
-            () => {
-                // Needed for lint
-            };
-        }
+            // eslint-disable-next-line no-empty
+        } catch {}
     });
 
     it('LROP v2 - URL', async () => {
@@ -176,8 +174,12 @@ describe('Generate v2 apps', () => {
                 source: DatasourceType.sapSystem,
                 connectedSystem: {
                     backendSystem: {
+                        url: 'https://abap.cloud.host',
                         serviceKeys: 'aServiceKey',
-                        authenticationType: 'ReentranceTicket'
+                        authenticationType: 'reentranceTicket',
+                        name: 'aSystemName',
+                        systemType: 'AbapCloud',
+                        connectionType: 'abap_catalog'
                     }
                 },
                 host: 'https://abap.cloud.host',

@@ -9,7 +9,7 @@ import { getFunctionalityDetails, resolveFunctionality } from './get-functionali
 import type { PropertyPath } from '../page-editor-api';
 import { PageEditorApi } from '../page-editor-api';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
-import { resolveApplication } from './utils';
+import { resolveApplication } from '../utils';
 
 /**
  * Executes a functionality based on the provided parameters.
@@ -40,10 +40,11 @@ export async function executeFunctionality(params: ExecuteFunctionalityInput): P
     });
 
     // Validate required parameters
-    const missingParams = functionality.parameters
-        .filter((param) => param.required && !(param.id in parameters))
-        .map((param) => param.name);
-
+    const requiredFields =
+        'required' in functionality.parameters && Array.isArray(functionality.parameters.required)
+            ? functionality.parameters.required
+            : [];
+    const missingParams: string[] = requiredFields.filter((name) => !(name in parameters));
     if (missingParams.length > 0) {
         throw new Error(`Missing required parameters: ${missingParams.join(', ')}`);
     }
@@ -102,33 +103,17 @@ async function generateChanges(
     const { propertyPath } = resolveFunctionality(functionalityId);
     const changedParameterInfo = findParameterById(functionality, propertyPath[propertyPath.length - 1]);
 
-    let changed = false;
-    if (!changedParameterInfo && typeof parametersValue === 'object') {
-        // Parameters most likely in node parameters - edge case
-        for (const parameterValue in parametersValue) {
-            const paramPropertyPath = [...propertyPath, parameterValue];
-            const parameterInfo = findParameterById(functionality, parameterValue);
-            if (parameterInfo) {
-                await editor.changeProperty(
-                    paramPropertyPath,
-                    resolveParameterValue(paramPropertyPath, parametersValue, parameterInfo)
-                );
-                changed = true;
-                if (changes.length === 0) {
-                    changes.push('Modified webapp/manifest.json');
-                }
-            }
-        }
-    }
-
-    if (!changed) {
-        // Common way to change property - AI passes precise property id and parameters
-        await editor.changeProperty(
-            propertyPath,
-            resolveParameterValue(propertyPath, parametersValue, changedParameterInfo)
-        );
-        // problem -> result?.manifestChangeIndicator does not return changed indicator when we change fcl
+    // Common way to change property - AI passes precise property id and parameters
+    const exportResult = await editor.changeProperty(
+        propertyPath,
+        resolveParameterValue(propertyPath, parametersValue, changedParameterInfo)
+    );
+    // problem -> result?.manifestChangeIndicator does not return changed indicator when we change fcl
+    if (exportResult?.manifestChangeIndicator !== 'NoChange' || !exportResult?.flexChanges?.length) {
         changes.push('Modified webapp/manifest.json');
+    }
+    if (exportResult?.flexChanges) {
+        changes.push(...exportResult.flexChanges.map((flexChange) => `Modified ${flexChange}`));
     }
 
     return changes;
@@ -144,7 +129,7 @@ async function generateChanges(
 export async function getEditorApi(appPath: string, pageName?: string): Promise<PageEditorApi | undefined> {
     const project = await resolveApplication(appPath);
     if (project?.applicationAccess) {
-        return new PageEditorApi(project.applicationAccess, pageName);
+        return new PageEditorApi(project.applicationAccess, undefined, pageName);
     }
     return undefined;
 }
@@ -202,5 +187,8 @@ function resolveParameterValue(
  * @returns The found Parameter object or undefined if not found
  */
 function findParameterById(functionality: GetFunctionalityDetailsOutput, id?: string | number): Parameter | undefined {
-    return functionality.parameters.find((parameter) => parameter.id === id);
+    const { parameters } = functionality;
+    if (id && 'properties' in parameters && parameters.properties?.[id]) {
+        return parameters.properties[id] as Parameter;
+    }
 }

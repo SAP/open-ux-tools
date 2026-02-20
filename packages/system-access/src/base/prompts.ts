@@ -1,5 +1,5 @@
 import { AuthenticationType } from '@sap-ux/store';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import type { PromptObject } from 'prompts';
 
 const authType: PromptObject<string> = {

@@ -1,8 +1,7 @@
 import { t } from '../../../i18n';
-import { SystemService } from '@sap-ux/store';
-import LoggerHelper from '../../logger-helper';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
+import { getAllBackendSystems } from '../../../utils/store';
 
 /**
  * Check if the system name is already in use.
@@ -11,7 +10,7 @@ import { readFileSync } from 'fs';
  * @returns true if the system name is already in use, otherwise false
  */
 async function isSystemNameInUse(systemName: string): Promise<boolean> {
-    const backendSystems = await new SystemService(LoggerHelper.logger).getAll({ includeSensitiveData: false });
+    const backendSystems = await getAllBackendSystems(false);
     return !!backendSystems.find((system) => system.name === systemName);
 }
 

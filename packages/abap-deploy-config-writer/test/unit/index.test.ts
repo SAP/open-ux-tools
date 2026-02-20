@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { generate } from '../../src';
 import fsExtra from 'fs-extra';
 import type { AbapDeployConfig, BspApp } from '@sap-ux/ui5-config';
@@ -57,6 +57,9 @@ describe('generate', () => {
                 },
                 lrep: 'MOCK_LREP'
             },
+            options: {
+                addBuildToUndeployScript: false
+            },
             isAppStudio: false
         },
         {
@@ -67,6 +70,9 @@ describe('generate', () => {
                     ...config.target,
                     destination: 'MOCK_DESTINATION'
                 }
+            },
+            options: {
+                addBuildToUndeployScript: false
             },
             isAppStudio: false
         },

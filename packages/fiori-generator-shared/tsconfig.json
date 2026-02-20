@@ -22,6 +22,9 @@
       "path": "../project-access"
     },
     {
+      "path": "../store"
+    },
+    {
       "path": "../telemetry"
     }
   ]

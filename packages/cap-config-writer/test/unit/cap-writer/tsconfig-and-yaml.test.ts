@@ -1,5 +1,5 @@
 import memFs from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import editor, { type Editor } from 'mem-fs-editor';
 import { updateTsConfig, updateStaticLocationsInApplicationYaml } from '../../../src/cap-writer/tsconfig-and-yaml';
 import { YamlDocument } from '@sap-ux/yaml';

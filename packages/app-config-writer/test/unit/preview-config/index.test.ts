@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { convertToVirtualPreview } from '../../../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
 import * as packageJson from '../../../src/preview-config/package-json';
 import * as previewFiles from '../../../src/preview-config/preview-files';

@@ -1,4 +1,6 @@
-# @sap-ux/jest-runner-puppeteer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/jest-runner-puppeteer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-runner-puppeteer)
+
+# [`@sap-ux/jest-runner-puppeteer`](https://github.com/SAP/open-ux-tools/tree/main/packages/jest-runner-puppeteer)
 
 Library providing utility functions working with Puppeteer on Chrome and Edge browsers.
 

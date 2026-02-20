@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
@@ -250,16 +250,6 @@ async function generate<T extends {}>(
     }
     fs.writeJSON(packagePath, packageJson);
 
-    if (addTest) {
-        const opaConfig = getOpaConfig(
-            {
-                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
-            },
-            feApp.app.flpAppId
-        );
-        generateOPAFiles(basePath, opaConfig, fs);
-    }
-
     if (feApp.service.capService) {
         const settings: CapProjectSettings = {
             appRoot: basePath,
@@ -267,7 +257,8 @@ async function generate<T extends {}>(
             appId: feApp.app.id,
             sapux: feApp.appOptions?.sapux,
             enableCdsUi5Plugin: feApp.appOptions?.addCdsUi5Plugin,
-            enableTypescript: feApp.appOptions?.typescript
+            enableTypescript: feApp.appOptions?.typescript,
+            disableRootPackageJsonUpdates: feApp.appOptions?.disableCapRootPkgJsonUpdates
         };
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, feApp.service.capService, settings);
@@ -275,6 +266,17 @@ async function generate<T extends {}>(
 
     if (feApp.appOptions?.addAnnotations) {
         await writeAnnotations(basePath, feApp, fs, log);
+    }
+
+    // OPA tests must be generated last since they depend on other parts of the app, such as annotations, being in place
+    if (addTest) {
+        const opaConfig = getOpaConfig(
+            {
+                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
+            },
+            feApp.app.flpAppId
+        );
+        await generateOPAFiles(basePath, opaConfig, fs, log);
     }
     return fs;
 }

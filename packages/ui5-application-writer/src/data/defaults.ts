@@ -21,7 +21,7 @@ export function packageDefaults(version?: string, description?: string, isEdmxPr
         version: version || '0.0.1',
         description: description || '',
         devDependencies: {
-            '@ui5/cli': '^4.0.16',
+            '@ui5/cli': '^4.0.33',
             '@sap/ux-ui5-tooling': '1'
         }
     };
@@ -98,7 +98,7 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
     }
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
-    return Object.assign({}, ui5, merged) as UI5;
+    return { ...ui5, ...merged } as UI5;
 }
 
 /**

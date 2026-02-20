@@ -1,4 +1,6 @@
-# @sap-ux/odata-service-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/odata-service-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-service-writer)
+
+# [`@sap-ux/odata-service-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/odata-service-writer)
 
 Writes the odata service related file updates to an existing UI5 project specified by the base path.
 

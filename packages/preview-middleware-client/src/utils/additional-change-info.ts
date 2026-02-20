@@ -5,6 +5,7 @@ import {
     type AddXMLChangeContent
 } from '../cpe/additional-change-info/add-xml-additional-info';
 import { FlexChange as Change } from '../flp/common';
+import type Component from 'sap/ui/core/Component';
 
 export type AdditionalChangeInfo = AddXMLAdditionalInfo | undefined;
 
@@ -14,8 +15,12 @@ const additionalChangeInfoMap = new Map<string, AdditionalChangeInfo>();
  * This function is used to set additional change information for a given change.
  *
  * @param change - The change object for which additional information is to be set.
+ * @param appComponent - The app component (optional), used to resolve controls in projects with local IDs.
  */
-export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> | undefined): void {
+export function setAdditionalChangeInfo(
+    change: FlexChange<AddXMLChangeContent> | undefined,
+    appComponent?: Component
+): void {
     if (!change) {
         return;
     }
@@ -23,13 +28,22 @@ export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> 
     let additionalChangeInfo;
     const key = change.getDefinition().fileName;
     if (change?.getChangeType?.() === 'addXML') {
-        additionalChangeInfo = getAddXMLAdditionalInfo(change);
+        additionalChangeInfo = getAddXMLAdditionalInfo(change, appComponent);
     }
 
-    if (additionalChangeInfo && !additionalChangeInfoMap.get(key)) {
-        // in certain scenarios we explicitly set additional info e.g template when creating the change 
-        // and that value should not be overwritten
-        additionalChangeInfoMap.set(key, additionalChangeInfo);
+    if (additionalChangeInfo) {
+        const existingInfo = additionalChangeInfoMap.get(key);
+        if (existingInfo) {
+            // Merge new info with existing info, keeping existing values and only adding new ones
+            const mergedInfo = {
+                ...additionalChangeInfo,
+                ...existingInfo
+            };
+            additionalChangeInfoMap.set(key, mergedInfo);
+        } else {
+            // No existing info, set the new info
+            additionalChangeInfoMap.set(key, additionalChangeInfo);
+        }
     }
 }
 

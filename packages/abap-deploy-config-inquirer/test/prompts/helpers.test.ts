@@ -1,6 +1,12 @@
 import { initI18n, t } from '../../src/i18n';
-import { getAbapSystemChoices, getPackageChoices, updatePromptStateUrl } from '../../src/prompts/helpers';
+import {
+    getAbapSystemChoices,
+    getPackageChoices,
+    shouldRunValidation,
+    updatePromptStateUrl
+} from '../../src/prompts/helpers';
 import { PromptState } from '../../src/prompts/prompt-state';
+import type { AbapDeployConfigAnswersInternal, BackendTarget } from '../../src/types';
 import { queryPackages } from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
 import { mockTargetSystems } from '../fixtures/targets';
@@ -21,7 +27,7 @@ describe('helpers', () => {
             const mockServiceProvider = {
                 user: () => 'mockUser2'
             } as any;
-            const backendTarget = {
+            const backendTarget: BackendTarget = {
                 serviceProvider: mockServiceProvider,
                 abapTarget: mockTargetSystems[1]
             };
@@ -34,32 +40,32 @@ describe('helpers', () => {
                   },
                   Object {
                     "client": "100",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target1 [mockUser]",
                     "scp": false,
                     "value": "https://mock.url.target1.com",
                   },
                   Object {
                     "client": "102",
+                    "isAbapCloud": true,
                     "isDefault": true,
-                    "isS4HC": true,
-                    "name": "target2 (S4HC) [mockUser2] (Source system)",
+                    "name": "target2 (ABAP Cloud) [mockUser2] (Source system)",
                     "scp": false,
                     "value": "https://mock.url.target2.com",
                   },
                   Object {
                     "client": "103",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target3 [mockUser3]",
                     "scp": false,
                     "value": "https://mock.url.target3.com",
                   },
                   Object {
                     "client": "104",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target4 [mockUser4]",
                     "scp": false,
                     "value": "https://mock.url.target4.com",
@@ -93,40 +99,40 @@ describe('helpers', () => {
                   },
                   Object {
                     "client": "100",
+                    "isAbapCloud": false,
                     "isDefault": true,
-                    "isS4HC": false,
                     "name": "New System [mockUser] (Source system)",
                     "scp": undefined,
                     "value": "https://mock.url.new.target.com",
                   },
                   Object {
                     "client": "100",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target1 [mockUser]",
                     "scp": false,
                     "value": "https://mock.url.target1.com",
                   },
                   Object {
                     "client": "102",
+                    "isAbapCloud": true,
                     "isDefault": false,
-                    "isS4HC": true,
-                    "name": "target2 (S4HC) [mockUser2]",
+                    "name": "target2 (ABAP Cloud) [mockUser2]",
                     "scp": false,
                     "value": "https://mock.url.target2.com",
                   },
                   Object {
                     "client": "103",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target3 [mockUser3]",
                     "scp": false,
                     "value": "https://mock.url.target3.com",
                   },
                   Object {
                     "client": "104",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target4 [mockUser4]",
                     "scp": false,
                     "value": "https://mock.url.target4.com",
@@ -145,32 +151,32 @@ describe('helpers', () => {
                   },
                   Object {
                     "client": "100",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target1 [mockUser]",
                     "scp": false,
                     "value": "https://mock.url.target1.com",
                   },
                   Object {
                     "client": "102",
+                    "isAbapCloud": true,
                     "isDefault": false,
-                    "isS4HC": true,
-                    "name": "target2 (S4HC) [mockUser2]",
+                    "name": "target2 (ABAP Cloud) [mockUser2]",
                     "scp": false,
                     "value": "https://mock.url.target2.com",
                   },
                   Object {
                     "client": "103",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target3 [mockUser3]",
                     "scp": false,
                     "value": "https://mock.url.target3.com",
                   },
                   Object {
                     "client": "104",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target4 [mockUser4]",
                     "scp": false,
                     "value": "https://mock.url.target4.com",
@@ -235,6 +241,63 @@ describe('helpers', () => {
                 packages: ['package3', 'package1', 'package2'],
                 morePackageResultsMsg: ''
             });
+        });
+    });
+
+    describe('shouldRunValidation', () => {
+        it('should return true if prev answers object is empty', () => {
+            const newAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const result = shouldRunValidation({} as AbapDeployConfigAnswersInternal, newAnswers);
+            expect(result).toBe(true);
+        });
+
+        it('should return false if no changes', () => {
+            const prevAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const newAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const result = shouldRunValidation(prevAnswers, newAnswers);
+            expect(result).toBe(false);
+        });
+
+        it('should return false if only description changed', () => {
+            const prevAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const newAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc2'
+            };
+            const result = shouldRunValidation(prevAnswers, newAnswers);
+            expect(result).toBe(false);
+        });
+
+        it('should return true if url changed', () => {
+            const prevAnswers = {
+                url: 'https://mock.url.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const newAnswers = {
+                url: 'https://mock.url2.com',
+                package: 'package1',
+                description: 'desc1'
+            };
+            const result = shouldRunValidation(prevAnswers, newAnswers);
+            expect(result).toBe(true);
         });
     });
 });

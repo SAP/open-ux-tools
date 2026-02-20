@@ -1,7 +1,6 @@
-import { readFile } from 'fs/promises';
-import { join } from 'path';
-import path from 'path';
-import fs from 'fs';
+import { readFile } from 'node:fs/promises';
+import path, { join } from 'node:path';
+import fs from 'node:fs';
 
 import express from 'express';
 import ZipFile from 'adm-zip';
@@ -154,44 +153,46 @@ async function globalSetup(): Promise<void> {
                 mergedManifestCache.set(manifestPath, manifest);
                 mapping[variant.reference] ??= new Set();
                 mapping[variant.reference].add(variant.id);
-
+                const v4Libs = getV4Libs(manifest);
                 res.json({
                     [variant.id]: {
                         name: variant.reference,
                         manifest,
                         asyncHints: {
-                            libs: [
-                                {
-                                    name: 'sap.ui.core'
-                                },
-                                {
-                                    name: 'sap.m'
-                                },
-                                {
-                                    name: 'sap.suite.ui.generic.template'
-                                },
-                                {
-                                    name: 'sap.uxap',
-                                    lazy: true
-                                },
-                                {
-                                    name: 'sap.ui.table',
-                                    lazy: true
-                                },
-                                {
-                                    name: 'sap.ui.commons',
-                                    lazy: true
-                                },
-                                {
-                                    name: 'sap.ui.comp'
-                                },
-                                {
-                                    name: 'sap.ui.rta'
-                                },
-                                {
-                                    name: 'sap.ui.generic.app'
-                                }
-                            ]
+                            libs: v4Libs.length
+                                ? v4Libs
+                                : [
+                                      {
+                                          name: 'sap.ui.core'
+                                      },
+                                      {
+                                          name: 'sap.m'
+                                      },
+                                      {
+                                          name: 'sap.suite.ui.generic.template'
+                                      },
+                                      {
+                                          name: 'sap.uxap',
+                                          lazy: true
+                                      },
+                                      {
+                                          name: 'sap.ui.table',
+                                          lazy: true
+                                      },
+                                      {
+                                          name: 'sap.ui.commons',
+                                          lazy: true
+                                      },
+                                      {
+                                          name: 'sap.ui.comp'
+                                      },
+                                      {
+                                          name: 'sap.ui.rta'
+                                      },
+                                      {
+                                          name: 'sap.ui.generic.app'
+                                      }
+                                  ]
                         },
                         url: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp`,
                         components: [
@@ -236,35 +237,38 @@ async function globalSetup(): Promise<void> {
             return;
         }
         res.json(
-            [...Object.keys(mapping), ...variants.values()].reduce((acc, key) => {
-                acc[key] = {
-                    name: baseAppDirectory,
-                    manifest: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp/manifest.json`,
-                    url: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp`,
-                    components: [
-                        {
-                            name: key,
-                            url: {
-                                url: '/',
-                                final: true
-                            },
-                            lazy: true
-                        }
-                    ],
-                    minUi5Versions: ['1.71.0'],
-                    requests: [
-                        {
-                            name: 'sap.ui.fl.changes',
-                            reference: key,
-                            preview: {
-                                maxLayer: 'PARTNER',
-                                reference: baseAppDirectory
+            [...Object.keys(mapping), ...variants.values()].reduce(
+                (acc, key) => {
+                    acc[key] = {
+                        name: baseAppDirectory,
+                        manifest: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp/manifest.json`,
+                        url: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp`,
+                        components: [
+                            {
+                                name: key,
+                                url: {
+                                    url: '/',
+                                    final: true
+                                },
+                                lazy: true
                             }
-                        }
-                    ]
-                };
-                return acc;
-            }, {} as Record<string, any>)
+                        ],
+                        minUi5Versions: ['1.71.0'],
+                        requests: [
+                            {
+                                name: 'sap.ui.fl.changes',
+                                reference: key,
+                                preview: {
+                                    maxLayer: 'PARTNER',
+                                    reference: baseAppDirectory
+                                }
+                            }
+                        ]
+                    };
+                    return acc;
+                },
+                {} as Record<string, any>
+            )
         );
     });
 
@@ -294,6 +298,57 @@ async function globalSetup(): Promise<void> {
     app.listen(port, () => {
         console.log(`Mock ABAP backend is running on http://localhost:${port}`);
     });
+}
+
+/**
+ * Get required V4 libs from manifest routing targets.
+ *
+ * @param manifest - The manifest object.
+ * @returns An array of library objects with name and optional lazy loading flag.
+ */
+function getV4Libs(manifest: Record<string, any>): Array<{ name: string; lazy?: boolean }> {
+    const appTargets = manifest['sap.ui5']?.routing?.targets;
+    let libs: { name: string; lazy?: boolean }[] = [];
+    for (const targetKey in appTargets) {
+        const target = appTargets[targetKey] as unknown as { type: string; name: string };
+        if (
+            target.type === 'Component' &&
+            target.name &&
+            target.name in
+                {
+                    'sap.fe.templates.ListReport': 'ListReport',
+                    'sap.fe.templates.ObjectPage': 'ObjectPage',
+                    'sap.fe.core.fpm': 'FPM'
+                }
+        ) {
+            libs = [
+                {
+                    name: 'sap.ui.core'
+                },
+                {
+                    name: 'sap.fe.core'
+                },
+                {
+                    name: 'sap.uxap',
+                    lazy: true
+                },
+                {
+                    name: 'sap.ui.mdc'
+                },
+                {
+                    name: 'sap.fe.macros'
+                },
+                {
+                    name: 'sap.ui.rta'
+                },
+                {
+                    name: 'sap.fe.templates'
+                }
+            ];
+            break;
+        }
+    }
+    return libs;
 }
 
 export default globalSetup;

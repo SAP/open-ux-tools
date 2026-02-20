@@ -1,4 +1,4 @@
-// Last content update: Sat Jun 14 2025 13:41:16 GMT+0200 (Mitteleuropäische Sommerzeit)
+// Last content update: Mon Feb 16 2026 12:18:31 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -319,14 +319,14 @@ export default {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
-            '$AppliesTo': ['Property'],
+            '$AppliesTo': ['Property', 'Parameter'],
             '@Org.OData.Core.V1.Description': 'Property contains an email address'
         },
         'IsPhoneNumber': {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
-            '$AppliesTo': ['Property'],
+            '$AppliesTo': ['Property', 'Parameter'],
             '@Org.OData.Core.V1.Description': 'Property contains a phone number'
         },
         'Event': {

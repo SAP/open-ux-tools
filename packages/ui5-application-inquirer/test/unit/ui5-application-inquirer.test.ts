@@ -165,10 +165,6 @@ describe('ui5-application-inquirer API', () => {
             },
             [promptNames.enableTypeScript]: {
                 default: true
-            },
-            [promptNames.enableCodeAssist]: {
-                advancedOption: true,
-                default: true
             }
         };
 
@@ -181,7 +177,6 @@ describe('ui5-application-inquirer API', () => {
         // Since capCdsInfo was provided some prompts should not provide an answer
         expect(answers).toEqual({
             description: 'No annotations',
-            enableCodeAssist: true,
             enableTypeScript: true,
             name: 'a prompt answer',
             skipAnnotations: true,
@@ -192,13 +187,11 @@ describe('ui5-application-inquirer API', () => {
         // Provided answer takes precendence, default theme uses ui5 answer, default functions use previous answers
         mockInquirerAdapter.prompt = jest.fn().mockResolvedValue({
             [promptNames.ui5Version]: '1.64.0',
-            [promptNames.skipAnnotations]: false,
-            [promptNames.enableCodeAssist]: false
+            [promptNames.skipAnnotations]: false
         });
         answers = await prompt(mockInquirerAdapter, promptOpts);
         expect(answers).toEqual({
             description: 'Annotations inc.',
-            enableCodeAssist: false,
             enableTypeScript: true,
             skipAnnotations: false,
             ui5Theme: 'sap_fiori_3',

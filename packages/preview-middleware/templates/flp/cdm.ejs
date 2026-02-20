@@ -24,10 +24,6 @@
          for productive scenarios.
     -->
 
-    <script type="text/javascript">
-        window["data-open-ux-preview-basePath"] = "<%- basePath %>";
-    </script>
-
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="<%- basePath %>/resources/sap-ui-core.js"
@@ -45,10 +41,11 @@
         data-open-ux-preview-enable-card-generator="<%- enableCardGenerator %>"
         <% } %>
         data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (locals.init) { %>
-        data-open-ux-preview-customInit='<%- init %>'<% } if (locals.flexSettings) { %>
+        data-open-ux-preview-custom-init='<%- init %>'<% } if (locals.flexSettings) { %>
         data-open-ux-preview-features='<%- JSON.stringify(features) %>'
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flexSettings) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>
+        data-open-ux-preview-base-url='<%- baseUrl %>'
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 

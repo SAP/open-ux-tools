@@ -6,12 +6,12 @@ import {
     getEntityPrompt,
     getTargetPropertiesPrompt,
     getAggregationPathPrompt,
-    getViewOrFragmentPathPrompt,
-    getBooleanPrompt
+    getViewOrFragmentPathPrompt
 } from '../utils';
 import type { PromptContext, Prompts } from '../../../prompts/types';
 import { BuildingBlockType, bindingContextAbsolute } from '../../types';
 import type { BuildingBlockConfig, RichTextEditor } from '../../types';
+import { resolveBindingContextTypeChoices } from '../utils/prompt-helpers';
 
 export type RichTextEditorPromptsAnswer = BuildingBlockConfig<RichTextEditor> & Answers;
 
@@ -25,13 +25,6 @@ export async function getRichTextEditorBuildingBlockPrompts(
     context: PromptContext
 ): Promise<Prompts<RichTextEditorPromptsAnswer>> {
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.richTextEditor.');
-    const defaultAnswers = {
-        buttonGroup: {
-            name: 'font-style',
-            visible: true,
-            buttons: 'bold,italic,underline'
-        }
-    };
 
     return {
         questions: [
@@ -55,7 +48,8 @@ export async function getRichTextEditorBuildingBlockPrompts(
                 guiOptions: {
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.entitySet']
-                }
+                },
+                choices: resolveBindingContextTypeChoices(context)
             }),
             getEntityPrompt(context, {
                 name: 'buildingBlockData.metaPath.entitySet',
@@ -78,44 +72,11 @@ export async function getRichTextEditorBuildingBlockPrompts(
                 guiOptions: {
                     mandatory: true
                 }
-            }),
-            {
-                name: 'buildingBlockData.buttonGroup.name',
-                type: 'input',
-                message: t('buttonGroup.name') as string,
-                default: defaultAnswers.buttonGroup.name
-            },
-            {
-                name: 'buildingBlockData.buttonGroup.buttons',
-                type: 'input',
-                message: t('buttonGroup.buttons') as string,
-                default: defaultAnswers.buttonGroup.buttons
-            },
-            getBooleanPrompt({
-                name: 'buildingBlockData.buttonGroup.visible',
-                message: t('buttonGroup.visible') as string,
-                default: defaultAnswers.buttonGroup.visible
-            }),
-            {
-                name: 'buildingBlockData.buttonGroup.priority',
-                type: 'input',
-                message: t('buttonGroup.priority') as string
-            },
-            {
-                name: 'buildingBlockData.buttonGroup.customToolbarPriority',
-                type: 'input',
-                message: t('buttonGroup.customToolbarPriority') as string
-            },
-            {
-                name: 'buildingBlockData.buttonGroup.row',
-                type: 'input',
-                message: t('buttonGroup.row') as string
-            }
+            })
         ],
         initialAnswers: {
             buildingBlockData: {
-                buildingBlockType: BuildingBlockType.RichTextEditor,
-                buttonGroup: defaultAnswers.buttonGroup
+                buildingBlockType: BuildingBlockType.RichTextEditor
             }
         }
     };

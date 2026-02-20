@@ -1,13 +1,13 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateCustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import { detectTabSpacing } from '../../src/common/file';
+import { detectTabSpacing, COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 import { getEndOfLinesLength, tabSizingTestCases } from '../common';
 
 describe('CustomAction', () => {
@@ -44,7 +44,9 @@ describe('CustomAction', () => {
                     },
                     routing: {
                         targets: {
-                            TestObjectPage: { name: 'sap.fe.templates.ListReport' }
+                            TestObjectPage: {
+                                name: 'sap.fe.templates.ListReport'
+                            }
                         }
                     }
                 }
@@ -112,6 +114,7 @@ describe('CustomAction', () => {
         });
 
         test('specific target folder, event handler as boolean', async () => {
+            const copyTplSpy = jest.spyOn(fs, 'copyTpl');
             await generateCustomAction(
                 testDir,
                 {
@@ -127,6 +130,7 @@ describe('CustomAction', () => {
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(testDir, 'webapp/ext/MyCustomAction.js'))).toMatchSnapshot();
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
         });
 
         test('specific control as target', async () => {
@@ -164,6 +168,60 @@ describe('CustomAction', () => {
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
+        });
+
+        test('custom menu as target', async () => {
+            const testAppManifest = JSON.stringify(
+                {
+                    'sap.app': {
+                        id: 'my.test.App'
+                    },
+                    'sap.ui5': {
+                        dependencies: {
+                            libs: {
+                                'sap.fe.templates': {}
+                            }
+                        },
+                        routing: {
+                            targets: {
+                                TestObjectPage: {
+                                    name: 'sap.fe.templates.ObjectPage',
+                                    options: {
+                                        settings: {
+                                            content: {
+                                                header: {
+                                                    actions: {
+                                                        TestMenu: {
+                                                            menu: ['DummyAction']
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                null,
+                2
+            );
+            fs.write(join(testDir, 'webapp/manifest.json'), testAppManifest);
+            await generateCustomAction(
+                testDir,
+                {
+                    name,
+                    target: {
+                        page: target.page,
+                        control: TargetControl.header,
+                        menuId: 'TestMenu'
+                    },
+                    settings
+                },
+                fs
+            );
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
         const positionTests = [

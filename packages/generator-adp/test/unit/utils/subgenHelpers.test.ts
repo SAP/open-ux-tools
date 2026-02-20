@@ -1,4 +1,4 @@
-import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import { FlexLayer, type AttributesAnswers, type ConfigAnswers, type SystemLookup } from '@sap-ux/adp-tooling';
 
@@ -6,6 +6,7 @@ import { t } from '../../../src/utils/i18n';
 import { addFlpGen, addDeployGen, addExtProjectGen } from '../../../src/utils/subgenHelpers';
 import { getExtensionProjectData } from '../../../src/app/extension-project';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('../../../src/app/extension-project', () => ({
     getExtensionProjectData: jest.fn()
@@ -25,7 +26,7 @@ describe('Sub-generator helpers', () => {
             jest.clearAllMocks();
         });
 
-        it('should compose FLP generator with correct parameters', () => {
+        it('should compose FLP generator with correct parameters', async () => {
             const flpOptions = {
                 projectRootPath: '/test/path',
                 inbounds: {
@@ -46,12 +47,24 @@ describe('Sub-generator helpers', () => {
                     }
                 } as unknown as ManifestNamespace.Inbound,
                 layer: FlexLayer.CUSTOMER_BASE,
-                vscode: {}
+                vscode: {},
+                prompts: {
+                    items: [
+                        {
+                            name: 'SAP Fiori Launchpad Configuration - Tile Settings',
+                            description: ''
+                        },
+                        {
+                            name: 'SAP Fiori Launchpad Configuration',
+                            description: ''
+                        }
+                    ]
+                } as unknown as Prompts
             };
             const resolvePath = 'flp-generator';
             jest.spyOn(require, 'resolve').mockReturnValue(resolvePath);
 
-            addFlpGen(flpOptions, composeWith, logger, wizard);
+            await addFlpGen(flpOptions, composeWith, logger, wizard);
 
             expect(composeWith).toHaveBeenCalledWith(
                 expect.any(String),
@@ -65,11 +78,9 @@ describe('Sub-generator helpers', () => {
         });
 
         it('should handle errors and show user notification', async () => {
-            composeWith.mockImplementation(() => {
-                throw error;
-            });
+            composeWith.mockRejectedValueOnce(error);
 
-            expect(() => addFlpGen({} as any, composeWith, logger, wizard)).toThrow(
+            await expect(addFlpGen({} as any, composeWith, logger, wizard)).rejects.toThrow(
                 "Could not call '@sap/fiori:adp-flp-config' sub-generator: Failed to compose"
             );
 
@@ -78,13 +89,13 @@ describe('Sub-generator helpers', () => {
     });
 
     describe('addDeployGen', () => {
-        const composeWith = jest.fn();
-
         beforeEach(() => {
             jest.clearAllMocks();
         });
 
-        it('should compose deploy-config generator with merged options', () => {
+        it('should compose deploy-config generator with merged options', async () => {
+            const composeWith = jest.fn();
+
             const deployOptions = {
                 projectName: 'some.app',
                 projectPath: '/project',
@@ -93,10 +104,17 @@ describe('Sub-generator helpers', () => {
                     Name: 'SYS',
                     Client: '100',
                     Url: 'sys-url'
-                }
+                },
+                projectType: AdaptationProjectType.ON_PREMISE
             };
 
-            addDeployGen(deployOptions, composeWith, logger, wizard);
+            const additionalValidation = {
+                shouldValidatePackageForStartingPrefix: true,
+                shouldValidatePackageType: true,
+                shouldValidateFormatAndSpecialCharacters: true
+            };
+
+            await addDeployGen(deployOptions, composeWith, logger, wizard);
 
             expect(composeWith).toHaveBeenCalledWith(
                 '@sap/fiori:deploy-config',
@@ -108,18 +126,29 @@ describe('Sub-generator helpers', () => {
                     appGenDestination: 'SYS',
                     appGenServiceHost: 'sys-url',
                     telemetryData: { appType: 'Fiori Adaptation' },
-                    subGenPromptOptions: expect.any(Object)
+                    subGenPromptOptions: {
+                        ui5AbapRepo: { hideIfOnPremise: true },
+                        transportInputChoice: { hideIfOnPremise: true },
+                        overwriteAbapConfig: { hide: true },
+                        packageAutocomplete: {
+                            additionalValidation
+                        },
+                        packageManual: {
+                            additionalValidation
+                        },
+                        adpProjectType: AdaptationProjectType.ON_PREMISE
+                    }
                 })
             );
             expect(logger.info).toHaveBeenCalled();
         });
 
         it('should handle errors and show user notification', async () => {
-            composeWith.mockImplementation(() => {
-                throw error;
-            });
+            const composeWith = jest.fn();
 
-            expect(() => addDeployGen({} as any, composeWith, logger, wizard)).toThrow(
+            composeWith.mockRejectedValueOnce(error);
+
+            await expect(addDeployGen({} as any, composeWith, logger, wizard)).rejects.toThrow(
                 "Could not call '@sap/fiori:deploy-config' sub-generator: Failed to compose"
             );
 

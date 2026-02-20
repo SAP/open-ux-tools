@@ -194,12 +194,7 @@ describe('getAbapTargetPrompts', () => {
                     destination: 'mockDest1'
                 })
             ).toBe(false);
-            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith(
-                'mockDest1',
-                mockDestinations,
-                undefined,
-                undefined
-            );
+            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations);
         } else {
             throw new Error('Destination setter prompt not found');
         }
@@ -211,7 +206,6 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: mockTargetSystems
         });
-        jest.spyOn(validators, 'validateTargetSystem').mockResolvedValueOnce(true);
 
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const targetSystemPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.targetSystem);
@@ -229,32 +223,32 @@ describe('getAbapTargetPrompts', () => {
                   },
                   Object {
                     "client": "100",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target1 [mockUser]",
                     "scp": false,
                     "value": "https://mock.url.target1.com",
                   },
                   Object {
                     "client": "102",
+                    "isAbapCloud": true,
                     "isDefault": false,
-                    "isS4HC": true,
-                    "name": "target2 (S4HC) [mockUser2]",
+                    "name": "target2 (ABAP Cloud) [mockUser2]",
                     "scp": false,
                     "value": "https://mock.url.target2.com",
                   },
                   Object {
                     "client": "103",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target3 [mockUser3]",
                     "scp": false,
                     "value": "https://mock.url.target3.com",
                   },
                   Object {
                     "client": "104",
+                    "isAbapCloud": false,
                     "isDefault": false,
-                    "isS4HC": false,
                     "name": "target4 [mockUser4]",
                     "scp": false,
                     "value": "https://mock.url.target4.com",
@@ -280,11 +274,11 @@ describe('getAbapTargetPrompts', () => {
         );
 
         if (targetSystemCliSetterPrompt) {
-            expect(
+            await expect(
                 (targetSystemCliSetterPrompt.when as Function)({
-                    targetSystem: 'target1'
+                    targetSystem: 'https://target.com'
                 })
-            ).toBe(false);
+            ).resolves.toBe(false);
             expect(validateTargetSystemUrlCliSpy).toHaveBeenCalledTimes(1);
         } else {
             throw new Error('Target system setter prompt not found');
@@ -297,7 +291,7 @@ describe('getAbapTargetPrompts', () => {
             backendSystems: undefined
         });
         PromptState.isYUI = true;
-        jest.spyOn(validators, 'validateTargetSystemUrlCli').mockReturnValueOnce();
+        jest.spyOn(validators, 'validateTargetSystemUrlCli').mockResolvedValueOnce();
         jest.spyOn(validators, 'validateUrl').mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const urlPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.url);

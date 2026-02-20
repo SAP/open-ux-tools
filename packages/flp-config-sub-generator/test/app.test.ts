@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as memfs from 'memfs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import yeomanTest from 'yeoman-test';
@@ -16,11 +16,13 @@ import { assertInboundsHasConfig } from './utils';
 import type { PackageInfo } from '@sap-ux/nodejs-utils';
 import type { Manifest } from '@sap-ux/project-access';
 import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -36,7 +38,7 @@ jest.mock('process', () => ({
 }));
 const processMock = process as jest.Mocked<typeof process>;
 
-let foundGenExts: Partial<PackageInfo>[] = [];
+const foundGenExts: Partial<PackageInfo>[] = [];
 
 const sapApp = 'sap.app';
 const crossNavigation = 'crossNavigation';
@@ -84,7 +86,9 @@ describe('flp-config generator', () => {
         await initI18n();
         cwdBeforeTests = jest.requireActual('process').cwd();
         processMock.chdir = jest.fn().mockImplementation((dir): void => {
-            if (dir && dir.startsWith(OUTPUT_DIR_PREFIX)) cwd = dir;
+            if (dir?.startsWith(OUTPUT_DIR_PREFIX)) {
+                cwd = dir;
+            }
         }) as any;
     });
 
@@ -243,7 +247,8 @@ describe('flp-config generator', () => {
         const answers: FLPConfigAnswers = {
             semanticObject: 'com-fiori-tools-travel',
             action: 'inbound',
-            title: '{{com-fiori-tools-travel-inbound.flpTitle}}'
+            title: '{{com-fiori-tools-travel-inbound.flpTitle}}',
+            overwrite: true
         };
 
         await expect(

@@ -12,7 +12,7 @@ import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types
 import { DefaultLogger, TelemetryHelper, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import { type CapService, DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { ServiceType } from '@sap-ux/odata-service-writer';
-import { join } from 'path';
+import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import yeomanTest from 'yeoman-test';
 import { type FioriAppGeneratorOptions, FioriAppGenerator } from '../../../src/fiori-app-generator';
@@ -240,8 +240,8 @@ describe('Test FioriAppGenerator', () => {
                 AppGenBusinessHubType: undefined,
                 EnableEslint: undefined,
                 EnableTypeScript: undefined,
-                EnableCodeAssist: undefined,
-                ToolsId: 'abcd1234'
+                ToolsId: 'abcd1234',
+                ValueHelpCount: 0
             });
             expect(writeAppGenInfoFiles).toHaveBeenCalledWith(
                 {
@@ -319,8 +319,7 @@ describe('Test FioriAppGenerator', () => {
         const mockState: State = {
             project: {
                 name: 'testApp',
-                targetFolder,
-                enableCodeAssist: true
+                targetFolder
             } as Project,
             service: {
                 capService: {
@@ -348,7 +347,6 @@ describe('Test FioriAppGenerator', () => {
             {
                 appPackagePath: appPath,
                 capService: mockState.service!.capService,
-                enableCodeAssist: true,
                 useNpmWorkspaces: true
             },
             expect.objectContaining({ debug: expect.any(Function) }) // Logger
@@ -409,7 +407,9 @@ describe('Test FioriAppGenerator', () => {
                         url: 'http://mockhost:1234',
                         client: '010',
                         username: 'mockUser',
-                        password: 'mockPassword'
+                        password: 'mockPassword',
+                        systemType: 'OnPrem',
+                        connectionType: 'abap_catalog'
                     },
                     serviceProvider: {} as ServiceProvider
                 },

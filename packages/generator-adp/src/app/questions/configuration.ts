@@ -1,11 +1,8 @@
-import type {
-    ConfigAnswers,
-    FlexUISupportedSystem,
-    SourceApplication,
-    SystemLookup,
-    UI5Version
-} from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, FlexUICapability, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
 import {
+    getFlexUICapability,
+    getSupportedProject,
+    SupportedProject,
     checkSystemVersionPattern,
     fetchPublicVersions,
     FlexLayer,
@@ -14,7 +11,6 @@ import {
     getConfiguredProvider,
     getEndpointNames,
     getFioriId,
-    getFlexUISupportedSystem,
     getRelevantVersions,
     getSystemUI5Version,
     isAppSupported,
@@ -24,7 +20,7 @@ import {
     loadApps,
     SourceManifest
 } from '@sap-ux/adp-tooling';
-import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type {
     ConfirmQuestion,
@@ -38,6 +34,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
 import { t } from '../../utils/i18n';
+import type { TelemetryCollector } from '../../telemetry';
 import type {
     AchPromptOptions,
     ApplicationPromptOptions,
@@ -46,20 +43,25 @@ import type {
     FioriIdPromptOptions,
     PasswordPromptOptions,
     ShouldCreateExtProjectPromptOptions,
+    StoreCredentialsPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
-import { configPromptNames } from '../types';
+import { configPromptNames, SystemType } from '../types';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
-import { getApplicationChoices } from './helper/choices';
+import { getApplicationChoices, getProjectTypeChoices } from './helper/choices';
 import {
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
-    showInternalQuestions
+    showInternalQuestions,
+    showStoreCredentialsQuestion
 } from './helper/conditions';
 import { getExtProjectMessage } from './helper/message';
 import { validateExtensibilityExtension } from './helper/validators';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -93,11 +95,24 @@ export class ConfigPrompter {
     /**
      * Cached UI flexibility information from the system.
      */
-    private flexUISystem: FlexUISupportedSystem | undefined;
+    private flexUICapability?: FlexUICapability;
+
     /**
-     * Flag indicating if the project is a cloud project.
+     * The supported project type for the system.
      */
-    private isCloudProject: boolean | undefined;
+    private supportedProject?: SupportedProject;
+
+    /**
+     * The selected project type by the user. For a mixed system only
+     * the user may select from a cloudReady or an OnPremise project types.
+     */
+    private selectedProjectType?: AdaptationProjectType;
+
+    /**
+     * The system type for the selected system.
+     */
+    private selectedSystemType?: SystemType;
+
     /**
      * Flag indicating whether the selected application is supported.
      */
@@ -106,6 +121,10 @@ export class ConfigPrompter {
      * Error message to be shown in the confirm extension project prompt.
      */
     private appValidationErrorMessage: string | undefined;
+    /**
+     * System additional message.
+     */
+    private systemAdditionalMessage?: IMessageSeverity;
     /**
      * Indicates whether views are loaded synchronously.
      */
@@ -153,12 +172,17 @@ export class ConfigPrompter {
     }
 
     /**
-     * Returns flag indicating if the project is a cloud project.
-     *
-     * @returns Whether system is cloud-ready.
+     * @returns {AdaptationProjectType | undefined} The project type.
      */
-    public get isCloud(): boolean {
-        return !!this.isCloudProject;
+    public get projectType(): AdaptationProjectType | undefined {
+        return this.selectedProjectType;
+    }
+
+    /**
+     * @returns {SystemType | undefined} The system type.
+     */
+    public get systemType(): SystemType | undefined {
+        return this.selectedSystemType;
     }
 
     /**
@@ -212,8 +236,14 @@ export class ConfigPrompter {
      * @param {SystemLookup} systemLookup - The source system class to retrieve system endpoints.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - Instance of the logger.
+     * @param {TelemetryCollector} telemetryCollector - Instance of the telemetry collector.
      */
-    constructor(private readonly systemLookup: SystemLookup, layer: FlexLayer, private readonly logger: ToolsLogger) {
+    constructor(
+        private readonly systemLookup: SystemLookup,
+        layer: FlexLayer,
+        private readonly logger: ToolsLogger,
+        private readonly telemetryCollector: TelemetryCollector
+    ) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 
@@ -230,6 +260,12 @@ export class ConfigPrompter {
             [configPromptNames.systemValidationCli]: this.getSystemValidationPromptForCli(),
             [configPromptNames.username]: this.getUsernamePrompt(promptOptions?.[configPromptNames.username]),
             [configPromptNames.password]: this.getPasswordPrompt(promptOptions?.[configPromptNames.password]),
+            [configPromptNames.storeCredentials]: this.getStoreCredentialsPrompt(
+                promptOptions?.[configPromptNames.storeCredentials]
+            ),
+            [configPromptNames.projectType]: this.getProjectTypeListPrompt(
+                promptOptions?.[configPromptNames.projectType]
+            ),
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
@@ -273,7 +309,13 @@ export class ConfigPrompter {
             },
             default: '',
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
-            additionalMessages: () => getSystemAdditionalMessages(this.flexUISystem, !!this.isCloudProject)
+            additionalMessages: () => {
+                this.systemAdditionalMessage = getSystemAdditionalMessages(
+                    this.flexUICapability,
+                    this.selectedProjectType
+                );
+                return this.systemAdditionalMessage;
+            }
         };
     }
 
@@ -341,7 +383,88 @@ export class ConfigPrompter {
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
-            additionalMessages: () => getSystemAdditionalMessages(this.flexUISystem, !!this.isCloudProject)
+            additionalMessages: () => {
+                if (!this.systemAdditionalMessage) {
+                    this.systemAdditionalMessage = getSystemAdditionalMessages(
+                        this.flexUICapability,
+                        this.selectedProjectType
+                    );
+                    return this.systemAdditionalMessage;
+                }
+                return undefined;
+            }
+        };
+    }
+
+    /**
+     * Creates the store credentials prompt configuration.
+     *
+     * @param {StoreCredentialsPromptOptions} _ - Optional configuration for the store credentials prompt.
+     * @returns The store credentials prompt as a {@link ConfigQuestion}.
+     */
+    private getStoreCredentialsPrompt(_?: StoreCredentialsPromptOptions): ConfirmQuestion<ConfigAnswers> {
+        return {
+            type: 'confirm',
+            name: configPromptNames.storeCredentials,
+            message: t('prompts.storeCredentialsLabelBreadcrumb'),
+            default: false,
+            guiOptions: {
+                breadcrumb: t('prompts.storeCredentialsLabelBreadcrumb'),
+                hint: t('prompts.storeCredentialsTooltip')
+            },
+            when: (answers: ConfigAnswers) =>
+                showStoreCredentialsQuestion(answers, this.isLoginSuccessful, this.isAuthRequired),
+            additionalMessages: (input?: unknown) => {
+                if (input === true) {
+                    return {
+                        message: t('warnings.passwordStoreWarning'),
+                        severity: Severity.warning
+                    };
+                }
+            }
+        };
+    }
+
+    /**
+     * Creates the project type prompt configuration.
+     *
+     * @param {ApplicationPromptOptions | undefined} options - The prompt options.
+     * @returns {ListQuestion<ConfigAnswers>} The project type prompt configuration.
+     */
+    private getProjectTypeListPrompt(options?: ApplicationPromptOptions): ListQuestion<ConfigAnswers> {
+        return {
+            type: 'list',
+            name: configPromptNames.projectType,
+            message: t('prompts.projectTypeListLabel'),
+            guiOptions: {
+                mandatory: true,
+                breadcrumb: true,
+                applyDefaultWhenDirty: true
+            },
+            choices: getProjectTypeChoices,
+            default: options?.default,
+            // We include the system in the validation to avoid prompt appearance
+            // after pressing start over from the template wizard. This is needed
+            // because the prompter is cached adn we do not want to reset cached data, because
+            // back/forward navigation will be affected if we do so.
+            when: ({ system }: ConfigAnswers) =>
+                !!system && this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM,
+            validate: async (projectType: AdaptationProjectType) => {
+                this.selectedProjectType = projectType;
+
+                const isInternalUsage = isInternalFeaturesSettingEnabled();
+                if (this.selectedProjectType === AdaptationProjectType.CLOUD_READY && isInternalUsage) {
+                    return t('error.cloudSystemsForInternalUsers');
+                }
+
+                try {
+                    this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
+                } catch (error) {
+                    return error.message;
+                }
+
+                return true;
+            }
         };
     }
 
@@ -477,13 +600,13 @@ export class ConfigPrompter {
                 applyDefaultWhenDirty: true
             },
             when: (answers: ConfigAnswers) =>
-                showExtensionProjectQuestion(
-                    answers,
-                    this.flexUISystem,
-                    this.isCloudProject,
-                    this.isApplicationSupported,
-                    this.containsSyncViews
-                ),
+                showExtensionProjectQuestion({
+                    projectType: this.selectedProjectType,
+                    isApplicationSelected: !!answers.application,
+                    isApplicationSupported: this.isApplicationSupported,
+                    hasSyncViews: this.containsSyncViews,
+                    flexUICapability: this.flexUICapability
+                }),
             validate: (value: boolean) =>
                 validateExtensibilityExtension({
                     value,
@@ -513,7 +636,7 @@ export class ConfigPrompter {
             validationResult === t('error.appDoesNotSupportManifest') ||
             validationResult === t('error.appDoesNotSupportFlexibility');
 
-        if (isAppStudio() && isKnownUnsupported && !this.isCloud) {
+        if (isAppStudio() && isKnownUnsupported && this.selectedProjectType !== AdaptationProjectType.CLOUD_READY) {
             this.logger.error(validationResult);
             this.appValidationErrorMessage = validationResult;
             this.isApplicationSupported = false;
@@ -525,7 +648,7 @@ export class ConfigPrompter {
             return validationResult;
         }
 
-        if (this.isCloud) {
+        if (this.selectedProjectType === AdaptationProjectType.CLOUD_READY) {
             try {
                 this.baseApplicationInbounds = await getBaseAppInbounds(app.id, this.provider);
             } catch (error) {
@@ -544,10 +667,18 @@ export class ConfigPrompter {
      * @param {ConfigAnswers} answers - The configuration answers provided by the user.
      * @returns An error message if validation fails, or true if the system selection is valid.
      */
-    private async validatePassword(password: string, answers: ConfigAnswers): Promise<string | boolean> {
+    private async validatePassword(password: string, answers?: ConfigAnswers): Promise<string | boolean> {
         const validationResult = validateEmptyString(password);
         if (typeof validationResult === 'string') {
             return validationResult;
+        }
+
+        if (!answers) {
+            return true;
+        }
+
+        if (!answers.system || !answers.username) {
+            return t('error.pleaseProvideAllRequiredData');
         }
 
         const options = {
@@ -565,7 +696,10 @@ export class ConfigPrompter {
                 return validationResult;
             }
 
-            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+            this.telemetryCollector.startTiming('applicationListLoadingTime');
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
+            this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
+            this.telemetryCollector.endTiming('applicationListLoadingTime');
             this.isLoginSuccessful = true;
             return true;
         } catch (e) {
@@ -597,18 +731,27 @@ export class ConfigPrompter {
 
         try {
             this.targetApps = [];
-            this.flexUISystem = undefined;
+            this.flexUICapability = undefined;
+            this.selectedProjectType = undefined;
+            this.selectedSystemType = undefined;
+            this.supportedProject = undefined;
             this.abapProvider = await getConfiguredProvider(options, this.logger);
             this.isAuthRequired = await this.systemLookup.getSystemRequiresAuth(system);
-            if (!this.isAuthRequired) {
-                const validationResult = await this.handleSystemDataValidation();
 
-                if (typeof validationResult === 'string') {
-                    return validationResult;
-                }
-
-                this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+            if (this.isAuthRequired) {
+                return true;
             }
+
+            const validationResult = await this.handleSystemDataValidation();
+
+            if (typeof validationResult === 'string') {
+                return validationResult;
+            }
+
+            this.telemetryCollector.startTiming('applicationListLoadingTime');
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
+            this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
+            this.telemetryCollector.endTiming('applicationListLoadingTime');
 
             return true;
         } catch (e) {
@@ -655,16 +798,32 @@ export class ConfigPrompter {
     }
 
     /**
-     * Fetches system data including cloud project and UI flexibility information.
+     * Fetches the system type, supported project type and the UI flexibility information.
      *
      * @returns A promise that resolves when system data is fetched.
      */
     private async loadSystemData(): Promise<void> {
         try {
-            this.isCloudProject = await this.abapProvider.isAbapCloud();
-            this.flexUISystem = await getFlexUISupportedSystem(this.abapProvider, this.isCustomerBase);
-        } catch (e) {
-            this.handleSystemError(e);
+            // Do not include the ato settings retreival in the parallel calls because we need to first login
+            // before executing any other call. A provider works like this - with the first api call it authenticates the user.
+            this.selectedSystemType = (await this.provider.isAbapCloud()) ? SystemType.CLOUD_READY : SystemType.ON_PREM;
+
+            const [supportedProject, flexUICapability] = await Promise.all([
+                getSupportedProject(this.abapProvider),
+                getFlexUICapability(this.abapProvider, this.isCustomerBase)
+            ]);
+
+            this.supportedProject = supportedProject;
+            this.flexUICapability = flexUICapability;
+
+            // Set selected project type based on the supported project.
+            if (this.supportedProject === SupportedProject.CLOUD_READY) {
+                this.selectedProjectType = AdaptationProjectType.CLOUD_READY;
+            } else if (this.supportedProject === SupportedProject.ON_PREM) {
+                this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
+            }
+        } catch (error) {
+            this.handleSystemError(error);
         }
     }
 
@@ -674,10 +833,16 @@ export class ConfigPrompter {
      * @returns {Promise<void>} A promise that resolves once all version data is loaded and assigned.
      */
     private async loadUI5Versions(): Promise<void> {
-        const version = await getSystemUI5Version(this.abapProvider);
+        let version: string | undefined;
+        try {
+            version = await getSystemUI5Version(this.abapProvider, this.logger);
+        } catch (error) {
+            this.logger.debug(`Could not fetch the system UI5 version: ${error.message}.`);
+        }
+
         this.systemVersion = checkSystemVersionPattern(version);
         this.publicVersions = await fetchPublicVersions(this.logger);
-        this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);
+        this.ui5Versions = await getRelevantVersions(version, this.isCustomerBase, this.publicVersions);
     }
 
     /**
@@ -690,7 +855,7 @@ export class ConfigPrompter {
             await this.loadSystemData();
             await this.loadUI5Versions();
 
-            if (!this.isCustomerBase && this.isCloudProject) {
+            if (!this.isCustomerBase && this.selectedProjectType === AdaptationProjectType.CLOUD_READY) {
                 return t('error.cloudSystemsForInternalUsers');
             }
 
@@ -715,9 +880,11 @@ export class ConfigPrompter {
 
             if (error.response?.status === 405 || error.response?.status === 404) {
                 // Handle the case where the API is not available and continue to standard onPremise flow
-                this.isCloudProject = false;
+                this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
                 return;
             }
+
+            throw error;
         }
     }
 

@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import NodeEnvironment from 'jest-environment-node';
 import puppeteer from 'puppeteer-core';
-import fs from 'fs';
-import os from 'os';
-import { join } from 'path';
+import fs from 'node:fs';
+import os from 'node:os';
+import { join } from 'node:path';
 import type { Context } from 'vm';
 
 const DIR = join(os.tmpdir(), 'jest_puppeteer_global_setup');

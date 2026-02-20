@@ -1,5 +1,5 @@
-import type { SecureContext } from 'tls';
-import tls from 'tls';
+import type { SecureContext } from 'node:tls';
+import tls from 'node:tls';
 import { sapGlobalRootCaCert } from '../cacerts/sap-global-root-ca';
 
 /**

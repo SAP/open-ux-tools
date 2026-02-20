@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { promises } from 'fs';
+import { join } from 'node:path';
+import { promises } from 'node:fs';
 
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 

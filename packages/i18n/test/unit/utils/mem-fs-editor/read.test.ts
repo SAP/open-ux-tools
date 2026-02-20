@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { readFile } from '../../../../src/utils';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 describe('read', () => {
     describe('readFile', () => {

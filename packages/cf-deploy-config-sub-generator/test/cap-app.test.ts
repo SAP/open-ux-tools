@@ -1,11 +1,11 @@
 import hasbin from 'hasbin';
 import CFGenerator from '../src/app';
 import yeomanTest from 'yeoman-test';
-import { join } from 'path';
+import { join } from 'node:path';
 import { TestFixture } from './fixtures';
 import { initI18n, t } from '../src/utils';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
-import type * as fs from 'fs';
+import type * as fs from 'node:fs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as cfDeployWriter from '@sap-ux/cf-deploy-config-writer';
@@ -30,9 +30,9 @@ jest.mock('@sap-ux/project-access', () => {
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -56,7 +56,6 @@ jest.mock('@sap/mta-lib', () => {
 const mockGetHostEnvironment = jest.fn();
 const mockSendTelemetry = jest.fn();
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: () => mockSendTelemetry(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),
@@ -160,7 +159,7 @@ describe('Cloud foundry generator tests', () => {
         expect(mockGenerateCAPConfig).not.toHaveBeenCalled();
         expect(mockGenerateAppConfig).not.toHaveBeenCalled();
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
-        expect(mockSendTelemetry).toHaveBeenCalled();
+        expect(mockSendTelemetry).not.toHaveBeenCalled();
     });
 
     it('Validate Approuter prompting is shown if HTML5 is being added to a CAP project with missing mta', async () => {

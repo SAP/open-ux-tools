@@ -1,8 +1,8 @@
 import type { CustomMiddleware, FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 import type { ResultMessage } from '../types';
 import { findAllApps } from '@sap-ux/project-access';
-import { existsSync, promises as fsPromises } from 'fs';
-import { join } from 'path';
+import { existsSync, promises as fsPromises } from 'node:fs';
+import { join } from 'node:path';
 import * as yaml from 'yamljs';
 import { FileName, Severity } from '../types';
 import { t } from '../i18n';

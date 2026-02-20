@@ -1,8 +1,8 @@
-import { homedir } from 'os';
+import { homedir } from 'node:os';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 
 export const appInfoFilePath = join(homedir(), '.fioritools', 'appInfo.json');
 export const defaultAppInfoContents = {

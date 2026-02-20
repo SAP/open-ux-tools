@@ -1,5 +1,5 @@
 import { t } from '../i18n';
-import { EOL } from 'os';
+import { EOL } from 'node:os';
 
 /**
  * Validator Fiori app name is compatble with Fiori project requirements.

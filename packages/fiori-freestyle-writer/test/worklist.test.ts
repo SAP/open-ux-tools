@@ -1,6 +1,6 @@
 import type { FreestyleApp } from '../src';
 import { generate, TemplateType } from '../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, getMetadata, projectChecks, updatePackageJSONDependencyToUseLocalPath } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';

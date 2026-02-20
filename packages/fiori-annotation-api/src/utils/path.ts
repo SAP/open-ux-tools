@@ -1,5 +1,5 @@
-import { realpathSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const driveLetter = process.platform === 'win32' ? realpathSync.native('\\')[0] : '';
 

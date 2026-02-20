@@ -1,12 +1,11 @@
 import { readFile } from 'fs-extra';
-import path, { dirname, join } from 'path';
+import path, { dirname, join } from 'node:path';
 import {
     getAnnotationNamespaces,
     removeAnnotationsFromCDSFiles,
     removeRemoteServiceAnnotationXmlFiles,
     updateCdsFilesWithAnnotations
 } from '../../src/data/annotations';
-import { t } from '../../src/i18n';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -19,7 +18,8 @@ describe('metadata parsing', () => {
         annotationSingleRef: string,
         multischemaMetadata: string,
         invalidEdmx: string,
-        missingSchema: string;
+        missingSchema: string,
+        metadatav401: string;
 
     beforeAll(async () => {
         testDataPath = join(__dirname, '../test-data/annotations-test');
@@ -29,6 +29,7 @@ describe('metadata parsing', () => {
         multischemaMetadata = await readFile(join(testDataPath, 'multiple_schemas.xml'), 'utf-8');
         invalidEdmx = await readFile(join(testDataPath, 'bad_metadata.xml'), 'utf-8');
         missingSchema = await readFile(join(testDataPath, 'missing_schema.xml'), 'utf-8');
+        metadatav401 = await readFile(join(testDataPath, 'metadata_v401.xml'), 'utf-8');
     });
 
     it('getAnnotationNamespaces: metadata parsing', () => {
@@ -74,6 +75,12 @@ describe('metadata parsing', () => {
             { namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' },
             { namespace: 'SEPMRA_PROD_MAN_1', alias: '' }
         ]);
+        expect(
+            getAnnotationNamespaces({
+                metadata: metadatav401,
+                annotations: { technicalName: 'TEST_ANNOTATIONS', xml: metadatav401 }
+            })
+        ).toEqual([{ namespace: 'com.sap.gateway.srvd.dmo.test_dte_root_o401.v0001', alias: 'SAP__self' }]);
     });
 });
 

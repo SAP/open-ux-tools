@@ -4,7 +4,7 @@ import {
     ensurePreviewMiddlewareDependency,
     updateVariantsCreationScript
 } from '../../../src/preview-config/package-json';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
 import * as variantsConfig from '../../../src/variants-config/generateVariantsConfig';
 
@@ -34,6 +34,7 @@ describe('package-json', () => {
             const variousConfigsPath = join(basePath, 'various-configs');
 
             const variousConfigsPackageJsonPath = join(variousConfigsPath, 'package.json');
+            fs.delete(variousConfigsPackageJsonPath);
             ensurePreviewMiddlewareDependency(fs, variousConfigsPath);
             expect(() => fs.read(join(variousConfigsPath, 'package.json'))).toThrow(
                 `${variousConfigsPackageJsonPath} doesn\'t exist`

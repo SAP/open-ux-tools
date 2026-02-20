@@ -1,4 +1,6 @@
-#  `@sap-ux/reload-middleware`
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/reload-middleware/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/reload-middleware)
+
+# [`@sap-ux/reload-middleware`](https://github.com/SAP/open-ux-tools/tree/main/packages/reload-middleware)
 
 The `@sap-ux/reload-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for reloading applications automatically during local development. Whenever a file relevant for the SAP Fiori applications is chaged the middleware will refresh the browser tab in which the application is running.
 

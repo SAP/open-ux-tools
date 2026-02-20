@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { t } from '../../src/utils/i18n';
 import { adtSourceTemplateId } from '../../src/utils/constants';
 import RepoAppDownloadLogger from '../../src/utils/logger';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('../../src/utils/logger', () => ({
     logger: {

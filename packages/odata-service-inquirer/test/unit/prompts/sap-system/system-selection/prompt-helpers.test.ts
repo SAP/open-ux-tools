@@ -2,28 +2,32 @@ import { listDestinations } from '@sap-ux/btp-utils';
 import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
 import {
     CfAbapEnvServiceChoice,
+    connectWithBackendSystem,
     createSystemChoices,
     findDefaultSystemSelectionIndex,
-    getBackendSystemDisplayName,
     NewSystemChoice
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AxiosError } from '@sap-ux/axios-extension';
+import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
+import LoggerHelper from '../../../../../src/prompts/logger-helper';
 
 const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234',
     url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1',
-    systemType: 'OnPrem'
+    systemType: 'OnPrem',
+    connectionType: 'abap_catalog'
 };
 
 const backendSystemReentrance: BackendSystem = {
     name: 'http://s4hc:1234',
     url: 'http:/s4hc:1234',
     authenticationType: 'reentranceTicket',
-    systemType: 'S4HC'
+    systemType: 'AbapCloud',
+    connectionType: 'abap_catalog'
 };
 
 const backendSystems: BackendSystem[] = [backendSystemBasic, backendSystemReentrance];
@@ -43,8 +47,12 @@ jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
     // Mock store access
-    SystemService: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValueOnce(backendSystems),
+    getService: jest.fn().mockImplementation(() => ({
+        getAll: jest.fn().mockResolvedValue(backendSystems),
+        read: jest.fn().mockImplementation((key) => {
+            const system = backendSystems.find((s) => s.url === key.url);
+            return Promise.resolve(system);
+        }),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
             return Promise.resolve(system);
         })
@@ -70,26 +78,6 @@ describe('Test system selection prompt helpers', () => {
             mockIsAppStudio = false;
         });
 
-        test('Should get backend system display name', () => {
-            expect(
-                getBackendSystemDisplayName({
-                    name: 'systemA',
-                    userDisplayName: 'userDisplayName1',
-                    authenticationType: 'reentranceTicket' as AuthenticationType,
-                    systemType: 'S4HC'
-                } as BackendSystem)
-            ).toEqual('systemA (S4HC) [userDisplayName1]');
-
-            expect(
-                getBackendSystemDisplayName({
-                    name: 'systemB',
-                    userDisplayName: 'userDisplayName2',
-                    serviceKeys: { url: 'Im a service key' },
-                    systemType: 'BTP'
-                } as BackendSystem)
-            ).toEqual('systemB (BTP) [userDisplayName2]');
-        });
-
         test('Should create backend system selection choices', async () => {
             expect(await createSystemChoices()).toEqual([
                 {
@@ -107,7 +95,25 @@ describe('Test system selection prompt helpers', () => {
                     }
                 },
                 {
-                    name: `${backendSystemReentrance.name} (S4HC)`,
+                    name: `${backendSystemReentrance.name} (ABAP Cloud)`,
+                    value: {
+                        system: backendSystemReentrance,
+                        type: 'backendSystem'
+                    }
+                }
+            ]);
+
+            // hideNewSystem set to true
+            expect(await createSystemChoices(undefined, false, true)).toEqual([
+                {
+                    name: backendSystemBasic.name,
+                    value: {
+                        system: backendSystemBasic,
+                        type: 'backendSystem'
+                    }
+                },
+                {
+                    name: `${backendSystemReentrance.name} (ABAP Cloud)`,
                     value: {
                         system: backendSystemReentrance,
                         type: 'backendSystem'
@@ -248,5 +254,52 @@ describe('Test system selection prompt helpers', () => {
             expect(findDefaultSystemSelectionIndex(basChoices, destination1.Name)).toEqual(1);
             expect(findDefaultSystemSelectionIndex(basChoices, destination2.Name)).toEqual(2);
         });
+    });
+});
+
+describe('connectWithBackendSystem', () => {
+    beforeAll(async () => {
+        await initI18nOdataServiceInquirer();
+    });
+
+    test('should strip path from URL and log warning for reentrance ticket systems with path in URL', async () => {
+        const backendSystemReentranceWithPath: BackendSystem = {
+            name: 'Cloud System With Path',
+            url: 'https://cloud.system.com/some/path',
+            authenticationType: 'reentranceTicket',
+            systemType: 'AbapCloud',
+            connectionType: 'abap_catalog'
+        };
+
+        // Mock getService to return our test system with path
+        const { getService } = jest.requireMock('@sap-ux/store');
+        getService.mockImplementationOnce(() => ({
+            read: jest.fn().mockResolvedValue(backendSystemReentranceWithPath)
+        }));
+
+        const validateUrlMock = jest.fn().mockResolvedValue(true);
+        const mockConnectionValidator = {
+            validateUrl: validateUrlMock,
+            serviceProvider: { name: 'mockProvider' },
+            setConnectedSystem: jest.fn()
+        } as unknown as ConnectionValidator;
+
+        const loggerWarnSpy = jest.spyOn(LoggerHelper.logger, 'warn');
+
+        await connectWithBackendSystem(BackendSystemKey.from(backendSystemReentranceWithPath), mockConnectionValidator);
+
+        // Should log a warning about the path
+        expect(loggerWarnSpy).toHaveBeenCalledWith(expect.stringContaining(backendSystemReentranceWithPath.url));
+
+        // Should call validateUrl with origin only (path stripped)
+        expect(validateUrlMock).toHaveBeenCalledWith(
+            'https://cloud.system.com',
+            expect.objectContaining({
+                isSystem: true,
+                systemAuthType: 'reentranceTicket'
+            })
+        );
+
+        loggerWarnSpy.mockRestore();
     });
 });

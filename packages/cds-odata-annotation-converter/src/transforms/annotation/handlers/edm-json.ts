@@ -52,7 +52,7 @@ export class EdmJsonVisitor {
      *
      * @param state - The visitor state.
      */
-    constructor(private state: VisitorState) {}
+    constructor(private readonly state: VisitorState) {}
 
     /**
      * Visits the given AnnotationNode and invokes the corresponding visitor function based on the node type.

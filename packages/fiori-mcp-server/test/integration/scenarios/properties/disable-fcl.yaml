@@ -1,0 +1,15 @@
+config:
+    project: 'node-ai-created'
+    # Overwrite original manifest.json by continuing from state of 'fcl-enable' test
+    setupFiles:
+    - source: fcl-enable/webapp/manifest.json
+      target: app/managetravels/webapp/manifest.json
+vars:
+    appPath: '{{APP_PATH}}'
+    query: 'Disable FCL. Application in {{appPath}}'
+assert:
+  - type: javascript
+    value: file://../assertions/snapshots.ts:validate
+    config:
+      snapshot: fcl-disable
+      file: webapp/manifest.json

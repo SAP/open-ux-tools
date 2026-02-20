@@ -1,0 +1,9 @@
+{
+    "systems": [
+        {
+            "url": "https://existing.system.test.url.com",
+            "client": "100",
+            "name": "Existing System"
+        }
+    ]
+}

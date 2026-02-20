@@ -1,5 +1,5 @@
-import { readdirSync } from 'fs';
-import { join } from 'path';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { Range, Position } from '@sap-ux/odata-annotation-core-types';
 
@@ -22,7 +22,7 @@ const expandPosition = (value: string): Position =>
         value
             .slice(1, -1)
             .split(',')
-            .map((text) => parseInt(text, 10)) as [number, number]
+            .map((text) => Number.parseInt(text, 10)) as [number, number]
     );
 
 /**

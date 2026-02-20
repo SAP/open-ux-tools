@@ -5,7 +5,7 @@ import { MessageBarType, SCENARIO, type Scenario } from '@sap-ux-private/control
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import AppState from 'sap/ushell/services/AppState';
+import type AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
 import initCdm from './initCdm';
@@ -188,7 +188,7 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
         const sapClient = urlParams.get('sap-client');
-        if (sapClient && sapClient.length === 3) {
+        if (sapClient?.length === 3) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
@@ -324,7 +324,7 @@ export async function init({
                 const view = event.getParameter('componentInstance');
                 const pluginScript = flexSettings.pluginScript ?? '';
 
-                let libs: string[] = [];
+                const libs: string[] = [];
 
                 if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
@@ -345,7 +345,7 @@ export async function init({
 
                 sap.ui.require(
                     libs,
-                    // eslint-disable-next-line no-shadow
+
                     async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
                         try {
                             await startAdaptation(options, pluginScript);
@@ -408,15 +408,15 @@ export async function init({
     renderer.placeAt('content');
 }
 
-// eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
+// eslint-disable-next-line @sap-ux/fiori-tools/sap-no-dom-access,@sap-ux/fiori-tools/sap-browser-api-warning
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
-        appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
-        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
-        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage'),
-        enableCardGenerator: !!bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator')
+        appUrls: bootstrapConfig.dataset.openUxPreviewLibsManifests,
+        flex: bootstrapConfig.dataset.openUxPreviewFlexSettings,
+        customInit: bootstrapConfig.dataset.openUxPreviewCustomInit,
+        enhancedHomePage: !!bootstrapConfig.dataset.openUxPreviewEnhancedHomepage,
+        enableCardGenerator: !!bootstrapConfig.dataset.openUxPreviewEnableCardGenerator
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
@@ -442,7 +442,7 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
             });
         }
 
-        // eslint-disable-next-line fiori-custom/sap-no-location-reload
+        // eslint-disable-next-line @sap-ux/fiori-tools/sap-no-location-reload
         window.location.reload();
     }
 }

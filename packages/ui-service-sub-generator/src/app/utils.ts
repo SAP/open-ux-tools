@@ -9,7 +9,7 @@ import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@s
 import type { ProviderSystem, ServiceConnectivityData } from '@sap/service-provider-apis';
 import { ProviderType } from '@sap/service-provider-apis';
 import type { Editor } from 'mem-fs-editor';
-import { basename, dirname, join } from 'path';
+import { basename, dirname, join } from 'node:path';
 import type { GeneratorOptions } from 'yeoman-generator';
 import { SAP_NAMESPACE, SERVICE_GENERATION_FAIL, UI_SERVICE_CACHE } from '../utils';
 import { t } from '../utils/i18n';

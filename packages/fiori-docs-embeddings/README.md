@@ -1,4 +1,6 @@
-# @sap-ux/fiori-docs-embeddings
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-docs-embeddings/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-docs-embeddings)
+
+# [`@sap-ux/fiori-docs-embeddings`](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-docs-embeddings)
 
 A Node.js package that indexes SAP Fiori related documentation from multiple sources and generates vector embeddings for semantic search capabilities.
 
@@ -6,11 +8,22 @@ A Node.js package that indexes SAP Fiori related documentation from multiple sou
 
 This module- Crawls documentation from GitHub repositories (see Configuration for a list of default sources)
 Example sources:
+
 https://github.com/SAP-docs/btp-fiori-tools (Fiori Tools documentation)
-https://github.com/SAP-docs/sapui5 (UI5 framework documentation)
+
+https://github.com/SAP-docs/sapui5/tree/main/docs/06_SAP_Fiori_Elements (UI5 Fiori Elements documentation)
+
 https://github.com/SAP-samples/fiori-tools-samples (Sample applications)
+
 https://github.com/SAP-samples/fiori-elements-feature-showcase (Feature examples)
+
 https://ui5.sap.com/test-resources/sap/fe/macros/designtime/apiref/api.json (Design Time API Reference)
+
+https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/overview/introduction (SAP Fiori Development Portal)
+
+https://github.com/SAP/open-ux-tools/blob/main/packages/create/README.md (Fiori Tools create documentation)
+
+https://www.npmjs.com/package/@sap/ux-ui5-tooling (@sap/ux-ui5-tooling documentation)
 
 - Parses markdown, JSON, TypeScript, and other file types
 - Generates AI-powered vector embeddings using transformers

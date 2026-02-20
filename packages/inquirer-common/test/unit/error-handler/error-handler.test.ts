@@ -53,6 +53,7 @@ describe('Test ErrorHandler', () => {
         );
         expect(ErrorHandler.getErrorType(new Error('CERT_HAS_EXPIRED'))).toEqual(ERROR_TYPE.CERT_EXPIRED);
         expect(ErrorHandler.isCertError('unable to get local issuer certificate')).toEqual(true);
+        expect(ErrorHandler.getErrorType('EPROTO') === ERROR_TYPE.CONNECTION).toEqual(true);
     });
 
     test('Maintains last error state', () => {
@@ -70,6 +71,12 @@ describe('Test ErrorHandler', () => {
         expect(errorHandler.getErrorMsg()).toEqual(undefined);
         expect(errorHandler.getErrorMsg({ response: { status: '404' } }, true)).toEqual(t('errors.urlNotFound'));
         expect(errorHandler.getErrorMsg()).toEqual(undefined);
+
+        errorHandler.setCurrentError(ERROR_TYPE.CONNECTION);
+        expect(errorHandler.hasError()).toBe(true);
+        errorHandler.resetErrorState();
+        expect(errorHandler.getErrorMsg()).toBeUndefined();
+        expect(errorHandler.hasError()).toBeFalse();
     });
 
     test('Get current error type', () => {

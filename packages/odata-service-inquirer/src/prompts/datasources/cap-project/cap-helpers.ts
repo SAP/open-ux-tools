@@ -6,7 +6,7 @@ import {
     getCdsRoots,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import { basename, isAbsolute, relative } from 'path';
+import { basename, dirname, isAbsolute, relative } from 'node:path';
 import { t } from '../../../i18n';
 import type { CapServiceChoice } from '../../../types';
 import type { CapService } from '@sap-ux/cap-config-writer';
@@ -14,20 +14,37 @@ import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
-import { realpath } from 'fs/promises';
+import { realpath } from 'node:fs/promises';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { cwd } from 'node:process';
 
 export const enterCapPathChoiceValue = 'enterCapPath';
 
 /**
- * Search for CAP projects in the specified paths.
+ * Searches for CAP project root paths from given paths, searching up to 2 parent levels if needed in CLI environment.
+ * Returns sorted paths with priority given to projects matching the original paths, and tracks duplicate folder names.
  *
- * @param paths - The paths used to search for CAP projects
+ * @param paths - Array of file system paths to search for CAP projects
  * @returns The CAP project paths and the number of folders with the same name
  */
 async function getCapProjectPaths(
     paths: string[]
 ): Promise<{ capProjectPaths: CapProjectRootPath[]; folderCounts: Map<string, number> }> {
     const capProjectRoots = await findCapProjects({ wsFolders: paths });
+    if (capProjectRoots.length === 0 && getHostEnvironment() === hostEnvironment.cli) {
+        // If no CAP projects found, search parent directories (up to 2 levels)
+        const parentPath = dirname(cwd());
+        const grandparentPath = dirname(parentPath);
+        // Second call is needed, since we don't want to traverse the whole fs
+        const capProjectsUp = await findCapProjects({
+            wsFolders: [parentPath, grandparentPath],
+            noTraversal: true
+        });
+        if (capProjectsUp.length > 0) {
+            // Add only the first found project from parent search, since we only want the current project's parent
+            capProjectRoots.push(capProjectsUp[0]);
+        }
+    }
     const capRootPaths: CapProjectRootPath[] = [];
     // Keep track of duplicate folder names to append the path to the name when displaying the choices
     const folderNameCount = new Map<string, number>();
@@ -39,7 +56,9 @@ async function getCapProjectPaths(
         capRootPaths.push({ folderName, path: process.platform === 'win32' ? await realpath(root) : root });
         folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
+
     capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName));
+
     return {
         capProjectPaths: capRootPaths,
         folderCounts: folderNameCount
@@ -55,10 +74,9 @@ async function getCapProjectPaths(
  */
 export async function getCapProjectChoices(paths: string[]): Promise<CapProjectChoice[]> {
     const { capProjectPaths, folderCounts } = await getCapProjectPaths(paths);
-
     const capChoices: CapProjectChoice[] = [];
 
-    for await (const capProjectPath of capProjectPaths) {
+    for (const capProjectPath of capProjectPaths) {
         const customCapPaths = await getCapCustomPaths(capProjectPath.path);
         const folderCount = folderCounts.get(capProjectPath.folderName) ?? 1;
 
@@ -95,7 +113,7 @@ function createCapServiceChoice(
     cdsVersionInfo: CdsVersionInfo
 ): CapServiceChoice | undefined {
     const srvDef = capModel.definitions?.[serviceInfo.name];
-    /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+
     const serviceFilePath = (srvDef as any)?.$location?.file;
     LoggerHelper.logger.debug(`Cap service def: ${JSON.stringify(srvDef)}`);
     LoggerHelper.logger.debug(`Cap service def $location.file: ${JSON.stringify(serviceFilePath)}`);

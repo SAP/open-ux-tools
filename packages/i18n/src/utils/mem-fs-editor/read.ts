@@ -1,4 +1,4 @@
-import { promises } from 'fs';
+import { promises } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
 /**

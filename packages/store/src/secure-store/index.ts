@@ -4,9 +4,9 @@ import { DummyStore } from './dummy-store';
 import { KeyStoreManager } from './key-store';
 import type { SecureStore } from './types';
 import type { keyring as zoweKeyring } from '@zowe/secrets-for-zowe-sdk';
-import { join, dirname } from 'path';
-import { homedir } from 'os';
-import fs from 'fs';
+import { join, dirname } from 'node:path';
+import { homedir } from 'node:os';
+import fs from 'node:fs';
 
 // Ensure the require is not bundled by webpack and resolved at runtime
 declare function __non_webpack_require__(moduleName: string): any;
@@ -62,7 +62,7 @@ function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
                     log.info(`Attempting to load Zowe secrets SDK from: ${path}`);
                     return typeof __non_webpack_require__ === 'function'
                         ? __non_webpack_require__(path)
-                        : require(path);
+                        : require(path); // eslint-disable-line @typescript-eslint/no-require-imports
                 } catch (fallbackError) {
                     log.warn(`Failed to load Zowe secrets SDK from ${path}: ${errorString(fallbackError)}`);
                 }

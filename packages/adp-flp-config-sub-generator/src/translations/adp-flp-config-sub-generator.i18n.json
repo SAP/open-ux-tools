@@ -3,8 +3,11 @@
         "flpCredentialsName": "SAP Fiori Launchpad Configuration - Credentials",
         "flpCredentialsDesc": "Enter credentials for your adaptation project's system: ({{- system}}).",
         "sysConfirmDesc": "Validates connection to the configured system.",
-        "flpConfigName": "SAP Fiori Launchpad Configuration",
-        "tileSettingsName": "SAP Fiori Launchpad Configuration - Tile Settings for {{- projectName}}"
+        "flpConfigName": "SAP Fiori Launchpad Configuration: Tile Settings",
+        "tileSettingsName": "SAP Fiori Launchpad Configuration: Tile Handling",
+        "tileSettingsDescr": "Add a new tile or replace existing tiles of the base application.\nProject: {{projectName}}",
+        "flpConfigReplaceCurrentTiles": "Existing Tiles (Title ⑊ Navigation Intent):\n\n{{- currentTiles}}",
+        "flpConfigReplaceTile": "  • {{- title}} ⑊ {{- navigationIntent}}"
     },
     "info": {
         "flpConfigAdded": "SAP Fiori launchpad configuration added."

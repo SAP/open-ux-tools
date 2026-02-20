@@ -1,4 +1,4 @@
-import { dirname, join } from 'path';
+import { dirname, join } from 'node:path';
 import type { I18nPropertiesPaths, Manifest } from '../../types';
 import { readJSON } from '../../file';
 import type { Editor } from 'mem-fs-editor';

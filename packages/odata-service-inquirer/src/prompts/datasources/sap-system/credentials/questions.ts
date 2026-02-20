@@ -1,20 +1,22 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
-import { isFullUrlDestination, isPartialUrlDestination, type Destination } from '@sap-ux/btp-utils';
-import type { InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
+import { isFullUrlDestination, isPartialUrlDestination, isAppStudio, type Destination } from '@sap-ux/btp-utils';
+import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import { promptNames } from '../../../../types';
-import { PromptState, removeCircularFromServiceProvider } from '../../../../utils';
+import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import type { ValidationResult } from '../../../types';
 import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
 import type { NewSystemAnswers } from '../new-system/types';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
-    systemPassword = 'systemPassword'
+    systemPassword = 'systemPassword',
+    storeSystemCredentials = 'storeSystemCredentials'
 }
 /**
  * Re-usable credentials prompts for connection to systems using basic auth.
@@ -24,28 +26,34 @@ export enum BasicCredentialsPromptNames {
  * @param sapClient
  * @param sapClient.sapClient the sapClient value to be used along with the credentials validation
  * @param sapClient.isValid validation of credentials is deferred until a valid sapClient is provided or undefined
+ * @param requiredOdataVersion
  * @returns the credentials prompts
  */
 export function getCredentialsPrompts<T extends Answers>(
     connectionValidator: ConnectionValidator,
     promptNamespace?: string,
-    sapClient?: { sapClient: string | undefined; isValid: boolean }
-): (InputQuestion<T> | PasswordQuestion<T>)[] {
+    sapClient?: { sapClient: string | undefined; isValid: boolean },
+    requiredOdataVersion?: OdataVersion
+): (InputQuestion<T> | PasswordQuestion<T> | ConfirmQuestion<T>)[] {
     const usernamePromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
         BasicCredentialsPromptNames.systemUsername
     }`;
     const passwordPromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
         BasicCredentialsPromptNames.systemPassword
     }`;
-
+    const storeCredentialsPromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
+        BasicCredentialsPromptNames.storeSystemCredentials
+    }`;
     // Optimization to prevent re-checking of auth
     let authRequired: boolean | undefined;
 
-    return [
+    const credentialsPrompts: (InputQuestion<T> | PasswordQuestion<T> | ConfirmQuestion<T>)[] = [
         {
             when: async () => {
                 authRequired = await connectionValidator.isAuthRequired();
-                return connectionValidator.systemAuthType === 'basic' && authRequired;
+                return (
+                    connectionValidator.systemAuthType === 'basic' && authRequired && (!sapClient || sapClient.isValid)
+                );
             },
             type: 'input',
             name: usernamePromptName,
@@ -57,7 +65,8 @@ export function getCredentialsPrompts<T extends Answers>(
             validate: (user: string) => user?.length > 0
         } as InputQuestion<T>,
         {
-            when: () => !!(connectionValidator.systemAuthType === 'basic' && authRequired),
+            when: () =>
+                !!(connectionValidator.systemAuthType === 'basic' && authRequired && (!sapClient || sapClient.isValid)),
             type: 'password',
             guiOptions: {
                 mandatory: true,
@@ -74,7 +83,7 @@ export function getCredentialsPrompts<T extends Answers>(
                         connectionValidator.validatedUrl &&
                         answers?.[usernamePromptName] &&
                         password &&
-                        (sapClient?.isValid || !sapClient)
+                        (!sapClient || sapClient.isValid)
                     )
                 ) {
                     return false;
@@ -99,14 +108,15 @@ export function getCredentialsPrompts<T extends Answers>(
                     password,
                     {
                         sapClient: sapClient?.sapClient || selectedSystemClient,
-                        isSystem
+                        isSystem,
+                        odataVersion: convertODataVersionType(requiredOdataVersion)
                     }
                 );
                 if (valResult === true && connectionValidator.serviceProvider) {
                     updatePromptStateWithConnectedSystem(connectionValidator.serviceProvider, selectedSystem, {
                         username: answers?.[usernamePromptName],
                         password: password
-                    });
+                    }); // Store credentials temporarily - will be conditionally kept/removed in store credentials prompt
                     return true;
                 }
                 return valResult;
@@ -128,6 +138,45 @@ export function getCredentialsPrompts<T extends Answers>(
             }
         } as PasswordQuestion<T>
     ];
+
+    const confirmCredentialStoragePrompt: ConfirmQuestion<T> = {
+        when: (answers: T) =>
+            !!(
+                connectionValidator.systemAuthType === 'basic' &&
+                authRequired &&
+                connectionValidator.validity.authenticated &&
+                answers[passwordPromptName]
+            ),
+        type: 'confirm',
+        name: storeCredentialsPromptName,
+        message: t('prompts.storeSystemCredentials.message'),
+        default: false,
+        guiOptions: {
+            breadcrumb: t('prompts.storeSystemCredentials.breadcrumb')
+        },
+        validate: async (storeCredentials: boolean): Promise<boolean> => {
+            if (PromptState.odataService.connectedSystem?.backendSystem) {
+                const backendSystem = PromptState.odataService.connectedSystem.backendSystem;
+                PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
+                    newOrUpdated: storeCredentials
+                });
+            }
+            return true;
+        },
+        additionalMessages: (storeCredentials: boolean) => {
+            if (storeCredentials === true) {
+                return {
+                    message: t('texts.passwordStoreWarning'),
+                    severity: Severity.warning
+                };
+            }
+        }
+    } as ConfirmQuestion<T>;
+
+    if (!isAppStudio()) {
+        credentialsPrompts.push(confirmCredentialStoragePrompt);
+    }
+    return credentialsPrompts;
 }
 
 /**
@@ -150,13 +199,12 @@ function updatePromptStateWithConnectedSystem(
     // Update the existing backend system with the new credentials that may be used to update in the store.
     if (selectedSystem?.type === 'backendSystem') {
         const backendSystem = selectedSystem.system as BackendSystem;
-        // Have the credentials changed..
+        // Have the credentials changed..?
         if (backendSystem.username !== username || backendSystem.password !== password) {
             PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
                 username: username,
-                password,
-                userDisplayName: username,
-                newOrUpdated: true
+                password: password,
+                userDisplayName: username
             } as Partial<BackendSystem>);
         }
         // If the connection is successful and a destination was selected, assign the connected destination to the prompt state.

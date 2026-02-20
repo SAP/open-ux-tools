@@ -58,7 +58,9 @@
             "metadataFilePathNotValid": "The metadata file does not exist or is not accessible. Please specify a valid file path.",
             "capProjectNotFound": "The folder you have selected does not contain a valid CAP project. Please check and try again.",
             "warningCertificateValidationDisabled": "Certificate validation has been disabled by the user.",
-            "annotationsNotFound": "Annotations not found for the specified service."
+            "annotationsNotFound": "Annotations not found for the specified service.",
+            "backendSystemExistsWarning": "A saved system connection entry: \"{{- backendName}}\" already exists with the same URL and client. Please reuse the existing entry or remove it, using the systems panel, before adding a new connection.",
+            "systemUrlOriginOnlyWarning": "System URLs must only contain the hostname and may also include the port, for example, 'https://abc.com:123/'."
         },
         "warnings": {
             "nonUIServiceTypeWarningMessage": "Services of service type: {{serviceType}} or without a service type are not intended to be used for generating SAP Fiori UI applications.",
@@ -81,6 +83,10 @@
         },
         "systemPassword": {
             "message": "Password"
+        },
+        "storeSystemCredentials": {
+            "message": "Do you want to store the system credentials?",
+            "breadcrumb": "Store Credentials"
         },
         "systemService": {
             "message": "Service",
@@ -105,7 +111,7 @@
             "newSystemChoiceLabel": "New System",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
+            "authenticationFailedUpdateCredentials": "$t(texts.authenticationFailed). Please try updating the credentials."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
@@ -134,7 +140,8 @@
             "noDraftEnabledEntitiesError": "The CAP service you have chosen does not have any entities that are draft enabled. To generate an OData V4 SAP Fiori application using this floorplan for a CAP project, the entity selected must be draft enabled.",
             "mainEntityParameterFoundInfo": "The selected entity '{{entityName}}' requires a parameter which is set by the application filters. Navigation entities are not supported.",
             "noEntitiesError": "$t(errors.noRelevantEntities)",
-            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an analytical list page application. The service must contain aggregate-based entities for this template."
+            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an analytical list page application. The service must contain aggregate-based entities for this template.",
+            "requiredError": "Please select a main entity to continue."
         },
         "navigationEntitySelection": {
             "message": "Navigation Entity",
@@ -153,12 +160,14 @@
         "tableType": {
             "message": "Table Type",
             "hint": "Defines the table type for the list report page.",
+            "requiredError": "Please select a table type to continue.",
             "choiceNone": "$t(texts.choiceNameNone)",
             "choiceGrid": "Grid",
             "choiceAnalytical": "Analytical",
             "choiceResponsive": "Responsive",
             "choiceTree": "Tree",
-            "analyticalTableDefault": "The 'Analytical' table type is chosen by default because the selected entity supports it."
+            "analyticalTableDefault": "The 'Analytical' table type is chosen by default because the selected entity supports it.",
+            "treeTableDefault": "The 'Tree' table type is chosen by default because the selected entity supports it."
         },
         "hierarchyQualifier": {
             "message": "Hierarchy Qualifier",
@@ -199,6 +208,10 @@
         "smartVariantManagement": {
             "message": "Enable Smart Variant Management",
             "hint": "Enables page level variant."
+        },
+        "valueHelpDownload": {
+            "message": "The service contains references to value help services. Do you want to download the associated metadata during generation? This may increase generation time.",
+            "hint": "Download metadata for value help to improve the user experience with dropdowns and search."
         }
     },
     "errors": {
@@ -210,7 +223,9 @@
         "capModelAndServicesLoadError": "An error occurred loading the CAP model and services: {{- error, addMsgWithColonFormatter}}.",
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. The CAP service property: `urlPath` is not defined but it is required.",
         "unknownError": "An error occurred: {{- error, addMsgWithColonFormatter}}.",
-        "authenticationFailed": "Authentication incorrect: {{error}}.",
+        "authenticationFailed": "$t(texts.authenticationFailed): {{error}}.",
+        "authenticationFailedSpecificCatalog": "{{authFailType}}: Unable to access the OData V{{odataVersion}} service catalog",
+        "authenticationFailedAllCatalogs": "{{authFailType}}: Unable to access any service catalogs",
         "invalidUrl": "Invalid URL: {{-input, addMsgWithColonFormatter}}.",
         "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",
         "urlNotFound": "URL not found.",
@@ -220,9 +235,9 @@
         "urlRedirect": "The service URL is redirecting.",
         "certValidationRequired": "Certificate validation is required to continue.",
         "exitingGeneration": "Exiting generation. Exit: {{exitReason}}.",
-        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}.",
-        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails).",
-        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}.",
+        "serviceMetadataError": "An error occurred when reading the service metadata for service: {{- servicePath}}. Error: {{errorText}}",
+        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\", \"errorText\": \"{{errorText}}\" }) $t(texts.seeLogForDetails)",
+        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\", \"errorText\": \"{{errorText}}\" })",
         "serviceTypeRequestError": "An error occurred when retrieving the service type: {{- error}}.",
         "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
         "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}: {{error}}.",
@@ -234,7 +249,8 @@
         "unparseableXML": "Unparseable XML was specified: {{-error}}.",
         "noRelevantEntities": "The template and service selected have no relevant entities that you can use.",
         "cfInstanceCredentialsNotReturned": "Cannot not retrieve credentials to access: {{serviceInstanceName}}.",
-        "v2CatalogServiceNoAnnotations": "An error occurred when creating an OData V2 catalog service object. Annotations will not be available: {{-error}}"
+        "v2CatalogServiceNoAnnotations": "An error occurred when creating an OData V2 catalog service object. Annotations will not be available: {{-error}}",
+        "backendSystemRetrieval": "An error occurred when retrieving the backend systems from the store: {{-error}}"
     },
     "warnings": {
         "largeMetadataDocument": "The metadata for this OData service is very large. It may take some time before this operation completes.",
@@ -246,16 +262,22 @@
         "collaborativeDraftMessage": "The selected service is draft enabled but does not support collaborative draft.",
         "certificateErrors": "A certificate error occurred when connecting to the host: {{-url}}. Certificate error: {{error}}.",
         "allowingUnauthorizedCertsNode": "Setting the `NODE_TLS_REJECT_UNAUTHORIZED` environment variable to `0` makes TLS connections and HTTPS requests insecure by disabling certificate verification. It is important to understand the security risks when using this setting.",
-        "certErrorIgnoredByNodeSetting": "An SSL certificate error is being ignored by the 'NODE_TLS_REJECT_UNAUTHORIZED=0' Node.js setting. This makes TLS connections and HTTPS requests insecure by disabling certificate verification. For details of the certification error, see the logs."
+        "certErrorIgnoredByNodeSetting": "An SSL certificate error is being ignored by the 'NODE_TLS_REJECT_UNAUTHORIZED=0' Node.js setting. This makes TLS connections and HTTPS requests insecure by disabling certificate verification. For details of the certification error, see the logs.",
+        "noExternalServiceMetdataFetched": "No external service metadata was fetched. $t(texts.seeLogForDetails)",
+        "missingServices": "OData V{{odataVersion}} services are not available.",
+        "specifiedServicesNotAvailable_one": "The required OData service: {{-service}} is not available from the {{odataVersion}}services catalog. Please ensure the service is available.",
+        "specifiedServicesNotAvailable_other": "The required OData services are not available from the {{odataVersion}}services catalog. Please ensure the services are available. $t(texts.seeLogForDetails)",
+        "storedSystemUrlPathNotSupported": "The stored cloud system URL '{{- systemUrl}}' contains a path which is not supported for reentrance ticket authentication. The path is ignored for this connection."
     },
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",
         "seeLogForDetails": "For more information, view the logs.",
         "forUserName": "(for user [{{username}}])",
-        "systemTypeBTP": "BTP",
-        "systemTypeS4HC": "S4HC",
         "httpStatus": "HTTP Status {{httpStatus}}",
         "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
-        "choiceNameNone": "None"
+        "choiceNameNone": "None",
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies.",
+        "authorizationFailed": "Authorization failed",
+        "authenticationFailed": "Authentication failed"
     }
 }

@@ -8,7 +8,6 @@ import { addRemoveMockserverConfigCommand } from './mockserver-config';
  */
 export function getRemoveCommands(): Command {
     const removeCommands = new Command('remove');
-    // create-fiori remove mockserver-config
     addRemoveMockserverConfigCommand(removeCommands);
     return removeCommands;
 }

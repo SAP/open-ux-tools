@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -36,6 +36,11 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
+    test('getFormBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Form);
+        expect(questionnair).toMatchSnapshot();
+    });
+
     test('getTableBuildingBlockPrompts', async () => {
         const questionnair = await promptsAPI.getPrompts(PromptsType.Table);
         expect(questionnair).toMatchSnapshot();
@@ -48,6 +53,11 @@ describe('Prompts', () => {
 
     test('getRichTextEditorBuildingBlockPrompts', async () => {
         const questionnair = await promptsAPI.getPrompts(PromptsType.RichTextEditor);
+        expect(questionnair).toMatchSnapshot();
+    });
+
+    test('getRichTextEditorButtonGroupsBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.RichTextEditorButtonGroups);
         expect(questionnair).toMatchSnapshot();
     });
 

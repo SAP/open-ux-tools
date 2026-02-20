@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { dirname, join, sep } from 'path';
+import { dirname, join, sep } from 'node:path';
 import { t } from '../i18n';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { DirName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
@@ -23,11 +23,13 @@ interface DataSourceUpdateSettings {
  * @param {Editor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {DataSourceUpdateSettings} dataSourceUpdateSettings - dataSource settings for update
+ * @param {string} minimumUi5Version - minimum UI5 version of the application
  */
 function enhanceManifestDatasources(
     fs: Editor,
     webappPath: string,
-    dataSourceUpdateSettings: DataSourceUpdateSettings
+    dataSourceUpdateSettings: DataSourceUpdateSettings,
+    minimumUi5Version?: string
 ): void {
     const {
         serviceName,
@@ -61,10 +63,11 @@ function enhanceManifestDatasources(
         settings['localUri'] = `localService/${serviceName}/metadata.xml`;
     }
     if (serviceVersion === '4') {
-        settings['odataVersion'] = '4.0';
+        settings['odataVersion'] = minimumUi5Version && semVer.satisfies(minimumUi5Version, '>=1.144') ? '4.01' : '4.0';
     } else if (serviceVersion === '2') {
         settings['odataVersion'] = '2.0';
     }
+
     // Create or update service dataSource in manifest.json for service
     dataSources[serviceName] = {
         uri: servicePath,
@@ -305,16 +308,21 @@ function enhanceManifest(
     // Enhance model settings for service
     const serviceSettings = Object.assign(service, getModelSettings(minimumUi5Version));
     if (serviceSettings.name && serviceSettings.path && serviceSettings.model !== undefined) {
-        enhanceManifestDatasources(fs, webappPath, {
-            serviceName: serviceSettings.name,
-            servicePath: serviceSettings.path,
-            serviceVersion: serviceSettings.version,
-            manifest,
-            forceServiceUpdate,
-            serviceMetadata: serviceSettings.metadata,
-            serviceRemoteAnnotations: serviceSettings.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
-            serviceLocalAnnotations: serviceSettings.localAnnotationsName
-        });
+        enhanceManifestDatasources(
+            fs,
+            webappPath,
+            {
+                serviceName: serviceSettings.name,
+                servicePath: serviceSettings.path,
+                serviceVersion: serviceSettings.version,
+                manifest,
+                forceServiceUpdate,
+                serviceMetadata: serviceSettings.metadata,
+                serviceRemoteAnnotations: serviceSettings.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
+                serviceLocalAnnotations: serviceSettings.localAnnotationsName
+            },
+            minimumUi5Version
+        );
         // Add or update existing service model settings for manifest.json
         enhanceManifestModels(
             serviceSettings.name,
@@ -376,7 +384,7 @@ async function addMultipleServiceSupportToManifest(
     const dataSources = manifest?.['sap.app']?.dataSources;
     for (const dataSourceKey in dataSources) {
         const dataSource = dataSources[dataSourceKey];
-        if (dataSource && dataSource.type === 'OData') {
+        if (dataSource?.type === 'OData') {
             convertSingleService(webappPath, dataSourceKey, dataSource, fs);
             const annotations = dataSource.settings?.annotations;
             if (annotations) {

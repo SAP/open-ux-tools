@@ -1,4 +1,4 @@
-import { stat } from 'fs';
+import { stat } from 'node:fs';
 import type { CdsEnvironment } from '../types';
 import { getI18nConfiguration } from './config';
 

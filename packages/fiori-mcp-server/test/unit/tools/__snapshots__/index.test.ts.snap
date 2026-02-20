@@ -3,9 +3,10 @@
 exports[`Tools schemas execute_functionality: Input schema for "execute_functionality" 1`] = `
 Object {
   "additionalProperties": false,
+  "description": "Input object for executing a functionality. Only three top-level properties are allowed: \\"functionalityId\\", \\"parameters\\", and \\"appPath\\". All other dynamic or functionality-specific inputs must be included inside the \\"parameters\\" object. Do not place any additional fields at the root level.",
   "properties": Object {
     "appPath": Object {
-      "description": "Path to the Fiori application. Path should be an absolute path.",
+      "description": "Path to the Fiori application if one exists or to the current directory. Path should be an absolute path.",
       "type": "string",
     },
     "functionalityId": Object {
@@ -109,7 +110,7 @@ Object {
   "additionalProperties": false,
   "properties": Object {
     "appPath": Object {
-      "description": "Path to the Fiori application. Path should be an absolute path.",
+      "description": "Path to the Fiori application if one exists or to the current directory. Path should be an absolute path.",
       "type": "string",
     },
     "functionalityId": Object {
@@ -186,264 +187,102 @@ Object {
       "type": "string",
     },
     "parameters": Object {
-      "items": Object {
-        "additionalProperties": false,
+      "additionalProperties": Object {},
+      "properties": Object {
+        "description": Object {
+          "type": "string",
+        },
         "properties": Object {
-          "currentValue": Object {},
-          "defaultValue": Object {},
-          "description": Object {
-            "type": "string",
-          },
-          "examples": Object {
-            "items": Object {
-              "type": "string",
-            },
-            "type": "array",
-          },
-          "id": Object {
-            "type": "string",
-          },
-          "name": Object {
-            "type": "string",
-          },
-          "options": Object {
-            "items": Object {
-              "anyOf": Array [
-                Object {
-                  "type": "string",
-                },
-                Object {
-                  "type": "number",
-                },
-                Object {
-                  "type": "boolean",
-                },
-                Object {
-                  "type": "null",
-                },
-              ],
-            },
-            "type": "array",
-          },
-          "parameters": Object {
-            "items": Object {
-              "additionalProperties": false,
-              "properties": Object {
-                "currentValue": Object {},
-                "defaultValue": Object {},
-                "description": Object {
-                  "type": "string",
-                },
-                "examples": Object {
-                  "items": Object {
+          "additionalProperties": Object {
+            "anyOf": Array [
+              Object {
+                "additionalProperties": Object {},
+                "properties": Object {
+                  "description": Object {
                     "type": "string",
                   },
-                  "type": "array",
-                },
-                "id": Object {
-                  "type": "string",
-                },
-                "name": Object {
-                  "type": "string",
-                },
-                "options": Object {
-                  "items": Object {
+                  "properties": Object {},
+                  "type": Object {
                     "anyOf": Array [
                       Object {
+                        "enum": Array [
+                          "object",
+                          "array",
+                          "string",
+                          "number",
+                          "boolean",
+                          "null",
+                          "integer",
+                          "any",
+                        ],
                         "type": "string",
                       },
                       Object {
-                        "type": "number",
-                      },
-                      Object {
-                        "type": "boolean",
-                      },
-                      Object {
-                        "type": "null",
-                      },
-                    ],
-                  },
-                  "type": "array",
-                },
-                "parameters": Object {
-                  "items": Object {
-                    "additionalProperties": false,
-                    "properties": Object {
-                      "currentValue": Object {},
-                      "defaultValue": Object {},
-                      "description": Object {
-                        "type": "string",
-                      },
-                      "examples": Object {
                         "items": Object {
+                          "enum": Array [
+                            "object",
+                            "array",
+                            "string",
+                            "number",
+                            "boolean",
+                            "null",
+                            "integer",
+                            "any",
+                          ],
                           "type": "string",
                         },
                         "type": "array",
                       },
-                      "id": Object {
-                        "type": "string",
-                      },
-                      "name": Object {
-                        "type": "string",
-                      },
-                      "options": Object {
-                        "items": Object {
-                          "anyOf": Array [
-                            Object {
-                              "type": "string",
-                            },
-                            Object {
-                              "type": "number",
-                            },
-                            Object {
-                              "type": "boolean",
-                            },
-                            Object {
-                              "type": "null",
-                            },
-                          ],
-                        },
-                        "type": "array",
-                      },
-                      "parameters": Object {
-                        "items": Object {
-                          "additionalProperties": false,
-                          "properties": Object {
-                            "currentValue": Object {},
-                            "defaultValue": Object {},
-                            "description": Object {
-                              "type": "string",
-                            },
-                            "examples": Object {
-                              "items": Object {
-                                "type": "string",
-                              },
-                              "type": "array",
-                            },
-                            "id": Object {
-                              "type": "string",
-                            },
-                            "name": Object {
-                              "type": "string",
-                            },
-                            "options": Object {
-                              "items": Object {
-                                "anyOf": Array [
-                                  Object {
-                                    "type": "string",
-                                  },
-                                  Object {
-                                    "type": "number",
-                                  },
-                                  Object {
-                                    "type": "boolean",
-                                  },
-                                  Object {
-                                    "type": "null",
-                                  },
-                                ],
-                              },
-                              "type": "array",
-                            },
-                            "pattern": Object {
-                              "type": "string",
-                            },
-                            "required": Object {
-                              "type": "boolean",
-                            },
-                            "type": Object {
-                              "enum": Array [
-                                "string",
-                                "number",
-                                "boolean",
-                                "array",
-                                "object",
-                              ],
-                              "type": "string",
-                            },
-                          },
-                          "required": Array [
-                            "id",
-                            "type",
-                          ],
-                          "type": "object",
-                        },
-                        "type": "array",
-                      },
-                      "pattern": Object {
-                        "type": "string",
-                      },
-                      "required": Object {
-                        "type": "boolean",
-                      },
-                      "type": Object {
-                        "enum": Array [
-                          "string",
-                          "number",
-                          "boolean",
-                          "array",
-                          "object",
-                        ],
-                        "type": "string",
-                      },
-                    },
-                    "required": Array [
-                      "id",
-                      "type",
                     ],
-                    "type": "object",
                   },
-                  "type": "array",
                 },
-                "pattern": Object {
-                  "type": "string",
-                },
-                "required": Object {
-                  "type": "boolean",
-                },
-                "type": Object {
-                  "enum": Array [
-                    "string",
-                    "number",
-                    "boolean",
-                    "array",
-                    "object",
-                  ],
-                  "type": "string",
-                },
+                "type": "object",
               },
-              "required": Array [
-                "id",
-                "type",
-              ],
-              "type": "object",
-            },
-            "type": "array",
-          },
-          "pattern": Object {
-            "type": "string",
-          },
-          "required": Object {
-            "type": "boolean",
-          },
-          "type": Object {
-            "enum": Array [
-              "string",
-              "number",
-              "boolean",
-              "array",
-              "object",
+              Object {
+                "type": "boolean",
+              },
             ],
+          },
+          "propertyNames": Object {
             "type": "string",
           },
+          "type": "object",
         },
-        "required": Array [
-          "id",
-          "type",
-        ],
-        "type": "object",
+        "type": Object {
+          "anyOf": Array [
+            Object {
+              "enum": Array [
+                "object",
+                "array",
+                "string",
+                "number",
+                "boolean",
+                "null",
+                "integer",
+                "any",
+              ],
+              "type": "string",
+            },
+            Object {
+              "items": Object {
+                "enum": Array [
+                  "object",
+                  "array",
+                  "string",
+                  "number",
+                  "boolean",
+                  "null",
+                  "integer",
+                  "any",
+                ],
+                "type": "string",
+              },
+              "type": "array",
+            },
+          ],
+        },
       },
-      "type": "array",
+      "type": "object",
     },
     "prerequisites": Object {
       "items": Object {
@@ -542,7 +381,7 @@ Object {
   "additionalProperties": false,
   "properties": Object {
     "appPath": Object {
-      "description": "Path to the root folder of the Fiori application (where package.json and ui5.yaml reside). Path should be an absolute path.",
+      "description": "Path to the root folder of the Fiori application (where package.json and ui5.yaml reside) if one exists or to the current directory. Path should be an absolute path.",
       "type": "string",
     },
   },

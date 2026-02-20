@@ -23,8 +23,8 @@ describe('getTileSettingsPrompts', () => {
                     breadcrumb: true
                 },
                 choices: [
-                    { name: 'choices.replaceOriginalTile', value: tileActions.REPLACE },
-                    { name: 'choices.addNewTile', value: tileActions.ADD }
+                    { name: 'choices.addNewTile', value: tileActions.ADD },
+                    { name: 'choices.replaceOriginalTile', value: tileActions.REPLACE }
                 ],
                 store: false
             })

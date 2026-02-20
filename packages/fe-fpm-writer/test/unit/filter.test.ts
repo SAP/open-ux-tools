@@ -1,12 +1,13 @@
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { CustomFilter } from '../../src/filter/types';
 import { generateCustomFilter } from '../../src/filter';
 import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import { getEndOfLinesLength } from '../common';
+import { COPY_TEMPLATE_OPTIONS } from '../../src/common/file';
 
 describe('CustomFilter', () => {
     describe('generateCustomFilter', () => {
@@ -53,10 +54,12 @@ describe('CustomFilter', () => {
             fs.write(join(testDir, 'webapp/manifest.json'), testAppManifest);
         });
         test('New custom filter (no eventhandler)', async () => {
+            const copyTplSpy = jest.spyOn(fs, 'copyTpl');
             await generateCustomFilter(testDir, filter, fs);
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(getControllerPath(filter))).toBe(false);
             expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
+            expect(copyTplSpy.mock.calls[0][4]).toEqual(COPY_TEMPLATE_OPTIONS);
         });
 
         test('Create several new custom filters', async () => {

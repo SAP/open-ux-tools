@@ -11,7 +11,8 @@ import { EnablementValidatorResult } from './enablement-validator';
 import { getTextBundle } from '../../i18n';
 import { SimpleQuickActionDefinitionBase } from './simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator';
-import { PageDescriptorV2, PageDescriptorV4 } from '../controllers/AddSubpage.controller';
+import { PageDescriptorV2 } from '../controllers/AddSubpage.controller';
+import { PageDescriptorV4 } from '../controllers/types';
 
 export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-subpage';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
@@ -95,18 +96,18 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
 
         const metaModel = this.getODataMetaModel();
         if (!metaModel || !control) {
-            return Promise.resolve();
+            return;
         }
 
         const modifiedControl = getControlById<ObjectPageLayout>(control.controlId);
         if (!modifiedControl) {
-            return Promise.resolve();
+            return;
         }
 
         const component = Component.getOwnerComponentFor(modifiedControl);
         const entitySetName = await this.getEntitySetNameFromPageComponent(component, metaModel);
         if (!entitySetName) {
-            return Promise.resolve();
+            return;
         }
         this.entitySet = entitySetName;
 
@@ -117,8 +118,6 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
             await this.prepareNavigationData(metaModel);
         }
         this.control = modifiedControl;
-
-        return Promise.resolve();
     }
 
     async execute(): Promise<FlexCommand[]> {

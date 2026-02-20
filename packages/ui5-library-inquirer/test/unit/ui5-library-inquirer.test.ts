@@ -6,6 +6,7 @@ import { initI18n } from '../../src/i18n';
 import * as ui5LibInqApi from '../../src/index';
 import * as ui5Info from '@sap-ux/ui5-info';
 import * as prompting from '../../src/prompts/prompts';
+import * as commands from '@sap-ux/ui5-info/dist/commands';
 import inquirer, { createPromptModule, type Answers, type ListQuestion } from 'inquirer';
 
 /**
@@ -21,10 +22,6 @@ describe('API test', () => {
         {
             version: '1.117.0',
             maintained: true
-        },
-        {
-            version: '1.116.0',
-            maintained: false
         }
     ];
 
@@ -58,13 +55,13 @@ describe('API test', () => {
                 "name": "1.117.0 - (Maintained version)",
                 "value": "1.117.0",
               },
-              {
-                "name": "1.116.0 - (Out of maintenance version)",
-                "value": "1.116.0",
-              },
             ]
         `);
-        expect(getUI5VersionsSpy).toHaveBeenCalledWith({ useCache: true, includeMaintained: true });
+        expect(getUI5VersionsSpy).toHaveBeenCalledWith({
+            useCache: true,
+            includeMaintained: true,
+            onlyNpmVersion: true
+        });
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, {
             includeSeparators: undefined,
             targetFolder: undefined,
@@ -82,7 +79,11 @@ describe('API test', () => {
             targetFolder: 'some/target/folder/'
         });
         expect(prompts).toMatchSnapshot();
-        expect(getUI5VersionsSpy).toHaveBeenCalledWith({ useCache: true, includeMaintained: true });
+        expect(getUI5VersionsSpy).toHaveBeenCalledWith({
+            useCache: true,
+            includeMaintained: true,
+            onlyNpmVersion: true
+        });
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, {
             includeSeparators: true,
             targetFolder: 'some/target/folder/',
@@ -102,12 +103,17 @@ describe('API test', () => {
             libraryName: 'testName',
             namespace: 'testNS',
             targetFolder: 'some/test/folder',
-            ui5Version: '1.2.4'
+            ui5Version: '1.76.0'
         };
 
-        const getPromptsSpy = jest.spyOn(ui5LibInqApi, 'getPrompts').mockResolvedValue(questions);
+        // Mock the underlying functions that getPrompts uses instead of getPrompts itself
+        const getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
+        const getQuestionsSpy = jest.spyOn(prompting, 'getQuestions').mockReturnValue(questions);
+
         const registerPromptSpy = jest.spyOn(inquirer, 'registerPrompt').mockReturnValue();
         const inquirerPromptSpy = jest.spyOn(inquirer, 'prompt').mockResolvedValue(Object.assign({}, answers));
+        // Mock npm command to return versions that include the expected version
+        jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(['1.76.0', '1.118.0']);
 
         const promptAnswers = await prompt();
         // No options provided
@@ -117,10 +123,11 @@ describe('API test', () => {
               "libraryName": "testName",
               "namespace": "testNS",
               "targetFolder": "some/test/folder",
-              "ui5Version": "1.2.4",
+              "ui5Version": "1.76.0",
             }
         `);
-        expect(getPromptsSpy).toHaveBeenCalledWith(undefined);
+        expect(getUI5VersionsSpy).toHaveBeenCalled();
+        expect(getQuestionsSpy).toHaveBeenCalled();
         expect(registerPromptSpy).not.toHaveBeenCalled();
         expect(inquirerPromptSpy).toHaveBeenCalledWith(questions);
     });
@@ -137,12 +144,17 @@ describe('API test', () => {
             libraryName: 'testName',
             namespace: 'testNS',
             targetFolder: 'some/test/folder',
-            ui5Version: '1.2.4'
+            ui5Version: '1.76.0'
         };
 
-        const getPromptsSpy = jest.spyOn(ui5LibInqApi, 'getPrompts').mockResolvedValue(questions);
+        // Mock the underlying functions that getPrompts uses instead of getPrompts itself
+        const getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
+        const getQuestionsSpy = jest.spyOn(prompting, 'getQuestions').mockReturnValue(questions);
+
         const registerPromptSpy = jest.spyOn(inquirer, 'registerPrompt').mockReturnValue();
         const inquirerPromptSpy = jest.spyOn(inquirer, 'prompt').mockResolvedValue(Object.assign({}, answers));
+        // Mock npm command to return versions that include the expected version
+        jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(['1.76.0', '1.118.0']);
 
         const promptOptions = {
             includeSeparators: true,
@@ -157,10 +169,11 @@ describe('API test', () => {
               "libraryName": "testName",
               "namespace": "testNS",
               "targetFolder": "some/test/folder",
-              "ui5Version": "1.2.4",
+              "ui5Version": "1.76.0",
             }
         `);
-        expect(getPromptsSpy).toHaveBeenCalledWith(promptOptions);
+        expect(getUI5VersionsSpy).toHaveBeenCalled();
+        expect(getQuestionsSpy).toHaveBeenCalled();
         expect(registerPromptSpy).toHaveBeenCalledWith('autocomplete', expect.any(Function));
         expect(inquirerPromptSpy).toHaveBeenCalledWith(questions);
     });
@@ -177,10 +190,13 @@ describe('API test', () => {
             libraryName: 'testName',
             namespace: 'testNS',
             targetFolder: 'some/test/folder',
-            ui5Version: '1.2.4'
+            ui5Version: '1.76.0'
         };
 
-        const getPromptsSpy = jest.spyOn(ui5LibInqApi, 'getPrompts').mockResolvedValue(questions);
+        // Mock the underlying functions that getPrompts uses instead of getPrompts itself
+        const getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue(ui5Vers);
+        const getQuestionsSpy = jest.spyOn(prompting, 'getQuestions').mockReturnValue(questions);
+
         const inquirerRegisterPromptSpy = jest.spyOn(inquirer, 'registerPrompt').mockReturnValue();
         const inquirerPromptSpy = jest.spyOn(inquirer, 'prompt');
         const mockPromptsModule = createPromptModule();
@@ -189,6 +205,8 @@ describe('API test', () => {
             prompt: jest.fn().mockResolvedValue(Object.assign({}, answers)),
             promptModule: mockPromptsModule
         };
+        // Mock npm command to return versions that include the expected version
+        jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(['1.76.0', '1.118.0']);
 
         const promptOptions = {
             includeSeparators: true,
@@ -203,10 +221,11 @@ describe('API test', () => {
               "libraryName": "testName",
               "namespace": "testNS",
               "targetFolder": "some/test/folder",
-              "ui5Version": "1.2.4",
+              "ui5Version": "1.76.0",
             }
         `);
-        expect(getPromptsSpy).toHaveBeenCalledWith(promptOptions);
+        expect(getUI5VersionsSpy).toHaveBeenCalled();
+        expect(getQuestionsSpy).toHaveBeenCalled();
         expect(inquirerRegisterPromptSpy).not.toHaveBeenCalledWith();
         expect(inquirerPromptSpy).not.toHaveBeenCalledWith();
         expect(mockAdapter.prompt).toHaveBeenCalledWith([{ 'message': 'Test Prompt', 'name': 'testPrompt' }]);

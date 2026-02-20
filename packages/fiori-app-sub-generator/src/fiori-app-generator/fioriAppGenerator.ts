@@ -23,7 +23,7 @@ import { DatasourceType, getEntityRelatedPrompts } from '@sap-ux/odata-service-i
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
 import { getUI5Versions, latestVersionString, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import Generator from 'yeoman-generator';
 import type { FioriStep, Service, State, YeomanUiStepConfig } from '../types';
@@ -306,7 +306,7 @@ export class FioriAppGenerator extends Generator {
                         t('steps.deployConfig.title')
                     );
                 }
-                addDeployGen(
+                await addDeployGen(
                     {
                         service: this.state.service,
                         projectName: this.state.project.name,
@@ -334,7 +334,7 @@ export class FioriAppGenerator extends Generator {
                         t('steps.flpConfig.title')
                     );
                 }
-                addFlpGen(
+                await addFlpGen(
                     {
                         projectName: this.state.project.name,
                         targetFolder: this.state.project.targetFolder,
@@ -409,9 +409,9 @@ export class FioriAppGenerator extends Generator {
                 AppGenBusinessHubType: getTelemetryBusinessHubType(service.apiHubConfig?.apiHubType),
                 EnableEslint: project.enableEslint,
                 EnableTypeScript: project.enableTypeScript,
-                EnableCodeAssist: project.enableCodeAssist,
                 EnableVirtualEndpoints: project.enableVirtualEndpoints,
-                ToolsId: appConfig.app.sourceTemplate?.toolsId
+                ToolsId: appConfig.app.sourceTemplate?.toolsId,
+                ValueHelpCount: service.valueListMetadata?.length ?? 0
             });
 
             if (service.apiHubConfig && isAppStudio()) {
@@ -440,7 +440,6 @@ export class FioriAppGenerator extends Generator {
                 {
                     appPackagePath: this.destinationPath(),
                     capService: this.state.service.capService,
-                    enableCodeAssist: this.state.project?.enableCodeAssist ?? false,
                     // Assumption that npm workspaces will be enabled if cds ui5 plugin is a depenedency
                     useNpmWorkspaces: !!(
                         this.state.project.enableTypeScript || // If typescript is enabled, it is required that the CAP project will be updated to use NPM workspaces

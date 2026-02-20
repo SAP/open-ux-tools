@@ -1,4 +1,4 @@
-import type { integer } from '../../../text-document-utils/src';
+import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types';
 
 /**
  * Building block type.
@@ -8,10 +8,14 @@ import type { integer } from '../../../text-document-utils/src';
 export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
+    CustomFilterField = 'custom-filter-field',
     Field = 'field',
+    Form = 'form',
     Page = 'page',
     Table = 'table',
-    RichTextEditor = 'rich-text-editor'
+    CustomColumn = 'custom-column',
+    RichTextEditor = 'rich-text-editor',
+    RichTextEditorButtonGroups = 'rich-text-editor-button-groups'
 }
 
 /**
@@ -23,6 +27,11 @@ export enum BuildingBlockType {
 export type BindingContextType = 'absolute' | 'relative';
 export const bindingContextAbsolute: BindingContextType = 'absolute';
 export const bindingContextRelative: BindingContextType = 'relative';
+
+export type TemplateConfig = {
+    hasAggregation?: boolean;
+    aggregationNamespace: string;
+};
 
 /**
  * Represents a building block metaPath object.
@@ -91,38 +100,6 @@ export interface Chart extends BuildingBlock {
      * whether data is selected or deselected.
      */
     selectionChange?: string;
-}
-
-/**
- * Represents a custom filter to be used inside the FilterBar.
- * The template for the FilterField has to be provided as the default aggregation.
- */
-export interface FilterField {
-    /**
-     * Reference to the key of another filter already displayed in the table to properly place this one.
-     */
-    anchor: string;
-    /**
-     * The property name of the FilterField.
-     */
-    key: string;
-    /**
-     * The text that will be displayed for this FilterField.
-     */
-    label: string;
-    /**
-     * If set the search will be automatically triggered, when a filter value was changed.
-     */
-    liveMode: boolean;
-    /**
-     * Defines where this filter should be placed relative to the defined anchor.
-     * Allowed values are `Before` and `After`.
-     */
-    placement: 'Before' | 'After';
-    /**
-     * Parameter which sets the visibility of the FilterBar building block.
-     */
-    visible: boolean;
 }
 
 /**
@@ -412,6 +389,60 @@ export interface Page extends BuildingBlock {
 }
 
 /**
+ * Represents a custom filter to be used inside the FilterBar.
+ * The template for the FilterField has to be provided as the default aggregation.
+ *
+ * @see https://sapui5.hana.ondemand.com/#/api/sap.fe.macros.filterBar.FilterField
+ * @example
+ * <macros:filterFields>
+ *    <macros:FilterField key="TotalPrice" label="Total Price" anchor="SomeOtherFilter" placement="After">
+ *       <core:Fragment fragmentName="sap.fe.core.fpmExplorer.filterBarCustom.CustomRangeFilter" type="XML" />
+ *    </macros:FilterField>
+ * </macros:filterFields>
+ * @extends {BuildingBlock}
+ */
+export interface CustomFilterField extends BuildingBlock {
+    /**
+     * Reference to the key of another filter already displayed in the table to properly place this one.
+     */
+    anchor: string;
+    /**
+     * The property name of the FilterField.
+     */
+    filterFieldKey?: string;
+    /**
+     * The text that will be displayed for this FilterField.
+     */
+    label: string;
+    /**
+     * Position of a custom filter relative to an anchor element.
+     */
+    position?: Position;
+    /**
+     * The property used to filter by.
+     */
+    property: string;
+    /**
+     * If set to true, the filter will be marked as required in the UI.
+     */
+    required: boolean;
+    /**
+     * The fragment that contains the template for the custom filter.
+     */
+    embededFragment?: EmbededFragment;
+}
+
+export interface CustomColumn extends BuildingBlock {
+    title: string;
+    width?: string;
+    columnKey?: string;
+    position?: Position;
+    embededFragment?: EmbededFragment;
+}
+
+export type EmbededFragment = EventHandler & CustomFragment & CustomElement & FragmentContentData;
+
+/**
  * Building block used to create a rich text editor based on the metadata provided by OData V4.
  * MetaPath construction example: metaPath="/EntitySet/targetProperty"
  *
@@ -429,34 +460,73 @@ export interface RichTextEditor extends BuildingBlock {
      */
     targetProperty?: string;
     /**
-     * Button group configuration for the Rich Text Editor.
+     * Button groups to include in the editor toolbar.
      */
-    buttonGroup?: {
-        /**
-         * The name of the button group.
-         */
-        name: string;
-        /**
-         * The buttons to be displayed in the group.
-         */
-        buttons: string;
-        /**
-         * Whether the group is visible.
-         */
-        visible: boolean;
-        /**
-         * The priority of the group.
-         */
-        priority: integer;
-        /**
-         * The priority of the group in the custom toolbar.
-         */
-        customToolbarPriority?: integer;
-        /**
-         * Row number in which the button group should be.
-         */
-        row?: integer;
-    };
+    buttonGroups?: ButtonGroupConfig[];
+}
+/**
+ * Configuration for a button group in the rich text editor.
+ */
+export interface ButtonGroupConfig {
+    /**
+     * Unique identifier for the button group (e.g., 'font-style', 'clipboard', 'undo').
+     */
+    readonly name: string;
+
+    /**
+     * Comma-separated list of buttons to include in this group.
+     *
+     * @example "bold,italic,underline" or "cut,copy,paste"
+     */
+    buttons: string;
+
+    /**
+     * Display priority for ordering button groups (higher = more prominent position).
+     *
+     * @default 10
+     */
+    priority?: number;
+
+    /**
+     * Whether this button group is visible in the editor toolbar.
+     *
+     * @default true
+     */
+    visible?: boolean;
+    /**
+     * Custom toolbar priority to override default positioning.
+     */
+    customToolbarPriority?: number;
+    /**
+     * Row number in the toolbar where this button group should appear.
+     */
+    row?: number;
+    /**
+     * Optional ID for the button group.
+     */
+    id?: string;
+}
+
+/**
+ * Building block for configuring Rich Text Editor button groups.
+ *
+ * @example
+ * {
+ *   buildingBlockType: BuildingBlockType.RichTextEditorButtonGroups,
+ *   id: "rteButtonGroups1",
+ *   buttonGroups: [
+ *     { name: "font-style", buttons: "bold,italic,underline", priority: 10 },
+ *     { name: "clipboard", visible: false, buttons: "cut,copy,paste" },
+ *     { name: "undo", priority: 20, buttons: "undo,redo" }
+ *   ]
+ * }
+ * @extends {BuildingBlock}
+ */
+export interface RichTextEditorButtonGroups extends BuildingBlock {
+    /**
+     * Button groups to include in the editor toolbar.
+     */
+    buttonGroups: ButtonGroupConfig[];
 }
 
 /**
@@ -491,4 +561,36 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
      * If false or undefined, the page building block will be appended.
      */
     replace?: boolean;
+}
+
+/**
+ * Represents a custom filter to be used inside the FilterBar.
+ * The template for the FilterField has to be provided as the default aggregation.
+ */
+export interface FilterField {
+    /**
+     * Reference to the key of another filter already displayed in the table to properly place this one.
+     */
+    anchor: string;
+    /**
+     * The property name of the FilterField.
+     */
+    key: string;
+    /**
+     * The text that will be displayed for this FilterField.
+     */
+    label: string;
+    /**
+     * If set the search will be automatically triggered, when a filter value was changed.
+     */
+    liveMode: boolean;
+    /**
+     * Defines where this filter should be placed relative to the defined anchor.
+     * Allowed values are `Before` and `After`.
+     */
+    placement: 'Before' | 'After';
+    /**
+     * Parameter which sets the visibility of the FilterBar building block.
+     */
+    visible: boolean;
 }

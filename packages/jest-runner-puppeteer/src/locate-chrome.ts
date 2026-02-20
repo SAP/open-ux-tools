@@ -1,6 +1,6 @@
-import { homedir } from 'os';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import which from 'which';
 
 /**

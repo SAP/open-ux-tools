@@ -124,7 +124,7 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
         if (extLogger) {
             LogWrapper._logLevel = vscode
                 ? vscode.workspace.getConfiguration().get(LOGGING_LEVEL_CONFIG_PROP)
-                : logLevel ?? 'info';
+                : (logLevel ?? 'info');
             LogWrapper._vscodeLogger = extLogger.getChildLogger({ label: logName });
         } else {
             if (!LogWrapper._yoLogger) {
@@ -132,7 +132,7 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
             }
             LogWrapper._logLevel = logLevel === 'off' || !logLevel ? 'info' : logLevel;
         }
-        LogWrapper._vscodeLogger?.debug(t('debug.loggingConfigured', { logLevel: LogWrapper._logLevel }));
+        LogWrapper._vscodeLogger?.debug(t('logMessages.debug.loggingConfigured', { logLevel: LogWrapper._logLevel }));
     }
 
     static readonly logAtLevel = (level: LogLevel, message: string | object, ...args: any[]) => {
@@ -156,7 +156,7 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
                 );
             }
         } else {
-            DefaultLogger.error(t('error.logWrapperNotInitialised'));
+            DefaultLogger.error(t('logMessages.error.logWrapperNotInitialised'));
         }
     };
 

@@ -1,5 +1,5 @@
-import { promises } from 'fs';
-import { join } from 'path';
+import { promises } from 'node:fs';
+import { join } from 'node:path';
 import type { Diagnostic, Element } from '@sap-ux/odata-annotation-core';
 import type { AnnotationGroup, Annotation } from '@sap-ux/cds-annotation-parser';
 import { deserialize } from './deserialize-ast';

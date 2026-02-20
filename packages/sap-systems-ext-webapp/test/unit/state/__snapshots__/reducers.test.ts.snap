@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Test the reducer Action CREATE_NEW_SYSTEM 1`] = `
+Object {
+  "addNewSapSystem": true,
+  "systemInfo": Object {
+    "client": "",
+    "name": "",
+    "password": "",
+    "url": "",
+    "username": "",
+  },
+}
+`;
+
+exports[`Test the reducer Action SYSTEM_INFO_ERROR 1`] = `
+Object {
+  "loadingState": "error",
+  "systemInfo": Object {
+    "client": "",
+    "name": "",
+    "password": "",
+    "url": "",
+    "username": "",
+  },
+}
+`;
+
+exports[`Test the reducer Action SYSTEM_INFO_LOADING 1`] = `
+Object {
+  "loadingState": "loading",
+  "systemInfo": Object {
+    "client": "",
+    "name": "",
+    "password": "",
+    "url": "",
+    "username": "",
+  },
+}
+`;
+
+exports[`Test the reducer Action TEST_CONNECTION_LOADING 1`] = `
+Object {
+  "systemInfo": Object {
+    "client": "",
+    "name": "",
+    "password": "",
+    "url": "",
+    "username": "",
+  },
+  "testConnectionLoadingState": "loading",
+}
+`;
+
+exports[`Test the reducer Action TEST_CONNECTION_STATUS 1`] = `
+Object {
+  "connectionStatus": Object {
+    "connected": true,
+    "message": "",
+  },
+  "guidedAnswerLink": undefined,
+  "systemInfo": Object {
+    "client": "",
+    "name": "",
+    "password": "",
+    "url": "",
+    "username": "",
+  },
+  "testConnectionLoadingState": "idle",
+}
+`;
+
+exports[`Test the reducer Action UPDATE_SYSTEM_STATUS 1`] = `
+Object {
+  "systemInfo": Object {
+    "client": "",
+    "name": "",
+    "password": "",
+    "url": "",
+    "username": "",
+  },
+  "updateSystemStatus": Object {
+    "message": "Update successful",
+    "updateSuccess": true,
+  },
+}
+`;
+
+exports[`Test the reducer Action UPDATE_SYSTEM_STATUS 2`] = `
+Object {
+  "systemInfo": Object {
+    "client": "",
+    "name": "",
+    "password": "",
+    "url": "",
+    "username": "",
+  },
+  "updateSystemStatus": Object {
+    "message": "",
+    "updateSuccess": true,
+  },
+}
+`;

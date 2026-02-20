@@ -5,7 +5,7 @@ import { getUI5Versions } from '@sap-ux/ui5-info';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Manifest } from '@sap-ux/project-access';
 import { readManifest } from '../../src/utils/file-helpers';
-import { join } from 'path';
+import { join } from 'node:path';
 import { FileName, DirName } from '@sap-ux/project-access';
 import RepoAppDownloadLogger from '../../src/utils/logger';
 import { fioriAppSourcetemplateId } from '../../src/utils/constants';

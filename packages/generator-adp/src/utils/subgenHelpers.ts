@@ -1,5 +1,5 @@
 import type Generator from 'yeoman-generator';
-import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
@@ -7,6 +7,7 @@ import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoin
 
 import { t } from './i18n';
 import { getExtensionProjectData } from '../app/extension-project';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 /**
  * Parameters required for composing the extension project generator.
  */
@@ -24,6 +25,7 @@ interface FlpGenProps {
     projectRootPath: string;
     inbounds?: ManifestNamespace.Inbound;
     layer: FlexLayer;
+    prompts: Prompts;
 }
 
 /**
@@ -34,6 +36,7 @@ interface DeployGenOptions {
     projectPath: string;
     connectedSystem: string;
     system?: Endpoint;
+    projectType?: AdaptationProjectType;
 }
 
 /**
@@ -56,21 +59,22 @@ const PACKAGE_ADDITIONAL_VALIDATION = {
  * @param {ToolsLogger} logger - Logger instance for tracking operations and errors.
  * @param {AppWizard} appWizard - AppWizard instance for interacting with the UI (optional).
  */
-export function addFlpGen(
-    { projectRootPath, vscode, inbounds, layer }: FlpGenProps,
+export async function addFlpGen(
+    { projectRootPath, vscode, inbounds, layer, prompts }: FlpGenProps,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
-): void {
+): Promise<void> {
     try {
         /**
          * We are using this namespace for now because '@sap/fiori:adp-flp-config' is not yet bundled in '@sap/generator-fiori'.
          */
-        composeWith('@sap/fiori:adp-flp-config', {
+        await composeWith('@sap/fiori:adp-flp-config', {
             launchAsSubGen: true,
             vscode,
             inbounds,
             layer,
+            prompts,
             data: { projectRootPath },
             appWizard
         });
@@ -94,16 +98,17 @@ export function addFlpGen(
  * @param {ToolsLogger} logger - Logger for info and error output
  * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
  */
-export function addDeployGen(
-    { projectName, projectPath, connectedSystem, system }: DeployGenOptions,
+export async function addDeployGen(
+    { projectName, projectPath, connectedSystem, system, projectType }: DeployGenOptions,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
-): void {
+): Promise<void> {
     try {
+        const hideIfOnPremise = projectType === AdaptationProjectType.ON_PREMISE;
         const subGenPromptOptions = {
-            ui5AbapRepo: { hideIfOnPremise: true },
-            transportInputChoice: { hideIfOnPremise: true },
+            ui5AbapRepo: { hideIfOnPremise },
+            transportInputChoice: { hideIfOnPremise },
             overwriteAbapConfig: { hide: true },
             packageAutocomplete: {
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
@@ -111,13 +116,14 @@ export function addDeployGen(
             packageManual: {
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
             },
-            targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+            adpProjectType: projectType
         };
 
         const generatorOptions = {
             launchDeployConfigAsSubGenerator: true,
             projectName,
             projectPath,
+            adpProjectType: projectType,
             telemetryData: { appType: 'Fiori Adaptation' },
             appWizard,
             logWrapper: logger,
@@ -129,7 +135,7 @@ export function addDeployGen(
             ...(system?.Url && { appGenServiceHost: system.Url })
         };
 
-        composeWith('@sap/fiori:deploy-config', generatorOptions);
+        await composeWith('@sap/fiori:deploy-config', generatorOptions);
         logger.info(`'@sap/fiori:deploy-config' was called.`);
     } catch (e) {
         logger.error(e);
@@ -157,7 +163,7 @@ export async function addExtProjectGen(
     try {
         const data = await getExtensionProjectData(configAnswers, attributeAnswers, systemLookup);
 
-        composeWith('@bas-dev/extensibility-sub', {
+        await composeWith('@bas-dev/extensibility-sub', {
             arguments: [JSON.stringify(data)],
             appWizard
         });

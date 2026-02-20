@@ -1,6 +1,6 @@
 import { getQuestions } from '../../../src/prompts';
 import { t } from '../../../src/i18n';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Separator } from 'inquirer';
 import * as projectInputValidators from '@sap-ux/project-input-validator';
 import type { UI5VersionChoice } from '@sap-ux/inquirer-common';

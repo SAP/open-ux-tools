@@ -2,7 +2,7 @@ import { serveStaticMiddleware } from '../../src';
 import type { ServeStaticConfig } from '../../src';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import * as expressServeStatic from 'serve-static';
-import { relative, join } from 'path';
+import { relative, join } from 'node:path';
 
 jest.mock('serve-static', () => ({
     __esModule: true,

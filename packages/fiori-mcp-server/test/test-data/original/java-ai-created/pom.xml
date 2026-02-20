@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>customer</groupId>
+	<artifactId>java-ai-created-parent</artifactId>
+	<version>${revision}</version>
+	<packaging>pom</packaging>
+
+	<name>java-ai-created parent</name>
+
+	<properties>
+		<!-- OUR VERSION -->
+		<revision>1.0.0-SNAPSHOT</revision>
+
+		<!-- DEPENDENCIES VERSION -->
+		<jdk.version>21</jdk.version>
+		<cds.services.version>4.4.1</cds.services.version>
+		<spring.boot.version>3.5.6</spring.boot.version>
+
+		<cds.install-node.downloadUrl>https://nodejs.org/dist/</cds.install-node.downloadUrl>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<modules>
+		<module>srv</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- CDS SERVICES -->
+			<dependency>
+				<groupId>com.sap.cds</groupId>
+				<artifactId>cds-services-bom</artifactId>
+				<version>${cds.services.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- SPRING BOOT -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring.boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- MAKE CDS PLUGIN RUNNABLE FROM ROOT -->
+				<plugin>
+					<groupId>com.sap.cds</groupId>
+					<artifactId>cds-maven-plugin</artifactId>
+					<version>${cds.services.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<!-- JAVA VERSION -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.14.1</version>
+				<configuration>
+					<release>${jdk.version}</release>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- MAKE SPRING BOOT PLUGIN RUNNABLE FROM ROOT -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.boot.version}</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+			<!-- SUREFIRE VERSION -->
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.5.4</version>
+			</plugin>
+
+			<!-- POM FLATTENING FOR CI FRIENDLY VERSIONS -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.7.3</version>
+				<configuration>
+					<updatePomFile>true</updatePomFile>
+					<flattenMode>resolveCiFriendliesOnly</flattenMode>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- PROJECT STRUCTURE CHECKS -->
+			<plugin>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.6.2</version>
+				<executions>
+					<execution>
+						<id>Project Structure Checks</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.6.3</version>
+								</requireMavenVersion>
+								<requireJavaVersion>
+									<version>${jdk.version}</version>
+								</requireJavaVersion>
+								<reactorModuleConvergence />
+							</rules>
+							<fail>true</fail>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -15,8 +15,13 @@ import type {
     CloudApp,
     InternalInboundNavigation,
     CloudCustomTaskConfig,
-    CloudCustomTaskConfigTarget
+    CloudCustomTaskConfigTarget,
+    CfAdpWriterConfig,
+    CustomConfig
 } from '../types';
+import { UI5_CDN_URL } from '../base/constants';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { SupportedProject } from '../source';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -60,7 +65,7 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
         ]);
     }
 
-    if (config.customConfig?.adp?.environment === 'C') {
+    if (config.customConfig?.adp?.projectType === AdaptationProjectType.CLOUD_READY) {
         const tasks = getAdpCloudCustomTasks(config);
         ui5Config.addCustomTasks(tasks);
     }
@@ -70,10 +75,10 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
  * Generate custom configuration required for the ui5.yaml.
  *
  * @param ui5Config configuration representing the ui5.yaml
- * @param config full project configuration
+ * @param customConfig custom configuration
  */
-export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config: AdpWriterConfig) {
-    const adp = config.customConfig?.adp;
+export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, customConfig?: CustomConfig): void {
+    const adp = customConfig?.adp;
     if (adp) {
         const { support } = adp;
         ui5Config.addCustomConfiguration('adp', { support });
@@ -238,10 +243,16 @@ function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }
             url: config.target?.url ?? VSCODE_URL
         };
     } else {
+        const customConfig = config.customConfig?.adp;
+        const isCloudProjectInPrivateCloudSystem =
+            customConfig?.projectType === AdaptationProjectType.CLOUD_READY &&
+            customConfig.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM;
+        const client = isCloudProjectInPrivateCloudSystem ? config.target.client : undefined;
         target = {
             url: config.target.url ?? VSCODE_URL,
             authenticationType: config.target.authenticationType,
-            ignoreCertErrors: false
+            ignoreCertErrors: false,
+            client
         };
     }
 
@@ -294,21 +305,9 @@ function getInboundChangeContentWithNewInboundID(
     };
 
     if (flpConfiguration.subTitle) {
-        content.inbound[
-            flpConfiguration.inboundId
-        ].subTitle = `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
+        content.inbound[flpConfiguration.inboundId].subTitle =
+            `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
     }
-
-    content.inbound[flpConfiguration.inboundId].signature.parameters['sap-appvar-id'] = {
-        required: true,
-        filter: {
-            value: appId,
-            format: 'plain'
-        },
-        launcherValue: {
-            value: appId
-        }
-    };
 
     return content;
 }
@@ -316,17 +315,18 @@ function getInboundChangeContentWithNewInboundID(
 /**
  * Generate Inbound change content required for manifest.appdescriptor.
  *
- * @param flpConfiguration FLP cloud project configuration
+ * @param flpConfigurations FLP cloud project configuration
  * @param appId Application variant id
  * @param manifestChangeContent Application variant change content
  */
 export function enhanceManifestChangeContentWithFlpConfig(
-    flpConfiguration: InternalInboundNavigation,
+    flpConfigurations: InternalInboundNavigation[],
     appId: string,
     manifestChangeContent: Content[] = []
 ): void {
-    const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfiguration, appId);
-    if (inboundChangeContent) {
+    for (const [index, flpConfig] of flpConfigurations.entries()) {
+        const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
+
         const addInboundChange = {
             changeType: 'appdescr_app_addNewInbound',
             content: inboundChangeContent,
@@ -334,15 +334,93 @@ export function enhanceManifestChangeContentWithFlpConfig(
                 'i18n': 'i18n/i18n.properties'
             }
         };
-        const removeOtherInboundsChange = {
-            changeType: 'appdescr_app_removeAllInboundsExceptOne',
-            content: {
-                'inboundId': flpConfiguration.inboundId
-            },
-            texts: {}
-        };
-
         manifestChangeContent.push(addInboundChange);
-        manifestChangeContent.push(removeOtherInboundsChange);
+
+        // Remove all inbounds except one should be only after the first inbound is added
+        // This is implemented this way to avoid issues with the merged on ABAP side
+        if (index === 0) {
+            const removeOtherInboundsChange = {
+                changeType: 'appdescr_app_removeAllInboundsExceptOne',
+                content: {
+                    'inboundId': flpConfig.inboundId
+                },
+                texts: {}
+            };
+
+            manifestChangeContent.push(removeOtherInboundsChange);
+        }
     }
+}
+
+/**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ * @param {CfAdpWriterConfig} config - Full project configuration.
+ */
+export function enhanceUI5YamlWithCfCustomTask(ui5Config: UI5Config, config: CfAdpWriterConfig): void {
+    const { baseApp, cf, project } = config;
+    ui5Config.addCustomTasks([
+        {
+            name: 'app-variant-bundler-build',
+            beforeTask: 'escapeNonAsciiCharacters',
+            configuration: {
+                module: project.name,
+                appHostId: baseApp.appHostId,
+                appName: baseApp.appName,
+                appVersion: baseApp.appVersion,
+                html5RepoRuntime: cf.html5RepoRuntimeGuid,
+                org: cf.org.GUID,
+                space: cf.space.GUID,
+                sapCloudService: cf.businessSolutionName ?? '',
+                serviceInstanceName: cf.businessService,
+                serviceInstanceGuid: cf.serviceInstanceGuid
+            }
+        }
+    ]);
+}
+
+/**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ * @param {CfAdpWriterConfig} config - Full project configuration.
+ */
+/**
+ * Generate custom middleware configuration (fiori-tools-proxy and fiori-tools-preview only).
+ *
+ * @param {UI5Config} ui5Config - Configuration representing the ui5.yaml.
+ */
+export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): void {
+    const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
+        url: UI5_CDN_URL
+    };
+
+    // Add fiori-tools-appreload for live reload during development
+    ui5Config.addFioriToolsAppReloadMiddleware();
+
+    // Add fiori-tools-preview (for local preview)
+    ui5Config.addCustomMiddleware([
+        {
+            name: 'fiori-tools-preview',
+            afterMiddleware: 'fiori-tools-appreload',
+            configuration: {
+                flp: {
+                    theme: 'sap_horizon'
+                },
+                adp: {
+                    cfBuildPath: 'dist'
+                }
+            }
+        }
+    ]);
+
+    // Add fiori-tools-proxy (for UI5 resources)
+    ui5Config.addFioriToolsProxyMiddleware(
+        {
+            ui5: ui5ConfigOptions,
+            backend: []
+        },
+        'fiori-tools-preview'
+    );
 }

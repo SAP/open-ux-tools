@@ -1,7 +1,7 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { AxiosRequestConfig, BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
-import { readFileSync } from 'fs';
-import { dirname, isAbsolute, join } from 'path';
+import { readFileSync } from 'node:fs';
+import { dirname, isAbsolute, join } from 'node:path';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
 import { NAME } from '../types';
 

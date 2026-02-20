@@ -1,5 +1,5 @@
 import FlexChange from 'sap/ui/fl/Change';
-import { getControlById } from '../../utils/core';
+import { getControlBySelector, findViewByControl } from '../../utils/core';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
@@ -7,33 +7,50 @@ import {
     TREE_TABLE_TYPE
 } from '../../adp/quick-actions/control-types';
 import Element from 'sap/ui/core/Element';
+import type Component from 'sap/ui/core/Component';
+import type Selector from 'sap/ui/fl/Selector';
 
 export type AddXMLAdditionalInfo = {
     templateName?: string;
     targetAggregation?: string;
     controlType?: string;
+    viewName?: string;
 };
 
 export type AddXMLChangeContent = {
     targetAggregation?: string;
 };
 
-export function getAddXMLAdditionalInfo(change: FlexChange<AddXMLChangeContent>): AddXMLAdditionalInfo | undefined {
-    const selectorId = change.getSelector()?.id ?? '';
+export function getAddXMLAdditionalInfo(
+    change: FlexChange<AddXMLChangeContent>,
+    appComponent?: Component
+): AddXMLAdditionalInfo | undefined {
+    const selector = change.getSelector();
     const targetAggregation = change.getContent()?.targetAggregation ?? '';
-    const controlType = getControlById(selectorId)?.getMetadata().getName() ?? '';
-    const templateName = getFragmentTemplateName(selectorId, targetAggregation);
+    const targetControl = getControlBySelector(selector, appComponent);
+    const controlType = targetControl?.getMetadata().getName() ?? '';
+    const templateName = getFragmentTemplateName(selector, targetAggregation, appComponent);
+    const viewName = targetControl ? (findViewByControl(targetControl)?.getViewName() ?? '') : '';
+
+    const result: AddXMLAdditionalInfo = {};
     if (templateName) {
-        return { templateName };
+        result.templateName = templateName;
     }
-    if (controlType && targetAggregation) {
-        return { targetAggregation, controlType };
+    if (controlType && targetAggregation && viewName) {
+        result.targetAggregation = targetAggregation;
+        result.controlType = controlType;
+        result.viewName = viewName;
     }
-    return undefined;
+    
+    return Object.keys(result).length > 0 ? result : undefined;
 }
 
-export function getFragmentTemplateName(selectorId: string, targetAggregation: string): string {
-    const control = getControlById(selectorId);
+export function getFragmentTemplateName(
+    selector: Selector | undefined,
+    targetAggregation: string,
+    appComponent?: Component
+): string {
+    const control = getControlBySelector(selector, appComponent);
 
     if (!control) {
         return '';

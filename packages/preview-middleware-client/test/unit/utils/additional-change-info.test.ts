@@ -35,7 +35,7 @@ describe('additional-change-info.ts', () => {
 
             setAdditionalChangeInfo(mockChange);
 
-            expect(getAddXMLAdditionalInfoSpy).toHaveBeenCalledWith(mockChange);
+            expect(getAddXMLAdditionalInfoSpy).toHaveBeenCalledWith(mockChange, undefined);
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
             expect(result).toEqual(mockAdditionalInfo);
         });
@@ -79,7 +79,7 @@ describe('additional-change-info.ts', () => {
             expect(getAddXMLAdditionalInfoSpy).toHaveBeenCalledTimes(2);
 
             const result = getAdditionalChangeInfo(mockChange as unknown as Change);
-            expect(result).toEqual({ templateName: 'template' });
+            expect(result).toEqual({ controlType: 'test', templateName: 'template' });
         });
     });
 

@@ -40,6 +40,7 @@ import {
 import type { Package } from '@sap-ux/project-access';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**
  * Get the writer template type from the Fiori App floorplan.
@@ -220,7 +221,8 @@ export async function transformState<T>(
                 project.skipAnnotations !== true
                     ? await getAnnotations(project.name, service.annotations?.[0], service?.capService)
                     : undefined,
-            ignoreCertError: service.ignoreCertError
+            ignoreCertError: service.ignoreCertError,
+            externalServices: service.valueListMetadata
         };
 
         const destinationName = service.destinationName ?? service.connectedSystem?.destination?.Name;
@@ -231,27 +233,41 @@ export async function transformState<T>(
         }
 
         if (service.capService) {
+            const disableCapRootPkgJsonUpdates = isFeatureEnabled(
+                'sap.ux.testBetaFeatures.disableCapRootPkgJsonUpdates'
+            );
+
             const { cdsUi5PluginInfo, ...capServiceInfo } = service.capService;
             appConfig.service.capService = {
                 ...capServiceInfo,
                 cdsUi5PluginInfo
             } as CapServiceCdsInfo;
+            // If enable cds-ui5-plugin is true (default) then
+            // set isWorkspaceEnabled && hasCdsUi5Plugin to true to ensure that npm install uses correct path for CAP.
+            if (appConfig.appOptions?.addCdsUi5Plugin === true) {
+                appConfig.service.capService.cdsUi5PluginInfo = appConfig.service.capService.cdsUi5PluginInfo ?? {};
+                appConfig.service.capService.cdsUi5PluginInfo.isWorkspaceEnabled = true;
+                appConfig.service.capService.cdsUi5PluginInfo.hasCdsUi5Plugin = true;
+            }
+            appConfig.appOptions = {
+                ...appConfig.appOptions,
+                disableCapRootPkgJsonUpdates
+            };
         }
 
         if (
             service.destinationAuthType === DestinationAuthType.SAML_ASSERTION ||
             service.connectedSystem?.destination?.Authentication === DestinationAuthType.SAML_ASSERTION ||
-            AuthenticationType.ReentranceTicket === service.connectedSystem?.backendSystem?.authenticationType
-        ) {
-            appConfig.service.previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
-        } else if (
+            AuthenticationType.ReentranceTicket === service.connectedSystem?.backendSystem?.authenticationType ||
+            // Apps generated with stored service keys (legacy) will use re-entrance tickets for connectivity
+            // New stored systems will only use re-entrance
             service.connectedSystem?.backendSystem?.serviceKeys ||
-            // If 'cloud' write `scp` property to yamls to enable preview on VSCode (using oAuth)
+            // If 'cloud' this will enable preview on VSCode (using re-entrance) for app portability
             (getHostEnvironment() === hostEnvironment.bas &&
                 service.connectedSystem?.destination &&
                 isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
         ) {
-            appConfig.service.previewSettings = { scp: true };
+            appConfig.service.previewSettings = { authenticationType: AuthenticationType.ReentranceTicket };
         } else if (service.apiHubConfig) {
             appConfig.service.previewSettings = { apiHub: true };
         }
@@ -347,7 +363,6 @@ function getBaseAppConfig(
             ui5Libs: []
         },
         appOptions: {
-            codeAssist: project.enableCodeAssist,
             eslint: project.enableEslint,
             typescript: project.enableTypeScript,
             sapux: project.sapux,

@@ -1,4 +1,6 @@
-# @sap-ux/generator-adp
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/generator-adp/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/generator-adp)
+
+# [`@sap-ux/generator-adp`](https://github.com/SAP/open-ux-tools/tree/main/packages/generator-adp)
 
 ## Features
 

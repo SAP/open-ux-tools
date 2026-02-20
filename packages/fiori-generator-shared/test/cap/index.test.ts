@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { getCapFolderPathsSync } from '../../src/';
-import { join } from 'path';
+import { join } from 'node:path';
 
 describe('getCapFolderPaths', () => {
     const testCapProject = join(__dirname, '../fixtures/test-cap-project');

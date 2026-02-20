@@ -1,10 +1,11 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { generate } from '../../../src';
 import type { AdpWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
 import { migrate } from '../../../src/writer';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
@@ -164,12 +165,6 @@ describe('ADP writer', () => {
                     ui5: {
                         version: '1.133.0'
                     },
-                    flp: {
-                        semanticObject: 'sampleObj',
-                        action: 'sampleAction',
-                        title: 'testTitle',
-                        subTitle: 'testSubTitle'
-                    },
                     customConfig: {
                         adp: {
                             environment: 'C',
@@ -177,7 +172,8 @@ describe('ADP writer', () => {
                                 id: '@package/name',
                                 toolsId: 'uuidv4',
                                 version: '0.0.1'
-                            }
+                            },
+                            projectType: AdaptationProjectType.CLOUD_READY
                         }
                     }
                 },
@@ -228,12 +224,6 @@ describe('ADP writer', () => {
                     ui5: {
                         version: '1.122.1'
                     },
-                    flp: {
-                        semanticObject: 'sampleObj',
-                        action: 'sampleAction',
-                        title: 'testTitle',
-                        subTitle: 'testSubTitle'
-                    },
                     customConfig: {
                         adp: {
                             environment: 'C',
@@ -241,7 +231,8 @@ describe('ADP writer', () => {
                                 id: '@package/name',
                                 toolsId: 'uuidv4',
                                 version: '0.0.1'
-                            }
+                            },
+                            projectType: AdaptationProjectType.CLOUD_READY
                         }
                     }
                 },
@@ -273,10 +264,6 @@ describe('ADP writer', () => {
                     ui5: {
                         version: '1.133.0'
                     },
-                    flp: {
-                        inboundId: 'sampleId',
-                        subTitle: 'sampleSubTitle'
-                    },
                     customConfig: {
                         adp: {
                             environment: 'C',
@@ -284,7 +271,8 @@ describe('ADP writer', () => {
                                 id: '@package/name',
                                 toolsId: 'uuidv4',
                                 version: '0.0.1'
-                            }
+                            },
+                            projectType: AdaptationProjectType.CLOUD_READY
                         }
                     }
                 },
@@ -319,7 +307,8 @@ describe('ADP writer', () => {
                         id: '@package/name',
                         toolsId: 'uuidv4',
                         version: '0.0.1'
-                    }
+                    },
+                    projectType: AdaptationProjectType.ON_PREMISE
                 }
             },
             options: {

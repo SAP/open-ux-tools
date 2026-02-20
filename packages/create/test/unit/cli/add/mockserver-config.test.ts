@@ -5,9 +5,9 @@ import { addAddMockserverConfigCommand } from '../../../../src/cli/add/mockserve
 import * as prompts from 'prompts';
 import * as mockserverWriter from '@sap-ux/mockserver-config-writer';
 import * as logger from '../../../../src/tracing/logger';
-import * as childProcess from 'child_process';
+import * as childProcess from 'node:child_process';
 import * as npmCommand from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('child_process');
 jest.mock('prompts');

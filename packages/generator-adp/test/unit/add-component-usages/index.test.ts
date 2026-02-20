@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { join, resolve } from 'path';
+import fs from 'node:fs';
+import { join, resolve } from 'node:path';
 import yeomanTest from 'yeoman-test';
 
 import { ChangeType, generateChange, getVariant } from '@sap-ux/adp-tooling';

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 
 export const INPUT_APP_DIR_CF = join(__dirname, '../test-apps/cf');
 export const INPUT_APP_NAME_BASE = 'testappbase';

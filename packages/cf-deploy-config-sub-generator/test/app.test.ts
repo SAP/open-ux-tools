@@ -2,7 +2,7 @@ import hasbin from 'hasbin';
 import CFGenerator from '../src/app';
 import yeomanTest from 'yeoman-test';
 import { load, dump } from 'js-yaml';
-import { join } from 'path';
+import { join } from 'node:path';
 import { TestFixture } from './fixtures';
 import type { Manifest } from '@sap-ux/project-access';
 import { initI18n, t } from '../src/utils';
@@ -10,7 +10,7 @@ import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { MockMta } from './utils/mock-mta';
 import { ApiHubType } from '@sap-ux/cf-deploy-config-writer';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as questions from '../src/app/questions';
@@ -38,9 +38,9 @@ jest.mock('@sap-ux/project-access', () => {
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -64,7 +64,6 @@ jest.mock('@sap/mta-lib', () => {
 const mockGetHostEnvironment = jest.fn();
 const mockSendTelemetry = jest.fn();
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: () => mockSendTelemetry(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),

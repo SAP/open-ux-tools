@@ -3,14 +3,17 @@
     xmlns:uxap="sap.uxap"
     xmlns:core='sap.ui.core'
     xmlns='sap.m'
->
+><% if (targetAggregation && controlType && viewName) { %>
+    <!-- viewName: <%= viewName %> -->
+    <!-- controlType: <%= controlType %> -->
+    <!-- targetAggregation: <%= targetAggregation %> --> <% } %>
     <uxap:ObjectPageSection
         id="<%- ids.objectPageSection %>"
         title="New Custom Section"
     >
         <uxap:ObjectPageSubSection id="<%- ids.objectPageSubSection %>">
             <HBox id="<%- ids.hBox %>">
-                <!--  add your xml here -->
+                <!-- add your xml here -->
             </HBox>
         </uxap:ObjectPageSubSection>
     </uxap:ObjectPageSection>

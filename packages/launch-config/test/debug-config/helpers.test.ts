@@ -4,7 +4,7 @@ import {
     isFolderInWorkspace,
     handleAppsNotInWorkspace
 } from '../../src/debug-config/helpers';
-import path from 'path';
+import path from 'node:path';
 
 // Mock the vscode object
 const mockVscode = {

@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { CustomPage } from '../../../src';
 import { generateCustomPage, validateBasePath } from '../../../src';

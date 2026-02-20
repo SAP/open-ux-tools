@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { DeployProjectType } from '@sap-ux/abap-deploy-config-sub-generator';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '@sap-ux/project-access';

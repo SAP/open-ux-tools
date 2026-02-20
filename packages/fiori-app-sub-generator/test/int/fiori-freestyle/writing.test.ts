@@ -1,8 +1,8 @@
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { copyFileSync, promises as fsPromise, mkdirSync } from 'fs';
-import { join } from 'path';
+import { copyFileSync, promises as fsPromise, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { rimraf } from 'rimraf';
 import { FloorplanFF, type State } from '../../../src/types';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils';
@@ -44,7 +44,7 @@ describe('Freestyle generation', () => {
 
     afterEach(() => {
         // remove specific generated app folder
-        rimraf.sync(join(testDir, testProjectName));
+        rimraf.rimrafSync(join(testDir, testProjectName));
     });
 
     it('Test Freestyle Simple Floorplan v2', async () => {
@@ -247,35 +247,6 @@ describe('Freestyle generation', () => {
         accessSpy.mockRestore();
     });
 
-    it('Test Freestyle Simple Floorplan - Code Assist', async () => {
-        testProjectName = 'simple_code_assist';
-        mockModulePath = setExpectedOutPath(testProjectName);
-        const state: State = {
-            project: {
-                name: testProjectName,
-                description: 'An SAP Fiori application.',
-                title: 'App Title',
-                enableCodeAssist: true,
-                ui5Theme: 'sap_fiori_3',
-                ui5Version: '1.82.2',
-                localUI5Version: '1.82.2',
-                skipAnnotations: false,
-                namespace: '',
-                targetFolder: testDir,
-                enableVirtualEndpoints: true
-            },
-            service: {
-                servicePath: '',
-                version: OdataVersion.v2,
-                source: DatasourceType.metadataFile
-            },
-            floorplan: FloorplanFF.FF_SIMPLE,
-            viewName: 'View1'
-        };
-        await runWritingPhaseGen(state);
-        expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
-    });
-
     it('Test Freestyle Simple Floorplan - Eslint', async () => {
         testProjectName = 'simple_eslint';
         mockModulePath = setExpectedOutPath(testProjectName);
@@ -284,7 +255,6 @@ describe('Freestyle generation', () => {
                 name: testProjectName,
                 description: 'An SAP Fiori application.',
                 title: 'App Title',
-                enableCodeAssist: false,
                 enableEslint: true,
                 ui5Theme: 'sap_fiori_3',
                 ui5Version: '1.82.2',
@@ -314,7 +284,6 @@ describe('Freestyle generation', () => {
                 name: testProjectName,
                 description: 'An SAP Fiori application.',
                 title: 'App Title',
-                enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: true,
                 ui5Theme: 'sap_fiori_3',

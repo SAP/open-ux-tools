@@ -1,4 +1,4 @@
-import { join, normalize } from 'path';
+import { join, normalize } from 'node:path';
 import { findInstalledPackages } from '../../src/installedCheck';
 import readPkgUp from 'read-pkg-up';
 import fastGlob from 'fast-glob';

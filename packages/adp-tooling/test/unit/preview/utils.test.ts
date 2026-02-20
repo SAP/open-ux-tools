@@ -1,6 +1,6 @@
 import { DirName } from '@sap-ux/project-access';
 import { getFragmentPathFromTemplate } from '../../../src/preview/utils';
-import { sep } from 'path';
+import { sep } from 'node:path';
 
 describe('getFragmentPathFromTemplate', () => {
     const mockChange = {

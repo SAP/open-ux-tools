@@ -1,12 +1,14 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import applicationSchema from './page-editor-api/test-data/schema/App.json';
 import applicationConfig from './page-editor-api/test-data/config/App.json';
 import listReportSchema from './page-editor-api/test-data/schema/ListReport.json';
 import listReportConfig from './page-editor-api/test-data/config/ListReport.json';
 import objectPageSchema from './page-editor-api/test-data/schema/ObjectPage.json';
 import objectPageConfig from './page-editor-api/test-data/config/ObjectPage.json';
-import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, rmSync, unlinkSync } from 'fs';
-import { execSync } from 'child_process';
+import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
+import type { FlexChange } from '../../src/page-editor-api/flex';
+import type { ReadAppParams, ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
+import type { ApplicationAccess } from '@sap-ux/project-access';
 
 const getDataFile = (
     dataSourceUri: string,
@@ -34,19 +36,31 @@ const getDataFile = (
     };
 };
 
-export const mockSpecificationImport = (
-    importProjectMock: jest.Mock<Promise<{ dataSourceUri: string; fileContent: string }[]>>,
+export const mockSpecificationReadApp = (
+    readAppMock: jest.Mock<Promise<{ files: { dataSourceUri: string; fileContent: string }[] }>>,
     overwriteFiles: { dataSourceUri: string; fileContent: string }[] = []
 ) => {
-    importProjectMock.mockResolvedValue([
-        // Application config and schema
-        getDataFile('app.json', overwriteFiles),
-        getDataFile(join('.schemas', 'App.json'), overwriteFiles),
-        getDataFile(join('pages', 'TravelList.json'), overwriteFiles),
-        getDataFile(join('.schemas', 'ListReport_TravelList.json'), overwriteFiles),
-        getDataFile(join('pages', 'TravelObjectPage.json'), overwriteFiles),
-        getDataFile(join('.schemas', 'ObjectPage_TravelObjectPage.json'), overwriteFiles)
-    ]);
+    readAppMock.mockResolvedValue({
+        files: [
+            // Application config and schema
+            getDataFile('app.json', overwriteFiles),
+            getDataFile(join('.schemas', 'App.json'), overwriteFiles),
+            getDataFile(join('pages', 'TravelList.json'), overwriteFiles),
+            getDataFile(join('.schemas', 'ListReport_TravelList.json'), overwriteFiles),
+            getDataFile(join('pages', 'TravelObjectPage.json'), overwriteFiles),
+            getDataFile(join('.schemas', 'ObjectPage_TravelObjectPage.json'), overwriteFiles)
+        ]
+    });
+};
+
+export const mockSpecificationReadAppWithModel = (
+    readAppMock: jest.Mock<Promise<{ files: { dataSourceUri: string; fileContent: string }[] }>>,
+    appPath: string,
+    applications: { [key: string]: ApplicationAccess } = {}
+) => {
+    readAppMock.mockImplementation(async (options?: ReadAppParams): Promise<ReadAppResult> => {
+        return readAppWithModel(appPath, applications, options);
+    });
 };
 
 export function copyDirectory(src: string, dest: string): void {
@@ -68,70 +82,50 @@ export function copyDirectory(src: string, dest: string): void {
     }
 }
 
-export function removeDirectory(
-    dirPath: string,
-    options: { skipNodeModules?: boolean; preserveRoot?: boolean } = {}
-): void {
-    const { skipNodeModules = true, preserveRoot = true } = options;
-
-    if (!existsSync(dirPath)) {
-        return;
-    }
-
-    // Skip node_modules directories if skipNodeModules is true
-    if (skipNodeModules && dirPath.endsWith('node_modules')) {
-        return;
-    }
-
-    try {
-        if (preserveRoot) {
-            // Remove contents but preserve the root directory
-            const files = readdirSync(dirPath);
-            for (const file of files) {
-                const filePath = join(dirPath, file);
-                const fileStats = lstatSync(filePath);
-
-                if (fileStats.isDirectory()) {
-                    // For subdirectories, remove completely (don't preserve)
-                    removeDirectory(filePath, { skipNodeModules, preserveRoot: false });
-                } else {
-                    unlinkSync(filePath);
-                }
-            }
-        } else {
-            // Remove the entire directory and its contents using modern rmSync
-            rmSync(dirPath, { recursive: true, force: true });
+export function generateFlexChanges(
+    fileName: string,
+    content: { newValue?: string; property: string; newBinding?: string },
+    fileType = 'change',
+    changeType = 'propertyChange'
+): FlexChange {
+    return {
+        fileName,
+        fileType,
+        changeType,
+        content,
+        'selector': {
+            'id': 'project::sap.suite.ui.generic.template.ListReport.view.ListReport::Travel--listReport-TravelID'
         }
-    } catch (error) {
-        console.error(`Failed to remove directory ${dirPath}:`, error);
-        throw error;
-    }
+    };
 }
 
-export function npmInstall(projectPath: string): void {
-    const isWindows = process.platform === 'win32';
-    const npmCommand = isWindows ? 'npm.cmd' : 'npm';
+async function getLocalSpecification(): Promise<Specification> {
+    const moduleName = '@sap/ux-specification';
+    // Workaround loading issue with '@sap-ux/odata-annotation-core-types' - it will be fixed in new spec version
+    jest.mock(
+        '@sap-ux/odata-annotation-core-types',
+        () => ({
+            DiagnosticSeverity: {}
+        }),
+        { virtual: true }
+    );
+    return import(moduleName);
+}
 
-    // Check if node_modules exists and is not empty
-    const nodeModulesPath = join(projectPath, 'node_modules');
-    if (existsSync(nodeModulesPath)) {
-        const stat = lstatSync(nodeModulesPath);
-        if (stat.isDirectory()) {
-            const contents = readdirSync(nodeModulesPath);
-            if (contents.length > 0) {
-                return;
-            }
-        }
-    }
+export async function readAppWithModel(
+    path: string,
+    applications: { [key: string]: ApplicationAccess } = {},
+    options?: Partial<ReadAppParams>
+): Promise<ReadAppResult> {
+    const specification = await getLocalSpecification();
+    const result = await specification.readApp({
+        ...options,
+        app: applications[path] ?? path
+    });
+    return result;
+}
 
-    try {
-        execSync(`${npmCommand} install`, {
-            cwd: projectPath,
-            stdio: 'inherit'
-        });
-        console.log('npm install completed successfully');
-    } catch (error) {
-        console.error('npm install failed:', error);
-        throw error;
-    }
+export async function ensureSpecificationLoaded(): Promise<void> {
+    await getLocalSpecification();
+    process.env.MCP_SPEC_LOADED = '1';
 }

@@ -28,7 +28,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -50,7 +50,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop2
 type: application
@@ -109,7 +109,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop2
 type: application
@@ -161,7 +161,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop2
 type: application
@@ -3074,7 +3074,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -3113,7 +3113,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -3558,7 +3558,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -3663,7 +3662,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -3685,7 +3684,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop2
 type: application
@@ -3744,7 +3743,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop2
 type: application
@@ -3796,7 +3795,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop2
 type: application
@@ -6709,7 +6708,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -6748,7 +6747,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -7193,7 +7192,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -7272,14 +7270,6 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v2_ts 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
-",
-    "state": "modified",
-  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -7291,6 +7281,15 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
     "state": "modified",
   },
   "package.json": Object {
@@ -7306,14 +7305,13 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -7367,13 +7365,13 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v2_ts
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -7442,7 +7440,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v2_ts
 type: application
@@ -7510,7 +7508,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v2_ts
 type: application
@@ -10441,15 +10439,14 @@ appDescription=A Fiori application.",
     "state": "modified",
   },
   "webapp/test/changes_loader.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 //Loads and extends the openui5 FileListBaseConnector
 
 const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -10486,11 +10483,10 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
     "state": "modified",
   },
   "webapp/test/changes_preview.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -10811,7 +10807,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -10833,7 +10829,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop1
 type: application
@@ -10886,7 +10882,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop1
 type: application
@@ -10935,7 +10931,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop1
 type: application
@@ -14138,6 +14134,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -14398,7 +14399,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -14503,7 +14503,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -14525,7 +14525,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop194
 type: application
@@ -14578,7 +14578,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop194
 type: application
@@ -14627,7 +14627,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop194
 type: application
@@ -17830,6 +17830,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -18090,7 +18095,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -18195,7 +18199,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -18217,7 +18221,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_add_test_virtual_endpoints
 type: application
@@ -18266,7 +18270,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_add_test_virtual_endpoints
 type: application
@@ -18311,7 +18315,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_add_test_virtual_endpoints
 type: application
@@ -18944,6 +18948,11 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -19308,7 +19317,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -19439,7 +19447,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -19462,7 +19470,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_addtests
 type: application
@@ -19515,7 +19523,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_addtests
 type: application
@@ -19564,7 +19572,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_addtests
 type: application
@@ -22767,6 +22775,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -23216,7 +23229,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -23334,7 +23346,7 @@ Object {
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -23347,7 +23359,7 @@ Object {
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_addtests_cds
 type: application
@@ -23608,6 +23620,11 @@ appDescription=A Fiori application.",
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -24057,7 +24074,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -24162,11 +24178,12 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_addtests_cds_typescript 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
 ",
     "state": "modified",
   },
@@ -24183,14 +24200,13 @@ Object {
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\"
   },
   \\"scripts\\": {
     \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\"
@@ -24231,7 +24247,7 @@ Object {
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_addtests_cds
 type: application
@@ -24516,6 +24532,11 @@ appDescription=A Fiori application.",
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -24965,7 +24986,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -25096,7 +25116,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -25119,7 +25139,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_annotation_reuse_lib
 type: application
@@ -25172,7 +25192,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_annotation_reuse_lib
 type: application
@@ -25221,7 +25241,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v4_annotation_reuse_lib
 type: application
@@ -25896,6 +25916,11 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -26345,7 +26370,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -26476,7 +26500,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -26498,7 +26522,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felropui5
 type: application
@@ -26551,7 +26575,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felropui5
 type: application
@@ -26600,7 +26624,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felropui5
 type: application
@@ -29803,6 +29827,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -30063,7 +30092,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -30168,7 +30196,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -30190,7 +30218,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felropui5
 type: application
@@ -30243,7 +30271,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felropui5
 type: application
@@ -30292,7 +30320,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felropui5
 type: application
@@ -33496,6 +33524,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -33756,7 +33789,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -33861,7 +33893,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -33883,13 +33915,13 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop3
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -33942,7 +33974,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop3
 type: application
@@ -33994,7 +34026,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop3
 type: application
@@ -36907,7 +36939,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -36946,7 +36978,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -37393,7 +37425,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -37498,7 +37529,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -37520,13 +37551,13 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop4
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -37575,7 +37606,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop4
 type: application
@@ -37623,7 +37654,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: felrop4
 type: application
@@ -40556,7 +40587,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -40578,7 +40609,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_set_toolsId
 type: application
@@ -40637,7 +40668,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_set_toolsId
 type: application
@@ -40689,7 +40720,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_set_toolsId
 type: application
@@ -43603,7 +43634,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -43642,7 +43673,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -44087,7 +44118,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -44192,7 +44222,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -44214,7 +44244,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_set_toolsId_only
 type: application
@@ -44273,7 +44303,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_set_toolsId_only
 type: application
@@ -44325,7 +44355,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_set_toolsId_only
 type: application
@@ -47239,7 +47269,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -47278,7 +47308,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -47723,7 +47753,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -47802,14 +47831,6 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori Elements template: lropTemplates Generate files for template: lropV2_ts_ui5_1_108 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
-",
-    "state": "modified",
-  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -47821,6 +47842,15 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
     "state": "modified",
   },
   "package.json": Object {
@@ -47836,14 +47866,13 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -47897,7 +47926,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_ts_ui5_1_108
 type: application
@@ -47972,7 +48001,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_ts_ui5_1_108
 type: application
@@ -48040,7 +48069,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_ts_ui5_1_108
 type: application
@@ -50971,15 +51000,14 @@ appDescription=A Fiori application.",
     "state": "modified",
   },
   "webapp/test/changes_loader.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 //Loads and extends the openui5 FileListBaseConnector
 
 const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -51016,11 +51044,10 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
     "state": "modified",
   },
   "webapp/test/changes_preview.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -51304,14 +51331,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 
 exports[`Fiori Elements template: lropTemplates Generate files for template: lropV2_ts_ui5_1_111 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
-",
-    "state": "modified",
-  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -51323,6 +51342,15 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
     "state": "modified",
   },
   "package.json": Object {
@@ -51338,14 +51366,13 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.111.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -51399,7 +51426,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_ts_ui5_1_111
 type: application
@@ -51474,7 +51501,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_ts_ui5_1_111
 type: application
@@ -51542,7 +51569,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_ts_ui5_1_111
 type: application
@@ -54473,15 +54500,14 @@ appDescription=A Fiori application.",
     "state": "modified",
   },
   "webapp/test/changes_loader.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 //Loads and extends the openui5 FileListBaseConnector
 
 const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -54518,11 +54544,10 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
     "state": "modified",
   },
   "webapp/test/changes_preview.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -54806,14 +54831,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 
 exports[`Fiori Elements template: lropTemplates Generate files for template: lropV2_ts_ui5_1_113 1`] = `
 Object {
-  ".eslintrc": Object {
-    "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
-    \\"root\\": true
-}
-",
-    "state": "modified",
-  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -54825,6 +54842,15 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
     "state": "modified",
   },
   "package.json": Object {
@@ -54840,14 +54866,13 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"~1.113.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
-    \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
+    \\"typescript\\": \\"^5.9.3\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -54901,7 +54926,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_ts_ui5_1_113
 type: application
@@ -54976,7 +55001,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_ts_ui5_1_113
 type: application
@@ -55044,7 +55069,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lropV2_ts_ui5_1_113
 type: application
@@ -57975,15 +58000,14 @@ appDescription=A Fiori application.",
     "state": "modified",
   },
   "webapp/test/changes_loader.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 //Loads and extends the openui5 FileListBaseConnector
 
 const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -58020,11 +58044,10 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
     "state": "modified",
   },
   "webapp/test/changes_preview.ts": Object {
-    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+    "contents": "// @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 const version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -58334,7 +58357,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -58354,13 +58377,13 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v2_ts
 type: application
 framework:
   name: SAPUI5
-  version: 1.84.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -58397,7 +58420,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v2_ts
 type: application
@@ -58670,6 +58693,11 @@ appDescription=A Fiori application.",
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -58794,7 +58822,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -58815,13 +58843,13 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v2_ts
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -58874,7 +58902,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v2_ts
 type: application
@@ -58926,7 +58954,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: lrop_v2_ts
 type: application
@@ -61801,7 +61829,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -61840,7 +61868,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {

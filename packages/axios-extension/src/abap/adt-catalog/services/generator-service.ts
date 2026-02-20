@@ -9,7 +9,7 @@ export class GeneratorService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
      */
-    private static adtCategory = {
+    private static readonly adtCategory = {
         scheme: 'http://www.sap.com/adt/categories/respository',
         term: 'generators'
     };
@@ -22,8 +22,6 @@ export class GeneratorService extends AdtService {
     public static getAdtCatagory(): AdtCategory {
         return GeneratorService.adtCategory;
     }
-
-    private id: string;
 
     /**
      * Get the UI service generator for the given referenced object.

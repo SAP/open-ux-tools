@@ -1,6 +1,6 @@
 import mockedStore from '@sap-ux/store';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
-import fs from 'fs';
+import fs from 'node:fs';
 
 export const mockReadFileSync = jest.spyOn(fs, 'readFileSync');
 

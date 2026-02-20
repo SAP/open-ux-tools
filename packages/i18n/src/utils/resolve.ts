@@ -1,5 +1,5 @@
-import { join, dirname, sep } from 'path';
-import { existsSync, promises } from 'fs';
+import { join, dirname, sep } from 'node:path';
+import { existsSync, promises } from 'node:fs';
 import type { CdsEnvironment } from '../types';
 import { getI18nConfiguration } from './config';
 import type { Editor } from 'mem-fs-editor';

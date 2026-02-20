@@ -1,6 +1,6 @@
-import { pathToFileURL } from 'url';
-import { join } from 'path';
-import { promises } from 'fs';
+import { pathToFileURL } from 'node:url';
+import { join } from 'node:path';
+import { promises } from 'node:fs';
 
 import { getProject } from '@sap-ux/project-access';
 

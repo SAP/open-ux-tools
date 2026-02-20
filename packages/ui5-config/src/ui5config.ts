@@ -14,7 +14,8 @@ import type {
     MockserverConfig,
     ServeStaticPath,
     DataSourceConfig,
-    AbapDeployConfig
+    AbapDeployConfig,
+    MockserverService
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -27,8 +28,8 @@ import {
 import { fioriToolsProxy, serveStatic } from './constants';
 import Ajv, { type ValidateFunction } from 'ajv';
 import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
-import { join, posix, relative, sep } from 'path';
-import { readFile } from 'fs/promises';
+import { join, posix, relative, sep } from 'node:path';
+import { readFile } from 'node:fs/promises';
 import yaml from 'js-yaml';
 
 /**
@@ -103,7 +104,7 @@ export class UI5Config {
         let resources: Resources;
         try {
             resources = this.document.getMap({ path: 'resources' }).toJSON();
-        } catch (error) {
+        } catch {
             resources = {};
         }
         return resources.configuration ?? {};
@@ -141,7 +142,6 @@ export class UI5Config {
      * Get the type in the yaml file.
      *
      * @returns {Ui5Document['type']} the type
-     * @memberof Ui5Document['type']
      */
     public getType(): Ui5Document['type'] {
         const type = this.document.getNode({ path: 'type' });
@@ -171,7 +171,7 @@ export class UI5Config {
         try {
             const configNode = this.document.getMap({ path: 'customConfiguration' });
             configNode.setIn([key], value);
-        } catch (_error) {
+        } catch {
             this.document.setIn({
                 path: 'customConfiguration',
                 value: {
@@ -541,12 +541,15 @@ export class UI5Config {
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
             if (mockserverMiddlewareConfig?.services) {
                 const urlPath = dataSourceConfig.servicePath.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
-                const newServiceData = {
+                const newServiceData: MockserverService = {
                     urlPath,
                     metadataPath: dataSourceConfig.metadataPath ?? `${serviceRoot}/metadata.xml`,
                     mockdataPath: `${serviceRoot}/data`,
                     generateMockData: true
                 };
+                if (dataSourceConfig.resolveExternalServiceReferences === true) {
+                    newServiceData.resolveExternalServiceReferences = true;
+                }
                 const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
                     (existingService) => existingService.urlPath === urlPath
                 );
@@ -720,6 +723,19 @@ export class UI5Config {
             });
         }
         return this;
+    }
+
+    /**
+     * Determines whether the UI5 configuration document contains the builder key.
+     *
+     * @returns True if the configuration contains builder key at root level otherwise false.
+     */
+    public hasBuilderKey(): boolean {
+        try {
+            return !!this.document.getNode({ path: 'builder' });
+        } catch {
+            return false;
+        }
     }
 
     /**

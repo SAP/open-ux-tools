@@ -1,4 +1,6 @@
-# @sap-ux/store
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/store/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/store)
+
+# [`@sap-ux/store`](https://github.com/SAP/open-ux-tools/tree/main/packages/store)
 
 This is a store for persistent data in Fiori tools.
 
@@ -86,3 +88,107 @@ interface EntityKey<T> {
     getId: () => string;
 }
 ```
+
+#### Special handling for BackendSystem getAll()
+
+The `BackendSystem` service supports filtering and retrieval options when calling `getAll()`. This allows you to retrieve only the backend systems that match specific criteria.
+
+##### BackendServiceRetrievalOptions
+
+The `getAll()` method accepts an optional `BackendServiceRetrievalOptions` parameter with the following properties:
+
+- `includeSensitiveData?: boolean` - Whether to include sensitive data (username, password, etc.) in the returned systems
+- `backendSystemFilter?: BackendSystemFilter` - Filter criteria to match specific backend systems
+
+##### BackendSystemFilter
+
+The `BackendSystemFilter` allows filtering by any serializable property of a `BackendSystem`. The following properties can be used for filtering:
+
+- `name` - System name
+- `url` - System URL
+- `client` - SAP client number
+- `systemType` - Type of system (e.g., `SystemType.AbapOnPrem`, `SystemType.AbapCloud`, `SystemType.Generic`)
+- `authenticationType` - Authentication method (e.g., `AuthenticationType.Basic`, `AuthenticationType.OAuth2RefreshToken`)
+- `connectionType` - Connection type (e.g., `'abap_catalog'`, `'odata_service'`, `'generic_host'`)
+- `systemInfo` - Nested object with `systemId` and `client` properties
+
+##### Filter Value Types
+
+Each filter property supports three types of values:
+
+1. **Single value** - Match systems where the property equals the specified value
+2. **Array of values** - Match systems where the property equals any value in the array
+3. **Object value** (for `systemInfo`) - Match systems where nested properties match
+
+##### Usage Examples
+
+**Filter by single value:**
+```typescript
+import { getService } from '@sap-ux/store';
+import { SystemType } from '@sap-ux/store/types';
+
+const systemService = await getService('system');
+
+// Get only OnPrem systems
+const onPremSystems = await systemService.getAll({
+    backendSystemFilter: { systemType: SystemType.AbapOnPrem }
+});
+```
+
+**Filter by array of values:**
+```typescript
+// Get systems with either 'abap_catalog' or 'odata_service' connection types
+const catalogOrServiceSystems = await systemService.getAll({
+    backendSystemFilter: {
+        connectionType: ['abap_catalog', 'odata_service']
+    }
+});
+```
+
+**Filter by nested object (systemInfo):**
+```typescript
+// Get systems matching specific systemId and client
+const specificSystems = await systemService.getAll({
+    backendSystemFilter: {
+        systemInfo: { systemId: 'ID123', client: '999' }
+    }
+});
+```
+
+**Combine multiple filters:**
+```typescript
+// Get OnPrem systems with abap_catalog connection and specific client
+const filteredSystems = await systemService.getAll({
+    backendSystemFilter: {
+        systemType: SystemType.AbapOnPrem,
+        connectionType: 'abap_catalog',
+        client: '100'
+    }
+});
+```
+
+**Include sensitive data:**
+```typescript
+// Get all systems with sensitive data included
+const systemsWithCredentials = await systemService.getAll({
+    includeSensitiveData: true,
+    backendSystemFilter: { systemType: SystemType.AbapCloud }
+});
+```
+
+##### Default Behavior
+
+**IMPORTANT:** If no `connectionType` filter is specified, the `getAll()` method automatically filters by `connectionType: 'abap_catalog'` for backwards compatibility. To retrieve systems with other connection types, you must explicitly specify the `connectionType` filter:
+
+```typescript
+// Returns only 'abap_catalog' systems (default behavior)
+const defaultSystems = await systemService.getAll();
+
+// Returns all systems regardless of connection type
+const allSystems = await systemService.getAll({
+    backendSystemFilter: {
+        connectionType: ['abap_catalog', 'odata_service', 'generic_host']
+    }
+});
+```
+

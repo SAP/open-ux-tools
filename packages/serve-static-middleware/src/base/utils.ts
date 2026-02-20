@@ -1,6 +1,6 @@
 import type { ServeStaticConfig, PathConfig } from './types';
 import type { ServeStaticOptions } from 'serve-static';
-import { relative, isAbsolute, join } from 'path';
+import { relative, isAbsolute, join } from 'node:path';
 
 /**
  * Resolves the serve static options from the yaml configuration.

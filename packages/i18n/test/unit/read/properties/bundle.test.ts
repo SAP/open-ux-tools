@@ -1,5 +1,5 @@
-import { promises } from 'fs';
-import { join } from 'path';
+import { promises } from 'node:fs';
+import { join } from 'node:path';
 import { getPropertiesI18nBundle } from '../../../../src';
 import { replaceBundleWithUnifiedFileUri } from '../../helper';
 import { create as createStorage } from 'mem-fs';

@@ -1,5 +1,6 @@
-import { homedir } from 'os';
-import path from 'path';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
+import { plural } from 'pluralize';
 
 /** Pick the properties listed and return a new object with a shallow-copy */
 export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undefined => {
@@ -13,6 +14,24 @@ export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undef
         undefined
     );
 };
+
+/**
+ * Checks if any of the values in the object are not `undefined` or `null`
+ *
+ * @param obj - the object to check
+ * @param props - the properties to check on the object
+ * @returns - `true` if any value is not `undefined` or `null`, `false` otherwise
+ */
+export function hasAnyValue<E extends object, K extends keyof E>(obj: E, props: K[]): boolean {
+    if (obj == null || typeof obj !== 'object') {
+        return false;
+    }
+
+    return props.some((prop) => {
+        const value = obj[prop];
+        return value !== undefined && value !== null;
+    });
+}
 
 /** Given an `Error` or any other object thrown, returns an `Error` instance */
 export function errorInstance(e: Error | unknown): NodeJS.ErrnoException {
@@ -34,9 +53,50 @@ export enum FioriToolsSettings {
     dir = '.fioritools'
 }
 
+export enum SapTools {
+    dir = '.saptools'
+}
+
 export const getFioriToolsDirectory = (): string => {
-    return path.join(homedir(), FioriToolsSettings.dir);
+    return join(homedir(), FioriToolsSettings.dir);
 };
+
+export const getSapToolsDirectory = (): string => {
+    return join(homedir(), SapTools.dir);
+};
+
+/**
+ * Trims, lowercases and returns plural if a non-empty string
+ *
+ * @param s
+ */
+export function toPersistenceName(s: string): string | undefined {
+    const t = s?.trim().toLowerCase();
+    return t && plural(t);
+}
+
+export function getEntityFileName(entityName: string): string {
+    return toPersistenceName(entityName) + '.json';
+}
+
+/**
+ * Simple object matcher that supports nested objects
+ *
+ * @param obj - object to inspect
+ * @param filter - properties and values used for filtering the object.
+ * @returns - true if the `obj` has equivalent property values to `attrs`
+ */
+export function isMatch(obj: any, filter: any): boolean {
+    return Object.entries(filter).every(([key, val]) => {
+        if (Array.isArray(val)) {
+            return val.includes(obj[key]);
+        }
+        if (val && typeof val === 'object') {
+            return isMatch(obj[key], val);
+        }
+        return obj[key] === val;
+    });
+}
 
 export * from './app-studio';
 export * from './backend';

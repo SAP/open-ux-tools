@@ -2,15 +2,15 @@ import type { AxiosResponse } from 'axios';
 import * as memfs from 'memfs';
 import { processToolsSuiteTelemetry } from '../../src/tooling-telemetry';
 import { ToolingTelemetrySettings } from '../../src/tooling-telemetry/config-state';
-import fs from 'fs';
-import { join } from 'path';
+import fs from 'node:fs';
+import { join } from 'node:path';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 jest.mock('fs', () => {
     const fs1 = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line  @typescript-eslint/no-require-imports
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line  @typescript-eslint/no-require-imports
     const vol = require('memfs').vol;
     const memfs = new Union().use(fs1).use(vol as unknown as typeof fs);
     memfs.realpath = fs1.realpath;

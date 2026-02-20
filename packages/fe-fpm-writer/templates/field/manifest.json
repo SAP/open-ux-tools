@@ -1,0 +1,32 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- target %>": {
+                    "options": {
+                        "settings": {
+                            "controlConfiguration": {
+                                "<%- targetEntity %>": {
+                                    "fields": {
+                                        "<%- name %>": {
+                                            "template": "<%- ns %>.<%- typeof fragmentFile !== 'undefined' ? fragmentFile : name  %>",
+                                            <%if (typeof position !== 'undefined') {%>"position": {
+                                                <% if (position.placement) { %> 
+                                                    "placement": "<%- position.placement %>"<% if (position.anchor) { %>,<% } %>
+                                                <% } %>
+                                                <% if (position.anchor) { %> 
+                                                    "anchor": "<%- position.anchor %>" 
+                                                <% } %>
+                                            },<% } %>
+                                            "label": "<%- label %>"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

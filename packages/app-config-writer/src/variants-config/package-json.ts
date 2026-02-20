@@ -1,4 +1,4 @@
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import { getRTAUrlParameters, getRTAUrl } from './utils';
 import { getCLIForPreview } from '../common/utils';
 import type { Editor } from 'mem-fs-editor';
@@ -53,11 +53,10 @@ export async function addVariantsManagementScript(
         logger?.warn(`Script 'start-variants-management' already exists but is outdated. Script will be updated.`);
     } else {
         logger?.info(`Script 'start-variants-management' is already up-to-date.`);
-        return Promise.resolve();
+        return;
     }
 
     packageJson.scripts['start-variants-management'] = startVariantsManagementScriptNew;
     fs.writeJSON(packageJsonPath, packageJson);
     logger?.debug(`Script 'start-variants-management' written to 'package.json'.`);
-    return Promise.resolve();
 }

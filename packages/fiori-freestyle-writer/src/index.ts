@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
@@ -194,7 +194,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
             appId: ffApp.app.id,
             sapux: ffApp.appOptions?.sapux,
             enableCdsUi5Plugin: ffApp.appOptions?.addCdsUi5Plugin,
-            enableTypescript: ffApp.appOptions?.typescript
+            enableTypescript: ffApp.appOptions?.typescript,
+            disableRootPackageJsonUpdates: ffApp.appOptions?.disableCapRootPkgJsonUpdates
         };
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, ffApp.service.capService, settings);

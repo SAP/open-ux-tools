@@ -1,32 +1,44 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
 import { getFunctionalityDetails } from '../../../src/tools';
-import { mockSpecificationImport } from '../utils';
-import applicationConfig from '../page-editor-api/test-data/config/App.json';
+import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils';
 import * as addPageDependency from '../../../src/tools/functionalities/page';
 import * as projectUtils from '../../../src/page-editor-api/project';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+
     ...(jest.requireActual('@sap-ux/project-access') as object)
 }));
 
+const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
+
 describe('getFunctionalityDetails', () => {
     const appPath = 'testApplicationPath';
-    let importProjectMock = jest.fn();
+    let readAppMock = jest.fn();
     const findProjectRootSpy: jest.SpyInstance = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
     const getManifestSpy: jest.SpyInstance = jest.spyOn(projectUtils, 'getManifest');
     const createApplicationAccessSpy: jest.SpyInstance = jest.spyOn(
         openUxProjectAccessDependency,
         'createApplicationAccess'
     );
+    const applications: { [key: string]: openUxProjectAccessDependency.ApplicationAccess } = {};
+    beforeAll(async () => {
+        // Create application access can take more time on slower machines
+        applications[appPathLropV4] = await openUxProjectAccessDependency.createApplicationAccess(appPathLropV4);
+        // Ensure spec is loaded - first import is most costly
+        await ensureSpecificationLoaded();
+    }, 10000);
     beforeEach(async () => {
-        importProjectMock = jest.fn().mockResolvedValue([]);
+        readAppMock = jest.fn().mockResolvedValue({ files: [] });
         getManifestSpy.mockResolvedValue({});
         findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
         createApplicationAccessSpy.mockImplementation((rootPath: string) => {
             return {
                 getAppId: () => 'dummy-id',
+                app: {
+                    changes: 'changes'
+                },
                 project: {
                     root: 'root',
                     apps: {
@@ -34,7 +46,8 @@ describe('getFunctionalityDetails', () => {
                     }
                 },
                 getSpecification: () => ({
-                    importProject: importProjectMock
+                    readApp: readAppMock,
+                    getApiVersion: () => ({ version: '99' })
                 })
             };
         });
@@ -47,11 +60,11 @@ describe('getFunctionalityDetails', () => {
             appPath,
             functionalityId: 'add-page'
         });
-        expect(details).toEqual({ ...addPageDependency.ADD_PAGE_FUNCTIONALITY, parameters: [] });
+        expect(details).toEqual({ ...addPageDependency.ADD_PAGE_FUNCTIONALITY });
     });
 
     test('call atomic property', async () => {
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const details = await getFunctionalityDetails({
             appPath,
             functionalityId: ['settings', 'flexEnabled']
@@ -59,108 +72,102 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: 'change-property',
+            functionalityId: ['settings', 'flexEnabled'],
             name: 'Change property',
-            parameters: [
-                {
-                    currentValue: true,
-                    description: 'Enables key user adaptation for an application.',
-                    id: 'flexEnabled',
-                    name: 'Flex Enabled',
-                    options: [null, true, false],
-                    type: 'boolean'
+            parameters: {
+                type: 'object',
+                properties: {
+                    flexEnabled: {
+                        description: 'Enables key user adaptation for an application.',
+                        descriptionSrcURL: 'https://ui5.sap.com/sdk/#/topic/ccd45ba3f0b446a0901b2c9d42b8ad53',
+                        'manifestPath': '$["sap.ui5"].flexEnabled',
+                        type: 'boolean'
+                    }
                 }
-            ]
+            }
         });
     });
 
     test('Get page property', async () => {
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const details = await getFunctionalityDetails({
             appPath,
-            functionalityId: [
-                'TravelObjectPage',
-                'sections',
-                'GroupSection',
-                'subsections',
-                'CustomSubSection',
-                'title'
-            ]
+            functionalityId: ['TravelObjectPage', 'header', 'actions', 'RelatedApps', 'showRelatedApps']
         });
         expect(details).toEqual({
-            description:
+            'description':
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: 'change-property',
-            name: 'Change property',
-            pageName: 'TravelObjectPage',
-            parameters: [
-                {
-                    currentValue: 'Custom Sub Section',
-                    description: 'The label of a custom section, preferably as an i18n key.',
-                    id: 'title',
-                    name: 'Title',
-                    type: 'string'
-                }
-            ]
+            'functionalityId': ['TravelObjectPage', 'header', 'actions', 'RelatedApps', 'showRelatedApps'],
+            'name': 'Change property',
+            'pageName': 'TravelObjectPage',
+            'parameters': {
+                'properties': {
+                    'showRelatedApps': {
+                        'artifactType': 'Manifest',
+                        'description': 'Set showRelatedApps to true to show the navigation button for related apps.',
+                        'type': 'boolean'
+                    }
+                },
+                'type': 'object'
+            }
         });
     });
 
     test('Get page node properties', async () => {
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const details = await getFunctionalityDetails({
             appPath,
-            functionalityId: ['TravelObjectPage', 'sections', 'GroupSection', 'subsections', 'CustomSubSection']
+            functionalityId: ['TravelObjectPage', 'header', 'actions', 'DeleteAction']
         });
         expect(details).toEqual({
-            description:
+            'description':
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: 'change-property',
-            name: 'Change property',
-            pageName: 'TravelObjectPage',
-            parameters: [
-                {
-                    currentValue: 'project1.ext.fragment.CustomSubSection',
-                    description: 'The path to the XML template containing the section control.',
-                    id: 'fragmentName',
-                    name: 'Fragment Name',
-                    type: 'string'
+            'functionalityId': ['TravelObjectPage', 'header', 'actions', 'DeleteAction'],
+            'name': 'Change property',
+            'pageName': 'TravelObjectPage',
+            'parameters': {
+                'properties': {
+                    'DeleteAction': {
+                        'actionType': 'Standard',
+                        'additionalProperties': true,
+                        'annotationPath':
+                            '/com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.Container/Travel/@com.sap.vocabularies.UI.v1.DeleteHidden',
+                        'description': 'Delete',
+                        'isViewNode': true,
+                        'keys': [
+                            {
+                                'name': 'Action',
+                                'value': 'Delete'
+                            }
+                        ],
+                        'properties': {
+                            'overflowGroup': {
+                                'artifactType': 'Manifest',
+                                'description':
+                                    "Defines a group of actions. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+                                'descriptionSrcURL': 'https://ui5.sap.com/#/topic/cbf16c599f2d4b8796e3702f7d4aae6c',
+                                'type': 'number'
+                            },
+                            'priority': {
+                                'artifactType': 'Manifest',
+                                'description':
+                                    'Defines the priority of the action. This determines ordering and whether the action is moved into overflow.',
+                                'descriptionSrcURL': 'https://ui5.sap.com/#/topic/cbf16c599f2d4b8796e3702f7d4aae6c',
+                                'enum': ['AlwaysOverflow', 'High', 'Low', 'NeverOverflow'],
+                                'type': 'string'
+                            }
+                        },
+                        'propertyIndex': 1,
+                        'type': 'object'
+                    }
                 },
-                {
-                    currentValue: undefined,
-                    description: 'Use the key of another section as a placement anchor.',
-                    id: 'relatedFacet',
-                    name: 'Anchor',
-                    options: ['', 'SubSection1', 'CustomSubSection'],
-                    type: 'string'
-                },
-                {
-                    currentValue: undefined,
-                    description: 'Define the placement, either before or after the anchor section.',
-                    id: 'relativePosition',
-                    name: 'Placement',
-                    options: ['', 'After', 'Before'],
-                    type: 'string'
-                },
-                {
-                    currentValue: 'Custom Sub Section',
-                    description: 'The label of a custom section, preferably as an i18n key.',
-                    id: 'title',
-                    name: 'Title',
-                    type: 'string'
-                }
-            ]
+                'type': 'object'
+            }
         });
     });
 
     test('Get application complex property details', async () => {
-        // Mock data with value to test how "currentValue" is resolved
-        const appConfigTemp = JSON.parse(JSON.stringify(applicationConfig));
-        appConfigTemp.settings.flexibleColumnLayout = {
-            defaultTwoColumnLayoutType: 'ThreeColumnsBeginExpandedEndHidden'
-        };
-        mockSpecificationImport(importProjectMock, [
-            { dataSourceUri: 'app.json', fileContent: JSON.stringify(appConfigTemp) }
-        ]);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const details = await getFunctionalityDetails({
             appPath,
             functionalityId: ['settings', 'flexibleColumnLayout']
@@ -168,67 +175,56 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            functionalityId: 'change-property',
+            functionalityId: ['settings', 'flexibleColumnLayout'],
             name: 'Change property',
-            parameters: [
-                {
-                    currentValue: {
-                        defaultTwoColumnLayoutType: 'ThreeColumnsBeginExpandedEndHidden'
-                    },
-                    description:
-                        'The flexible column layout allows users to see more details on the page, and to expand and collapse the screen areas.',
-                    id: 'flexibleColumnLayout',
-                    name: 'flexibleColumnLayout',
-                    parameters: [
-                        {
-                            description:
-                                'Determines whether the Flexible Column Layout is limited to two columns. If set to true, the third level will be displayed in full screen mode rather than a third column.',
-                            id: 'limitFCLToTwoColumns',
-                            name: 'Limit FCL To Two Columns',
-                            options: [null, true, false],
-                            type: 'boolean'
+            parameters: {
+                type: 'object',
+                properties: {
+                    flexibleColumnLayout: {
+                        additionalProperties: false,
+                        description:
+                            'The flexible column layout allows users to see more details on the page, and to expand and collapse the screen areas.',
+                        descriptionSrcURL: 'https://ui5.sap.com/sdk/#/topic/e762257125b34513b0859faa1610b09e',
+                        'manifestPath': '$["sap.ui5"].routing.config.flexibleColumnLayout',
+                        properties: {
+                            defaultThreeColumnLayoutType: {
+                                enum: [
+                                    'EndColumnFullScreen',
+                                    'MidColumnFullScreen',
+                                    'OneColumn',
+                                    'ThreeColumnsBeginExpandedEndHidden',
+                                    'ThreeColumnsEndExpanded',
+                                    'ThreeColumnsMidExpanded',
+                                    'ThreeColumnsMidExpandedEndHidden',
+                                    'TwoColumnsBeginExpanded',
+                                    'TwoColumnsMidExpanded'
+                                ],
+                                type: 'string'
+                            },
+                            defaultTwoColumnLayoutType: {
+                                enum: [
+                                    'EndColumnFullScreen',
+                                    'MidColumnFullScreen',
+                                    'OneColumn',
+                                    'ThreeColumnsBeginExpandedEndHidden',
+                                    'ThreeColumnsEndExpanded',
+                                    'ThreeColumnsMidExpanded',
+                                    'ThreeColumnsMidExpandedEndHidden',
+                                    'TwoColumnsBeginExpanded',
+                                    'TwoColumnsMidExpanded'
+                                ],
+                                type: 'string'
+                            },
+                            limitFCLToTwoColumns: {
+                                description:
+                                    'Determines whether the Flexible Column Layout is limited to two columns. If set to true, the third level will be displayed in full screen mode rather than a third column.',
+                                type: 'boolean'
+                            }
                         },
-                        {
-                            currentValue: 'ThreeColumnsBeginExpandedEndHidden',
-                            description: '',
-                            id: 'defaultTwoColumnLayoutType',
-                            name: 'Default Two Column Layout Type',
-                            options: [
-                                '',
-                                'EndColumnFullScreen',
-                                'MidColumnFullScreen',
-                                'OneColumn',
-                                'ThreeColumnsBeginExpandedEndHidden',
-                                'ThreeColumnsEndExpanded',
-                                'ThreeColumnsMidExpanded',
-                                'ThreeColumnsMidExpandedEndHidden',
-                                'TwoColumnsBeginExpanded',
-                                'TwoColumnsMidExpanded'
-                            ],
-                            type: 'string'
-                        },
-                        {
-                            description: '',
-                            id: 'defaultThreeColumnLayoutType',
-                            name: 'Default Three Column Layout Type',
-                            options: [
-                                '',
-                                'EndColumnFullScreen',
-                                'MidColumnFullScreen',
-                                'OneColumn',
-                                'ThreeColumnsBeginExpandedEndHidden',
-                                'ThreeColumnsEndExpanded',
-                                'ThreeColumnsMidExpanded',
-                                'ThreeColumnsMidExpandedEndHidden',
-                                'TwoColumnsBeginExpanded',
-                                'TwoColumnsMidExpanded'
-                            ],
-                            type: 'string'
-                        }
-                    ],
-                    type: 'object'
+                        type: 'object'
+                    }
                 }
-            ]
+            }
         });
     });
 

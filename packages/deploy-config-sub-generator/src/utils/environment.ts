@@ -7,13 +7,14 @@ import {
     type ApiHubConfig
 } from '@sap-ux/cf-deploy-config-sub-generator';
 import {
+    DeploymentGenerator,
     ERROR_TYPE,
     ErrorHandler,
     generateDestinationName,
     mtaExecutable
 } from '@sap-ux/deploy-config-generator-shared';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
 /**
@@ -28,8 +29,9 @@ export function isMTAInstalled(choice: string, projectPath: string): boolean | s
         (choice === 'cf' && !hasbin.sync(mtaExecutable)) ||
         (choice === 'abap' && !hasbin.sync(mtaExecutable) && existsSync(join(projectPath, 'mta.yaml')))
     ) {
-        ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN);
-        return ' ';
+        const errMsg = ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN);
+        DeploymentGenerator.logger?.warn(errMsg);
+        return errMsg;
     }
     return true;
 }

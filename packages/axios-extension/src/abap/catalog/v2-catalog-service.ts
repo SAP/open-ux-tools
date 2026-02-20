@@ -123,7 +123,7 @@ export class V2CatalogService extends CatalogService {
             segParams.forEach((parameter) => {
                 const [key, value] = parameter.split('=');
                 if (key === 'v') {
-                    version = parseInt(value, 10);
+                    version = Number.parseInt(value, 10);
                 }
             });
         }

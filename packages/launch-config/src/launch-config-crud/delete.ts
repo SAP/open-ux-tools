@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { DirName } from '@sap-ux/project-access';
 import { LAUNCH_JSON_FILE } from '../types';
 import type { Editor } from 'mem-fs-editor';

@@ -1,10 +1,10 @@
 import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
-import { join } from 'path';
+import { join } from 'node:path';
 import ReuseLibGenLogger from '../utils/logger';
 import { t, prompts, runPostLibGenHook, generatorTitle } from '../utils';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
-import { platform } from 'os';
+import { platform } from 'node:os';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { defaultAuthor, defaultFramework, defaultLibraryName, defaultNamespace, defaultUi5Version } from './defaults';
 import {

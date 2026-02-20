@@ -1,5 +1,5 @@
 import type { FlpConfig, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { type Package, FileName } from '@sap-ux/project-access';
 
@@ -85,7 +85,6 @@ export function isValidPreviewScript(script: Script, convertTests: boolean = fal
         script.name != 'start-control-property-editor' &&
         script.name != 'start-cards-generator';
 
-    //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const startsWebServer = !!(script.value.includes('ui5 serve') || script.value.includes('fiori run'));
     const { path } = extractUrlDetails(script.value);
     const opensTest = isTestPath(script ?? '');

@@ -6,7 +6,7 @@ import type { JSONPath, ModificationOptions, Node } from 'jsonc-parser';
 import { findNodeAtLocation, parse, parseTree } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig, mergeArgs } from './utils';
-import { join } from 'path';
+import { join } from 'node:path';
 import { DirName } from '@sap-ux/project-access';
 import { updateLaunchJSON } from './writer';
 

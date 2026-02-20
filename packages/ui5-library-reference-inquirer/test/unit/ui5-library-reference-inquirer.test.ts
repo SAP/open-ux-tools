@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { prompt, getPrompts, type InquirerAdapter, type UI5LibraryReferencePromptOptions } from '../../src';
 import * as ui5LibRefPrompts from '../../src/prompts';
 import { createPromptModule } from 'inquirer';

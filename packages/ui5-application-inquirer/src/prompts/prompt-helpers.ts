@@ -1,6 +1,6 @@
 import { latestVersionString } from '@sap-ux/ui5-info';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { coerce, gte } from 'semver';
 import { defaultProjectNumber, t } from '../i18n';
 import {
@@ -82,7 +82,7 @@ export function hidePrompts(
             const promptOpt = promptOptions?.[promptKey] as UI5ApplicationCommonPromptOptions | AddDeployPromptOptions;
 
             const hidePrompt =
-                typeof promptOpt?.hide === 'function' ? promptOpt.hide(isCapProject) : promptOpt?.hide ?? false;
+                typeof promptOpt?.hide === 'function' ? promptOpt.hide(isCapProject) : (promptOpt?.hide ?? false);
             if (
                 !hidePrompt &&
                 // Target directory is determined by the CAP project. `enableEsLint` and `targetFolder` are not available for CAP projects

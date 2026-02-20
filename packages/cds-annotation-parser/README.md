@@ -1,4 +1,6 @@
-# @sap-ux/cds-annotation-parser
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/cds-annotation-parser/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/cds-annotation-parser)
+
+# [`@sap-ux/cds-annotation-parser`](https://github.com/SAP/open-ux-tools/tree/main/packages/cds-annotation-parser)
 
 ## Installation
 Npm

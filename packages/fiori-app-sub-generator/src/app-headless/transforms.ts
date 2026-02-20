@@ -4,7 +4,7 @@ import { getCapFolderPathsSync, type AppConfig } from '@sap-ux/fiori-generator-s
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import { getDefaultUI5Theme, supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { FEAppConfig, FFAppConfig, Project, Service, State } from '../types';
 import { ApiHubType, FloorplanFE, FloorplanFF, capTypeConversion, defaultPromptValues } from '../types';
 import { getODataVersion, t } from '../utils';
@@ -112,7 +112,6 @@ function _setProjectDefaults(project: AppConfig['project']): Project {
         localUI5Version: project.localUI5Version ?? ui5Version,
         ui5Theme: project.ui5Theme ?? getDefaultUI5Theme(ui5Version),
         skipAnnotations: project.skipAnnotations || defaultPromptValues[promptNames.skipAnnotations],
-        enableCodeAssist: project.enableCodeAssist || defaultPromptValues[promptNames.enableCodeAssist],
         enableEslint: project.enableEslint || defaultPromptValues[promptNames.enableEslint],
         enableTypeScript: project.enableTypeScript || defaultPromptValues[promptNames.enableTypeScript],
         sapux: project.sapux || false,

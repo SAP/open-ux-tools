@@ -2,7 +2,11 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
 import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { searchChoices } from '@sap-ux/inquirer-common';
+import {
+    searchChoices,
+    getRecursiveHierarchyQualifierForEntitySet,
+    findEntitySetByName
+} from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../i18n';
@@ -125,21 +129,40 @@ export function getEntitySelectionQuestions(
         name: EntityPromptNames.mainEntity,
         message: t('prompts.mainEntitySelection.message'),
         guiOptions: {
-            breadcrumb: true
+            breadcrumb: true,
+            mandatory: true
         },
         choices: entityChoices.choices,
         source: (prevAnswers: unknown, input: string) =>
             searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
         default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
-        validate: () => validateEntityChoices(entityChoices.choices, templateType, odataVersion, isCapService),
-        additionalMessages: (answers: EntitySelectionAnswers) => {
+        // Workaround for YUI bug: Despite mandatory=true, YUI allows users to clear/delete list selections.
+        validate: (value: EntityAnswer | null | undefined) => {
+            // First check if there are valid entity choices (handles edge case of no entities in service)
+            const entityChoicesValidation = validateEntityChoices(
+                entityChoices.choices,
+                templateType,
+                odataVersion,
+                isCapService
+            );
+            if (entityChoicesValidation !== true) {
+                return entityChoicesValidation;
+            }
+            // Then check if a value is selected (user hasn't deleted/cleared the field)
+            if (!value) {
+                return t('prompts.mainEntitySelection.requiredError');
+            }
+            return true;
+        },
+        additionalMessages: (mainEntityValue: EntityAnswer | null | undefined) => {
             if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
                 return {
                     message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
                     severity: Severity.warning
                 };
             }
-            if (answers.mainEntity?.mainEntityParameterName) {
+            // Only check mainEntityValue properties if it exists (handle null/undefined from user deleting the field)
+            if (mainEntityValue?.mainEntityParameterName) {
                 // display a warning if the main entity has a mainEntityParameterName
                 return {
                     message: t('prompts.mainEntitySelection.mainEntityParameterFoundInfo'),
@@ -268,7 +291,9 @@ function getTableLayoutQuestions(
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];
 
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
-        let setAnalyticalTableDefault = false;
+        // Variables to track selected entity and default table type
+        let selectedEntity: EntityAnswer | undefined;
+        let defaultTableType: TableType | undefined;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
             type: 'list',
@@ -277,27 +302,53 @@ function getTableLayoutQuestions(
             guiOptions: {
                 hint: t('prompts.tableType.hint'),
                 breadcrumb: true,
+                mandatory: true,
                 applyDefaultWhenDirty: true // set table type on entity selection change
+            },
+            // Workaround for YUI bug: Despite mandatory=true, YUI allows clearing mandatory list selections
+            validate: (value: TableType | null | undefined) => {
+                if (!value) {
+                    return t('prompts.tableType.requiredError');
+                }
+                return true;
             },
             choices: tableTypeChoices,
             default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
-                const tableTypeDefault = getDefaultTableType(
-                    templateType,
-                    metadata,
-                    odataVersion,
-                    prevAnswers?.mainEntity?.entitySetName,
-                    prevAnswers?.tableType
-                );
-                setAnalyticalTableDefault = tableTypeDefault.setAnalyticalTableDefault;
-                return tableTypeDefault.tableType;
+                const currentEntity = prevAnswers?.mainEntity;
+
+                // Only re-evaluate if entity has changed or no previous selection exists
+                if (currentEntity?.entitySetName !== selectedEntity?.entitySetName || !prevAnswers?.tableType) {
+                    defaultTableType = getDefaultTableType(
+                        templateType,
+                        metadata,
+                        odataVersion,
+                        isCapService,
+                        currentEntity?.entitySetName
+                    );
+
+                    // Update tracking variables
+                    selectedEntity = currentEntity;
+                    return defaultTableType;
+                }
+
+                // Entity hasn't changed and user has a selection - preserve their choice
+                // Reset the default table type since this is user's choice, not system default
+                defaultTableType = undefined;
+                return prevAnswers.tableType;
             },
-            additionalMessages: (tableType: TableType) => {
-                if (tableType === 'AnalyticalTable' && setAnalyticalTableDefault) {
+            additionalMessages: () => {
+                if (defaultTableType === 'AnalyticalTable') {
                     return {
                         message: t('prompts.tableType.analyticalTableDefault'),
                         severity: Severity.information
                     };
+                } else if (defaultTableType === 'TreeTable') {
+                    return {
+                        message: t('prompts.tableType.treeTableDefault'),
+                        severity: Severity.information
+                    };
                 }
+                return undefined;
             }
         } as ListQuestion<TableConfigAnswers>);
 
@@ -312,7 +363,14 @@ function getTableLayoutQuestions(
                 breadcrumb: true,
                 mandatory: true
             },
-            default: '',
+            default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
+                // Auto-populate qualifier from RecursiveHierarchy annotation if available
+                if (prevAnswers?.mainEntity?.entitySetName) {
+                    const entitySet = findEntitySetByName(metadata, prevAnswers.mainEntity.entitySetName);
+                    return entitySet ? getRecursiveHierarchyQualifierForEntitySet(entitySet) : '';
+                }
+                return '';
+            },
             validate: (input: string) => {
                 if (!input) {
                     return t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning');

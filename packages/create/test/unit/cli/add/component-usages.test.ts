@@ -7,8 +7,8 @@ import * as validations from '../../../../src/validation/validation';
 import * as logger from '../../../../src/tracing/logger';
 import { addComponentUsagesCommand } from '../../../../src/cli/add/component-usages';
 import { Command } from 'commander';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 
 jest.mock('@sap-ux/adp-tooling');
 
@@ -39,7 +39,6 @@ describe('add/component-usages', () => {
         libraryIsLazy: 'true'
     };
     const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
-    jest.spyOn(validations, 'validateAdpProject').mockResolvedValue(undefined);
     jest.spyOn(adp, 'getPromptsForAddComponentUsages').mockImplementation(() => []);
 
     const appRoot = join(__dirname, '../../../fixtures');
@@ -52,12 +51,12 @@ describe('add/component-usages', () => {
         } as Partial<ToolsLogger> as ToolsLogger;
         jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
         jest.spyOn(adp, 'getVariant').mockReturnValue(descriptorVariant);
+        jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
+        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValue(false);
     });
 
     test('should result in error when executed for CF projects', async () => {
-        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
-            new Error('This command is not supported for CF projects.')
-        );
+        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValueOnce(true);
 
         const command = new Command('component-usages');
         addComponentUsagesCommand(command);
@@ -69,7 +68,7 @@ describe('add/component-usages', () => {
     });
 
     test('should result in error when the project is not adaptation project', async () => {
-        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
+        jest.spyOn(validations, 'validateAdpAppType').mockRejectedValueOnce(
             new Error('This command can only be used for an adaptation project')
         );
 

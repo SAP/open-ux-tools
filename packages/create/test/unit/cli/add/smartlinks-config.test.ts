@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import * as prompts from 'prompts';
 import * as appConfigWriter from '@sap-ux/app-config-writer';
 import type { ToolsLogger } from '@sap-ux/logger';

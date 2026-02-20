@@ -20,6 +20,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
 /** sap.ui.fl */
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
+import type Selector from 'sap/ui/fl/Selector';
 
 import { getResourceModel } from '../../i18n';
 
@@ -119,7 +120,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         );
 
         newSelectedControlChildren = newSelectedControlChildren.map((key) => {
-            return parseInt(key, radix);
+            return Number.parseInt(key, radix);
         });
 
         this.specialIndexHandling(selectedItemText);
@@ -158,7 +159,8 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             await this.createFragmentChange(modifiedValue);
         }
 
-        const templateName = getFragmentTemplateName(this.getRuntimeControl().getId(), targetAggregation);
+        const selector: Selector = { id: this.getRuntimeControl().getId(), idIsLocal: false };
+        const templateName = getFragmentTemplateName(selector, targetAggregation);
         if (templateName) {
             CommunicationService.sendAction(setApplicationRequiresReload(true));
         }
@@ -185,7 +187,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         );
 
         selectedControlChildren = selectedControlChildren.map((key) => {
-            return parseInt(key, radix);
+            return Number.parseInt(key, radix);
         });
 
         this.model.setProperty('/selectedControlName', selectedControlName);

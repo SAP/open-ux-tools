@@ -1,4 +1,4 @@
-import { dirname, join, relative } from 'path';
+import { dirname, join, relative } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { type Logger } from '@sap-ux/logger';
@@ -68,9 +68,7 @@ import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type M
  * @returns file system reference
  */
 export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     if (logger) {
         LoggerHelper.logger = logger;
     }
@@ -107,16 +105,16 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
 
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
-        destinationName: cfAppConfig.destinationName || destination,
+        destinationName: cfAppConfig.destinationName ?? destination,
         addManagedAppRouter: cfAppConfig.addManagedAppRouter,
         addAppFrontendRouter: cfAppConfig.addAppFrontendRouter,
         addMtaDestination: cfAppConfig.addMtaDestination ?? false,
         cloudServiceName: cfAppConfig.cloudServiceName,
         lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
         isMtaRoot: hasRoot ?? false,
-        serviceHost: cfAppConfig.serviceHost || serviceHost,
+        serviceHost: cfAppConfig.serviceHost ?? serviceHost,
         rootPath: rootPath.replace(/\/$/, ''),
-        destinationAuthentication: cfAppConfig.destinationAuthentication || destinationAuthentication,
+        destinationAuthentication: cfAppConfig.destinationAuthentication ?? destinationAuthentication,
         isDestinationFullUrl: cfAppConfig.isDestinationFullUrl ?? destinationIsFullUrl,
         apiHubConfig: cfAppConfig.apiHubConfig,
         firstServicePathSegment:
@@ -213,10 +211,11 @@ async function processManifest(
     firstServicePathSegment: string | undefined;
     appId: string | undefined;
 }> {
-    const manifest = await readManifest(join(await getWebappPath(appPath), FileName.Manifest), fs);
-    const appId = manifest?.['sap.app']?.id ? toMtaModuleName(manifest?.['sap.app']?.id) : undefined;
+    const webappPath = await getWebappPath(appPath);
+    const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
+    const appId = manifest?.['sap.app']?.id ? toMtaModuleName(manifest['sap.app'].id) : undefined;
     const servicePath = manifest?.['sap.app']?.dataSources?.mainService?.uri;
-    const firstServicePathSegment = servicePath?.substring(0, servicePath?.indexOf('/', 1));
+    const firstServicePathSegment = servicePath?.substring(0, servicePath.indexOf('/', 1));
     return { servicePath, firstServicePathSegment, appId };
 }
 
@@ -395,16 +394,18 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
 
 /**
  * Updates the manifest.json file with the cloud service name.
+ * Preserves existing sap.cloud properties while updating public and service values.
  *
  * @param cfConfig writer configuration
  * @param fs reference to a mem-fs editor
  */
 async function updateManifest(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const webappPath = await getWebappPath(cfConfig.appPath, fs);
-    const manifest = await readManifest(join(webappPath, FileName.Manifest), fs);
+    const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
     if (manifest && cfConfig.cloudServiceName) {
+        // Preserve existing sap.cloud properties while updating required values (Sonar S7744 fix)
         const sapCloud = {
-            ...(manifest['sap.cloud'] || {}),
+            ...manifest['sap.cloud'],
             public: true,
             service: cfConfig.cloudServiceName
         } as Manifest['sap.cloud'];

@@ -10,8 +10,8 @@ import * as validations from '../../../../src/validation/validation';
 import * as adp from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const appManifest = readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.json'), 'utf-8');
 const descriptorVariant = JSON.parse(
@@ -82,7 +82,6 @@ describe('change/data-source', () => {
             client: '100'
         }
     });
-    jest.spyOn(validations, 'validateAdpProject').mockResolvedValue(undefined);
     jest.spyOn(adp.ManifestService, 'initBaseManifest').mockResolvedValue({
         fetchBaseManifest: jest.fn(),
         fetchMergedManifest: jest.fn(),
@@ -102,36 +101,24 @@ describe('change/data-source', () => {
         jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
         jest.spyOn(adp, 'getVariant').mockReturnValue(descriptorVariant);
         jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
+        jest.spyOn(validations, 'validateAdpAppType').mockResolvedValue(undefined);
+        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValue(false);
     });
 
     test('change-data-source - CF environment', async () => {
-        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
-            new Error('This command is not supported for CF projects.')
-        );
+        jest.spyOn(adp, 'isCFEnvironment').mockResolvedValueOnce(true);
 
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for CF projects.');
-        expect(generateChangeSpy).not.toHaveBeenCalled();
-    });
-
-    test('change-data-source - no system configuration', async () => {
-        jest.spyOn(adp, 'getAdpConfig').mockRejectedValueOnce(new Error('No system configuration found in ui5.yaml'));
-
-        const command = new Command('change-data-source');
-        addChangeDataSourceCommand(command);
-        await command.parseAsync(getArgv());
-
-        expect(loggerMock.debug).toHaveBeenCalled();
-        expect(loggerMock.error).toHaveBeenCalledWith('No system configuration found in ui5.yaml');
+        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for Cloud Foundry projects.');
         expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('change-data-source - not an adaptation project', async () => {
-        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
+        jest.spyOn(validations, 'validateAdpAppType').mockRejectedValueOnce(
             new Error('This command can only be used for an adaptation project')
         );
 

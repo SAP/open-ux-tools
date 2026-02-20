@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { PackageJsonMockConfig } from '../types';
@@ -98,7 +98,7 @@ function isUi5CliHigherTwo(devDependencies: Partial<Record<string, string>>): bo
     try {
         const versionString = devDependencies['@ui5/cli'];
         if (typeof versionString === 'string') {
-            const majorVersion = parseInt(versionString.split('.')[0].match(/\d+/)?.[0] || '0', 10);
+            const majorVersion = Number.parseInt(versionString.split('.')[0].match(/\d+/)?.[0] || '0', 10);
             isHigherTwo = majorVersion > 2 ? true : false;
         }
     } catch {

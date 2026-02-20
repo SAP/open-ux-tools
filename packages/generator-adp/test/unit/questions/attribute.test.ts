@@ -46,7 +46,7 @@ const mockConfig = {
     layer: FlexLayer.CUSTOMER_BASE,
     ui5Versions: ['1.118.0', '1.119.0'],
     isVersionDetected: true,
-    prompts: new YeomanUiSteps(getWizardPages())
+    prompts: new YeomanUiSteps(getWizardPages(false))
 };
 
 const getDefaultVersionMock = getDefaultVersion as jest.Mock;
@@ -82,7 +82,7 @@ describe('Attribute Prompts', () => {
 
             const validateFn = (prompt as any).validate;
             validateFn('project1', { targetFolder: '' });
-            expect(validateProjectNameMock).toHaveBeenCalledWith('project1', mockPath, true);
+            expect(validateProjectNameMock).toHaveBeenCalledWith('project1', mockPath, true, false);
         });
     });
 

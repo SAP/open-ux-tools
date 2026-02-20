@@ -1,5 +1,225 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`Building Blocks CustomColumn building block CustomColumn detects macros:columns elements correctly: generate-custom-column-without-macros-columns 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table>
+                <macros:columns>
+                    <macros:Column/>
+                    <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+                        <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
+                    </macrosTable:Column>
+                </macros:columns>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Building Blocks CustomColumn building block generate CustomColumn without macros:columns - should not update aggregation path: generate-custom-column-without-macros-columns 1`] = `
+Object {
+  "generate-custom-column-without-macros-columns/webapp/ext/fragment/CustomColumnTitle2.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"Sample Text\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "generate-custom-column-without-macros-columns/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table>
+                <macros:columns>
+                    <macrosTable:Column header=\\"CustomColumnTitle2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+                        <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomColumnTitle2\\" type=\\"XML\\"/>
+                    </macrosTable:Column>
+                </macros:columns>
+            </macros:Table>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-column-without-macros-columns/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks CustomFilterField building block CustomFilterField detects macros:filterFields elements correctly: generate-custom-filter-field-with-macros-filter-fields 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar>
+                <macros:filterFields>
+                    <macros:FilterField/>
+                    <macros:FilterField key=\\"myFilterFieldKey\\" label=\\"Custom Filter Field 2\\" id=\\"testCustomFilterField2\\" placement=\\"After\\" required=\\"true\\" property=\\"testProperty\\">
+                        <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFilterField2\\" type=\\"XML\\"/>
+                    </macros:FilterField>
+                </macros:filterFields>
+            </macros:FilterBar>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Building Blocks CustomFilterField building block generate CustomFilterField with minimal required properties: generate-custom-filter-field-minimal 1`] = `
+Object {
+  "generate-custom-filter-field-minimal/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:filterFields>
+                <macros:FilterField key=\\"myFilterFieldKey\\" label=\\"Minimal Filter Field\\" id=\\"minimalCustomFilterField\\" placement=\\"After\\" property=\\"SimpleProperty\\">
+                    <core:Fragment fragmentName=\\"my.test.App.ext.minimalFilterField.MinimalFilterField\\" type=\\"XML\\"/>
+                </macros:FilterField>
+            </macros:filterFields>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-filter-field-minimal/webapp/ext/minimalFilterField/MinimalFilterField.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox width=\\"100%\\">
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>
+",
+    "state": "modified",
+  },
+  "generate-custom-filter-field-minimal/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks CustomFilterField building block generate CustomFilterField without macros:filterFields - should not update aggregation path: generate-custom-filter-field-without-macros-filter-fields 1`] = `
+Object {
+  "generate-custom-filter-field-without-macros-filter-fields/webapp/ext/fragment/CustomFilterField2.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox width=\\"100%\\">
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>
+",
+    "state": "modified",
+  },
+  "generate-custom-filter-field-without-macros-filter-fields/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar>
+                <macros:filterFields>
+                    <macros:FilterField key=\\"myFilterFieldKey\\" label=\\"Custom Filter Field 2\\" id=\\"testCustomFilterField2\\" placement=\\"After\\" required=\\"true\\" property=\\"testProperty\\">
+                        <core:Fragment fragmentName=\\"my.test.App.ext.fragment.CustomFilterField2\\" type=\\"XML\\"/>
+                    </macros:FilterField>
+                </macros:filterFields>
+            </macros:FilterBar>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-custom-filter-field-without-macros-filter-fields/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
 Object {
   "default": Object {
@@ -36,6 +256,335 @@ exports[`Building Blocks FilterBar properties: filterbar-properties 1`] = `
         </content>
     </Page>
 </mvc:View>"
+`;
+
+exports[`Building Blocks Form building block generate Form building block in xml fragment: generate-form-in-fragment 1`] = `
+Object {
+  "generate-form-in-fragment/webapp/ext/fragment/custom.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+    <VBox>
+        <Text text=\\"Custom section\\"/>
+        <macros:Form id=\\"testFormInFragment\\" metaPath=\\"@com.sap.vocabularies.UI.v1.FieldGroup#Info\\" title=\\"Fragment Form\\"/>
+    </VBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "generate-form-in-fragment/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Form building block generate Form building block with ReferenceFacet annotation: generate-form-with-reference-facet 1`] = `
+Object {
+  "generate-form-with-reference-facet/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Form id=\\"testForm\\" metaPath=\\"@com.sap.vocabularies.UI.v1.ReferenceFacet#FormDetails\\" title=\\"Form Details\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-form-with-reference-facet/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Form building block generate Form building block with contextPath and metaPath: generate-form-with-context-meta-path 1`] = `
+Object {
+  "generate-form-with-context-meta-path/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Form id=\\"testForm\\" metaPath=\\"@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation\\" title=\\"General Information\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-form-with-context-meta-path/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Form building block generate Form building block with just ID: generate-form-with-id 1`] = `
+Object {
+  "generate-form-with-id/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Form id=\\"testForm\\" title=\\"\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-form-with-id/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Form building block generate Form building block with metaPath as object: generate-form-with-metapath-object 1`] = `
+Object {
+  "generate-form-with-metapath-object/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Form id=\\"testForm\\" metaPath=\\"/TestEntitySet/@com.sap.vocabularies.UI.v1.FieldGroup#Details\\" title=\\"Form with MetaPath Object\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-form-with-metapath-object/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Form building block generate Form building block with title property: generate-form-with-title 1`] = `
+Object {
+  "generate-form-with-title/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Form id=\\"testForm\\" title=\\"Test Form Title\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-form-with-title/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Form building block generate Form building block without macros namespace: generate-form-without-macros-ns 1`] = `
+Object {
+  "generate-form-without-macros-ns/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Form id=\\"testForm\\" title=\\"Test Form\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-form-without-macros-ns/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Form building block getSerializedFileContent for Form building block 1`] = `
+"<macros:Form
+	id=\\"testForm\\"
+	metaPath=\\"@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation\\"
+	title=\\"Test Form\\"/>
+"
 `;
 
 exports[`Building Blocks Generate with just ID and xml view without macros namespace generate chart building block: generate-chart-with-id-no-macros-ns 1`] = `
@@ -1053,6 +1602,181 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 />"
 `;
 
+exports[`Building Blocks RichTextEditorButtonGroups building block RichTextEditorButtonGroups detects richtexteditor:buttonGroups elements correctly: generate-rte-button-groups-with-existing-button-groups 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"2\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block RichTextEditorButtonGroups with all available button groups: generate-rte-all-button-groups 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline,strikethrough\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" buttons=\\"fontfamily,fontsize,forecolor,backcolor\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"3\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" buttons=\\"bullist,numlist,outdent,indent\\" customToolbarPriority=\\"4\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"5\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" buttons=\\"image,emoticons\\" customToolbarPriority=\\"6\\"/>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" buttons=\\"link,unlink\\" customToolbarPriority=\\"7\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"8\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" customToolbarPriority=\\"9\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" buttons=\\"styleselect\\" customToolbarPriority=\\"10\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditor button groups with empty array: rte-empty-button-groups 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"EdgeCaseRTE\\">
+            <macros:buttonGroups>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups - override existing element's attributes when new attributes provided: generate-rte-button-groups-complex-replace 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" priority=\\"10\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo\\" priority=\\"12\\"/>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"false\\" buttons=\\"bold,italic,underline,strikethrough\\" priority=\\"20\\" id=\\"newFontStyle\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" buttons=\\"formatselect\\" priority=\\"5\\" customToolbarPriority=\\"34\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"true\\" buttons=\\"image\\" priority=\\"18\\" customToolbarPriority=\\"40\\" row=\\"2\\" id=\\"customInsert\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"35\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups - preserve existing element's attributes when no new attributes provided: generate-rte-button-groups-preserve-existing-attributes 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"false\\" buttons=\\"cut,copy,paste\\" priority=\\"15\\" id=\\"existingClipboard\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" priority=\\"12\\" customToolbarPriority=\\"50\\" row=\\"3\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"true\\" buttons=\\"bullist,numlist,outdent,indent\\" customToolbarPriority=\\"51\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups with existing button groups: generate-rte-button-groups-replace-existing 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" priority=\\"10\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"2\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block generate RichTextEditorButtonGroups without richtexteditor:buttonGroups wrapper: generate-rte-button-groups-without-wrapper 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"3\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block multiple RichTextEditors with complex button group scenarios: multiple-rtes-step1-update-rte1 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor1\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline\\" priority=\\"15\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" priority=\\"8\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" buttons=\\"image,emoticons\\" priority=\\"7\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Description\\" id=\\"RichTextEditor2\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"false\\" priority=\\"3\\" buttons=\\"link,unlink\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" priority=\\"10\\" buttons=\\"undo,redo\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\"/>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block multiple RichTextEditors with complex button group scenarios: multiple-rtes-step2-update-rte2 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor1\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline\\" priority=\\"15\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" priority=\\"8\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" buttons=\\"image,emoticons\\" priority=\\"7\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Description\\" id=\\"RichTextEditor2\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"false\\" buttons=\\"bullist,numlist,outdent,indent\\" priority=\\"12\\" customToolbarPriority=\\"3\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\"/>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`Building Blocks RichTextEditorButtonGroups building block multiple RichTextEditors with complex button group scenarios: multiple-rtes-step3-add-to-rte3 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
+    <VBox>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/AgencyID\\" id=\\"RichTextEditor1\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font-style\\" visible=\\"true\\" buttons=\\"bold,italic,underline\\" priority=\\"15\\"/>
+                <richtexteditor:ButtonGroup name=\\"table\\" visible=\\"true\\" buttons=\\"table\\" priority=\\"8\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"insert\\" visible=\\"false\\" buttons=\\"image,emoticons\\" priority=\\"7\\" customToolbarPriority=\\"25\\" row=\\"2\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Description\\" id=\\"RichTextEditor2\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"clipboard\\" visible=\\"true\\" buttons=\\"cut,copy,paste\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"text-align\\" visible=\\"true\\" buttons=\\"alignleft,aligncenter,alignright,alignjustify\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"structure\\" visible=\\"false\\" buttons=\\"bullist,numlist,outdent,indent\\" priority=\\"12\\" customToolbarPriority=\\"3\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/Travel/Notes\\" id=\\"RichTextEditor3\\">
+            <macros:buttonGroups>
+                <richtexteditor:ButtonGroup name=\\"font\\" visible=\\"true\\" buttons=\\"fontselect,fontsizeselect\\" customToolbarPriority=\\"1\\"/>
+                <richtexteditor:ButtonGroup name=\\"styleselect\\" visible=\\"true\\" buttons=\\"styleselect\\" priority=\\"20\\" customToolbarPriority=\\"2\\"/>
+                <richtexteditor:ButtonGroup name=\\"undo\\" visible=\\"true\\" buttons=\\"undo,redo\\" customToolbarPriority=\\"3\\"/>
+                <richtexteditor:ButtonGroup name=\\"link\\" visible=\\"true\\" buttons=\\"link\\" customToolbarPriority=\\"40\\" id=\\"customLinkButton\\"/>
+            </macros:buttonGroups>
+        </macros:RichTextEditorWithMetadata>
+    </VBox>
+</core:FragmentDefinition>"
+`;
+
 exports[`Building Blocks generate Page building block with replace target locator set: generate-page-block 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <macros:Page id=\\"testPage\\" title=\\"Test Page Title\\" description=\\"Test Page Description\\"/>
@@ -1162,24 +1886,81 @@ exports[`Building Blocks generates Rich Text Editor building block with absolute
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
         <Text text=\\"Custom section\\"/>
-        <macros:RichTextEditorWithMetadata metaPath=\\"/testEntitySet/testProperty\\" id=\\"testRichTextEditor\\">
-            <macros:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"font-style\\" buttons=\\"bold,italic,underline\\" visible=\\"true\\"/>
-            </macros:buttonGroups>
-        </macros:RichTextEditorWithMetadata>
+        <macros:RichTextEditorWithMetadata metaPath=\\"/testEntitySet/testProperty\\" id=\\"testRichTextEditor\\"/>
     </VBox>
 </core:FragmentDefinition>"
 `;
 
-exports[`Building Blocks throws error for Rich Text Editor building block if UI5 version is below 1.117.0: generate-rich-text-editor-block 1`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
-    <VBox>
-        <Text text=\\"Custom section\\"/>
-        <macros:RichTextEditorWithMetadata metaPath=\\"_testNavigation/testProperty\\" id=\\"testRichTextEditor\\">
-            <macros:buttonGroups>
-                <richtexteditor:ButtonGroup name=\\"font-style\\" buttons=\\"bold,italic,underline\\" visible=\\"true\\" priority=\\"2\\" customToolbarPriority=\\"10\\" row=\\"1\\"/>
-            </macros:buttonGroups>
-        </macros:RichTextEditorWithMetadata>
-    </VBox>
-</core:FragmentDefinition>"
+exports[`Building Blocks updateAggregationPath detects default aggregation when no explicit filterFields element exists 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\">
+    <macros:FilterBar id=\\"FilterBar1\\">
+        <macros:FilterField id=\\"existingField\\"/>
+        <macros:FilterField key=\\"newFieldKey\\" label=\\"New Field\\" id=\\"newField\\" placement=\\"After\\" property=\\"testProperty\\">
+            <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestFragment\\" type=\\"XML\\"/>
+        </macros:FilterField>
+    </macros:FilterBar>
+    <macros:FilterBar id=\\"FilterBar2\\"/>
+</mvc:View>"
+`;
+
+exports[`Building Blocks updateAggregationPath detects explicit aggregation (filterFields) in target FilterBar 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\">
+    <macros:FilterBar id=\\"FilterBar1\\">
+        <macros:filterFields>
+            <macros:FilterField id=\\"existingField\\"/>
+            <macros:FilterField key=\\"newFieldKey\\" label=\\"New Field\\" id=\\"newField\\" placement=\\"After\\" property=\\"testProperty\\">
+                <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestFragment\\" type=\\"XML\\"/>
+            </macros:FilterField>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id=\\"FilterBar2\\"/>
+</mvc:View>"
+`;
+
+exports[`Building Blocks updateAggregationPath does not incorrectly detect filterFields from other FilterBar 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\">
+    <macros:FilterBar id=\\"FilterBar1\\">
+        <macros:filterFields>
+            <macros:FilterField id=\\"field1\\"/>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id=\\"FilterBar2\\">
+        <macros:FilterField id=\\"field2\\"/>
+        <macros:FilterField key=\\"newFieldKey\\" label=\\"New Field\\" id=\\"newFieldInBar2\\" placement=\\"After\\" property=\\"testProperty\\">
+            <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestFragment\\" type=\\"XML\\"/>
+        </macros:FilterField>
+    </macros:FilterBar>
+</mvc:View>"
+`;
+
+exports[`Building Blocks updateAggregationPath scopes aggregation search to target FilterBar when multiple FilterBars exist 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\">
+    <macros:FilterBar id=\\"FilterBar1\\">
+        <macros:filterFields>
+            <macros:FilterField id=\\"field1\\"/>
+        </macros:filterFields>
+    </macros:FilterBar>
+    <macros:FilterBar id=\\"FilterBar2\\">
+        <macros:filterFields>
+            <macros:FilterField id=\\"field2\\"/>
+            <macros:FilterField key=\\"newFieldKey\\" label=\\"New Field in Bar 2\\" id=\\"newFieldInBar2\\" placement=\\"After\\" property=\\"testProperty\\">
+                <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestFragment\\" type=\\"XML\\"/>
+            </macros:FilterField>
+        </macros:filterFields>
+    </macros:FilterBar>
+</mvc:View>"
+`;
+
+exports[`Building Blocks updateAggregationPath scopes aggregation search to target Table when multiple Tables exist 1`] = `
+"<mvc:View xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:core=\\"sap.ui.core\\" xmlns:macrosTable=\\"sap.fe.macros.table\\">
+    <macros:Table id=\\"Table1\\">
+        <macros:Column id=\\"column1\\"/>
+    </macros:Table>
+    <macros:Table id=\\"Table2\\">
+        <macros:Column id=\\"column2\\"/>
+        <macrosTable:Column header=\\"New Column in Table 2\\" importance=\\"High\\" placement=\\"After\\" key=\\"myColumnKey\\">
+            <core:Fragment fragmentName=\\"my.test.App.ext.fragment.TestColumnFragment\\" type=\\"XML\\"/>
+        </macrosTable:Column>
+    </macros:Table>
+</mvc:View>"
 `;

@@ -1,5 +1,5 @@
 import type { AbapTarget } from '@sap-ux/system-access';
-import type { ServiceProvider, SystemInfo } from '@sap-ux/axios-extension';
+import type { AdaptationProjectType, ServiceProvider } from '@sap-ux/axios-extension';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 
 export const enum TargetSystemType {
@@ -46,7 +46,7 @@ export interface AbapSystemChoice {
     url?: string;
     client?: string;
     isDefault?: boolean;
-    isS4HC?: boolean;
+    isAbapCloud?: boolean;
 }
 
 /**
@@ -185,12 +185,6 @@ export type TransportInputChoicePromptOptions = {
     showCreateDuringDeploy?: boolean;
 };
 
-export type TargetSystemPromptOptions = {
-    additionalValidation?: {
-        shouldRestrictDifferentSystemType: boolean;
-    };
-};
-
 type AbapPromptsCommonOptions =
     | promptNames.destination
     | promptNames.url
@@ -205,7 +199,6 @@ type AbapPromptsCommonOptions =
 type abapPromptOptions = {
     [K in AbapPromptsCommonOptions]: CommonPromptOptions;
 } & {
-    [promptNames.targetSystem]: TargetSystemPromptOptions & CommonPromptOptions;
     [promptNames.ui5AbapRepo]: UI5AbapRepoPromptOptions & CommonPromptOptions;
     [promptNames.description]: DescriptionPromptOptions & CommonPromptOptions;
     [promptNames.packageManual]: PackageManualPromptOptions & CommonPromptOptions;
@@ -222,6 +215,7 @@ type abapPromptOptions = {
  */
 type AbapDeployConfigCommonInquirerOptions = {
     backendTarget?: BackendTarget;
+    adpProjectType?: AdaptationProjectType;
 };
 
 /**
@@ -255,7 +249,7 @@ export interface AbapDeployConfigAnswers {
 export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers {
     clientChoice?: string;
     username?: string;
-    isS4HC?: boolean;
+    isAbapCloud?: boolean;
     packageInputChoice?: PackageInputChoices;
     packageManual?: string;
     packageAutocomplete?: string;
@@ -319,8 +313,3 @@ export enum TransportChoices {
 }
 
 export type AbapDeployConfigQuestion = YUIQuestion<AbapDeployConfigAnswersInternal>;
-
-export type SystemInfoResult = {
-    systemInfo?: SystemInfo;
-    apiExist: boolean;
-};

@@ -1,5 +1,5 @@
 import { DirName } from '@sap-ux/project-access';
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { createLaunchConfig, LAUNCH_JSON_FILE, updateLaunchConfig } from '../../src';

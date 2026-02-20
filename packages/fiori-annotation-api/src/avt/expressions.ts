@@ -23,7 +23,16 @@ import type {
     PathExpression,
     PropertyPathExpression,
     StringExpression,
-    DoubleExpression
+    DoubleExpression,
+    HasExpression,
+    InExpression,
+    AddExpression,
+    SubExpression,
+    MulExpression,
+    DivExpression,
+    DivByExpression,
+    ModExpression,
+    NegExpression
 } from '@sap-ux/vocabularies-types';
 
 /**
@@ -59,6 +68,7 @@ export const expressionNames: Record<string, string> = {
 };
 
 /**
+ * Type guard to check if a value is an annotation expression.
  *
  * @param value - Node.
  * @returns True if node is an expression.
@@ -89,6 +99,15 @@ export function isExpression(
     | GtExpression
     | GeExpression
     | LtExpression
-    | LeExpression {
+    | LeExpression
+    | HasExpression
+    | InExpression
+    | AddExpression
+    | SubExpression
+    | MulExpression
+    | DivExpression
+    | DivByExpression
+    | ModExpression
+    | NegExpression {
     return typeof value === 'object' && value.type !== undefined && expressionNames[value.type] !== undefined;
 }

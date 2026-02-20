@@ -1,5 +1,5 @@
-import { createWriteStream, existsSync, promises } from 'fs';
-import { basename, dirname, join } from 'path';
+import { createWriteStream, existsSync, promises } from 'node:fs';
+import { basename, dirname, join } from 'node:path';
 import * as archiver from 'archiver';
 import { glob } from 'glob-gitignore';
 import ignore from 'ignore';
@@ -27,7 +27,7 @@ export async function archiveProject({
     targetFileName
 }: ArchiveProjectOptions): Promise<{ path: string; size: string }> {
     if (!existsSync(projectRoot)) {
-        return Promise.reject(new Error(t('error.noProjectRoot', { projectRoot })));
+        throw new Error(t('error.noProjectRoot', { projectRoot }));
     }
     const fileList = await getFileList(projectRoot);
     return new Promise((resolve, reject) => {

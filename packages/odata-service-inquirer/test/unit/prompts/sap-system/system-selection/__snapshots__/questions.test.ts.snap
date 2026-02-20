@@ -16,7 +16,7 @@ exports[`Test system selection prompts should return system selection prompts an
         },
       },
     ],
-    "default": -1,
+    "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Select a system configuration.",
@@ -131,6 +131,7 @@ exports[`Test system selection prompts should return system selection prompts an
         "name": "http://abap.on.prem:1234",
         "value": {
           "system": {
+            "connectionType": "abap_catalog",
             "name": "http://abap.on.prem:1234",
             "password": "password1",
             "systemType": "OnPrem",
@@ -141,7 +142,7 @@ exports[`Test system selection prompts should return system selection prompts an
         },
       },
     ],
-    "default": -1,
+    "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Select a system configuration.",
@@ -175,6 +176,18 @@ exports[`Test system selection prompts should return system selection prompts an
     "message": "Password",
     "name": "systemSelection:systemPassword",
     "type": "password",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "additionalMessages": [Function],
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Store Credentials",
+    },
+    "message": "Do you want to store the system credentials?",
+    "name": "systemSelection:storeSystemCredentials",
+    "type": "confirm",
     "validate": [Function],
     "when": [Function],
   },
@@ -260,6 +273,18 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Store Credentials",
+    },
+    "message": "Do you want to store the system credentials?",
+    "name": "abapOnPrem:storeSystemCredentials",
+    "type": "confirm",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
     "default": [Function],
     "guiOptions": {
       "applyDefaultWhenDirty": true,
@@ -296,10 +321,6 @@ exports[`Test system selection prompts should return system selection prompts an
         "value": "cloudFoundry",
       },
       {
-        "name": "Upload a Service Key File",
-        "value": "serviceKey",
-      },
-      {
         "name": "Use Reentrance Ticket",
         "value": "reentranceTicket",
       },
@@ -319,18 +340,6 @@ exports[`Test system selection prompts should return system selection prompts an
     },
     "message": "System URL",
     "name": "abapOnBtp:newSystemUrl",
-    "type": "input",
-    "validate": [Function],
-    "when": [Function],
-  },
-  {
-    "guiOptions": {
-      "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
-      "mandatory": true,
-    },
-    "guiType": "file-browser",
-    "message": "Service Key File Path",
-    "name": "serviceKey",
     "type": "input",
     "validate": [Function],
     "when": [Function],

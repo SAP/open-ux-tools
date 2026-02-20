@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
 
 /**
  * Executes an npm command to extract the supported npm versions from the npm registry.
@@ -7,10 +7,12 @@ import { spawn } from 'child_process';
  */
 export function executeNpmUI5VersionsCmd(): Promise<string[]> {
     return new Promise((resolve, reject) => {
-        const cmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+        const isWindows = process.platform === 'win32';
+        const cmd = isWindows ? 'npm.cmd' : 'npm';
         const args = ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'];
         const stack: any = [];
-        const spawnedCmd = spawn(cmd, args, {});
+        const spawnOptions = isWindows ? { shell: true } : {};
+        const spawnedCmd = spawn(cmd, args, spawnOptions);
         spawnedCmd.stdout.setEncoding('utf8');
         let response: string;
 

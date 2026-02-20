@@ -220,7 +220,8 @@ export const toAnnotationFile = (
     cdsAnnotationFile: CdsAnnotationFile,
     metadataCollector: MetadataCollector,
     position?: Position,
-    propagationMap?: PropagatedTargetMap
+    propagationMap?: PropagatedTargetMap,
+    mergePropagatedAnnotations = false
 ): { file: AnnotationFile; pointer?: PositionPointer; nodeRange?: Range; diagnostics?: ExtendedDiagnostic[] } => {
     const supportedVocabularies = [...vocabularyService.getVocabularies().values()];
     const returnValue: ReturnValue = {
@@ -276,7 +277,7 @@ export const toAnnotationFile = (
         };
     });
     returnValue.diagnostics = diagnostics;
-    checkGhostTarget(returnValue, propagationMap);
+    checkGhostTarget(returnValue, propagationMap, mergePropagatedAnnotations);
 
     return returnValue;
 };
@@ -347,7 +348,7 @@ function convertTargetAnnotations(
             // TODO: clean this up
             if (pointer) {
                 const [innerIndex, ...rest] = pointer.split('/').slice(1);
-                const adjustedTermIndex = acc.length + parseInt(innerIndex, 10);
+                const adjustedTermIndex = acc.length + Number.parseInt(innerIndex, 10);
                 returnValue.pointer = ['', 'targets', targetIndex, 'terms', adjustedTermIndex, ...rest].join('/');
                 // if there is no pointer, then node range is meaningless
                 returnValue.nodeRange = nodeRange;
@@ -373,11 +374,17 @@ function convertTargetAnnotations(
 }
 
 /**
+ * Checks for ghost targets in propagation map and adds them to the file targets.
  *
  * @param returnValue - The return value containing file targets.
  * @param [propagationMap] - The map of propagated targets.
+ * @param mergePropagatedAnnotations - Flag indicating whether to merge propagated annotations in the existing file.
  */
-function checkGhostTarget(returnValue: ReturnValue, propagationMap?: PropagatedTargetMap): void {
+function checkGhostTarget(
+    returnValue: ReturnValue,
+    propagationMap?: PropagatedTargetMap,
+    mergePropagatedAnnotations?: boolean
+): void {
     if (propagationMap) {
         const sourceTargets = returnValue.file.targets;
         const ghostTargets: TargetType[] = [];
@@ -386,16 +393,23 @@ function checkGhostTarget(returnValue: ReturnValue, propagationMap?: PropagatedT
                 Object.keys(propagationMap[target.name]).forEach((propagatedTargetName) => {
                     const ghostTarget = { ...target };
                     ghostTarget.name = propagatedTargetName;
-                    ghostTargets.push(ghostTarget);
+                    if (mergePropagatedAnnotations) {
+                        returnValue.file.targets.push(ghostTarget);
+                    } else {
+                        ghostTargets.push(ghostTarget);
+                    }
                 });
             }
         });
 
-        returnValue.file.targets = ghostTargets;
+        if (!mergePropagatedAnnotations) {
+            returnValue.file.targets = ghostTargets;
+        }
     }
 }
 
 /**
+ * Extracts the ValueListProperty path value from a value list parameter record element.
  *
  * @param valueListParameterRecordElement record element inside value list information.
  * @returns value list property path or undefined.
@@ -427,6 +441,7 @@ const getRecordPropertyElement = (recordElement: Element, propertyName: string):
 };
 
 /**
+ * Extracts the CollectionPath value from a value list record element.
  *
  * @param valueListRecordElement record element inside value list information.
  * @returns value of value list CollectionPath
@@ -449,6 +464,7 @@ function getValueListCollectionPathValue(valueListRecordElement: Element): strin
 }
 
 /**
+ * Extracts collection path and parameters from a value list term annotation.
  *
  * @param term valueList term element
  * @returns value list properties e.g collection path, parameters.
@@ -477,6 +493,7 @@ function extractValueListPropertiesFromAnnotation(term: Element): { collectionPa
 }
 
 /**
+ * Collects all ValueListProperty values from a collection element.
  *
  * @param collection collection inside valueList Term
  * @returns list of all value list properties in string array.
@@ -498,6 +515,7 @@ function collectAllValueListProperty(collection: Element): string[] {
 }
 
 /**
+ * Extracts metadata paths from ValueList annotations and adds them to the provided set.
  *
  * @param terms - An array of elements representing terms with annotations.
  * @param mdPathSet - The set to which metadata paths are added.

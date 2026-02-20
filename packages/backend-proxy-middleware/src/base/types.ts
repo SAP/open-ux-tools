@@ -66,11 +66,5 @@ export type BackendConfig = LocalBackendConfig | DestinationBackendConfig;
 export interface BackendMiddlewareConfig {
     backend: BackendConfig;
     options?: Partial<Options>;
-}
-
-export interface MiddlewareParameters<T> {
-    resources: object;
-    options: {
-        configuration: T;
-    };
+    debug?: boolean;
 }

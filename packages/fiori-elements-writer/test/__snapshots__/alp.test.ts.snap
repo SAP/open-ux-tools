@@ -28,7 +28,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -50,7 +50,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: alp2
 type: application
@@ -108,7 +108,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: alp2
 type: application
@@ -159,7 +159,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: alp2
 type: application
@@ -5431,7 +5431,7 @@ const parsedUI5Version = sap.ui.version.split('.');
 
 //For UI5 version >= 1.80, the location of the FileListBaseConnector is different
 const connectorPath =
-    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+    Number.parseInt(parsedUI5Version[0], 10) >= 1 && Number.parseInt(parsedUI5Version[1], 10) >= 80
         ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
@@ -5470,7 +5470,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
   "webapp/test/changes_preview.js": Object {
     "contents": "//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
-if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+if (Number.parseInt(version[0], 10) <= 1 && Number.parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
     sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
         jQuery.extend(FakeLrepConnector.prototype, {
@@ -5915,7 +5915,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -6020,7 +6019,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^4.0.16\\",
+    \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -6042,7 +6041,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: alp1
 type: application
@@ -6095,7 +6094,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: alp1
 type: application
@@ -6144,7 +6143,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"3.1\\"
+specVersion: \\"4.0\\"
 metadata:
   name: alp1
 type: application
@@ -11669,6 +11668,11 @@ appDescription=A Fiori application.",
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
     \\"archeType\\": \\"analytical\\"
+  },
+  \\"sap.fe\\": {
+    \\"app\\": {
+      \\"enableLazyLoading\\": true
+    }
   }
 }
 ",
@@ -11929,7 +11933,6 @@ function registerSAPFonts() {
     });
 };
 
-/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;

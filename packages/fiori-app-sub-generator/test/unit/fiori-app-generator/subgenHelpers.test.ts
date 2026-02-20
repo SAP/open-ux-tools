@@ -4,7 +4,7 @@ import type { Destination } from '@sap-ux/btp-utils';
 import { DefaultLogger } from '@sap-ux/fiori-generator-shared';
 import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers';
 import { ApiHubType } from '../../../src/types';
-import { join } from 'path';
+import { join } from 'node:path';
 
 describe('Subgen (flp/deploy) are correctly composedWith', () => {
     it('Should call composeWith `@sap/fiori:flp-config` with correct options', async () => {

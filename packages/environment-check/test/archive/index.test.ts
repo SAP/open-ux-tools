@@ -1,6 +1,6 @@
 import type * as archiver from 'archiver';
-import { join } from 'path';
-import * as mockFs from 'fs';
+import { join } from 'node:path';
+import * as mockFs from 'node:fs';
 import * as mockGlobGitignore from 'glob-gitignore';
 
 import { archiveProject } from '../../src/archive';

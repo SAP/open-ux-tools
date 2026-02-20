@@ -1,25 +1,25 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { isAbapEnvironmentOnBtp, isAppStudio, isS4HC, type Destinations } from '@sap-ux/btp-utils';
+import { AdaptationProjectType, isAxiosError, type SystemInfo } from '@sap-ux/axios-extension';
+import { isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
 import { handleTransportConfigError } from '../error-handler';
 import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
-import { getSystemInfo, getTransportListFromService, isAbapCloud } from '../service-provider-utils';
+import { getTransportListFromService } from '../service-provider-utils';
 import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
 import {
     ClientChoiceValue,
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
+    type Credentials,
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
     type BackendTarget,
     type PackagePromptOptions,
     type SystemConfig,
-    type TargetSystemPromptOptions,
     type UI5AbapRepoPromptOptions
 } from '../types';
 import {
@@ -42,45 +42,28 @@ import { PromptState } from './prompt-state';
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 
 /**
- * Validates the system type based on the provided options and backend target.
- *
- * @param options - target system options
- * @returns boolean
- */
-async function validateSystemType(options?: TargetSystemPromptOptions): Promise<boolean | string> {
-    if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
-        const isDefaultProviderAbapCloud = AbapServiceProviderManager.getIsDefaultProviderAbapCloud();
-        const isSelectedS4HC = PromptState?.abapDeployConfig?.isS4HC;
-        if (isDefaultProviderAbapCloud === true && isSelectedS4HC === false) {
-            return t('errors.validators.invalidCloudSystem');
-        } else if (isDefaultProviderAbapCloud === false && isSelectedS4HC) {
-            return t('errors.validators.invalidOnPremSystem');
-        }
-    }
-
-    return true;
-}
-/**
  * Validates the destination question and sets the destination in the prompt state.
  *
  * @param destination - chosen destination
  * @param destinations - list of destinations
- * @param options - target system options
  * @param backendTarget - backend target
+ * @param adpProjectType - The adaptation project type.
  * @returns boolean
  */
 export async function validateDestinationQuestion(
     destination: string,
     destinations?: Destinations,
-    options?: TargetSystemPromptOptions,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
-    await updateDestinationPromptState(destination, destinations, options, backendTarget);
-    const systemTypeValidation = await validateSystemType(options);
-    if (typeof systemTypeValidation === 'string') {
-        return systemTypeValidation;
+    updateDestinationPromptState(destination, destinations);
+
+    const adpProjectTypeValidation = await validateSystemSupportAdpProjectType(adpProjectType, backendTarget);
+    if (typeof adpProjectTypeValidation === 'string') {
+        return adpProjectTypeValidation;
     }
+
     return !!destination?.trim();
 }
 
@@ -90,26 +73,26 @@ export async function validateDestinationQuestion(
  * @param props - properties to update
  * @param props.url - url
  * @param props.client - client
- * @param props.isS4HC - is S/4HANA Cloud
+ * @param props.isAbapCloud - Cloud based Abap (either Steampunk or Embedded Steampunk)
  * @param props.scp - is SCP
  * @param props.target - target system
  */
 function updatePromptState({
     url,
     client,
-    isS4HC,
+    isAbapCloud,
     scp,
     target
 }: {
     url: string;
     client?: string;
-    isS4HC?: boolean;
+    isAbapCloud?: boolean;
     scp?: boolean;
     target?: string;
 }): void {
     PromptState.abapDeployConfig.url = url;
     PromptState.abapDeployConfig.client = client;
-    PromptState.abapDeployConfig.isS4HC = isS4HC;
+    PromptState.abapDeployConfig.isAbapCloud = isAbapCloud;
     PromptState.abapDeployConfig.scp = scp;
     PromptState.abapDeployConfig.targetSystem = target;
 }
@@ -117,32 +100,21 @@ function updatePromptState({
 /**
  * Updates the destination prompt state.
  *
- * @param destination - destination
- * @param destinations - list of destinations
- * @param options - target system options
- * @param backendTarget - backend target
+ * @param destinationName - The destination name.
+ * @param destinations - Map organizing destinations by name.
  */
-export async function updateDestinationPromptState(
-    destination: string,
-    destinations: Destinations = {},
-    options?: TargetSystemPromptOptions,
-    backendTarget?: BackendTarget
-): Promise<void> {
-    const dest = destinations[destination];
-    if (dest) {
-        PromptState.abapDeployConfig.destination = dest.Name;
-        updatePromptState({
-            url: dest?.Host,
-            client: dest['sap-client'],
-            isS4HC: isS4HC(dest),
-            scp: isAbapEnvironmentOnBtp(dest)
-        });
-
-        if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
-            const isS4HCloud = await isAbapCloud(backendTarget);
-            PromptState.abapDeployConfig.isS4HC = isS4HCloud ?? false;
-        }
+export function updateDestinationPromptState(destinationName: string, destinations: Destinations = {}): void {
+    const destination = destinations[destinationName];
+    if (!destination) {
+        return;
     }
+    PromptState.abapDeployConfig.destination = destination.Name;
+    updatePromptState({
+        url: destination?.Host,
+        client: destination['sap-client'],
+        isAbapCloud: isS4HC(destination),
+        scp: isAbapEnvironmentOnBtp(destination)
+    });
 }
 
 /**
@@ -150,38 +122,48 @@ export async function updateDestinationPromptState(
  *
  * @param target - target system
  * @param choices - abab system choices
- * @param options - target system options
+ * @param backendTarget - The backend target
+ * @param adpProjectType - The Adaptation project type
  * @returns boolean or error message string
  */
 export async function validateTargetSystem(
     target?: string,
     choices?: AbapSystemChoice[],
-    options?: TargetSystemPromptOptions
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
     if (!target || target === TargetSystemType.Url) {
         return true;
     }
-    const isValid = isValidUrl(target?.trim());
-    if (isValid === true && choices) {
-        const choice = choices.find((choice) => choice.value === target);
 
-        if (choice) {
-            updatePromptState({
-                url: choice.value,
-                client: choice.client ?? '',
-                scp: choice.scp,
-                isS4HC: choice.isS4HC,
-                target: target
-            });
-        }
+    const targetSystemUrl = target?.trim();
+    const isValidSystemUrl = isValidUrl(targetSystemUrl);
 
-        const systemTypeValidation = await validateSystemType(options);
-        if (typeof systemTypeValidation === 'string') {
-            return systemTypeValidation;
-        }
+    const choice = choices?.find((choice) => choice.value === target);
+    if (isValidSystemUrl && choice) {
+        updatePromptState({
+            url: choice.value,
+            client: choice.client ?? '',
+            scp: choice.scp,
+            isAbapCloud: choice.isAbapCloud,
+            target: target
+        });
     }
-    return isValid;
+
+    // If ADP project type is not relevant, URL validity is enough.
+    if (!adpProjectType) {
+        return isValidSystemUrl || t('errors.invalidUrl', { url: targetSystemUrl });
+    }
+
+    // ADP also requires a valid system URL.
+    if (!isValidSystemUrl) {
+        return t('errors.invalidUrl', { url: targetSystemUrl });
+    }
+
+    const adpProjectTypeValidation = await validateSystemSupportAdpProjectType(adpProjectType, backendTarget);
+
+    return typeof adpProjectTypeValidation === 'string' ? adpProjectTypeValidation : true;
 }
 
 /**
@@ -202,7 +184,7 @@ export function validateUrl(input: string): boolean | string {
             url: input.trim(),
             client: backendSystem?.client,
             scp: !!backendSystem?.serviceKeys,
-            isS4HC: backendSystem?.authenticationType === AuthenticationType.ReentranceTicket
+            isAbapCloud: backendSystem?.authenticationType === AuthenticationType.ReentranceTicket
         });
     } else {
         return t('errors.invalidUrl', { url: input?.trim() });
@@ -215,14 +197,22 @@ export function validateUrl(input: string): boolean | string {
  *
  * @param targetSystem - target system
  * @param choices - abap system choices
+ * @param backendTarget - The backend target.
+ * @param adpProjectType - The Adaptation project type.
  * @throws Error if target system is invalid
  */
-export function validateTargetSystemUrlCli(targetSystem?: string, choices?: AbapSystemChoice[]): void {
-    if (!PromptState.isYUI) {
-        const isTargetValid = validateTargetSystem(targetSystem, choices);
-        if (typeof isTargetValid === 'string') {
-            throw new Error(isTargetValid);
-        }
+export async function validateTargetSystemUrlCli(
+    targetSystem?: string,
+    choices?: AbapSystemChoice[],
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
+): Promise<void> {
+    if (PromptState.isYUI) {
+        return;
+    }
+    const isTargetValid = await validateTargetSystem(targetSystem, choices, backendTarget, adpProjectType);
+    if (typeof isTargetValid === 'string') {
+        throw new Error(isTargetValid);
     }
 }
 
@@ -278,38 +268,44 @@ export function validateClient(client: string): boolean | string {
  * @param input - password entered
  * @param previousAnswers - previous answers
  * @param backendTarget - backend target from abap deploy config prompt options
- * @param shouldCheckSystemType - if the system type should be checked
+ * @param adpProjectType - The adaptation project type.
  * @returns boolean or error message as a string
  */
 export async function validateCredentials(
     input: string,
     previousAnswers: AbapDeployConfigAnswersInternal,
     backendTarget?: BackendTarget,
-    shouldCheckSystemType = false
+    adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
     if (!input || !previousAnswers.username) {
         return t('errors.requireCredentials');
     }
 
+    const credentials: Credentials = {
+        username: previousAnswers.username,
+        password: input
+    };
     const { transportConfigNeedsCreds } = await initTransportConfig({
         backendTarget: backendTarget,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
-        credentials: {
-            username: previousAnswers.username,
-            password: input
-        },
+        credentials,
         errorHandler: (e: string) => {
             handleTransportConfigError(e);
         }
     });
 
-    if (isAppStudio() && shouldCheckSystemType) {
-        const isS4HCloud = await isAbapCloud(backendTarget);
-        PromptState.abapDeployConfig.isS4HC = isS4HCloud ?? false;
+    PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
+
+    const adpProjectTypeValidation = await validateSystemSupportAdpProjectType(
+        adpProjectType,
+        backendTarget,
+        credentials
+    );
+    if (typeof adpProjectTypeValidation === 'string') {
+        return adpProjectTypeValidation;
     }
 
-    PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
     return transportConfigNeedsCreds ? t('errors.incorrectCredentials') : true;
 }
 
@@ -643,27 +639,33 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
  *
  * @param {string} input - The name of the package to validate.
  * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
+ * @param {AdaptationProjectType | undefined} adpProjectType - The project type.
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
-async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
-    const isS4HC = PromptState?.abapDeployConfig?.isS4HC;
-    if (!isS4HC) {
-        LoggerHelper.logger.debug(`System is OnPremise, skipping package "${input}" type validation`);
-        return true;
-    }
-    const systemInfoResult = await getSystemInfo(input, backendTarget);
-    if (!systemInfoResult.apiExist) {
-        return true;
-    }
+async function validatePackageType(
+    input: string,
+    backendTarget?: BackendTarget,
+    adpProjectType?: AdaptationProjectType
+): Promise<boolean | string> {
+    try {
+        if (adpProjectType === AdaptationProjectType.ON_PREMISE) {
+            LoggerHelper.logger.debug(`Project is OnPremise, skipping package "${input}" type validation`);
+            return true;
+        }
 
-    const types = systemInfoResult.systemInfo?.adaptationProjectTypes;
-    if (types && types?.length > 1) {
-        return true;
+        const { adaptationProjectTypes } = await getSystemInfo(input, backendTarget);
+
+        const isValidPackage =
+            adaptationProjectTypes.length > 1 || adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY;
+
+        return isValidPackage ? true : t('errors.validators.invalidCloudPackage');
+    } catch (error) {
+        // If the api is missing return true.
+        if (isAxiosError(error) && error.response?.status === 404) {
+            return true;
+        }
+        return t('errors.validators.invalidCloudPackage');
     }
-
-    const isValidPackageType = types?.length === 1 && types[0] === AdaptationProjectType.CLOUD_READY;
-
-    return isValidPackageType ? true : t('errors.validators.invalidCloudPackage');
 }
 
 /**
@@ -675,6 +677,7 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
  * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional for ui5AbapRepo.
  * @param {BackendTarget} [backendTarget] - The backend target for validation context.
  * @param {boolean} [useStandalone] - indicates if the package prompts are being ran in standalone.
+ * @param {AdaptationProjectType | undefined} adpProjectType - The adaptation project type.
  * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
  *                                        a `string` with an error message if validation fails,
  *                                        or the result of additional cloud package validation if applicable.
@@ -685,7 +688,8 @@ export async function validatePackage(
     promptOption?: PackagePromptOptions,
     ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
     backendTarget?: BackendTarget,
-    useStandalone?: boolean
+    useStandalone?: boolean,
+    adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
     PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
     if (!input?.trim()) {
@@ -730,7 +734,7 @@ export async function validatePackage(
     }
 
     if (promptOption?.additionalValidation?.shouldValidatePackageType) {
-        return await validatePackageType(input, backendTarget);
+        return await validatePackageType(input, backendTarget, adpProjectType);
     }
 
     return true;
@@ -817,11 +821,93 @@ function shouldValidatePackageForStartingPrefix(
         answers.ui5AbapRepo &&
         promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix &&
         !ui5AbapPromptOptions?.hide &&
-        !(
-            ui5AbapPromptOptions?.hideIfOnPremise === true &&
-            PromptState.abapDeployConfig?.isS4HC === false &&
-            PromptState.abapDeployConfig?.scp === false
-        )
+        !(ui5AbapPromptOptions?.hideIfOnPremise && PromptState.abapDeployConfig?.scp === false)
     );
     return shouldValidatePackageForStartingPrefix;
+}
+
+/**
+ * Validates whether the provided type of an adaptation project can be deployed on the
+ * system with destination: {@link PromptState.abapDeployConfig.destination}.
+ *
+ * @param {AdaptationProjectType | undefined} adpProjectType - The adaptation project type.
+ * @param {BackendTarget | undefined} backendTarget - The system on which the Adaptation project is created.
+ * @param {Credentials | undefined} [credentials] - Optional credentials to the ABAP system.
+ * @returns {Promise<boolean | string>} Promise resolved with true in case the validation succeed otherwise with a string
+ * containing an error message or undefined if the project type is not provided. If the deployment destination
+ * requires authentication the function resolves with true.
+ */
+async function validateSystemSupportAdpProjectType(
+    adpProjectType?: AdaptationProjectType,
+    backendTarget?: BackendTarget,
+    credentials?: Credentials
+): Promise<boolean | string | undefined> {
+    try {
+        if (!adpProjectType) {
+            return undefined;
+        }
+
+        const { adaptationProjectTypes } = await getSystemInfo(undefined, backendTarget, credentials);
+        if (!adaptationProjectTypes.length) {
+            return t('errors.validators.invalidAdpProjectTypes');
+        }
+        const supportedAdpProjectTypes = adaptationProjectTypes.join(',');
+        return adaptationProjectTypes.includes(adpProjectType)
+            ? true
+            : t('errors.validators.unsupportedAdpProjectType', {
+                  adpProjectType,
+                  supportedAdpProjectTypes
+              });
+    } catch (error) {
+        if (!isAxiosError(error)) {
+            return error.message;
+        }
+
+        const status = error.response?.status;
+
+        // We omit the validation in case the user is not authenticated.
+        if (status === 401 || status === 403) {
+            return true;
+        }
+
+        // In case the system info api is not found we assume we are in an onPremise system.
+        if (status === 404) {
+            return adpProjectType === AdaptationProjectType.ON_PREMISE
+                ? true
+                : t('errors.validators.unsupportedAdpProjectType', {
+                      adpProjectType,
+                      supportedAdpProjectTypes: AdaptationProjectType.ON_PREMISE
+                  });
+        }
+
+        return error.message;
+    }
+}
+
+/**
+ * Fetches system information for a specified package from an ABAP system. This method
+ * calls the system info api call for the system related to the destination prompt.
+ *
+ * @param {string | undefined} packageName - The name of the package for which to retrieve system information.
+ * @param {BackendTarget} [backendTarget] - Optional backend target information.
+ * @param {Credentials | undefined} [credentials] - Optional credentials to the ABAP system.
+ * @returns {Promise<SystemInfo>} A promise resolved with the system information.
+ */
+async function getSystemInfo(
+    packageName?: string,
+    backendTarget?: BackendTarget,
+    credentials?: Credentials
+): Promise<SystemInfo> {
+    // NOTE avasilev: The provider instance here actualy does not point always the
+    // backendTarget but the system with destination: PromptState.abapDeployConfig.destination
+    // which is actualy the system selected from the destination prompt which is ok for the consumers of this method.
+    // From a developer experience point of view the AbapServiceProviderManager.buildAbapTarget()
+    // which is a private static method of the class uses the PromptState.abapDeployConfig.destination
+    // in order to construct the provider instance returned by the AbapServiceProviderManager.getOrCreateServiceProvider(),
+    // the destination variable is not part of the class definition and is mutated outside of the class body in various places.
+    // This breaks the class encapsulation and is hard to understand and brings a confusion also could lead
+    // to unexpected behaviour.
+    const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget, credentials);
+    const lrep = provider.getLayeredRepository();
+    return lrep.getSystemInfo(undefined, packageName);
 }

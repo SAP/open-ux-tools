@@ -25,14 +25,14 @@ import { CommonAnnotationTerms, CommonAnnotationTypes } from '@sap-ux/vocabulari
 import type { PropertyAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { Hidden } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTerms, UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { join } from 'path';
-import { pathToFileURL } from 'url';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { adaptFilePath } from './utils';
 
-const draftSpecificFields = ['IsActiveEntity', 'HasActiveEntity', 'HasDraftEntity'];
+const draftSpecificFields = new Set(['IsActiveEntity', 'HasActiveEntity', 'HasDraftEntity']);
 
 const commonNodeModulePath = join('node_modules', '@sap', 'cds', 'common.cds');
-const managedProperties = ['createdAt', 'createdBy', 'modifiedAt', 'modifiedBy'];
+const managedProperties = new Set(['createdAt', 'createdBy', 'modifiedAt', 'modifiedBy']);
 
 const FACETS_PROP_NAME_LABEL = 'Label';
 const FACETS_PROP_NAME_ID = 'ID';
@@ -311,7 +311,7 @@ function generateFieldGroup(context: Context): RawAnnotation {
 function getDataFieldRecordCollection(context: Context, isListReport = false): AnnotationRecord[] {
     const { project, metadataService, entityType } = context;
 
-    const properties = entityType.entityProperties.filter((property) => !draftSpecificFields.includes(property.name));
+    const properties = entityType.entityProperties.filter((property) => !draftSpecificFields.has(property.name));
 
     const keyCount = moveKeysToBeginning(isListReport, entityType, properties);
 
@@ -325,7 +325,7 @@ function getDataFieldRecordCollection(context: Context, isListReport = false): A
             type === 'Edm.Guid' ||
             !type?.startsWith('Edm') ||
             // can't use nullish coalescing for boolean values
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
             mdElement?.isCollectionValued ||
             // for CDS: no fields from sap.cds.common
             ((project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs') &&
@@ -427,7 +427,7 @@ function isPropertyFromCommonNodeModule(propName: string, locationUri?: string):
     if (!propName || !locationUri) {
         return false;
     }
-    return managedProperties.includes(propName) && locationUri.endsWith(commonNodeModulePath);
+    return managedProperties.has(propName) && locationUri.endsWith(commonNodeModulePath);
 }
 
 function isHidden(hiddenAnno: Hidden | undefined): boolean {
@@ -629,7 +629,7 @@ function getValueListParameterDisplayOnly(
                 prop.isComplexType ||
                 hidden ||
                 prop.edmPrimitiveType === 'Edm.Guid' ||
-                draftSpecificFields.includes(prop.name) ||
+                draftSpecificFields.has(prop.name) ||
                 isPropertyFromCommonNodeModule(prop.name, prop.location?.uri);
 
             return !isOmit;

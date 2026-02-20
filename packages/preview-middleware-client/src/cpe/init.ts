@@ -4,7 +4,8 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import {
     appLoaded,
     enableTelemetry,
-    iconsLoaded
+    iconsLoaded,
+    MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../utils/error';
@@ -20,6 +21,18 @@ import { RtaService } from './rta-service';
 import { SelectionService } from './selection';
 import type { ActionHandler, Service } from './types';
 import { getIcons } from './ui5-utils';
+import { ODataHealthChecker } from './odata-health/odata-health-checker';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { ODataUpStatus } from './odata-health/odata-health-status';
+
+/**
+ * Subscribes a handler to the CommunicationService
+ *
+ * @param handler action handler
+ */
+function subscribe(handler: ActionHandler): void {
+    CommunicationService.subscribe(handler);
+}
 
 export default function init(
     rta: RuntimeAuthoring,
@@ -31,14 +44,6 @@ export default function init(
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {
         enableTelemetry();
-    }
-
-    /**
-     *
-     * @param handler action handler
-     */
-    function subscribe(handler: ActionHandler): void {
-        CommunicationService.subscribe(handler);
     }
 
     const rtaService = new RtaService(rta);
@@ -59,13 +64,39 @@ export default function init(
         quickActionService
     ];
 
+    // Do health check to all available oData service instances.
+    const oDataHealthChecker = new ODataHealthChecker(rta);
+    oDataHealthChecker
+        .getHealthStatus()
+        .then((healthStatus) =>
+            healthStatus.map((status) =>
+                status instanceof ODataUpStatus
+                    ? Promise.resolve()
+                    : sendInfoCenterMessage({
+                          title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
+                          description: {
+                              key: 'ADP_ODATA_SERVICE_DOWN_DESCRIPTION',
+                              params: [status.serviceUrl, status.errorMessage]
+                          },
+                          type: MessageBarType.warning
+                      })
+            )
+        )
+        .catch((error) =>
+            sendInfoCenterMessage({
+                title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
+                description: getError(error).message,
+                type: MessageBarType.warning
+            })
+        );
+
     try {
         loadDefaultLibraries();
         const allPromises = services.map((service) => {
             return service.init(CommunicationService.sendAction, subscribe)?.catch((error) => {
                 Log.error('Service Initialization Failed: ', getError(error));
             });
-        });
+        }).filter((p): p is Promise<void> => p !== undefined);
         Promise.all(allPromises)
             .then(() => {
                 CommunicationService.sendAction(appLoaded());

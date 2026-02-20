@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { UI5LibInput, UI5LibInputTS } from '../types';
 import { getFilePaths } from '@sap-ux/project-access';
 import { mergeObjects, UI5Config } from '@sap-ux/ui5-config';
-import { join } from 'path';
+import { join } from 'node:path';
 import { gte } from 'semver';
 
 /**

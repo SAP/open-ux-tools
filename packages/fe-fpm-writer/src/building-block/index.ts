@@ -1,29 +1,32 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
+import { coerce, lt } from 'semver';
+import { join, parse, relative } from 'node:path';
+import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
+import format from 'xml-formatter';
+import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
-import { join, parse, relative } from 'path';
+
+import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
     BuildingBlockType,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
     type RichTextEditor,
-    bindingContextAbsolute
+    bindingContextAbsolute,
+    type TemplateConfig
 } from './types';
-import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
-import * as xpath from 'xpath';
-import format from 'xml-formatter';
+import type { Manifest } from '../common/types';
 import { getErrorMessage, validateBasePath, validateDependenciesLibs } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
-import { coerce, lt } from 'semver';
-import type { Manifest } from '../common/types';
-import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddNamespace } from './prompts/utils/xml';
 import { i18nNamespaces, translate } from '../i18n';
+import { processBuildingBlock } from './processor';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -60,12 +63,23 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
     }
 
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
+
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
-    const { content: manifest } = await getManifest(basePath, fs);
-    const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
+    const { updatedAggregationPath, processedBuildingBlockData, hasAggregation, aggregationNamespace } =
+        processBuildingBlock(buildingBlockData, xmlDocument, manifestPath, manifest, aggregationPath, fs);
 
-    if (buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor) {
+    const templateConfig: TemplateConfig = {
+        hasAggregation,
+        aggregationNamespace
+    };
+    const templateDocument = getTemplateDocument(processedBuildingBlockData, xmlDocument, fs, manifest, templateConfig);
+
+    if (
+        buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditor ||
+        buildingBlockData.buildingBlockType === BuildingBlockType.RichTextEditorButtonGroups
+    ) {
         const minUI5Version = manifest ? coerce(getMinimumUI5Version(manifest)) : undefined;
         if (minUI5Version && lt(minUI5Version, '1.117.0')) {
             const t = translate(i18nNamespaces.buildingBlock, 'richTextEditorBuildingBlock.');
@@ -77,7 +91,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     fs = updateViewFile(
         basePath,
         viewOrFragmentPath,
-        aggregationPath,
+        updatedAggregationPath,
         xmlDocument,
         templateDocument,
         fs,
@@ -206,6 +220,7 @@ function getMetaPath(
  * @param {Manifest} manifest - the manifest content
  * @param {Editor} fs - the memfs editor instance
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @param {Record<string, unknown>} templateConfig - additional template configuration
  * @returns {string} the template xml file content
  */
 function getTemplateContent<T extends BuildingBlock>(
@@ -213,7 +228,8 @@ function getTemplateContent<T extends BuildingBlock>(
     viewDocument: Document | undefined,
     manifest: Manifest | undefined,
     fs: Editor,
-    usePlaceholders?: boolean
+    usePlaceholders?: boolean,
+    templateConfig?: TemplateConfig
 ): string {
     const templateFolderName = buildingBlockData.buildingBlockType;
     const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
@@ -245,7 +261,8 @@ function getTemplateContent<T extends BuildingBlock>(
         fs.read(templateFilePath),
         {
             macrosNamespace: viewDocument ? getOrAddNamespace(viewDocument, 'sap.fe.macros', 'macros') : 'macros',
-            data: buildingBlockData
+            data: buildingBlockData,
+            config: templateConfig
         },
         {}
     );
@@ -255,12 +272,13 @@ function getTemplateContent<T extends BuildingBlock>(
  * Method returns the manifest content for the required dependency library.
  *
  * @param {Editor} fs - the memfs editor instance
+ * @param {string} library - the dependency library
  * @returns {Promise<string>} Manifest content for the required dependency library.
  */
-export async function getManifestContent(fs: Editor): Promise<string> {
+export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'): Promise<string> {
     // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
     const templatePath = getTemplatePath('/building-block/common/manifest.json');
-    return render(fs.read(templatePath), { libraries: { 'sap.fe.macros': {} } });
+    return render(fs.read(templatePath), { libraries: { [library]: {} } });
 }
 
 /**
@@ -270,15 +288,24 @@ export async function getManifestContent(fs: Editor): Promise<string> {
  * @param {Document} viewDocument - the view xml file document
  * @param {Editor} fs - the memfs editor instance
  * @param  {Manifest} manifest - the manifest content
+ * @param {Record<string, unknown>} templateConfig - additional template configuration
  * @returns {Document} the template xml file document
  */
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: Document | undefined,
     fs: Editor,
-    manifest: Manifest | undefined
+    manifest: Manifest | undefined,
+    templateConfig: TemplateConfig
 ): Document {
-    const templateContent = getTemplateContent(buildingBlockData, viewDocument, manifest, fs);
+    const templateContent = getTemplateContent(
+        buildingBlockData,
+        viewDocument,
+        manifest,
+        fs,
+        undefined,
+        templateConfig
+    );
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };

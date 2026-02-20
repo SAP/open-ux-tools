@@ -1,5 +1,5 @@
-import { existsSync } from 'fs';
-import { dirname, isAbsolute, join, parse } from 'path';
+import { existsSync } from 'node:fs';
+import { dirname, isAbsolute, join, parse } from 'node:path';
 import { FileName } from '../constants';
 import { readJSON, updatePackageJSON } from '../file';
 import type { Package } from '../types';

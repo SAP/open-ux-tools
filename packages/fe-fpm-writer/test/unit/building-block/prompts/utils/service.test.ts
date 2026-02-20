@@ -1,5 +1,5 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { join } from 'path';
+import { join } from 'node:path';
 import { getProject } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
@@ -18,7 +18,7 @@ const ENTITY_SET = 'C_CustomerOP';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+
     ...(jest.requireActual('@sap-ux/project-access') as object),
     getCapModelAndServices: jest.fn().mockResolvedValue({
         model: {},

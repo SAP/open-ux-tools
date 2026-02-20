@@ -1,7 +1,7 @@
 import type { AbapDeployConfig, CliOptions } from '../../../src/types';
 import { getDeploymentConfig, mergeConfig } from '../../../src/cli/config';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import ProcessEnv = NodeJS.ProcessEnv;
 
 describe('cli/config', () => {

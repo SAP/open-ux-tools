@@ -1,4 +1,4 @@
-// Last content update: Sat Jun 14 2025 13:41:16 GMT+0200 (Mitteleuropäische Sommerzeit)
+// Last content update: Mon Feb 16 2026 12:18:31 GMT+0100 (Central European Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -1628,7 +1628,7 @@ export default {
         },
         'Placeholder': {
             '$Kind': 'Term',
-            '$AppliesTo': ['Property', 'Parameter'],
+            '$AppliesTo': ['Property', 'Parameter', 'Record'],
             '@Org.OData.Core.V1.Description':
                 'A short, human-readable text that gives a hint or an example to help the user with data entry',
             '@Org.OData.Core.V1.IsLanguageDependent': true
@@ -1883,6 +1883,7 @@ export default {
                 'com.sap.vocabularies.UI.v1.Hidden',
                 'com.sap.vocabularies.UI.v1.Importance',
                 'com.sap.vocabularies.UI.v1.PartOfPreview',
+                'com.sap.vocabularies.UI.v1.Placeholder',
                 'com.sap.vocabularies.HTML5.v1.CssDefaults',
                 'com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues',
                 'com.sap.vocabularies.Common.v1.FieldControl'
@@ -2260,12 +2261,13 @@ export default {
         },
         'Recommendations': {
             '$Kind': 'Term',
-            '$Type': 'Edm.ComplexType',
+            '$Type': 'Edm.Untyped',
             '$AppliesTo': ['EntityType'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description': 'Recommendations for an entity',
             '@Org.OData.Core.V1.LongDescription':
-                'This complex-typed annotation contains structural properties corresponding via name equality\nto non-key structural primitive properties of the entity type for which recommendations are available.\nThe type of such a property is a collection of a informal specialization of [`PropertyRecommendationType`](#PropertyRecommendationType).\n(The specializiations are called "informal" because they may omit the property `RecommendedFieldDescription`.)\n\nClients retrieve the recommendations with a GET request that includes this annotation in a `$select` clause.\nThe recommendations MAY be computed asynchronously, see [this diagram](../docs/recommendations.md).'
+                'This complex- or entity-typed annotation contains structural properties corresponding via name equality\nto non-key structural primitive properties of the entity type for which recommendations are available.\nThe type of such a property is a collection of a informal specialization of [`PropertyRecommendationType`](#PropertyRecommendationType).\n(The specializiations are called "informal" because they may omit the property `RecommendedFieldDescription`.)\n\nClients retrieve the recommendations with a GET request that includes this annotation in a `$select` or `$expand` clause.\nThe recommendations MAY be computed asynchronously, see [this diagram](../docs/recommendations.md).',
+            '@Org.OData.Validation.V1.DerivedTypeConstraint': ['Edm.ComplexType', 'Edm.EntityType']
         },
         'PropertyRecommendationType': {
             '$Kind': 'ComplexType',

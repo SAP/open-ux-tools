@@ -8,6 +8,7 @@ import * as cfTools from '@sap/cf-tools';
 import { PromptState } from '../../../../../src/utils/prompt-state';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
+import * as utils from '../../../../../src/utils';
 
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 
@@ -118,6 +119,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
         const getCredsSpy = jest.spyOn(cfTools, 'apiGetInstanceCredentials');
         const createDestSpy = jest.spyOn(btpUtils, 'createOAuth2UserTokenExchangeDest');
         const validateDestSpy = jest.spyOn(connectionValidatorMock, 'validateDestination');
+        const existingBackendSpy = jest.spyOn(utils, 'isBackendSystemKeyExisting');
         const questions = getCfAbapBASQuestions();
         const cfDiscoQuestion = questions.find((question) => question.name === `cfAbapBas:cloudFoundryAbapSystem`);
         expect(
@@ -137,6 +139,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
         );
         expect(validateDestSpy).toHaveBeenCalledWith(createdDestinationMock, undefined, undefined);
         expect(PromptState.odataService.connectedSystem?.destination).toEqual(createdDestinationMock);
+        expect(existingBackendSpy).not.toHaveBeenCalled();
     });
 
     test('test getCfAbapBASQuestions validate() will throw an exception if the user is missing privileges on CF', async () => {
@@ -156,5 +159,24 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
         ).toEqual(errMsg);
         expect(getCredsSpy).toHaveBeenCalledWith('test1-cFAbapService');
         expect(createDestSpy).toHaveBeenCalled();
+    });
+
+    test('Should include value help download prompt when promptOptions.valueHelpDownload.hide is false', () => {
+        const questions = getCfAbapBASQuestions({ valueHelpDownload: { hide: false } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'cfAbapBas:valueHelpDownload');
+        expect(valueHelpPrompt).toBeDefined();
+        expect(valueHelpPrompt?.type).toBe('confirm');
+    });
+
+    test('Should not include value help download prompt when promptOptions.valueHelpDownload.hide is true', () => {
+        const questions = getCfAbapBASQuestions({ valueHelpDownload: { hide: true } });
+        const valueHelpPrompt = questions.find((question) => question.name === 'cfAbapBas:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
+    });
+
+    test('Should not include value help download prompt by default when promptOptions is not provided', () => {
+        const questions = getCfAbapBASQuestions();
+        const valueHelpPrompt = questions.find((question) => question.name === 'cfAbapBas:valueHelpDownload');
+        expect(valueHelpPrompt).toBeUndefined();
     });
 });

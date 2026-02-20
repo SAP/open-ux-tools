@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
-import os from 'os';
-import { join } from 'path';
+import os from 'node:os';
+import { join } from 'node:path';
 import { withCondition, extendWithOptions } from '@sap-ux/inquirer-common';
 import {
     getNamePrompt,
@@ -15,13 +14,7 @@ import {
     getAddFlpConfigPrompt,
     getEnableVirtualEndpoints
 } from './prompts1';
-import {
-    getShowAdvancedPrompt,
-    getUI5ThemePrompt,
-    getEnableEsLintPrompt,
-    getEnableCodeAssistPrompt,
-    getSkipAnnotationsPrompt
-} from './prompts2';
+import { getShowAdvancedPrompt, getUI5ThemePrompt, getEnableEsLintPrompt, getSkipAnnotationsPrompt } from './prompts2';
 import { validateFioriAppProjectFolder } from '@sap-ux/project-input-validator';
 import { promptNames } from '../types';
 import { hidePrompts } from './prompt-helpers';
@@ -53,7 +46,7 @@ export async function getQuestions(
     let targetDir =
         typeof promptOptions?.[promptNames.targetFolder]?.default === 'string'
             ? promptOptions[promptNames.targetFolder].default // Default functions will be applied later, these replace the existing defaults
-            : promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd();
+            : (promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd());
 
     const shouldValidateFioriAppFolder = promptOptions?.[promptNames.targetFolder]?.validateFioriAppFolder;
     if (shouldValidateFioriAppFolder) {
@@ -83,7 +76,6 @@ export async function getQuestions(
         [promptNames.showAdvanced]: getShowAdvancedPrompt(),
         [promptNames.ui5Theme]: getUI5ThemePrompt(),
         [promptNames.enableEslint]: getEnableEsLintPrompt(),
-        [promptNames.enableCodeAssist]: getEnableCodeAssistPrompt(),
         [promptNames.skipAnnotations]: getSkipAnnotationsPrompt()
     };
 

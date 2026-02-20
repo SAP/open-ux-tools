@@ -1,4 +1,4 @@
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import type { CheckIntegrityResult, Content, ProjectSettings } from '../types';
 import { getContentIntegrity, getFileIntegrity } from './hash';
 import { readIntegrityData, writeIntegrityData } from './persistence';
@@ -25,7 +25,7 @@ const sortLocal = (a: string, b: string): number => a.localeCompare(b);
 export async function initProject(settings: ProjectSettings): Promise<void> {
     const enabled = true;
     const fileIntegrity = await getFileIntegrity(settings.fileList);
-    const contentIntegrity = await getContentIntegrity(settings.additionalStringContent);
+    const contentIntegrity = getContentIntegrity(settings.additionalStringContent);
     await writeIntegrityData(settings.integrityFilePath, { enabled, fileIntegrity, contentIntegrity });
 }
 

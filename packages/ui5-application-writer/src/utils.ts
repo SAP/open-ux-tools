@@ -1,6 +1,6 @@
 import { gte } from 'semver';
 import { type UI5, type TemplateOptions } from './types';
-import { join } from 'path';
+import { join } from 'node:path';
 import { FileName } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 

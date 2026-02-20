@@ -1,11 +1,11 @@
 import yeomanTest from 'yeoman-test';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { join } from 'path';
+import { join } from 'node:path';
 import RepoAppDownloadGenerator from '../src/app';
 import * as prompts from '../src/prompts/prompts';
 import { PromptNames } from '../src/app/types';
-import fs from 'fs';
+import fs from 'node:fs';
 import { TestFixture } from './fixtures';
 import { getAppConfig } from '../src/app/app-config';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
@@ -81,6 +81,13 @@ const mockSendTelemetry = sendTelemetry as jest.Mock;
 jest.mock('@sap-ux/ui5-info', () => ({
     ...jest.requireActual('@sap-ux/ui5-info'),
     getUI5Versions: jest.fn()
+}));
+
+jest.mock('@sap-ux/project-access', () => ({
+    ...(jest.requireActual('@sap-ux/project-access') as any),
+    createApplicationAccess: jest.fn().mockResolvedValue({
+        getSpecification: jest.fn()
+    })
 }));
 
 function createAppConfig(appId: string, metadata: string): FioriElementsApp<LROPSettings> {

@@ -1,6 +1,6 @@
 import yeomanTest from 'yeoman-test';
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 import fsextra from 'fs-extra';
 import RefLibGenerator from '../../src/app';
 import { reuseLibs } from './util/constants';
@@ -19,7 +19,6 @@ const refLibGenPath = path.join(__dirname, '../../src/app');
 let yoEnv4 = false;
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),
@@ -45,7 +44,7 @@ jest.mock('yeoman-test/lib/adapter', () => ({
 
 afterAll(() => {
     process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later
-    rimraf.sync(testOutputDir);
+    rimraf.rimrafSync(testOutputDir);
 });
 
 describe('Test reference generator', () => {

@@ -1,7 +1,7 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { getAppDescriptorVariant } from '../../../src/base/archive';
 import AdmZip from 'adm-zip';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 
 describe('base/archive', () => {
     const fixture = join(__dirname, '../../fixtures/adp/webapp');

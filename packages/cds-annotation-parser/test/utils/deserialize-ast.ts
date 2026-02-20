@@ -10,7 +10,7 @@ function expandPosition(value: string): Position {
     const [line, character] = value
         .substring(1, value.length - 1)
         .split(',')
-        .map((text) => parseInt(text, 10));
+        .map((text) => Number.parseInt(text, 10));
     return Position.create(line, character);
 }
 /**

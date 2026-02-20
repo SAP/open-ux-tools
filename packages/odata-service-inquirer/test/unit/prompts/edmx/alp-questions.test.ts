@@ -1,12 +1,12 @@
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { getAnalyticListPageQuestions } from '../../../../src/prompts/edmx/alp-questions';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
 import { EntityPromptNames } from '../../../../src/types';
-import { join } from 'path';
+import { join } from 'node:path';
 
 describe('Test analytic list page specific prompts', () => {
     let annotationsWithPresentationQualifier: string;

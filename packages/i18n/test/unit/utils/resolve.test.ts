@@ -1,7 +1,7 @@
 import { getCapI18nFiles, resolveCapI18nFolderForFile, getCapI18nFolder } from '../../../src/utils';
-import { join } from 'path';
+import { join } from 'node:path';
 import { toUnifiedUri } from '../helper';
-import fs from 'fs';
+import fs from 'node:fs';
 import type { CdsEnvironment } from '../../../src';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';

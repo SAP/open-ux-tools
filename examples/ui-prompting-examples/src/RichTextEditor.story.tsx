@@ -19,14 +19,6 @@ export const ExternalValues = (): JSX.Element => {
                     metaPath: {
                         bindingContextType: 'absolute',
                         entitySet: 'C_CustomerBankDetailsOP'
-                    },
-                    buttonGroup: {
-                        name: 'edit-actions',
-                        buttons: 'copy,paste,undo,redo',
-                        visible: false,
-                        priority: 20,
-                        customToolbarPriority: 5,
-                        row: 2
                     }
                 }
             }}

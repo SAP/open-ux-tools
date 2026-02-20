@@ -12,6 +12,8 @@ import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { removeSync } from 'circular-reference-remover';
+import type { BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey } from '@sap-ux/store';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -39,7 +41,7 @@ export function parseOdataVersion(metadata: string): {
 } {
     try {
         const convertedMetadata = convert(parse(metadata));
-        const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+        const parsedOdataVersion = Number.parseInt(convertedMetadata?.version, 10);
 
         if (Number.isNaN(parsedOdataVersion)) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
@@ -150,6 +152,41 @@ export function removeCircularFromServiceProvider(serviceProvider: ServiceProvid
         (serviceProvider as any).log = removeSync((serviceProvider as any).log, { setUndefined: true });
     }
     return serviceProvider;
+}
+
+/**
+ * Checks if the specified backend systems contain a match for the specified url and client.
+ *
+ * @param backendSystems backend systems to search for a matching key
+ * @param url the url component of the backend system key
+ * @param client the client component of of the backend system key
+ * @returns the backend system if found or undefined
+ */
+export function isBackendSystemKeyExisting(
+    backendSystems: BackendSystem[],
+    url: string,
+    client?: string
+): BackendSystem | undefined {
+    const newBackendSystemId = new BackendSystemKey({ url, client }).getId();
+    return backendSystems.find((backendSystem) => BackendSystemKey.from(backendSystem).getId() === newBackendSystemId);
+}
+
+/**
+ * Compare 2 string arrays without considering ordering.
+ *
+ * @param array1
+ * @param array2
+ */
+export function areArraysEquivalent(array1: Array<string> | undefined, array2: Array<string> | undefined): boolean {
+    // Both undefined, same length or same object ref
+    if ((!array1 && !array2) || (array1?.length === 0 && array2?.length === 0) || array1 === array2) {
+        return true;
+    }
+    // If either undefined must be different due to earlier condition
+    if (!array1 || !array2) {
+        return false;
+    }
+    return [...array1].sort().toString() === [...array2].sort().toString();
 }
 
 export { PromptState };

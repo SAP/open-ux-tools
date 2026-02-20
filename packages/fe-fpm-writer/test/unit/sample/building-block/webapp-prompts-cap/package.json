@@ -29,7 +29,6 @@
         "srv"
     ],
     "devDependencies": {
-        "@sap/ux-specification": "1.84.5",
         "sqlite3": "^4.2.0"
     },
     "sapux": [

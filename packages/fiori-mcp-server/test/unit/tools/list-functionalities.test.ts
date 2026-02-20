@@ -1,40 +1,60 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
 import type { ListFunctionalitiesOutput } from '../../../src/types';
 import { listFunctionalities } from '../../../src/tools';
-import { mockSpecificationImport } from '../utils';
+import { ensureSpecificationLoaded, mockSpecificationReadAppWithModel } from '../utils';
 import * as projectUtils from '../../../src/page-editor-api/project';
+import { join } from 'node:path';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+
     ...(jest.requireActual('@sap-ux/project-access') as object)
 }));
 
+const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
+
 describe('listFunctionalities', () => {
     const appPath = 'testApplicationPath';
-    let importProjectMock = jest.fn();
+    let readAppMock = jest.fn();
+    let getSpecificationMock = jest.fn();
     const findProjectRootSpy: jest.SpyInstance = jest.spyOn(openUxProjectAccessDependency, 'findProjectRoot');
     const getManifestSpy: jest.SpyInstance = jest.spyOn(projectUtils, 'getManifest');
     const createApplicationAccessSpy: jest.SpyInstance = jest.spyOn(
         openUxProjectAccessDependency,
         'createApplicationAccess'
     );
+    const getSpecificationModuleFromCacheSpy: jest.SpyInstance = jest.spyOn(
+        openUxProjectAccessDependency,
+        'getSpecificationModuleFromCache'
+    );
+    const applications: { [key: string]: openUxProjectAccessDependency.ApplicationAccess } = {};
+    beforeAll(async () => {
+        // Create application access can take more time on slower machines
+        applications[appPathLropV4] = await openUxProjectAccessDependency.createApplicationAccess(appPathLropV4);
+        // Ensure spec is loaded - first import is most costly
+        await ensureSpecificationLoaded();
+    }, 10000);
     beforeEach(async () => {
-        importProjectMock = jest.fn().mockResolvedValue([]);
-        getManifestSpy.mockResolvedValue({});
+        readAppMock = jest.fn().mockResolvedValue({ files: [] });
+        getManifestSpy.mockResolvedValue({ manifest: true });
         findProjectRootSpy.mockImplementation(async (path: string): Promise<string> => path);
+        getSpecificationMock = jest.fn().mockResolvedValue({
+            readApp: readAppMock,
+            getApiVersion: () => ({ version: '99' })
+        });
         createApplicationAccessSpy.mockImplementation((rootPath: string) => {
             return {
                 getAppId: () => 'dummy-id',
+                app: {
+                    changes: 'changes'
+                },
                 project: {
                     root: 'root',
                     apps: {
                         ['dummy-id']: {}
                     }
                 },
-                getSpecification: () => ({
-                    importProject: importProjectMock
-                })
+                getSpecification: getSpecificationMock
             };
         });
     });
@@ -46,9 +66,11 @@ describe('listFunctionalities', () => {
         expect(functionalities.applicationPath).toEqual(appPath);
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
-            'generate-fiori-ui-app',
+            'generate-fiori-ui-application-cap',
             'delete-page',
-            'create-controller-extension'
+            'create-controller-extension',
+            'generate-fiori-ui-application',
+            'fetch-service-metadata'
         ]);
     });
 
@@ -60,33 +82,62 @@ describe('listFunctionalities', () => {
                     apps: {}
                 },
                 getSpecification: () => ({
-                    importProject: importProjectMock
+                    readApp: readAppMock
                 })
             };
         });
         const functionalities = (await listFunctionalities({
             appPath
         })) as ListFunctionalitiesOutput;
-        expect(importProjectMock).toHaveBeenCalledTimes(0);
+        expect(readAppMock).toHaveBeenCalledTimes(0);
         expect(functionalities.applicationPath).toEqual(appPath);
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
-            'generate-fiori-ui-app',
+            'generate-fiori-ui-application-cap',
             'delete-page',
-            'create-controller-extension'
+            'create-controller-extension',
+            'generate-fiori-ui-application',
+            'fetch-service-metadata'
         ]);
     });
 
     test('call with valid app and data', async () => {
-        mockSpecificationImport(importProjectMock);
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const result = (await listFunctionalities({
             appPath
         })) as ListFunctionalitiesOutput;
+        expect(result.functionalities.length).toEqual(101);
         expect(result.functionalities).toMatchSnapshot();
+        expect(readAppMock).toHaveBeenCalledTimes(1);
+        expect(getSpecificationMock).toHaveBeenCalledTimes(1);
+        expect(getSpecificationModuleFromCacheSpy).toHaveBeenCalledTimes(0);
+    });
+
+    test('Fallback if older specification loaded - load from global cache', async () => {
+        mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
+        // Mock specification to return old version
+        getSpecificationMock.mockResolvedValue({
+            readApp: readAppMock,
+            getApiVersion: () => ({ version: '1' })
+        });
+        // mock spec from global cache
+        getSpecificationModuleFromCacheSpy.mockResolvedValue({
+            readApp: readAppMock,
+            getApiVersion: () => ({ version: '99' })
+        });
+        // Act
+        const result = (await listFunctionalities({
+            appPath
+        })) as ListFunctionalitiesOutput;
+        // Check
+        expect(result.functionalities.length).toEqual(101);
+        expect(readAppMock).toHaveBeenCalledTimes(1);
+        expect(getSpecificationMock).toHaveBeenCalledTimes(1);
+        expect(getSpecificationModuleFromCacheSpy).toHaveBeenCalledTimes(1);
     });
 
     test('Error during reading functionalities', async () => {
-        importProjectMock.mockImplementation(() => {
+        readAppMock.mockImplementation(() => {
             throw new Error('Dummy');
         });
         const result = (await listFunctionalities({

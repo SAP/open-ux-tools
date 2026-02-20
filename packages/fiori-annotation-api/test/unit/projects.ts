@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { pathToFileURL } from 'url';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import type { ProjectType } from '@sap-ux/project-access';
 
 // import type { ProjectInfo } from '@sap/ux-test-utils';

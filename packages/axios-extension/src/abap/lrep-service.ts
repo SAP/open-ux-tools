@@ -1,7 +1,7 @@
 import type { AxiosResponse, CustomParamsSerializer } from 'axios';
 import { Axios } from 'axios';
-import { readFileSync } from 'fs';
-import { URLSearchParams } from 'url';
+import { readFileSync } from 'node:fs';
+import { URLSearchParams } from 'node:url';
 import type { Logger } from '@sap-ux/logger';
 import { LogLevel } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
@@ -111,6 +111,43 @@ export interface SystemInfo {
     inbounds?: Inbound[];
 }
 
+export interface AdaptationDescriptor {
+    id: string;
+    type?: string;
+    title?: string;
+    contexts?: Record<string, string[]>;
+    createdBy?: string;
+    createdAt?: string;
+    changedBy?: string;
+    changedAt?: string;
+}
+
+export interface AdaptationsResponse {
+    adaptations: AdaptationDescriptor[];
+}
+
+export interface KeyUserChangeContent {
+    content: Record<string, unknown>;
+    texts?: Record<string, unknown>;
+}
+
+export interface KeyUserDataResponse {
+    contents: KeyUserChangeContent[];
+}
+
+export interface FlexVersion {
+    versionId: string;
+    isPublished: boolean;
+    title: string;
+    activatedAt: string;
+    activatedBy: string;
+    appdescrChangesHash: string;
+}
+
+export interface FlexVersionsResponse {
+    versions: FlexVersion[];
+}
+
 interface Language {
     sap: string;
     description: string;
@@ -177,6 +214,26 @@ function isBuffer(input: string | Buffer): input is Buffer {
  * @returns The decoded parameters as a string.
  */
 const decodeUrlParams: CustomParamsSerializer = (params: URLSearchParams) => decodeURIComponent(params.toString());
+
+/**
+ * Transform the response data to a JSON object.
+ *
+ * @param data the response data
+ * @returns the transformed data
+ */
+function transformResponse<T = unknown>(data: unknown): T {
+    if (typeof data === 'string') {
+        try {
+            return JSON.parse(data) as T;
+        } catch {
+            /**
+             * If parsing fails, return the original data to preserve error information for non-JSON error responses.
+             */
+            return data as T;
+        }
+    }
+    return data as T;
+}
 
 /**
  * Path suffix for all DTA actions.
@@ -339,6 +396,91 @@ export class LayeredRepositoryService extends Axios implements Service {
                 this.log.error(
                     'Newer version of SAP_UI required, please check https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/delete-adaptation-project'
                 );
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Lists context-based adaptations for the given application.
+     *
+     * @param {string} appId - Technical application id.
+     * @param {string} [version] - Optional version id. If not provided, uses the hardcoded default version.
+     * @returns {Promise<AdaptationsResponse>} Adaptations sorted by priority.
+     */
+    public async listAdaptations(appId: string, version?: string): Promise<AdaptationsResponse> {
+        try {
+            const response = await this.get<AdaptationsResponse>(
+                `/flex/apps/${encodeURIComponent(appId)}/adaptations/?version=${encodeURIComponent(version)}`,
+                {
+                    transformResponse
+                }
+            );
+            this.tryLogResponse(response, `Successfully fetched adaptations for app ${appId}`);
+            return response.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves key user changes for the given component and adaptation id.
+     *
+     * @param {string} componentId - Technical component id.
+     * @param {string} adaptationId - Adaptation identifier (DEFAULT for default).
+     * @returns {Promise<KeyUserDataResponse>} Key user change payload.
+     */
+    public async getKeyUserData(componentId: string, adaptationId: string): Promise<KeyUserDataResponse> {
+        const params = new URLSearchParams(this.defaults?.params);
+        params.append('adaptationId', encodeURIComponent(adaptationId));
+        try {
+            const response = await this.get<KeyUserDataResponse>(`/flex/keyuserdata/${componentId}`, {
+                params,
+                paramsSerializer: decodeUrlParams,
+                transformResponse
+            });
+            this.tryLogResponse(
+                response,
+                `Successfully fetched key user data for component ${componentId} and ${adaptationId} adaptation.`
+            );
+            return response.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves versions for the given component.
+     *
+     * @param {string} componentId - Technical component id.
+     * @param {number} [limit] - Optional limit for the number of versions to retrieve (default: 2).
+     * @param {string} [language] - Optional language code (default: EN).
+     * @returns {Promise<FlexVersionsResponse>} Flex versions response containing an array of versions.
+     */
+    public async getFlexVersions(
+        componentId: string,
+        limit: number = 2,
+        language: string = 'EN'
+    ): Promise<FlexVersionsResponse> {
+        try {
+            const params = new URLSearchParams(this.defaults?.params);
+            params.append('sap-language', language);
+            params.append('limit', limit.toString());
+            const response = await this.get<FlexVersionsResponse>(`/flex/versions/${encodeURIComponent(componentId)}`, {
+                params,
+                transformResponse
+            });
+            this.tryLogResponse(response, `Successfully fetched flex versions for component ${componentId}`);
+            return response.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
             }
             throw error;
         }

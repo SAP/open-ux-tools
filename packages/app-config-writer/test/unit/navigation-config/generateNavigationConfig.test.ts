@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { generateInboundNavigationConfig } from '../../../src/navigation-config';
 
 describe('Unit tests for navigation config generation', () => {

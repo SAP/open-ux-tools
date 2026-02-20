@@ -1,4 +1,4 @@
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import { MiddlewareConfigs } from '../types';
 import { FileName, type Package, readUi5Yaml, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';

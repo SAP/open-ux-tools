@@ -1,4 +1,5 @@
 import { isOfflineError } from '../../../src/ui5/network';
+import type { NetworkError } from '../../../src/types';
 
 describe('network utilities', () => {
     describe('isOfflineError', () => {
@@ -64,17 +65,22 @@ describe('network utilities', () => {
         });
 
         it('should return false for null error message', () => {
-            const error = { message: null, name: null } as unknown as Error;
+            const error = { message: null, name: null } as unknown as NetworkError;
             expect(isOfflineError(error)).toBe(false);
         });
 
         it('should handle error with only name property', () => {
-            const error = { name: 'NetworkError' } as Error;
+            const error = { name: 'NetworkError' } as NetworkError;
             expect(isOfflineError(error)).toBe(true);
         });
 
         it('should handle error with only message property', () => {
-            const error = { message: 'fetch failed' } as Error;
+            const error = { message: 'fetch failed' } as NetworkError;
+            expect(isOfflineError(error)).toBe(true);
+        });
+
+        it('should handle error with code property', () => {
+            const error = { code: 'ENOTFOUND' } as NetworkError;
             expect(isOfflineError(error)).toBe(true);
         });
 

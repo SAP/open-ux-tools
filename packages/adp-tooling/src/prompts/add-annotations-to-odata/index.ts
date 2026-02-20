@@ -3,9 +3,9 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
 import { filterDataSourcesByType, getWebappPath, DirName } from '@sap-ux/project-access';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { join, isAbsolute, basename } from 'path';
+import { join, isAbsolute, basename } from 'node:path';
 
 /**
  * Gets the prompts for adding annotations to OData service.

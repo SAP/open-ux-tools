@@ -1,6 +1,6 @@
 import yeomanTest from 'yeoman-test';
-import { join } from 'path';
-import fs from 'fs';
+import { join } from 'node:path';
+import fs from 'node:fs';
 import * as memfs from 'memfs';
 import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import * as abapWriter from '@sap-ux/abap-deploy-config-writer';
@@ -17,6 +17,7 @@ import { ABAP_DEPLOY_TASK } from '../src/utils/constants';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { getVariantNamespace } from '../src/utils/project';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
@@ -37,9 +38,9 @@ mockGetService.mockResolvedValueOnce({
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -49,7 +50,6 @@ jest.mock('fs', () => {
 });
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: jest.fn(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),
@@ -62,6 +62,11 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
 
 const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 const mockSendTelemetry = sendTelemetry as jest.Mock;
+
+jest.mock('@sap-ux/telemetry', () => ({
+    ...(jest.requireActual('@sap-ux/telemetry') as {}),
+    initTelemetrySettings: jest.fn()
+}));
 
 const abapDeployGenPath = join(__dirname, '../../src/app');
 
@@ -355,6 +360,7 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
             {
+                adpProjectType: undefined,
                 backendTarget: {
                     abapTarget: {
                         url: 'https://mock.url.target2.com',
@@ -390,8 +396,7 @@ describe('Test abap deploy configuration generator', () => {
                 overwriteAbapConfig: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: false
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                }
             },
             {},
             false // isYUI
@@ -422,7 +427,7 @@ describe('Test abap deploy configuration generator', () => {
         const abapDeployConfigInquirerSpy = jest
             .spyOn(abapInquirer, 'getPrompts')
             .mockResolvedValue({ prompts: [], answers: {} as abapInquirer.AbapDeployConfigAnswersInternal });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('Fiori Adaptation');
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
         cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
         memfs.vol.fromNestedJSON(
             {
@@ -464,6 +469,7 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
             {
+                adpProjectType: AdaptationProjectType.ON_PREMISE,
                 backendTarget: {
                     abapTarget: {
                         url: 'https://mock.url.target2.com',
@@ -499,8 +505,7 @@ describe('Test abap deploy configuration generator', () => {
                 overwriteAbapConfig: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: true
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+                }
             },
             {},
             false // isYUI
@@ -535,7 +540,7 @@ describe('Test abap deploy configuration generator', () => {
                 transportManual: 'ZTESTK900001'
             } as abapInquirer.AbapDeployConfigAnswersInternal
         });
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('Fiori Adaptation');
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
         cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
         memfs.vol.fromNestedJSON(
             {
@@ -568,6 +573,7 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
             {
+                adpProjectType: AdaptationProjectType.ON_PREMISE,
                 backendTarget: {
                     abapTarget: {
                         url: 'https://mock.system.sap:24300',
@@ -603,8 +609,7 @@ describe('Test abap deploy configuration generator', () => {
                 overwriteAbapConfig: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: true
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+                }
             },
             {},
             false // isYUI

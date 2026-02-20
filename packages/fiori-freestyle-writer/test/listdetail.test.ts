@@ -1,6 +1,6 @@
 import type { FreestyleApp } from '../src';
 import { generate } from '../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import type { ListDetailSettings } from '../src/types';
 import { TemplateType } from '../src/types';
 import { removeSync } from 'fs-extra';
@@ -53,7 +53,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             config: {
                 ...listDetailConfig,
                 appOptions: {
-                    codeAssist: true,
                     eslint: true
                 }
             }

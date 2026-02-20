@@ -1,7 +1,7 @@
-import path, { resolve } from 'path';
-import type { Editor } from 'mem-fs-editor';
+import path, { resolve } from 'node:path';
+import { create, type Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import { readFileSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { renderFile } from 'ejs';
 
 jest.mock('ejs', () => ({
@@ -15,7 +15,11 @@ import {
     type PropertyValueType,
     ChangeType,
     type ManifestChangeProperties,
-    type DescriptorVariant
+    type DescriptorVariant,
+    type AdpWriterConfig,
+    type App,
+    type ToolsSupport,
+    FlexLayer
 } from '../../../src';
 import {
     findChangeWithInboundId,
@@ -23,9 +27,13 @@ import {
     getChangesByType,
     getParsedPropertyValue,
     parseStringToObject,
+    transformKeyUserChangeForAdp,
     writeAnnotationChange,
-    writeChangeToFolder
+    writeChangeToFolder,
+    writeKeyUserChanges
 } from '../../../src/base/change-utils';
+import type { KeyUserChangeContent } from '@sap-ux/axios-extension';
+import { create as createStorage } from 'mem-fs';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -51,8 +59,8 @@ describe('Change Utils', () => {
         const writeJsonSpy = jest.fn();
         const mockFs = { writeJSON: writeJsonSpy };
 
-        it('should write change to the specified folder without subdirectory', () => {
-            writeChangeToFolder(
+        it('should write change to the specified folder without subdirectory', async () => {
+            await writeChangeToFolder(
                 projectPath,
                 change as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
@@ -61,9 +69,9 @@ describe('Change Utils', () => {
             expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(change.fileName), change);
         });
 
-        it('should write change to the specified folder with subdirectory', () => {
+        it('should write change to the specified folder with subdirectory', async () => {
             const dir = 'subdir';
-            writeChangeToFolder(
+            await writeChangeToFolder(
                 projectPath,
                 change as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor,
@@ -73,7 +81,7 @@ describe('Change Utils', () => {
             expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(path.join(dir, change.fileName)), change);
         });
 
-        it('should throw error when writing json fails', () => {
+        it('should throw error when writing json fails', async () => {
             const errMsg = 'Corrupted json.';
             mockFs.writeJSON.mockImplementation(() => {
                 throw new Error(errMsg);
@@ -81,13 +89,13 @@ describe('Change Utils', () => {
 
             const expectedPath = path.join('project', 'webapp', 'changes', `${change.fileName}.change`);
 
-            expect(() => {
+            await expect(() =>
                 writeChangeToFolder(
                     projectPath,
                     change as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
-                );
-            }).toThrow(
+                )
+            ).rejects.toThrow(
                 `Could not write change to folder. Reason: Could not write change to file: ${expectedPath}. Reason: Corrupted json.`
             );
         });
@@ -265,6 +273,7 @@ describe('Change Utils', () => {
     describe('findChangeWithInboundId', () => {
         const mockProjectPath = '/mock/project/path';
         const mockInboundId = 'mockInboundId';
+        const memFs = create(createStorage());
 
         beforeEach(() => {
             jest.resetAllMocks();
@@ -274,24 +283,24 @@ describe('Change Utils', () => {
         const readdirSyncMock = readdirSync as jest.Mock;
         const readFileSyncMock = readFileSync as jest.Mock;
 
-        it('should return empty results if the directory does not exist', () => {
+        it('should return empty results if the directory does not exist', async () => {
             existsSyncMock.mockReturnValue(false);
 
-            const result = findChangeWithInboundId(mockProjectPath, mockInboundId);
+            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId, memFs);
 
             expect(result).toEqual({ filePath: '', changeWithInboundId: undefined });
         });
 
-        it('should return empty results if no matching file is found', () => {
+        it('should return empty results if no matching file is found', async () => {
             existsSyncMock.mockReturnValue(true);
             readdirSyncMock.mockReturnValue([]);
 
-            const result = findChangeWithInboundId(mockProjectPath, mockInboundId);
+            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId, memFs);
 
             expect(result).toEqual({ filePath: '', changeWithInboundId: undefined });
         });
 
-        it('should return the change object and file path if a matching file is found', () => {
+        it('should return the change object and file path if a matching file is found', async () => {
             existsSyncMock.mockReturnValue(true);
             readdirSyncMock.mockReturnValue([
                 { name: 'id_addAnnotationsToOData.change', isFile: () => true },
@@ -299,7 +308,7 @@ describe('Change Utils', () => {
             ]);
             readFileSyncMock.mockReturnValue(JSON.stringify({ content: { inboundId: mockInboundId } }));
 
-            const result = findChangeWithInboundId(mockProjectPath, mockInboundId);
+            const result = await findChangeWithInboundId(mockProjectPath, mockInboundId, memFs);
 
             expect(result).toEqual({
                 filePath: expect.stringContaining('id_changeInbound.change'),
@@ -307,14 +316,14 @@ describe('Change Utils', () => {
             });
         });
 
-        it('should throw an error if reading the file fails', () => {
+        it('should throw an error if reading the file fails', async () => {
             existsSyncMock.mockReturnValue(true);
             readdirSyncMock.mockReturnValue([{ name: 'id_changeInbound.change', isFile: () => true }]);
             readFileSyncMock.mockImplementation(() => {
                 throw new Error('Read file error');
             });
 
-            expect(() => findChangeWithInboundId(mockProjectPath, mockInboundId)).toThrow(
+            await expect(() => findChangeWithInboundId(mockProjectPath, mockInboundId, memFs)).rejects.toThrow(
                 'Could not find change with inbound id'
             );
         });
@@ -349,11 +358,11 @@ describe('Change Utils', () => {
             writeJSON: writeJsonSpy
         };
 
-        it('should write the change file and an annotation file from a template', () => {
+        it('should write the change file and an annotation file from a template', async () => {
             renderFileMock.mockImplementation((templatePath, data, options, callback) => {
                 callback(undefined, 'test');
             });
-            writeAnnotationChange(
+            await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
                 {
@@ -394,11 +403,11 @@ describe('Change Utils', () => {
             expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), 'test');
         });
 
-        it('should write the change file and an annotation file from a template using the provided templates path', () => {
+        it('should write the change file and an annotation file from a template using the provided templates path', async () => {
             renderFileMock.mockImplementation((templatePath, data, options, callback) => {
                 callback(undefined, 'test');
             });
-            writeAnnotationChange(
+            await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
                 {
@@ -440,10 +449,10 @@ describe('Change Utils', () => {
             expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), 'test');
         });
 
-        it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
+        it('should copy the annotation file to the correct directory if not creating a new empty file', async () => {
             mockData.annotation.filePath = `mock/path/to/annotation/file.xml`;
 
-            writeAnnotationChange(
+            await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
                 mockData.annotation as AnnotationsData['annotation'],
@@ -457,7 +466,7 @@ describe('Change Utils', () => {
             );
         });
 
-        it('should not copy the annotation file if the selected directory is the same as the target', () => {
+        it('should not copy the annotation file if the selected directory is the same as the target', async () => {
             mockData.annotation.filePath = path.join(
                 'mock',
                 'project',
@@ -468,7 +477,7 @@ describe('Change Utils', () => {
                 'mockAnnotation.xml'
             );
 
-            writeAnnotationChange(
+            await writeAnnotationChange(
                 mockProjectPath,
                 123456789,
                 mockData.annotation as AnnotationsData['annotation'],
@@ -479,22 +488,22 @@ describe('Change Utils', () => {
             expect(copySpy).not.toHaveBeenCalled();
         });
 
-        it('should throw error when write operation fails', () => {
+        it('should throw error when write operation fails', async () => {
             mockData.annotation.filePath = '';
 
             mockFs.writeJSON.mockImplementationOnce(() => {
                 throw new Error('Failed to write JSON');
             });
 
-            expect(() => {
+            await expect(() =>
                 writeAnnotationChange(
                     mockProjectPath,
                     123456789,
                     mockData.annotation as AnnotationsData['annotation'],
                     mockChange as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
-                );
-            }).toThrow(
+                )
+            ).rejects.toThrow(
                 `Could not write annotation changes. Reason: Could not write change to file: ${path.join(
                     mockProjectPath,
                     'webapp',
@@ -504,20 +513,246 @@ describe('Change Utils', () => {
             );
         });
 
-        it('should throw an error if rendering the annotation file fails', () => {
+        it('should throw an error if rendering the annotation file fails', async () => {
             renderFileMock.mockImplementation((templatePath, data, options, callback) => {
                 callback(new Error('Failed to render annotation file'), '');
             });
 
-            expect(() => {
+            await expect(() =>
                 writeAnnotationChange(
                     mockProjectPath,
                     123456789,
                     mockData.annotation as AnnotationsData['annotation'],
                     mockChange as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
-                );
-            }).toThrow('Failed to render annotation file');
+                )
+            ).rejects.toThrow('Failed to render annotation file');
+        });
+    });
+
+    describe('writeKeyUserChanges', () => {
+        const projectPath = 'project';
+        const appId = 'sap.ui.demoapps.rta.freestyle';
+        const supportId = '@sap-ux/adp-tooling';
+        const writeJsonSpy = jest.fn();
+        const mockFs = { writeJSON: writeJsonSpy } as unknown as Editor;
+        const mockConfig: AdpWriterConfig = {
+            app: {
+                id: appId,
+                layer: 'CUSTOMER_BASE'
+            } as App,
+            customConfig: {
+                adp: {
+                    support: {
+                        id: supportId,
+                        version: '1.0.0'
+                    }
+                }
+            }
+        } as AdpWriterConfig;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should return early if changes is undefined', async () => {
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: [] }, mockFs);
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: undefined }, mockFs);
+            expect(writeJsonSpy).not.toHaveBeenCalled();
+        });
+
+        it('should skip entries without content', async () => {
+            const changes: KeyUserChangeContent[] = [
+                { content: { fileName: 'test.change' } },
+                {} as KeyUserChangeContent,
+                { content: { fileName: 'test2.change' } }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should skip entries without fileName', async () => {
+            const changes: KeyUserChangeContent[] = [
+                { content: { fileName: 'test.change' } },
+                { content: { changeType: 'page' } },
+                { content: { fileName: 'test2.change' } }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should add texts to change if not already present', async () => {
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_page.change',
+                        changeType: 'page'
+                    },
+                    texts: { variantName: { value: 'Test Variant', type: 'XFLD' } }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining('id_123_page.change'),
+                expect.objectContaining({
+                    fileName: 'id_123_page.change',
+                    changeType: 'page'
+                })
+            );
+        });
+
+        it('should write multiple changes', async () => {
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_page.change',
+                        changeType: 'page'
+                    }
+                },
+                {
+                    content: {
+                        fileName: 'id_456_variant.change',
+                        changeType: 'variant'
+                    }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should transform key user changes for ADP format', async () => {
+            const changes: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_rename.change',
+                        changeType: 'rename',
+                        reference: 'sap.ui.demoapps.rta.freestyle',
+                        layer: 'CUSTOMER',
+                        namespace: 'apps/sap.ui.demoapps.rta.freestyle/changes/',
+                        projectId: 'sap.ui.demoapps.rta.freestyle',
+                        adaptationId: 'DEFAULT',
+                        version: '1.0',
+                        context: 'someContext',
+                        versionId: 'someVersionId',
+                        support: {
+                            generator: 'sap.ui.rta.command'
+                        }
+                    }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changes }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenCalledWith(
+                expect.stringContaining('id_123_rename.change'),
+                expect.objectContaining({
+                    fileName: 'id_123_rename.change',
+                    reference: appId,
+                    layer: 'CUSTOMER_BASE',
+                    namespace: `apps/${appId}/changes/`,
+                    projectId: appId,
+                    support: expect.objectContaining({
+                        generator: 'adp-key-user-converter'
+                    })
+                })
+            );
+            const writtenChange = writeJsonSpy.mock.calls[0][1];
+            expect(writtenChange).not.toHaveProperty('adaptationId');
+            expect(writtenChange).not.toHaveProperty('version');
+            expect(writtenChange).not.toHaveProperty('context');
+            expect(writtenChange).not.toHaveProperty('versionId');
+        });
+
+        it('should always set support.generator when support.id is provided', async () => {
+            const changesWithGenerator: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_123_with_generator.change',
+                        changeType: 'rename',
+                        support: {
+                            generator: 'sap.ui.rta.command'
+                        }
+                    }
+                }
+            ];
+
+            const changesWithoutGenerator: KeyUserChangeContent[] = [
+                {
+                    content: {
+                        fileName: 'id_456_without_generator.change',
+                        changeType: 'rename'
+                    }
+                }
+            ];
+
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changesWithGenerator }, mockFs);
+            await writeKeyUserChanges(projectPath, { ...mockConfig, keyUserChanges: changesWithoutGenerator }, mockFs);
+
+            expect(writeJsonSpy).toHaveBeenNthCalledWith(
+                1,
+                expect.stringContaining('id_123_with_generator.change'),
+                expect.objectContaining({
+                    support: expect.objectContaining({
+                        generator: 'adp-key-user-converter'
+                    })
+                })
+            );
+
+            const secondCallChange = writeJsonSpy.mock.calls[1][1];
+            expect(secondCallChange.support).toBeDefined();
+            expect(secondCallChange.support.generator).toBe('adp-key-user-converter');
+        });
+    });
+
+    describe('transformKeyUserChangeForAdp', () => {
+        const appId = 'sap.ui.demoapps.rta.freestyle';
+
+        it('should update support.generator when generator exists', () => {
+            const change = {
+                fileName: 'test.change',
+                changeType: 'rename',
+                support: {
+                    generator: 'sap.ui.rta.command'
+                }
+            };
+
+            const result = transformKeyUserChangeForAdp(change, appId, FlexLayer.CUSTOMER_BASE);
+
+            expect(result.support).toBeDefined();
+            expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
+        });
+
+        it('should add support.generator when generator does not exist', () => {
+            const change = {
+                fileName: 'test.change',
+                changeType: 'rename',
+                support: {}
+            };
+
+            const result = transformKeyUserChangeForAdp(change, appId, FlexLayer.CUSTOMER_BASE);
+
+            expect(result.support).toBeDefined();
+            expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
+        });
+
+        it('should create support object and add generator support property', () => {
+            const change = {
+                fileName: 'test.change',
+                changeType: 'rename'
+            };
+
+            const result = transformKeyUserChangeForAdp(change, appId, FlexLayer.CUSTOMER_BASE);
+
+            expect(result.support).toBeDefined();
+            expect((result.support as Record<string, unknown>)?.generator).toBe('adp-key-user-converter');
         });
     });
 });

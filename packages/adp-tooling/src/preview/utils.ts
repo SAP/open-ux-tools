@@ -1,6 +1,6 @@
 import { DirName } from '@sap-ux/project-access';
 import type { AppDescriptorV4Change } from '../types';
-import { join } from 'path';
+import { join } from 'node:path';
 
 /**
  * Generates the fragment path from the given template string and change object.

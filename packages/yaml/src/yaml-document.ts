@@ -425,7 +425,7 @@ export class YamlDocument {
             ?.toString()
             .split('.')
             .filter((p) => p !== '')
-            .map((p) => (isNaN(Number(p)) ? p : Number(p))); // to add comments to array elements e.g arr.0.prop
+            .map((p) => (Number.isNaN(Number(p)) ? p : Number(p))); // to add comments to array elements e.g arr.0.prop
 
         if (!result || result.length === 0) {
             throw new YAMLError(errorTemplate.pathCannotBeEmpty, errorCode.pathCannotBeEmpty);

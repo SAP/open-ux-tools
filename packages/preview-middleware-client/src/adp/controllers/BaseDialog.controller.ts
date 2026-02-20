@@ -1,8 +1,8 @@
-import Dialog from 'sap/m/Dialog';
-import Input from 'sap/m/Input';
-import Event from 'sap/ui/base/Event';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import UI5Element from 'sap/ui/core/Element';
+import type Dialog from 'sap/m/Dialog';
+import type Input from 'sap/m/Input';
+import type Event from 'sap/ui/base/Event';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type UI5Element from 'sap/ui/core/Element';
 import { ValueState } from 'sap/ui/core/library';
 import Controller from 'sap/ui/core/mvc/Controller';
 import JSONModel from 'sap/ui/model/json/JSONModel';
@@ -83,6 +83,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
 
     /**
      * Method is used in add fragment dialog controllers to get current control metadata which are needed on the dialog
+     *
      * @returns control metadata and target aggregations
      */
     protected getControlMetadata(): { controlMetadata: ManagedObjectMetadata; targetAggregation: string[] } {

@@ -1,5 +1,5 @@
-import path from 'path';
-import fs from 'fs/promises';
+import path from 'node:path';
+import fs from 'node:fs/promises';
 import { resolveEmbeddingsPath, hasEmbeddingsData } from '../../../src/utils/embeddings-path';
 import { logger } from '../../../src/utils/logger';
 

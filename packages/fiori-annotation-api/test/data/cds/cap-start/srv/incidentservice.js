@@ -17,7 +17,7 @@ module.exports = cds.service.impl(async function (srv) {
 
         function _setCriticality(Incidents) {
             if (Incidents.priority) {
-                Incidents.priority.criticality = parseInt(Incidents.priority.code);
+                Incidents.priority.criticality = Number.parseInt(Incidents.priority.code);
             }
         }
 

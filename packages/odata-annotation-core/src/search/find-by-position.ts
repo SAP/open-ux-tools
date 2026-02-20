@@ -368,7 +368,7 @@ export function getPositionData(annotationFile: AnnotationFile, positionPointer:
         if (segment.startsWith('$')) {
             if (typeof currentContext === 'string') {
                 // special segment indicating exact position inside a string
-                const offset = parseInt(segment.substring(1), 10);
+                const offset = Number.parseInt(segment.substring(1), 10);
 
                 startString = currentContext.substring(0, offset);
                 remainingString = currentContext.substring(offset);
@@ -379,9 +379,9 @@ export function getPositionData(annotationFile: AnnotationFile, positionPointer:
             if (i < segments.length - 1) {
                 return { found: false, path, startString, remainingString };
             }
-        } else if (segment === parseInt(segment, 10).toString() && Array.isArray(currentContext)) {
+        } else if (segment === Number.parseInt(segment, 10).toString() && Array.isArray(currentContext)) {
             path += convertSegment(segment, false);
-            const index = parseInt(segment, 10);
+            const index = Number.parseInt(segment, 10);
             currentContext = currentContext[index];
         } else if (typeof currentContext === 'object') {
             path += convertSegment(segment);

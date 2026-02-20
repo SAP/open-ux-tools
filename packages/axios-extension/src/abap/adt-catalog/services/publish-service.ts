@@ -30,7 +30,7 @@ export class PublishService extends AdtService {
      */
     public async getODataV4ServiceUri(technicalDetails: ODataServiceTechnicalDetails): Promise<string> {
         const { serviceDefinitionName, serviceName, serviceVersion } = technicalDetails;
-        const response = await this.get(`/${serviceName}`, {
+        const response = await this.get(`/${encodeURIComponent(serviceName)}`, {
             headers: {
                 Accept: 'application/vnd.sap.adt.businessservices.odatav4.v2+xml'
             },

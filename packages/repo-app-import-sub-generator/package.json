@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/repo-app-import-sub-generator",
     "description": "Generator to download LROP Fiori applications deployed from an ABAP repository.",
-    "version": "0.3.112",
+    "version": "0.3.253",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -16,8 +16,8 @@
         "build": "tsc --build",
         "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
         "watch": "tsc --watch",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
@@ -49,8 +49,8 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
         "adm-zip": "0.5.10",
-        "i18next": "25.3.0",
-        "inquirer": "8.2.6",
+        "i18next": "25.8.12",
+        "inquirer": "8.2.7",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
@@ -68,15 +68,15 @@
         "fs-extra": "10.0.0",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@vscode-logging/logger": "2.0.0",
+        "@vscode-logging/logger": "2.0.8",
         "@types/adm-zip": "0.5.5",
         "memfs": "3.4.13",
         "mem-fs-editor": "9.4.0",
-        "lodash": "4.17.21",
+        "lodash": "4.17.23",
         "@types/lodash": "4.14.202",
-        "rimraf": "5.0.5",
+        "rimraf": "6.1.2",
         "unionfs": "4.4.0",
-        "yeoman-environment": "3.8.0",
+        "yeoman-environment": "3.19.3",
         "yeoman-test": "6.3.0"
     },
     "engines": {

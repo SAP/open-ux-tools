@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { copyProject, getDestinationProjectRoot } from '../../../src';
 import type { CopyOptions } from '../../../src';
 import { install } from '../../../src/project/npm';

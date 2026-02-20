@@ -10,7 +10,7 @@ import {
 } from '../../../src/base/config';
 import { mergeTestConfigDefaults } from '../../../src/base/test';
 import type { MiddlewareConfig } from '../../../src';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
 
 describe('config', () => {

@@ -1,6 +1,6 @@
-import { existsSync } from 'fs';
-import { readdir } from 'fs/promises';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import { mkdir, readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
 import { deleteModule, getModule, getModulePath, loadModuleFromProject } from './module-loader';
@@ -56,7 +56,7 @@ async function hasSpecificationDevDependency(root: string): Promise<boolean> {
  * @param [options.logger] - logger instance
  * @returns - specification instance
  */
-async function getSpecificationModule<T>(root: string, options?: { logger?: Logger }): Promise<T> {
+export async function getSpecificationModuleFromCache<T>(root: string, options?: { logger?: Logger }): Promise<T> {
     const logger = options?.logger;
     let specification: T;
     const version = await getSpecificationVersion(root, { logger });
@@ -91,7 +91,7 @@ export async function getSpecification<T>(root: string, options?: { logger?: Log
     } catch {
         logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
     }
-    return await getSpecificationModule(root, { logger });
+    return await getSpecificationModuleFromCache(root, { logger });
 }
 
 /**
@@ -107,6 +107,14 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
             logger
         });
         const distTags = JSON.parse(distTagsString) as Record<string, string>;
+        if ('error' in distTags) {
+            // Abort writing cache: received error in dist-tags response
+            throw new Error(distTagsString);
+        }
+        // Make sure fiori tools directory exists
+        if (!existsSync(fioriToolsDirectory)) {
+            await mkdir(fioriToolsDirectory, { recursive: true });
+        }
         await writeFile(specificationDistTagPath, JSON.stringify(distTags, null, 4));
         const uniqueVersions = new Set(Object.values(distTags));
 
@@ -156,7 +164,18 @@ async function convertDistTagToVersion(distTag: string, options?: { logger?: Log
         logger?.debug(`Specification dist-tags not found at '${specificationDistTagPath}'. Trying to refresh.`);
         await refreshSpecificationDistTags({ logger });
     }
-    const specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
+    let specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
+    // Validate the current dist-tags file
+    if (
+        'error' in specificationDistTags &&
+        !(distTag in specificationDistTags) &&
+        !('latest' in specificationDistTags)
+    ) {
+        // Refresh if dist-tags are invalid
+        logger?.debug(`Specification dist-tags file has error at '${specificationDistTagPath}'. Trying to refresh.`);
+        await refreshSpecificationDistTags({ logger });
+        specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
+    }
     const version = specificationDistTags[distTag] ?? specificationDistTags.latest;
     return version;
 }
@@ -192,7 +211,7 @@ export async function getSpecificationPath(root: string, options?: { logger?: Lo
         logger?.debug(`Specification root found in project '${root}'`);
         return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
     }
-    await getSpecificationModule(root, { logger });
+    await getSpecificationModuleFromCache(root, { logger });
     const version = await getSpecificationVersion(root, { logger });
     logger?.debug(`Specification not found in project '${root}', using path from cache with version '${version}'`);
     const moduleRoot = join(moduleCacheRoot, moduleName, version);

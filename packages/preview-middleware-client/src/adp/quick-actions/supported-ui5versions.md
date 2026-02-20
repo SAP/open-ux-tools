@@ -9,7 +9,7 @@
 | Add Custom Section                                 |      V2       |          OP |  x  |  x  |  x  |  x  |  x  |  x  |  x  |  x  |  x  |    x    |    x    |
 |                                                    |      V4       |          OP |  x  |  x  |  x  |  x  |  x  |  x  |  x  |  x  |  x  |    x    |    x    |
 | Add Custom Page Action                             |      V2       | LR, ALP, OP |     |     |     |     |     |     |     |  x  |  x  |    x    |    x    |
-|                                                    |      V4       | LR, ALP, OP |     |     |     |     |     |     |     |  x  |  x  |    x    |    x    |
+|                                                    |      V4       | LR, ALP, OP |     |     |     |     |  x  |  x  |  x  |  x  |  x  |    x    |    x    |
 | Add Custom Table Action                            |      V2       | LR, ALP, OP |     |     |  x  |  x  |  x  |  x  |  x  |  x  |  x  |    x    |    x    |
 |                                                    |      V4       | LR, ALP, OP |     |     |  x  |  x  |  x  |  x  |  x  |  x  |  x  |    x    |    x    |
 | Add Custom Table Column                            |      V2       | LR, ALP, OP |     |     |  x  |  x  |  x  |  x  |  x  |  x  |  x  |    x    |    x    |

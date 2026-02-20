@@ -5,7 +5,7 @@ import { addRemoveMockserverConfigCommand } from '../../../../src/cli/remove/moc
 import * as prompts from 'prompts';
 import * as mockserverWriter from '@sap-ux/mockserver-config-writer';
 import * as logger from '../../../../src/tracing/logger';
-import { join } from 'path';
+import { join } from 'node:path';
 
 jest.mock('child_process');
 jest.mock('prompts');

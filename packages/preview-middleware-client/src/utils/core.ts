@@ -2,6 +2,11 @@ import Component from 'sap/ui/core/Component';
 import type { ID } from 'sap/ui/core/library';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import Element from 'sap/ui/core/Element';
+import View from 'sap/ui/core/mvc/View';
+import type Selector from 'sap/ui/fl/Selector';
+import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
+import Log from 'sap/base/Log';
+import { getError } from './error';
 
 /**
  * Gets Component by id.
@@ -33,6 +38,34 @@ export function getControlById<T extends Element = Element>(id: string): T | und
     } else {
         return sap.ui.getCore().byId(id) as T;
     }
+}
+
+/**
+ * Gets target control by trying getControlById first, then falling back to JsControlTreeModifier.bySelector
+ * for projects where the control may not be found by global ID.
+ *
+ * @param selector - The selector object from the change.
+ * @param appComponent - The app component (optional).
+ * @returns The target control element or undefined.
+ */
+export function getControlBySelector<T extends Element = Element>(
+    selector: Selector | undefined,
+    appComponent?: Component
+): T | undefined {
+    if (!selector?.id) {
+        return undefined;
+    }
+
+    let control = getControlById<T>(selector.id);
+    if (!control && appComponent && selector) {
+        try {
+            control = JsControlTreeModifier.bySelector(selector, appComponent) as unknown as T | undefined;
+        } catch (error) {
+            Log.warning('Failed to get control by selector:', getError(error));
+        }
+    }
+
+    return control;
 }
 
 /**
@@ -69,6 +102,38 @@ export function hasParent(component: ManagedObject, parentIdToFind: string): boo
         return true;
     }
     return hasParent(parent, parentIdToFind);
+}
+
+/**
+ * Utility function to safely call getParent on UI5 elements
+ * @param element UI5 element
+ * @returns parent element or null
+ */
+function getElementParent(element: Element | ManagedObject): ManagedObject | null {
+    if (typeof element.getParent === 'function') {
+        return element.getParent();
+    }
+    return null;
+}
+
+/**
+ * Finds the view that contains the given control.
+ *
+ * @param control - Control instance  
+ * @returns View instance if found, undefined otherwise
+ */
+export function findViewByControl(control: Element | ManagedObject): View | undefined {
+    if (!control) {
+        return undefined;
+    }
+    if (isA<View>('sap.ui.core.mvc.View', control)) {
+        return control;
+    }
+    const parent = getElementParent(control);
+    if (!parent) {
+        return undefined;
+    }
+    return findViewByControl(parent);
 }
 
 export function findNestedElements(

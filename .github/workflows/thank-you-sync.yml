@@ -1,0 +1,42 @@
+name: Incremental Committer Thank You
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  append-committers:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Add all committers if new
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # 1. Get all unique authors from the commits in this merged PR
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          COMMITTERS=$(gh pr view $PR_NUMBER --json commits --jq '.commits[].author.login' | sort -u)
+
+          # 2. Loop through each committer
+          for USER in $COMMITTERS; do
+            if [ "$USER" == "web-flow" ] || [ -z "$USER" ]; then continue; fi
+
+            # Check if user already exists in the file
+            if grep -qi "\[@$USER\]" THANKYOU.md; then
+              echo "User @$USER is already in the list. Skipping."
+            else
+              echo "New contributor detected! Adding @$USER."
+              echo "- [@$USER](https://github.com/$USER)" >> THANKYOU.md
+            fi
+          done
+
+      - name: Commit and Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add THANKYOU.md
+          git diff --quiet --staged || (git commit -m "docs: add new contributors from PR #${{ github.event.pull_request.number }}" && git push)

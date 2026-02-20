@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { mergeObjects } from '@sap-ux/ui5-config';
-import { join } from 'path';
+import { join } from 'node:path';
 import { NAV_CONFIG_NS, t } from '../i18n';
 
 /**

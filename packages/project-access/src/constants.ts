@@ -1,5 +1,5 @@
-import { homedir } from 'os';
-import { join } from 'path';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 
 export const FileName = {
     AdaptationConfig: 'config.json',
@@ -70,4 +70,5 @@ export const fioriToolsDirectory = join(homedir(), FioriToolsSettings.dir);
  */
 export const moduleCacheRoot = join(fioriToolsDirectory, DirName.ModuleCache);
 
-export const MinCdsVersionUi5Plugin = '6.8.2';
+export const MinCdsPluginUi5Version = '0.13.0';
+export const MinCdsVersion = '6.8.2';

@@ -2,32 +2,28 @@ import { type Destination, isAppStudio } from '@sap-ux/btp-utils';
 import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import { getAbapQuestions } from '../../../src/app/questions';
 import { readUi5Yaml } from '@sap-ux/project-access';
-import type { BackendSystem } from '@sap-ux/store';
 import { AuthenticationType } from '@sap-ux/store';
 import { DefaultLogger, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/btp-utils', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/btp-utils') as {}),
     isAppStudio: jest.fn()
 }));
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
 jest.mock('@sap-ux/project-access', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/project-access') as {}),
     readUi5Yaml: jest.fn()
 }));
 const mockReadUi5Yaml = readUi5Yaml as jest.Mock;
 
 jest.mock('@sap-ux/abap-deploy-config-inquirer', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/abap-deploy-config-inquirer') as {}),
     getPrompts: jest.fn()
 }));
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     getHostEnvironment: jest.fn()
 }));
@@ -56,6 +52,7 @@ describe('Test getAbapQuestions', () => {
             showOverwriteQuestion: false,
             logger: DefaultLogger,
             promptOptions: {
+                adpProjectType: AdaptationProjectType.CLOUD_READY,
                 ui5AbapRepo: { hideIfOnPremise: false },
                 transportInputChoice: { hideIfOnPremise: false },
                 packageAutocomplete: {
@@ -71,13 +68,13 @@ describe('Test getAbapQuestions', () => {
                         shouldValidatePackageType: false,
                         shouldValidateFormatAndSpecialCharacters: false
                     }
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                }
             }
         });
 
         expect(getPromptsSpy).toHaveBeenCalledWith(
             {
+                adpProjectType: AdaptationProjectType.CLOUD_READY,
                 backendTarget: {
                     abapTarget: {
                         'authenticationType': undefined,
@@ -111,8 +108,7 @@ describe('Test getAbapQuestions', () => {
                     }
                 },
                 overwriteAbapConfig: { hide: true },
-                transportInputChoice: { hideIfOnPremise: false },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                transportInputChoice: { hideIfOnPremise: false }
             },
             expect.any(Object),
             true
@@ -132,8 +128,9 @@ describe('Test getAbapQuestions', () => {
                     url: 'https://mock-url',
                     client: '100',
                     authenticationType: AuthenticationType.ReentranceTicket,
-                    scp: false
-                } as BackendSystem
+                    systemType: 'AbapCloud',
+                    connectionType: 'abap_catalog'
+                }
             },
             backendConfig: undefined,
             configFile: 'ui5-deploy.yaml',
@@ -154,8 +151,7 @@ describe('Test getAbapQuestions', () => {
                         shouldValidatePackageType: false,
                         shouldValidateFormatAndSpecialCharacters: false
                     }
-                },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                }
             }
         });
 
@@ -194,8 +190,7 @@ describe('Test getAbapQuestions', () => {
                     }
                 },
                 overwriteAbapConfig: { hide: true },
-                transportInputChoice: { hideIfOnPremise: false },
-                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
+                transportInputChoice: { hideIfOnPremise: false }
             },
             expect.any(Object),
             false

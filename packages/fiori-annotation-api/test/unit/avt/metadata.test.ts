@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { pathToFileURL } from 'url';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import type { DocumentCstNode } from '@xml-tools/parser';
 import { parse } from '@xml-tools/parser';

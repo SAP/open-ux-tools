@@ -1,11 +1,11 @@
 import type { Command } from 'commander';
 
 import type { DescriptorVariant, NewModelAnswers, NewModelData } from '@sap-ux/adp-tooling';
-import { generateChange, ChangeType, getPromptsForNewModel, getVariant } from '@sap-ux/adp-tooling';
+import { generateChange, ChangeType, getPromptsForNewModel, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
-import { validateAdpProject } from '../../validation/validation';
+import { validateAdpAppType } from '../../validation/validation';
 
 /**
  * Add a new sub-command to add new odata service and new sapui5 model of an adaptation project to the given command.
@@ -14,8 +14,13 @@ import { validateAdpProject } from '../../validation/validation';
  */
 export function addNewModelCommand(cmd: Command): void {
     cmd.command('model [path]')
-        .description('Add a new OData service and UI5 model to an existing adaptation project.')
-        .option('-s, --simulate', 'simulate only do not write or install')
+        .description(
+            `Add a new OData service and SAPUI5 model to an existing adaptation project.\n
+            This command is not supported for Cloud Foundry projects.\n
+Example:
+    \`npx --yes @sap-ux/create@latest add model\``
+        )
+        .option('-s, --simulate', 'Simulate only. Do not write or install.')
         .action(async (path, options) => {
             await addNewModel(path, !!options.simulate);
         });
@@ -34,11 +39,14 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
             basePath = process.cwd();
         }
 
-        await validateAdpProject(basePath);
+        await validateAdpAppType(basePath);
+        if (await isCFEnvironment(basePath)) {
+            throw new Error('This command is not supported for Cloud Foundry projects.');
+        }
 
         const variant = await getVariant(basePath);
 
-        const answers = await promptYUIQuestions(getPromptsForNewModel(basePath, variant.layer), false);
+        const answers = await promptYUIQuestions(await getPromptsForNewModel(basePath, variant.layer), false);
 
         const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(
             basePath,

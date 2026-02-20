@@ -1,5 +1,5 @@
 import { addVariantsManagementScript } from '../../../src/variants-config/package-json';
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createFS } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';

@@ -1,6 +1,6 @@
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import { FileName, getCapCustomPaths, getWebappPath } from '@sap-ux/project-access';
-import { join, normalize, posix } from 'path';
+import { join, normalize, posix } from 'node:path';
 import { enableCdsUi5Plugin } from '../cap-config';
 import type { CapServiceCdsInfo } from '../cap-config/types';
 import type { Editor } from 'mem-fs-editor';
@@ -107,7 +107,7 @@ async function updateScripts(
     addCdsUi5Plugin?: boolean
 ): Promise<void> {
     let cdsScripts: { [x: string]: string } = {};
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     if (addCdsUi5Plugin) {
         // If the project has the cds-plugin-ui5 then the project is served using the appId
         // Update existing watch scripts if they exist

@@ -1,8 +1,9 @@
 import type { Editor, FileMap } from 'mem-fs-editor';
-import { basename, dirname, extname, join, sep, posix } from 'path';
-import { default as find, type FindError } from 'findit2';
+import { basename, dirname, extname, join, sep, posix } from 'node:path';
+import type { FindError } from 'findit2';
+import find from 'findit2';
 import { fileExists } from './file-access';
-import { promises as fs } from 'fs';
+import { promises as fs } from 'node:fs';
 
 /**
  * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).
@@ -143,7 +144,6 @@ export function findBy(options: {
             if (fatalErrors.length === 0) {
                 resolve(searchResult);
             } else {
-                // eslint-disable-next-line prefer-promise-reject-errors
                 reject(fatalErrors);
             }
         });

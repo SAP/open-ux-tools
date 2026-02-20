@@ -1,9 +1,9 @@
 jest.disableAutomock();
 
-import * as cp from 'child_process';
+import * as cp from 'node:child_process';
 import { executeNpmUI5VersionsCmd } from '../src/commands';
 import { getUI5Versions } from '../src/ui5-version-info';
-import os from 'os';
+import os from 'node:os';
 
 jest.mock('child_process');
 const mockedCp = jest.mocked(cp, { shallow: true });
@@ -104,18 +104,19 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
         const retrievedUI5Versions = await getUI5Versions({
             onlyNpmVersion: true
         }); // expect defaults
-        expect(retrievedUI5Versions[0]).toEqual({ version: '1.136.0' });
-        expect(retrievedUI5Versions.length).toEqual(8);
         expect(retrievedUI5Versions).toMatchInlineSnapshot(`
             [
               {
+                "version": "1.144.0",
+              },
+              {
+                "version": "1.142.0",
+              },
+              {
+                "version": "1.139.0",
+              },
+              {
                 "version": "1.136.0",
-              },
-              {
-                "version": "1.133.0",
-              },
-              {
-                "version": "1.130.0",
               },
               {
                 "version": "1.120.0",
@@ -125,9 +126,6 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
               },
               {
                 "version": "1.96.0",
-              },
-              {
-                "version": "1.84.0",
               },
               {
                 "version": "1.71.0",
@@ -209,14 +207,14 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             1,
             'npm.cmd',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
-            {}
+            { 'shell': true }
         );
     });
 });
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockSpawn = require('mock-spawn');
-import childProcess from 'child_process';
+import childProcess from 'node:child_process';
 
 describe('Test commands internals', () => {
     jest.setTimeout(10000);

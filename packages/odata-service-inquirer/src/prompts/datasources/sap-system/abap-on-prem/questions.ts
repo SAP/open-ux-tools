@@ -9,7 +9,7 @@ import {
     type ServiceSelectionPromptOptions,
     type SystemNamePromptOptions
 } from '../../../../types';
-import { PromptState } from '../../../../utils';
+import { isBackendSystemKeyExisting, PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
 import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
@@ -55,7 +55,12 @@ export function getAbapOnPremQuestions(
     );
 
     questions.push(
-        ...getSystemServiceQuestion(connectValidator, abapOnPremPromptNamespace, promptOptions?.serviceSelection)
+        ...getSystemServiceQuestion(
+            connectValidator,
+            abapOnPremPromptNamespace,
+            promptOptions?.serviceSelection,
+            promptOptions?.valueHelpDownload?.hide
+        )
     );
 
     return questions;
@@ -80,7 +85,13 @@ export function getAbapOnPremSystemQuestions(
     const sapClientRef: { sapClient: string | undefined; isValid: boolean } = { sapClient: undefined, isValid: true };
 
     const questions: Question<AbapOnPremAnswers>[] = [
-        getSystemUrlQuestion<AbapOnPremAnswers>(connectValidator, abapOnPremPromptNamespace, requiredOdataVersion),
+        getSystemUrlQuestion<AbapOnPremAnswers>(
+            connectValidator,
+            abapOnPremPromptNamespace,
+            requiredOdataVersion,
+            undefined,
+            false
+        ),
         {
             type: 'input',
             name: abapOnPremPromptNames.sapClient,
@@ -88,11 +99,27 @@ export function getAbapOnPremSystemQuestions(
             guiOptions: {
                 breadcrumb: t('prompts.sapClient.breadcrumb')
             },
-            validate: (client) => {
+            validate: (client, prevAnswers: AbapOnPremAnswers) => {
                 const valRes = validateClient(client);
                 if (valRes === true) {
                     sapClientRef.sapClient = client;
                     sapClientRef.isValid = true;
+                    // If we also have a system url, warn about existing stored system overwrite
+                    if (prevAnswers?.[systemUrlPromptName]) {
+                        const existingBackend = isBackendSystemKeyExisting(
+                            PromptState.backendSystemsCache,
+                            prevAnswers[systemUrlPromptName],
+                            client
+                        );
+                        if (existingBackend) {
+                            // Prevents further prompts by setting the client to invalid
+                            // This is a temp workaround until multiple systems with the same url/client key is supported
+                            sapClientRef.isValid = false;
+                            return t('prompts.validationMessages.backendSystemExistsWarning', {
+                                backendName: existingBackend.name
+                            });
+                        }
+                    }
                     return true;
                 }
                 sapClientRef.sapClient = undefined;
@@ -100,7 +127,12 @@ export function getAbapOnPremSystemQuestions(
                 return valRes;
             }
         } as InputQuestion<AbapOnPremAnswers>,
-        ...getCredentialsPrompts<AbapOnPremAnswers>(connectValidator, abapOnPremPromptNamespace, sapClientRef)
+        ...getCredentialsPrompts<AbapOnPremAnswers>(
+            connectValidator,
+            abapOnPremPromptNamespace,
+            sapClientRef,
+            requiredOdataVersion
+        )
     ];
 
     if (systemNamePromptOptions?.hide !== true) {

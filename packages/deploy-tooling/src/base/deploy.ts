@@ -6,7 +6,7 @@ import type {
 } from '@sap-ux/axios-extension';
 import { isAxiosError, TransportRequestService } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
-import { writeFileSync } from 'fs';
+import { writeFileSync } from 'node:fs';
 import type { AbapDeployConfig } from '../types';
 import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './config';
 import { promptConfirmation } from './prompt';

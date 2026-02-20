@@ -1,20 +1,26 @@
+import type { JSONSchema7 } from 'json-schema';
 import type {
     v4,
     ExportParametersV4Type,
+    ExportConfigParameters,
     ExportResults,
     PageConfig,
     File,
     GenerateCustomExtensionParams,
     Specification,
     Application,
-    PageType
+    PageType,
+    ExportParametersV2Type,
+    ReadAppResult,
+    Parser
 } from '@sap/ux-specification/dist/types/src';
 import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification/dist/types/src';
-import { basename, join } from 'path';
+import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
-import type { Store } from 'mem-fs';
-import { getManifest, getUI5Version, readAnnotationFiles } from './project';
-import { logger } from '../utils/logger';
+import { getSpecificationModuleFromCache, readFlexChanges } from '@sap-ux/project-access';
+import { getFlexChangeLayer, getManifest, getUI5Version } from './project';
+import { logger, specificationLogger } from '../utils/logger';
+import { mergeChanges, writeFlexChanges } from './flex';
 
 export interface PageData {
     pageId: string;
@@ -30,18 +36,6 @@ export interface PageData {
 export interface AppData {
     config: Application;
     schema: string;
-}
-
-type Editor = NonNullable<Awaited<ReturnType<Specification['generateCustomExtension']>>>;
-
-// Extended interface of the mem-fs editor to restrict writing to specific files
-interface EditorExtended extends Editor {
-    store: Store;
-    /**
-     * Dump files to compare expected result. Provide a cwd for relative path.
-     * See also https://github.com/SBoudrias/mem-fs-editor#dumpcwd-filter for further details.
-     */
-    dump(): { [key: string]: { contents: string; state: 'modified' | 'deleted' } };
 }
 
 /**
@@ -66,7 +60,14 @@ export class SapuxFtfsFileIO {
      * @returns A promise that resolves to a Specification object
      */
     private async getSpecification(): Promise<Specification> {
-        return this.appAccess.getSpecification();
+        let specification = await this.appAccess.getSpecification<Specification>();
+        const apiVersion = specification.getApiVersion();
+        const version = typeof apiVersion?.version === 'string' ? Number.parseInt(apiVersion.version, 10) : 0;
+        if (version < 24) {
+            // resolved spec is outdated - load latest specification from global cache(it must contain latest API)
+            specification = await getSpecificationModuleFromCache(this.appAccess.app.appRoot);
+        }
+        return specification;
     }
 
     /**
@@ -82,20 +83,27 @@ export class SapuxFtfsFileIO {
     /**
      * Retrieves virtual files for the project.
      *
+     * @param skipParsing If true, skips parsing the application modeler within the specification.
      * @returns A promise that resolves to an array of File objects
      */
-    private async getVirtualFiles(): Promise<File[]> {
-        const manifest = await getManifest(this.appAccess);
-        if (!manifest) {
-            return [];
-        }
+    private async readApp(skipParsing?: boolean): Promise<ReadAppResult> {
         const specification = await this.getSpecification();
-        const annotationData = await readAnnotationFiles(this.appAccess);
-        // Import project using specification API
-        return specification.importProject({
-            manifest: manifest,
-            annotations: annotationData
+        return specification.readApp({
+            app: this.appAccess,
+            skipParsing,
+            logger: specificationLogger
         });
+    }
+
+    /**
+     * Retrieves virtual files for the project.
+     *
+     * @param skipParsing If true, skips parsing the application modeler within the specification.
+     * @returns A promise that resolves to an array of File objects
+     */
+    public async getApplicationModel(skipParsing?: boolean): Promise<Parser.ApplicationModel | undefined> {
+        const app = await this.readApp(skipParsing);
+        return app.applicationModel;
     }
 
     /**
@@ -104,19 +112,15 @@ export class SapuxFtfsFileIO {
      * @param files - Optional array of File objects
      * @returns A promise that resolves to an AppData object
      */
-    public async readApp(files?: File[]): Promise<AppData> {
-        files ??= await this.getVirtualFiles();
+    public async readAppData(files?: File[]): Promise<AppData> {
+        if (!files) {
+            const appData = await this.readApp(true);
+            files = appData.files;
+        }
         const appJson = files.find((file) => file.dataSourceUri === FileName.App);
         const appConfig = JSON.parse(appJson?.fileContent ?? '{}') as Application;
         const schemaPath = join('.schemas', basename(join(appConfig?.$schema ?? '')));
         const schemaFile = files.find((file) => join(file.dataSourceUri) === schemaPath);
-        if (schemaFile) {
-            const schema = JSON.parse(schemaFile.fileContent);
-            if (schema.properties?.settings) {
-                schema.properties.settings.isViewNode = true;
-            }
-            schemaFile.fileContent = JSON.stringify(schema);
-        }
         return {
             config: appConfig,
             schema: schemaFile?.fileContent ?? '{}'
@@ -131,14 +135,15 @@ export class SapuxFtfsFileIO {
      */
     public async readPageData(pageId: string): Promise<PageData | undefined> {
         try {
-            const files = await this.getVirtualFiles();
+            const app = await this.readApp(true);
+            const { files } = app;
             const pagePath = join(DirName.Pages, `${pageId}.json`);
             const pageFile = files.find((file) => join(file.dataSourceUri) === pagePath);
             const pageConfig = pageFile?.fileContent ? (JSON.parse(pageFile.fileContent) as PageConfig) : undefined;
             const schemaPath = join('.schemas', basename(join(pageConfig?.$schema ?? '')));
             const schema = files.find((file) => join(file.dataSourceUri) === schemaPath);
             if (pageConfig && schema) {
-                const application = await this.readApp(files);
+                const application = await this.readAppData(files);
                 const page = application.config.pages?.[pageId];
                 if (page) {
                     const pageType = page.pageType;
@@ -170,29 +175,38 @@ export class SapuxFtfsFileIO {
     public async writePage(pageData: PageData): Promise<ExportResults | undefined> {
         const manifest = await getManifest(this.appAccess);
         if (!manifest) {
-            return;
+            return undefined;
         }
         const specification = await this.getSpecification();
         const schemaType = pageData.pageType === PageTypeV4.ObjectPage ? SchemaType.ObjectPage : SchemaType.ListReport;
-        const params: ExportParametersV4Type = {
+        const exportParams = {
             [schemaType]: {
                 appId: this.getAppId(manifest),
-                jsonSchema: JSON.parse(pageData.schema),
+                jsonSchema: JSON.parse(pageData.schema) as JSONSchema7,
                 manifest,
                 page: {
                     ...pageData.page,
                     name: pageData.pageId,
-                    config: pageData.config
-                } as v4.PageV4
+                    config: pageData.config,
+                    logger: specificationLogger
+                } as v4.PageV4,
+                logger: specificationLogger
             }
-        } as unknown as ExportParametersV4Type;
-
-        const result = specification.exportConfig({
-            v4: params
-        });
+        };
+        const exportConfig = await this.getExportConfigParameters(manifest, exportParams);
+        const result = specification.exportConfig(exportConfig);
         if (result.manifestChangeIndicator === 'Updated') {
             await this.appAccess.updateManifestJSON(result.manifest);
         }
+        // Update flex changes
+        const changesPath = this.appAccess.app.changes;
+        const oldChangeFiles = await readFlexChanges(this.appAccess.app.changes);
+        const mergedChangeFiles = mergeChanges(changesPath, oldChangeFiles, result.flexChanges);
+        const fsEditor = await writeFlexChanges(changesPath, mergedChangeFiles);
+        await fsEditor.commit(() => {
+            //empty callback, do nothing.
+        });
+        result.flexChanges = Object.keys(fsEditor.dump());
         return result;
     }
 
@@ -206,20 +220,19 @@ export class SapuxFtfsFileIO {
         const { config, schema } = appData;
         const manifest = await getManifest(this.appAccess);
         if (!manifest) {
-            return;
+            return undefined;
         }
         const specification = await this.getSpecification();
-        const params: ExportParametersV4Type = {
+        const exportParams: ExportParametersV4Type = {
             [SchemaType.Application]: {
                 application: config as v4.ApplicationV4,
                 manifest,
-                jsonSchema: JSON.parse(schema)
+                jsonSchema: JSON.parse(schema) as JSONSchema7,
+                logger: specificationLogger
             }
         };
-
-        const result = specification.exportConfig({
-            v4: params
-        });
+        const exportConfig = await this.getExportConfigParameters(manifest, exportParams);
+        const result = specification.exportConfig(exportConfig);
         await this.appAccess.updateManifestJSON(result.manifest);
         return result;
     }
@@ -235,10 +248,29 @@ export class SapuxFtfsFileIO {
             params.data.minUI5Version = await getUI5Version(this.appAccess);
         }
         const specification = await this.getSpecification();
-        const fsEditor = (await specification.generateCustomExtension(params)) as EditorExtended;
-        await fsEditor.commit(() => {
+        const fsEditor = await specification.generateCustomExtension(params);
+        await fsEditor?.commit(() => {
             //empty callback, do nothing.
         });
-        return Object.keys(fsEditor.dump());
+        return fsEditor ? Object.keys(fsEditor.dump()) : [];
+    }
+
+    /**
+     * Builds the export configuration parameters for specification API 'exportConfig' call.
+     * Adds 'ui5Version' and 'layer' values to the configuration.
+     *
+     * @param manifest - The application manifest containing OData service configuration
+     * @param params - Partial export parameters to include in the resulting configuration
+     * @returns A promise that resolves to the fully composed export configuration object
+     */
+    private async getExportConfigParameters(
+        manifest: Manifest,
+        params: Partial<ExportParametersV2Type | ExportParametersV4Type>
+    ): Promise<ExportConfigParameters> {
+        const odataVersion = manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion;
+        const exportConfig = (odataVersion === '2.0' ? { v2: params } : { v4: params }) as ExportConfigParameters;
+        exportConfig.ui5Version = await getUI5Version(this.appAccess);
+        exportConfig.layer = await getFlexChangeLayer(this.appAccess.root);
+        return exportConfig;
     }
 }

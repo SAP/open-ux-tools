@@ -1,4 +1,4 @@
-import { dirname, join, relative, basename } from 'path';
+import { dirname, join, relative, basename } from 'node:path';
 import type { DebugOptions, WorkspaceHandlerInfo } from '../types';
 import { formatCwd, getLaunchJsonPath, isFolderInWorkspace, handleAppsNotInWorkspace } from './helpers';
 

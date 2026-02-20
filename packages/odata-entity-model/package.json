@@ -1,7 +1,12 @@
 {
     "name": "@sap-ux/odata-entity-model",
-    "version": "0.3.1",
+    "version": "0.3.5",
     "description": "OData model representation without annotations",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/odata-entity-model"
+    },
     "main": "dist/index.js",
     "author": "SAP SE",
     "license": "Apache-2.0",
@@ -12,17 +17,19 @@
         "clean": "rimraf --glob coverage dist *.tsbuildinfo",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
-        "lint": "eslint . --ext .ts,.tsx",
-        "lint:summary": "eslint . --ext .ts,.tsx -f summary",
-        "lint:fix": "eslint . --ext .ts --fix",
-        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
-        "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
+        "lint": "eslint",
+        "lint:summary": "eslint . -f summary",
+        "lint:fix": "eslint --fix",
+        "lint:report": "eslint . -f multiple ",
         "test": "jest  --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "watch": "tsc  --build ./ -watch"
     },
     "files": [
         "dist/**"
     ],
+    "engines": {
+        "node": ">=20.x"
+    },
     "devDependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "npm-run-all2": "6.2.0"

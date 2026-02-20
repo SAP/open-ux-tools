@@ -2,7 +2,7 @@ import { reuseLibs } from './test-input/libs';
 import { generate } from '../src/index';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import fsextra from 'fs-extra';
 
 describe('Test UI5 Library Reference Writer', () => {

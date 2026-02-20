@@ -3,7 +3,7 @@ import { createCapI18nEntries } from '../../../../src';
 import * as json from '../../../../src/write/cap/json';
 import * as properties from '../../../../src/write/cap/properties';
 import * as csv from '../../../../src/write/cap/csv';
-import { join } from 'path';
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 

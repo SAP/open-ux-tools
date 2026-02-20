@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { FileName, DirName } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';

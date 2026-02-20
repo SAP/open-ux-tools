@@ -8,8 +8,8 @@ import {
     expect
 } from '@sap-ux-private/playwright';
 import type { Page } from '@sap-ux-private/playwright';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
+import { writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant';
 
@@ -110,7 +110,7 @@ const check = async (param: { page: Page }) => {
     const { page } = param;
     await page.goto(`${getUrl()}/my/custom/path/preview.html#app-preview`);
     await page.getByRole('button', { name: 'Go', exact: true }).click();
-    await expect(page.getByText('ProductForEdit_0', { exact: true })).toBeVisible();
+    await expect(page.getByText('Product_0', { exact: true })).toBeVisible();
 };
 
 const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];

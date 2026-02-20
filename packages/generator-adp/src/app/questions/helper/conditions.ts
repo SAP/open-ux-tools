@@ -1,5 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ConfigAnswers, FlexUISupportedSystem } from '@sap-ux/adp-tooling';
+import { AppRouterType } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, FlexUICapability, CfServicesAnswers, CFApp } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Determines if a credential question should be shown.
@@ -34,33 +36,37 @@ export function showApplicationQuestion(
 /**
  * Determines if an extension project is allowed based on the system and application conditions.
  *
- * @param {ConfigAnswers} answers - The user-provided answers containing application details.
- * @param {FlexUISupportedSystem} flexUISystem - The system type info (e.g., onPremise/UIFlex).
- * @param {boolean} isCloudProject - Whether the system is a cloud-based system.
- * @param {boolean} isApplicationSupported - Whether the selected application is supported.
- * @param {boolean} hasSyncViews - Whether synchronized views exist for the app.
- * @returns {boolean | undefined} True if an extension project is allowed, otherwise false or undefined.
+ * @param params - Function parameters as an object literal.
+ * @param {boolean} params.isApplicationSelected - True if the user has selected an application.
+ * @param {boolean} params.isApplicationSupported - Whether the selected application is supported.
+ * @param {boolean} params.hasSyncViews - Whether synchronized views exist for the app.
+ * @param {AdaptationProjectType|undefined} params.projectType - The project type.
+ * @param {FlexUICapability | undefined} params.flexUICapability - The system type info (e.g., onPremise/UIFlex).
+ * @returns {boolean} True if an extension project is allowed, otherwise false or undefined.
  */
-export function showExtensionProjectQuestion(
-    answers: ConfigAnswers,
-    flexUISystem: FlexUISupportedSystem | undefined,
-    isCloudProject: boolean | undefined,
-    isApplicationSupported: boolean,
-    hasSyncViews: boolean
-): boolean {
-    if (!answers.application) {
+export function showExtensionProjectQuestion({
+    isApplicationSelected,
+    isApplicationSupported,
+    hasSyncViews,
+    projectType,
+    flexUICapability
+}: {
+    isApplicationSelected: boolean;
+    isApplicationSupported: boolean;
+    hasSyncViews: boolean;
+    projectType?: AdaptationProjectType;
+    flexUICapability?: FlexUICapability;
+}): boolean {
+    if (!isApplicationSelected || projectType === AdaptationProjectType.CLOUD_READY) {
         return false;
     }
 
-    if (isCloudProject) {
-        return false;
-    }
-
-    const isOnPremiseAppStudio = !!flexUISystem?.isOnPremise && isAppStudio();
-    const nonFlexOrNonOnPremise = flexUISystem && (!flexUISystem?.isOnPremise || !flexUISystem?.isUIFlex);
+    const isDtaDeploymentSupportedAppStudio = !!flexUICapability?.isDtaFolderDeploymentSupported && isAppStudio();
+    const nonFlexOrNonOnPremise =
+        flexUICapability && (!flexUICapability?.isDtaFolderDeploymentSupported || !flexUICapability?.isUIFlexSupported);
 
     return (
-        isOnPremiseAppStudio &&
+        isDtaDeploymentSupportedAppStudio &&
         (!isApplicationSupported || (isApplicationSupported && (nonFlexOrNonOnPremise || hasSyncViews)))
     );
 }
@@ -79,4 +85,50 @@ export function showInternalQuestions(
     isApplicationSupported: boolean
 ): boolean {
     return !!answers.system && answers.application && !isCustomerBase && isApplicationSupported;
+}
+
+/**
+ * Determines if the business solution name question should be shown.
+ *
+ * @param {CfServicesAnswers} answers - The user-provided answers containing application details.
+ * @param {boolean} isCFLoggedIn - A flag indicating whether the user is logged in to Cloud Foundry.
+ * @param {boolean} showSolutionNamePrompt - A flag indicating whether the solution name prompt should be shown.
+ * @param {string} businessService - The business service to be used.
+ * @returns {boolean} True if the business solution name question should be shown, otherwise false.
+ */
+export function showBusinessSolutionNameQuestion(
+    answers: CfServicesAnswers,
+    isCFLoggedIn: boolean,
+    showSolutionNamePrompt: boolean,
+    businessService: string | undefined
+): boolean {
+    return isCFLoggedIn && answers.approuter === AppRouterType.MANAGED && showSolutionNamePrompt && !!businessService;
+}
+
+/**
+ * Determines if the base app prompt should be shown.
+ *
+ * @param {CfServicesAnswers} answers - The user-provided answers containing application details.
+ * @param {boolean} isCFLoggedIn - A flag indicating whether the user is logged in to Cloud Foundry.
+ * @param {CFApp[]} apps - The base apps available.
+ * @returns {boolean} True if the base app prompt should be shown, otherwise false.
+ */
+export function shouldShowBaseAppPrompt(answers: CfServicesAnswers, isCFLoggedIn: boolean, apps: CFApp[]): boolean {
+    return isCFLoggedIn && !!answers.businessService && !!apps.length;
+}
+
+/**
+ * Determines if the store credentials question should be shown.
+ *
+ * @param {ConfigAnswers} answers - The user-provided answers containing credentials.
+ * @param {boolean} isLoginSuccessful - A flag indicating that system login was successful.
+ * @param {boolean} isAuthRequired - A flag indicating whether system authentication is needed.
+ * @returns {boolean} True if the store credentials question should be shown.
+ */
+export function showStoreCredentialsQuestion(
+    answers: ConfigAnswers,
+    isLoginSuccessful: boolean,
+    isAuthRequired: boolean
+): boolean {
+    return !isAppStudio() && showCredentialQuestion(answers, isAuthRequired) && isLoginSuccessful && !!answers.password;
 }

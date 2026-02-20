@@ -1,6 +1,6 @@
-import { existsSync } from 'fs';
-import os from 'os';
-import { join } from 'path';
+import { existsSync } from 'node:fs';
+import os from 'node:os';
+import { join } from 'node:path';
 import { coerce, lt } from 'semver';
 
 export const YEOMANUI_TARGET_FOLDER_CONFIG_PROP = 'ApplicationWizard.TargetFolder';

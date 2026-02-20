@@ -1,8 +1,12 @@
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import {
+    type AbapServiceProvider,
+    AdaptationProjectType,
+    type LayeredRepositoryService
+} from '@sap-ux/axios-extension';
 import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
-import { AxiosError } from 'axios';
+import { AxiosError, type AxiosResponseHeaders } from 'axios';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { AuthenticationType } from '../../../store/src';
+import { AuthenticationType } from '@sap-ux/store';
 import { initI18n, t } from '../../src/i18n';
 import { PromptState } from '../../src/prompts/prompt-state';
 import {
@@ -24,6 +28,7 @@ import {
 } from '../../src/prompts/validators';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
 import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
+import type { AbapSystemChoice, BackendTarget } from '../../src/types';
 import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
 import * as utils from '../../src/utils';
 import * as validatorUtils from '../../src/validator-utils';
@@ -36,9 +41,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 }));
 
 jest.mock('../../src/service-provider-utils', () => ({
-    getTransportListFromService: jest.fn(),
-    getSystemInfo: jest.fn(),
-    isAbapCloud: jest.fn()
+    getTransportListFromService: jest.fn()
 }));
 
 jest.mock('../../src/service-provider-utils/abap-service-provider');
@@ -54,6 +57,12 @@ describe('Test validators', () => {
     beforeAll(async () => {
         await initI18n();
     });
+
+    beforeEach(() => {
+        // reset propmt state for test isolation
+        PromptState.abapDeployConfig = {};
+    });
+
     describe('validateDestinationQuestion', () => {
         it('should return true for valid destination', async () => {
             const result = await validateDestinationQuestion('Dest2', mockDestinations);
@@ -69,44 +78,90 @@ describe('Test validators', () => {
             expect(result).toBe(false);
         });
 
-        it('should return error when selected destination is cloud and the default one is onPrem', async () => {
-            jest.spyOn(serviceProviderUtils, 'isAbapCloud').mockResolvedValueOnce(true);
-            jest.spyOn(AbapServiceProviderManager, 'getIsDefaultProviderAbapCloud').mockReturnValueOnce(false);
-            const result = await validateDestinationQuestion('Dest2', mockDestinations, {
-                additionalValidation: { shouldRestrictDifferentSystemType: true }
-            });
+        it('[ADP] should return error when the selected destination supports cloud only ADP projects and the default destination supports only onPrem', async () => {
+            const supportedAdpProjectTypes = [AdaptationProjectType.CLOUD_READY];
+            const adpProjectType = AdaptationProjectType.ON_PREMISE;
+            mockResolvedSystemInfo(supportedAdpProjectTypes);
 
-            expect(result).toBe(t('errors.validators.invalidOnPremSystem'));
+            const result = await validateDestinationQuestion('Dest2', mockDestinations, undefined, adpProjectType);
+
+            expect(result).toBe(
+                t('errors.validators.unsupportedAdpProjectType', {
+                    adpProjectType,
+                    supportedAdpProjectTypes
+                })
+            );
         });
 
-        it('should return error when selected destination is onPrem and the default one is cloud', async () => {
-            jest.spyOn(serviceProviderUtils, 'isAbapCloud').mockResolvedValueOnce(false);
-            jest.spyOn(AbapServiceProviderManager, 'getIsDefaultProviderAbapCloud').mockReturnValueOnce(true);
-            const result = await validateDestinationQuestion('Dest2', mockDestinations, {
-                additionalValidation: { shouldRestrictDifferentSystemType: true }
-            });
+        it('[ADP] should return error when the selected destination supports onPrem only ADP projects and the default destination supports only cloud', async () => {
+            const supportedAdpProjectTypes = [AdaptationProjectType.ON_PREMISE];
+            const adpProjectType = AdaptationProjectType.CLOUD_READY;
+            mockResolvedSystemInfo(supportedAdpProjectTypes);
 
-            expect(result).toBe(t('errors.validators.invalidCloudSystem'));
+            const result = await validateDestinationQuestion('Dest2', mockDestinations, undefined, adpProjectType);
+
+            expect(result).toBe(
+                t('errors.validators.unsupportedAdpProjectType', {
+                    adpProjectType,
+                    supportedAdpProjectTypes
+                })
+            );
+        });
+
+        it('[ADP] should return true when the user is not authenticated.', async () => {
+            const unauthorizedError = getAxiosError(401);
+            const adpProjectType = AdaptationProjectType.CLOUD_READY;
+            mockRejectedSystemInfo(unauthorizedError);
+
+            const result = await validateDestinationQuestion('Dest2', mockDestinations, undefined, adpProjectType);
+
+            expect(result).toBe(true);
+        });
+
+        it('[ADP] should return an error when the system info api is missing AND the ADP project type is cloud', async () => {
+            const notFoundError = getAxiosError(404);
+            const adpProjectType = AdaptationProjectType.CLOUD_READY;
+            mockRejectedSystemInfo(notFoundError);
+
+            const result = await validateDestinationQuestion('Dest2', mockDestinations, undefined, adpProjectType);
+
+            expect(result).toBe(
+                t('errors.validators.unsupportedAdpProjectType', {
+                    adpProjectType,
+                    supportedAdpProjectTypes: AdaptationProjectType.ON_PREMISE
+                })
+            );
+        });
+
+        it('[ADP] should return true when the system info api is missing AND the ADP project type is onPrem', async () => {
+            const notFoundError = getAxiosError(404);
+            const adpProjectType = AdaptationProjectType.ON_PREMISE;
+            mockRejectedSystemInfo(notFoundError);
+
+            const result = await validateDestinationQuestion('Dest2', mockDestinations, undefined, adpProjectType);
+
+            expect(result).toBe(true);
         });
     });
 
     describe('validateTargetSystem', () => {
-        const abapSystemChoices = [
+        const abapSystemChoices: AbapSystemChoice[] = [
             {
                 name: 'Target1',
                 value: 'https://mock.url.target1.com',
                 client: '001',
-                isS4HC: false,
+                isAbapCloud: false,
                 scp: false
             },
             {
                 name: 'Target2',
                 value: 'https://mock.url.target2.com',
                 client: '002',
-                isS4HC: true,
+                isAbapCloud: true,
                 scp: false
             }
         ];
+
         it('should return true for valid (or empty) target system', async () => {
             let result = await validateTargetSystem('');
             expect(result).toBe(true);
@@ -118,34 +173,58 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
                 client: '001',
-                destination: undefined,
-                isS4HC: false,
+                isAbapCloud: false,
                 scp: false,
                 targetSystem: 'https://mock.url.target1.com'
             });
             expect(result).toBe(true);
         });
 
-        it('should return false for invalid  target system', async () => {
-            const result = await validateTargetSystem('/x/inval.z');
-            expect(result).toBe(false);
+        it('should return invalid url localized string for invalid target system', async () => {
+            const url = '/x/inval.z';
+            const result = await validateTargetSystem(url);
+            expect(result).toBe(t('errors.invalidUrl', { url }));
         });
 
-        it('should return error when selected destination is cloud and the default one is onPrem', async () => {
-            jest.spyOn(AbapServiceProviderManager, 'getIsDefaultProviderAbapCloud').mockReturnValueOnce(false);
-            const result = await validateTargetSystem('https://mock.url.target2.com', abapSystemChoices, {
-                additionalValidation: { shouldRestrictDifferentSystemType: true }
-            });
-
-            expect(result).toBe(t('errors.validators.invalidOnPremSystem'));
+        it('should return true when url is valid and the ADP project type can be deployed on the target system', async () => {
+            const srcUrl = 'https://mock.url.target1.com';
+            const targetUrl = 'https://mock.url.deployment.target.com';
+            const backendTarget: BackendTarget = {
+                abapTarget: {
+                    url: targetUrl
+                }
+            };
+            mockResolvedSystemInfo([AdaptationProjectType.ON_PREMISE]);
+            const result = await validateTargetSystem(
+                srcUrl,
+                abapSystemChoices,
+                backendTarget,
+                AdaptationProjectType.ON_PREMISE
+            );
+            expect(result).toBe(true);
         });
 
-        it('should return error when selected destination is onPrem and the default one is cloud', async () => {
-            jest.spyOn(AbapServiceProviderManager, 'getIsDefaultProviderAbapCloud').mockReturnValueOnce(true);
-            const result = await validateTargetSystem('https://mock.url.target1.com', abapSystemChoices, {
-                additionalValidation: { shouldRestrictDifferentSystemType: true }
-            });
-            expect(result).toBe(t('errors.validators.invalidCloudSystem'));
+        it('should return a string containing the error message when url is valid and the ADP project type cannot be deployed on the target system', async () => {
+            const srcUrl = 'https://mock.url.target1.com';
+            const targetUrl = 'https://mock.url.deployment.target.com';
+            const backendTarget: BackendTarget = {
+                abapTarget: {
+                    url: targetUrl
+                }
+            };
+            mockResolvedSystemInfo([AdaptationProjectType.ON_PREMISE]);
+            const result = await validateTargetSystem(
+                srcUrl,
+                abapSystemChoices,
+                backendTarget,
+                AdaptationProjectType.CLOUD_READY
+            );
+            expect(result).toBe(
+                t('errors.validators.unsupportedAdpProjectType', {
+                    adpProjectType: AdaptationProjectType.CLOUD_READY,
+                    supportedAdpProjectTypes: [AdaptationProjectType.ON_PREMISE]
+                })
+            );
         });
     });
 
@@ -156,15 +235,16 @@ describe('Test validators', () => {
                 url: 'https://mock.url.target1.com',
                 client: '001',
                 serviceKeys: {},
-                authenticationType: AuthenticationType.ReentranceTicket
+                authenticationType: AuthenticationType.ReentranceTicket,
+                systemType: 'AbapCloud',
+                connectionType: 'abap_catalog'
             });
             const result = validateUrl('https://mock.url.target1.com');
             expect(result).toBe(true);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
                 client: '001',
-                destination: undefined,
-                isS4HC: true,
+                isAbapCloud: true,
                 scp: true,
                 targetSystem: undefined
             });
@@ -176,11 +256,10 @@ describe('Test validators', () => {
             expect(result).toBe(true);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.notfound.url.target1.com',
-                client: undefined,
-                destination: undefined,
-                isS4HC: false,
+                isAbapCloud: false,
                 scp: false,
-                targetSystem: undefined
+                targetSystem: undefined,
+                client: undefined
             });
         });
 
@@ -196,18 +275,20 @@ describe('Test validators', () => {
     });
 
     describe('validateTargetSystemUrlCli', () => {
-        it('should resolve when target is valid', () => {
+        it('should resolve when target is valid', async () => {
             PromptState.isYUI = false;
-            expect(validateTargetSystemUrlCli('https://mock.url.target1.com')).toBeUndefined();
+            await expect(validateTargetSystemUrlCli('https://mock.url.target1.com')).resolves.toBeUndefined();
         });
 
-        it('should throw error when target is invalid', () => {
-            PromptState.isYUI = true;
+        it('should throw error when target is invalid', async () => {
+            PromptState.isYUI = false;
+            let validationError;
             try {
-                validateTargetSystemUrlCli('/x/inval.z');
-            } catch (e) {
-                expect(e).toStrictEqual(new Error(t('errors.invalidUrl', { url: '/x/inval.z' })));
+                await validateTargetSystemUrlCli('/x/inval.z');
+            } catch (error) {
+                validationError = error;
             }
+            expect(validationError).toStrictEqual(new Error(t('errors.invalidUrl', { url: '/x/inval.z' })));
         });
     });
 
@@ -288,68 +369,39 @@ describe('Test validators', () => {
             );
         });
 
-        it('should check system type when shouldCheckSystemType is true and in App Studio', async () => {
-            mockIsAppStudio.mockReturnValueOnce(true);
-
+        it('[ADP] should return true for valid credentials and supported ADP project type', async () => {
             jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: false
             });
-            jest.spyOn(serviceProviderUtils, 'isAbapCloud').mockResolvedValueOnce(true);
 
-            const result = await validateCredentials(
-                'pass1',
-                { ...previousAnswers, username: 'user1' },
-                undefined,
-                true
-            );
+            const supportedAdpProjectTypes = [AdaptationProjectType.ON_PREMISE, AdaptationProjectType.CLOUD_READY];
+            const adpProjectType = AdaptationProjectType.CLOUD_READY;
+            mockResolvedSystemInfo(supportedAdpProjectTypes);
 
-            expect(result).toBe(true);
-            expect(mockIsAppStudio).toHaveBeenCalled();
-            expect(serviceProviderUtils.isAbapCloud).toHaveBeenCalled();
-            expect(PromptState.abapDeployConfig.isS4HC).toBe(true);
+            expect(
+                await validateCredentials('pass1', { ...previousAnswers, username: 'user1' }, undefined, adpProjectType)
+            ).toBe(true);
         });
 
-        it('should not check system type when shouldCheckSystemType is false', async () => {
-            mockIsAppStudio.mockReturnValueOnce(true);
-
+        it('[ADP] should return an error for valid credentials and NOT supported ADP project type', async () => {
             jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: false
             });
 
-            const result = await validateCredentials(
-                'pass1',
-                { ...previousAnswers, username: 'user1' },
-                undefined,
-                false
+            const supportedAdpProjectTypes = [AdaptationProjectType.ON_PREMISE];
+            const adpProjectType = AdaptationProjectType.CLOUD_READY;
+            mockResolvedSystemInfo(supportedAdpProjectTypes);
+
+            expect(
+                await validateCredentials('pass1', { ...previousAnswers, username: 'user1' }, undefined, adpProjectType)
+            ).toBe(
+                t('errors.validators.unsupportedAdpProjectType', {
+                    adpProjectType,
+                    supportedAdpProjectTypes
+                })
             );
-
-            expect(result).toBe(true);
-            expect(mockIsAppStudio).toHaveBeenCalled();
-            // isAbapCloud should not be called because shouldCheckSystemType is false
-            expect(serviceProviderUtils.isAbapCloud).not.toHaveBeenCalled();
-        });
-
-        it('should not check system type when not in App Studio even if shouldCheckSystemType is true', async () => {
-            mockIsAppStudio.mockReturnValueOnce(false);
-
-            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
-                transportConfig: {} as any,
-                transportConfigNeedsCreds: false
-            });
-
-            const result = await validateCredentials(
-                'pass1',
-                { ...previousAnswers, username: 'user1' },
-                undefined,
-                true
-            );
-
-            expect(result).toBe(true);
-            expect(mockIsAppStudio).toHaveBeenCalled();
-            // isAbapCloud should not be called because isAppStudio() returns false
-            expect(serviceProviderUtils.isAbapCloud).not.toHaveBeenCalled();
         });
     });
 
@@ -448,13 +500,23 @@ describe('Test validators', () => {
             expect(result).toBe(true);
         });
 
-        it('should return true for onPremise system', async () => {
-            PromptState.abapDeployConfig.isS4HC = false;
-            const getSystemInfoSpy = jest.spyOn(serviceProviderUtils, 'getSystemInfo');
-            const result = await validatePackage('ZPACKAGE', previousAnswers, {
-                additionalValidation: { shouldValidatePackageType: true }
-            });
-            expect(getSystemInfoSpy).not.toHaveBeenCalled();
+        it('[ADP] should return true for onPrem ADP project type', async () => {
+            const supportedAdpProjectTypes = [AdaptationProjectType.ON_PREMISE];
+            const adpProjectType = AdaptationProjectType.ON_PREMISE;
+            const getSystemInfoMock = mockResolvedSystemInfo(supportedAdpProjectTypes);
+
+            const result = await validatePackage(
+                'ZPACKAGE',
+                previousAnswers,
+                {
+                    additionalValidation: { shouldValidatePackageType: true }
+                },
+                undefined,
+                undefined,
+                undefined,
+                adpProjectType
+            );
+            expect(getSystemInfoMock).not.toHaveBeenCalled();
             expect(result).toBe(true);
         });
 
@@ -480,7 +542,7 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid starting prefix', async () => {
-            PromptState.abapDeployConfig.isS4HC = false;
+            PromptState.abapDeployConfig.isAbapCloud = false;
             PromptState.abapDeployConfig.scp = true;
             const result = await validatePackage(
                 'namespace',
@@ -499,7 +561,6 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid ui5Repo starting prefix', async () => {
-            PromptState.abapDeployConfig.isS4HC = true;
             PromptState.abapDeployConfig.scp = false;
             const result = await validatePackage(
                 'ZPACKAGE',
@@ -509,16 +570,13 @@ describe('Test validators', () => {
                 },
                 {
                     additionalValidation: { shouldValidatePackageForStartingPrefix: true }
-                },
-                {
-                    hideIfOnPremise: true
                 }
             );
             expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
         });
 
         it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
-            PromptState.abapDeployConfig.isS4HC = true;
+            PromptState.abapDeployConfig.isAbapCloud = true;
             PromptState.abapDeployConfig.scp = false;
             const result = await validatePackage(
                 '/NAMESPACE/ZPACKAGE',
@@ -536,15 +594,8 @@ describe('Test validators', () => {
             expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
         });
 
-        it('should return error when package is not cloud', async () => {
-            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
-                apiExist: true,
-                systemInfo: {
-                    adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
-                    activeLanguages: []
-                }
-            });
-            PromptState.abapDeployConfig.isS4HC = true;
+        it('[ADP] should return error when package is not cloud', async () => {
+            mockResolvedSystemInfo([AdaptationProjectType.ON_PREMISE]);
             const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
@@ -552,13 +603,7 @@ describe('Test validators', () => {
         });
 
         it('should return true when package meets all validators', async () => {
-            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
-                apiExist: true,
-                systemInfo: {
-                    adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY],
-                    activeLanguages: []
-                }
-            });
+            mockResolvedSystemInfo([AdaptationProjectType.CLOUD_READY]);
             const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
@@ -566,13 +611,7 @@ describe('Test validators', () => {
         });
 
         it('should return true when there are more than one project type for a package', async () => {
-            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
-                apiExist: true,
-                systemInfo: {
-                    adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY, AdaptationProjectType.ON_PREMISE],
-                    activeLanguages: []
-                }
-            });
+            mockResolvedSystemInfo([AdaptationProjectType.CLOUD_READY, AdaptationProjectType.ON_PREMISE]);
             const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
@@ -585,9 +624,8 @@ describe('Test validators', () => {
         });
 
         it('should return true when package base validation passes get systemInfo API is missing in the target system', async () => {
-            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
-                apiExist: false
-            });
+            const notFoundError = getAxiosError(404);
+            mockRejectedSystemInfo(notFoundError);
             const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
@@ -828,4 +866,46 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig.abort).toBeTruthy();
         });
     });
+
+    // Helper functions
+
+    function getAxiosError(status: number, message?: string): AxiosError {
+        return new AxiosError(message, status.toString(10), undefined, undefined, {
+            status,
+            statusText: message ?? 'error',
+            headers: {},
+            config: { headers: {} as unknown as AxiosResponseHeaders },
+            data: {}
+        });
+    }
+
+    function mockResolvedSystemInfo(supportedAdpProjectTypes: AdaptationProjectType[]): jest.Mock {
+        const getSystemInfoMock = jest.fn().mockResolvedValue({ adaptationProjectTypes: supportedAdpProjectTypes });
+        const lrepServiceMock = {
+            getSystemInfo: getSystemInfoMock
+        } as unknown as LayeredRepositoryService;
+
+        const providerMock = {
+            getLayeredRepository: jest.fn().mockReturnValue(lrepServiceMock)
+        } as unknown as AbapServiceProvider;
+
+        jest.spyOn(AbapServiceProviderManager, 'getOrCreateServiceProvider').mockResolvedValue(providerMock);
+
+        return getSystemInfoMock;
+    }
+
+    function mockRejectedSystemInfo(error: AxiosError): jest.Mock {
+        const getSystemInfoMock = jest.fn().mockRejectedValue(error);
+        const lrepServiceMock = {
+            getSystemInfo: getSystemInfoMock
+        } as unknown as LayeredRepositoryService;
+
+        const providerMock = {
+            getLayeredRepository: jest.fn().mockReturnValue(lrepServiceMock)
+        } as unknown as AbapServiceProvider;
+
+        jest.spyOn(AbapServiceProviderManager, 'getOrCreateServiceProvider').mockResolvedValue(providerMock);
+
+        return getSystemInfoMock;
+    }
 });

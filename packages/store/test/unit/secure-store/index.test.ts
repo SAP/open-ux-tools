@@ -3,8 +3,8 @@ import { getSecureStore } from '../../../src/secure-store';
 import { DummyStore } from '../../../src/secure-store/dummy-store';
 import { KeyStoreManager } from '../../../src/secure-store/key-store';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
-import { readdirSync, existsSync } from 'fs';
-import { join } from 'path';
+import { readdirSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     existsSync: jest.fn(),

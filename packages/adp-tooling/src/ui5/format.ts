@@ -73,15 +73,22 @@ export function removeMicroPart(version: string): string {
 }
 
 /**
- * Removes the timestamp part from a version string, typically used to clean up snapshot versions that include a timestamp.
- * Converts a version string like '1.95.0.34566363464' to '1.95.0'.
+ * Removes the timestamp and '-snapshot' suffix from a version string.
+ * Converts a version string like '1.95.0.123456789' or '1.95.0-snapshot' to '1.95.0'.
  *
- * @param {string} version - The version string that may include a timestamp as part of a snapshot version.
- * @returns {string} The version string without the timestamp, including only the major, minor, and micro version numbers.
+ * @param {string} version - The version string that may include a timestamp and '-snapshot' suffix.
+ * @returns {string} The cleaned version string without the timestamp and snapshot designation.
+ * @example
+ * ```typescript
+ * formatUi5Version('1.95.0.123456789'); // returns '1.95.0'
+ * formatUi5Version('1.95.0-snapshot');   // returns '1.95.0'
+ * formatUi5Version('1.95.0-SNAPSHOT');   // returns '1.95.0'
+ * formatUi5Version('1.95.0');            // returns '1.95.0'
+ * ```
  */
-export function removeTimestampFromVersion(version: string): string {
+export function formatUi5Version(version: string): string {
     const versionParts = version.split('.');
-    return `${versionParts[0]}.${versionParts[1]}.${versionParts[2]}`;
+    return `${versionParts[0]}.${versionParts[1]}.${versionParts[2].toLowerCase().replace('-snapshot', '')}`;
 }
 
 /**
@@ -95,7 +102,10 @@ export function removeTimestampFromVersion(version: string): string {
  */
 export function addSnapshot(version: string, latestVersion: string): string {
     const versionParts = version.split('.');
-    return versionParts[2] && removeTimestampFromVersion(version) != latestVersion ? '-snapshot' : '';
+    return (versionParts[3] || version.toLowerCase().includes('-snapshot')) &&
+        formatUi5Version(version) !== latestVersion
+        ? '-snapshot'
+        : '';
 }
 
 /**
@@ -106,9 +116,9 @@ export function addSnapshot(version: string, latestVersion: string): string {
  */
 export function parseUI5Version(version: string): { major: number; minor: number; patch: number } {
     const versionParts = version ? version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.') : [];
-    const major = parseInt(versionParts[0], 10);
-    const minor = parseInt(versionParts[1], 10);
-    const patch = parseInt(versionParts[2], 10);
+    const major = Number.parseInt(versionParts[0], 10);
+    const minor = Number.parseInt(versionParts[1], 10);
+    const patch = Number.parseInt(versionParts[2], 10);
 
     return { major, minor, patch };
 }
@@ -134,7 +144,7 @@ export function isFeatureSupportedVersion(featureVersion: string, version?: stri
     } = parseUI5Version(featureVersion);
     const { major, minor, patch } = parseUI5Version(version);
 
-    if (isNaN(major) && isNaN(minor) && isNaN(patch)) {
+    if (Number.isNaN(major) && Number.isNaN(minor) && Number.isNaN(patch)) {
         return true;
     }
 

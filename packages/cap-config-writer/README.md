@@ -1,4 +1,6 @@
-# @sap-ux/cap-config-writer
+﻿[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/cap-config-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/cap-config-writer)
+
+# [`@sap-ux/cap-config-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/cap-config-writer)
 
 Adds or removes configuration to a SAP CAP projects.
 

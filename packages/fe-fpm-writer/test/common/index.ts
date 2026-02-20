@@ -1,5 +1,5 @@
-import os from 'os';
-import { rmdirSync, existsSync } from 'fs';
+import os from 'node:os';
+import { rmdirSync, existsSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 
 /**

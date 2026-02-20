@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { findFileUp } from '../file/file-search';
 import { FileName } from '../constants';
-import { dirname } from 'path';
+import { dirname } from 'node:path';
 import type { MtaPath } from '../types/mta';
 
 /**

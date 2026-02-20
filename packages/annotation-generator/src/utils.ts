@@ -1,4 +1,4 @@
-import { realpathSync } from 'fs';
+import { realpathSync } from 'node:fs';
 
 /**
  * Toggles drive letter in the given path based on the os native drive letter representation (for windows only).

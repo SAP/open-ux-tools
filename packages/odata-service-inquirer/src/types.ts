@@ -1,4 +1,4 @@
-import type { Annotations, ServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider, ODataServiceInfo, ExternalService } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -102,6 +102,11 @@ export interface OdataServiceAnswers {
      * If the user chose to ignore the certificate error when connecting to the service the value will be true.
      */
     [serviceUrlInternalPromptNames.ignoreCertError]?: boolean;
+
+    /**
+     * Value list metdata related to the main odata service
+     */
+    valueListMetadata?: ExternalService[];
 }
 
 export interface ConnectedSystem {
@@ -161,7 +166,11 @@ export enum promptNames {
     /**
      * System selection
      */
-    systemSelection = 'systemSelection'
+    systemSelection = 'systemSelection',
+    /**
+     * Value Help download confirm prompt
+     */
+    valueHelpDownload = 'valueHelpDownload'
 }
 
 /**
@@ -195,7 +204,7 @@ export interface EntitySelectionAnswers {
  * Answers related to the Page Building Block prompt.
  */
 export interface PageBuildingBlockAnswers {
-    /** Indicates if the user wants to add a Page Building Block */
+    /** Indicates if a Page Building Block should be addedn*/
     [EntityPromptNames.addPageBuildingBlock]?: boolean;
     /** The title for the Page Building Block, required if addPageBuildingBlock is true */
     [EntityPromptNames.pageBuildingBlockTitle]?: string;
@@ -241,6 +250,11 @@ export type CapProjectPromptOptions = {
      * The default selected CAP project choice, this is used to pre-select a CAP project based on the CAP project path.
      */
     defaultChoice?: string;
+    /**
+     * Use autocomplete for project selection instead of list (CLI only).
+     * Note: inquirer-autocomplete-prompt module is used for this feature and has to be registered with the inquirer instance.
+     */
+    useAutoComplete?: boolean;
 };
 
 export type CapServicePromptOptions = {
@@ -310,15 +324,20 @@ export type SystemSelectionPromptOptions = {
      * Provide a default choice for the system selection prompt, this is used to pre-select a system based on the system name.
      * Set as string literal types `NewSystemChoice` or `CfAbapEnvServiceChoice` to specify the default choice to create a new system connection config in VSCode
      * or to select the Cloud Foundry Abap environments service discovery choice in BAS respectively.
+     * Supported as object reference `{ value: }` to allow binding to runtime variables of other prompts or as string
      *
      */
-    defaultChoice?: string;
+    defaultChoice?: string | { value?: string };
     /**
      * Only show the default choice in the system selection prompt, this is used to skip the system selection prompt if the default choice is already known.
      * If the `defaultChoice` value is not found in the systems choices, or the `defaultChoice` option is not specified,
      * this option will not be applied and the full list of choices will be presented to the user.
      */
     onlyShowDefaultChoice?: boolean;
+    /**
+     * If true, the 'New System' option is not added to the system selection list. Default is false - the 'New System' option will be available.
+     */
+    hideNewSystem?: boolean;
 };
 
 export type MetadataPromptOptions = {
@@ -349,7 +368,7 @@ export type ServiceSelectionPromptOptions = {
      */
     showCollaborativeDraftWarning?: boolean;
     /**
-     * A list of service ids ({@link ODataServiceInfo.id}), used to filter the catalog results
+     * A list of service ids ({@link ODataServiceInfo.id}) or service paths ({@link ODataServiceInfo.path}), used to filter the service catalog results
      */
     serviceFilter?: string[];
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
@@ -384,7 +403,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
     Record<promptNames.userSystemName, SystemNamePromptOptions> &
-    Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
+    Record<promptNames.systemSelection, SystemSelectionPromptOptions> &
+    Record<promptNames.valueHelpDownload, ValueHelpDownloadPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 
@@ -412,3 +432,9 @@ export type EntityPromptOptions = {
      */
     displayPageBuildingBlockPrompt?: boolean;
 };
+
+/**
+ * Support hiding of the value help download prompt, default is true - hidden.
+ * Note that this prompt is dependant on service metdata being provided, usually by the service selection prompt.
+ */
+export type ValueHelpDownloadPromptOptions = Pick<CommonPromptOptions, 'hide'>;

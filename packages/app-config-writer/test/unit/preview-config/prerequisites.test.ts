@@ -1,7 +1,7 @@
 import { checkPrerequisites } from '../../../src/preview-config/prerequisites';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join } from 'node:path';
 import { ToolsLogger } from '@sap-ux/logger';
 import * as ProjectAccess from '@sap-ux/project-access';
 

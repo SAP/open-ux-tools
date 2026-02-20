@@ -1,12 +1,13 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join } from 'node:path';
 import { lt, valid } from 'semver';
 import { getMinUI5VersionAsArray, getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { FCL_ROUTER } from '../common/defaults';
 import { getTemplatePath } from '../templates';
 import { addExtensionTypes, getManifest } from '../common/utils';
+import { copyTpl } from '../common/file';
 
 /**
  * Configurable options when enabling the Flexible Programming Model in a UI5 application.
@@ -130,7 +131,7 @@ export async function enableFPM(basePath: string, config: FPMConfig = {}, fs?: E
     if (config.replaceAppComponent) {
         const ext = config.typescript ? 'ts' : 'js';
         const componentTemplate = getTemplatePath(`/app/Component.${ext}`);
-        fs.copyTpl(componentTemplate, join(basePath, `webapp/Component.${ext}`), manifest['sap.app']);
+        copyTpl(fs, componentTemplate, join(basePath, `webapp/Component.${ext}`), manifest['sap.app']);
     }
 
     return fs;

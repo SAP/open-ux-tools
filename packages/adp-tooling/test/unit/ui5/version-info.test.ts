@@ -1,9 +1,4 @@
-import {
-    isFeatureSupportedVersion,
-    removeTimestampFromVersion,
-    addSnapshot,
-    buildSystemVersionLabel
-} from '../../../src/ui5/format';
+import { formatUi5Version, addSnapshot, buildSystemVersionLabel } from '../../../src/ui5/format';
 import {
     getLatestVersion,
     getVersionToBeUsed,
@@ -17,7 +12,12 @@ import {
 } from '../../../src/ui5/version-info';
 import type { UI5Version } from '../../../src';
 import { fetchInternalVersions } from '../../../src/ui5/fetch';
-import { LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../../../src/base/constants';
+import {
+    CURRENT_SYSTEM_VERSION,
+    LATEST_VERSION,
+    SNAPSHOT_UNTESTED_VERSION,
+    SNAPSHOT_VERSION
+} from '../../../src/base/constants';
 
 jest.mock('../../../src/ui5/fetch', () => ({
     fetchInternalVersions: jest.fn()
@@ -25,6 +25,7 @@ jest.mock('../../../src/ui5/fetch', () => ({
 
 jest.mock('../../../src/ui5/format', () => ({
     ...jest.requireActual('../../../src/ui5/format'),
+    formatUi5Version: jest.fn(),
     removeTimestampFromVersion: jest.fn(),
     addSnapshot: jest.fn(),
     buildSystemVersionLabel: jest.fn()
@@ -42,12 +43,12 @@ const mockInternalVersions = ['1.120.0', '1.119.1', '1.119.0', '1.64.0'];
 const fetchInternalVersionsMock = fetchInternalVersions as jest.Mock;
 const addSnapshotMock = addSnapshot as jest.Mock;
 const buildSystemVersionLabelMock = buildSystemVersionLabel as jest.Mock;
-const removeTimestampFromVersionMock = removeTimestampFromVersion as jest.Mock;
+const formatUi5VersionMock = formatUi5Version as jest.Mock;
 
 describe('Version Info', () => {
     beforeEach(() => {
         fetchInternalVersionsMock.mockResolvedValue(mockInternalVersions);
-        removeTimestampFromVersionMock.mockImplementation((v) => v);
+        formatUi5VersionMock.mockImplementation((v) => v);
         addSnapshotMock.mockReturnValue('');
         buildSystemVersionLabelMock.mockReturnValue('1.119.1 (system version)');
     });
@@ -146,13 +147,13 @@ describe('Version Info', () => {
         });
 
         it('should compute version labels correctly for a non-latest version', () => {
-            removeTimestampFromVersionMock.mockImplementation((v) => v.split('-')?.[0]);
+            formatUi5VersionMock.mockImplementation((v) => v.split('-')?.[0]);
             addSnapshotMock.mockReturnValue('-snapshot');
 
             const version = '1.119.1-snapshot';
             const result = getVersionLabels(version, mockPublicVersions);
 
-            expect(removeTimestampFromVersionMock).toHaveBeenCalledWith(version);
+            expect(formatUi5VersionMock).toHaveBeenCalledWith(version);
             expect(addSnapshotMock).toHaveBeenCalledWith(version, '1.120.0');
             // Since the formatted version ('1.119.1') does not match the latest ('1.120.0'),
             // systemLatestLabel should be an empty string.
@@ -164,7 +165,7 @@ describe('Version Info', () => {
         });
 
         it('should set systemLatestLabel when formatted version equals the latest version', () => {
-            removeTimestampFromVersionMock.mockReturnValue('1.120.0');
+            formatUi5VersionMock.mockReturnValue('1.120.0');
             addSnapshotMock.mockReturnValue('');
             const version = '1.120.0';
             const result = getVersionLabels(version, mockPublicVersions);
@@ -212,7 +213,7 @@ describe('Version Info', () => {
 
     describe('getRelevantVersions', () => {
         it('should handle external (non-customer base) versions with a provided systemVersion', async () => {
-            removeTimestampFromVersionMock.mockReturnValue('1.119.1');
+            formatUi5VersionMock.mockReturnValue('1.119.1');
             addSnapshotMock.mockReturnValue('-snapshot');
             buildSystemVersionLabelMock.mockReturnValue('1.119.1 (system version)');
 
@@ -225,7 +226,7 @@ describe('Version Info', () => {
         });
 
         it('should handle customer base versions when systemVersion is provided and no snapshot label exists', async () => {
-            removeTimestampFromVersionMock.mockReturnValue('1.119.1');
+            formatUi5VersionMock.mockReturnValue('1.119.1');
             addSnapshotMock.mockReturnValue(''); // no snapshot label
             buildSystemVersionLabelMock.mockReturnValue('1.119.1 (system version)');
 
@@ -235,13 +236,29 @@ describe('Version Info', () => {
         });
 
         it('should handle customer base versions when a snapshot label is present', async () => {
-            removeTimestampFromVersionMock.mockReturnValue('1.119.1');
+            formatUi5VersionMock.mockReturnValue('1.119.1');
             addSnapshotMock.mockReturnValue('-snapshot'); // snapshot label exists
 
             const result = await getRelevantVersions('1.119.1', true, mockPublicVersions);
             // When a snapshot label is present for a customer base, it returns
             // an array containing only the latest public version.
             expect(result).toEqual(['1.120.0 ' + LATEST_VERSION]);
+        });
+
+        it('should return system version and latest version when there are no higher versions and system version differs from latest', async () => {
+            const olderPublicVersions = {
+                latest: { version: '1.118.0' },
+                '1.118.0': { version: '1.118.0' },
+                '1.117.0': { version: '1.117.0' }
+            } as unknown as UI5Version;
+
+            formatUi5VersionMock.mockReturnValue('1.119.5');
+            addSnapshotMock.mockReturnValue('');
+            buildSystemVersionLabelMock.mockReturnValue('1.119.5 (system version)');
+
+            const result = await getRelevantVersions('1.119.5', true, olderPublicVersions);
+
+            expect(result).toEqual(['1.119.5 ' + CURRENT_SYSTEM_VERSION, '1.118.0 ' + LATEST_VERSION]);
         });
 
         it('should handle an undefined systemVersion for external users', async () => {

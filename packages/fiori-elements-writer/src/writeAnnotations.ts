@@ -1,4 +1,4 @@
-import { sep } from 'path';
+import { sep } from 'node:path';
 import { type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
 import { TemplateType, type EntityConfig, type FioriElementsApp } from './types';
