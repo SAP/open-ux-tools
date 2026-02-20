@@ -80,17 +80,11 @@ describe('systemInfo utils', () => {
             document.body.appendChild(mockInputElement);
 
             // Mock ResizeObserver
-            global.ResizeObserver = jest.fn().mockImplementation((callback) => ({
+            global.ResizeObserver = jest.fn().mockImplementation(() => ({
                 observe: jest.fn(),
                 disconnect: jest.fn(),
                 unobserve: jest.fn()
             })) as any;
-
-            // Mock requestAnimationFrame
-            global.requestAnimationFrame = jest.fn((callback) => {
-                callback(0);
-                return 0;
-            }) as any;
 
             jest.useFakeTimers();
         });
@@ -209,73 +203,6 @@ describe('systemInfo utils', () => {
             });
         });
 
-        it('should handle window resize events with debouncing', async () => {
-            Object.defineProperty(mockInputElement, 'scrollWidth', {
-                writable: true,
-                configurable: true,
-                value: 100
-            });
-            Object.defineProperty(mockInputElement, 'clientWidth', {
-                writable: true,
-                configurable: true,
-                value: 200
-            });
-
-            const { getByTestId } = render(<TestComponent inputId="test-input" value="test value" />);
-
-            jest.advanceTimersByTime(0);
-
-            // Simulate window resize that causes overflow
-            Object.defineProperty(mockInputElement, 'clientWidth', {
-                writable: true,
-                configurable: true,
-                value: 50
-            });
-
-            window.dispatchEvent(new Event('resize'));
-
-            // Should be debounced - not updated yet
-            expect(getByTestId('is-overflowing')).toHaveTextContent('false');
-
-            // Fast-forward past debounce delay (100ms)
-            jest.advanceTimersByTime(100);
-
-            await waitFor(() => {
-                expect(getByTestId('is-overflowing')).toHaveTextContent('true');
-            });
-        });
-
-        it('should debounce multiple rapid window resize events', async () => {
-            const rafSpy = jest.spyOn(global, 'requestAnimationFrame');
-
-            render(<TestComponent inputId="test-input" value="test value" />);
-
-            jest.advanceTimersByTime(0);
-
-            // Clear initial requestAnimationFrame call from setup
-            rafSpy.mockClear();
-
-            // Trigger multiple resize events rapidly
-            window.dispatchEvent(new Event('resize'));
-            jest.advanceTimersByTime(50);
-            window.dispatchEvent(new Event('resize'));
-            jest.advanceTimersByTime(50);
-            window.dispatchEvent(new Event('resize'));
-
-            // Should still be waiting for debounce
-            expect(rafSpy).not.toHaveBeenCalled();
-
-            // Fast-forward past final debounce delay
-            jest.advanceTimersByTime(100);
-
-            // Should only call once after all rapid events
-            await waitFor(() => {
-                expect(rafSpy).toHaveBeenCalledTimes(1);
-            });
-
-            rafSpy.mockRestore();
-        });
-
         it('should handle missing input element gracefully', () => {
             const { getByTestId } = render(<TestComponent inputId="non-existent-input" value="test value" />);
 
@@ -313,8 +240,6 @@ describe('systemInfo utils', () => {
                 unobserve: jest.fn()
             })) as any;
 
-            const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
-
             const { unmount } = render(<TestComponent inputId="test-input" value="test value" />);
 
             jest.advanceTimersByTime(0);
@@ -323,21 +248,16 @@ describe('systemInfo utils', () => {
 
             // Should disconnect ResizeObserver
             expect(disconnectMock).toHaveBeenCalled();
-
-            // Should remove window resize listener
-            expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
-
-            removeEventListenerSpy.mockRestore();
         });
 
-        it('should clear timeouts on unmount', () => {
+        it('should clear timeout on unmount', () => {
             const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
 
             const { unmount } = render(<TestComponent inputId="test-input" value="test value" />);
 
             unmount();
 
-            // Should clear timeouts (initial check and resize debounce)
+            // Should clear initial check timeout
             expect(clearTimeoutSpy).toHaveBeenCalled();
 
             clearTimeoutSpy.mockRestore();

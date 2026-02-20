@@ -51,7 +51,6 @@ export const useTextInputOverflow = (
     }, [inputId]);
 
     useEffect(() => {
-        // Defer check to ensure DOM has updated with new value
         const timeoutId = setTimeout(checkOverflow, 0);
         let resizeObserver: ResizeObserver | undefined;
 
@@ -61,25 +60,9 @@ export const useTextInputOverflow = (
             resizeObserver.observe(inputElement);
         }
 
-        // Add window resize listener as fallback for cases where ResizeObserver doesn't fire
-        // (e.g., when window resizes but input dimensions don't technically change)
-        let resizeTimeout: NodeJS.Timeout;
-        const handleWindowResize = (): void => {
-            // Debounce to avoid excessive calls during rapid resizing
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                // Use requestAnimationFrame to ensure we check after browser layout/paint
-                requestAnimationFrame(checkOverflow);
-            }, 100);
-        };
-
-        window.addEventListener('resize', handleWindowResize);
-
         return (): void => {
             clearTimeout(timeoutId);
-            clearTimeout(resizeTimeout);
             resizeObserver?.disconnect();
-            window.removeEventListener('resize', handleWindowResize);
         };
     }, [value, checkOverflow]);
 
