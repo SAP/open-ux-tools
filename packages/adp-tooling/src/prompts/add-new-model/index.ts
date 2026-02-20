@@ -225,10 +225,10 @@ function validatePromptURI(value: string): boolean | string {
  * @param {UI5FlexLayer} layer - UI5 Flex layer.
  * @returns {YUIQuestion<NewModelAnswers>[]} The questions/prompts.
  */
-export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestion<NewModelAnswers>[] {
+export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Promise<YUIQuestion<NewModelAnswers>[]> {
     const isCustomerBase = FlexLayer.CUSTOMER_BASE === layer;
     const defaultSeviceName = isCustomerBase ? NamespacePrefix.CUSTOMER : NamespacePrefix.EMPTY;
-    const isCFEnv = isCFEnvironment(projectPath);
+    const isCFEnv = await isCFEnvironment(projectPath);
 
     const changeFiles = getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL, 'manifest');
 

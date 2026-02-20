@@ -1,5 +1,83 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.72
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/ui5-application-writer@1.7.11
+
+## 0.7.71
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-application-writer@1.7.10
+
+## 0.7.70
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/ui5-application-writer@1.7.9
+
+## 0.7.69
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/ui5-application-writer@1.7.9
+
+## 0.7.68
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/ui5-application-writer@1.7.8
+
+## 0.7.67
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/ui5-application-writer@1.7.8
+
+## 0.7.66
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.1
+- @sap-ux/ui5-application-writer@1.7.8
+
+## 0.7.65
+
+### Patch Changes
+
+- Updated dependencies [2bffca7]
+    - @sap-ux/ui5-application-writer@1.7.7
+
+## 0.7.64
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/ui5-application-writer@1.7.6
+
+## 0.7.63
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/ui5-application-writer@1.7.6
+
 ## 0.7.62
 
 ### Patch Changes

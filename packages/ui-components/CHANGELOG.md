@@ -1,5 +1,30 @@
 # @sap-ux/ui-components
 
+## 1.27.6
+
+### Patch Changes
+
+- 5deb976: Dropdowns and contextual menus: update header item style in dropdown list
+- d8a39ce: fix(deps): update dependency sanitize-html to v2.17.1
+
+## 1.27.5
+
+### Patch Changes
+
+- a22d236: fix(deps): update dependency sanitize-html to v2.17.0
+
+## 1.27.4
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
+## 1.27.3
+
+### Patch Changes
+
+- b990534: UIFlexibleTable. Large cell content in flexible table items no longer shifts the other column to the right.
+
 ## 1.27.2
 
 ### Patch Changes

@@ -1,5 +1,102 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.68
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/fiori-generator-shared@0.13.76
+
+## 0.12.67
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/project-access@1.35.6
+
+## 0.12.66
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/fiori-generator-shared@0.13.74
+
+## 0.12.65
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.73
+
+## 0.12.64
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.72
+- @sap-ux/project-access@1.35.4
+
+## 0.12.63
+
+### Patch Changes
+
+- 1a922e7: adds option to prevent root package json updates for cap
+
+## 0.12.62
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.71
+
+## 0.12.61
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/fiori-generator-shared@0.13.70
+
+## 0.12.60
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/fiori-generator-shared@0.13.69
+
+## 0.12.59
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.68
+- @sap-ux/project-access@1.35.1
+
+## 0.12.58
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/fiori-generator-shared@0.13.67
+
+## 0.12.57
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/fiori-generator-shared@0.13.66
+
+## 0.12.56
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.65
+
 ## 0.12.55
 
 ### Patch Changes

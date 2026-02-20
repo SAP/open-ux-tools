@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aadp-tooling"
     },
-    "version": "0.18.54",
+    "version": "0.18.69",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -51,9 +51,9 @@
         "@sap-ux/ui5-info": "workspace:*",
         "@sap/cf-tools": "3.3.0",
         "adm-zip": "0.5.10",
-        "axios": "1.12.2",
+        "axios": "1.13.5",
         "ejs": "3.1.10",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "inquirer": "8.2.7",
         "js-yaml": "4.1.1",
         "mem-fs": "2.1.0",

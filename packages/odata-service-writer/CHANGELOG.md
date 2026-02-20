@@ -1,5 +1,84 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.22
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/mockserver-config-writer@0.9.54
+    - @sap-ux/ui5-config@0.29.18
+
+## 0.29.21
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-config@0.29.18
+    - @sap-ux/mockserver-config-writer@0.9.53
+
+## 0.29.20
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/mockserver-config-writer@0.9.52
+
+## 0.29.19
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/mockserver-config-writer@0.9.51
+    - @sap-ux/project-access@1.35.4
+
+## 0.29.18
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/mockserver-config-writer@0.9.50
+
+## 0.29.17
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/mockserver-config-writer@0.9.49
+
+## 0.29.16
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/ui5-config@0.29.16
+    - @sap-ux/mockserver-config-writer@0.9.48
+    - @sap-ux/project-access@1.35.1
+
+## 0.29.15
+
+### Patch Changes
+
+- Updated dependencies [a5ecd7f]
+    - @sap-ux/project-access@1.35.0
+    - @sap-ux/mockserver-config-writer@0.9.47
+
+## 0.29.14
+
+### Patch Changes
+
+- Updated dependencies [467e6aa]
+    - @sap-ux/project-access@1.34.7
+    - @sap-ux/mockserver-config-writer@0.9.46
+
 ## 0.29.13
 
 ### Patch Changes

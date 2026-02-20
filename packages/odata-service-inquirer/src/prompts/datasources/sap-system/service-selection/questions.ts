@@ -46,14 +46,14 @@ const cliServicePromptName = 'cliServiceSelection';
  * @param promptNamespace - The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  *     This is used to avoid conflicts with other prompts of the same types.
  * @param promptOptions - Options for the service selection prompt see {@link OdataServicePromptOptions}
- * @param showValueHelpDownloadPrompt - If true the value help download confirm prompt will be included
+ * @param hideValueHelpDownloadPrompt - If true the value help download confirm prompt will be hidden (default: true)
  * @returns the service selection prompt
  */
 export function getSystemServiceQuestion(
     connectValidator: ConnectionValidator,
     promptNamespace: string,
     promptOptions?: ServiceSelectionPromptOptions,
-    showValueHelpDownloadPrompt = false
+    hideValueHelpDownloadPrompt = true
 ): Question<ServiceAnswer>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
@@ -226,13 +226,13 @@ export function getSystemServiceQuestion(
         } as Question);
     }
 
-    if (showValueHelpDownloadPrompt) {
+    if (!hideValueHelpDownloadPrompt) {
         /**
          * Only show the value help download prompt when a service has been validated (convertedMetadata is set), is odata version v4 and is an abap connection
          */
         questions.push(
             ...withCondition(
-                [getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef)],
+                getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef),
                 (answers: { [serviceSelectionPromptName]?: ServiceAnswer }) =>
                     !!(connectValidator.serviceProvider instanceof AbapServiceProvider) &&
                     !!convertedMetadataRef.convertedMetadata &&

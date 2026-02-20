@@ -1,5 +1,32 @@
 # @sap-ux/axios-extension
 
+## 1.25.14
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+
+## 1.25.13
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+
+## 1.25.12
+
+### Patch Changes
+
+- bda7356: fix(deps): update dependency qs to v6.14.2 [security]
+
+## 1.25.11
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+- Updated dependencies [2fc459c]
+    - @sap-ux/btp-utils@1.1.8
+
 ## 1.25.10
 
 ### Patch Changes

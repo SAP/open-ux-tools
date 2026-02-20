@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.7.12
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 0.7.11
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 0.7.10
 
 ### Patch Changes
