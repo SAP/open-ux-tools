@@ -1,5 +1,20 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.69
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/fiori-generator-shared@0.13.77
+
+## 0.12.68
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/fiori-generator-shared@0.13.76
+
 ## 0.12.67
 
 ### Patch Changes

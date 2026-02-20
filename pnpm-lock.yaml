@@ -113,8 +113,8 @@ importers:
         specifier: 9.22.6
         version: 9.22.6(react-dom@16.14.0)(react@16.14.0)
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       ts-jest:
         specifier: 29.4.5
         version: 29.4.5(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3)
@@ -205,7 +205,7 @@ importers:
         version: link:../../packages/system-access
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
@@ -603,8 +603,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
@@ -733,8 +733,8 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       supertest:
         specifier: 7.1.4
         version: 7.1.4
@@ -1242,8 +1242,8 @@ importers:
         specifier: 3.4.13
         version: 3.4.13
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       unionfs:
         specifier: 4.4.0
         version: 4.4.0
@@ -1432,8 +1432,8 @@ importers:
         specifier: 3.0.6
         version: 3.0.6
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       source-map-support:
         specifier: 0.5.16
         version: 0.5.16
@@ -1459,8 +1459,8 @@ importers:
         specifier: 6.2.0
         version: 6.2.0
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       ts-jest:
         specifier: 29.4.5
         version: 29.4.5(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3)
@@ -1578,7 +1578,7 @@ importers:
         version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -1693,8 +1693,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       unionfs:
         specifier: 4.4.0
         version: 4.4.0
@@ -1991,8 +1991,8 @@ importers:
         specifier: 3.7.0
         version: 3.7.0(jest@30.2.0)
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
 
   packages/fiori-annotation-api:
     dependencies:
@@ -2079,8 +2079,8 @@ importers:
         specifier: workspace:*
         version: link:../cap-config-writer
       '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2197,8 +2197,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
@@ -2498,8 +2498,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.6
-        version: 0.9.6
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2708,8 +2708,8 @@ importers:
         specifier: 3.4.13
         version: 3.4.13
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       unionfs:
         specifier: 4.4.0
         version: 4.4.0
@@ -2808,8 +2808,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
@@ -2856,8 +2856,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2969,8 +2969,8 @@ importers:
   packages/jest-runner-puppeteer:
     dependencies:
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
     devDependencies:
       chalk:
         specifier: 4.1.2
@@ -3162,8 +3162,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -3253,8 +3253,8 @@ importers:
         specifier: 0.10.19
         version: 0.10.19
       '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
@@ -3412,7 +3412,7 @@ importers:
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
       '@sap-ux-private/playwright':
-        specifier: 0.2.6
+        specifier: 0.2.7
         version: link:../playwright
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -3750,8 +3750,8 @@ importers:
         specifier: 3.4.13
         version: 3.4.13
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       unionfs:
         specifier: 4.4.0
         version: 4.4.0
@@ -3991,8 +3991,8 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
 
   packages/telemetry:
     dependencies:
@@ -4364,8 +4364,8 @@ importers:
         specifier: 13.5.6
         version: 13.5.6
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
@@ -4449,8 +4449,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       yeoman-environment:
         specifier: 3.19.3
         version: 3.19.3(@types/node@18.19.130)
@@ -4568,8 +4568,8 @@ importers:
         specifier: workspace:*
         version: link:../yaml
       ajv:
-        specifier: 8.17.1
-        version: 8.17.1
+        specifier: 8.18.0
+        version: 8.18.0
       axios:
         specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
@@ -4726,8 +4726,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       vscode-uri:
         specifier: 3.1.0
         version: 3.1.0
@@ -4821,8 +4821,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(@types/node@18.19.130)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
@@ -4974,8 +4974,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       rimraf:
-        specifier: 6.1.2
-        version: 6.1.2
+        specifier: 6.1.3
+        version: 6.1.3
 
   packages/xml-odata-annotation-converter:
     dependencies:
@@ -9798,12 +9798,14 @@ packages:
   /@isaacs/balanced-match@4.0.1:
     resolution: {integrity: sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ==}
     engines: {node: 20 || >=22}
+    dev: true
 
   /@isaacs/brace-expansion@5.0.1:
     resolution: {integrity: sha512-WMz71T1JS624nWj2n2fnYAuPovhv7EUhk69R6i9dsVyzxt5eM3bjwvgk9L+APE1TRscGysAVMANkB0jh0LQZrQ==}
     engines: {node: 20 || >=22}
     dependencies:
       '@isaacs/balanced-match': 4.0.1
+    dev: true
 
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -12317,23 +12319,10 @@ packages:
       - typescript
     dev: false
 
-  /@sap-ux/edmx-parser@0.9.1:
-    resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
-    dependencies:
-      xml-js: 1.6.11
-    dev: false
-
-  /@sap-ux/edmx-parser@0.9.6:
-    resolution: {integrity: sha512-6dj+nTRNcnA37vqSBJm+xCdJC1u3Dg+4KWTPxveqI/c+1NvvvVlZ18SbZaHEKBFDX2HJU2345IiszrfYU1P3ng==}
-    dependencies:
-      xml-js: 1.6.11
-    dev: true
-
   /@sap-ux/edmx-parser@0.9.8:
     resolution: {integrity: sha512-GFyrixCHRvPVN07RjJYMQJE9xY2J3EpLuOsOXyAhuAoePqBjbAFuE+lJyyJMmJK3oltDBVDB+dqyA0eMSeCD/A==}
     dependencies:
       xml-js: 1.6.11
-    dev: true
 
   /@sap-ux/fe-fpm-writer@0.40.11(typescript@5.9.3):
     resolution: {integrity: sha512-847DjXC6C1ko3spU49hbmlDEXIezt4OuQuzd+5jkPeBq/LFNi1XwVdf1ilR2mcTSqvGi6Vaq5Lgi3rTJsH5PLw==}
@@ -12833,7 +12822,7 @@ packages:
       '@secretlint/profiler': 10.2.2
       '@secretlint/resolver': 10.2.2
       '@secretlint/types': 10.2.2
-      ajv: 8.17.1
+      ajv: 8.18.0
       debug: 4.4.3
       rc-config-loader: 4.1.3
     transitivePeerDependencies:
@@ -16632,7 +16621,7 @@ packages:
       ajv: 6.12.6
     dev: true
 
-  /ajv-formats@2.1.1(ajv@8.17.1):
+  /ajv-formats@2.1.1(ajv@8.18.0):
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
     peerDependencies:
       ajv: ^8.0.0
@@ -16640,7 +16629,7 @@ packages:
       ajv:
         optional: true
     dependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
     dev: true
 
   /ajv-formats@3.0.1(ajv@8.17.1):
@@ -16662,12 +16651,12 @@ packages:
       ajv: 6.12.6
     dev: true
 
-  /ajv-keywords@5.1.0(ajv@8.17.1):
+  /ajv-keywords@5.1.0(ajv@8.18.0):
     resolution: {integrity: sha512-YCS/JNFAUyr5vAuhk1DWm1CBxRHW9LbJ2ozWeemrIqpbsqKjHVxYPyi5GC0rjZIT5JxJ3virVTS8wk4i/Z+krw==}
     peerDependencies:
       ajv: ^8.8.2
     dependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
       fast-deep-equal: 3.1.3
     dev: true
 
@@ -16681,6 +16670,14 @@ packages:
 
   /ajv@8.17.1:
     resolution: {integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==}
+    dependencies:
+      fast-deep-equal: 3.1.3
+      fast-uri: 3.0.3
+      json-schema-traverse: 1.0.0
+      require-from-string: 2.0.2
+
+  /ajv@8.18.0:
+    resolution: {integrity: sha512-PlXPeEWMXMZ7sPYOHqmDyCJzcfNrUr3fGNKtezX14ykXOEIvyK81d+qydx89KY5O71FKMPaQ2vBfBFI5NHR63A==}
     dependencies:
       fast-deep-equal: 3.1.3
       fast-uri: 3.0.3
@@ -17345,7 +17342,6 @@ packages:
   /balanced-match@4.0.3:
     resolution: {integrity: sha512-1pHv8LX9CpKut1Zp4EXey7Z8OfH11ONNH6Dhi2WDUt31VVZFXZzKwXcysBgqSumFCmR+0dqjMK5v5JiFHzi0+g==}
     engines: {node: 20 || >=22}
-    dev: true
 
   /bare-events@2.8.2:
     resolution: {integrity: sha512-riJjyv1/mHLIPX4RwiK+oW9/4c3TEUeORHKefKAKnZ5kyslbN+HXowtbaVEqt4IMUB7OXlfixcs6gsFeo/jhiQ==}
@@ -17628,7 +17624,6 @@ packages:
     engines: {node: 20 || >=22}
     dependencies:
       balanced-match: 4.0.3
-    dev: true
 
   /braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
@@ -21838,7 +21833,7 @@ packages:
       jackspeak: 3.4.3
       minimatch: 9.0.5
       minipass: 7.1.2
-      package-json-from-dist: 1.0.0
+      package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
   /glob@11.1.0:
@@ -21859,9 +21854,18 @@ packages:
     resolution: {integrity: sha512-tvZgpqk6fz4BaNZ66ZsRaZnbHvP/jG3uKJvAZOwEVUL4RTA5nJeeLYfyN9/VA8NX/V3IBG+hkeuGpKjvELkVhA==}
     engines: {node: 20 || >=22}
     dependencies:
-      minimatch: 10.1.1
+      minimatch: 10.2.2
       minipass: 7.1.2
       path-scurry: 2.0.0
+    dev: true
+
+  /glob@13.0.6:
+    resolution: {integrity: sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==}
+    engines: {node: 18 || 20 || >=22}
+    dependencies:
+      minimatch: 10.2.2
+      minipass: 7.1.3
+      path-scurry: 2.0.2
 
   /glob@7.2.0:
     resolution: {integrity: sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==}
@@ -25366,13 +25370,13 @@ packages:
     engines: {node: 20 || >=22}
     dependencies:
       '@isaacs/brace-expansion': 5.0.1
+    dev: true
 
   /minimatch@10.2.2:
     resolution: {integrity: sha512-+G4CpNBxa5MprY+04MbgOw1v7So6n5JY166pFi9KfYwT78fxScCeSNQSNzp6dpPSW2rONOps6Ocam1wFhCgoVw==}
     engines: {node: 18 || 20 || >=22}
     dependencies:
       brace-expansion: 5.0.2
-    dev: true
 
   /minimatch@3.0.5:
     resolution: {integrity: sha512-tUpxzX0VAzJHjLu0xUfFv1gwVp9ba3IOuRAVH2EGuRW8a5emA2FlACLqiT/lDVtS1W+TGNwqz3sWaNyLgDJWuw==}
@@ -25503,6 +25507,10 @@ packages:
 
   /minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
+    engines: {node: '>=16 || 14 >=14.17'}
+
+  /minipass@7.1.3:
+    resolution: {integrity: sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==}
     engines: {node: '>=16 || 14 >=14.17'}
 
   /minizlib@2.1.2:
@@ -27005,9 +27013,6 @@ packages:
       netmask: 2.0.2
     dev: true
 
-  /package-json-from-dist@1.0.0:
-    resolution: {integrity: sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==}
-
   /package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
 
@@ -27266,6 +27271,14 @@ packages:
     dependencies:
       lru-cache: 11.2.5
       minipass: 7.1.2
+    dev: true
+
+  /path-scurry@2.0.2:
+    resolution: {integrity: sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==}
+    engines: {node: 18 || 20 || >=22}
+    dependencies:
+      lru-cache: 11.2.5
+      minipass: 7.1.3
 
   /path-to-regexp@0.1.12:
     resolution: {integrity: sha512-RA1GjUVMnvYFxuqovrEqZoxxW5NUZqbwKtYz/Tt7nXerk0LbLblQmrsgdeOxV5SFHf0UDggjS/bSeOZwt1pmEQ==}
@@ -29384,12 +29397,12 @@ packages:
       glob: 10.5.0
     dev: true
 
-  /rimraf@6.1.2:
-    resolution: {integrity: sha512-cFCkPslJv7BAXJsYlK1dZsbP8/ZNLkCAQ0bi1hf5EKX2QHegmDFEFA6QhuYJlk7UDdc+02JjO80YSOrWPpw06g==}
+  /rimraf@6.1.3:
+    resolution: {integrity: sha512-LKg+Cr2ZF61fkcaK1UdkH2yEBBKnYjTyWzTJT6KNPcSPaiT7HSdhtMXQuN5wkTX0Xu72KQ1l8S42rlmexS2hSA==}
     engines: {node: 20 || >=22}
     hasBin: true
     dependencies:
-      glob: 13.0.0
+      glob: 13.0.6
       package-json-from-dist: 1.0.1
 
   /roarr@2.15.4:
@@ -29889,9 +29902,9 @@ packages:
     engines: {node: '>= 12.13.0'}
     dependencies:
       '@types/json-schema': 7.0.15
-      ajv: 8.17.1
-      ajv-formats: 2.1.1(ajv@8.17.1)
-      ajv-keywords: 5.1.0(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-formats: 2.1.1(ajv@8.18.0)
+      ajv-keywords: 5.1.0(ajv@8.18.0)
     dev: true
 
   /schema-utils@4.3.3:
@@ -29899,9 +29912,9 @@ packages:
     engines: {node: '>= 10.13.0'}
     dependencies:
       '@types/json-schema': 7.0.15
-      ajv: 8.17.1
-      ajv-formats: 2.1.1(ajv@8.17.1)
-      ajv-keywords: 5.1.0(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-formats: 2.1.1(ajv@8.18.0)
+      ajv-keywords: 5.1.0(ajv@8.18.0)
     dev: true
 
   /scoped-regex@2.1.0:
@@ -31152,7 +31165,7 @@ packages:
     resolution: {integrity: sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==}
     engines: {node: '>=10.0.0'}
     dependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
       lodash.truncate: 4.4.2
       slice-ansi: 4.0.0
       string-width: 4.2.3
@@ -33300,37 +33313,6 @@ packages:
       - bluebird
       - supports-color
 
-  /yeoman-generator@5.10.0:
-    resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
-    engines: {node: '>=12.10.0'}
-    peerDependencies:
-      yeoman-environment: ^3.2.0
-    peerDependenciesMeta:
-      yeoman-environment:
-        optional: true
-    dependencies:
-      chalk: 4.1.2
-      dargs: 7.0.0
-      debug: 4.3.7
-      execa: 5.1.1
-      github-username: 6.0.0
-      lodash: 4.17.23
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      minimist: 1.2.8
-      pacote: 15.2.0
-      read-pkg-up: 7.0.1
-      run-async: 2.4.1
-      semver: 7.7.3
-      shelljs: 0.8.5
-      sort-keys: 4.2.0
-      text-table: 0.2.0
-    transitivePeerDependencies:
-      - bluebird
-      - encoding
-      - mem-fs
-      - supports-color
-    dev: false
-
   /yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3):
     resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
     engines: {node: '>=12.10.0'}
@@ -33351,7 +33333,7 @@ packages:
       pacote: 15.2.0
       read-pkg-up: 7.0.1
       run-async: 2.4.1
-      semver: 7.7.4
+      semver: 7.7.3
       shelljs: 0.8.5
       sort-keys: 4.2.0
       text-table: 0.2.0

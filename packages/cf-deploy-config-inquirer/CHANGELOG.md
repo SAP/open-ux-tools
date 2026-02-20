@@ -1,5 +1,26 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.94
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.12
+
+## 0.5.93
+
+### Patch Changes
+
+- Updated dependencies [ff634b0]
+    - @sap-ux/inquirer-common@0.11.11
+
+## 0.5.92
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/inquirer-common@0.11.10
+
 ## 0.5.91
 
 ### Patch Changes
