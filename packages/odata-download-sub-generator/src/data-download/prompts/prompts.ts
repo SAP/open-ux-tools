@@ -205,10 +205,10 @@ function getAppSelectionPrompt(
  * @param relatedEntityChoices - Object containing choices and entitySetsFlat
  * @param relatedEntityChoices.choices - The checkbox choices for entity selection
  * @param relatedEntityChoices.entitySetsFlat - Map of entity paths to entity set names
- * @param odataServiceAnswers
- * @param appConfig
- * @param odataQueryResult
- * @param odataQueryResult.odata
+ * @param odataServiceAnswers - The OData service answers object containing the connection configuration and service metadata
+ * @param appConfig - The application configuration object retrieved from ux-specification containing app settings
+ * @param odataQueryResult - An object that serves as a container for storing the OData query results
+ * @param odataQueryResult.odata - The array of OData entities that were downloaded from the service
  * @returns The checkbox question for entity selection
  */
 function getEntitySelectionPrompt(

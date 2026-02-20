@@ -35,4 +35,3 @@ server:
           - urlPath: /sap/opu/odata4/sap/m2_sb_travel_mduu_04/srvd/sap/m2_sd_travel_mduu/0001
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
-            resolveExternalServiceReferences: true

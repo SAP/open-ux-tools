@@ -26,6 +26,9 @@
       "path": "../logger"
     },
     {
+      "path": "../mockserver-config-writer"
+    },
+    {
       "path": "../odata-service-inquirer"
     },
     {

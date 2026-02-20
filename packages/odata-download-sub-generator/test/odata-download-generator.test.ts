@@ -1,7 +1,8 @@
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { DefaultLogger, getHostEnvironment, hostEnvironment, LogWrapper } from '@sap-ux/fiori-generator-shared';
+import { getHostEnvironment, hostEnvironment, LogWrapper } from '@sap-ux/fiori-generator-shared';
+import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { writeExternalServiceMetadata } from '@sap-ux/odata-service-writer';
-import { DirName, getMockServerConfig } from '@sap-ux/project-access';
+import { getMockServerConfig } from '@sap-ux/project-access';
 import { join } from 'path';
 import { ODataDownloadGenerator } from '../src/data-download/odata-download-generator';
 import { getODataDownloaderPrompts, promptNames } from '../src/data-download/prompts/prompts';
@@ -31,6 +32,10 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
 
 jest.mock('@sap-ux/odata-service-writer', () => ({
     writeExternalServiceMetadata: jest.fn()
+}));
+
+jest.mock('@sap-ux/mockserver-config-writer', () => ({
+    generateMockserverConfig: jest.fn()
 }));
 
 jest.mock('@sap-ux/project-access', () => ({
@@ -287,6 +292,68 @@ describe('ODataDownloadGenerator', () => {
                 mockValueHelpData,
                 'mainService',
                 '/sap/opu/odata4/sap/travel'
+            );
+        });
+
+        it('should write resolveExternalServiceReferences to ui5-mock.yaml when value help data and mock config exist', async () => {
+            const mockValueHelpData = [{ path: '/sap/opu/odata4/sap/valuehelp', entities: [] }];
+
+            (createEntitySetData as jest.Mock).mockReturnValue({});
+
+            (getODataDownloaderPrompts as jest.Mock).mockResolvedValue({
+                answers: {
+                    application: {
+                        appAccess: {
+                            getAppRoot: () => '/test/app',
+                            app: { mainService: 'mainService' }
+                        },
+                        referencedEntities: {
+                            listEntity: { entitySetName: 'Travel', semanticKeys: [], entityPath: 'Travel' }
+                        },
+                        relatedEntityChoices: {
+                            entitySetsFlat: {}
+                        }
+                    },
+                    odataQueryResult: { odata: [] },
+                    odataServiceAnswers: {
+                        servicePath: '/sap/opu/odata4/sap/travel',
+                        metadata: '<metadata/>'
+                    }
+                },
+                questions: []
+            });
+
+            (getValueHelpSelectionPrompt as jest.Mock).mockReturnValue({
+                questions: [],
+                valueHelpData: mockValueHelpData
+            });
+
+            (getMockServerConfig as jest.Mock).mockResolvedValue({
+                services: [
+                    {
+                        urlPath: '/sap/opu/odata4/sap/travel',
+                        mockdataPath: 'webapp/localService/mockdata'
+                    }
+                ]
+            });
+            mockPrompt.mockResolvedValue({});
+
+            await generator.prompting();
+            await generator.writing();
+
+            expect(generateMockserverConfig).toHaveBeenCalledWith(
+                '/test/app',
+                expect.objectContaining({
+                    webappPath: join('/test/app', 'webapp'),
+                    packageJsonConfig: { skip: true },
+                    ui5MockYamlConfig: {
+                        overwrite: true,
+                        resolveExternalServiceReferences: {
+                            mainService: true
+                        }
+                    }
+                }),
+                mockFs
             );
         });
 

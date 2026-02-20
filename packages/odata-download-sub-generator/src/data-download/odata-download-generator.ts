@@ -16,7 +16,11 @@ import { getODataDownloaderPrompts, promptNames } from './prompts/prompts';
 import { type ReferencedEntities } from './types';
 import { createEntitySetData } from './utils';
 import { getValueHelpSelectionPrompt } from './prompts/value-help-prompts';
-import type { MockserverService } from '@sap-ux/ui5-config';
+import type { MockserverConfig, MockserverService } from '@sap-ux/ui5-config';
+import {
+    generateMockserverConfig,
+    type MockserverConfig as MockserverUpdateConfig
+} from '@sap-ux/mockserver-config-writer';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -80,6 +84,10 @@ export class ODataDownloadGenerator extends Generator {
          * Entity property to entity set map, used to create output files
          */
         entityPropertyToEntitySet?: EntitySetsFlat;
+        /**
+         * Mock server config from ui5-mock.yaml
+         */
+        mockServerConfig?: MockserverConfig;
     } = {};
 
     /**
@@ -153,12 +161,12 @@ export class ODataDownloadGenerator extends Generator {
             this.state.appEntities = application.referencedEntities;
 
             if (this.state.appRootPath) {
-                const mockConfig = await getMockServerConfig(this.state.appRootPath);
+                this.state.mockServerConfig = await getMockServerConfig(this.state.appRootPath);
                 let serviceConfig: MockserverService | undefined;
-                if (mockConfig?.services) {
-                    ODataDownloadGenerator.logger.debug(`Mock config: ${JSON.stringify(mockConfig)}`);
+                if (this.state.mockServerConfig?.services) {
+                    ODataDownloadGenerator.logger.debug(`Mock config: ${JSON.stringify(this.state.mockServerConfig)}`);
                     // Find the matching service from mock config ignoring leading and trailing '/'
-                    serviceConfig = mockConfig.services.find(
+                    serviceConfig = this.state.mockServerConfig.services.find(
                         (service) =>
                             service.urlPath.replaceAll(/(^\/)|(\/$)/g, '') ===
                             this.state.mainServicePath?.replaceAll(/(^\/)|(\/$)/g, '')
@@ -189,55 +197,82 @@ export class ODataDownloadGenerator extends Generator {
     }
 
     async writing(): Promise<void> {
-        if (this.state.entityOData && this.state.entityPropertyToEntitySet && this.state.appEntities) {
-            try {
-                // Set target dir to mock data path
-                this.destinationRoot(join(this.state.appRootPath!));
+        if (this.state.appRootPath) {
+            if (this.state.entityOData && this.state.entityPropertyToEntitySet && this.state.appEntities) {
+                try {
+                    // Set target dir to mock data path
+                    this.destinationRoot(join(this.state.appRootPath));
 
-                const entityFileData = createEntitySetData(
-                    this.state.entityOData,
-                    this.state.entityPropertyToEntitySet,
-                    this.state.appEntities.listEntity.entitySetName
-                );
-                ODataDownloadGenerator.logger.info(
-                    t('info.entityFilesToBeGenerated', { entities: Object.keys(entityFileData).join(', ') })
-                );
+                    const entityFileData = createEntitySetData(
+                        this.state.entityOData,
+                        this.state.entityPropertyToEntitySet,
+                        this.state.appEntities.listEntity.entitySetName
+                    );
+                    ODataDownloadGenerator.logger.info(
+                        t('info.entityFilesToBeGenerated', { entities: Object.keys(entityFileData).join(', ') })
+                    );
 
-                Object.entries(entityFileData).forEach(([entityName, entityData]) => {
-                    // Writes relative to destination root path
-                    this.writeDestinationJSON(join(this.state.mockDataRootPath!, `${entityName}.json`), entityData);
-                });
-            } catch (error) {
-                ODataDownloadGenerator.logger.error(error);
+                    Object.entries(entityFileData).forEach(([entityName, entityData]) => {
+                        // Writes relative to destination root path
+                        this.writeDestinationJSON(join(this.state.mockDataRootPath!, `${entityName}.json`), entityData);
+                    });
+                } catch (error) {
+                    ODataDownloadGenerator.logger.error(error);
+                }
+            } else {
+                ODataDownloadGenerator.logger.info(t('info.noServiceEntityData'));
             }
-        } else {
-            ODataDownloadGenerator.logger.info(t('info.noServiceEntityData'));
-        }
 
-        // Write value help data files
-        if (this.state.valueHelpData) {
-            // Service metadata writing will create the necessary data folders
-            // Passing the webapp folder might be invalid, but we cant pass the path from the mocker server here.
-            await writeExternalServiceMetadata(
-                this.fs,
-                join(this.state.appRootPath!, DirName.Webapp),
-                this.state.valueHelpData,
-                this.state.mainServiceName,
-                this.state.mainServicePath
-            );
-        } else {
-            ODataDownloadGenerator.logger.info(t('info.noValueHelpData'));
-        }
-        // Update the metadata
-        if (this.state.updateMainServiceMetadata && this.state.mainServiceMetadata && this.state.mainServiceName) {
-            const mainServiceMetadataPath = join(
-                this.state.appRootPath!,
-                DirName.Webapp,
-                DirName.LocalService,
-                this.state.mainServiceName,
-                'metadata.xml'
-            );
-            this.writeDestination(mainServiceMetadataPath, prettifyXml(this.state.mainServiceMetadata, { indent: 4 }));
+            // Write value help data files
+            if (this.state.valueHelpData?.length) {
+                // Service metadata writing will create the necessary data folders
+                // Passing the webapp folder might be invalid, but we cant pass the path from the mocker server here.
+                const webappPath = join(this.state.appRootPath, DirName.Webapp);
+                await writeExternalServiceMetadata(
+                    this.fs,
+                    webappPath,
+                    this.state.valueHelpData,
+                    this.state.mainServiceName,
+                    this.state.mainServicePath
+                );
+                // Update the mock server config if `resolveExternalServiceReferences` is not already present
+                if (this.state.mockServerConfig) {
+                    const config: MockserverUpdateConfig = {
+                        webappPath: webappPath,
+                        // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
+                        packageJsonConfig: {
+                            skip: true
+                        },
+                        // Set 'overwrite' to true to overwrite services data in YAML files
+                        ui5MockYamlConfig: {
+                            overwrite: true
+                        }
+                    };
+                    if (config.ui5MockYamlConfig && this.state.mainServiceName) {
+                        config.ui5MockYamlConfig.resolveExternalServiceReferences = {
+                            [this.state.mainServiceName]: true
+                        };
+                        // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
+                        await generateMockserverConfig(this.state.appRootPath, config, this.fs);
+                    }
+                }
+            } else {
+                ODataDownloadGenerator.logger.info(t('info.noValueHelpData'));
+            }
+            // Update the metadata
+            if (this.state.updateMainServiceMetadata && this.state.mainServiceMetadata && this.state.mainServiceName) {
+                const mainServiceMetadataPath = join(
+                    this.state.appRootPath!,
+                    DirName.Webapp,
+                    DirName.LocalService,
+                    this.state.mainServiceName,
+                    'metadata.xml'
+                );
+                this.writeDestination(
+                    mainServiceMetadataPath,
+                    prettifyXml(this.state.mainServiceMetadata, { indent: 4 })
+                );
+            }
         }
     }
 

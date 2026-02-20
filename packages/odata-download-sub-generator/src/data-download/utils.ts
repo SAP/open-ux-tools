@@ -17,8 +17,9 @@ import { navPropNameExclusions } from './types';
  * Deep equality check using JSON.stringify.
  * Suitable for OData entities which have consistent key ordering from the server.
  *
- * @param a
- * @param b
+ * @param a - The first value to be compared for equality
+ * @param b - The second value to be compared for equality
+ * @returns Returns true if the JSON string representations of both values are identical, false otherwise
  */
 const jsonEqual = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b);
 /**

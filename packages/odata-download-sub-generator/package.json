@@ -44,15 +44,16 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
+        "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/odata-service-inquirer": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/vocabularies-types": "0.14.5",
-        "@vscode-logging/logger": "2.0.0",
+        "@vscode-logging/logger": "2.0.8",
         "@sap-devx/yeoman-ui-types": "1.16.9",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "inquirer": "8.2.7",
         "prettify-xml": "1.2.0",
         "yeoman-generator": "5.10.0"
@@ -60,7 +61,7 @@
     "devDependencies": {
         "@types/inquirer": "8.2.6",
         "@types/yeoman-generator": "5.2.14",
-        "rimraf": "5.0.5"
+        "rimraf": "6.1.2"
     },
     "engines": {
         "node": ">=20.x"
