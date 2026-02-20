@@ -1,5 +1,15 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.120
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+- Updated dependencies [d588c26]
+    - @sap-ux/feature-toggle@0.3.7
+    - @sap-ux/ui5-library-reference-inquirer@0.4.120
+    - @sap-ux/fiori-generator-shared@0.13.76
+
 ## 0.1.119
 
 ### Patch Changes

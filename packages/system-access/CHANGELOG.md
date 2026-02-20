@@ -1,5 +1,12 @@
 # @sap-ux/system-access
 
+## 0.6.56
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+    - @sap-ux/axios-extension@1.25.15
+
 ## 0.6.55
 
 ### Patch Changes

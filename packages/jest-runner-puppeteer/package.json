@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-runner-puppeteer",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "description": "Jest runner for puppeteer",
     "repository": {
         "type": "git",

@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.131
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+    - @sap-ux/ui5-library-inquirer@0.6.70
+    - @sap-ux/fiori-generator-shared@0.13.76
+
 ## 0.1.130
 
 ### Patch Changes
