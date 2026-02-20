@@ -1,5 +1,14 @@
 # @sap-ux/project-access
 
+## 1.35.6
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- e5bc3ca: fix(deps): update dependency vscode-uri to v3.1.0
+- Updated dependencies [bb310dc]
+    - @sap-ux/ui5-config@0.29.18
+
 ## 1.35.5
 
 ### Patch Changes

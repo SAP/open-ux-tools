@@ -1,5 +1,16 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.76
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-config@0.29.18
+    - @sap-ux/system-access@0.6.54
+
 ## 0.2.75
 
 ### Patch Changes
