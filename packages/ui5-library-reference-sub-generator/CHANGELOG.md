@@ -1,5 +1,20 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.118
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- e5bc3ca: fix(deps): update dependency vscode-uri to v3.1.0
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-library-reference-inquirer@0.4.118
+    - @sap-ux/telemetry@0.6.76
+    - @sap-ux/ui5-library-reference-writer@0.2.51
+
 ## 0.1.117
 
 ### Patch Changes

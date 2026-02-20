@@ -1,5 +1,19 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.55
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/cap-config-writer@0.12.67
+    - @sap-ux/odata-service-writer@0.29.21
+    - @sap-ux/ui5-application-writer@1.7.10
+    - @sap-ux/ui5-config@0.29.18
+    - @sap-ux/ui5-test-writer@0.7.71
+
 ## 2.5.54
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.252
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/abap-deploy-config-writer@0.2.76
+    - @sap-ux/fiori-elements-writer@2.8.73
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-info@0.13.13
+    - @sap-ux/odata-service-inquirer@2.18.6
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/launch-config@0.10.65
+    - @sap-ux/project-input-validator@0.6.58
+    - @sap-ux/system-access@0.6.54
+
 ## 0.3.251
 
 ### Patch Changes
