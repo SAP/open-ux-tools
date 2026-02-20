@@ -4978,11 +4978,25 @@ importers:
         version: 6.1.2
 
   packages/ui5-yaml-schema-wrapper:
-    dependencies:
+    devDependencies:
+      '@sap-ux/backend-proxy-middleware':
+        specifier: workspace:*
+        version: link:../backend-proxy-middleware
+      '@sap-ux/backend-proxy-middleware-cf':
+        specifier: workspace:*
+        version: link:../backend-proxy-middleware-cf
       '@sap-ux/preview-middleware':
         specifier: workspace:*
         version: link:../preview-middleware
-    devDependencies:
+      '@sap-ux/reload-middleware':
+        specifier: workspace:*
+        version: link:../reload-middleware
+      '@sap-ux/serve-static-middleware':
+        specifier: workspace:*
+        version: link:../serve-static-middleware
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9

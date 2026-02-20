@@ -28,10 +28,13 @@
         "LICENSE",
         "schema"
     ],
-    "dependencies": {
-        "@sap-ux/preview-middleware": "workspace:*"
-    },
     "devDependencies": {
+        "@sap-ux/backend-proxy-middleware": "workspace:*",
+        "@sap-ux/backend-proxy-middleware-cf": "workspace:*",
+        "@sap-ux/preview-middleware": "workspace:*",
+        "@sap-ux/reload-middleware": "workspace:*",
+        "@sap-ux/serve-static-middleware": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
         "@types/js-yaml": "4.0.9",
         "@types/node": "20.17.10",
         "ajv": "8.17.1",

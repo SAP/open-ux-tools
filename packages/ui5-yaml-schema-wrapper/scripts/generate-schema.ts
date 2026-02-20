@@ -1,6 +1,6 @@
 import * as TJS from 'typescript-json-schema';
 import { writeFileSync, existsSync } from 'fs';
-import { resolve, join } from 'path';
+import { join, dirname } from 'path';
 
 const settings: TJS.PartialArgs = {
     required: false,
@@ -26,44 +26,48 @@ interface MiddlewareSchemaConfig {
     outputFileName: string;
 }
 
-// Resolve paths relative to the project root
-const projectRoot = resolve(__dirname, '../../..');
+// Helper to resolve package source paths
+function resolvePackageSrc(packageName: string, srcPath: string): string {
+    const packageJson = require.resolve(`${packageName}/package.json`);
+    return join(dirname(packageJson), 'src', srcPath);
+}
+
 const schemaOutputDir = join(__dirname, '..', 'schema');
 
 const middlewareConfigs: MiddlewareSchemaConfig[] = [
     {
         name: 'preview-middleware',
-        typesPath: join(projectRoot, 'packages/preview-middleware/src/types/index.ts'),
+        typesPath: resolvePackageSrc('@sap-ux/preview-middleware', 'types/index.ts'),
         typeName: 'MiddlewareConfig',
         outputFileName: 'preview-middleware-schema.json'
     },
     {
         name: 'backend-proxy-middleware',
-        typesPath: join(projectRoot, 'packages/backend-proxy-middleware/src/base/types.ts'),
+        typesPath: resolvePackageSrc('@sap-ux/backend-proxy-middleware', 'base/types.ts'),
         typeName: 'BackendMiddlewareConfig',
         outputFileName: 'backend-proxy-middleware-schema.json'
     },
     {
         name: 'backend-proxy-middleware-cf',
-        typesPath: join(projectRoot, 'packages/backend-proxy-middleware-cf/src/types.ts'),
+        typesPath: resolvePackageSrc('@sap-ux/backend-proxy-middleware-cf', 'types.ts'),
         typeName: 'CfOAuthMiddlewareConfig',
         outputFileName: 'backend-proxy-middleware-cf-schema.json'
     },
     {
         name: 'reload-middleware',
-        typesPath: join(projectRoot, 'packages/reload-middleware/src/base/types.ts'),
+        typesPath: resolvePackageSrc('@sap-ux/reload-middleware', 'base/types.ts'),
         typeName: 'ReloaderConfig',
         outputFileName: 'reload-middleware-schema.json'
     },
     {
         name: 'serve-static-middleware',
-        typesPath: join(projectRoot, 'packages/serve-static-middleware/src/base/types.ts'),
+        typesPath: resolvePackageSrc('@sap-ux/serve-static-middleware', 'base/types.ts'),
         typeName: 'ServeStaticConfig',
         outputFileName: 'serve-static-middleware-schema.json'
     },
     {
         name: 'ui5-proxy-middleware',
-        typesPath: join(projectRoot, 'packages/ui5-config/src/types/middlewares.ts'),
+        typesPath: resolvePackageSrc('@sap-ux/ui5-config', 'types/middlewares.ts'),
         typeName: 'UI5ProxyConfig',
         outputFileName: 'ui5-proxy-middleware-schema.json'
     }
@@ -99,7 +103,6 @@ function generateSchema(config: MiddlewareSchemaConfig): boolean {
 }
 
 console.log('=== Generating Middleware Schemas ===');
-console.log(`Project root: ${projectRoot}`);
 console.log(`Schema output directory: ${schemaOutputDir}`);
 
 let successCount = 0;
