@@ -1,5 +1,16 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.128
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/adp-tooling@0.18.69
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/project-input-validator@0.6.59
+
 ## 0.4.127
 
 ### Patch Changes

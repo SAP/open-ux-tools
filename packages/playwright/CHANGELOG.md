@@ -1,5 +1,11 @@
 # @sap-ux-private/playwright
 
+## 0.2.7
+
+### Patch Changes
+
+- 97735d2: fix(deps): update dependency portfinder to v1.0.38
+
 ## 0.2.6
 
 ### Patch Changes

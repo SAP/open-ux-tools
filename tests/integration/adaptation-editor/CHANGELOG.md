@@ -1,5 +1,13 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.53
+
+### Patch Changes
+
+- 97735d2: fix(deps): update dependency portfinder to v1.0.38
+- Updated dependencies [97735d2]
+    - @sap-ux-private/playwright@0.2.7
+
 ## 0.0.52
 
 ### Patch Changes

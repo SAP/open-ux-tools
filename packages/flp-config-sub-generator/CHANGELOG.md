@@ -1,5 +1,17 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.133
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/app-config-writer@0.6.103
+    - @sap-ux/deploy-config-generator-shared@0.1.95
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/flp-config-inquirer@0.4.128
+    - @sap-ux/inquirer-common@0.11.10
+
 ## 0.3.132
 
 ### Patch Changes

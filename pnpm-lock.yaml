@@ -3412,7 +3412,7 @@ importers:
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
       '@sap-ux-private/playwright':
-        specifier: 0.2.6
+        specifier: 0.2.7
         version: link:../playwright
       '@sap-ux/axios-extension':
         specifier: workspace:*

@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.45
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/store@1.5.7
+
 ## 0.10.44
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.32
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/store@1.5.7
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
 ## 0.6.31
 
 ### Patch Changes

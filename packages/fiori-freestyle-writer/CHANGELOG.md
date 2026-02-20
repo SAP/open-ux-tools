@@ -1,5 +1,18 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.5.56
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/cap-config-writer@0.12.68
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/odata-service-writer@0.29.22
+    - @sap-ux/ui5-application-writer@1.7.11
+    - @sap-ux/ui5-test-writer@0.7.72
+    - @sap-ux/ui5-config@0.29.18
+
 ## 2.5.55
 
 ### Patch Changes
