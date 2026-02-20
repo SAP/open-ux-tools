@@ -1,5 +1,19 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.5.85
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+- Updated dependencies [ff634b0]
+- Updated dependencies [d588c26]
+    - @sap-ux/inquirer-common@0.11.11
+    - @sap-ux/odata-service-inquirer@2.18.8
+    - @sap-ux/cf-deploy-config-sub-generator@0.2.138
+    - @sap-ux/deploy-config-generator-shared@0.1.95
+    - @sap-ux/abap-deploy-config-sub-generator@0.2.6
+    - @sap-ux/fiori-generator-shared@0.13.76
+
 ## 0.5.84
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.33
+
+### Patch Changes
+
+- ff634b0: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.8
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
 ## 0.6.32
 
 ### Patch Changes

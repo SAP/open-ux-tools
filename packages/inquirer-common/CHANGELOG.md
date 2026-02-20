@@ -1,5 +1,16 @@
 # @sap-ux/inquirer-common
 
+## 0.11.11
+
+### Patch Changes
+
+- ff634b0: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.8
+- Updated dependencies [ff634b0]
+- Updated dependencies [d588c26]
+    - @sap-ux/odata-service-writer@0.29.23
+    - @sap-ux/feature-toggle@0.3.7
+    - @sap-ux/fiori-generator-shared@0.13.76
+
 ## 0.11.10
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.13
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+
 ## 0.7.12
 
 ### Patch Changes
