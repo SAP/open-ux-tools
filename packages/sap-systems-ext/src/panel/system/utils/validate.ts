@@ -25,7 +25,10 @@ export function validateSystemInfo(input: BackendSystem): boolean | string {
  */
 export async function validateSystemName(newName: string, currentName?: string): Promise<true> {
     const systemService = await getBackendSystemService();
-    const allSystems = await systemService.getAll({ includeSensitiveData: false });
+    const allSystems = await systemService.getAll({
+        includeSensitiveData: false,
+        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+    });
     const newSystemName = newName.trim();
 
     const nameExists = allSystems.some(
