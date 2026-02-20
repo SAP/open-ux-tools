@@ -12,6 +12,12 @@ export interface BackendDestination {
      * Requests matching these paths will have the path prefix removed before forwarding.
      */
     paths: string[];
+    /**
+     * Optional path rewriting. When specified, the matched path prefix will be replaced
+     * with this value before forwarding to the backend.
+     * If not specified, the matched path is simply removed.
+     */
+    pathRewrite?: string;
 }
 
 /**
