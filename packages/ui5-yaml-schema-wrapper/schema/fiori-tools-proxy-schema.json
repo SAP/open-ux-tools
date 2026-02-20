@@ -18,7 +18,7 @@
             "type": "string"
         },
         "ignoreCertError": {
-            "description": "DEPRECATED: Use ignoreCertErrors (plural) instead.",
+            "deprecated": "Use ignoreCertErrors (plural) instead.",
             "type": "boolean"
         },
         "ignoreCertErrors": {
