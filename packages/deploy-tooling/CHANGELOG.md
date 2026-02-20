@@ -1,5 +1,15 @@
 # @sap-ux/deploy-tooling
 
+## 0.17.56
+
+### Patch Changes
+
+- Updated dependencies [cbd340a]
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/project-input-validator@0.6.59
+    - @sap-ux/system-access@0.6.55
+    - @sap-ux/ui5-config@0.29.18
+
 ## 0.17.55
 
 ### Patch Changes

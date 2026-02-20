@@ -1,5 +1,13 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.72
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/ui5-application-writer@1.7.11
+
 ## 0.7.71
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.8.74
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/cap-config-writer@0.12.68
+    - @sap-ux/fe-fpm-writer@0.42.12
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/odata-service-writer@0.29.22
+    - @sap-ux/ui5-application-writer@1.7.11
+    - @sap-ux/ui5-test-writer@0.7.72
+    - @sap-ux/ui5-config@0.29.18
+    - @sap-ux/annotation-generator@0.4.26
+
 ## 2.8.73
 
 ### Patch Changes

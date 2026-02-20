@@ -1,5 +1,12 @@
 # @sap-ux/ui-components
 
+## 1.27.6
+
+### Patch Changes
+
+- 5deb976: Dropdowns and contextual menus: update header item style in dropdown list
+- d8a39ce: fix(deps): update dependency sanitize-html to v2.17.1
+
 ## 1.27.5
 
 ### Patch Changes

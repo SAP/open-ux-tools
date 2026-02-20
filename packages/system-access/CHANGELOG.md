@@ -1,5 +1,12 @@
 # @sap-ux/system-access
 
+## 0.6.55
+
+### Patch Changes
+
+- Updated dependencies [cbd340a]
+    - @sap-ux/store@1.5.7
+
 ## 0.6.54
 
 ### Patch Changes
