@@ -2079,8 +2079,8 @@ importers:
         specifier: workspace:*
         version: link:../cap-config-writer
       '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2498,8 +2498,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.6
-        version: 0.9.6
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2856,8 +2856,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -3162,8 +3162,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -3253,8 +3253,8 @@ importers:
         specifier: 0.10.19
         version: 0.10.19
       '@sap-ux/edmx-parser':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.8
+        version: 0.9.8
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
@@ -12334,23 +12334,10 @@ packages:
       - typescript
     dev: false
 
-  /@sap-ux/edmx-parser@0.9.1:
-    resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
-    dependencies:
-      xml-js: 1.6.11
-    dev: false
-
-  /@sap-ux/edmx-parser@0.9.6:
-    resolution: {integrity: sha512-6dj+nTRNcnA37vqSBJm+xCdJC1u3Dg+4KWTPxveqI/c+1NvvvVlZ18SbZaHEKBFDX2HJU2345IiszrfYU1P3ng==}
-    dependencies:
-      xml-js: 1.6.11
-    dev: true
-
   /@sap-ux/edmx-parser@0.9.8:
     resolution: {integrity: sha512-GFyrixCHRvPVN07RjJYMQJE9xY2J3EpLuOsOXyAhuAoePqBjbAFuE+lJyyJMmJK3oltDBVDB+dqyA0eMSeCD/A==}
     dependencies:
       xml-js: 1.6.11
-    dev: true
 
   /@sap-ux/fe-fpm-writer@0.40.11(typescript@5.9.3):
     resolution: {integrity: sha512-847DjXC6C1ko3spU49hbmlDEXIezt4OuQuzd+5jkPeBq/LFNi1XwVdf1ilR2mcTSqvGi6Vaq5Lgi3rTJsH5PLw==}

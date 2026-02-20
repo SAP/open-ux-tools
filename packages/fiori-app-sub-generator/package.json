@@ -35,7 +35,7 @@
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/cap-config-writer": "workspace:*",
-        "@sap-ux/edmx-parser": "0.9.1",
+        "@sap-ux/edmx-parser": "0.9.8",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/fiori-elements-writer": "workspace:*",
         "@sap-ux/fiori-freestyle-writer": "workspace:*",
