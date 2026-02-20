@@ -92,7 +92,7 @@ export function registerProxyRoute(
     const tokenMiddleware = tokenProvider.createTokenMiddleware();
 
     router.use(path, tokenMiddleware, proxyFn);
-    const rewriteInfo = pathRewrite !== undefined ? ` (rewrite to: ${pathRewrite})` : ' (strip prefix)';
+    const rewriteInfo = pathRewrite ? ` (rewrite to: ${pathRewrite})` : ' (strip prefix)';
     logger.info(`Registered proxy for path: ${path} -> ${destinationUrl}${rewriteInfo}`);
 }
 

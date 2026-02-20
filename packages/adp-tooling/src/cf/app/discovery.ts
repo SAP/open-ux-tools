@@ -115,7 +115,7 @@ function processRouteForDestination(
     route: XsAppRoute,
     destinationToPaths: Map<string, { paths: Set<string>; pathRewrite?: string }>
 ): void {
-    const destination = route.destination as string | undefined;
+    const destination = route.destination;
     const service = route.service;
 
     if (!destination || service === 'html5-apps-repo-rt' || !route.source) {
