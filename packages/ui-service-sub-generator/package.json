@@ -53,7 +53,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.11",
-        "@vscode-logging/logger": "2.0.0",
+        "@vscode-logging/logger": "2.0.8",
         "jest-extended": "6.0.0",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
