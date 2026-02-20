@@ -40,7 +40,7 @@
         "folder-hash": "4.0.4",
         "@types/fs-extra": "11.0.4",
         "@types/folder-hash": "4.0.4",
-        "portfinder": "1.0.32",
+        "portfinder": "1.0.38",
         "promisify-child-process": "4.1.2"
     },
     "devDependencies": {},
