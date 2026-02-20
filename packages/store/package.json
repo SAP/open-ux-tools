@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "pluralize": "8.0.0",
         "reflect-metadata": "0.1.13"
     },

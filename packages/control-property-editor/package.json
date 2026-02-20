@@ -40,7 +40,7 @@
         "body-parser": "1.20.4",
         "eslint-plugin-react": "7.37.5",
         "http-proxy-middleware": "2.0.9",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "jest-scss-transform": "1.0.4",
         "npm-run-all2": "6.2.0",
         "react": "16.14.0",

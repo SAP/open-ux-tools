@@ -37,7 +37,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "lodash": "4.17.23"
     },
     "devDependencies": {

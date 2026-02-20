@@ -37,7 +37,7 @@
         "@sap-ux/ui5-info": "workspace:*",
         "@sap-ux/ui5-library-inquirer": "workspace:*",
         "@sap-ux/ui5-library-writer": "workspace:*",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
