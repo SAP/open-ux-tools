@@ -2,7 +2,14 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
-import { addXSSecurityConfig, getTemplatePath, setMtaDefaults, validateVersion, runCommand, toMtaModuleName as toMtaModuleNameUtil } from '../utils';
+import {
+    addXSSecurityConfig,
+    getTemplatePath,
+    setMtaDefaults,
+    validateVersion,
+    runCommand,
+    toMtaModuleName as toMtaModuleNameUtil
+} from '../utils';
 import {
     MTAVersion,
     MTADescription,
