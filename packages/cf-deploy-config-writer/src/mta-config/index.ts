@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
-import { addXSSecurityConfig, getTemplatePath, setMtaDefaults, validateVersion, runCommand } from '../utils';
+import { addXSSecurityConfig, getTemplatePath, setMtaDefaults, validateVersion, runCommand, toMtaModuleName as toMtaModuleNameUtil } from '../utils';
 import {
     MTAVersion,
     MTADescription,
@@ -65,15 +65,14 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
 /**
  * Generate an MTA ID that is suitable for CF deployment.
  * Removes special characters and restricts length to maximum allowed.
+ * Note: This delegates to the utility function and adds length restriction.
  *
  * @param appId Name of the app, like `sap.ux.app`
  * @returns Name that's acceptable for mta.yaml (sanitized and length-restricted)
  */
 export function toMtaModuleName(appId: string): string {
-    // Remove special characters not allowed in MTA module names
-    // MTA IDs must contain only alphanumeric characters, hyphens, underscores, and dots
-    // Using replaceAll for global replacement (Sonar S7781)
-    return appId.replaceAll(/[`~!@#$%^&*()_|+\-=?;:'",.<>]/gi, '').slice(0, MAX_MTA_ID_LENGTH);
+    // Use the canonical implementation from utils and apply length restriction
+    return toMtaModuleNameUtil(appId).slice(0, MAX_MTA_ID_LENGTH);
 }
 
 /**
@@ -120,8 +119,12 @@ export function doesCDSBinaryExist(): void {
 /**
  * Validate the writer configuration to ensure all required parameters are present.
  *
- * @param config writer configuration
- * @throws {Error} If validation fails
+ * @param config Writer configuration
+ * @throws {Error} If MTA binary is not found in system path
+ * @throws {Error} If required MTA parameters (routerType, mtaId, mtaPath) are missing
+ * @throws {Error} If MTA ID is invalid (too long, invalid characters, or doesn't start with letter/underscore)
+ * @throws {Error} If MTA version is invalid
+ * @throws {Error} If ABAP service binding details are incomplete
  */
 export function validateMtaConfig(config: CFBaseConfig): void {
     // We use mta-lib, which in turn relies on the mta executable being installed and available in the path
@@ -150,12 +153,11 @@ export function validateMtaConfig(config: CFBaseConfig): void {
 
 /**
  * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
- *
  * Note: this function is deprecated and will be removed in future releases since the cds binary currently does not support app frontend services.
  *
- * @param config writer configuration
- * @param fs reference to a mem-fs editor
- * @deprecated this function is deprecated and will be removed in future releases
+ * @param config Writer configuration
+ * @param fs Reference to a mem-fs editor
+ * @deprecated This function is deprecated and will be removed in future releases
  */
 async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<void> {
     const mtaTemplate = readFileSync(getTemplatePath(`frontend/${FileName.MtaYaml}`), 'utf-8');
@@ -172,11 +174,12 @@ async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<v
 }
 
 /**
- *  Add standalone app router to the target folder.
+ * Add standalone app router to the target folder.
  *
- * @param cfConfig writer configuration
+ * @param cfConfig Writer configuration
  * @param mtaInstance MTA configuration instance
- * @param fs reference to a mem-fs editor
+ * @param fs Reference to a mem-fs editor
+ * @throws {Error} If service key retrieval fails for ABAP service binding
  */
 async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: Editor): Promise<void> {
     await mtaInstance.addStandaloneRouter(true);
@@ -216,8 +219,8 @@ async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfi
 /**
  * Add standalone | managed | frontend app router to the target folder.
  *
- * @param config writer configuration
- * @param fs reference to a mem-fs editor
+ * @param config Writer configuration
+ * @param fs Reference to a mem-fs editor
  */
 export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
     const mtaConfigInstance = await getMtaConfig(config.mtaPath);
@@ -235,8 +238,9 @@ export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promis
 /**
  * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
  *
- * @param config writer configuration
- * @param fs reference to a mem-fs editor
+ * @param config Writer configuration
+ * @param fs Reference to a mem-fs editor
+ * @throws {Error} If CDS command execution fails when generating mta.yaml
  */
 export async function generateCAPMTA(config: CAPConfig, fs: Editor): Promise<void> {
     if (config.routerType === RouterModuleType.AppFront) {
