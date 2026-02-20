@@ -1,9 +1,10 @@
+import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { type Logger } from '@sap-ux/logger';
-import { generateSupportingConfig } from '../utils';
+import { generateSupportingConfig, fileExists } from '../utils';
 import LoggerHelper from '../logger-helper';
-import { createMTA, validateMtaConfig, addRoutingConfig, isMTAFound } from '../mta-config';
+import { createMTA, validateMtaConfig, addRoutingConfig } from '../mta-config';
 import { type CFBaseConfig, type MTABaseConfig } from '../types';
 import { t } from '../i18n';
 
@@ -24,7 +25,7 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     logger?.debug(`Generate base configuration using: \n ${JSON.stringify(config)}`);
     validateMtaConfig(config);
     // Check if mta.yaml already exists in the target directory
-    if (isMTAFound(config.mtaPath)) {
+    if (fileExists(fs, join(config.mtaPath, config.mtaId))) {
         throw new Error(t('error.mtaAlreadyExists'));
     }
     createMTA(config as MTABaseConfig);

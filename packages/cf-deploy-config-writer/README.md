@@ -45,29 +45,10 @@ await mtaConfig.addMtaExtensionConfig('mynewdestination', 'https://my-service-ur
 await mtaConfig.save();
 ```
 
-## Example: Appending a `Managed` Approuter Configuration to an SAP Fiori UI5 Application
-
-Calling the `generateAppConfig` function to append Cloud Foundry configuration to a HTML5 application, assumes `manifest.json` and `ui5.yaml` configurations are present otherwise the process will exit with an error;
-```Typescript
-import { generateAppConfig, DefaultMTADestination } from '@sap-ux/cf-deploy-config-writer'
-import { join } from 'path';
-
-const exampleWriter = async () => {
-  const ui5AppPath = join(__dirname, 'testapp');
-  // Option 1. Append managed approuter configuration, toggle `addManagedAppRouter` to false to ommit the managed approuter configuration being appended to the mta.yaml
-  const fs = await generateAppConfig({appPath: ui5AppPath, addManagedAppRouter: true, destinationName: 'SAPBTPDestination'}); 
-  return new Promise((resolve) => {
-      fs.commit(resolve); // When using with Yeoman it handle the fs commit.
-  });
-}
-// Calling the function
-await exampleWriter();
-```
-
 ## Example: Generate or Append a `Managed` Approuter Configuration to a SAP Fiori UI5 Application
 
 Calling the `generateAppConfig` function to append Cloud Foundry configuration to a HTML5 application;
-- Assumes `manifest.json` and `ui5.yaml` configurations are present in the target folder
+- Assumes `manifest.json` and `ui5.yaml` configurations are present in the target folder, otherwise the process will exit with an error
 - Supports `CAP` projects where an existing `mta.yaml` is already present and you are adding a SAP Fiori UI5 app to it
 
 ```Typescript
@@ -76,12 +57,12 @@ import { join } from 'path';
 
 const exampleWriter = async () => {
   const ui5AppPath = join(__dirname, 'testapp');
-  // Option 1. Append managed approuter configuration, toggle `addManagedAppRouter` to false to ommit the managed approuter configuration being appended to the mta.yaml
-  const fs = await generateAppConfig({appPath: ui5AppPath, addManagedAppRouter: true, destinationName: 'SAPBTPDestination'}); 
+  // Option 1. Append managed approuter configuration, toggle `addManagedAppRouter` to false to omit the managed approuter configuration being appended to the mta.yaml
+  const fs1 = await generateAppConfig({appPath: ui5AppPath, addManagedAppRouter: true, destinationName: 'SAPBTPDestination'});
   // Option 2. For CAP flows, set the destination to DefaultMTADestination to create a destination instance between the HTML5 app and CAP Project
-  const fs = await generateAppConfig({appPath: ui5AppPath, addManagedAppRouter: true, destinationName: DefaultMTADestination});
+  const fs2 = await generateAppConfig({appPath: ui5AppPath, addManagedAppRouter: true, destinationName: DefaultMTADestination});
   return new Promise((resolve) => {
-      fs.commit(resolve); // When using with Yeoman it handle the fs commit.
+      fs2.commit(resolve); // When using with Yeoman it handles the fs commit.
   });
 }
 // Calling the function
@@ -100,12 +81,12 @@ import { join } from 'path';
 
 const exampleWriter = async () => {
   const mtaPath = join(__dirname, 'testproject');
-  // If your SAPUI5 application will be consuming an SAB BTP OnPremise destination, Connectivity serivce is required; Refer to https://discovery-center.cloud.sap/serviceCatalog/connectivity-service?region=all
+  // If your SAPUI5 application will be consuming an SAP BTP OnPremise destination, Connectivity service is required; Refer to https://discovery-center.cloud.sap/serviceCatalog/connectivity-service?region=all
   const addConnectivityService = true;
-  // Generate an approuter configuration, with the default being a Managed Approuter, toggle the routerType to genereate RouterModuleType.AppFront or RouterModuleType.Standard configurations
+  // Generate an approuter configuration, with the default being a Managed Approuter, toggle the routerType to generate RouterModuleType.AppFront or RouterModuleType.Standard configurations
   const fs = await generateBaseConfig({ mtaId: 'mymtaproject', routerType: RouterModuleType.Managed, mtaPath, addConnectivityService });
   return new Promise((resolve) => {
-      fs.commit(resolve); // When using with Yeoman it handle the fs commit.
+      fs.commit(resolve); // When using with Yeoman it handles the fs commit.
   });
 }
 // Calling the function
@@ -124,10 +105,10 @@ import { join } from 'path';
 
 const exampleWriter = async () => {
   const mtaPath = join(__dirname, 'testcapproject');
-  // Generate an approuter configuration, with the default being a Managed Approuter, toggle the routerType to genereate RouterModuleType.AppFront or RouterModuleType.Standard configurations 
+  // Generate an approuter configuration, with the default being a Managed Approuter, toggle the routerType to generate RouterModuleType.AppFront or RouterModuleType.Standard configurations
   const fs = await generateCAPConfig({ mtaId: 'mymtaproject', routerType: RouterModuleType.Managed, mtaPath });
   return new Promise((resolve) => {
-      fs.commit(resolve); // When using with Yeoman it handle the fs commit.
+      fs.commit(resolve); // When using with Yeoman it handles the fs commit.
   });
 }
 // Calling the function
@@ -152,6 +133,30 @@ For example, the following configuration will be appended to the `xs-app.json` r
 
 Replace `<apply-service-segment-path>` with the actual service path you want to use, for example `/sap` or `/myservice`;
 
+## Error Handling
+
+The package throws errors in the following scenarios:
+- **MTA Binary Not Found**: If the MTA tool is not installed or not in PATH
+- **Invalid MTA ID**: If the MTA ID doesn't meet naming requirements (must start with letter/underscore, max 128 chars, only letters/numbers/dashes/periods/underscores)
+- **Missing Required Files**: If `manifest.json` or `ui5.yaml` are missing for UI5 app configuration
+- **Existing MTA Configuration**: If an `mta.yaml` file already exists when generating base config
+- **Missing ABAP Service Details**: If ABAP service binding is specified without required service details
+- **Invalid CAP Project**: If the target folder doesn't contain a valid Node.js CAP project
+
+All error messages support internationalization (i18n) for proper localization.
+
+## CAP Project Considerations
+
+When using `generateCAPConfig`, note that CAP projects do not support direct ABAP service binding. The `CAPConfig` interface intentionally excludes `abapServiceProvider` properties to provide type safety and semantic clarity for CAP-specific deployments.
+
+## MTA Module Naming
+
+Application names are automatically converted to MTA-compatible module names by:
+- Removing special characters (`` `~!@#$%^&*£()|+=?;:'",.<>`` )
+- Keeping only letters, numbers, dots (.), hyphens (-), and underscores (_)
+- Truncating to maximum allowed length (128 characters for IDs)
+
+For example: `sap.ux.app` remains `sap.ux.app`, but `my-app@v1.0` becomes `my-appv1.0`
 
 ## Keywords
 SAP Fiori elements

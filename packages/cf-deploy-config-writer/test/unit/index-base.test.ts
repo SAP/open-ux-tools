@@ -175,7 +175,7 @@ describe('CF Writer Base', () => {
                 mtaDescription: 'MyManagedDescription',
                 routerType: RouterModuleType.Managed
             } as Partial<CFBaseConfig>;
-            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
+            jest.spyOn(unitTestFs, 'exists').mockReturnValueOnce(true);
             await expect(generateBaseConfig(config as CFBaseConfig, unitTestFs)).rejects.toThrow(
                 'An `mta.yaml` file already exists in the target directory.'
             );
