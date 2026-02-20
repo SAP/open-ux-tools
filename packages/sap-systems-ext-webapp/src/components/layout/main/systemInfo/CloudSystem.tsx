@@ -46,10 +46,8 @@ export function CloudSystem({
                         {t('labels.url')} <span className="mandatory-asterisk">*</span>
                     </label>
                     <UITooltip
-                        tooltipProps={{
-                            ...UITooltipUtils.renderContent(tooltipContent),
-                            delay: 0
-                        }}
+                        tooltipProps={UITooltipUtils.renderContent(tooltipContent)}
+                        delay={0}
                         calloutProps={{ hidden: isEditing || !systemInfo?.url || !isOverflowing }}>
                         <UITextInput
                             name="reentranceTicketUrl"

@@ -52,12 +52,9 @@ export function OnPremSystem({
                     {t('labels.url')} <span className="mandatory-asterisk">*</span>
                 </label>
                 <UITooltip
-                    tooltipProps={{
-                        ...UITooltipUtils.renderContent(tooltipContent)
-                    }}
-                    calloutProps={{ hidden: isEditing || !systemInfo?.url || !isOverflowing }}
+                    tooltipProps={UITooltipUtils.renderContent(tooltipContent)}
                     delay={0}
-                    directionalHint={1}>
+                    calloutProps={{ hidden: isEditing || !systemInfo?.url || !isOverflowing }}>
                     <UITextInput
                         name="systemUrl"
                         id={sysUrlId}
