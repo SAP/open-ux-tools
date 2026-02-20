@@ -1,5 +1,12 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.31
+
+### Patch Changes
+
+- 1371f6b: fix(deps): update dependency @langchain/core to v1.1.26
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
 ## 0.6.30
 
 ### Patch Changes

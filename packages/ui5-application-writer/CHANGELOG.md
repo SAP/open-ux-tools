@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.10
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+    - @sap-ux/ui5-config@0.29.18
+
 ## 1.7.9
 
 ### Patch Changes

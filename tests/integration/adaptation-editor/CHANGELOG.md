@@ -1,5 +1,15 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.52
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-info@0.13.13
+
 ## 0.0.51
 
 ### Patch Changes
