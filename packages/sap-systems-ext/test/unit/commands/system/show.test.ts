@@ -93,7 +93,9 @@ describe('Test the show system command handler', () => {
         const handler = showSystemsCommandHandler(mockContext);
         await handler({ url: 'https://example.com', client: '100' });
 
-        expect(showErrorMessageSpy).toHaveBeenCalledWith('Error executing command to view connection details.');
+        expect(showErrorMessageSpy).toHaveBeenCalledWith(
+            'An error occurred when executing the command to view the connection details.'
+        );
     });
 
     it('should pick a system when no system is provided', async () => {

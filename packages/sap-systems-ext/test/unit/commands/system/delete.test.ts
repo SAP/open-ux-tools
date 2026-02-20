@@ -95,7 +95,9 @@ describe('Test the delete system command handler', () => {
         const handler = deleteSystemCommandHandler(mockContext);
         await handler({ url: 'https://example.com', client: '100' });
 
-        expect(showWarningMessageSpy).toHaveBeenCalledWith('Error deleting connection: [Test System].');
+        expect(showWarningMessageSpy).toHaveBeenCalledWith(
+            'An error occurred when deleting connection: [Test System].'
+        );
     });
 
     it('should show an error message if the system does not exist', async () => {

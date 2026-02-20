@@ -13,7 +13,7 @@
         "yes": "Yes",
         "no": "No",
         "delete": "Delete [{{- system}}]? Your Fiori application may not run locally anymore.",
-        "overwrite": "Connection already exists with name [{{- system}}]. Do you want to overwrite?"
+        "overwrite": "A connection with the same name [{{- system}}] already exists. Do you want to overwrite it?"
     },
     "info": {
         "numServices": "This SAP System [{{- system}}] returned {{v2}} OData V2 and {{v4}} OData V4 services.",
@@ -32,19 +32,20 @@
         "importCancelled": "Import cancelled."
     },
     "error": {
-        "deletingConnection": "Error deleting connection: [{{- system}}].",
-        "importConfigFailed": "Failed to import connection configuration.",
-        "noConnectionsDefined": "No connections defined in configuration file: {{- filePath}}",
+        "deletingConnection": "An error occurred when deleting connection: [{{- system}}].",
+        "importConfigFailed": "Failed to import the connection configuration.",
+        "noConnectionsDefined": "No connections defined in the configuration file: {{- filePath}}",
         "incompleteConfig": "Connection configuration is incomplete. A URL is required.",
         "loadingConnections": "Failed to load stored connections.",
         "connectionNotFound": "Connection [{{- backendKey}}] not found in the secure store. Please ensure the connection is saved correctly.",
         "exportFailure": "Failed to export connection information: {{- error}}.",
-        "connectionInfo": "Error during processing of connection information: {{- error}}",
+        "connectionInfo": "An error occurred during processing of the connection information: {{- error}}",
         "keyExists": "Connection (URL + Client) already exists",
-        "updateFailure": "Failed to update connection information: {{- error}}",
+        "updateFailure": "Failed to update the connection information: {{- error}}",
+        "creationFailure": "Failed to create the connection information: {{- error}}",
         "noServices": "This SAP system failed to return any services.",
         "cert": {
-            "urlValidation": "The connection URL is using {{certError}} security certificate.",
+            "urlValidation": "The connection URL uses {{certError}} security certificate.",
             "expired": "an expired",
             "selfSigned": "a self-signed",
             "unknownOrInvalid": "an unknown or invalid",
@@ -56,7 +57,7 @@
         "launchAppGen": "Failed to launch the SAP Fiori application generator for [{{- systemName}}].",
         "catalogRequest": "The V{{version}} request failed with error: {{error}}.",
         "guidedAnswersCmd": "Error executing command to open the Guided Answers extension: {{- error}}",
-        "viewConnectionDetails": "Error executing command to view connection details.",
+        "viewConnectionDetails": "An error occurred when executing the command to view the connection details.",
         "noFileSelected": "No file selected for import.",
         "panelActionDispatch": "Error dispatching panel action: {{- error}}",
         "noneSelected": "No SAP system selected.",
@@ -69,7 +70,7 @@
     },
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection.",
-        "connectionNameExists": "Connection name is already in use",
+        "connectionNameExists": "This connection name already exists. Choose a different name.",
         "urlInvalid": "The URL '{{- url}}' provided is invalid"
     },
     "telemetry": {

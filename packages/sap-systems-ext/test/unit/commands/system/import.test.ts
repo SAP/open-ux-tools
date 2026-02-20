@@ -75,7 +75,7 @@ describe('Test the import system command handler', () => {
         const handler = importSystemCommandHandler(mockContext);
         await handler();
 
-        expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to import connection configuration.');
+        expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to import the connection configuration.');
     });
 
     it('should show error message that config is incomplete and missing system url', async () => {
@@ -101,7 +101,7 @@ describe('Test the import system command handler', () => {
 
         expect(showErrorMessageSpy).toHaveBeenCalledWith(
             expect.stringContaining(
-                `No connections defined in configuration file: ${join(
+                `No connections defined in the configuration file: ${join(
                     __dirname,
                     '../../../fixtures/import/invalid-test.json'
                 )}`

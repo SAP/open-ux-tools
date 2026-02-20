@@ -158,9 +158,10 @@ async function postSavingError(
     systemExistsInStore: boolean,
     systemType = 'unknown'
 ): Promise<void> {
+    const message = t(systemExistsInStore ? 'error.updateFailure' : 'error.creationFailure', { error: errorMsg });
     postMessage(
         updateSystemStatus({
-            message: t('error.updateFailure', { error: errorMsg }),
+            message,
             updateSuccess: false
         })
     );

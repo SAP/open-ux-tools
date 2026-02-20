@@ -6,7 +6,7 @@ import { BasicAuthCreds } from './BasicAuthCreds';
 import { useTranslation } from 'react-i18next';
 
 import '../../../../styles/SystemMain.scss';
-import { getUrlErrorMessage } from './utils';
+import { getUrlErrorMessage, useTextInputOverflow } from './utils';
 
 interface OnPremSystemProps {
     systemInfo?: BackendSystem;
@@ -41,6 +41,8 @@ export function OnPremSystem({
     setIsDetailsValid
 }: Readonly<OnPremSystemProps>): ReactElement {
     const { t } = useTranslation();
+    const sysUrlId = 'sysUrl';
+    const { isEditing, isOverflowing, onEditStart, onEditEnd } = useTextInputOverflow(sysUrlId, systemInfo?.url);
     const tooltipContent = <div className="url-tooltip">{systemInfo?.url}</div>;
 
     return (
@@ -49,19 +51,29 @@ export function OnPremSystem({
                 <label className="store-detail-label">
                     {t('labels.url')} <span className="mandatory-asterisk">*</span>
                 </label>
-                <UITooltip tooltipProps={UITooltipUtils.renderContent(tooltipContent)}>
+                <UITooltip
+                    tooltipProps={{
+                        ...UITooltipUtils.renderContent(tooltipContent)
+                    }}
+                    calloutProps={{ hidden: isEditing || !systemInfo?.url || !isOverflowing }}
+                    delay={0}
+                    directionalHint={1}>
                     <UITextInput
                         name="systemUrl"
-                        id="sysUrl"
+                        id={sysUrlId}
                         key={`systemUrl-${systemInfo?.connectionType}`} // force re-render so validation is ran if connection type changes
                         value={systemInfo?.url}
                         onChange={(e) => {
+                            onEditStart();
                             setUrl((e.target as HTMLInputElement).value);
                             setIsDetailsUpdated(true);
                         }}
-                        onGetErrorMessage={(value) =>
-                            getUrlErrorMessage(value, t, setIsDetailsValid, systemInfo?.connectionType)
-                        }
+                        onBlur={() => onEditEnd()}
+                        onGetErrorMessage={(value) => {
+                            const urlMessage = getUrlErrorMessage(value, t, systemInfo?.connectionType);
+                            setIsDetailsValid(!urlMessage);
+                            return urlMessage;
+                        }}
                     />
                 </UITooltip>
             </div>

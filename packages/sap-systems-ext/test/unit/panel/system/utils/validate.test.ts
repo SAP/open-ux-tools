@@ -57,7 +57,7 @@ describe('Test the panel action utils', () => {
             ]);
 
             await expect(validateSystemName('Existing System 1 ', 'New System')).rejects.toBe(
-                'Connection name is already in use'
+                'This connection name already exists. Choose a different name.'
             );
         });
     });
