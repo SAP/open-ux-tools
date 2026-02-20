@@ -1,5 +1,15 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.119
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/ui5-library-reference-inquirer@0.4.119
+    - @sap-ux/telemetry@0.6.77
+
 ## 0.1.118
 
 ### Patch Changes

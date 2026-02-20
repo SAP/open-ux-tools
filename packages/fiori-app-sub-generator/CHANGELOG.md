@@ -1,5 +1,23 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.73
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/cap-config-writer@0.12.68
+    - @sap-ux/fiori-elements-writer@2.8.74
+    - @sap-ux/fiori-freestyle-writer@2.5.56
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/launch-config@0.10.66
+    - @sap-ux/odata-service-inquirer@2.18.7
+    - @sap-ux/odata-service-writer@0.29.22
+    - @sap-ux/store@1.5.7
+    - @sap-ux/ui5-application-inquirer@0.16.32
+    - @sap-ux/telemetry@0.6.77
+    - @sap-ux/annotation-generator@0.4.26
+
 ## 0.11.72
 
 ### Patch Changes

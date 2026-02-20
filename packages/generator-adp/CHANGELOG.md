@@ -1,5 +1,20 @@
 # @sap-ux/generator-adp
 
+## 0.9.5
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/adp-tooling@0.18.69
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/odata-service-writer@0.29.22
+    - @sap-ux/project-input-validator@0.6.59
+    - @sap-ux/store@1.5.7
+    - @sap-ux/system-access@0.6.55
+    - @sap-ux/telemetry@0.6.77
+
 ## 0.9.4
 
 ### Patch Changes

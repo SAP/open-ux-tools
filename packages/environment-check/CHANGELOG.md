@@ -1,5 +1,14 @@
 # @sap-ux/environment-check
 
+## 0.18.93
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/store@1.5.7
+    - @sap-ux/ui5-config@0.29.18
+
 ## 0.18.92
 
 ### Patch Changes

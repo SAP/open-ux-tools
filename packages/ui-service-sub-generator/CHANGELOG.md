@@ -1,5 +1,17 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.189
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/ui-service-inquirer@0.2.126
+    - @sap-ux/system-access@0.6.55
+    - @sap-ux/telemetry@0.6.77
+
 ## 0.1.188
 
 ### Patch Changes

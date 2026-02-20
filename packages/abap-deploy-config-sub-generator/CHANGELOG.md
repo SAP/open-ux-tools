@@ -1,5 +1,18 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.2.5
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.4
+    - @sap-ux/adp-tooling@0.18.69
+    - @sap-ux/deploy-config-generator-shared@0.1.95
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/ui5-config@0.29.18
+    - @sap-ux/abap-deploy-config-writer@0.2.77
+
 ## 0.2.4
 
 ### Patch Changes

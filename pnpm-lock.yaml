@@ -92,8 +92,8 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
       nx:
-        specifier: 21.6.5
-        version: 21.6.5
+        specifier: 21.6.10
+        version: 21.6.10
       postcss:
         specifier: 8.5.6
         version: 8.5.6
@@ -238,8 +238,8 @@ importers:
         specifier: 5.0.2
         version: 5.0.2(@types/react@16.14.55)(react@16.14.0)
       sanitize-html:
-        specifier: 2.17.0
-        version: 2.17.0
+        specifier: 2.17.1
+        version: 2.17.1
     devDependencies:
       '@babel/core':
         specifier: 7.29.0
@@ -395,8 +395,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7)
@@ -450,8 +450,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
     devDependencies:
       '@sap-ux/store':
         specifier: workspace:*
@@ -569,8 +569,8 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -666,8 +666,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@18.19.130)
@@ -806,8 +806,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -937,8 +937,8 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -1057,8 +1057,8 @@ importers:
         specifier: workspace:*
         version: link:../yaml
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1122,8 +1122,8 @@ importers:
         specifier: 1.19.0
         version: 1.19.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
     devDependencies:
       '@sap-ux/odata-annotation-core-types':
         specifier: workspace:*
@@ -1147,8 +1147,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7)
@@ -1205,8 +1205,8 @@ importers:
         specifier: 1.2.3
         version: 1.2.3
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -1284,8 +1284,8 @@ importers:
         specifier: 1.2.3
         version: 1.2.3
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1402,8 +1402,8 @@ importers:
         specifier: 2.0.9
         version: 2.0.9
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       jest-scss-transform:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.2.0)
@@ -1421,7 +1421,7 @@ importers:
         version: 16.14.0(react@16.14.0)
       react-i18next:
         specifier: 15.4.1
-        version: 15.4.1(i18next@25.8.0)(react-dom@16.14.0)(react@16.14.0)
+        version: 15.4.1(i18next@25.8.12)(react-dom@16.14.0)(react@16.14.0)
       react-redux:
         specifier: 7.2.9
         version: 7.2.9(react-dom@16.14.0)(react@16.14.0)
@@ -1574,8 +1574,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -1638,8 +1638,8 @@ importers:
         specifier: 1.2.3
         version: 1.2.3
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -1787,8 +1787,8 @@ importers:
         specifier: 1.0.14
         version: 1.0.14
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       ignore:
         specifier: 5.2.4
         version: 5.2.4
@@ -1936,8 +1936,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -2124,8 +2124,8 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@18.19.130)
@@ -2275,8 +2275,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -2348,8 +2348,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -2406,8 +2406,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       logform:
         specifier: 2.4.0
         version: 2.4.0
@@ -2552,8 +2552,8 @@ importers:
         specifier: 0.27.2
         version: 0.27.2
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
@@ -2610,8 +2610,8 @@ importers:
         specifier: workspace:*
         version: link:../project-input-validator
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -2659,8 +2659,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@18.19.130)
@@ -2765,8 +2765,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       uuid:
         specifier: 10.0.0
         version: 10.0.0
@@ -2898,8 +2898,8 @@ importers:
         specifier: 0.1.3
         version: 0.1.3
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -2997,8 +2997,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       jsonc-parser:
         specifier: 3.2.0
         version: 3.2.0
@@ -3065,8 +3065,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -3207,8 +3207,8 @@ importers:
         specifier: 5.3.6
         version: 5.3.6
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7)
@@ -3271,8 +3271,8 @@ importers:
         specifier: 5.3.6
         version: 5.3.6
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -3360,8 +3360,8 @@ importers:
         specifier: 11.0.0
         version: 11.0.0
       portfinder:
-        specifier: 1.0.32
-        version: 1.0.32
+        specifier: 1.0.38
+        version: 1.0.38
       promisify-child-process:
         specifier: 4.1.2
         version: 4.1.2
@@ -3412,7 +3412,7 @@ importers:
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
       '@sap-ux-private/playwright':
-        specifier: 0.2.6
+        specifier: 0.2.7
         version: link:../playwright
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -3561,8 +3561,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       validate-npm-package-name:
         specifier: 5.0.0
         version: 5.0.0
@@ -3598,8 +3598,8 @@ importers:
         specifier: 0.10.3
         version: 0.10.3
       portfinder:
-        specifier: 1.0.32
-        version: 1.0.32
+        specifier: 1.0.38
+        version: 1.0.38
     devDependencies:
       '@types/connect-livereload':
         specifier: 0.6.3
@@ -3683,8 +3683,8 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@18.19.130)
@@ -3810,8 +3810,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       jsonc-parser:
         specifier: 3.2.0
         version: 3.2.0
@@ -3879,8 +3879,8 @@ importers:
         specifier: 0.2.1
         version: 0.2.1
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       jest-scss-transform:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.2.0)
@@ -3892,7 +3892,7 @@ importers:
         version: 16.14.0(react@16.14.0)
       react-i18next:
         specifier: 15.4.1
-        version: 15.4.1(i18next@25.8.0)(react-dom@16.14.0)(react@16.14.0)
+        version: 15.4.1(i18next@25.8.12)(react-dom@16.14.0)(react@16.14.0)
       react-redux:
         specifier: 7.2.9
         version: 7.2.9(react-dom@16.14.0)(react@16.14.0)
@@ -3931,8 +3931,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       pluralize:
         specifier: 8.0.0
         version: 8.0.0
@@ -4061,8 +4061,8 @@ importers:
         specifier: 9.22.5
         version: 9.22.5(react-dom@16.14.0)(react@16.14.0)
       sanitize-html:
-        specifier: 2.17.0
-        version: 2.17.0
+        specifier: 2.17.1
+        version: 2.17.1
       uuid:
         specifier: 3.4.0
         version: 3.4.0
@@ -4324,8 +4324,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -4403,8 +4403,8 @@ importers:
         specifier: workspace:*
         version: link:../ui-service-inquirer
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -4473,8 +4473,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7)
@@ -4519,8 +4519,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -4633,8 +4633,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7)
@@ -4658,8 +4658,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
@@ -4695,8 +4695,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-library-reference-writer
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -4787,8 +4787,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-library-writer
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -4839,8 +4839,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
@@ -4897,8 +4897,8 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       proxy-from-env:
         specifier: 1.1.0
         version: 1.1.0
@@ -4946,8 +4946,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.0
-        version: 25.8.0(typescript@5.9.3)
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -5078,8 +5078,8 @@ importers:
         specifier: 6.2.0
         version: 6.2.0
       portfinder:
-        specifier: 1.0.32
-        version: 1.0.32
+        specifier: 1.0.38
+        version: 1.0.38
       semver:
         specifier: 7.7.4
         version: 7.7.4
@@ -8243,27 +8243,11 @@ packages:
       kuler: 2.0.0
     dev: true
 
-  /@emnapi/core@1.6.0:
-    resolution: {integrity: sha512-zq/ay+9fNIJJtJiZxdTnXS20PllcYMX3OE23ESc4HK/bdYu3cOWYVhsOhVnXALfU/uqJIxn5NBPd9z4v+SfoSg==}
-    requiresBuild: true
-    dependencies:
-      '@emnapi/wasi-threads': 1.1.0
-      tslib: 2.8.1
-    dev: true
-
   /@emnapi/core@1.8.1:
     resolution: {integrity: sha512-AvT9QFpxK0Zd8J0jopedNm+w/2fIzvtPKPjqyw9jwvBaReTTqPBk9Hixaz7KbjimP+QNz605/XnjFcDAL2pqBg==}
     requiresBuild: true
     dependencies:
       '@emnapi/wasi-threads': 1.1.0
-      tslib: 2.8.1
-    dev: true
-    optional: true
-
-  /@emnapi/runtime@1.6.0:
-    resolution: {integrity: sha512-obtUmAHTMjll499P+D9A3axeJFlhdjOWdKUNs/U6QIGT7V5RjcUW1xToAzjvmgTSQhDbYn/NwfTRoJcQ2rNBxA==}
-    requiresBuild: true
-    dependencies:
       tslib: 2.8.1
     dev: true
 
@@ -8273,7 +8257,6 @@ packages:
     dependencies:
       tslib: 2.8.1
     dev: true
-    optional: true
 
   /@emnapi/wasi-threads@1.1.0:
     resolution: {integrity: sha512-WI0DdZ8xFSbgMjR1sFsKABJ/C5OnRrjT06JXbZKexJGrDuPTzZdDYfFlsgcCXCyf+suG5QU2e/y1Wo2V/OapLQ==}
@@ -10691,8 +10674,8 @@ packages:
   /@napi-rs/wasm-runtime@0.2.4:
     resolution: {integrity: sha512-9zESzOO5aDByvhIAsOy9TbpZ0Ur2AJbUI7UT73kcUTS2mxAMHOBaa1st/jAymNoCtvrit99kkzT1FZuXVcgfIQ==}
     dependencies:
-      '@emnapi/core': 1.6.0
-      '@emnapi/runtime': 1.6.0
+      '@emnapi/core': 1.8.1
+      '@emnapi/runtime': 1.8.1
       '@tybys/wasm-util': 0.9.0
     dev: true
 
@@ -11037,80 +11020,80 @@ packages:
       - supports-color
     dev: true
 
-  /@nx/nx-darwin-arm64@21.6.5:
-    resolution: {integrity: sha512-TFIQPKsKZrLeWN8JMaTuwnLq+QE/vh7TjinlXUjdalH6uTczPKWC9ViNmdfNUBblZWQjOGxc4aQ5rVs8YvUIbw==}
+  /@nx/nx-darwin-arm64@21.6.10:
+    resolution: {integrity: sha512-4K8oZdzil6zpY3zxugSbVDS4dF8o82KCeyT1IYH7t+aWD/tUnYhw/zmdNx6Jq80oxYgPrPWhxmuZ/UCN0LSYLw==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@nx/nx-darwin-x64@21.6.5:
-    resolution: {integrity: sha512-S/uW1tznZ5p93fOwcG+s+tuYI3aVIJKWTWI366XlusOj8yAHsDl1lI8dTp9ImN9kIdcgfF7/fr/zEMHpLLVvLg==}
+  /@nx/nx-darwin-x64@21.6.10:
+    resolution: {integrity: sha512-WqFIRjxtOHoJob2f24YiKfgqTcgtVb/CKYvnuMAmKccarOi91DeABQO35gXUwvE89TjhlR5slG5YLZt7E5UCaQ==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@nx/nx-freebsd-x64@21.6.5:
-    resolution: {integrity: sha512-DTSTXWiy381u6u4YEuJK8sFFnlRojuPqmWd8sxhVHzxE5gShm2lcZmuCmmPHm/p2cqW929a07rMpjJfgcJyjIA==}
+  /@nx/nx-freebsd-x64@21.6.10:
+    resolution: {integrity: sha512-EqrBLRA0WRek+x3kH6/YL+fRa6xKvj9e9nRfOYyo0GSbUwew5ofGWODGoYtoHC+oCuL4qtpKGRhU27NFwhOM8A==}
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@nx/nx-linux-arm-gnueabihf@21.6.5:
-    resolution: {integrity: sha512-GEZXLowEaJb0ug4HgPSx6Cmc6EBP2WI7horw69aQ2bH7VeXEvxg758C5JDPSK33LQliJTGw4eaMzJqfEutvsuA==}
+  /@nx/nx-linux-arm-gnueabihf@21.6.10:
+    resolution: {integrity: sha512-CdbPy4s1I4f57DOncoSsnJX9dB2f7sZhdPXHKZ9tgCMcBpy6uYHhkzmrwCdiBjl/2JQLM/GwEkqoYxpzIlAJbA==}
     cpu: [arm]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@nx/nx-linux-arm64-gnu@21.6.5:
-    resolution: {integrity: sha512-iGIyx7jZvgOfs4e8jMZbEZ0b8jqsnVBwcU0s+5XltMxUuVNiDmnzRnj+lyYFxO5DuFEKyO5YGDtI9nLeBuzDkg==}
+  /@nx/nx-linux-arm64-gnu@21.6.10:
+    resolution: {integrity: sha512-4ZSjvCjnBT0WpGdF12hvgLWmok4WftaE09fOWWrMm4b2m8F/5yKgU6usPFTehQa5oqTp08KW60kZMLaOQHOJQg==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@nx/nx-linux-arm64-musl@21.6.5:
-    resolution: {integrity: sha512-miz+U1g9pRfKV3sofzXOb8MzX/wpc09NLJ0P/IH5vfxHe5URk9ipk3tKrnoWnd0GaZxJTfdQcoAAOzBSOOyP/A==}
+  /@nx/nx-linux-arm64-musl@21.6.10:
+    resolution: {integrity: sha512-lNzlTsgr7nY56ddIpLTzYZTuNA3FoeWb9Ald07pCWc0EHSZ0W4iatJ+NNnj/QLINW8HWUehE9mAV5qZlhVFBmg==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@nx/nx-linux-x64-gnu@21.6.5:
-    resolution: {integrity: sha512-mn9INnIDPHxm2lN7dMPydoYR/Z0t7VmekIZIQx1TlkOvJJfC+B1UeQ/VDvOqs6bhNv+WCPw7b7Kq7gBC4hbgMw==}
+  /@nx/nx-linux-x64-gnu@21.6.10:
+    resolution: {integrity: sha512-nJxUtzcHwk8TgDdcqUmbJnEMV3baQxmdWn77d1NTP4cG677A7jdV93hbnCcw+AQonaFLUzDwJOIX8eIPZ32GLw==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@nx/nx-linux-x64-musl@21.6.5:
-    resolution: {integrity: sha512-1CudJ4QEvbrD5fj7udOLrApPWcx0BqZ7KIBdp3CqJ6De8oXUAmNgcf1NjD+DhJt0efVOGtaDPK60Sshkm9wjSA==}
+  /@nx/nx-linux-x64-musl@21.6.10:
+    resolution: {integrity: sha512-+VwITTQW9wswP7EvFzNOucyaU86l2UcO6oYxFiwNvRioTlDOE5U7lxYmCgj3OHeGCmy9jhXlujdD+t3OhOT3gQ==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@nx/nx-win32-arm64-msvc@21.6.5:
-    resolution: {integrity: sha512-dFNNfqNZUi4Hqox8NPlVjjQw5dqOlmBERZ4he1CRQ0OC4SAFV7uX8c+U9y8ndghU2R5AnCztu63aHfZOQiTfBw==}
+  /@nx/nx-win32-arm64-msvc@21.6.10:
+    resolution: {integrity: sha512-kkK/0GNVs7pdcgksLfoMBT8k92XGfcePPuhhS1Tsyq+zc3gpsPo+vNIGfeIf2FumKBsUdWUHuChfpxBmjcVFVw==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@nx/nx-win32-x64-msvc@21.6.5:
-    resolution: {integrity: sha512-KC0nK82N2suok1Q2J4sNavtAvVnF9QVivGs/7Wj4Gx3L14lyt/mq6I9f8eOyI1JAeSCRf0a7RhQKfDv8Qac4mQ==}
+  /@nx/nx-win32-x64-msvc@21.6.10:
+    resolution: {integrity: sha512-ddYZv1Z8wLhlHASwi044gTcM0+7OJ24V1yCwlVe3wsIqZDUZvVC1Lgk+wIQXUH8mBKm3NZti8B72nldoofOmSw==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
@@ -11744,7 +11727,7 @@ packages:
     resolution: {integrity: sha512-ioXoq9gPxkss4MYhD+SFaU9p1IHFUX0ILAWFPyjGaBdjLsYAlZw6j1iLA0N/m12uVHLFDfSYNF7EQccjinIMDA==}
     engines: {node: '>=18'}
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.3
       extract-zip: 2.0.1
       progress: 2.0.3
       proxy-agent: 6.4.0
@@ -17130,13 +17113,13 @@ packages:
     resolution: {integrity: sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA==}
     dependencies:
       lodash: 4.17.23
+    dev: true
 
   /async@3.2.4:
     resolution: {integrity: sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==}
 
   /async@3.2.6:
     resolution: {integrity: sha512-htCUDlxyyCLMgaM3xXg0C0LW2xqfuQ6p05pCEIsXuyQ+a1koYKTuBMzRNwmybfLgvJDMd0r1LTn4+E0Ti6C2AA==}
-    dev: true
 
   /asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -18993,6 +18976,7 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.3
+    dev: true
 
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -22476,7 +22460,7 @@ packages:
       mime: 1.6.0
       minimist: 1.2.8
       opener: 1.5.2
-      portfinder: 1.0.32
+      portfinder: 1.0.38
       secure-compare: 3.0.1
       union: 0.5.0
       url-join: 4.0.1
@@ -22564,8 +22548,8 @@ packages:
       '@babel/runtime': 7.28.6
       typescript: 5.9.3
 
-  /i18next@25.8.0(typescript@5.9.3):
-    resolution: {integrity: sha512-urrg4HMFFMQZ2bbKRK7IZ8/CTE7D8H4JRlAwqA2ZwDRFfdd0K/4cdbNNLgfn9mo+I/h9wJu61qJzH7jCFAhUZQ==}
+  /i18next@25.8.12(typescript@5.9.3):
+    resolution: {integrity: sha512-hw59RF5QaH9i3l47hTXjeLLtzgVO8OtznlTJZbulmaLbz+itA1hIKWHTEiajY9W2SNPzvL8U5nTBVt7SsOGNRA==}
     peerDependencies:
       typescript: ^5
     peerDependenciesMeta:
@@ -26376,8 +26360,8 @@ packages:
   /nwsapi@2.2.21:
     resolution: {integrity: sha512-o6nIY3qwiSXl7/LuOU0Dmuctd34Yay0yeuZRLFmDPrrdHpXKFndPj3hM+YEPVHYC5fx2otBx4Ilc/gyYSAUaIA==}
 
-  /nx@21.6.5:
-    resolution: {integrity: sha512-PqvLf24A+x10b4oXX19hd8FqWK/EiMkcmehOP+JLN64R0qYrCxiJcE/s9Zp9YXJS5S0jkeikSz0ZDq1OG21NcQ==}
+  /nx@21.6.10:
+    resolution: {integrity: sha512-iKSyAg0VGG1MEOnlyyseMOt4n9J7I955VC+0UPQbNQTLdIUW8ibIHubpQyjd8Qvq4CfrLxzm+iq1AmbZ5vEG4A==}
     hasBin: true
     requiresBuild: true
     peerDependencies:
@@ -26425,16 +26409,16 @@ packages:
       yargs: 17.7.2
       yargs-parser: 21.1.1
     optionalDependencies:
-      '@nx/nx-darwin-arm64': 21.6.5
-      '@nx/nx-darwin-x64': 21.6.5
-      '@nx/nx-freebsd-x64': 21.6.5
-      '@nx/nx-linux-arm-gnueabihf': 21.6.5
-      '@nx/nx-linux-arm64-gnu': 21.6.5
-      '@nx/nx-linux-arm64-musl': 21.6.5
-      '@nx/nx-linux-x64-gnu': 21.6.5
-      '@nx/nx-linux-x64-musl': 21.6.5
-      '@nx/nx-win32-arm64-msvc': 21.6.5
-      '@nx/nx-win32-x64-msvc': 21.6.5
+      '@nx/nx-darwin-arm64': 21.6.10
+      '@nx/nx-darwin-x64': 21.6.10
+      '@nx/nx-freebsd-x64': 21.6.10
+      '@nx/nx-linux-arm-gnueabihf': 21.6.10
+      '@nx/nx-linux-arm64-gnu': 21.6.10
+      '@nx/nx-linux-arm64-musl': 21.6.10
+      '@nx/nx-linux-x64-gnu': 21.6.10
+      '@nx/nx-linux-x64-musl': 21.6.10
+      '@nx/nx-win32-arm64-msvc': 21.6.10
+      '@nx/nx-win32-x64-msvc': 21.6.10
     transitivePeerDependencies:
       - debug
     dev: true
@@ -27558,13 +27542,12 @@ packages:
     engines: {node: '>=10.13.0'}
     dev: false
 
-  /portfinder@1.0.32:
-    resolution: {integrity: sha512-on2ZJVVDXRADWE6jnQaX0ioEylzgBpQk8r55NE4wjXW1ZxO+BgDlY6DXwj20i0V8eB4SenDQ00WEaxfiIQPcxg==}
-    engines: {node: '>= 0.12.0'}
+  /portfinder@1.0.38:
+    resolution: {integrity: sha512-rEwq/ZHlJIKw++XtLAO8PPuOQA/zaPJOZJ37BVuN97nLpMJeuDVLVGRwbFoBgLudgdTMP2hdRJP++H+8QOA3vg==}
+    engines: {node: '>= 10.12'}
     dependencies:
-      async: 2.6.4
-      debug: 3.2.7
-      mkdirp: 0.5.6
+      async: 3.2.6
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -28582,7 +28565,7 @@ packages:
       scheduler: 0.19.1
     bundledDependencies: false
 
-  /react-i18next@15.4.1(i18next@25.8.0)(react-dom@16.14.0)(react@16.14.0):
+  /react-i18next@15.4.1(i18next@25.8.12)(react-dom@16.14.0)(react@16.14.0):
     resolution: {integrity: sha512-ahGab+IaSgZmNPYXdV1n+OYky95TGpFwnKRflX/16dY04DsYYKHtVLjeny7sBSCREEcoMbAgSkFiGLF5g5Oofw==}
     peerDependencies:
       i18next: '>= 23.2.3'
@@ -28597,7 +28580,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.27.6
       html-parse-stringify: 3.0.1
-      i18next: 25.8.0(typescript@5.9.3)
+      i18next: 25.8.12(typescript@5.9.3)
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
     dev: true
@@ -29616,8 +29599,8 @@ packages:
     dependencies:
       truncate-utf8-bytes: 1.0.2
 
-  /sanitize-html@2.17.0:
-    resolution: {integrity: sha512-dLAADUSS8rBwhaevT12yCezvioCA+bmUTPH/u57xKPT8d++voeYE6HeluA/bPbQ15TwDBG2ii+QZIEmYx8VdxA==}
+  /sanitize-html@2.17.1:
+    resolution: {integrity: sha512-ehFCW+q1a4CSOWRAdX97BX/6/PDEkCqw7/0JXZAGQV57FQB3YOkTa/rrzHPeJ+Aghy4vZAFfWMYyfxIiB7F/gw==}
     dependencies:
       deepmerge: 4.3.1
       escape-string-regexp: 4.0.0

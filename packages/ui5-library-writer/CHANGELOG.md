@@ -1,5 +1,12 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.59
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+    - @sap-ux/ui5-config@0.29.18
+
 ## 0.6.58
 
 ### Patch Changes
