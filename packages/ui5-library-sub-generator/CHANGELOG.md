@@ -1,5 +1,18 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.129
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/ui5-info@0.13.13
+    - @sap-ux/ui5-library-writer@0.6.58
+    - @sap-ux/ui5-library-inquirer@0.6.68
+
 ## 0.1.128
 
 ### Patch Changes

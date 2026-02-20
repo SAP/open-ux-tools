@@ -1,5 +1,15 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.94
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/nodejs-utils@0.2.16
+
 ## 0.1.93
 
 ### Patch Changes

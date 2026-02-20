@@ -1,5 +1,12 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.18
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+    - @sap-ux/ui5-config@0.29.18
+
 ## 1.6.17
 
 ### Patch Changes

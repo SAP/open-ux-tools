@@ -1,5 +1,14 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.6.68
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/ui5-info@0.13.13
+    - @sap-ux/project-input-validator@0.6.58
+
 ## 0.6.67
 
 ### Patch Changes
