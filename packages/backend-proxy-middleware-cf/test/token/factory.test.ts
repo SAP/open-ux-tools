@@ -117,8 +117,12 @@ describe('token factory', () => {
     describe('createTokenProvider', () => {
         test('creates provider from credentials in config', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '/backend.example',
-                paths: ['/sap/opu/odata'],
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: ['/sap/opu/odata']
+                    }
+                ],
                 credentials: {
                     clientId: 'test-client-id',
                     clientSecret: 'test-client-secret',
@@ -134,8 +138,12 @@ describe('token factory', () => {
 
         test('creates provider from CF ADP project when credentials not provided', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '/backend.example',
-                paths: ['/sap/opu/odata']
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: ['/sap/opu/odata']
+                    }
+                ]
             };
 
             const mockUi5Yaml = {
@@ -188,8 +196,12 @@ describe('token factory', () => {
 
         test('throws error when service instance name is missing', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '/backend.example',
-                paths: ['/sap/opu/odata']
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: ['/sap/opu/odata']
+                    }
+                ]
             };
 
             const mockUi5Yaml = {
@@ -216,8 +228,12 @@ describe('token factory', () => {
 
         test('throws error when no service keys found', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '/backend.example',
-                paths: ['/sap/opu/odata']
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: ['/sap/opu/odata']
+                    }
+                ]
             };
 
             const mockUi5Yaml = {

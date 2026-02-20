@@ -7,6 +7,7 @@ import type { Logger } from '@sap-ux/logger';
 import { type CAPConfig, type CFBaseConfig } from '../types';
 import { t } from '../i18n';
 import { getCapProjectType } from '@sap-ux/project-access';
+import { MTA_FILE_OPERATION_DELAY_MS } from '../constants';
 
 /**
  * Add a standalone | managed approuter to a CAP project.
@@ -17,17 +18,15 @@ import { getCapProjectType } from '@sap-ux/project-access';
  * @returns file system reference
  */
 export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     if (logger) {
         LoggerHelper.logger = logger;
     }
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
     await generateCAPMTA(config, fs);
-    // Delay, known issues with loading mta yaml after generation!
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Delay to ensure MTA file write completes before subsequent read operations
+    await new Promise((resolve) => setTimeout(resolve, MTA_FILE_OPERATION_DELAY_MS));
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
     LoggerHelper.logger?.debug(t('debug.capGenerationCompleted'));

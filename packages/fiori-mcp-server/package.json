@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.6.10",
+    "version": "0.6.31",
     "keywords": [
         "SAP Fiori tools",
         "SAP Fiori elements",
@@ -52,13 +52,14 @@
     },
     "devDependencies": {
         "npm-run-all2": "8.0.4",
-        "esbuild": "0.25.6",
-        "@modelcontextprotocol/sdk": "1.25.2",
+        "esbuild": "0.27.2",
+        "@modelcontextprotocol/sdk": "1.26.0",
         "@sap-ux/axios-extension": "workspace:*",
-        "@sap/ux-specification": "1.139.2",
+        "@sap/ux-specification": "1.142.0",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.19",
+        "@sap-ux/vocabularies-types": "0.14.5",
         "@sap-ux/edmx-parser": "0.9.6",
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
@@ -74,14 +75,15 @@
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
-        "i18next": "25.3.0",
+        "i18next": "25.8.12",
         "os-name": "4.0.1",
+        "ts-node": "10.9.2",
         "zod": "4.1.13",
         "@sap-ai-sdk/foundation-models": "2.3.0",
         "@sap-ai-sdk/langchain": "2.3.0",
-        "promptfoo": "0.119.14",
-        "@langchain/mcp-adapters": "1.0.2",
-        "@langchain/core": "1.1.8"
+        "promptfoo": "0.120.21",
+        "@langchain/mcp-adapters": "1.1.2",
+        "@langchain/core": "1.1.26"
     },
     "dependencies": {
         "@sap-ux/fiori-docs-embeddings": "workspace:*",

@@ -1,5 +1,17 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.5
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
+## 0.2.4
+
+### Patch Changes
+
+- 9f11dd2: chore - address audit issues
+
 ## 0.2.3
 
 ### Patch Changes

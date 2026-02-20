@@ -264,7 +264,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.130.0'
+                description: '<1.120.0'
             }
         },
         async ({ page, previewFrame, projectCopy, ui5Version }) => {
@@ -281,7 +281,8 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addCustomTableAction.click();
 
-            await dialog.fillField('Fragment Name', 'op-table-action');
+            await dialog.fillField('Action Id', 'testTableActionId');
+            await dialog.fillField('Button Text', 'Test Table Action');
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();
 
@@ -290,30 +291,85 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                 changes: [
                     {
                         fileType: 'change',
-                        changeType: 'addXML',
+                        changeType: 'appdescr_fe_changePageConfiguration',
                         content: {
-                            targetAggregation: 'actions',
-                            index: 0,
-                            fragmentPath: 'fragments/op-table-action.fragment.xml'
+                            page: 'RootEntityObjectPage',
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath:
+                                    'controlConfiguration/toFirstAssociatedEntity/@com.sap.vocabularies.UI.v1.LineItem#tableSection/actions/testTableActionId',
+                                propertyValue: {
+                                    enabled: true,
+                                    position: {
+                                        anchor: 'DataFieldForAction::Service.approveRootEntity',
+                                        placement: 'Before'
+                                    },
+                                    press: '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
+                                    text: 'Test Table Action',
+                                    visible: true,
+                                    requiresSelection: false
+                                }
+                            }
                         }
                     }
-                ],
-                fragments: {
-                    'op-table-action.fragment.xml': new RegExp(
-                        `<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>\\s*` +
-                            `<!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->\\s*` +
-                            `<!-- controlType: sap.ui.mdc.Table -->\\s*` +
-                            `<!-- targetAggregation: actions -->\\s*` +
-                            `<actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-[a-z0-9]+" >\\s*` +
-                            `<Button xmlns:m="sap.m" id="btn-[a-z0-9]+" visible="true" text="New Action" />\\s*` +
-                            `</actiontoolbar:ActionToolbarAction>\\s*` +
-                            `</core:FragmentDefinition>`
-                    )
-                }
+                ]
             });
 
             await editor.reloadCompleted();
-            await lr.checkControlVisible('New Action');
+            await lr.checkControlVisible('Test Table Action');
+        }
+    );
+
+    test(
+        '7: Add Custom Page Action to OP page',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.120.0'
+            }
+        },
+        async ({ page, previewFrame, ui5Version, projectCopy }) => {
+            const lr = new ListReport(previewFrame, 'fev4');
+            const dialog = new AdpDialog(previewFrame, ui5Version);
+            const editor = new AdaptationEditorShell(page, ui5Version);
+
+            await editor.toolbar.navigationModeButton.click();
+            await lr.clickOnButton();
+            await lr.clickOnTableNthRow(0);
+
+            await editor.toolbar.uiAdaptationModeButton.click();
+            // wait until the quick actions label is rendered in the preview
+            await editor.quickActions.waitForObjectPageQuickActionLoaded();
+            await editor.quickActions.addCustomPageAction.click();
+            await dialog.fillField('Action Id', 'testActionId');
+            await dialog.fillField('Button Text', 'Test Page Action');
+            await dialog.createButton.click();
+            await editor.toolbar.saveAndReloadButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await verifyChanges(projectCopy, {
+                changes: [
+                    {
+                        fileType: 'change',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            page: 'RootEntityObjectPage',
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath: 'content/header/actions/testActionId',
+                                propertyValue: {
+                                    enabled: true,
+                                    press: '.extension.<ApplicationId.FolderName.ScriptFilename.methodName>',
+                                    text: 'Test Page Action',
+                                    visible: true
+                                }
+                            }
+                        }
+                    }
+                ]
+            });
+            await lr.checkControlVisible('Test Page Action');
         }
     );
 });

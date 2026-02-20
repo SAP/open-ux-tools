@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-docs-embeddings",
-    "version": "0.4.9",
+    "version": "0.4.15",
     "description": "SAP Fiori documentation indexing",
     "repository": {
         "type": "git",
@@ -39,7 +39,7 @@
         "node-fetch": "^3.3.2",
         "marked": "^12.0.0",
         "gray-matter": "^4.0.3",
-        "fast-xml-parser": "^4.3.4",
+        "fast-xml-parser": "5.3.6",
         "tsx": "^4.7.0"
     },
     "keywords": [
@@ -51,6 +51,9 @@
         "indexing"
     ],
     "license": "Apache-2.0",
+    "engines": {
+        "node": ">=20.x"
+    },
     "files": [
         "data/index.js",
         "data/embeddings/**/*",

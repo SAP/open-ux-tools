@@ -7,8 +7,8 @@
 - [3. Add New Annotation File](#3-add-new-annotation-file)
 - [4. Enable Variant Management in Tables and Charts](#4-enable-variant-management-in-tables-and-charts)
 - [5. Change table actions](#5-change-table-actions)
-- [6: Add Custom Page Action to LR page](#6-add-custom-page-action-to-lr-page)
-- [7: Add Custom Table Action to LR page](#7-add-custom-table-action-to-lr-page)
+- [6: Add Custom Page Action to LR page(manifest change)](#6-add-custom-page-action-to-lr-pagemanifest-change)
+- [7: Add Custom Table Action to LR page(manifest change)](#7-add-custom-table-action-to-lr-pagemanifest-change)
 - [8. Enable/Disable Semantic Date Range in Filter Bar](#8-enabledisable-semantic-date-range-in-filter-bar)
 - [9. Enable Table Filtering for Page Variants](#9-enable-table-filtering-for-page-variants)
 
@@ -191,91 +191,86 @@
 
 ---
 
-<a id="6-add-custom-page-action-to-lr-page"></a>
-## 6: Add Custom Page Action to LR page
+<a id="6-add-custom-page-action-to-lr-pagemanifest-change"></a>
+## 6: Add Custom Page Action to LR page(manifest change)
 
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Add Custom Page Action` button in the Quick Actions Panel
-3. Fill `Fragment Name` field with `test-page-action` in the dialog `Add Custom Page Action`
-4. Click `Save and Reload` button in the toolBar
-5. Verify changes:
-
-**Fragment(s)**
-
-**test-page-action.fragment.xml**
-```xml
-<!-- Use stable and unique IDs!-->
-<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-    <!--  add your xml here -->
-    <Button text="New Button"  id="btn-<UNIQUE_ID>"></Button>
-</core:FragmentDefinition>
-```
+3. Fill `Action Id` field with `testActionId` in the dialog `Add Custom Page Action`
+4. Fill `Button Text` field with `Test Page Action` in the dialog `Add Custom Page Action`
+5. Click `Save and Reload` button in the toolBar
+6. Verify changes:
 
 **Change(s)**
 
 ```json
 {
   "fileType": "change",
-  "changeType": "addXML",
+  "changeType": "appdescr_fe_changePageConfiguration",
   "content": {
-    "targetAggregation": "actions",
-    "fragmentPath": "fragments/test-page-action.fragment.xml",
-    "index": 1
-  },
-  "selector": {
-    "id": "fiori.elements.v4.0::RootEntityList--fe::DynamicPageTitle"
+    "page": "RootEntityList",
+    "entityPropertyChange": {
+      "operation": "UPSERT",
+      "propertyPath": "content/header/actions/testActionId",
+      "propertyValue": {
+        "enabled": true,
+        "press": ".extension.<ApplicationId.FolderName.ScriptFilename.methodName>",
+        "text": "Test Page Action",
+        "visible": true
+      }
+    }
   }
 }
 ```
 
 
-6. Check control with label `New Button` is visible in the `Running Application Preview`
+7. Check control with label `Test Page Action` is visible in the `Running Application Preview`
 
 ---
 
-<a id="7-add-custom-table-action-to-lr-page"></a>
-## 7: Add Custom Table Action to LR page
+<a id="7-add-custom-table-action-to-lr-pagemanifest-change"></a>
+## 7: Add Custom Table Action to LR page(manifest change)
 
 ### Steps
 
 1. Check `UIAdaptation` mode in the toolbar is enabled
 2. Click `Add Custom Table Action` button in the Quick Actions Panel
-3. Fill `Fragment Name` field with `test-table-action` in the dialog `Add Custom Table Action`
-4. Click `Save and Reload` button in the toolBar
-5. Verify changes:
-
-**Fragment(s)**
-
-**test-table-action.fragment.xml**
-```xml
-<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
-   <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="toolbarAction-<UNIQUE_ID>" >
-        <Button xmlns:m="sap.m" id="btn-<UNIQUE_ID>" visible="true" text="New Action" />
-    </actiontoolbar:ActionToolbarAction>
-</core:FragmentDefinition>
-```
+3. Fill `Action Id` field with `testTableActionId` in the dialog `Add Custom Table Action`
+4. Fill `Button Text` field with `Test Table Action` in the dialog `Add Custom Table Action`
+5. Click `Save and Reload` button in the toolBar
+6. Verify changes:
 
 **Change(s)**
 
 ```json
 {
   "fileType": "change",
-  "changeType": "addXML",
+  "changeType": "appdescr_fe_changePageConfiguration",
   "content": {
-    "targetAggregation": "actions",
-    "fragmentPath": "fragments/test-table-action.fragment.xml",
-    "index": 0
-  },
-  "selector": {
-    "id": "fiori.elements.v4.0::RootEntityList--fe::table::RootEntity::LineItem"
+    "page": "RootEntityList",
+    "entityPropertyChange": {
+      "operation": "UPSERT",
+      "propertyPath": "controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/actions/testTableActionId",
+      "propertyValue": {
+        "enabled": true,
+        "position": {
+          "anchor": "DataFieldForAction::Service.approveRootEntity",
+          "placement": "Before"
+        },
+        "press": ".extension.<ApplicationId.FolderName.ScriptFilename.methodName>",
+        "text": "Test Table Action",
+        "visible": true,
+        "requiresSelection": false
+      }
+    }
   }
 }
 ```
 
 
-6. Check control with label `New Action` is visible in the `Running Application Preview`
+7. Check control with label `Test Table Action` is visible in the `Running Application Preview`
 
 ---
 

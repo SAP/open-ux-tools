@@ -23,6 +23,7 @@
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/generator-adp",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/adp-flp-config-sub-generator",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/abap-deploy-config-sub-generator",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/abap-deploy-config-inquirer",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/deploy-config-sub-generator",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/ui5-application-inquirer",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/ui5-info",
@@ -36,6 +37,7 @@
                 "${workspaceRoot}/packages/generator-adp/generators/**/*.js",
                 "${workspaceRoot}/packages/adp-flp-config-sub-generator/generators/**/*.js",
                 "${workspaceRoot}/packages/abap-deploy-config-sub-generator/generators/**/*.js",
+                "${workspaceRoot}/packages/abap-deploy-config-inquirer/dist/**/*.js",
                 "${workspaceRoot}/packages/deploy-config-sub-generator/generators/**/*.js",
                 "${workspaceRoot}/packages/ui5-application-inquirer/dist/**/*.js",
                 "${workspaceRoot}/packages/ui5-info/dist/**/*.js",
@@ -185,7 +187,10 @@
             "runtimeArgs": ["@modelcontextprotocol/inspector", "node", "dist/index.js"],
             "console": "integratedTerminal",
             "skipFiles": ["<node_internals>/**"],
-            "cwd": "${workspaceFolder}/packages/fiori-mcp-server"
+            "cwd": "${workspaceFolder}/packages/fiori-mcp-server",
+            "env":{
+                "LOG_LEVEL": "debug"
+            }
         },
         {
             "type": "node",

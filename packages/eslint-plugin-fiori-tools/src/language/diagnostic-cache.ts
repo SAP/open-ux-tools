@@ -12,58 +12,80 @@ export class DiagnosticCache {
      * If set to true, forces cache clear on the first update of a file.
      */
     public static forceReindexOnFirstUpdate = false; // NOSONAR - Property must be mutable for test setup
-    private static cache: InternalDiagnosticCache = {};
+    private static readonly cache: Map<string, InternalDiagnosticCache> = new Map();
     private static readonly requests: Map<string, number> = new Map();
 
     /**
-     * Get diagnostics for a given key.
+     * Get diagnostics for a given URI and rule type.
      *
-     * @param key - The key to retrieve diagnostics for.
+     * @param uri - The file URI to retrieve diagnostics for.
+     * @param ruleType - The rule type to retrieve diagnostics for.
      * @returns An array of diagnostics or undefined.
      */
-    public static getMessages<T extends Diagnostic['type']>(key: T): Extract<Diagnostic, { type: T }>[] | undefined {
-        return this.cache[key];
+    public static getMessages<T extends Diagnostic['type']>(
+        uri: string,
+        ruleType: T
+    ): Extract<Diagnostic, { type: T }>[] | undefined {
+        const uriCache = this.cache.get(uri);
+        return uriCache?.[ruleType];
     }
 
     /**
-     * Add diagnostic for a given key.
+     * Add diagnostic for a given URI and rule type.
      *
-     * @param key - The key to add diagnostics for.
+     * @param uri - The file URI to add diagnostics for.
+     * @param ruleType - The rule type to add diagnostics for.
      * @param diagnostic - Diagnostic to store.
      */
-    public static addMessage<T extends Diagnostic['type']>(key: T, diagnostic: Extract<Diagnostic, { type: T }>): void {
-        this.cache[key] ??= [];
-        this.cache[key].push(diagnostic as any);
+    public static addMessage<T extends Diagnostic['type']>(
+        uri: string,
+        ruleType: T,
+        diagnostic: Extract<Diagnostic, { type: T }>
+    ): void {
+        let uriCache = this.cache.get(uri);
+        if (!uriCache) {
+            uriCache = {};
+            this.cache.set(uri, uriCache);
+        }
+        uriCache[ruleType] ??= [];
+        uriCache[ruleType].push(diagnostic as any);
     }
 
     /**
-     * Adds diagnostics for a given key.
+     * Adds diagnostics for a given URI and rule type.
      *
-     * @param key - The key to add diagnostics for.
+     * @param uri - The file URI to add diagnostics for.
+     * @param ruleType - The rule type to add diagnostics for.
      * @param diagnostics - Diagnostics to store.
      */
     public static addMessages<T extends Diagnostic['type']>(
-        key: T,
+        uri: string,
+        ruleType: T,
         diagnostics: Extract<Diagnostic, { type: T }>[]
     ): void {
-        this.cache[key] ??= [];
+        let uriCache = this.cache.get(uri);
+        if (!uriCache) {
+            uriCache = {};
+            this.cache.set(uri, uriCache);
+        }
+        uriCache[ruleType] ??= [];
         for (const diagnostic of diagnostics) {
-            this.cache[key].push(diagnostic as any);
+            uriCache[ruleType].push(diagnostic as any);
         }
     }
 
     /**
-     * Clear diagnostics for a given key.
+     * Clear diagnostics for a given URI.
      *
-     * @param key - The key to clear diagnostics for.
+     * @param uri - The file URI to clear diagnostics for.
      */
-    public static clear(key: string): void {
-        const numberOfRequests = this.requests.get(key) ?? 0;
-        this.requests.set(key, numberOfRequests + 1);
+    public static clear(uri: string): void {
+        const numberOfRequests = this.requests.get(uri) ?? 0;
+        this.requests.set(uri, numberOfRequests + 1);
         if (numberOfRequests > 0 || this.forceReindexOnFirstUpdate) {
             // the first time file is processed assume it is pristine
-            // clear cache on subsequent calls
-            this.cache = {};
+            // clear cache on subsequent calls for the URI
+            this.cache.delete(uri);
         }
     }
 }

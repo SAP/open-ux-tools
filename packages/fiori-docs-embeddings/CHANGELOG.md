@@ -1,5 +1,41 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 0.4.15
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+
+## 0.4.14
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
+## 0.4.13
+
+### Patch Changes
+
+- c3a1e07: fix: add documentation sources
+
+## 0.4.12
+
+### Patch Changes
+
+- 4eac0a7: Improve chunk creation to ensure code samples are not modified.
+
+## 0.4.11
+
+### Patch Changes
+
+- a686522: feat: add Fiori Tools commands and update total document count
+
+## 0.4.10
+
+### Patch Changes
+
+- c99758e: chore - Update embeddings docs from original sources for mcp server
+
 ## 0.4.9
 
 ### Patch Changes

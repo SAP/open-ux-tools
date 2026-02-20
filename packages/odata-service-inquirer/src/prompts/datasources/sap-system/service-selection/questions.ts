@@ -22,7 +22,7 @@ import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
+import { areArraysEquivalent, getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -46,20 +46,21 @@ const cliServicePromptName = 'cliServiceSelection';
  * @param promptNamespace - The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  *     This is used to avoid conflicts with other prompts of the same types.
  * @param promptOptions - Options for the service selection prompt see {@link OdataServicePromptOptions}
- * @param showValueHelpDownloadPrompt - If true the value help download confirm prompt will be included
+ * @param hideValueHelpDownloadPrompt - If true the value help download confirm prompt will be hidden (default: true)
  * @returns the service selection prompt
  */
 export function getSystemServiceQuestion(
     connectValidator: ConnectionValidator,
     promptNamespace: string,
     promptOptions?: ServiceSelectionPromptOptions,
-    showValueHelpDownloadPrompt = false
+    hideValueHelpDownloadPrompt = true
 ): Question<ServiceAnswer>[] {
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
     let previousSystemUrl: string | undefined;
     let previousClient: string | undefined;
     let previousService: ServiceAnswer | undefined;
+    let previousServiceFilter: ServiceSelectionPromptOptions['serviceFilter'];
     // State shared across validate and additionalMessages functions
     let hasBackendAnnotations: boolean | undefined;
     // Wrap to allow pass by ref to nested prompts
@@ -89,7 +90,8 @@ export function getSystemServiceQuestion(
             if (
                 serviceChoices.length === 0 ||
                 previousSystemUrl !== connectValidator.validatedUrl ||
-                previousClient !== connectValidator.validatedClient
+                previousClient !== connectValidator.validatedClient ||
+                !areArraysEquivalent(previousServiceFilter, promptOptions?.serviceFilter)
             ) {
                 // if we have a catalog, use it to list services
                 if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
@@ -100,6 +102,7 @@ export function getSystemServiceQuestion(
                     );
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
+                    previousServiceFilter = promptOptions?.serviceFilter ? [...promptOptions.serviceFilter] : undefined;
 
                     // Telemetry event for successful service listing using a destination
                     if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
@@ -165,7 +168,11 @@ export function getSystemServiceQuestion(
                 return ErrorHandler.getHelpForError(ERROR_TYPE.SERVICES_UNAVAILABLE) ?? false;
             }
             // Dont re-request the same service details
-            if (serviceAnswer && previousService?.servicePath !== serviceAnswer.servicePath) {
+            if (
+                serviceAnswer &&
+                (previousService?.servicePath !== serviceAnswer.servicePath ||
+                    previousService?.servicePath !== PromptState.odataService.servicePath) // PromptState was reset by a system selection
+            ) {
                 hasBackendAnnotations = undefined;
                 convertedMetadataRef.convertedMetadata = undefined;
                 previousService = serviceAnswer;
@@ -219,13 +226,13 @@ export function getSystemServiceQuestion(
         } as Question);
     }
 
-    if (showValueHelpDownloadPrompt) {
+    if (!hideValueHelpDownloadPrompt) {
         /**
          * Only show the value help download prompt when a service has been validated (convertedMetadata is set), is odata version v4 and is an abap connection
          */
         questions.push(
             ...withCondition(
-                [getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef)],
+                getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef),
                 (answers: { [serviceSelectionPromptName]?: ServiceAnswer }) =>
                     !!(connectValidator.serviceProvider instanceof AbapServiceProvider) &&
                     !!convertedMetadataRef.convertedMetadata &&

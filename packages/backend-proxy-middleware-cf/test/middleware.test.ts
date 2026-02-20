@@ -54,9 +54,21 @@ describe('backend-proxy-middleware-cf', () => {
 
     describe('Middleware initialization', () => {
         const baseConfig: CfOAuthMiddlewareConfig = {
-            url: '/backend.example',
-            paths: ['/sap/opu/odata']
+            backends: [
+                {
+                    url: '/backend.example',
+                    paths: ['/sap/opu/odata']
+                }
+            ]
         };
+
+        test('throws error when configuration is missing', async () => {
+            await expect(
+                (middleware as any).default({
+                    options: {}
+                })
+            ).rejects.toThrow('Backend proxy middleware (CF) has no configuration.');
+        });
 
         test('minimal configuration', async () => {
             await getTestServer(baseConfig);
@@ -64,8 +76,7 @@ describe('backend-proxy-middleware-cf', () => {
             expect(mockValidateConfig).toHaveBeenCalledWith(baseConfig, expect.any(Object));
             expect(mockCreateTokenProvider).toHaveBeenCalledWith(baseConfig, expect.any(Object));
             expect(mockSetupProxyRoutes).toHaveBeenCalledWith(
-                baseConfig.paths,
-                baseConfig.url,
+                baseConfig.backends,
                 mockTokenProvider,
                 expect.any(Object)
             );
@@ -94,29 +105,52 @@ describe('backend-proxy-middleware-cf', () => {
 
         test('with multiple paths', async () => {
             const configWithMultiplePaths: CfOAuthMiddlewareConfig = {
-                ...baseConfig,
-                paths: ['/sap/opu/odata', '/sap/bc/ui5_ui5', '/api']
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: ['/sap/opu/odata', '/sap/bc/ui5_ui5', '/api']
+                    }
+                ]
             };
             await getTestServer(configWithMultiplePaths);
 
             expect(mockSetupProxyRoutes).toHaveBeenCalledWith(
-                configWithMultiplePaths.paths,
-                configWithMultiplePaths.url,
+                configWithMultiplePaths.backends,
                 mockTokenProvider,
                 expect.any(Object)
             );
         });
 
-        test('throws error configuration is missing', async () => {
-            await expect(getTestServer(undefined as unknown as CfOAuthMiddlewareConfig)).rejects.toThrow(
-                'Backend proxy middleware (CF) has no configuration.'
+        test('with multiple backends', async () => {
+            const configWithMultipleBackends: CfOAuthMiddlewareConfig = {
+                backends: [
+                    {
+                        url: '/backend1.example',
+                        paths: ['/sap/opu/odata']
+                    },
+                    {
+                        url: '/backend2.example',
+                        paths: ['/api/v1', '/api/v2']
+                    }
+                ]
+            };
+            await getTestServer(configWithMultipleBackends);
+
+            expect(mockSetupProxyRoutes).toHaveBeenCalledWith(
+                configWithMultipleBackends.backends,
+                mockTokenProvider,
+                expect.any(Object)
             );
         });
 
         test('throws error when validation fails', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '/backend.example',
-                paths: ['/sap/opu/odata']
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: ['/sap/opu/odata']
+                    }
+                ]
             };
             const validationError = new Error('Validation failed');
             mockValidateConfig.mockRejectedValueOnce(validationError);

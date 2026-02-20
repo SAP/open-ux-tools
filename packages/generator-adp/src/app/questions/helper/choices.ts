@@ -1,5 +1,8 @@
-import { AppRouterType } from '@sap-ux/adp-tooling';
-import type { CFApp, SourceApplication } from '@sap-ux/adp-tooling';
+import { AppRouterType, getEndpointNames } from '@sap-ux/adp-tooling';
+import type { CFApp, Endpoint, SourceApplication } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { t } from '../../../utils/i18n';
+import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
 
 interface Choice {
     name: string;
@@ -60,4 +63,49 @@ export const getAppRouterChoices = (isInternalUsage: boolean): { name: AppRouter
         });
     }
     return options;
+};
+
+/**
+ * Creates the list of choices for the project type prompt.
+ *
+ * @returns {{ name: string; value: AdaptationProjectType }[]} The localized project type choices.
+ */
+export const getProjectTypeChoices = (): { name: string; value: AdaptationProjectType }[] => [
+    { name: t('prompts.projectTypeCloudReadyName'), value: AdaptationProjectType.CLOUD_READY },
+    { name: t('prompts.projectTypeOnPremName'), value: AdaptationProjectType.ON_PREMISE }
+];
+
+/**
+ * Returns the choices for the adaptation prompt.
+ *
+ * @param {AdaptationDescriptor[]} adaptations - The adaptations to get the choices for.
+ * @returns {Array<{ name: string; value: AdaptationDescriptor }>} The choices for the adaptation prompt.
+ */
+export const getAdaptationChoices = (
+    adaptations: AdaptationDescriptor[]
+): Array<{ name: string; value: AdaptationDescriptor }> => {
+    return adaptations?.map((adaptation) => ({
+        name: adaptation.title ? `${adaptation.title} (${adaptation.id})` : adaptation.id,
+        value: adaptation
+    }));
+};
+
+/**
+ * Returns the choices for the system prompt.
+ *
+ * @param {string[]} systems - The systems to get the choices for.
+ * @param {string} defaultSystem - The default system.
+ * @returns {Array<{ name: string; value: string }>} The choices for the system prompt.
+ */
+export const getKeyUserSystemChoices = (
+    systems: Endpoint[],
+    defaultSystem: string
+): Array<{ name: string; value: string }> => {
+    const endpointNames = getEndpointNames(systems);
+    return endpointNames.map((name) => {
+        return {
+            name: name === defaultSystem ? `${name} (Source system)` : name,
+            value: name
+        };
+    });
 };

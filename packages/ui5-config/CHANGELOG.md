@@ -1,5 +1,37 @@
 # @sap-ux/ui5-config
 
+## 0.29.18
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+
+## 0.29.17
+
+### Patch Changes
+
+- e7f58d7: (ADP) Introduce Private Cloud feature
+
+## 0.29.16
+
+### Patch Changes
+
+- 2fc459c: Upgrade axios
+
+## 0.29.15
+
+### Patch Changes
+
+- ad321ab: fix(deps): update dependency semver to v7.7.3
+
+## 0.29.14
+
+### Patch Changes
+
+- ea7a16c: Fix Extend lodash vulnerability
+- Updated dependencies [ea7a16c]
+    - @sap-ux/yaml@0.17.4
+
 ## 0.29.13
 
 ### Patch Changes
