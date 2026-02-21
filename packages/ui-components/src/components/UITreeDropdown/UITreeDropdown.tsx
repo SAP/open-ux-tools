@@ -19,7 +19,6 @@ import { UIIconButton } from '../UIButton/UIIconButton';
 import { UiIcons } from '../Icons';
 
 import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
-import { getMessageInfo } from '../../helper/ValidationMessage';
 
 import './UITreeDropdown.scss';
 
@@ -729,7 +728,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const messageInfo = getMessageInfo(this.props);
         let useTargetWidth = true;
         if (this.props.useTargetWidth) {
             useTargetWidth = false;
@@ -765,7 +763,10 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                             // Select the text of the input
                             event.target.select();
                         }}
-                        errorMessage={messageInfo.message}
+                        errorMessage={this.props.errorMessage}
+                        warningMessage={this.props.warningMessage}
+                        infoMessage={this.props.infoMessage}
+                        isAbsolute={this.props.isAbsolute}
                     />
                     <UIIconButton
                         tabIndex={-1}
