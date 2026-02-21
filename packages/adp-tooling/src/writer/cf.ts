@@ -9,7 +9,7 @@ import { readUi5Yaml } from '@sap-ux/project-access';
 import {
     adjustMtaYaml,
     getAppHostIds,
-    getServiceInstanceKeys,
+    getOrCreateServiceInstanceKeys,
     addServeStaticMiddleware,
     addBackendProxyMiddleware,
     getCfUi5AppInfo
@@ -51,7 +51,8 @@ export async function generateCf(
             appRouterType: cf.approuter,
             businessSolutionName: cf.businessSolutionName ?? '',
             businessService: cf.businessService,
-            serviceKeys: cf.serviceInfo?.serviceKeys
+            serviceKeys: cf.serviceInfo?.serviceKeys,
+            spaceGuid: cf.space.GUID
         },
         fs,
         config.options?.templatePathOverwrite,
@@ -135,15 +136,18 @@ export async function generateCfConfig(
 
     const ui5Config = await readUi5Yaml(basePath, yamlPath);
 
-    const bundlerTask = ui5Config.findCustomTask<{ serviceInstanceName?: string }>('app-variant-bundler-build');
+    const bundlerTask = ui5Config.findCustomTask<{ space?: string; serviceInstanceName?: string }>(
+        'app-variant-bundler-build'
+    );
     const serviceInstanceName = bundlerTask?.configuration?.serviceInstanceName;
     if (!serviceInstanceName) {
         throw new Error('No serviceInstanceName found in app-variant-bundler-build configuration');
     }
 
-    const serviceInfo = await getServiceInstanceKeys(
+    const serviceInfo = await getOrCreateServiceInstanceKeys(
         {
-            names: [serviceInstanceName]
+            names: [serviceInstanceName],
+            spaceGuids: [bundlerTask?.configuration?.space ?? '']
         },
         logger
     );
