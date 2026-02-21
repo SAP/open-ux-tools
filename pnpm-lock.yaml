@@ -3141,6 +3141,88 @@ importers:
         specifier: 6.2.0
         version: 6.2.0
 
+  packages/odata-download-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.16.9
+        version: 1.16.9
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.19
+        version: 0.10.19
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/mockserver-config-writer':
+        specifier: workspace:*
+        version: link:../mockserver-config-writer
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      '@sap-ux/vocabularies-types':
+        specifier: 0.14.5
+        version: 0.14.5
+      '@sap/ux-specification':
+        specifier: 1.142.1
+        version: 1.142.1(typescript@5.9.3)
+      '@vscode-logging/logger':
+        specifier: 2.0.8
+        version: 2.0.8
+      deepmerge:
+        specifier: 4.3.1
+        version: 4.3.1
+      i18next:
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
+      inquirer:
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.19.130)
+      odata-query:
+        specifier: 8.0.5
+        version: 8.0.5
+      prettify-xml:
+        specifier: 1.2.0
+        version: 1.2.0
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0
+    devDependencies:
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/yeoman-generator':
+        specifier: 5.2.14
+        version: 5.2.14
+      rimraf:
+        specifier: 6.1.2
+        version: 6.1.2
+
   packages/odata-entity-model:
     devDependencies:
       '@sap-ux/odata-annotation-core-types':
@@ -9731,8 +9813,8 @@ packages:
         optional: true
     dependencies:
       '@types/node': 18.19.130
-      chardet: 2.1.0
-      iconv-lite: 0.7.0
+      chardet: 2.1.1
+      iconv-lite: 0.7.2
 
   /@inquirer/external-editor@2.0.3(@types/node@20.0.0):
     resolution: {integrity: sha512-LgyI7Agbda74/cL5MvA88iDpvdXI2KuMBCGRkbCl2Dg1vzHeOgs+s0SDcXV7b+WZJrv2+ERpWSM65Fpi9VfY3w==}
@@ -15176,7 +15258,7 @@ packages:
       '@types/ejs': 3.1.2
       '@types/inquirer': 8.2.6
       '@types/mem-fs-editor': 7.0.1
-      '@types/node': 18.11.9
+      '@types/node': 20.0.0
       '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
     dev: true
@@ -16701,13 +16783,6 @@ packages:
     dependencies:
       type-fest: 0.21.3
 
-  /ansi-escapes@7.1.1:
-    resolution: {integrity: sha512-Zhl0ErHcSRUaVfGUeUdDuLgpkEo8KIFjB4Y9uAc46ScOpdDiU1Dbyplh7qWJeJ/ZHpbyMSM26+X3BySgnIz40Q==}
-    engines: {node: '>=18'}
-    dependencies:
-      environment: 1.1.0
-    dev: true
-
   /ansi-escapes@7.3.0:
     resolution: {integrity: sha512-BvU8nYgGQBxcmMuEeUEmNTvrMVjJNSH7RgW24vXexN4Ven6qCvy4TntnvlnwnMLTVlcRQQdbRY8NKnaIoeWDNg==}
     engines: {node: '>=18'}
@@ -17971,12 +18046,8 @@ packages:
     resolution: {integrity: sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==}
     dev: false
 
-  /chardet@2.1.0:
-    resolution: {integrity: sha512-bNFETTG/pM5ryzQ9Ad0lJOTa6HWD/YsScAR3EnCPZRPlQh77JocYktSHOUHelyhm8IARL+o4c4F1bP5KVOjiRA==}
-
   /chardet@2.1.1:
     resolution: {integrity: sha512-PsezH1rqdV9VvyNhxxOW32/d75r01NY7TQCmOqomRo15ZSOKbpTFVsfjghxo6JloQUCGnH4k1LGu0R4yCLlWQQ==}
-    dev: true
 
   /charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
@@ -22592,18 +22663,11 @@ packages:
     dependencies:
       safer-buffer: 2.1.2
 
-  /iconv-lite@0.7.0:
-    resolution: {integrity: sha512-cf6L2Ds3h57VVmkZe+Pn+5APsT7FpqJtEhhieDCvrE2MK5Qk9MyffgQyuxQTm6BChfeZNtcOLHp9IcWRVcIcBQ==}
-    engines: {node: '>=0.10.0'}
-    dependencies:
-      safer-buffer: 2.1.2
-
   /iconv-lite@0.7.2:
     resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
     engines: {node: '>=0.10.0'}
     dependencies:
       safer-buffer: 2.1.2
-    dev: true
 
   /icss-utils@5.1.0(postcss@8.4.31):
     resolution: {integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==}
@@ -24617,7 +24681,7 @@ packages:
       chalk: 4.1.2
       console-table-printer: 2.15.0
       p-queue: 6.6.2
-      semver: 7.7.3
+      semver: 7.7.4
       uuid: 10.0.0
     dev: true
 
@@ -26554,6 +26618,12 @@ packages:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
     dev: true
 
+  /odata-query@8.0.5:
+    resolution: {integrity: sha512-uteX6kmx4Y8LkEjdLuhXagI2GXQbJHvmfbI6z4PKcGj7vv5bLM6cX3vrBQsLr2JQStk0MUouRtkcja4pQhFKhg==}
+    dependencies:
+      tslib: 2.8.1
+    dev: false
+
   /on-finished@2.3.0:
     resolution: {integrity: sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==}
     engines: {node: '>= 0.8'}
@@ -27803,7 +27873,7 @@ packages:
     dev: true
 
   /prettify-xml@1.2.0:
-    resolution: {integrity: sha1-Rtzx7oqNi3PbMLfgbvJtyc8/bxg=}
+    resolution: {integrity: sha512-kuoTbmC+QQUfx45PrdkVzJqrNEp2lhK++WGyiqBx6JrCvZUQDgeYjdV3h53n7p+37s1Iwx6GjAQ7fcIgD8kkLQ==}
     dev: false
 
   /pretty-bytes@5.6.0:
@@ -30005,6 +30075,7 @@ packages:
     resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
     engines: {node: '>=10'}
     hasBin: true
+    dev: false
 
   /semver@7.7.4:
     resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
@@ -30446,7 +30517,7 @@ packages:
     engines: {node: '>= 10'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.3
+      debug: 4.3.7
       socks: 2.8.4
     transitivePeerDependencies:
       - supports-color
@@ -31250,7 +31321,7 @@ packages:
     resolution: {integrity: sha512-lk+vH+MccxNqgVqSnkMVKx4VLJfnLjDBGzH16JVZjKE2DoxP57s6/vt6JmXV5I3jBcfGrxNrYtC+mPtU7WJztA==}
     engines: {node: '>=18'}
     dependencies:
-      ansi-escapes: 7.1.1
+      ansi-escapes: 7.3.0
       supports-hyperlinks: 3.2.0
     dev: true
 
@@ -31691,7 +31762,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
       '@tufjs/models': 1.0.4
-      debug: 4.4.3
+      debug: 4.3.7
       make-fetch-happen: 11.1.1
     transitivePeerDependencies:
       - supports-color
