@@ -3,7 +3,13 @@ import * as Enzyme from 'enzyme';
 import type { DialogProps, DialogState } from '../../../src/components/UIDialog';
 import { UIDialog, UIDialogScrollArea, DIALOG_MAX_HEIGHT_OFFSET } from '../../../src/components/UIDialog';
 import { UIDefaultButton } from '../../../src/components/UIButton';
-import type { IDialogStyles, IDialogContentStyles, IDialogFooterStyles } from '@fluentui/react';
+import type {
+    IDialogStyles,
+    IDialogContentStyles,
+    IDialogFooterStyles,
+    IModalStyles,
+    IRawStyle
+} from '@fluentui/react';
 import { Dialog, DialogFooter, ContextualMenu } from '@fluentui/react';
 import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
@@ -217,7 +223,10 @@ describe('<UIDialog />', () => {
     });
 
     describe('Styles', () => {
-        it('Basic style', () => {
+        it('Basic style without withBlurOverlay', () => {
+            wrapper.setProps({
+                withBlurOverlay: false
+            });
             const dialog = wrapper.find(Dialog);
             const props = dialog.props();
             expect(props.modalProps?.overlay?.styles).toEqual({
@@ -226,7 +235,48 @@ describe('<UIDialog />', () => {
                     opacity: 0.8
                 }
             });
+            const modalStyles = props.modalProps?.styles as IModalStyles;
+            expect(modalStyles.root).toEqual({
+                backdropFilter: undefined,
+                transition: 'opacity 0.4s ease-in-out'
+            });
+            expect((modalStyles.main as IRawStyle)['animation']).toContain(' 0.4s ease-in-out');
         });
+
+        it('Overlay "withBlurOverlay" is enabled', () => {
+            const dialog = wrapper.find(Dialog);
+            const props = dialog.props();
+            expect(props.modalProps?.overlay?.styles).toEqual({
+                root: {
+                    'background': 'none',
+                    'opacity': undefined
+                }
+            });
+            const modalStyles = props.modalProps?.styles as IModalStyles;
+            expect(modalStyles.root).toEqual({
+                backdropFilter: 'blur(5px)',
+                transition: 'opacity 0.4s ease-in-out'
+            });
+            expect((modalStyles.main as IRawStyle)['animation']).toContain(' 0.4s ease-in-out');
+        });
+
+        it('Overlay "isOpenAnimated" is disabled', () => {
+            wrapper.setProps({
+                isOpenAnimated: false
+            });
+            const dialog = wrapper.find(Dialog);
+            const props = dialog.props();
+            expect(props.modalProps?.styles).toEqual({
+                root: {
+                    transition: undefined,
+                    backdropFilter: 'blur(5px)'
+                },
+                main: {
+                    animation: undefined
+                }
+            });
+        });
+
         it('Title - single line', () => {
             const dialog = wrapper.find(Dialog);
             const props = dialog.props();
@@ -497,6 +547,32 @@ describe('<UIDialog />', () => {
                 wrapper.update();
                 styles = getRootStyles();
                 expect(styles.opacity).toEqual(undefined);
+            });
+        }
+
+        const closeTestCases = [
+            {
+                value: true,
+                expectedScale: 'scale(0.9)',
+                expectedTransition: 'transform 0.4s ease-in-out'
+            },
+            {
+                value: false,
+                expectedScale: '',
+                expectedTransition: ''
+            }
+        ];
+        for (const testCase of closeTestCases) {
+            it(`Clone with "isOpenAnimated=${testCase.value}"`, async () => {
+                wrapper.setProps({
+                    isOpenAnimated: testCase.value,
+                    isOpen: false
+                });
+                expect(wrapper.find(dialogSelectors.main).length).toEqual(1);
+                const dialogWindow = wrapper.find(dialogSelectors.main).getDOMNode() as HTMLElement;
+                expect(dialogWindow.style.transform).toEqual(testCase.expectedScale);
+                expect(dialogWindow.style.transform).toEqual(testCase.expectedScale);
+                expect(dialogWindow.style.transition).toEqual(testCase.expectedTransition);
             });
         }
     });
