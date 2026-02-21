@@ -5,7 +5,13 @@ import { create } from 'mem-fs-editor';
 import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
+import {
+    FileName,
+    type Package,
+    readUi5Yaml,
+    findCapProjectRoot,
+    checkCdsUi5PluginEnabled
+} from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
@@ -61,7 +67,8 @@ async function updateMiddlewareConfigWithGeneratorPath(
 }
 
 /**
- * Updates the `package.json` file to include a script for starting the card generator.
+ * Updates the app's `package.json` file to include a script for starting the card generator.
+ * Uses `fiori run` or `ui5 serve` - needed for mockserver support.
  * Removes the `@sap-ux/cards-editor-middleware` dependency if it exists in `devDependencies`.
  *
  * @param {string} basePath - The path to the project root where the `package.json` file is located.
@@ -86,6 +93,7 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
         '/test/flpCardGeneratorSandbox.html';
     const cliForPreview = await getCLIForPreview(basePath, ui5YamlFile, fs);
 
+    // App's script uses fiori run or ui5 serve (for mockserver support)
     packageJson.scripts ??= {};
     packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open "${cardGeneratorPath}${intent}"`;
 
@@ -97,6 +105,77 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
     }
 
     fs.writeJSON(packageJsonPath, packageJson);
+}
+
+/**
+ * Updates the CAP root's `package.json` file to include a script for starting the card generator.
+ * Uses `cds watch --open` - needed for CAP backend support.
+ * Only adds the script if cds-plugin-ui5 is enabled.
+ *
+ * @param {string} basePath - The path to the app root.
+ * @param {Editor} fs - The `mem-fs-editor` instance used to read and write files.
+ * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file for retrieving middleware configurations.
+ * @param {ToolsLogger} [logger] - Optional logger instance for logging debug information.
+ * @returns {Promise<void>} A promise that resolves when the CAP root's `package.json` file has been successfully updated.
+ */
+async function updateCapRootPackageJson(
+    basePath: string,
+    fs: Editor,
+    yamlPath?: string,
+    logger?: ToolsLogger
+): Promise<void> {
+    // Find CAP project root
+    const capProjectRoot = await findCapProjectRoot(basePath, false, fs);
+    if (!capProjectRoot) {
+        logger?.debug('Not a CAP project, skipping CAP root package.json update.');
+        return;
+    }
+
+    // Check if cds-plugin-ui5 is enabled
+    const isCdsUi5PluginEnabled = await checkCdsUi5PluginEnabled(capProjectRoot, fs);
+    if (!isCdsUi5PluginEnabled) {
+        logger?.debug('cds-plugin-ui5 is not enabled, skipping CAP root package.json update.');
+        return;
+    }
+
+    const capPackageJsonPath = join(capProjectRoot, 'package.json');
+    if (!fs.exists(capPackageJsonPath)) {
+        logger?.warn('CAP root package.json not found.');
+        return;
+    }
+
+    const capPackageJson = (fs.readJSON(capPackageJsonPath) ?? {}) as Package;
+    const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
+    const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
+    const previewMiddleware = await getPreviewMiddleware(ui5YamlConfig, basePath, ui5YamlFile, fs);
+    const intent = getIntentFromPreviewConfig(previewMiddleware?.configuration) ?? '#app-preview';
+    const cardGeneratorPath =
+        (previewMiddleware?.configuration as PreviewConfig)?.editors?.cardGenerator?.path ??
+        '/test/flpCardGeneratorSandbox.html';
+
+    // Get app name from ui5.yaml metadata
+    let appName: string;
+    try {
+        type UI5ConfigInternal = {
+            document: { getMap: (opts: { path: string }) => { toJSON: () => { name?: string } } };
+        };
+        appName =
+            (ui5YamlConfig as unknown as UI5ConfigInternal).document.getMap({ path: 'metadata' }).toJSON()?.name ??
+            basename(basePath);
+    } catch {
+        appName = basename(basePath);
+    }
+
+    // Remove leading slash from cardGeneratorPath for cds watch --open
+    const openPath = cardGeneratorPath.startsWith('/') ? cardGeneratorPath.slice(1) : cardGeneratorPath;
+
+    // CAP root script uses cds watch --open (for CAP backend support)
+    capPackageJson.scripts ??= {};
+    capPackageJson.scripts['start-cards-generator'] =
+        `cds watch --open ${appName}/${openPath}${intent} --livereload false`;
+
+    fs.writeJSON(capPackageJsonPath, capPackageJson);
+    logger?.info(`Added 'start-cards-generator' script to CAP root package.json for CAP backend support.`);
 }
 
 /**
@@ -120,6 +199,9 @@ export async function enableCardGeneratorConfig(
     fs = fs ?? create(createStorage());
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
+    // Add script to app's package.json (fiori run - for mockserver support)
     await updatePackageJson(basePath, fs, yamlPath, logger);
+    // Add script to CAP root's package.json (cds watch - for CAP backend support)
+    await updateCapRootPackageJson(basePath, fs, yamlPath, logger);
     return fs;
 }

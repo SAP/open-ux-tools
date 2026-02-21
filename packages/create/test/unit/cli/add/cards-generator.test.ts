@@ -61,7 +61,6 @@ describe('add/cards-generator', () => {
         await command.parseAsync(testArgv([]));
 
         // Flow check - CAP projects are now supported
-
         expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
         expect(traceSpy).not.toHaveBeenCalled();
     });
@@ -75,5 +74,17 @@ describe('add/cards-generator', () => {
         // Flow check
         expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
         expect(traceSpy).toHaveBeenCalled();
+    });
+
+    test('add cards-generator with custom config path', async () => {
+        // Test execution
+        const command = new Command('add');
+        addCardsEditorConfigCommand(command);
+        await command.parseAsync(testArgv(['--config', 'ui5-local.yaml']));
+
+        // Flow check
+        expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
+        const [, yamlPath] = enableCardGeneratorConfigMock.mock.calls[0];
+        expect(yamlPath).toBe('ui5-local.yaml');
     });
 });
