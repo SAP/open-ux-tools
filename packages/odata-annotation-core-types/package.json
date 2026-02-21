@@ -31,7 +31,7 @@
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
-        "npm-run-all2": "6.2.0"
+        "npm-run-all2": "8.0.4"
     },
     "engines": {
         "node": ">=20.x"
