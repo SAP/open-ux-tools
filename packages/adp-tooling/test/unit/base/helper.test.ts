@@ -23,7 +23,7 @@ import {
     getBaseAppId,
     getExistingAdpProjectType
 } from '../../../src/base/helper';
-import { AppType, getAppType, readUi5Yaml } from '@sap-ux/project-access';
+import { getAppType, readUi5Yaml } from '@sap-ux/project-access';
 
 jest.mock('fs', () => {
     return {
@@ -534,10 +534,14 @@ describe('helper', () => {
             getAppTypeMock = getAppType as jest.Mock;
         });
 
-        test('should return CLOUD_READY when project is Fiori Adaptation and has builder key', async () => {
+        test('should return CLOUD_READY when project is Fiori Adaptation and has custom tasks', async () => {
             getAppTypeMock.mockResolvedValue('Fiori Adaptation');
             mockUi5Config = {
-                hasBuilderKey: jest.fn().mockReturnValue(true)
+                getAllCustomTasks: jest.fn().mockReturnValue([
+                    {
+                        name: 'build-app'
+                    }
+                ])
             } as unknown as UI5Config;
             readUi5YamlMock.mockResolvedValue(mockUi5Config);
 
@@ -548,10 +552,10 @@ describe('helper', () => {
             expect(result).toBe(AdaptationProjectType.CLOUD_READY);
         });
 
-        test('should return ON_PREMISE when project is Fiori Adaptation and does not have builder key', async () => {
+        test('should return ON_PREMISE when project is Fiori Adaptation and does not have custom tasks', async () => {
             getAppTypeMock.mockResolvedValue('Fiori Adaptation');
             mockUi5Config = {
-                hasBuilderKey: jest.fn().mockReturnValue(false)
+                getAllCustomTasks: jest.fn().mockReturnValue([])
             } as unknown as UI5Config;
             readUi5YamlMock.mockResolvedValue(mockUi5Config);
 
@@ -585,22 +589,6 @@ describe('helper', () => {
         test('should return undefined when readUi5Config throws an error', async () => {
             getAppTypeMock.mockResolvedValue('Fiori Adaptation');
             readUi5YamlMock.mockRejectedValue(new Error('Failed to read ui5.yaml'));
-
-            const result = await getExistingAdpProjectType(basePath);
-
-            expect(getAppTypeMock).toHaveBeenCalledWith(basePath);
-            expect(readUi5YamlMock).toHaveBeenCalledWith(basePath, 'ui5.yaml');
-            expect(result).toBeUndefined();
-        });
-
-        test('should return undefined when hasBuilderKey throws an error', async () => {
-            getAppTypeMock.mockResolvedValue('Fiori Adaptation');
-            mockUi5Config = {
-                hasBuilderKey: jest.fn().mockImplementation(() => {
-                    throw new Error('Config error');
-                })
-            } as unknown as UI5Config;
-            readUi5YamlMock.mockResolvedValue(mockUi5Config);
 
             const result = await getExistingAdpProjectType(basePath);
 
