@@ -35,7 +35,7 @@ import {
     tryFixChange,
     isV4DescriptorChange
 } from './change-handler';
-import { addCustomSectionFragment } from './descriptor-change-handler';
+import { addCustomFragment } from './descriptor-change-handler';
 import { getExistingAdpProjectType } from '../base/helper';
 import path from 'node:path';
 declare global {
@@ -311,7 +311,7 @@ export class AdpPreview {
                     );
                 }
                 if (isV4DescriptorChange(change)) {
-                    addCustomSectionFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                    addCustomFragment(this.util.getProject().getSourcePath(), change, fs, logger);
                 }
                 break;
             default:
