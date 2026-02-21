@@ -177,7 +177,7 @@ describe('CF Writer Base', () => {
             } as Partial<CFBaseConfig>;
             jest.spyOn(unitTestFs, 'exists').mockReturnValueOnce(true);
             await expect(generateBaseConfig(config as CFBaseConfig, unitTestFs)).rejects.toThrow(
-                'A folder with same name already exists in the target directory'
+                'An `mta.yaml` file already exists in the target directory.'
             );
             delete config.abapServiceProvider?.abapService;
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(
