@@ -31,7 +31,7 @@
     ],
     "dependencies": {
         "@sap/cf-tools": "3.3.0",
-        "@sap-ux/annotation-converter": "0.10.19",
+        "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/edmx-parser": "0.9.8",
         "@sap-ux/feature-toggle": "workspace:*",
