@@ -216,6 +216,26 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Called when component is rerendered.
+     *
+     * @param prevProps - Previous props to compare with current props.
+     */
+    componentDidUpdate(prevProps: UIComboBoxProps): void {
+        const baseCombobox = this.comboBox.current;
+        const isOpen = baseCombobox?.state.isOpen;
+        if (
+            isOpen &&
+            this.props.multiSelect &&
+            this.props.calloutCollisionTransformation &&
+            prevProps.options.length !== this.props.options.length
+        ) {
+            window.requestAnimationFrame(() => {
+                this.calloutCollisionTransform.applyTransformation();
+            });
+        }
+    }
+
+    /**
      * Checks if the loading state has changed between the previous and new loader values.
      *
      * @param prevLoader The previous loading state.
