@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/cf-deploy-config-sub-generator",
     "description": "Generators for configuring Cloud Foundry deployment configuration",
-    "version": "0.2.135",
+    "version": "0.2.139",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -40,7 +40,7 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "hasbin": "1.2.3",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
@@ -54,7 +54,7 @@
         "@sap/mta-lib": "1.7.4",
         "js-yaml": "4.1.1",
         "memfs": "3.4.13",
-        "rimraf": "6.1.2",
+        "rimraf": "6.1.3",
         "unionfs": "4.4.0",
         "yeoman-test": "6.3.0"
     },
