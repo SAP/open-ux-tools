@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.15
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
 ## 0.7.14
 
 ### Patch Changes

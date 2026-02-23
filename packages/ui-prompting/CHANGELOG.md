@@ -1,5 +1,13 @@
 # @sap-ux/ui-prompting
 
+## 0.6.6
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+- Updated dependencies [4d381b7]
+    - @sap-ux/ui-components@1.27.8
+
 ## 0.6.5
 
 ### Patch Changes
