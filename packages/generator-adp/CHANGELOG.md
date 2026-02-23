@@ -1,5 +1,19 @@
 # @sap-ux/generator-adp
 
+## 0.9.7
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.71
+- @sap-ux/odata-service-writer@0.29.24
+- @sap-ux/project-access@1.35.7
+- @sap-ux/telemetry@0.6.78
+- @sap-ux/inquirer-common@0.11.12
+- @sap-ux/axios-extension@1.25.15
+- @sap-ux/fiori-generator-shared@0.13.77
+- @sap-ux/project-input-validator@0.6.60
+- @sap-ux/system-access@0.6.56
+
 ## 0.9.6
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.12
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+
 ## 1.7.11
 
 ### Patch Changes
