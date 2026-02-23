@@ -1,4 +1,4 @@
-import { validateSystemInfo, validateSystemName } from '../../../../../src/panel/system/utils';
+import { validateSystemInfo, validateSystemName, validateSystemUrl } from '../../../../../src/panel/system/utils';
 import { initI18n } from '../../../../../src/utils';
 
 const systemServiceGetAllMock = jest.fn();
@@ -57,8 +57,26 @@ describe('Test the panel action utils', () => {
             ]);
 
             await expect(validateSystemName('Existing System 1 ', 'New System')).rejects.toBe(
-                'System name is already in use'
+                'This connection name already exists. Choose a different name.'
             );
+        });
+    });
+
+    describe('validateSystemUrl', () => {
+        it('should return true for valid URL with port', () => {
+            expect(validateSystemUrl('https://example.com:8080')).toBe(true);
+        });
+
+        it('should return true for valid URL with path', () => {
+            expect(validateSystemUrl('https://example.com/path/to/resource')).toBe(true);
+        });
+
+        it('should throw an error for invalid URL without protocol', () => {
+            expect(() => validateSystemUrl('example.com')).toThrow("The URL 'example.com' provided is invalid");
+        });
+
+        it('should throw an error for invalid URL without protocol', () => {
+            expect(() => validateSystemUrl('q!@#$%^')).toThrow("The URL 'q!@#$%^' provided is invalid");
         });
     });
 });

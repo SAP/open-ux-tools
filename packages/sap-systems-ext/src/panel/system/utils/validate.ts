@@ -25,7 +25,10 @@ export function validateSystemInfo(input: BackendSystem): boolean | string {
  */
 export async function validateSystemName(newName: string, currentName?: string): Promise<true> {
     const systemService = await getBackendSystemService();
-    const allSystems = await systemService.getAll({ includeSensitiveData: false });
+    const allSystems = await systemService.getAll({
+        includeSensitiveData: false,
+        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+    });
     const newSystemName = newName.trim();
 
     const nameExists = allSystems.some(
@@ -33,8 +36,24 @@ export async function validateSystemName(newName: string, currentName?: string):
     );
 
     if (nameExists) {
-        throw t('validation.systemNameExists');
+        throw t('validation.connectionNameExists');
     }
 
     return true;
+}
+
+/**
+ * Validates that the provided URL is valid and only contains the origin (protocol, hostname, and optional port).
+ * This is to ensure that system entries are consistent and to prevent issues with trailing paths when connecting to the system.
+ *
+ * @param url - the URL to validate
+ * @returns true if the URL is valid, otherwise throws an error
+ */
+export function validateSystemUrl(url: string): boolean {
+    try {
+        new URL(url);
+        return true;
+    } catch {
+        throw t('validation.urlInvalid', { url });
+    }
 }

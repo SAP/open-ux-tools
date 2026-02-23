@@ -13,14 +13,13 @@
         ':label(renovate)',
         ':rebaseStalePrs',
         ':semanticCommits',
-        ':semanticPrefixChore',
+        ':semanticPrefixFixDepsChoreOthers',
         ':timezone(America/Los_Angeles)',
         ':updateNotScheduled',
         'workarounds:typesNodeVersioning'
     ],
 
-    enabledManagers: ['npm', 'github-actions'
-    ],
+    enabledManagers: ['npm', 'github-actions'],
     branchPrefix: 'chore/renovate/',
     platformCommit: 'enabled',
 
@@ -28,15 +27,17 @@
         dependencyDashboardApproval: true
     },
     dependencyDashboardAutoclose: true,
-    dependencyDashboardLabels: ['renovate-dashboard'
-    ],
+    dependencyDashboardLabels: ['renovate-dashboard'],
     dependencyDashboardTitle: 'Renovate Dependency Dashboard',
 
     assigneesFromCodeOwners: true,
     // Allow Renovate to continue updating PRs after GitHub Actions bot commits
     // This is needed for the update-ui5manifest-version workflow which adds
     // additional changes (test fixtures, changesets) to Renovate PRs
-    gitIgnoredAuthors: ['kranthie-sap'],
+    gitIgnoredAuthors: [
+        '84985584+kranthie-sap@users.noreply.github.com',
+        'github-actions[bot]@users.noreply.github.com'
+    ],
 
     ignorePaths: [
         '**/templates/**',
@@ -71,6 +72,11 @@
     ignoreDeps: ['@sap-ux-private/playwright'],
 
     packageRules: [
+        // Override: devDependencies should also use 'fix' (not just runtime deps)
+        {
+            matchDepTypes: ['devDependencies'],
+            semanticCommitType: 'fix'
+        },
         {
             matchPackageNames: ['@ui5/manifest'],
             groupName: 'dependencies [@ui5/manifest]',

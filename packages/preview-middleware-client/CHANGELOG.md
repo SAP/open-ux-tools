@@ -1,5 +1,30 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.21
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux-private/control-property-editor-common@0.7.5
+
+## 0.18.20
+
+### Patch Changes
+
+- 88c68c9: fix(deps): update dependency @ui5/cli to v4.0.44
+
+## 0.18.19
+
+### Patch Changes
+
+- 227e704: Fix detection of sap.fe.macros.Table for newer UI5 versions.
+
+## 0.18.18
+
+### Patch Changes
+
+- 849529f: fix: Missing additional info for adaptation projects with local IDs
+
 ## 0.18.17
 
 ### Patch Changes
