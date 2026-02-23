@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.23.133
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/i18n@0.3.8
+    - @sap-ux/adp-tooling@0.18.73
+    - @sap-ux/system-access@0.6.56
+
+## 0.23.132
+
+### Patch Changes
+
+- Updated dependencies [ce9f074]
+    - @sap-ux/adp-tooling@0.18.72
+
 ## 0.23.131
 
 ### Patch Changes

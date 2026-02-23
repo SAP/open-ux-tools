@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.7.6
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
 ## 0.7.5
 
 ### Patch Changes

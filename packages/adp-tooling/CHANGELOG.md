@@ -1,5 +1,25 @@
 # @sap-ux/adp-tooling
 
+## 0.18.73
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/i18n@0.3.8
+    - @sap-ux/axios-extension@1.25.15
+    - @sap-ux/inquirer-common@0.11.13
+    - @sap-ux/odata-service-writer@0.29.25
+    - @sap-ux/project-input-validator@0.6.61
+    - @sap-ux/system-access@0.6.56
+
+## 0.18.72
+
+### Patch Changes
+
+- ce9f074: chore: bump adaptation project for cf dependency versions
+
 ## 0.18.71
 
 ### Patch Changes

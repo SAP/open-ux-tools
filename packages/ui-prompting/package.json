@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-prompting",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -66,7 +66,7 @@
         "eslint-plugin-storybook": "0.6.15",
         "jest-environment-jsdom": "29.7.0",
         "jest-scss-transform": "1.0.4",
-        "npm-run-all2": "6.2.0",
+        "npm-run-all2": "8.0.4",
         "react": "16.14.0",
         "react-dom": "16.14.0",
         "sass": "1.66.1",

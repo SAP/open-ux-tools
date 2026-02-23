@@ -1,5 +1,14 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.22
+
+### Patch Changes
+
+- 0ecc5f1: fix(deps): Update dependency @ui5/manifest to v1.83.0
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux-private/control-property-editor-common@0.7.6
+
 ## 0.18.21
 
 ### Patch Changes

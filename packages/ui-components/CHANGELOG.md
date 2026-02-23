@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.27.7
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
 ## 1.27.6
 
 ### Patch Changes

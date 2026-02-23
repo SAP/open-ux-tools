@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/cds-odata-annotation-converter"
     },
-    "version": "0.7.7",
+    "version": "0.7.8",
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",
@@ -40,7 +40,7 @@
     "devDependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "npm-run-all2": "6.2.0"
+        "npm-run-all2": "8.0.4"
     },
     "engines": {
         "node": ">=20.x"

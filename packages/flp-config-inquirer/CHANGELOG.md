@@ -1,5 +1,24 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.132
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/adp-tooling@0.18.73
+    - @sap-ux/axios-extension@1.25.15
+    - @sap-ux/fiori-generator-shared@0.13.78
+    - @sap-ux/inquirer-common@0.11.13
+    - @sap-ux/project-input-validator@0.6.61
+
+## 0.4.131
+
+### Patch Changes
+
+- Updated dependencies [ce9f074]
+    - @sap-ux/adp-tooling@0.18.72
+
 ## 0.4.130
 
 ### Patch Changes
