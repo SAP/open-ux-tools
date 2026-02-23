@@ -1,5 +1,18 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.21
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux-private/control-property-editor-common@0.7.5
+
+## 0.18.20
+
+### Patch Changes
+
+- 88c68c9: fix(deps): update dependency @ui5/cli to v4.0.44
+
 ## 0.18.19
 
 ### Patch Changes

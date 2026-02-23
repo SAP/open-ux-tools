@@ -1,5 +1,30 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.77
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/telemetry@0.6.78
+
+## 0.13.76
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+    - @sap-ux/telemetry@0.6.77
+
+## 0.13.75
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/telemetry@0.6.76
+
 ## 0.13.74
 
 ### Patch Changes
