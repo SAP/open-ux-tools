@@ -93,11 +93,12 @@ const rule: FioriRuleDefinition = createFioriRule({
 });
 
 /**
+ * Checks personalization.group value in Analitical or Responsive table with required minUI5 version.
  *
- * @param table
- * @param parsedApp
- * @param pageName
- * @returns
+ * @param table - OData V4 table.
+ * @param parsedApp - Parsed application.
+ * @param pageName - OData V4 page name.
+ * @returns TablePersonalization issues collected for 'group' property
  */
 function checkGroupProperty(table: Table, parsedApp: ParsedApp, pageName: string): TablePersonalization[] {
     const minUI5Version = parsedApp.manifest.minUI5Version;
@@ -129,11 +130,12 @@ function checkGroupProperty(table: Table, parsedApp: ParsedApp, pageName: string
 }
 
 /**
+ * Checks table personalization boolean of object value.
  *
- * @param table
- * @param page
- * @param parsedApp
- * @returns
+ * @param table - OData V4 table.
+ * @param page - OData V4 page.
+ * @param parsedApp - Parsed application.
+ * @returns TablePersonalization issues collected for all properties
  */
 function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: ParsedApp): TablePersonalization[] {
     const problems: TablePersonalization[] = [];
