@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.72
+
+### Patch Changes
+
+- ce9f074: chore: bump adaptation project for cf dependency versions
+
 ## 0.18.71
 
 ### Patch Changes

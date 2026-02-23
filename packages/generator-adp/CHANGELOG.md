@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.9.8
+
+### Patch Changes
+
+- ce9f074: chore: bump adaptation project for cf dependency versions
+- Updated dependencies [ce9f074]
+    - @sap-ux/adp-tooling@0.18.72
+
 ## 0.9.7
 
 ### Patch Changes
