@@ -131,6 +131,7 @@ async function getReplayServerInternal(): Promise<Mockttp> {
                     : interaction.httpResponse.body;
 
             return {
+                ...(interaction.httpResponse.headers ?? {}),
                 statusCode: interaction.httpResponse.statusCode,
                 // TODO if I send headers then request matching is broken why?? i dont
                 // match headers. May be some resources are loaded from cache and then a request does not

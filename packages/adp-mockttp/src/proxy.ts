@@ -31,7 +31,16 @@ async function getEndpointInternal(): Promise<MockedEndpoint> {
     //     },
     //     ignoreHostHttpsErrors: true
     // });
-    return proxy
-        .forAnyRequest()
-        .thenForwardTo(`https://${process.env.SAP_SYSTEM_HOST}:${getSapSystemPort()}`, { ignoreHostHttpsErrors: true });
+    return proxy.forAnyRequest().thenForwardTo(`https://${process.env.SAP_SYSTEM_HOST}:${getSapSystemPort()}`, {
+        ignoreHostHttpsErrors: true,
+        transformResponse: {
+            updateHeaders: {
+                'cache-control': undefined,
+                'etag': undefined,
+                'expires': undefined,
+                'last-modified': undefined,
+                'pragma': undefined
+            }
+        }
+    });
 }
