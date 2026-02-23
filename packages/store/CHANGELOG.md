@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.5.7
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
 ## 1.5.6
 
 ### Patch Changes

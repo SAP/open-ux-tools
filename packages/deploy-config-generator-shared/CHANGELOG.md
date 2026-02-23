@@ -1,5 +1,29 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.96
+
+### Patch Changes
+
+- @sap-ux/fiori-generator-shared@0.13.77
+
+## 0.1.95
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/fiori-generator-shared@0.13.76
+
+## 0.1.94
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/nodejs-utils@0.2.16
+
 ## 0.1.93
 
 ### Patch Changes

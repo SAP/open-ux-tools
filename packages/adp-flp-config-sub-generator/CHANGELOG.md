@@ -1,5 +1,69 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.183
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.71
+- @sap-ux/project-access@1.35.7
+- @sap-ux/flp-config-inquirer@0.4.130
+- @sap-ux/inquirer-common@0.11.12
+- @sap-ux/axios-extension@1.25.15
+- @sap-ux/fiori-generator-shared@0.13.77
+- @sap-ux/system-access@0.6.56
+
+## 0.1.182
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+- Updated dependencies [ff634b0]
+- Updated dependencies [d588c26]
+    - @sap-ux/inquirer-common@0.11.11
+    - @sap-ux/adp-tooling@0.18.70
+    - @sap-ux/feature-toggle@0.3.7
+    - @sap-ux/system-access@0.6.56
+    - @sap-ux/flp-config-inquirer@0.4.129
+    - @sap-ux/axios-extension@1.25.15
+    - @sap-ux/fiori-generator-shared@0.13.76
+
+## 0.1.181
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/adp-tooling@0.18.69
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/flp-config-inquirer@0.4.128
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/store@1.5.7
+    - @sap-ux/system-access@0.6.55
+
+## 0.1.180
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/flp-config-inquirer@0.4.127
+    - @sap-ux/adp-tooling@0.18.68
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/system-access@0.6.54
+
+## 0.1.179
+
+### Patch Changes
+
+- Updated dependencies [d1b13c4]
+    - @sap-ux/adp-tooling@0.18.67
+    - @sap-ux/flp-config-inquirer@0.4.126
+
 ## 0.1.178
 
 ### Patch Changes
