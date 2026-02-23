@@ -78,6 +78,9 @@ function getMiddlewareMappings(): MiddlewareSchemaMapping[] {
 
 /**
  * Load a schema file from the schema directory
+ *
+ * @param schemaDir
+ * @param fileName
  */
 function loadSchema(schemaDir: string, fileName: string): Schema {
     const filePath = join(schemaDir, fileName);
@@ -86,9 +89,20 @@ function loadSchema(schemaDir: string, fileName: string): Schema {
 }
 
 /**
- * Resolve external file references in a schema by extracting definitions and converting to internal refs
+ * Resolve external file references in a schema by extracting definitions and converting to internal refs.
+ *
+ * @param schema - The schema to process
+ * @param schemaDir - Directory to load referenced schemas from
+ * @param loadedSchemas - Cache of already loaded schemas to avoid duplicates
+ * @param prefix - Prefix to use for extracted definitions to avoid conflicts
+ * @returns The schema with external refs resolved
  */
-function resolveExternalRefs(schema: Schema, schemaDir: string, loadedSchemas: Map<string, Schema>, prefix: string): Schema {
+function resolveExternalRefs(
+    schema: Schema,
+    schemaDir: string,
+    loadedSchemas: Map<string, Schema>,
+    prefix: string
+): Schema {
     const extractedDefinitions: SchemaDefinition = {};
     const extractedKeys = new Set<string>();
 
@@ -101,11 +115,12 @@ function resolveExternalRefs(schema: Schema, schemaDir: string, loadedSchemas: M
             return newDefName;
         }
 
-        if (refSchema.definitions && refSchema.definitions[defName]) {
+        if (refSchema.definitions?.[defName]) {
             extractedKeys.add(newDefName);
             const defValue = JSON.parse(JSON.stringify(refSchema.definitions[defName])); // Deep clone
 
             // Process the definition to extract any dependencies
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             const processedDef = extractDependentDefs(defValue, refSchema, refSchemaPrefix);
             extractedDefinitions[newDefName] = processedDef;
 
@@ -122,7 +137,7 @@ function resolveExternalRefs(schema: Schema, schemaDir: string, loadedSchemas: M
         }
 
         if (Array.isArray(obj)) {
-            return obj.map(item => extractDependentDefs(item, refSchema, refSchemaPrefix));
+            return obj.map((item) => extractDependentDefs(item, refSchema, refSchemaPrefix));
         }
 
         const result: any = {};
@@ -177,7 +192,7 @@ function resolveExternalRefs(schema: Schema, schemaDir: string, loadedSchemas: M
                         continue;
                     } else if (jsonPath.startsWith('/properties/')) {
                         const propName = jsonPath.substring('/properties/'.length);
-                        if (refSchema.properties && refSchema.properties[propName]) {
+                        if (refSchema.properties?.[propName]) {
                             // Process the property to extract dependent definitions
                             const propSchema = JSON.parse(JSON.stringify(refSchema.properties[propName]));
                             const processedProp = extractDependentDefs(propSchema, refSchema, refSchemaPrefix);
@@ -212,6 +227,9 @@ function resolveExternalRefs(schema: Schema, schemaDir: string, loadedSchemas: M
 
 /**
  * Prefix all definition keys in a schema to avoid conflicts
+ *
+ * @param schema
+ * @param prefix
  */
 function prefixDefinitions(schema: Schema, prefix: string): Schema {
     if (!schema.definitions) {
@@ -268,6 +286,9 @@ function prefixDefinitions(schema: Schema, prefix: string): Schema {
 
 /**
  * Merge all middleware schemas into the main ux-ui5-tooling-schema.json
+ *
+ * @param schemaDir
+ * @param verbose
  */
 export function mergeSchemas(schemaDir: string, verbose: boolean = true): void {
     if (verbose) {
@@ -409,6 +430,8 @@ export function mergeSchemas(schemaDir: string, verbose: boolean = true): void {
 
 /**
  * CLI entry point for merging schemas
+ *
+ * @param baseDir
  */
 export function runCli(baseDir: string = process.cwd()): void {
     const schemaDir = join(baseDir, 'schema');
@@ -420,4 +443,3 @@ export function runCli(baseDir: string = process.cwd()): void {
 if (require.main === module) {
     runCli(__dirname.replace(/[/\\]src$/, ''));
 }
-
