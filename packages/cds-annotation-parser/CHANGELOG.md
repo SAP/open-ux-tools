@@ -1,5 +1,15 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.31
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux/odata-annotation-core@0.2.15
+    - @sap-ux/odata-entity-model@0.3.6
+    - @sap-ux/odata-vocabularies@0.4.26
+
 ## 0.2.30
 
 ### Patch Changes

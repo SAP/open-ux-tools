@@ -1,5 +1,11 @@
 # @sap-ux/i18n
 
+## 0.3.8
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
 ## 0.3.7
 
 ### Patch Changes
