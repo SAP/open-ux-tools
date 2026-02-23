@@ -2822,8 +2822,8 @@ importers:
         specifier: workspace:*
         version: link:../text-document-utils
       jsonc-parser:
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 3.3.1
+        version: 3.3.1
       vscode-languageserver-textdocument:
         specifier: 1.0.11
         version: 1.0.11
@@ -3000,8 +3000,8 @@ importers:
         specifier: 25.8.12
         version: 25.8.12(typescript@5.9.3)
       jsonc-parser:
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 3.3.1
+        version: 3.3.1
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -3813,8 +3813,8 @@ importers:
         specifier: 25.8.12
         version: 25.8.12(typescript@5.9.3)
       jsonc-parser:
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 3.3.1
+        version: 3.3.1
       normalize-path:
         specifier: 3.0.0
         version: 3.0.0
@@ -16938,7 +16938,7 @@ packages:
       form-data: 4.0.4
       glob: 11.1.0
       hosted-git-info: 4.1.0
-      jsonc-parser: 3.2.0
+      jsonc-parser: 3.3.1
       leven: 3.1.0
       markdown-it: 14.1.0
       mime: 1.6.0
@@ -25431,6 +25431,9 @@ packages:
 
   /jsonc-parser@3.2.0:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
+
+  /jsonc-parser@3.3.1:
+    resolution: {integrity: sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==}
 
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
