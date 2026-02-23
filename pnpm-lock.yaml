@@ -736,8 +736,8 @@ importers:
         specifier: 6.1.3
         version: 6.1.3
       supertest:
-        specifier: 7.1.4
-        version: 7.1.4
+        specifier: 7.2.2
+        version: 7.2.2
 
   packages/annotation-generator:
     dependencies:
@@ -907,8 +907,8 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
       supertest:
-        specifier: 7.1.4
-        version: 7.1.4
+        specifier: 7.2.2
+        version: 7.2.2
 
   packages/backend-proxy-middleware:
     dependencies:
@@ -974,8 +974,8 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
       supertest:
-        specifier: 7.1.4
-        version: 7.1.4
+        specifier: 7.2.2
+        version: 7.2.2
       yaml:
         specifier: 2.2.2
         version: 2.2.2
@@ -1020,8 +1020,8 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
       supertest:
-        specifier: 7.1.4
-        version: 7.1.4
+        specifier: 7.2.2
+        version: 7.2.2
 
   packages/btp-utils:
     dependencies:
@@ -3466,8 +3466,8 @@ importers:
         specifier: 8.0.4
         version: 8.0.4
       supertest:
-        specifier: 7.1.4
-        version: 7.1.4
+        specifier: 7.2.2
+        version: 7.2.2
 
   packages/preview-middleware-client:
     dependencies:
@@ -3620,8 +3620,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1
       supertest:
-        specifier: 7.1.4
-        version: 7.1.4
+        specifier: 7.2.2
+        version: 7.2.2
 
   packages/repo-app-import-sub-generator:
     dependencies:
@@ -3922,8 +3922,8 @@ importers:
         specifier: 1.16.2
         version: 1.16.2
       supertest:
-        specifier: 7.1.4
-        version: 7.1.4
+        specifier: 7.2.2
+        version: 7.2.2
 
   packages/store:
     dependencies:
@@ -4922,8 +4922,8 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
       supertest:
-        specifier: 7.1.4
-        version: 7.1.4
+        specifier: 7.2.2
+        version: 7.2.2
       yaml:
         specifier: 2.2.2
         version: 2.2.2
@@ -29972,12 +29972,6 @@ packages:
     dependencies:
       lru-cache: 6.0.0
 
-  /semver@7.7.1:
-    resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dev: true
-
   /semver@7.7.2:
     resolution: {integrity: sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==}
     engines: {node: '>=10'}
@@ -31055,30 +31049,30 @@ packages:
   /stylis@4.2.0:
     resolution: {integrity: sha512-Orov6g6BB1sDfYgzWfTHDOxamtX1bE/zo104Dh9e6fqJ3PooipYyfJ0pUmrZO2wAvO8YbEyeFrkV91XTsGMSrw==}
 
-  /superagent@10.2.3:
-    resolution: {integrity: sha512-y/hkYGeXAj7wUMjxRbB21g/l6aAEituGXM9Rwl4o20+SX3e8YOSV6BxFXl+dL3Uk0mjSL3kCbNkwURm8/gEDig==}
+  /superagent@10.3.0:
+    resolution: {integrity: sha512-B+4Ik7ROgVKrQsXTV0Jwp2u+PXYLSlqtDAhYnkkD+zn3yg8s/zjA2MeGayPoY/KICrbitwneDHrjSotxKL+0XQ==}
     engines: {node: '>=14.18.0'}
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
       debug: 4.4.3
       fast-safe-stringify: 2.1.1
-      form-data: 4.0.4
+      form-data: 4.0.5
       formidable: 3.5.4
       methods: 1.1.2
       mime: 2.6.0
       qs: 6.14.2
-      semver: 7.7.1
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /supertest@7.1.4:
-    resolution: {integrity: sha512-tjLPs7dVyqgItVFirHYqe2T+MfWc2VOBQ8QFKKbWTA3PU7liZR8zoSpAi/C1k1ilm9RsXIKYf197oap9wXGVYg==}
+  /supertest@7.2.2:
+    resolution: {integrity: sha512-oK8WG9diS3DlhdUkcFn4tkNIiIbBx9lI2ClF8K+b2/m8Eyv47LSawxUzZQSNKUrVb2KsqeTDCcjAAVPYaSLVTA==}
     engines: {node: '>=14.18.0'}
     dependencies:
+      cookie-signature: 1.2.2
       methods: 1.1.2
-      superagent: 10.2.3
+      superagent: 10.3.0
     transitivePeerDependencies:
       - supports-color
     dev: true

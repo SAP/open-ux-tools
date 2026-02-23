@@ -42,7 +42,7 @@
         "@types/supertest": "2.0.12",
         "express": "4.22.1",
         "nock": "13.4.0",
-        "supertest": "7.1.4",
+        "supertest": "7.2.2",
         "connect": "^3.7.0",
         "@types/connect": "^3.4.38"
     },
