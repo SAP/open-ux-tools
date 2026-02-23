@@ -1,17 +1,16 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { load } from 'js-yaml';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 
 describe('YAML Schema Validation', () => {
     const schemaDir = join(__dirname, '..', 'schema');
-    const previewMiddlewareSchemaPath = join(schemaDir, 'preview-middleware-schema.json');
-    const validYamlPath = join(__dirname, 'sample-ui5.yaml');
-    const invalidYamlPath = join(__dirname, 'sample-ui5-invalid.yaml');
 
     let ajv: Ajv;
     let previewMiddlewareSchema: any;
+    let backendProxySchema: any;
+    let reloadMiddlewareSchema: any;
+    let serveStaticSchema: any;
 
     beforeAll(() => {
         // Setup AJV with middleware schema
@@ -21,87 +20,327 @@ describe('YAML Schema Validation', () => {
         });
         addFormats(ajv);
 
-        previewMiddlewareSchema = JSON.parse(readFileSync(previewMiddlewareSchemaPath, 'utf-8'));
+        // Load all schemas
+        previewMiddlewareSchema = JSON.parse(readFileSync(join(schemaDir, 'preview-middleware-schema.json'), 'utf-8'));
+        backendProxySchema = JSON.parse(readFileSync(join(schemaDir, 'backend-proxy-middleware-schema.json'), 'utf-8'));
+        reloadMiddlewareSchema = JSON.parse(readFileSync(join(schemaDir, 'reload-middleware-schema.json'), 'utf-8'));
+        serveStaticSchema = JSON.parse(readFileSync(join(schemaDir, 'serve-static-middleware-schema.json'), 'utf-8'));
     });
 
-    test('valid ui5.yaml should pass middleware configuration validation', () => {
-        const yamlContent = readFileSync(validYamlPath, 'utf-8');
-        const parsedYaml: any = load(yamlContent);
+    describe('Preview Middleware Schema Validation', () => {
+        test('should validate preview middleware with complete configuration', () => {
+            const config = {
+                flp: {
+                    path: '/test/flpSandbox.html',
+                    intent: {
+                        object: 'myapp',
+                        action: 'display'
+                    },
+                    theme: 'sap_horizon',
+                    libs: true,
+                    apps: [
+                        {
+                            target: '/path/to/app',
+                            local: './local-app',
+                            componentId: 'my.component.id',
+                            intent: {
+                                object: 'otherapp',
+                                action: 'show'
+                            }
+                        }
+                    ],
+                    init: '/custom/init.js',
+                    enhancedHomePage: true
+                },
+                test: [
+                    {
+                        framework: 'OPA5',
+                        path: '/test/integration/opaTests.qunit.html',
+                        init: '/test/integration/opaTests.qunit.js',
+                        pattern: '/test/**/*Journey.{js,ts}'
+                    },
+                    {
+                        framework: 'QUnit',
+                        path: '/test/unit/unitTests.qunit.html',
+                        init: '/test/unit/unitTests.qunit.js',
+                        pattern: '/test/**/*Test.{js,ts}'
+                    }
+                ],
+                editors: {
+                    rta: {
+                        layer: 'CUSTOMER_BASE',
+                        options: {
+                            baseId: 'my-base-id',
+                            projectId: 'my-project-id',
+                            scenario: 'scenario1',
+                            appName: 'MyApp'
+                        },
+                        endpoints: [
+                            {
+                                path: '/preview.html',
+                                developerMode: false,
+                                pluginScript: '/plugins/my-plugin.js',
+                                generator: 'my-generator'
+                            }
+                        ]
+                    },
+                    cardGenerator: {
+                        path: '/card-generator'
+                    }
+                },
+                debug: true
+            };
 
-        const previewMiddleware = parsedYaml.server.customMiddleware.find(
-            (mw: any) => mw.name === 'preview-middleware'
-        );
+            const validate = ajv.compile(previewMiddlewareSchema);
+            const valid = validate(config);
 
-        const validate = ajv.compile(previewMiddlewareSchema);
-        const valid = validate(previewMiddleware.configuration);
+            if (!valid) {
+                console.error('Validation errors:', JSON.stringify(validate.errors, null, 2));
+            }
 
-        if (!valid) {
-            console.error('Validation errors:', JSON.stringify(validate.errors, null, 2));
-        }
+            expect(valid).toBe(true);
+        });
 
-        expect(valid).toBe(true);
+        test('should validate preview middleware with minimal flp configuration', () => {
+            const config = {
+                flp: {
+                    path: '/test/flp.html',
+                    intent: {
+                        object: 'testapp',
+                        action: 'preview'
+                    }
+                },
+                debug: false
+            };
+
+            const validate = ajv.compile(previewMiddlewareSchema);
+            const valid = validate(config);
+
+            if (!valid) {
+                console.error('Validation errors:', JSON.stringify(validate.errors, null, 2));
+            }
+
+            expect(valid).toBe(true);
+        });
+
+        test('should reject preview middleware with invalid framework value', () => {
+            const config = {
+                flp: {
+                    path: '/test/flpSandbox.html',
+                    intent: {
+                        object: 'myapp',
+                        action: 'display'
+                    }
+                },
+                test: [
+                    {
+                        framework: 'InvalidFramework',
+                        path: '/test/test.html'
+                    }
+                ]
+            };
+
+            const validate = ajv.compile(previewMiddlewareSchema);
+            const valid = validate(config);
+
+            expect(valid).toBe(false);
+            expect(validate.errors).toBeDefined();
+
+            // Should have enum error for framework
+            const frameworkError = validate.errors!.find(
+                (err: any) => err.instancePath.includes('/test/0/framework') || err.params?.allowedValues
+            );
+            expect(frameworkError).toBeDefined();
+        });
+
+        test('should reject preview middleware with additional properties', () => {
+            const config = {
+                flp: {
+                    path: '/test/flpSandbox.html',
+                    intent: {
+                        object: 'myapp',
+                        action: 'display'
+                    },
+                    invalidProperty: 'This should cause a validation error'
+                },
+                unknownProperty: 'This is not a valid MiddlewareConfig property'
+            };
+
+            const validate = ajv.compile(previewMiddlewareSchema);
+            const valid = validate(config);
+
+            expect(valid).toBe(false);
+            expect(validate.errors).toBeDefined();
+
+            // Should have additional properties violations
+            const additionalPropsError = validate.errors!.find((err: any) => err.keyword === 'additionalProperties');
+            expect(additionalPropsError).toBeDefined();
+        });
     });
 
-    test('valid ui5.yaml should have correct preview-middleware configuration', () => {
-        const yamlContent = readFileSync(validYamlPath, 'utf-8');
-        const parsedYaml: any = load(yamlContent);
+    describe('Backend Proxy Middleware Schema Validation', () => {
+        test('should validate backend proxy configuration with url and path', () => {
+            const config = {
+                backend: {
+                    url: 'https://backend.example.com',
+                    path: '/api'
+                },
+                debug: true
+            };
 
-        const previewMiddleware = parsedYaml.server.customMiddleware.find(
-            (mw: any) => mw.name === 'preview-middleware'
-        );
+            const validate = ajv.compile(backendProxySchema);
+            const valid = validate(config);
 
-        expect(previewMiddleware).toBeDefined();
-        expect(previewMiddleware.configuration.flp).toBeDefined();
-        expect(previewMiddleware.configuration.flp.intent.object).toBe('myapp');
-        expect(previewMiddleware.configuration.test).toHaveLength(2);
-        expect(previewMiddleware.configuration.debug).toBe(true);
+            if (!valid) {
+                console.error('Validation errors:', JSON.stringify(validate.errors, null, 2));
+            }
+
+            expect(valid).toBe(true);
+        });
+
+        test('should validate backend proxy configuration with destination', () => {
+            const config = {
+                backend: {
+                    destination: 'MyDestination',
+                    path: '/odata',
+                    pathReplace: '/services/odata'
+                }
+            };
+
+            const validate = ajv.compile(backendProxySchema);
+            const valid = validate(config);
+
+            expect(valid).toBe(true);
+        });
+
+        test('should reject backend proxy configuration with invalid properties', () => {
+            const config = {
+                backend: {
+                    url: 'https://backend.example.com',
+                    path: '/api',
+                    invalidProperty: 'should fail'
+                },
+                unknownConfig: true
+            };
+
+            const validate = ajv.compile(backendProxySchema);
+            const valid = validate(config);
+
+            expect(valid).toBe(false);
+            expect(validate.errors).toBeDefined();
+        });
     });
 
-    test('valid ui5.yaml should have correct fiori-tools-preview configuration', () => {
-        const yamlContent = readFileSync(validYamlPath, 'utf-8');
-        const parsedYaml: any = load(yamlContent);
+    describe('Reload Middleware Schema Validation', () => {
+        test('should validate reload middleware with valid port number', () => {
+            const config = {
+                port: 35729,
+                path: 'webapp',
+                exts: ['xml', 'json', 'properties'],
+                debug: true
+            };
 
-        const fioriToolsPreview = parsedYaml.server.customMiddleware.find(
-            (mw: any) => mw.name === 'fiori-tools-preview'
-        );
+            const validate = ajv.compile(reloadMiddlewareSchema);
+            const valid = validate(config);
 
-        expect(fioriToolsPreview).toBeDefined();
-        expect(fioriToolsPreview.configuration.flp).toBeDefined();
-        expect(fioriToolsPreview.configuration.flp.intent.object).toBe('testapp');
-        expect(fioriToolsPreview.configuration.debug).toBe(false);
+            if (!valid) {
+                console.error('Validation errors:', JSON.stringify(validate.errors, null, 2));
+            }
+
+            expect(valid).toBe(true);
+        });
+
+        test('should reject reload middleware with invalid port type', () => {
+            const config = {
+                port: 'not-a-number',
+                path: 'webapp'
+            };
+
+            const validate = ajv.compile(reloadMiddlewareSchema);
+            const valid = validate(config);
+
+            expect(valid).toBe(false);
+            expect(validate.errors).toBeDefined();
+
+            // Should have type error for port
+            const portError = validate.errors!.find(
+                (err: any) => err.instancePath === '/port' && err.keyword === 'type'
+            );
+            expect(portError).toBeDefined();
+        });
+
+        test('should reject reload middleware with additional properties', () => {
+            const config = {
+                port: 35729,
+                unknownConfig: true
+            };
+
+            const validate = ajv.compile(reloadMiddlewareSchema);
+            const valid = validate(config);
+
+            expect(valid).toBe(false);
+        });
     });
 
-    test('invalid configuration should fail validation', () => {
-        const yamlContent = readFileSync(invalidYamlPath, 'utf-8');
-        const parsedYaml: any = load(yamlContent);
+    describe('Serve Static Middleware Schema Validation', () => {
+        test('should validate serve static configuration with paths array', () => {
+            const config = {
+                paths: [
+                    {
+                        path: '/resources',
+                        src: './node_modules/@sap/ux-ui5-tooling/resources'
+                    },
+                    {
+                        path: '/test-resources',
+                        src: './test'
+                    }
+                ]
+            };
 
-        const previewMiddleware = parsedYaml.server.customMiddleware.find(
-            (mw: any) => mw.name === 'preview-middleware'
-        );
+            const validate = ajv.compile(serveStaticSchema);
+            const valid = validate(config);
 
-        expect(previewMiddleware).toBeDefined();
+            if (!valid) {
+                console.error('Validation errors:', JSON.stringify(validate.errors, null, 2));
+            }
 
-        const validate = ajv.compile(previewMiddlewareSchema);
-        const valid = validate(previewMiddleware.configuration);
+            expect(valid).toBe(true);
+        });
 
-        // The invalid configuration has:
-        // 1. Invalid framework value (should be 'OPA5', 'QUnit', or 'Testsuite')
-        // 2. Extra invalid properties (invalidProperty in flp, unknownProperty at root)
+        test('should allow serve static configuration with path only (src is optional)', () => {
+            const config = {
+                paths: [
+                    {
+                        path: '/resources'
+                    }
+                ]
+            };
 
-        // Validation should fail
-        expect(valid).toBe(false);
-        expect(validate.errors).toBeDefined();
-        expect(validate.errors!.length).toBeGreaterThan(0);
+            const validate = ajv.compile(serveStaticSchema);
+            const valid = validate(config);
 
-        // Check that we have errors for both:
-        // 1. Invalid framework enum value
-        const frameworkError = validate.errors!.find(
-            (err: any) => err.instancePath.includes('/test/0/framework') || err.params?.allowedValues
-        );
-        expect(frameworkError).toBeDefined();
+            if (!valid) {
+                console.error('Validation errors:', JSON.stringify(validate.errors, null, 2));
+            }
 
-        // 2. Additional properties violations (unknownProperty at root level)
-        const additionalPropsError = validate.errors!.find((err: any) => err.keyword === 'additionalProperties');
-        expect(additionalPropsError).toBeDefined();
+            expect(valid).toBe(true);
+        });
+
+        test('should reject serve static configuration with additional invalid properties', () => {
+            const config = {
+                paths: [
+                    {
+                        path: '/resources',
+                        src: './test',
+                        invalidProperty: 'should fail'
+                    }
+                ]
+            };
+
+            const validate = ajv.compile(serveStaticSchema);
+            const valid = validate(config);
+
+            expect(valid).toBe(false);
+        });
     });
 });
