@@ -41,7 +41,7 @@
         "@types/fs-extra": "11.0.4",
         "@types/folder-hash": "4.0.4",
         "portfinder": "1.0.38",
-        "promisify-child-process": "4.1.2"
+        "promisify-child-process": "5.0.1"
     },
     "devDependencies": {},
     "engines": {
