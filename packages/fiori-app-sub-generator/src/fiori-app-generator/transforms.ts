@@ -306,7 +306,6 @@ function getUI5VersionDefault(
     };
 }
 
-
 /**
  * Get the base app configuration for the Fiori Elements or Freestyle app.
  * Which type of app is generated is determined by the template type derived from the floorplan specified.
