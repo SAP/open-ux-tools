@@ -1,5 +1,21 @@
 # @sap-ux/adp-tooling
 
+## 0.18.74
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+- Updated dependencies [fd8de2b]
+- Updated dependencies [c043712]
+- Updated dependencies [b96de78]
+    - @sap-ux/i18n@0.3.9
+    - @sap-ux/axios-extension@1.25.16
+    - @sap-ux/project-input-validator@0.6.62
+    - @sap-ux/project-access@1.35.9
+    - @sap-ux/odata-service-writer@0.29.26
+    - @sap-ux/system-access@0.6.57
+    - @sap-ux/inquirer-common@0.11.14
+
 ## 0.18.73
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.21
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+
 ## 1.6.20
 
 ### Patch Changes
