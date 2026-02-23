@@ -11,7 +11,7 @@
                         "customMiddleware": {
                             "type": "array",
                             "items": {
-                                "anyOf": [
+                                "allOf": [
                                     {
                                         "if": {
                                             "properties": {
