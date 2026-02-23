@@ -353,9 +353,12 @@ describe('Test Update System Action', () => {
         jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Create };
 
-        const invalidSystem = { ...backendSystem, url: 'invalid url' };
+        const invalidSystem = { ...backendSystem, url: 'invalid url', systemType: undefined };
         await expect(
-            updateSystem(panelContext, { type: 'UPDATE_SYSTEM', payload: { system: invalidSystem } })
+            updateSystem(panelContext, {
+                type: 'UPDATE_SYSTEM',
+                payload: { system: invalidSystem as unknown as BackendSystem }
+            })
         ).resolves.toBeUndefined();
 
         expect(panelUtils.validateSystemUrl).toHaveBeenCalledWith('invalid url');
