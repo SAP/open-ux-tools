@@ -1,5 +1,29 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.24
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+    - @sap-ux/mockserver-config-writer@0.9.55
+    - @sap-ux/project-access@1.35.7
+
+## 0.29.23
+
+### Patch Changes
+
+- ff634b0: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.8
+
+## 0.29.22
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/mockserver-config-writer@0.9.54
+    - @sap-ux/ui5-config@0.29.18
+
 ## 0.29.21
 
 ### Patch Changes

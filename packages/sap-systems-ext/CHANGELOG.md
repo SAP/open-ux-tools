@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.4
+
+### Patch Changes
+
+- 66869b2: text and ui updates
+
+## 0.3.3
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
 ## 0.3.2
 
 ### Patch Changes

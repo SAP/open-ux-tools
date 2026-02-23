@@ -1,5 +1,12 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.18.21
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux-private/control-property-editor-common@0.7.5
+
 ## 0.18.20
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.20
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+
+## 1.6.19
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+    - @sap-ux/ui5-config@0.29.18
+
 ## 1.6.18
 
 ### Patch Changes

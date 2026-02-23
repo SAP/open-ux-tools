@@ -1,5 +1,43 @@
 # @sap-ux/adp-tooling
 
+## 0.18.71
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+    - @sap-ux/odata-service-writer@0.29.24
+    - @sap-ux/project-access@1.35.7
+    - @sap-ux/inquirer-common@0.11.12
+    - @sap-ux/axios-extension@1.25.15
+    - @sap-ux/project-input-validator@0.6.60
+    - @sap-ux/system-access@0.6.56
+
+## 0.18.70
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+- Updated dependencies [ff634b0]
+- Updated dependencies [d588c26]
+    - @sap-ux/inquirer-common@0.11.11
+    - @sap-ux/odata-service-writer@0.29.23
+    - @sap-ux/system-access@0.6.56
+    - @sap-ux/axios-extension@1.25.15
+
+## 0.18.69
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/odata-service-writer@0.29.22
+    - @sap-ux/project-input-validator@0.6.59
+    - @sap-ux/store@1.5.7
+    - @sap-ux/system-access@0.6.55
+    - @sap-ux/ui5-config@0.29.18
+
 ## 0.18.68
 
 ### Patch Changes
