@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.131
+
+### Patch Changes
+
+- 34b8293: fix: add cards generator path to CAP index.html
+
 ## 0.23.130
 
 ### Patch Changes
