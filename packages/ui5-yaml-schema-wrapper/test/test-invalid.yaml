@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=../schema/ux-ui5-tooling-schema.json
+specVersion: '4.0'
+metadata:
+  name: com.sap.cap.fe.ts.sample
+  allowSapInternal: true
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: localService/index.html
+          intent:
+            object: "Samples"
+            action: "display"
+        test:
+          - framework: "Testsuite"
+          - framework: "OPA5"
+          - framework: "Qunit"
+        editors:
+          xyz:
+            - url: hello/world.html
+          rta:
+            endpoints:
+              - path: localService/variantsManagement.html
+        debug: false
+

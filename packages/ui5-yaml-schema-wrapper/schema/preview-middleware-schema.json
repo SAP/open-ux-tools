@@ -157,7 +157,7 @@
         },
         "options": {
           "type": "object",
-          "additionalProperties": {},
+          "additionalProperties": false,
           "properties": {
             "baseId": {
               "type": "string"
@@ -206,7 +206,7 @@
       "properties": {
         "options": {
           "type": "object",
-          "additionalProperties": {},
+          "additionalProperties": false,
           "properties": {
             "baseId": {
               "type": "string"

@@ -10,3 +10,5 @@ export {
 } from './schema-generator';
 
 export type { MiddlewareSchemaConfig, SchemaGenerationResult, GenerationSummary } from './schema-generator';
+
+export { mergeSchemas } from './schema-merger';

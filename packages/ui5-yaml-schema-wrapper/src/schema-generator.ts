@@ -65,6 +65,35 @@ export function resolvePackageSrc(packageName: string, srcPath: string): string 
 }
 
 /**
+ * Recursively ensure that all object schemas have additionalProperties: false.
+ * This is needed because typescript-json-schema doesn't always set this property
+ * in nested definitions, which causes validation issues in conditional schemas.
+ *
+ * @param schema - The schema object to process.
+ */
+function ensureAdditionalPropertiesFalse(schema: any): void {
+    if (!schema || typeof schema !== 'object') {
+        return;
+    }
+
+    // If this is an object type with properties, ensure additionalProperties is false
+    if (schema.type === 'object' && schema.properties && schema.additionalProperties !== false) {
+        schema.additionalProperties = false;
+    }
+
+    // Process all nested schemas
+    for (const key in schema) {
+        if (typeof schema[key] === 'object') {
+            if (Array.isArray(schema[key])) {
+                schema[key].forEach((item: any) => ensureAdditionalPropertiesFalse(item));
+            } else {
+                ensureAdditionalPropertiesFalse(schema[key]);
+            }
+        }
+    }
+}
+
+/**
  * Get the default schema output directory
  *
  * @param baseDir - Base directory (defaults to current working directory)
@@ -158,6 +187,9 @@ export function generateSchema(
             }
             return { success: false, name: config.name, error };
         }
+
+        // Post-process schema to ensure additionalProperties: false is set on all object definitions
+        ensureAdditionalPropertiesFalse(schema);
 
         const outputPath = join(outputDir, config.outputFileName);
         writeFileSync(outputPath, JSON.stringify(schema, null, 2));

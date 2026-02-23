@@ -176,6 +176,36 @@ describe('YAML Schema Validation', () => {
             const additionalPropsError = validate.errors!.find((err: any) => err.keyword === 'additionalProperties');
             expect(additionalPropsError).toBeDefined();
         });
+
+        test('should reject preview middleware with invalid properties in editors object', () => {
+            const config = {
+                editors: {
+                    xyz: {
+                        url: 'hello/world.html'
+                    },
+                    rta: {
+                        endpoints: [
+                            {
+                                path: 'localService/variantsManagement.html'
+                            }
+                        ]
+                    }
+                },
+                debug: false
+            };
+
+            const validate = ajv.compile(previewMiddlewareSchema);
+            const valid = validate(config);
+
+            expect(valid).toBe(false);
+            expect(validate.errors).toBeDefined();
+
+            // Should have additional properties error for 'xyz'
+            const additionalPropsError = validate.errors!.find(
+                (err: any) => err.keyword === 'additionalProperties' && err.params?.additionalProperty === 'xyz'
+            );
+            expect(additionalPropsError).toBeDefined();
+        });
     });
 
     describe('Backend Proxy Middleware Schema Validation', () => {

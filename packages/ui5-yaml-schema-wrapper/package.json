@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui5-yaml-schema-wrapper",
-    "description": "UI5 YAML schema wrapper with middleware configuration support for preview-middleware, backend-proxy-middleware, reload-middleware, serve-static-middleware, and ui5-proxy-middleware",
+    "description": "Consolidated UI5 YAML schema with validation for all SAP Fiori tools middleware configurations",
     "version": "0.1.0",
     "repository": {
         "type": "git",
@@ -13,15 +13,14 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsx src/schema-generator.ts",
+        "build": "tsx src/schema-generator.ts && tsx src/schema-merger.ts",
         "clean": "rimraf --glob dist schema/*-schema.json *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
-        "test": "jest --ci",
-        "test:watch": "jest --watch"
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "files": [
         "LICENSE",
