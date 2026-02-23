@@ -89,8 +89,8 @@ importers:
         specifier: 0.2.16
         version: 0.2.16
       npm-run-all2:
-        specifier: 7.0.2
-        version: 7.0.2
+        specifier: 8.0.4
+        version: 8.0.4
       nx:
         specifier: 21.6.10
         version: 21.6.10
@@ -323,8 +323,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       react:
         specifier: 16.14.0
         version: 16.14.0
@@ -773,8 +773,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 8.0.4
+        version: 8.0.4
 
   packages/app-config-writer:
     dependencies:
@@ -1101,8 +1101,8 @@ importers:
         version: 7.1.1
     devDependencies:
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
 
   packages/cds-odata-annotation-converter:
     dependencies:
@@ -1132,8 +1132,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
 
   packages/cf-deploy-config-inquirer:
     dependencies:
@@ -1408,8 +1408,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.2.0)
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       postcss-modules:
         specifier: 6.0.1
         version: 6.0.1(postcss@8.5.6)
@@ -1456,8 +1456,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -2058,8 +2058,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 8.0.4
+        version: 8.0.4
 
   packages/fiori-app-sub-generator:
     dependencies:
@@ -2841,8 +2841,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@20.0.0)(typescript@5.9.3)
@@ -3128,8 +3128,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-entity-model
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
 
   packages/odata-annotation-core-types:
     dependencies:
@@ -3138,8 +3138,8 @@ importers:
         version: link:../text-document-utils
     devDependencies:
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
 
   packages/odata-entity-model:
     devDependencies:
@@ -3147,8 +3147,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-annotation-core-types
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
 
   packages/odata-service-inquirer:
     dependencies:
@@ -3327,8 +3327,8 @@ importers:
         specifier: 1.13.5
         version: 1.13.5(debug@4.4.3)
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       prettier:
         specifier: 2.5.1
         version: 2.5.1
@@ -3463,8 +3463,8 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       supertest:
         specifier: 7.1.4
         version: 7.1.4
@@ -3494,8 +3494,8 @@ importers:
         specifier: 50.8.0
         version: 50.8.0(eslint@9.39.1)
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       ui5-tooling-modules:
         specifier: 3.33.0
         version: 3.33.0(@ui5/project@4.0.8)(prettier@3.6.2)(typescript@5.9.3)
@@ -4149,8 +4149,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.2.0)
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       react:
         specifier: 16.14.0
         version: 16.14.0
@@ -4264,8 +4264,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.2.0)
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       react:
         specifier: 16.14.0
         version: 16.14.0
@@ -5002,8 +5002,8 @@ importers:
         specifier: 7.1.1
         version: 7.1.1
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       prettier:
         specifier: 2.5.1
         version: 2.5.1
@@ -5075,8 +5075,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       npm-run-all2:
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 8.0.4
+        version: 8.0.4
       portfinder:
         specifier: 1.0.38
         version: 1.0.38
@@ -16782,10 +16782,6 @@ packages:
     resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
     engines: {node: '>=10'}
 
-  /ansi-styles@6.2.1:
-    resolution: {integrity: sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==}
-    engines: {node: '>=12'}
-
   /ansi-styles@6.2.3:
     resolution: {integrity: sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==}
     engines: {node: '>=12'}
@@ -23394,7 +23390,6 @@ packages:
   /isexe@3.1.1:
     resolution: {integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==}
     engines: {node: '>=16'}
-    dev: true
 
   /isobject@3.0.1:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
@@ -26166,7 +26161,6 @@ packages:
   /npm-normalize-package-bin@4.0.0:
     resolution: {integrity: sha512-TZKxPvItzai9kN9H/TkmCtx/ZN/hvr3vUycjlfmH0ootY9yFBzNOpiXAdIn1Iteqsvk4lQn6B5PTrt+n6h8k/w==}
     engines: {node: ^18.17.0 || >=20.5.0}
-    dev: true
 
   /npm-package-arg@10.1.0:
     resolution: {integrity: sha512-uFyyCEmgBfZTtrKk/5xDfHp6+MdrqGotX/VoOyEEl3mBwiEE5FlBaePanazJSVMPT7vKepcjYBY2ztg9A3yPIA==}
@@ -26289,60 +26283,19 @@ packages:
       - supports-color
     dev: true
 
-  /npm-run-all2@5.0.0:
-    resolution: {integrity: sha512-twczQhEpj55UROtg0Xz0nzn83TanS5Re12g5g1hcdnyAhlWOt9VNHdSHf2Z6MO3/wOVqy9tEdi0ruJt5NnMgmw==}
-    engines: {node: '>= 10'}
-    hasBin: true
-    dependencies:
-      ansi-styles: 4.3.0
-      cross-spawn: 7.0.6
-      memorystream: 0.3.1
-      minimatch: 3.0.5
-      pidtree: 0.5.0
-      read-pkg: 5.2.0
-      shell-quote: 1.7.3
-    dev: true
-
-  /npm-run-all2@6.2.0:
-    resolution: {integrity: sha512-wA7yVIkthe6qJBfiJ2g6aweaaRlw72itsFGF6HuwCHKwtwAx/4BY1vVpk6bw6lS8RLMsexoasOkd0aYOmsFG7Q==}
-    engines: {node: ^14.18.0 || >=16.0.0, npm: '>= 8'}
-    dependencies:
-      ansi-styles: 6.2.1
-      cross-spawn: 7.0.5
-      memorystream: 0.3.1
-      minimatch: 9.0.5
-      pidtree: 0.6.0
-      read-package-json-fast: 3.0.2
-      shell-quote: 1.7.3
-
-  /npm-run-all2@7.0.2:
-    resolution: {integrity: sha512-7tXR+r9hzRNOPNTvXegM+QzCuMjzUIIq66VDunL6j60O4RrExx32XUhlrS7UK4VcdGw5/Wxzb3kfNcFix9JKDA==}
-    engines: {node: ^18.17.0 || >=20.5.0, npm: '>= 9'}
-    dependencies:
-      ansi-styles: 6.2.1
-      cross-spawn: 7.0.6
-      memorystream: 0.3.1
-      minimatch: 9.0.5
-      pidtree: 0.6.0
-      read-package-json-fast: 4.0.0
-      shell-quote: 1.7.3
-      which: 5.0.0
-    dev: true
-
   /npm-run-all2@8.0.4:
     resolution: {integrity: sha512-wdbB5My48XKp2ZfJUlhnLVihzeuA1hgBnqB2J9ahV77wLS+/YAJAlN8I+X3DIFIPZ3m5L7nplmlbhNiFDmXRDA==}
     engines: {node: ^20.5.0 || >=22.0.0, npm: '>= 10'}
     hasBin: true
     dependencies:
-      ansi-styles: 6.2.1
+      ansi-styles: 6.2.3
       cross-spawn: 7.0.6
       memorystream: 0.3.1
-      picomatch: 4.0.2
+      picomatch: 4.0.3
       pidtree: 0.6.0
       read-package-json-fast: 4.0.0
       shell-quote: 1.7.3
       which: 5.0.0
-    dev: true
 
   /npm-run-path@4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
@@ -27468,20 +27421,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /picomatch@4.0.2:
-    resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
-    engines: {node: '>=12'}
-    dev: true
-
   /picomatch@4.0.3:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
     engines: {node: '>=12'}
-
-  /pidtree@0.5.0:
-    resolution: {integrity: sha512-9nxspIM7OpZuhBxPg73Zvyq7j1QMPMPsGKTqRc2XOaFQauDvoNz9fM1Wdkjmeo7l9GXOZiRs97sPkuayl39wjA==}
-    engines: {node: '>=0.10'}
-    hasBin: true
-    dev: true
 
   /pidtree@0.6.0:
     resolution: {integrity: sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==}
@@ -28859,7 +28801,6 @@ packages:
     dependencies:
       json-parse-even-better-errors: 4.0.0
       npm-normalize-package-bin: 4.0.0
-    dev: true
 
   /read-package-json@6.0.4:
     resolution: {integrity: sha512-AEtWXYfopBj2z5N5PbkAOeNHRPUg5q+Nen7QLxV8M2zJq1ym6/lCz3fYNTCXe19puu2d06jfHhrP7v/S2PtMMw==}
@@ -32928,7 +32869,6 @@ packages:
     hasBin: true
     dependencies:
       isexe: 3.1.1
-    dev: true
 
   /wide-align@1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
