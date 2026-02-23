@@ -29,7 +29,9 @@ interface MiddlewareSchemaMapping {
 }
 
 /**
- * Get the list of middleware schemas to merge
+ * Get the list of middleware schemas to merge.
+ *
+ * @returns Array of middleware schema mappings
  */
 function getMiddlewareMappings(): MiddlewareSchemaMapping[] {
     return [
@@ -77,10 +79,11 @@ function getMiddlewareMappings(): MiddlewareSchemaMapping[] {
 }
 
 /**
- * Load a schema file from the schema directory
+ * Load a schema file from the schema directory.
  *
- * @param schemaDir
- * @param fileName
+ * @param schemaDir - Directory to load the schema from
+ * @param fileName - Name of the schema file to load
+ * @returns The loaded schema object
  */
 function loadSchema(schemaDir: string, fileName: string): Schema {
     const filePath = join(schemaDir, fileName);
@@ -226,10 +229,11 @@ function resolveExternalRefs(
 }
 
 /**
- * Prefix all definition keys in a schema to avoid conflicts
+ * Prefix all definition keys in a schema to avoid conflicts.
  *
- * @param schema
- * @param prefix
+ * @param schema - The schema to process
+ * @param prefix - The prefix to add to each definition key
+ * @returns The schema with prefixed definition keys
  */
 function prefixDefinitions(schema: Schema, prefix: string): Schema {
     if (!schema.definitions) {
@@ -285,10 +289,10 @@ function prefixDefinitions(schema: Schema, prefix: string): Schema {
 }
 
 /**
- * Merge all middleware schemas into the main ux-ui5-tooling-schema.json
+ * Merge all middleware schemas into the main ux-ui5-tooling-schema.json.
  *
- * @param schemaDir
- * @param verbose
+ * @param schemaDir - Directory where the individual middleware schemas are located
+ * @param verbose - Whether to log detailed information during the merge process (default: true)
  */
 export function mergeSchemas(schemaDir: string, verbose: boolean = true): void {
     if (verbose) {
@@ -429,9 +433,9 @@ export function mergeSchemas(schemaDir: string, verbose: boolean = true): void {
 }
 
 /**
- * CLI entry point for merging schemas
+ * CLI entry point for merging schemas.
  *
- * @param baseDir
+ * @param baseDir - Base directory to resolve the schema directory from (defaults to current working directory)
  */
 export function runCli(baseDir: string = process.cwd()): void {
     const schemaDir = join(baseDir, 'schema');
