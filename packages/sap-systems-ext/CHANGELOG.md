@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.5
+
+### Patch Changes
+
+- bdf59e5: fix naming validation when importing
+
 ## 0.3.4
 
 ### Patch Changes
