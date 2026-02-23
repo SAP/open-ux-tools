@@ -436,10 +436,13 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     const flpConfig = getFlpConfigWithDefaults(config.flp);
     urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
-    if (config.editors?.rta) {
-        config.editors.rta.endpoints.forEach((endpoint) => {
+    if (config.editors) {
+        config.editors.rta?.endpoints.forEach((endpoint) => {
             urls.push({ path: endpoint.path, type: 'editor' });
         });
+        if (config.editors.cardGenerator?.path) {
+            urls.push({ path: config.editors.cardGenerator.path, type: 'editor' });
+        }
     }
     // add test urls if configured
     if (config.test) {

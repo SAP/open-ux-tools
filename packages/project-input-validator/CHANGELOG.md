@@ -1,5 +1,32 @@
 # @sap-ux/project-input-validator
 
+## 0.6.60
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+
+## 0.6.59
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 0.6.58
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+
+## 0.6.57
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+
 ## 0.6.56
 
 ### Patch Changes

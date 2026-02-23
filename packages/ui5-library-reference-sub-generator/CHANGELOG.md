@@ -1,5 +1,61 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.121
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/telemetry@0.6.78
+- @sap-ux/ui5-library-reference-writer@0.2.52
+- @sap-ux/fiori-generator-shared@0.13.77
+- @sap-ux/ui5-library-reference-inquirer@0.4.121
+
+## 0.1.120
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+- Updated dependencies [d588c26]
+    - @sap-ux/feature-toggle@0.3.7
+    - @sap-ux/ui5-library-reference-inquirer@0.4.120
+    - @sap-ux/fiori-generator-shared@0.13.76
+
+## 0.1.119
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/ui5-library-reference-inquirer@0.4.119
+    - @sap-ux/telemetry@0.6.77
+
+## 0.1.118
+
+### Patch Changes
+
+- c94cc8e: fix(deps): update dependency @vscode-logging/logger to v2.0.8
+- e5bc3ca: fix(deps): update dependency vscode-uri to v3.1.0
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-library-reference-inquirer@0.4.118
+    - @sap-ux/telemetry@0.6.76
+    - @sap-ux/ui5-library-reference-writer@0.2.51
+
+## 0.1.117
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/telemetry@0.6.75
+    - @sap-ux/ui5-library-reference-inquirer@0.4.117
+    - @sap-ux/ui5-library-reference-writer@0.2.50
+
 ## 0.1.116
 
 ### Patch Changes

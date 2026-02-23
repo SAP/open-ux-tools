@@ -1,6 +1,6 @@
 {
     "name": "sap-ux-sap-systems-ext",
-    "version": "0.3.1",
+    "version": "0.3.5",
     "displayName": "Connection Manager for SAP Systems",
     "description": "Enables you to store connection information for remote SAP systems.",
     "main": "./dist/extension.js",
@@ -62,12 +62,12 @@
         "@zowe/secrets-for-zowe-sdk": "8.29.4",
         "cross-env": "7.0.3",
         "fast-glob": "3.3.1",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "jsonc-parser": "3.2.0",
         "normalize-path": "3.0.0",
         "npm-run-all2": "8.0.4",
         "os-name": "4.0.1",
-        "vscode-uri": "3.0.7",
+        "vscode-uri": "3.1.0",
         "@vscode/vsce": "3.6.0"
     },
     "contributes": {
@@ -192,12 +192,12 @@
                 },
                 {
                     "command": "sap.ux.tools.sapSystems.launchAppGen",
-                    "when": "view == sap.ux.tools.sapSystems && viewItem == sapSystem",
+                    "when": "view == sap.ux.tools.sapSystems && viewItem == sapSystem-abap_catalog",
                     "group": "navigation"
                 },
                 {
                     "command": "sap.ux.tools.sapSystems.show",
-                    "when": "view == sap.ux.tools.sapSystems && viewItem == sapSystem",
+                    "when": "view == sap.ux.tools.sapSystems && (viewItem == sapSystem-abap_catalog || viewItem == sapSystem-odata_service)",
                     "group": "navigation"
                 }
             ]

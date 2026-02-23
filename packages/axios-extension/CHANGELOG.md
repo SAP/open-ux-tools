@@ -1,5 +1,18 @@
 # @sap-ux/axios-extension
 
+## 1.25.15
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux/feature-toggle@0.3.7
+
+## 1.25.14
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+
 ## 1.25.13
 
 ### Patch Changes

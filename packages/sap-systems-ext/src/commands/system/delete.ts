@@ -19,7 +19,7 @@ export const deleteSystemCommandHandler =
         const backendSystem = await systemService.read(backendSystemKey);
 
         if (!backendSystem) {
-            window.showErrorMessage(t('error.systemNotFound', { backendKey: backendSystemKey.getId() }));
+            window.showErrorMessage(t('error.connectionNotFound', { backendKey: backendSystemKey.getId() }));
             return;
         }
 
@@ -51,7 +51,7 @@ function deletionSuccessHandler(
     panelManager.deleteAndDispose(panelKey);
     logTelemetry(SystemActionStatus.DELETED_SUCCESS, backendSystem.systemType);
 
-    window.showInformationMessage(t('info.systemDeleted', geti18nOpts(backendSystem.name)));
+    window.showInformationMessage(t('info.connectionDeleted', geti18nOpts(backendSystem.name)));
 }
 
 /**
@@ -60,7 +60,7 @@ function deletionSuccessHandler(
  * @param system - the backend system that failed to be deleted
  */
 function deletionFailureHandler(system: BackendSystem): void {
-    window.showWarningMessage(t('error.deletingSystem', geti18nOpts(system.name)));
+    window.showWarningMessage(t('error.deletingConnection', geti18nOpts(system.name)));
     logTelemetry(SystemActionStatus.DELETED_FAIL, system.systemType);
 }
 
