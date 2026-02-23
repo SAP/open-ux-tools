@@ -43,7 +43,7 @@ Path that is to be watched. By default, the standard SAPUI5 `webapp` folder is u
 
 #### ext
 
-- `<string>` (default: `html,js,ts,json,xml,properties,change,variant,appdescr_variant,ctrl_variant,ctrl_variant_change,ctrl_variant_management_change`)
+- `<string>` (default: `html,js,json,xml,properties,change`)
 Change this parameter to select a custom set of file extensions that are to be watched
 
 #### port
