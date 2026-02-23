@@ -216,4 +216,3 @@ describe('UI5 templates', () => {
         });
     });
 });
-
