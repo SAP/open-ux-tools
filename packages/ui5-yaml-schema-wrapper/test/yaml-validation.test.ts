@@ -25,6 +25,7 @@ describe('YAML Schema Validation', () => {
         backendProxySchema = JSON.parse(readFileSync(join(schemaDir, 'backend-proxy-middleware-schema.json'), 'utf-8'));
         reloadMiddlewareSchema = JSON.parse(readFileSync(join(schemaDir, 'reload-middleware-schema.json'), 'utf-8'));
         serveStaticSchema = JSON.parse(readFileSync(join(schemaDir, 'serve-static-middleware-schema.json'), 'utf-8'));
+        // Note: fiori-tools-proxy-schema has external references that are resolved in the merged schema
     });
 
     describe('Preview Middleware Schema Validation', () => {

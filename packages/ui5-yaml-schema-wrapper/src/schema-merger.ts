@@ -352,11 +352,7 @@ export function mergeSchemas(schemaDir: string, verbose: boolean = true): void {
 
         const updatedConfigSchema = updateRefsToPrefix(configSchema, prefix);
 
-        // Create a definition for this middleware configuration
-        const configDefName = `${prefix}_Configuration`;
-        allDefinitions[configDefName] = updatedConfigSchema;
-
-        // Create condition for this middleware that references the configuration definition
+        // Create condition for this middleware - INLINE the configuration schema
         const condition: any = {
             if: {
                 properties: {
@@ -367,9 +363,7 @@ export function mergeSchemas(schemaDir: string, verbose: boolean = true): void {
             },
             then: {
                 properties: {
-                    configuration: {
-                        $ref: `#/definitions/${configDefName}`
-                    }
+                    configuration: updatedConfigSchema
                 }
             }
         };

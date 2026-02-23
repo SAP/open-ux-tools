@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=../schema/ux-ui5-tooling-schema.json
+specVersion: '4.0'
+metadata:
+  name: test-validation
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: sap-fe-mockserver
+      configuration:
+        ignoreCertErrors: true
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: 1.144.1
+        backend:
+          - url: https://backend.example.com
+            path: /sap/opu/odata
+

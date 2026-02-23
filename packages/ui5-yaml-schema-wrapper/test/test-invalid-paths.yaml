@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../schema/ux-ui5-tooling-schema.json
+specVersion: '4.0'
+metadata:
+  name: test-invalid-paths
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: sap-fe-mockserver
+      configuration:
+        ignoreCertErrors: true
+        ui5:
+          paths:
+            - urlPath: '/resources/sap/ui/core/library-preload.js'
+              localPath: './resources/sap/ui/core/library-preload.js'
+            - urlPath: '/resources/sap/ui/core/themes/sap_horizon/library.css'
+              localPath: './resources/sap/ui/core/themes/sap_horizon/library.css'
+            - ewsrserve: true
+          version: '1.142.2'
+

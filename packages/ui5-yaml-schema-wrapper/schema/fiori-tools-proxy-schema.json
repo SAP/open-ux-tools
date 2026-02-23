@@ -11,7 +11,62 @@
         },
         "ui5": {
             "description": "UI5 proxy configuration.",
-            "$ref": "ui5-proxy-middleware-schema.json#/properties/ui5"
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "paths": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "path": {
+                                        "type": "string"
+                                    },
+                                    "url": {
+                                        "type": "string"
+                                    },
+                                    "pathReplace": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["path", "url"],
+                                "additionalProperties": false
+                            }
+                        },
+                        "version": {
+                            "type": "string"
+                        },
+                        "directLoad": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": ["paths"],
+                    "additionalProperties": false
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "url": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "string"
+                        },
+                        "directLoad": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": ["path", "url"],
+                    "additionalProperties": false
+                }
+            ]
         },
         "proxy": {
             "description": "If set then it will override the proxy settings from node.",
@@ -34,5 +89,64 @@
             "type": "string"
         }
     },
-    "additionalProperties": false
+    "additionalProperties": false,
+    "definitions": {
+        "PathConfig": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "pathReplace": {
+                    "type": "string"
+                }
+            },
+            "required": ["path", "url"],
+            "additionalProperties": false
+        },
+        "UI5ProxyConfig": {
+            "type": "object",
+            "properties": {
+                "paths": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PathConfig"
+                    }
+                },
+                "version": {
+                    "type": "string"
+                },
+                "directLoad": {
+                    "type": "boolean"
+                }
+            },
+            "required": ["paths"],
+            "additionalProperties": false
+        },
+        "FioriToolsProxyConfigUI5": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "url": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                },
+                "directLoad": {
+                    "type": "boolean"
+                }
+            },
+            "required": ["path", "url"],
+            "additionalProperties": false
+        }
+    }
 }

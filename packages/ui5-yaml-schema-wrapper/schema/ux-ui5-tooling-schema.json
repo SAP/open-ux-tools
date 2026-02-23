@@ -23,7 +23,55 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/preview_middleware_Configuration"
+                                                    "description": "Middleware configuration.",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "flp": {
+                                                            "$ref": "#/definitions/preview_middleware_Partial<FlpConfig>"
+                                                        },
+                                                        "test": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/preview_middleware_TestConfig"
+                                                            }
+                                                        },
+                                                        "rta": {
+                                                            "deprecated": "use editors.rta instead.",
+                                                            "$ref": "#/definitions/preview_middleware_InternalRtaConfig"
+                                                        },
+                                                        "editors": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "rta": {
+                                                                    "$ref": "#/definitions/preview_middleware_RtaConfig"
+                                                                },
+                                                                "cardGenerator": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "path": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "additionalProperties": false
+                                                                }
+                                                            },
+                                                            "additionalProperties": false
+                                                        },
+                                                        "adp": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithTarget"
+                                                                },
+                                                                {
+                                                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithBuildPath"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "debug": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
                                                 }
                                             }
                                         }
@@ -39,7 +87,55 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/preview_middleware_Configuration"
+                                                    "description": "Middleware configuration.",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "flp": {
+                                                            "$ref": "#/definitions/preview_middleware_Partial<FlpConfig>"
+                                                        },
+                                                        "test": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/preview_middleware_TestConfig"
+                                                            }
+                                                        },
+                                                        "rta": {
+                                                            "deprecated": "use editors.rta instead.",
+                                                            "$ref": "#/definitions/preview_middleware_InternalRtaConfig"
+                                                        },
+                                                        "editors": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "rta": {
+                                                                    "$ref": "#/definitions/preview_middleware_RtaConfig"
+                                                                },
+                                                                "cardGenerator": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "path": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "additionalProperties": false
+                                                                }
+                                                            },
+                                                            "additionalProperties": false
+                                                        },
+                                                        "adp": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithTarget"
+                                                                },
+                                                                {
+                                                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithBuildPath"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "debug": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
                                                 }
                                             }
                                         }
@@ -55,7 +151,19 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/backend_proxy_middleware_Configuration"
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "backend": {
+                                                            "$ref": "#/definitions/backend_proxy_middleware_BackendConfig"
+                                                        },
+                                                        "options": {
+                                                            "$ref": "#/definitions/backend_proxy_middleware_Partial<Options<IncomingMessage,ServerResponse<IncomingMessage>>>"
+                                                        },
+                                                        "debug": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
                                                 }
                                             }
                                         }
@@ -71,7 +179,41 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/backend_proxy_middleware_cf_Configuration"
+                                                    "description": "Configuration for Cloud Foundry OAuth middleware.",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "backends": {
+                                                            "description": "Array of backend destinations.\nEach destination has its own URL and paths.",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/backend_proxy_middleware_cf_BackendDestination"
+                                                            }
+                                                        },
+                                                        "credentials": {
+                                                            "description": "Manual OAuth credentials (optional).\nIf not provided, middleware will attempt to auto-detect from Cloud Foundry ADP project.",
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "clientId": {
+                                                                    "description": "OAuth2 client ID.",
+                                                                    "type": "string"
+                                                                },
+                                                                "clientSecret": {
+                                                                    "description": "OAuth2 client secret.",
+                                                                    "type": "string"
+                                                                },
+                                                                "url": {
+                                                                    "description": "Base URL for the OAuth token endpoint.\nThe token endpoint will be constructed as: {url}/oauth/token",
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "additionalProperties": false
+                                                        },
+                                                        "debug": {
+                                                            "description": "Enable debug logging.",
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
                                                 }
                                             }
                                         }
@@ -87,7 +229,79 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/reload_middleware_Configuration"
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "path": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "type": "string"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "https": {
+                                                            "$ref": "#/definitions/reload_middleware_HttpsOptions"
+                                                        },
+                                                        "connectOptions": {
+                                                            "$ref": "#/definitions/reload_middleware_Options"
+                                                        },
+                                                        "port": {
+                                                            "description": "Sets server port number: Defaults to 35729",
+                                                            "type": "number"
+                                                        },
+                                                        "noListen": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "exts": {
+                                                            "description": "File Extensions to watch",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "extraExts": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "exclusions": {
+                                                            "description": "Extensions to not watch",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/reload_middleware_RegExp"
+                                                            }
+                                                        },
+                                                        "applyCSSLive": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "applyImgLive": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "originalPath": {
+                                                            "type": "string"
+                                                        },
+                                                        "overrideURL": {
+                                                            "type": "string"
+                                                        },
+                                                        "usePolling": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "delay": {
+                                                            "description": "ms to delay browser refresh",
+                                                            "type": "number"
+                                                        },
+                                                        "debug": {
+                                                            "description": "Logs debug messages to console",
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
                                                 }
                                             }
                                         }
@@ -103,7 +317,79 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/reload_middleware_Configuration"
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "path": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "type": "string"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "https": {
+                                                            "$ref": "#/definitions/reload_middleware_HttpsOptions"
+                                                        },
+                                                        "connectOptions": {
+                                                            "$ref": "#/definitions/reload_middleware_Options"
+                                                        },
+                                                        "port": {
+                                                            "description": "Sets server port number: Defaults to 35729",
+                                                            "type": "number"
+                                                        },
+                                                        "noListen": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "exts": {
+                                                            "description": "File Extensions to watch",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "extraExts": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "exclusions": {
+                                                            "description": "Extensions to not watch",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/reload_middleware_RegExp"
+                                                            }
+                                                        },
+                                                        "applyCSSLive": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "applyImgLive": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "originalPath": {
+                                                            "type": "string"
+                                                        },
+                                                        "overrideURL": {
+                                                            "type": "string"
+                                                        },
+                                                        "usePolling": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "delay": {
+                                                            "description": "ms to delay browser refresh",
+                                                            "type": "number"
+                                                        },
+                                                        "debug": {
+                                                            "description": "Logs debug messages to console",
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
                                                 }
                                             }
                                         }
@@ -119,7 +405,92 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/serve_static_middleware_Configuration"
+                                                    "additionalProperties": false,
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "paths": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/serve_static_middleware_PathConfig"
+                                                            }
+                                                        },
+                                                        "acceptRanges": {
+                                                            "description": "Enable or disable accepting ranged requests, defaults to true.\nDisabling this will not send Accept-Ranges and ignore the contents of the Range request header.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "cacheControl": {
+                                                            "description": "Enable or disable setting Cache-Control response header, defaults to true.\nDisabling this will ignore the immutable and maxAge options.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "dotfiles": {
+                                                            "description": "Set how \"dotfiles\" are treated when encountered. A dotfile is a file or directory that begins with a dot (\".\").\nNote this check is done on the path itself without checking if the path actually exists on the disk.\nIf root is specified, only the dotfiles above the root are checked (i.e. the root itself can be within a dotfile when when set to \"deny\").\nThe default value is 'ignore'.\n'allow' No special treatment for dotfiles\n'deny' Send a 403 for any request for a dotfile\n'ignore' Pretend like the dotfile does not exist and call next()",
+                                                            "type": "string"
+                                                        },
+                                                        "etag": {
+                                                            "description": "Enable or disable etag generation, defaults to true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "extensions": {
+                                                            "description": "Set file extension fallbacks. When set, if a file is not found, the given extensions will be added to the file name and search for.\nThe first that exists will be served. Example: ['html', 'htm'].\nThe default value is false.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "const": false,
+                                                                    "type": "boolean"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "fallthrough": {
+                                                            "description": "Let client errors fall-through as unhandled requests, otherwise forward a client error.\nThe default value is true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "immutable": {
+                                                            "description": "Enable or disable the immutable directive in the Cache-Control response header.\nIf enabled, the maxAge option should also be specified to enable caching. The immutable directive will prevent supported clients from making conditional requests during the life of the maxAge option to check if the file has changed.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "index": {
+                                                            "description": "By default this module will send \"index.html\" files in response to a request on a directory.\nTo disable this set false or to supply a new index pass a string or an array in preferred order.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "boolean"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        "lastModified": {
+                                                            "description": "Enable or disable Last-Modified header, defaults to true. Uses the file system's last modified value.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "maxAge": {
+                                                            "description": "Provide a max-age in milliseconds for http caching, defaults to 0. This can also be a string accepted by the ms module.",
+                                                            "type": [
+                                                                "string",
+                                                                "number"
+                                                            ]
+                                                        },
+                                                        "redirect": {
+                                                            "description": "Redirect to trailing \"/\" when the pathname is a dir. Defaults to true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "setHeaders": {
+                                                            "description": "Function to set custom headers on response. Alterations to the headers need to occur synchronously.\nThe function is called as fn(res, path, stat), where the arguments are:\nres the response object\npath the file path that is being sent\nstat the stat object of the file that is being sent",
+                                                            "type": "object",
+                                                            "additionalProperties": false
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -135,7 +506,92 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/serve_static_middleware_Configuration"
+                                                    "additionalProperties": false,
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "paths": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/serve_static_middleware_PathConfig"
+                                                            }
+                                                        },
+                                                        "acceptRanges": {
+                                                            "description": "Enable or disable accepting ranged requests, defaults to true.\nDisabling this will not send Accept-Ranges and ignore the contents of the Range request header.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "cacheControl": {
+                                                            "description": "Enable or disable setting Cache-Control response header, defaults to true.\nDisabling this will ignore the immutable and maxAge options.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "dotfiles": {
+                                                            "description": "Set how \"dotfiles\" are treated when encountered. A dotfile is a file or directory that begins with a dot (\".\").\nNote this check is done on the path itself without checking if the path actually exists on the disk.\nIf root is specified, only the dotfiles above the root are checked (i.e. the root itself can be within a dotfile when when set to \"deny\").\nThe default value is 'ignore'.\n'allow' No special treatment for dotfiles\n'deny' Send a 403 for any request for a dotfile\n'ignore' Pretend like the dotfile does not exist and call next()",
+                                                            "type": "string"
+                                                        },
+                                                        "etag": {
+                                                            "description": "Enable or disable etag generation, defaults to true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "extensions": {
+                                                            "description": "Set file extension fallbacks. When set, if a file is not found, the given extensions will be added to the file name and search for.\nThe first that exists will be served. Example: ['html', 'htm'].\nThe default value is false.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "const": false,
+                                                                    "type": "boolean"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "fallthrough": {
+                                                            "description": "Let client errors fall-through as unhandled requests, otherwise forward a client error.\nThe default value is true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "immutable": {
+                                                            "description": "Enable or disable the immutable directive in the Cache-Control response header.\nIf enabled, the maxAge option should also be specified to enable caching. The immutable directive will prevent supported clients from making conditional requests during the life of the maxAge option to check if the file has changed.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "index": {
+                                                            "description": "By default this module will send \"index.html\" files in response to a request on a directory.\nTo disable this set false or to supply a new index pass a string or an array in preferred order.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "boolean"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        "lastModified": {
+                                                            "description": "Enable or disable Last-Modified header, defaults to true. Uses the file system's last modified value.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "maxAge": {
+                                                            "description": "Provide a max-age in milliseconds for http caching, defaults to 0. This can also be a string accepted by the ms module.",
+                                                            "type": [
+                                                                "string",
+                                                                "number"
+                                                            ]
+                                                        },
+                                                        "redirect": {
+                                                            "description": "Redirect to trailing \"/\" when the pathname is a dir. Defaults to true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "setHeaders": {
+                                                            "description": "Function to set custom headers on response. Alterations to the headers need to occur synchronously.\nThe function is called as fn(res, path, stat), where the arguments are:\nres the response object\npath the file path that is being sent\nstat the stat object of the file that is being sent",
+                                                            "type": "object",
+                                                            "additionalProperties": false
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -151,7 +607,38 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/ui5_proxy_middleware_Configuration"
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ui5": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "$ref": "#/definitions/ui5_proxy_middleware_UI5ProxyConfigTarget"
+                                                                },
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "$ref": "#/definitions/ui5_proxy_middleware_UI5ProxyConfigTarget"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "proxy": {
+                                                            "type": "string"
+                                                        },
+                                                        "debug": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "secure": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "directLoad": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "version": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
                                                 }
                                             }
                                         }
@@ -167,7 +654,105 @@
                                         "then": {
                                             "properties": {
                                                 "configuration": {
-                                                    "$ref": "#/definitions/fiori_tools_proxy_Configuration"
+                                                    "description": "Configuration for fiori-tools-proxy middleware. This middleware combines UI5 proxy and backend proxy functionality.",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "backend": {
+                                                            "description": "Backend proxy configurations.",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_BackendConfig"
+                                                            }
+                                                        },
+                                                        "ui5": {
+                                                            "description": "UI5 proxy configuration.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "paths": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "path": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "url": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "pathReplace": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "path",
+                                                                                    "url"
+                                                                                ],
+                                                                                "additionalProperties": false
+                                                                            }
+                                                                        },
+                                                                        "version": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "directLoad": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "paths"
+                                                                    ],
+                                                                    "additionalProperties": false
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "path": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "version": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "directLoad": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "path",
+                                                                        "url"
+                                                                    ],
+                                                                    "additionalProperties": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        "proxy": {
+                                                            "description": "If set then it will override the proxy settings from node.",
+                                                            "type": "string"
+                                                        },
+                                                        "ignoreCertError": {
+                                                            "deprecated": "Use ignoreCertErrors (plural) instead.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "ignoreCertErrors": {
+                                                            "description": "If set to true, certificate errors will be ignored (e.g., self-signed certificates).",
+                                                            "type": "boolean"
+                                                        },
+                                                        "debug": {
+                                                            "description": "Enable debug logging.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "bsp": {
+                                                            "description": "The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
                                                 }
                                             }
                                         }
@@ -426,57 +1011,6 @@
                         },
                         "ignoreCertErrors": {
                             "description": "If set to true then certification validation errors are ignored.",
-                            "type": "boolean"
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "preview_middleware_Configuration": {
-                    "description": "Middleware configuration.",
-                    "type": "object",
-                    "properties": {
-                        "flp": {
-                            "$ref": "#/definitions/preview_middleware_Partial<FlpConfig>"
-                        },
-                        "test": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/preview_middleware_TestConfig"
-                            }
-                        },
-                        "rta": {
-                            "deprecated": "use editors.rta instead.",
-                            "$ref": "#/definitions/preview_middleware_InternalRtaConfig"
-                        },
-                        "editors": {
-                            "type": "object",
-                            "properties": {
-                                "rta": {
-                                    "$ref": "#/definitions/preview_middleware_RtaConfig"
-                                },
-                                "cardGenerator": {
-                                    "type": "object",
-                                    "properties": {
-                                        "path": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "additionalProperties": false
-                                }
-                            },
-                            "additionalProperties": false
-                        },
-                        "adp": {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithTarget"
-                                },
-                                {
-                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithBuildPath"
-                                }
-                            ]
-                        },
-                        "debug": {
                             "type": "boolean"
                         }
                     },
@@ -1086,21 +1620,6 @@
                     "type": "object",
                     "additionalProperties": false
                 },
-                "backend_proxy_middleware_Configuration": {
-                    "type": "object",
-                    "properties": {
-                        "backend": {
-                            "$ref": "#/definitions/backend_proxy_middleware_BackendConfig"
-                        },
-                        "options": {
-                            "$ref": "#/definitions/backend_proxy_middleware_Partial<Options<IncomingMessage,ServerResponse<IncomingMessage>>>"
-                        },
-                        "debug": {
-                            "type": "boolean"
-                        }
-                    },
-                    "additionalProperties": false
-                },
                 "backend_proxy_middleware_cf_BackendDestination": {
                     "description": "Configuration for a single backend destination.",
                     "type": "object",
@@ -1119,43 +1638,6 @@
                         "pathRewrite": {
                             "description": "Optional path rewriting. When specified, the matched path prefix will be replaced\nwith this value before forwarding to the backend.\nIf not specified, the matched path is simply removed.",
                             "type": "string"
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "backend_proxy_middleware_cf_Configuration": {
-                    "description": "Configuration for Cloud Foundry OAuth middleware.",
-                    "type": "object",
-                    "properties": {
-                        "backends": {
-                            "description": "Array of backend destinations.\nEach destination has its own URL and paths.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/backend_proxy_middleware_cf_BackendDestination"
-                            }
-                        },
-                        "credentials": {
-                            "description": "Manual OAuth credentials (optional).\nIf not provided, middleware will attempt to auto-detect from Cloud Foundry ADP project.",
-                            "type": "object",
-                            "properties": {
-                                "clientId": {
-                                    "description": "OAuth2 client ID.",
-                                    "type": "string"
-                                },
-                                "clientSecret": {
-                                    "description": "OAuth2 client secret.",
-                                    "type": "string"
-                                },
-                                "url": {
-                                    "description": "Base URL for the OAuth token endpoint.\nThe token endpoint will be constructed as: {url}/oauth/token",
-                                    "type": "string"
-                                }
-                            },
-                            "additionalProperties": false
-                        },
-                        "debug": {
-                            "description": "Enable debug logging.",
-                            "type": "boolean"
                         }
                     },
                     "additionalProperties": false
@@ -1280,81 +1762,6 @@
                     },
                     "additionalProperties": false
                 },
-                "reload_middleware_Configuration": {
-                    "type": "object",
-                    "properties": {
-                        "path": {
-                            "anyOf": [
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                {
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "https": {
-                            "$ref": "#/definitions/reload_middleware_HttpsOptions"
-                        },
-                        "connectOptions": {
-                            "$ref": "#/definitions/reload_middleware_Options"
-                        },
-                        "port": {
-                            "description": "Sets server port number: Defaults to 35729",
-                            "type": "number"
-                        },
-                        "noListen": {
-                            "type": "boolean"
-                        },
-                        "exts": {
-                            "description": "File Extensions to watch",
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraExts": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "exclusions": {
-                            "description": "Extensions to not watch",
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/reload_middleware_RegExp"
-                            }
-                        },
-                        "applyCSSLive": {
-                            "type": "boolean"
-                        },
-                        "applyImgLive": {
-                            "type": "boolean"
-                        },
-                        "originalPath": {
-                            "type": "string"
-                        },
-                        "overrideURL": {
-                            "type": "string"
-                        },
-                        "usePolling": {
-                            "type": "boolean"
-                        },
-                        "delay": {
-                            "description": "ms to delay browser refresh",
-                            "type": "number"
-                        },
-                        "debug": {
-                            "description": "Logs debug messages to console",
-                            "type": "boolean"
-                        }
-                    },
-                    "additionalProperties": false
-                },
                 "serve_static_middleware_PathConfig": {
                     "type": "object",
                     "properties": {
@@ -1446,94 +1853,6 @@
                     },
                     "additionalProperties": false
                 },
-                "serve_static_middleware_Configuration": {
-                    "additionalProperties": false,
-                    "type": "object",
-                    "properties": {
-                        "paths": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/serve_static_middleware_PathConfig"
-                            }
-                        },
-                        "acceptRanges": {
-                            "description": "Enable or disable accepting ranged requests, defaults to true.\nDisabling this will not send Accept-Ranges and ignore the contents of the Range request header.",
-                            "type": "boolean"
-                        },
-                        "cacheControl": {
-                            "description": "Enable or disable setting Cache-Control response header, defaults to true.\nDisabling this will ignore the immutable and maxAge options.",
-                            "type": "boolean"
-                        },
-                        "dotfiles": {
-                            "description": "Set how \"dotfiles\" are treated when encountered. A dotfile is a file or directory that begins with a dot (\".\").\nNote this check is done on the path itself without checking if the path actually exists on the disk.\nIf root is specified, only the dotfiles above the root are checked (i.e. the root itself can be within a dotfile when when set to \"deny\").\nThe default value is 'ignore'.\n'allow' No special treatment for dotfiles\n'deny' Send a 403 for any request for a dotfile\n'ignore' Pretend like the dotfile does not exist and call next()",
-                            "type": "string"
-                        },
-                        "etag": {
-                            "description": "Enable or disable etag generation, defaults to true.",
-                            "type": "boolean"
-                        },
-                        "extensions": {
-                            "description": "Set file extension fallbacks. When set, if a file is not found, the given extensions will be added to the file name and search for.\nThe first that exists will be served. Example: ['html', 'htm'].\nThe default value is false.",
-                            "anyOf": [
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                {
-                                    "const": false,
-                                    "type": "boolean"
-                                }
-                            ]
-                        },
-                        "fallthrough": {
-                            "description": "Let client errors fall-through as unhandled requests, otherwise forward a client error.\nThe default value is true.",
-                            "type": "boolean"
-                        },
-                        "immutable": {
-                            "description": "Enable or disable the immutable directive in the Cache-Control response header.\nIf enabled, the maxAge option should also be specified to enable caching. The immutable directive will prevent supported clients from making conditional requests during the life of the maxAge option to check if the file has changed.",
-                            "type": "boolean"
-                        },
-                        "index": {
-                            "description": "By default this module will send \"index.html\" files in response to a request on a directory.\nTo disable this set false or to supply a new index pass a string or an array in preferred order.",
-                            "anyOf": [
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                {
-                                    "type": [
-                                        "string",
-                                        "boolean"
-                                    ]
-                                }
-                            ]
-                        },
-                        "lastModified": {
-                            "description": "Enable or disable Last-Modified header, defaults to true. Uses the file system's last modified value.",
-                            "type": "boolean"
-                        },
-                        "maxAge": {
-                            "description": "Provide a max-age in milliseconds for http caching, defaults to 0. This can also be a string accepted by the ms module.",
-                            "type": [
-                                "string",
-                                "number"
-                            ]
-                        },
-                        "redirect": {
-                            "description": "Redirect to trailing \"/\" when the pathname is a dir. Defaults to true.",
-                            "type": "boolean"
-                        },
-                        "setHeaders": {
-                            "description": "Function to set custom headers on response. Alterations to the headers need to occur synchronously.\nThe function is called as fn(res, path, stat), where the arguments are:\nres the response object\npath the file path that is being sent\nstat the stat object of the file that is being sent",
-                            "type": "object",
-                            "additionalProperties": false
-                        }
-                    }
-                },
                 "ui5_proxy_middleware_UI5ProxyConfigTarget": {
                     "type": "object",
                     "properties": {
@@ -1559,38 +1878,69 @@
                     },
                     "additionalProperties": false
                 },
-                "ui5_proxy_middleware_Configuration": {
+                "fiori_tools_proxy_PathConfig": {
                     "type": "object",
                     "properties": {
-                        "ui5": {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/ui5_proxy_middleware_UI5ProxyConfigTarget"
-                                },
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/ui5_proxy_middleware_UI5ProxyConfigTarget"
-                                    }
-                                }
-                            ]
-                        },
-                        "proxy": {
+                        "path": {
                             "type": "string"
                         },
-                        "debug": {
-                            "type": "boolean"
+                        "url": {
+                            "type": "string"
                         },
-                        "secure": {
-                            "type": "boolean"
-                        },
-                        "directLoad": {
-                            "type": "boolean"
-                        },
-                        "version": {
+                        "pathReplace": {
                             "type": "string"
                         }
                     },
+                    "required": [
+                        "path",
+                        "url"
+                    ],
+                    "additionalProperties": false
+                },
+                "fiori_tools_proxy_UI5ProxyConfig": {
+                    "type": "object",
+                    "properties": {
+                        "paths": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/fiori_tools_proxy_PathConfig"
+                            }
+                        },
+                        "version": {
+                            "type": "string"
+                        },
+                        "directLoad": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "paths"
+                    ],
+                    "additionalProperties": false
+                },
+                "fiori_tools_proxy_FioriToolsProxyConfigUI5": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "url": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "string"
+                        },
+                        "directLoad": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "path",
+                        "url"
+                    ],
                     "additionalProperties": false
                 },
                 "fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_DestinationBackendConfig": {
@@ -1706,79 +2056,6 @@
                             "$ref": "#/definitions/fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_LocalBackendConfig"
                         }
                     ]
-                },
-                "fiori_tools_proxy_fiori_tools_proxy_ui5_proxy_middleware_UI5ProxyConfigTarget": {
-                    "type": "object",
-                    "properties": {
-                        "path": {
-                            "anyOf": [
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                {
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "url": {
-                            "type": "string"
-                        },
-                        "pathReplace": {
-                            "type": "string"
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "fiori_tools_proxy_Configuration": {
-                    "description": "Configuration for fiori-tools-proxy middleware. This middleware combines UI5 proxy and backend proxy functionality.",
-                    "type": "object",
-                    "properties": {
-                        "backend": {
-                            "description": "Backend proxy configurations.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_BackendConfig"
-                            }
-                        },
-                        "ui5": {
-                            "description": "UI5 proxy configuration.",
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/fiori_tools_proxy_fiori_tools_proxy_ui5_proxy_middleware_UI5ProxyConfigTarget"
-                                },
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/fiori_tools_proxy_fiori_tools_proxy_ui5_proxy_middleware_UI5ProxyConfigTarget"
-                                    }
-                                }
-                            ]
-                        },
-                        "proxy": {
-                            "description": "If set then it will override the proxy settings from node.",
-                            "type": "string"
-                        },
-                        "ignoreCertError": {
-                            "deprecated": "Use ignoreCertErrors (plural) instead.",
-                            "type": "boolean"
-                        },
-                        "ignoreCertErrors": {
-                            "description": "If set to true, certificate errors will be ignored (e.g., self-signed certificates).",
-                            "type": "boolean"
-                        },
-                        "debug": {
-                            "description": "Enable debug logging.",
-                            "type": "boolean"
-                        },
-                        "bsp": {
-                            "description": "The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.",
-                            "type": "string"
-                        }
-                    },
-                    "additionalProperties": false
                 }
             }
         }
