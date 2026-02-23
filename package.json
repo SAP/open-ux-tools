@@ -39,7 +39,7 @@
         "ts-jest": "29.4.5",
         "typescript": "5.9.3",
         "typescript-eslint": "8.49.0",
-        "update-ts-references": "3.6.2",
+        "update-ts-references": "4.0.0",
         "yaml": "2.8.2",
         "yargs-parser": "21.1.1"
     },
