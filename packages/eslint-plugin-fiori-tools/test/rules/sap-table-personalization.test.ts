@@ -82,6 +82,226 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 ])
             },
             [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V4 - list report page - AnalyticalTable + minUI5=1.108 - group is true',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.108.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'AnalyticalTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization',
+                            'group'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V4 - list report page - ResponsiveTable + minUI5=1.120 - group is true',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization',
+                            'group'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V4 - list report page - GridTable - group is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.108.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'GridTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization',
+                            'group'
+                        ],
+                        value: false
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V4 - list report page - AnalyticalTable + minUI5=1.107 - group is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.107.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'AnalyticalTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization',
+                            'group'
+                        ],
+                        value: false
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V4 - list report page - ResponsiveTable + minUI5=1.119 - group is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.107.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization',
+                            'group'
+                        ],
+                        value: false
+                    }
+                ])
+            },
+            [FACETSV4]
         )
     ],
 
@@ -184,12 +404,12 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
         ),
         createInvalidTest(
             {
-                name: 'V4 - list report page table - all personalization properties are false',
+                name: 'V4 - list report page - Analytical table - all personalization properties are false',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
                         path: ['sap.ui5', 'dependencies', 'minUI5Version'],
-                        value: '1.120.1'
+                        value: '1.109.1'
                     },
                     {
                         path: [
@@ -252,7 +472,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 output: getManifestAsCode(V4_MANIFEST, [
                     {
                         path: ['sap.ui5', 'dependencies', 'minUI5Version'],
-                        value: '1.120.1'
+                        value: '1.109.1'
                     },
                     {
                         path: [
@@ -268,6 +488,94 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             'type'
                         ],
                         value: 'AnalyticalTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - list report page - Responsive table - group is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {
+                            group: false
+                        }
+                    }
+                ]),
+                errors: [
+                    {
+                        messageId: 'sap-table-personalization-group',
+                        line: 128,
+                        column: 23
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
                     },
                     {
                         path: [
