@@ -42,7 +42,7 @@
         "http-proxy-middleware": "3.0.5",
         "https-proxy-agent": "5.0.1",
         "i18next": "25.8.12",
-        "proxy-from-env": "1.1.0"
+        "proxy-from-env": "2.0.0"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
