@@ -10,6 +10,7 @@ import {
 import * as promptHelpers from '../../src/data-download/prompts/prompt-helpers';
 import { getEntityModel } from '../../src/data-download/utils';
 import { PromptState } from '../../src/data-download/prompt-state';
+import { ODataDownloadGenerator } from '../../src/data-download/odata-download-generator';
 
 jest.mock('@sap-ux/fiori-generator-shared');
 jest.mock('@sap-ux/odata-service-inquirer');
@@ -258,6 +259,40 @@ describe('Test prompts', () => {
             const result = await appSelectionPrompt.validate!('/test/app');
 
             expect(result).toBe('Error: Invalid specification');
+        });
+
+        it('should return error message and log error when createApplicationAccess throws an Error', async () => {
+            const mockError = new Error('Unable to read manifest.json');
+            (createApplicationAccess as jest.Mock).mockRejectedValue(mockError);
+
+            const mockLogger = { error: jest.fn() };
+            jest.spyOn(ODataDownloadGenerator, 'logger', 'get').mockReturnValue(mockLogger as any);
+
+            const result = await appSelectionPrompt.validate!('/invalid/app/path');
+
+            expect(result).toBe(
+                'The selected path does not contain a valid application. For more information, view the logs.'
+            );
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                'The selected path does not contain a valid application. Unable to read manifest.json'
+            );
+        });
+
+        it('should return error message and log error when createApplicationAccess throws a non-Error value', async () => {
+            const mockError = 'String error message';
+            (createApplicationAccess as jest.Mock).mockRejectedValue(mockError);
+
+            const mockLogger = { error: jest.fn() };
+            jest.spyOn(ODataDownloadGenerator, 'logger', 'get').mockReturnValue(mockLogger as any);
+
+            const result = await appSelectionPrompt.validate!('/invalid/app/path');
+
+            expect(result).toBe(
+                'The selected path does not contain a valid application. For more information, view the logs.'
+            );
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                'The selected path does not contain a valid application. String error message'
+            );
         });
 
         it('should reset appConfig when a different app is selected', async () => {

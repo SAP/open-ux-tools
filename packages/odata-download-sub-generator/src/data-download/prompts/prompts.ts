@@ -1,6 +1,11 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type CheckBoxQuestion, type ConfirmQuestion, type InputQuestion } from '@sap-ux/inquirer-common';
+import {
+    withCondition,
+    type CheckBoxQuestion,
+    type ConfirmQuestion,
+    type InputQuestion
+} from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
@@ -109,6 +114,11 @@ export async function getODataDownloaderPrompts(): Promise<{
         getHostEnvironment() !== hostEnvironment.cli,
         ODataDownloadGenerator.logger as Logger
     );
+    // Dont show the system/service selection prompts unless we have a valid app loaded
+    systemSelectionQuestions.prompts = withCondition(
+        systemSelectionQuestions.prompts as Question<Answers>[],
+        () => !!appConfig.appAccess
+    );
 
     const odataQueryResult: { odata: [] } = {
         odata: []
@@ -171,7 +181,19 @@ function getAppSelectionPrompt(
             keyPrompts.length = 0;
             resetAppConfig(appConfig);
             // validate application exists at path
-            const appAccess = await createApplicationAccess(appPath);
+            let appAccess;
+            try {
+                appAccess = await createApplicationAccess(appPath);
+            } catch (error: unknown) {
+                let errorMsg = error;
+                if (error instanceof Error) {
+                    errorMsg = error.message;
+                }
+                ODataDownloadGenerator.logger.error(
+                    t('prompts.appSelection.validation.selectedPathDoesNotContainValidApp', { error: errorMsg })
+                );
+                return `${t('prompts.appSelection.validation.selectedPathDoesNotContainValidApp')}${t('texts.seeLogForDetails')}`;
+            }
             const specResult = await getSpecification(appAccess);
 
             if (typeof specResult === 'string') {

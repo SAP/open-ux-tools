@@ -20,7 +20,8 @@
             "message": "Select an application as data download target",
             "breadcrumb": "Selected App",
             "validation": {
-                "specficationApiVersionOutdated": "The found version of @sap/ux-specification {{specApiVersion}} is too old. Data download cannot proceed."
+                "specficationApiVersionOutdated": "The found version of @sap/ux-specification {{specApiVersion}} is too old. Data download cannot proceed.",
+                "selectedPathDoesNotContainValidApp": "The selected path does not contain a valid application. {{- error}}"
             }
         },
         "relatedEntitySelection": {
