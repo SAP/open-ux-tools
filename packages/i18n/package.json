@@ -40,7 +40,7 @@
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
-        "npm-run-all2": "6.2.0",
+        "npm-run-all2": "8.0.4",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
         "ts-node": "10.9.2",
