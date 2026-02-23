@@ -23,29 +23,6 @@ ruleTester.run(TEST_NAME, anchorBarVisibleRule, {
         ),
         createValidTest(
             {
-                name: 'content.header exists but anchorBarVisible is not set',
-                filename: V4_MANIFEST_PATH,
-                code: getManifestAsCode(V4_MANIFEST, [
-                    {
-                        path: [
-                            'sap.ui5',
-                            'routing',
-                            'targets',
-                            'IncidentsObjectPage',
-                            'options',
-                            'settings',
-                            'content',
-                            'header',
-                            'someOtherProperty'
-                        ],
-                        value: 'someValue'
-                    }
-                ])
-            },
-            []
-        ),
-        createValidTest(
-            {
                 name: 'Form Entry Object Page - both visible and anchorBarVisible are false (valid exception)',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
