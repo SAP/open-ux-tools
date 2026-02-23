@@ -908,6 +908,44 @@ describe('Test prompts', () => {
                 await whenFn({});
                 expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(2);
             });
+
+            it('should reload choices when system name changes but not when only service path is unchanged', async () => {
+                const mockChoices1 = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+                const mockChoices2 = [createMockChoice('Entity2', 'to_Entity2', 'Entity2Set')];
+                const mockChoices3 = [createMockChoice('Entity3', 'to_Entity3', 'Entity3Set')];
+                (promptHelpers.createEntityChoices as jest.Mock)
+                    .mockReturnValueOnce({ choices: mockChoices1, entitySetsFlat: {} })
+                    .mockReturnValueOnce({ choices: mockChoices2, entitySetsFlat: {} })
+                    .mockReturnValueOnce({ choices: mockChoices3, entitySetsFlat: {} });
+
+                const result = await getODataDownloaderPrompts();
+                const appConfig = result.answers.application;
+                appConfig.servicePath = '/test/service';
+                appConfig.referencedEntities = { listEntity: createListEntity() };
+                appConfig.systemName = { value: 'System1' };
+
+                const freshResetPrompt = result.questions.find(
+                    (q: any) => q.name === promptNames.toggleSelection
+                ) as ConfirmQuestion;
+                const whenFn = freshResetPrompt.when as Function;
+
+                // First call - should create choices
+                await whenFn({});
+                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
+
+                // Same system name and service path - should NOT recreate choices
+                await whenFn({});
+                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(1);
+
+                // System name changes (service path unchanged) - SHOULD recreate choices
+                appConfig.systemName.value = 'System2';
+                await whenFn({});
+                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(2);
+
+                // Same system name again - should NOT recreate choices
+                await whenFn({});
+                expect(promptHelpers.createEntityChoices).toHaveBeenCalledTimes(2);
+            });
         });
     });
 

@@ -291,10 +291,12 @@ function getResetSelectionPrompt(
     }
 ): Question {
     let previousServicePath;
+    let previousSystemName;
     let previousReset;
     const toggleSelectionPrompt = {
         when: (answers) => {
-            if (appConfig.servicePath !== previousServicePath) {
+            // System was changed, rebuild choices even if service path is the same, otherwise if service is different
+            if (previousSystemName !== appConfig.systemName?.value || appConfig.servicePath !== previousServicePath) {
                 if (appConfig.referencedEntities?.listEntity) {
                     const entityChoices = createEntityChoices(
                         appConfig.referencedEntities.listEntity,
@@ -306,6 +308,7 @@ function getResetSelectionPrompt(
                     }
                 }
                 previousServicePath = appConfig.servicePath;
+                previousSystemName = appConfig.systemName?.value;
             }
             return relatedEntityChoices.choices.length > 0 && !answers?.[promptNames.skipDataDownload]?.[0];
         },
