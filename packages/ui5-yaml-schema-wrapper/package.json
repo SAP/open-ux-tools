@@ -13,8 +13,7 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsx scripts/generate-schema.ts",
-        "watch": "tsx scripts/generate-schema.ts",
+        "build": "tsx src/schema-generator.ts",
         "clean": "rimraf --glob dist schema/*-schema.json *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
