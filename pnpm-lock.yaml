@@ -3488,8 +3488,8 @@ importers:
         specifier: 4.0.44
         version: 4.0.44
       '@ui5/manifest':
-        specifier: 1.82.0
-        version: 1.82.0
+        specifier: 1.83.0
+        version: 1.83.0
       eslint-plugin-jsdoc:
         specifier: 50.8.0
         version: 50.8.0(eslint@9.39.1)
@@ -3549,8 +3549,8 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       '@ui5/manifest':
-        specifier: 1.82.0
-        version: 1.82.0
+        specifier: 1.83.0
+        version: 1.83.0
       vscode-uri:
         specifier: 3.1.0
         version: 3.1.0
@@ -4513,8 +4513,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.82.0
-        version: 1.82.0
+        specifier: 1.83.0
+        version: 1.83.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -15758,8 +15758,8 @@ packages:
       figures: 6.1.0
     dev: true
 
-  /@ui5/manifest@1.82.0:
-    resolution: {integrity: sha512-aMDT89KjgOLz76KfO0J8lVOENUmhak3Jt63vDxSA5pNivxyLmadkPv1AQyw8+ezZ4ApNXQ+XY8fbjFzU64ayAw==}
+  /@ui5/manifest@1.83.0:
+    resolution: {integrity: sha512-L5izBkf5uiOQIOsOgs1HHeoTLsSRyy65SfD9O1ncHmU9g7513Ok5ZKrnCzu2UABEtH9+7IqEKXBIoc3dh2eljw==}
 
   /@ui5/project@4.0.10(@ui5/builder@4.1.4):
     resolution: {integrity: sha512-Zp4ezytTUkx11TjaG9SPA+GqzXzoEKSNPy35gVEvN4l8P7eflQthGvo87SszzL+jtbEuruRn+BMSvXo5/xZIUQ==}
