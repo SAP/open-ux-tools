@@ -125,8 +125,8 @@ importers:
         specifier: 8.49.0
         version: 8.49.0(eslint@9.39.1)(typescript@5.9.3)
       update-ts-references:
-        specifier: 3.6.2
-        version: 3.6.2
+        specifier: 4.0.0
+        version: 4.0.0
       yaml:
         specifier: 2.8.2
         version: 2.8.2
@@ -32263,8 +32263,8 @@ packages:
       xdg-basedir: 5.1.0
     dev: true
 
-  /update-ts-references@3.6.2:
-    resolution: {integrity: sha512-vf+89uBSzdKu3/L3dM81NLiSedqd4S+qaixgEgij9C/788xjOzQjpUvjvoJef+835xGFPOMeEKYgJhMamJV+Ww==}
+  /update-ts-references@4.0.0:
+    resolution: {integrity: sha512-f9dHWEDOapl83Ef4d2fyaosCzlI4q/HM3ub/tIfPus8ddQfhLylVn+Vtu9NQwnwxS/WGKPtFdqaN5kNT7d1oaQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
