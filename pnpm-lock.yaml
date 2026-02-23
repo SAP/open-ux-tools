@@ -16,7 +16,7 @@ overrides:
   mta-local: 1.0.8
   router>path-to-regexp: 0.1.12
   router@^2.0.0>path-to-regexp: 8.2.0
-  tar@<7.5.7: '>=7.5.7'
+  tar@<7.5.9: '>=7.5.9'
 
 importers:
 
@@ -6209,7 +6209,7 @@ packages:
       '@azure/core-util': 1.13.1
       '@azure/logger': 1.3.0
       '@azure/storage-blob': 12.29.1
-      openai: 6.17.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
@@ -9822,7 +9822,7 @@ packages:
     resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      minipass: 7.1.2
+      minipass: 7.1.3
 
   /@isaacs/string-locale-compare@1.1.0:
     resolution: {integrity: sha512-SQ7Kzhh9+D+ZW9MA0zkYv3VXhIDNx+LzM6EJ+/65I3QY+enU6Itte7E5XX7EWrqLW2FN4n06GWzBnPoC3th2aQ==}
@@ -11205,8 +11205,8 @@ packages:
     dependencies:
       '@octokit/openapi-types': 12.11.0
 
-  /@openai/agents-core@0.4.5(ws@8.19.0)(zod@4.3.6):
-    resolution: {integrity: sha512-/eaXhWykCvlq9IPDfpeMREj9QK7uyOzMbg/4rWXdQF7wwCRQqRhhK8sQy6mbXZowAivurjtb0hdQDHMhbRYnBA==}
+  /@openai/agents-core@0.4.15(ws@8.19.0)(zod@4.3.6):
+    resolution: {integrity: sha512-LDCg7GnKLgAj2Zt5f3Wi40gedez9Oh1zoLA8UgoBGKs2cLwShIMLYoeh8DTE6fHKupzdnRHScAroT3EVTV8JOw==}
     peerDependencies:
       zod: ^4.0.0
     peerDependenciesMeta:
@@ -11214,7 +11214,7 @@ packages:
         optional: true
     dependencies:
       debug: 4.4.3
-      openai: 6.17.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
       zod: 4.3.6
     optionalDependencies:
       '@modelcontextprotocol/sdk': 1.26.0(zod@4.3.6)
@@ -11224,14 +11224,14 @@ packages:
       - ws
     dev: true
 
-  /@openai/agents-openai@0.4.5(ws@8.19.0)(zod@4.3.6):
-    resolution: {integrity: sha512-FdAmSlCEoLAz4LnonZe/FZ9InJf2hQG4rQcLbeqhCyi+GDj77IqQz40KPb3gcoaSMLi3bv5dlbkrXS/3TNOcMg==}
+  /@openai/agents-openai@0.4.15(ws@8.19.0)(zod@4.3.6):
+    resolution: {integrity: sha512-JCcHyi3IAv3VdUUmnUyQI5EYiAMf9DRsuH3rgxkROdkaHQ2OBVpvwqpRFNMPOKHuLIyZuSPuP/Lf1HcfeXU2zA==}
     peerDependencies:
       zod: ^4.0.0
     dependencies:
-      '@openai/agents-core': 0.4.5(ws@8.19.0)(zod@4.3.6)
+      '@openai/agents-core': 0.4.15(ws@8.19.0)(zod@4.3.6)
       debug: 4.4.3
-      openai: 6.17.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
       zod: 4.3.6
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -11239,12 +11239,12 @@ packages:
       - ws
     dev: true
 
-  /@openai/agents-realtime@0.4.5(zod@4.3.6):
-    resolution: {integrity: sha512-uq9vgD0yqLXML5L5B72Gm9AbC6hNofw+MT3egb9gWrB2J03vFUgotdB2LfxEGI1rHU2wOob+mr5MDomJu/jhGA==}
+  /@openai/agents-realtime@0.4.15(zod@4.3.6):
+    resolution: {integrity: sha512-i3eUVCjXFu9AhuhMDZynl+NBaGfpyGRgZ9CYPEvKRlZhxSYnQabtpdDyat7Dv+iljPR1+fzXJcMgci7mQLQFFg==}
     peerDependencies:
       zod: ^4.0.0
     dependencies:
-      '@openai/agents-core': 0.4.5(ws@8.19.0)(zod@4.3.6)
+      '@openai/agents-core': 0.4.15(ws@8.19.0)(zod@4.3.6)
       '@types/ws': 8.18.1
       debug: 4.4.3
       ws: 8.19.0
@@ -11256,16 +11256,16 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@openai/agents@0.4.5(ws@8.19.0)(zod@4.3.6):
-    resolution: {integrity: sha512-FWE7OM10Kb9Mlqlqh9riiQPI339ssPf6g830/rQKQy3dIEWutqd+L8yGcp95SZ05fKptS2R8OVcP/sBYx98r4g==}
+  /@openai/agents@0.4.15(ws@8.19.0)(zod@4.3.6):
+    resolution: {integrity: sha512-O3CJf8BIA2FoYtUy4cHmFqNcPNi2mjFIcKOySfV8m5BTkZJXElzs6zRWI6TNcEpp4nuJNB/xnKrJz3hSwQI+pw==}
     peerDependencies:
       zod: ^4.0.0
     dependencies:
-      '@openai/agents-core': 0.4.5(ws@8.19.0)(zod@4.3.6)
-      '@openai/agents-openai': 0.4.5(ws@8.19.0)(zod@4.3.6)
-      '@openai/agents-realtime': 0.4.5(zod@4.3.6)
+      '@openai/agents-core': 0.4.15(ws@8.19.0)(zod@4.3.6)
+      '@openai/agents-openai': 0.4.15(ws@8.19.0)(zod@4.3.6)
+      '@openai/agents-realtime': 0.4.15(zod@4.3.6)
       debug: 4.4.3
-      openai: 6.17.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
       zod: 4.3.6
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -11282,8 +11282,8 @@ packages:
     dev: true
     optional: true
 
-  /@opencode-ai/sdk@1.1.51:
-    resolution: {integrity: sha512-UL66X46AGgui5xURGEenXsIsgNVmgfkmJJeRtdeOMLhi/RcbTBikfPjjtmym3VLnqp855Wt7dZ/vAjOXqiUKXA==}
+  /@opencode-ai/sdk@1.2.10:
+    resolution: {integrity: sha512-SyXcVqry2hitPVvQtvXOhqsWyFhSycG/+LTLYXrcq8AFmd9FR7dyBSDB3f5Ol6IPkYOegk8P2Eg2kKPNSNiKGw==}
     dev: true
 
   /@opentelemetry/api-logs@0.211.0:
@@ -11304,8 +11304,8 @@ packages:
     requiresBuild: true
     dev: true
 
-  /@opentelemetry/context-async-hooks@2.5.0(@opentelemetry/api@1.9.0):
-    resolution: {integrity: sha512-uOXpVX0ZjO7heSVjhheW2XEPrhQAWr2BScDPoZ9UDycl5iuHG+Usyc3AIfG6kZeC1GyLpMInpQ6X5+9n69yOFw==}
+  /@opentelemetry/context-async-hooks@2.5.1(@opentelemetry/api@1.9.0):
+    resolution: {integrity: sha512-MHbu8XxCHcBn6RwvCt2Vpn1WnLMNECfNKYB14LI5XypcgH4IE0/DiVifVR9tAkwPMyLXN8dOoPJfya3IryLQVw==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
@@ -11325,6 +11325,16 @@ packages:
 
   /@opentelemetry/core@2.5.0(@opentelemetry/api@1.9.0):
     resolution: {integrity: sha512-ka4H8OM6+DlUhSAZpONu0cPBtPPTQKxbxVzC4CzVx5+K4JnroJVBtDzLAMx4/3CDTJXRvVFhpFjtl4SaiTNoyQ==}
+    engines: {node: ^18.19.0 || >=20.6.0}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.0.0 <1.10.0'
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/semantic-conventions': 1.39.0
+    dev: true
+
+  /@opentelemetry/core@2.5.1(@opentelemetry/api@1.9.0):
+    resolution: {integrity: sha512-Dwlc+3HAZqpgTYq0MUyZABjFkcrKTePwuiFVLjahGD8cx3enqihmpAmdgNFO1R4m/sIe5afjJrA25Prqy4NXlA==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
@@ -11412,6 +11422,17 @@ packages:
       '@opentelemetry/semantic-conventions': 1.39.0
     dev: true
 
+  /@opentelemetry/resources@2.5.1(@opentelemetry/api@1.9.0):
+    resolution: {integrity: sha512-BViBCdE/GuXRlp9k7nS1w6wJvY5fnFX5XvuEtWsTAOQFIO89Eru7lGW3WbfbxtCuZ/GbrJfAziXG0w0dpxL7eQ==}
+    engines: {node: ^18.19.0 || >=20.6.0}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.3.0 <1.10.0'
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/core': 2.5.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions': 1.39.0
+    dev: true
+
   /@opentelemetry/sdk-logs@0.211.0(@opentelemetry/api@1.9.0):
     resolution: {integrity: sha512-O5nPwzgg2JHzo59kpQTPUOTzFi0Nv5LxryG27QoXBciX3zWM3z83g+SNOHhiQVYRWFSxoWn1JM2TGD5iNjOwdA==}
     engines: {node: ^18.19.0 || >=20.6.0}
@@ -11459,16 +11480,28 @@ packages:
       '@opentelemetry/semantic-conventions': 1.39.0
     dev: true
 
-  /@opentelemetry/sdk-trace-node@2.5.0(@opentelemetry/api@1.9.0):
-    resolution: {integrity: sha512-O6N/ejzburFm2C84aKNrwJVPpt6HSTSq8T0ZUMq3xT2XmqT4cwxUItcL5UWGThYuq8RTcbH8u1sfj6dmRci0Ow==}
+  /@opentelemetry/sdk-trace-base@2.5.1(@opentelemetry/api@1.9.0):
+    resolution: {integrity: sha512-iZH3Gw8cxQn0gjpOjJMmKLd9GIaNh/E3v3ST67vyzLSxHBs14HsG4dy7jMYyC5WXGdBVEcM7U/XTF5hCQxjDMw==}
+    engines: {node: ^18.19.0 || >=20.6.0}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.3.0 <1.10.0'
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/core': 2.5.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 2.5.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions': 1.39.0
+    dev: true
+
+  /@opentelemetry/sdk-trace-node@2.5.1(@opentelemetry/api@1.9.0):
+    resolution: {integrity: sha512-9lopQ6ZoElETOEN0csgmtEV5/9C7BMfA7VtF4Jape3i954b6sTY2k3Xw3CxUTKreDck/vpAuJM+EDo4zheUw+A==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/context-async-hooks': 2.5.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/core': 2.5.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 2.5.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/context-async-hooks': 2.5.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 2.5.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 2.5.1(@opentelemetry/api@1.9.0)
     dev: true
 
   /@opentelemetry/semantic-conventions@1.21.0:
@@ -16643,6 +16676,17 @@ packages:
       ajv: 8.17.1
     dev: true
 
+  /ajv-formats@3.0.1(ajv@8.18.0):
+    resolution: {integrity: sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==}
+    peerDependencies:
+      ajv: ^8.0.0
+    peerDependenciesMeta:
+      ajv:
+        optional: true
+    dependencies:
+      ajv: 8.18.0
+    dev: true
+
   /ajv-keywords@3.5.2(ajv@6.12.6):
     resolution: {integrity: sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==}
     peerDependencies:
@@ -17778,7 +17822,7 @@ packages:
       promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
-      tar: 7.5.7
+      tar: 7.5.9
       unique-filename: 1.1.1
     transitivePeerDependencies:
       - bluebird
@@ -17803,7 +17847,7 @@ packages:
       promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 9.0.1
-      tar: 7.5.7
+      tar: 7.5.9
       unique-filename: 2.0.1
     transitivePeerDependencies:
       - bluebird
@@ -17822,7 +17866,7 @@ packages:
       minipass-pipeline: 1.2.4
       p-map: 4.0.0
       ssri: 10.0.4
-      tar: 7.5.7
+      tar: 7.5.9
       unique-filename: 3.0.0
 
   /cacache@19.0.1:
@@ -17839,7 +17883,7 @@ packages:
       minipass-pipeline: 1.2.4
       p-map: 7.0.3
       ssri: 12.0.0
-      tar: 7.5.7
+      tar: 7.5.9
       unique-filename: 4.0.0
     dev: true
 
@@ -18461,8 +18505,8 @@ packages:
     engines: {node: '>=18'}
     dev: true
 
-  /commander@14.0.2:
-    resolution: {integrity: sha512-TywoWNNRbhoD0BXs1P3ZEScW8W5iKrnbithIl0YH+uCmBd0QpPOA8yc82DS3BIE5Ma6FnBVUsJ7wVUDz4dvOWQ==}
+  /commander@14.0.3:
+    resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
     engines: {node: '>=20'}
     dev: true
 
@@ -19413,8 +19457,8 @@ packages:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
-  /dotenv@17.2.3:
-    resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
+  /dotenv@17.3.1:
+    resolution: {integrity: sha512-IO8C/dzEb6O3F9/twg6ZLXz164a2fhTnEWb95H23Dm4OuN+92NmEAlTrupP9VW6Jm3sO26tQlqyvyi4CsnY9GA==}
     engines: {node: '>=12'}
     dev: true
 
@@ -21850,15 +21894,6 @@ packages:
       path-scurry: 2.0.0
     dev: true
 
-  /glob@13.0.0:
-    resolution: {integrity: sha512-tvZgpqk6fz4BaNZ66ZsRaZnbHvP/jG3uKJvAZOwEVUL4RTA5nJeeLYfyN9/VA8NX/V3IBG+hkeuGpKjvELkVhA==}
-    engines: {node: 20 || >=22}
-    dependencies:
-      minimatch: 10.2.2
-      minipass: 7.1.2
-      path-scurry: 2.0.0
-    dev: true
-
   /glob@13.0.6:
     resolution: {integrity: sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==}
     engines: {node: 18 || 20 || >=22}
@@ -22752,13 +22787,13 @@ packages:
     engines: {node: ^18.17.0 || >=20.5.0}
     dev: true
 
-  /ink@6.6.0(react@19.2.4):
-    resolution: {integrity: sha512-QDt6FgJxgmSxAelcOvOHUvFxbIUjVpCH5bx+Slvc5m7IEcpGt3dYwbz/L+oRnqEGeRvwy1tineKK4ect3nW1vQ==}
+  /ink@6.8.0(react@19.2.4):
+    resolution: {integrity: sha512-sbl1RdLOgkO9isK42WCZlJCFN9hb++sX9dsklOvfd1YQ3bQ2AiFu12Q6tFlr0HvEUvzraJntQCCpfEoUe9DSzA==}
     engines: {node: '>=20'}
     peerDependencies:
       '@types/react': '>=19.0.0'
       react: '>=19.0.0'
-      react-devtools-core: ^6.1.2
+      react-devtools-core: '>=6.1.2'
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -22780,12 +22815,14 @@ packages:
       patch-console: 2.0.0
       react: 19.2.4
       react-reconciler: 0.33.0(react@19.2.4)
+      scheduler: 0.27.0
       signal-exit: 3.0.7
-      slice-ansi: 7.1.2
+      slice-ansi: 8.0.0
       stack-utils: 2.0.6
       string-width: 8.1.1
-      type-fest: 4.41.0
-      widest-line: 5.0.0
+      terminal-size: 4.0.1
+      type-fest: 5.4.4
+      widest-line: 6.0.0
       wrap-ansi: 9.0.2
       ws: 8.18.0
       yoga-layout: 3.2.1
@@ -24930,6 +24967,11 @@ packages:
     resolution: {integrity: sha512-vFrFJkWtJvJnD5hg+hJvVE8Lh/TcMzKnTgCWmtBipwI5yLX/iX+5UB2tfuyODF5E7k9xEzMdYgGqaSb1c0c5Yw==}
     engines: {node: 20 || >=22}
 
+  /lru-cache@11.2.6:
+    resolution: {integrity: sha512-ESL2CrkS/2wTPfuend7Zhkzo2u0daGJ/A2VucJOgQ/C48S/zB8MMeMHSGKYpXhIjbPxfuezITkaBH1wqv00DDQ==}
+    engines: {node: 20 || >=22}
+    dev: true
+
   /lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
     dependencies:
@@ -25137,8 +25179,8 @@ packages:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
 
-  /mathjs@15.1.0:
-    resolution: {integrity: sha512-HfnAcScQm9drGryodlDqeS3WAl4gUTYGDcOtcqL/8s23MZ28Ib1i8XnYK3ZdjNuaW/L4BAp9lIp8vxAMrcuu1w==}
+  /mathjs@15.1.1:
+    resolution: {integrity: sha512-rM668DTtpSzMVoh/cKAllyQVEbBApM5g//IMGD8vD7YlrIz9ITRr3SrdhjaDxcBNTdyETWwPebj2unZyHD7ZdA==}
     engines: {node: '>= 18'}
     hasBin: true
     dependencies:
@@ -25427,7 +25469,7 @@ packages:
     resolution: {integrity: sha512-D7V8PO9oaz7PWGLbCACuI1qEOsq7UKfLotx/C0Aet43fCUB/wfQ7DYeq2oR/svFJGYDHPr38SHATeaj/ZoKHKw==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
-      minipass: 7.1.2
+      minipass: 7.1.3
     dev: true
 
   /minipass-fetch@1.4.1:
@@ -25524,7 +25566,7 @@ packages:
     resolution: {integrity: sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==}
     engines: {node: '>= 18'}
     dependencies:
-      minipass: 7.1.2
+      minipass: 7.1.3
 
   /mitt@3.0.1:
     resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
@@ -25679,7 +25721,7 @@ packages:
     resolution: {integrity: sha512-NgXULcSA2sA/REbkgetukLf5l0Xxq9O10R9vvRIWUq28DS0CQClMArf/PfqJY4GzqO5jXauaa1bfRwoW2qXAtg==}
     dependencies:
       axios: 1.13.5(debug@4.4.3)
-      tar: 7.5.7
+      tar: 7.5.9
       unzip-stream: 0.3.4
     transitivePeerDependencies:
       - debug
@@ -25689,7 +25731,7 @@ packages:
     requiresBuild: true
     dependencies:
       axios: 1.13.5(debug@4.4.3)
-      tar: 7.5.7
+      tar: 7.5.9
       unzip-stream: 0.3.4
     transitivePeerDependencies:
       - debug
@@ -25919,7 +25961,7 @@ packages:
       nopt: 8.1.0
       proc-log: 5.0.0
       semver: 7.7.4
-      tar: 7.5.7
+      tar: 7.5.9
       tinyglobby: 0.2.15
       which: 5.0.0
     transitivePeerDependencies:
@@ -25939,7 +25981,7 @@ packages:
       npmlog: 6.0.2
       rimraf: 3.0.2
       semver: 7.7.4
-      tar: 7.5.7
+      tar: 7.5.9
       which: 2.0.2
     transitivePeerDependencies:
       - bluebird
@@ -25959,7 +26001,7 @@ packages:
       npmlog: 6.0.2
       rimraf: 3.0.2
       semver: 7.7.4
-      tar: 7.5.7
+      tar: 7.5.9
       which: 2.0.2
     transitivePeerDependencies:
       - supports-color
@@ -26630,7 +26672,7 @@ packages:
     dependencies:
       global-agent: 3.0.0
       onnxruntime-common: 1.21.0
-      tar: 7.5.7
+      tar: 7.5.9
     dev: true
     optional: true
 
@@ -26696,8 +26738,8 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-  /openai@6.17.0(ws@8.19.0)(zod@4.3.6):
-    resolution: {integrity: sha512-NHRpPEUPzAvFOAFs9+9pC6+HCw/iWsYsKCMPXH5Kw7BpMxqd8g/A07/1o7Gx2TWtCnzevVRyKMRFqyiHyAlqcA==}
+  /openai@6.22.0(ws@8.19.0)(zod@4.3.6):
+    resolution: {integrity: sha512-7Yvy17F33Bi9RutWbsaYt5hJEEJ/krRPOrwan+f9aCPuMat1WVsb2VNSII5W1EksKT6fF69TG/xj4XzodK3JZw==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -26791,8 +26833,8 @@ packages:
       strip-ansi: 6.0.1
       wcwidth: 1.0.1
 
-  /ora@9.2.0:
-    resolution: {integrity: sha512-4sGT6oNDbqIuciDfD2aCkoPgHLmOe+g+xpFK2WDO0aQuD/bNHNwfdFosWP+DXmcxRyXeF8vnki6kXnOOHTuRSA==}
+  /ora@9.3.0:
+    resolution: {integrity: sha512-lBX72MWFduWEf7v7uWf5DHp9Jn5BI8bNPGuFgtXMmr2uDz2Gz2749y3am3agSDdkhHPHYmmxEGSKH85ZLGzgXw==}
     engines: {node: '>=20'}
     dependencies:
       chalk: 5.6.2
@@ -27053,7 +27095,7 @@ packages:
       read-package-json-fast: 2.0.3
       rimraf: 3.0.2
       ssri: 8.0.1
-      tar: 7.5.7
+      tar: 7.5.9
     transitivePeerDependencies:
       - bluebird
       - supports-color
@@ -27079,7 +27121,7 @@ packages:
       read-package-json-fast: 3.0.2
       sigstore: 1.8.0
       ssri: 10.0.4
-      tar: 7.5.7
+      tar: 7.5.9
     transitivePeerDependencies:
       - bluebird
       - supports-color
@@ -27105,7 +27147,7 @@ packages:
       promise-retry: 2.0.1
       sigstore: 3.1.0
       ssri: 12.0.0
-      tar: 7.5.7
+      tar: 7.5.9
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -27950,19 +27992,19 @@ packages:
       '@inquirer/input': 5.0.4(@types/node@20.0.0)
       '@inquirer/select': 5.0.4(@types/node@20.0.0)
       '@modelcontextprotocol/sdk': 1.26.0(zod@4.3.6)
-      '@openai/agents': 0.4.5(ws@8.19.0)(zod@4.3.6)
-      '@opencode-ai/sdk': 1.1.51
+      '@openai/agents': 0.4.15(ws@8.19.0)(zod@4.3.6)
+      '@opencode-ai/sdk': 1.2.10
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 2.5.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 2.5.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/exporter-trace-otlp-http': 0.211.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 2.5.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 2.5.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-node': 2.5.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 2.5.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 2.5.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-node': 2.5.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.39.0
       '@types/ws': 8.18.1
       ai: 6.0.69(zod@4.3.6)
-      ajv: 8.17.1
-      ajv-formats: 3.0.1(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-formats: 3.0.1(ajv@8.18.0)
       async: 3.2.6
       better-sqlite3: 12.6.2
       binary-extensions: 3.1.0
@@ -27971,14 +28013,14 @@ packages:
       chokidar: 5.0.0
       cli-progress: 3.12.0
       cli-table3: 0.6.5
-      commander: 14.0.2
+      commander: 14.0.3
       compression: 1.8.1
       cors: 2.8.6
       csv-parse: 6.1.0
       csv-stringify: 6.6.0
       debounce: 3.0.0
       dedent: 1.7.1
-      dotenv: 17.2.3
+      dotenv: 17.3.1
       drizzle-orm: 0.45.1(@opentelemetry/api@1.9.0)(better-sqlite3@12.6.2)(pg@8.16.3)
       execa: 9.6.1
       express: 5.2.1
@@ -27988,9 +28030,9 @@ packages:
       fast-xml-parser: 5.3.6
       fastest-levenshtein: 1.0.16
       gcp-metadata: 8.1.2
-      glob: 13.0.0
+      glob: 13.0.6
       http-z: 8.1.1
-      ink: 6.6.0(react@19.2.4)
+      ink: 6.8.0(react@19.2.4)
       istextorbinary: 9.5.0
       jks-js: 1.1.5
       js-rouge: 3.2.0
@@ -27998,13 +28040,13 @@ packages:
       jsdom: 26.1.0
       keyv: 5.6.0
       keyv-file: 5.3.3
-      lru-cache: 11.2.5
-      mathjs: 15.1.0
-      minimatch: 10.1.1
+      lru-cache: 11.2.6
+      mathjs: 15.1.1
+      minimatch: 10.2.2
       nunjucks: 3.2.4(chokidar@5.0.0)
-      openai: 6.17.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
       opener: 1.5.2
-      ora: 9.2.0
+      ora: 9.3.0
       pem: 1.14.8
       posthog-node: 5.24.10
       protobufjs: 8.0.0
@@ -28020,7 +28062,7 @@ packages:
       socket.io-client: 4.8.3
       text-extensions: 3.1.0
       tsx: 4.21.0
-      undici: 7.20.0
+      undici: 7.22.0
       winston: 3.19.0
       ws: 8.19.0
       zod: 4.3.6
@@ -30371,6 +30413,14 @@ packages:
       is-fullwidth-code-point: 5.1.0
     dev: true
 
+  /slice-ansi@8.0.0:
+    resolution: {integrity: sha512-stxByr12oeeOyY2BlviTNQlYV5xOj47GirPr4yA1hE9JCtxfQN0+tVbkxwCtYDQWhEKWFHsEK48ORg5jrouCAg==}
+    engines: {node: '>=20'}
+    dependencies:
+      ansi-styles: 6.2.3
+      is-fullwidth-code-point: 5.1.0
+    dev: true
+
   /smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
@@ -31172,6 +31222,11 @@ packages:
       strip-ansi: 6.0.1
     dev: true
 
+  /tagged-tag@1.0.0:
+    resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
+    engines: {node: '>=20'}
+    dev: true
+
   /tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
@@ -31221,13 +31276,13 @@ packages:
     transitivePeerDependencies:
       - bare-abort-controller
 
-  /tar@7.5.7:
-    resolution: {integrity: sha512-fov56fJiRuThVFXD6o6/Q354S7pnWMJIVlDBYijsTNx6jKSE4pvrDTs6lUnmGvNyfJwFQQwWy3owKz1ucIhveQ==}
+  /tar@7.5.9:
+    resolution: {integrity: sha512-BTLcK0xsDh2+PUe9F6c2TlRp4zOOBMTkoQHQIWSIzI0R7KG46uEwq4OPk2W7bZcprBMsuaeFsqwYr7pjh6CuHg==}
     engines: {node: '>=18'}
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
-      minipass: 7.1.2
+      minipass: 7.1.3
       minizlib: 3.1.0
       yallist: 5.0.0
 
@@ -31252,6 +31307,11 @@ packages:
     dependencies:
       ansi-escapes: 7.1.1
       supports-hyperlinks: 3.2.0
+    dev: true
+
+  /terminal-size@4.0.1:
+    resolution: {integrity: sha512-avMLDQpUI9I5XFrklECw1ZEUPJhqzcwSWsyyI8blhRLT+8N1jLJWLWWYQpB2q2xthq8xDvjZPISVh53T/+CLYQ==}
+    engines: {node: '>=18'}
     dev: true
 
   /terser-webpack-plugin@5.3.10(esbuild@0.27.2)(webpack@5.96.1):
@@ -31478,6 +31538,7 @@ packages:
   /tr46@5.1.1:
     resolution: {integrity: sha512-hdF5ZgjTqgAntKkklYw0R03MG2x/bSzTtkxmIRw/sTNV8YXsCJ1tfLAX23lhxhHJlEf3CRCOCGGWw3vI3GaSPw==}
     engines: {node: '>=18'}
+    requiresBuild: true
     dependencies:
       punycode: 2.3.1
     dev: true
@@ -31768,6 +31829,13 @@ packages:
     engines: {node: '>=16'}
     dev: true
 
+  /type-fest@5.4.4:
+    resolution: {integrity: sha512-JnTrzGu+zPV3aXIUhnyWJj4z/wigMsdYajGLIYakqyOW1nPllzXEJee0QQbHj+CTIQtXGlAjuK0UY+2xTyjVAw==}
+    engines: {node: '>=20'}
+    dependencies:
+      tagged-tag: 1.0.0
+    dev: true
+
   /type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
     engines: {node: '>= 0.6'}
@@ -31992,8 +32060,8 @@ packages:
     engines: {node: '>=18.17'}
     dev: true
 
-  /undici@7.20.0:
-    resolution: {integrity: sha512-MJZrkjyd7DeC+uPZh+5/YaMDxFiiEEaDgbUSVMXayofAkDWF1088CDo+2RPg7B1BuS1qf1vgNE7xqwPxE0DuSQ==}
+  /undici@7.22.0:
+    resolution: {integrity: sha512-RqslV2Us5BrllB+JeiZnK4peryVTndy9Dnqq62S3yYRRTj0tFQCwEniUy2167skdGOy3vqRzEvl1Dm4sV2ReDg==}
     engines: {node: '>=20.18.1'}
     dev: true
 
@@ -32754,6 +32822,7 @@ packages:
   /whatwg-url@14.2.0:
     resolution: {integrity: sha512-De72GdQZzNTUBBChsXueQUnPKDkg/5A5zp7pFDuQAj5UFoENpiACU0wlCvzpAGnTkj++ihpKwKyYewn/XNUbKw==}
     engines: {node: '>=18'}
+    requiresBuild: true
     dependencies:
       tr46: 5.1.1
       webidl-conversions: 7.0.0
@@ -32871,6 +32940,13 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       string-width: 7.2.0
+    dev: true
+
+  /widest-line@6.0.0:
+    resolution: {integrity: sha512-U89AsyEeAsyoF0zVJBkG9zBgekjgjK7yk9sje3F4IQpXBJ10TF6ByLlIfjMhcmHMJgHZI4KHt4rdNfktzxIAMA==}
+    engines: {node: '>=20'}
+    dependencies:
+      string-width: 8.1.1
     dev: true
 
   /windows-release@4.0.0:
