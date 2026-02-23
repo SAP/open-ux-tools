@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { UI5, Ui5App } from './types';
+import type { UI5, Ui5App, AppOptions } from './types';
 import { getFilePaths } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
@@ -13,7 +13,11 @@ import { getTemplateVersionPath, processDestinationPath } from './utils';
  * Input required to enable optional features.
  */
 export interface FeatureInput {
-    ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType }; ui5?: Partial<UI5> };
+    ui5App: {
+        app: { id: string; baseComponent?: string; projectType?: ProjectType };
+        ui5?: Partial<UI5>;
+        appOptions?: Partial<AppOptions>;
+    };
     fs: Editor;
     basePath: string;
     tmplPath: string;
@@ -29,25 +33,31 @@ export interface FeatureInput {
  * @param input.fs reference to the mem-fs instance
  * @param input.basePath project base path
  * @param input.tmplPath template basepath
+ * @param context optional context object to merge with ui5App during template rendering
  */
-async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: FeatureInput) {
+async function copyTemplates(
+    name: string,
+    { ui5App, fs, basePath, tmplPath }: FeatureInput,
+    context?: Record<string, any>
+) {
     let optTmplDirPath = join(tmplPath, 'optional', `${name}`);
     const optionPath = getTemplateVersionPath(ui5App.ui5 as UI5);
     if (name === 'loadReuseLibs') {
         optTmplDirPath = join(optTmplDirPath, optionPath);
     }
     const optTmplFilePaths = await getFilePaths(optTmplDirPath);
+    const templateData = { ...ui5App, ...(context || {}) };
     optTmplFilePaths.forEach((optTmplFilePath) => {
         const relPath = optTmplFilePath.replace(optTmplDirPath, '');
         const outPath = join(basePath, relPath);
         // Extend or add
         if (!fs.exists(outPath)) {
-            fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
+            fs.copyTpl(optTmplFilePath, outPath, templateData, undefined, {
                 globOptions: { dot: true },
                 processDestinationPath: processDestinationPath
             });
         } else {
-            const add = JSON.parse(render(fs.read(optTmplFilePath), ui5App, {}));
+            const add = JSON.parse(render(fs.read(optTmplFilePath), templateData, {}));
             const existingFile = JSON.parse(fs.read(outPath));
             const merged = mergeObjects(existingFile, add);
             fs.writeJSON(outPath, merged);
@@ -59,7 +69,10 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
  * Factory functions for applying optional features.
  */
 const factories: { [key: string]: (input: FeatureInput) => Promise<void> } = {
-    eslint: async (input: FeatureInput) => await copyTemplates('eslint', input),
+    eslint: async (input: FeatureInput) => {
+        // Always use 'recommended' profile
+        await copyTemplates('eslint', input, { eslintProfile: 'recommended' });
+    },
     loadReuseLibs: async (input: FeatureInput) => await copyTemplates('loadReuseLibs', input),
     sapux: async (input: FeatureInput) => {
         if (input.ui5App.app.projectType === 'EDMXBackend') {
