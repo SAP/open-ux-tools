@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/inquirer-common",
     "description": "Commonly used shared functionality and types to support inquirer modules.",
-    "version": "0.11.10",
+    "version": "0.11.12",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -33,7 +33,7 @@
         "@sap/cf-tools": "3.3.0",
         "@sap-ux/annotation-converter": "0.10.19",
         "@sap-ux/btp-utils": "workspace:*",
-        "@sap-ux/edmx-parser": "0.9.1",
+        "@sap-ux/edmx-parser": "0.9.8",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",

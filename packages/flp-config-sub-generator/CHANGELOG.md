@@ -1,5 +1,30 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.135
+
+### Patch Changes
+
+- @sap-ux/app-config-writer@0.6.105
+- @sap-ux/project-access@1.35.7
+- @sap-ux/flp-config-inquirer@0.4.130
+- @sap-ux/inquirer-common@0.11.12
+- @sap-ux/fiori-generator-shared@0.13.77
+- @sap-ux/deploy-config-generator-shared@0.1.96
+
+## 0.3.134
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+- Updated dependencies [ff634b0]
+- Updated dependencies [d588c26]
+    - @sap-ux/inquirer-common@0.11.11
+    - @sap-ux/feature-toggle@0.3.7
+    - @sap-ux/deploy-config-generator-shared@0.1.95
+    - @sap-ux/flp-config-inquirer@0.4.129
+    - @sap-ux/app-config-writer@0.6.104
+    - @sap-ux/fiori-generator-shared@0.13.76
+
 ## 0.3.133
 
 ### Patch Changes

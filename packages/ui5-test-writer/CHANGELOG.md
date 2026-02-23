@@ -1,5 +1,18 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.74
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/ui5-application-writer@1.7.12
+
+## 0.7.73
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+
 ## 0.7.72
 
 ### Patch Changes

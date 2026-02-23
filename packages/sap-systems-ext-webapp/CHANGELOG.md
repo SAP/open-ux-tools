@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.1.2
+
+### Patch Changes
+
+- 66869b2: text and ui updates
+
 ## 0.1.1
 
 ### Patch Changes
