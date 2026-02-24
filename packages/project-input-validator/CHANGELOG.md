@@ -1,5 +1,19 @@
 # @sap-ux/project-input-validator
 
+## 0.6.62
+
+### Patch Changes
+
+- b96de78: fix(deps): update dependency validate-npm-package-name to v7
+    - @sap-ux/project-access@1.35.9
+
+## 0.6.61
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+
 ## 0.6.60
 
 ### Patch Changes
