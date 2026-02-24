@@ -26,7 +26,7 @@ import {
     TREE_TABLE_TYPE
 } from './control-types';
 import { isVariantManagementEnabledOPPage } from './fe-v2/utils';
-import { isMacroTable, MacroTable } from '../../utils/fe-v4';
+import { isMacroTable } from '../../utils/fe-v4';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
