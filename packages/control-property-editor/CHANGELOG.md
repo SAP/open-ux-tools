@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.7.15
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
+## 0.7.14
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
 ## 0.7.13
 
 ### Patch Changes

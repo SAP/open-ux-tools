@@ -1,5 +1,11 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.1.3
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
 ## 0.1.2
 
 ### Patch Changes

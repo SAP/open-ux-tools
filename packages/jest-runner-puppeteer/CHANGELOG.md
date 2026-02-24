@@ -1,5 +1,11 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.7
+
+### Patch Changes
+
+- 469c90c: fix(deps): update dependency which to v6
+
 ## 0.2.6
 
 ### Patch Changes

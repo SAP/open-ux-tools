@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-access",
-    "version": "1.35.7",
+    "version": "1.35.9",
     "description": "Library to access SAP Fiori tools projects",
     "repository": {
         "type": "git",
@@ -47,7 +47,7 @@
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.7.1",
-        "@ui5/manifest": "1.82.0",
+        "@ui5/manifest": "1.83.0",
         "vscode-uri": "3.1.0"
     }
 }

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.7.13
+
+### Patch Changes
+
+- 0ecc5f1: fix(deps): Update dependency @ui5/manifest to v1.83.0
+
 ## 1.7.12
 
 ### Patch Changes
