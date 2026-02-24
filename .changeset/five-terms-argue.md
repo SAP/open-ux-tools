@@ -4,4 +4,4 @@
 '@sap-ux/ui5-config': patch
 ---
 
-(ADP) Add small refactoring to deployment validatiors and util method in the ui5 config for retreival of all custom tasks.
+(ADP) Add small refactoring to deployment validatiors and remove the redundant ui5 config hasBuilderKey() method.
