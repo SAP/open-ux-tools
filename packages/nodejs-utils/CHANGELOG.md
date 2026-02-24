@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.16
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+
 ## 0.2.15
 
 ### Patch Changes

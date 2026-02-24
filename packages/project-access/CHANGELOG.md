@@ -1,5 +1,36 @@
 # @sap-ux/project-access
 
+## 1.35.9
+
+### Patch Changes
+
+- Updated dependencies [fd8de2b]
+    - @sap-ux/i18n@0.3.9
+
+## 1.35.8
+
+### Patch Changes
+
+- 0ecc5f1: fix(deps): Update dependency @ui5/manifest to v1.83.0
+- Updated dependencies [cc1c422]
+    - @sap-ux/i18n@0.3.8
+
+## 1.35.7
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+
+## 1.35.6
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- e5bc3ca: fix(deps): update dependency vscode-uri to v3.1.0
+- Updated dependencies [bb310dc]
+    - @sap-ux/ui5-config@0.29.18
+
 ## 1.35.5
 
 ### Patch Changes
