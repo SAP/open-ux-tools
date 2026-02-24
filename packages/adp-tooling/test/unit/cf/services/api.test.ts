@@ -13,7 +13,7 @@ import {
     createServiceInstance,
     getServiceNameByTags,
     createServices,
-    getServiceInstanceKeys
+    getOrCreateServiceInstanceKeys
 } from '../../../../src/cf/services/api';
 import { initI18n, t } from '../../../../src/i18n';
 import { isLoggedInCf } from '../../../../src/cf/core/auth';
@@ -533,7 +533,32 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServices(yamlContent, initialServices, '1234567890', 'test-space-guid', mockLogger);
+            mockRequestCfApi.mockResolvedValue({
+                resources: [
+                    {
+                        name: 'test-xsuaa-service',
+                        guid: 'test-guid'
+                    }
+                ]
+            });
+            mockGetServiceKeys.mockResolvedValue([
+                {
+                    credentials: {
+                        clientid: 'test-client-id',
+                        clientsecret: 'test-client-secret',
+                        url: 'test-url',
+                        uaa: {
+                            clientid: 'test-uaa-clientid',
+                            clientsecret: 'test-uaa-clientsecret',
+                            url: 'test-uaa-url'
+                        },
+                        uri: 'test-uri',
+                        endpoints: {}
+                    }
+                }
+            ]);
+
+            await createServices(yamlContent, initialServices, '1234567890', 'test-space-guid', undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
                 expect.arrayContaining([
@@ -545,6 +570,9 @@ describe('CF Services API', () => {
                     expect.any(String)
                 ])
             );
+
+            expect(mockRequestCfApi).toHaveBeenCalledWith(expect.stringContaining('service_instances'));
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid');
         });
 
         test('should create non-xsuaa service without security file path', async () => {
@@ -567,7 +595,6 @@ describe('CF Services API', () => {
                 ]
             };
             const initialServices = ['portal'];
-            const spaceGuid = 'test-space-guid';
 
             mockGetProjectNameForXsSecurity.mockReturnValue('test-project-1234567890');
             mockCFToolsCliExecute.mockResolvedValue({
@@ -576,7 +603,32 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            await createServices(yamlContent, initialServices, '1234567890', undefined, mockLogger);
+            mockRequestCfApi.mockResolvedValue({
+                resources: [
+                    {
+                        name: 'test-destination-service',
+                        guid: 'test-guid'
+                    }
+                ]
+            });
+            mockGetServiceKeys.mockResolvedValue([
+                {
+                    credentials: {
+                        clientid: 'test-client-id',
+                        clientsecret: 'test-client-secret',
+                        url: 'test-url',
+                        uaa: {
+                            clientid: 'test-uaa-clientid',
+                            clientsecret: 'test-uaa-clientsecret',
+                            url: 'test-uaa-url'
+                        },
+                        uri: 'test-uri',
+                        endpoints: {}
+                    }
+                }
+            ]);
+
+            await createServices(yamlContent, initialServices, '1234567890', 'test-space-guid', undefined, mockLogger);
 
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(
                 expect.arrayContaining(['create-service', 'destination', 'lite', 'test-destination-service'])
@@ -584,10 +636,12 @@ describe('CF Services API', () => {
 
             // Verify that the call does NOT include the -c flag (no security file path)
             expect(mockCFToolsCliExecute).toHaveBeenCalledWith(expect.not.arrayContaining(['-c']));
+            expect(mockRequestCfApi).toHaveBeenCalledWith(expect.stringContaining('service_instances'));
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('test-guid');
         });
     });
 
-    describe('getServiceInstanceKeys', () => {
+    describe('getOrCreateServiceInstanceKeys', () => {
         test('should return service keys when service instance is found', async () => {
             const serviceInstanceQuery = {
                 spaceGuids: ['test-space-guid'],
@@ -626,7 +680,7 @@ describe('CF Services API', () => {
             });
             mockGetServiceKeys.mockResolvedValue(mockServiceKeys.serviceKeys);
 
-            const result = await getServiceInstanceKeys(serviceInstanceQuery, mockLogger);
+            const result = await getOrCreateServiceInstanceKeys(serviceInstanceQuery, mockLogger);
 
             expect(result).toEqual(mockServiceKeys);
             expect(mockLogger.log).toHaveBeenCalledWith("Use 'test-service' HTML5 Repo instance");
@@ -640,7 +694,7 @@ describe('CF Services API', () => {
 
             mockRequestCfApi.mockResolvedValue({ resources: [] });
 
-            const result = await getServiceInstanceKeys(serviceInstanceQuery, mockLogger);
+            const result = await getOrCreateServiceInstanceKeys(serviceInstanceQuery, mockLogger);
 
             expect(result).toBeNull();
         });
@@ -653,7 +707,7 @@ describe('CF Services API', () => {
 
             mockRequestCfApi.mockRejectedValue(new Error('Service query failed'));
 
-            await expect(getServiceInstanceKeys(serviceInstanceQuery, mockLogger)).rejects.toThrow(
+            await expect(getOrCreateServiceInstanceKeys(serviceInstanceQuery, mockLogger)).rejects.toThrow(
                 t('error.failedToGetServiceInstanceKeys', {
                     error: t('error.failedToGetServiceInstance', {
                         error: 'Service query failed',
@@ -673,7 +727,7 @@ describe('CF Services API', () => {
                 resources: 'not-an-array'
             });
 
-            await expect(getServiceInstanceKeys(serviceInstanceQuery, mockLogger)).rejects.toThrow(
+            await expect(getOrCreateServiceInstanceKeys(serviceInstanceQuery, mockLogger)).rejects.toThrow(
                 t('error.failedToGetServiceInstanceKeys', {
                     error: t('error.failedToGetServiceInstance', {
                         error: t('error.noValidJsonForServiceInstance'),
@@ -715,7 +769,7 @@ describe('CF Services API', () => {
                 }
             ]);
 
-            const result = await getServiceInstanceKeys(serviceInstanceQuery, mockLogger);
+            const result = await getOrCreateServiceInstanceKeys(serviceInstanceQuery, mockLogger);
 
             expect(result).toEqual({
                 serviceKeys: [
@@ -765,7 +819,7 @@ describe('CF Services API', () => {
 
             mockCreateServiceKey.mockRejectedValue(new Error('Failed to create service key'));
 
-            await expect(getServiceInstanceKeys(serviceInstanceQuery, mockLogger)).rejects.toThrow(
+            await expect(getOrCreateServiceInstanceKeys(serviceInstanceQuery, mockLogger)).rejects.toThrow(
                 t('error.failedToGetServiceInstanceKeys', {
                     error: t('error.failedToGetOrCreateServiceKeys', {
                         serviceInstanceName: 'test-service',
