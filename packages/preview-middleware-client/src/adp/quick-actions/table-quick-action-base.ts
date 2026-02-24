@@ -398,7 +398,8 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             enabled: true,
             children: []
         };
-        const macroTable = isMacroTable(table.getParent()) ? (table.getParent() as MacroTable) : undefined;
+        const parent = table.getParent();
+        const macroTable = isMacroTable(parent) ? parent : undefined;
         if (this.options.validateTableColumns && macroTable) {
             const { metaPath, contextPath } = macroTable;
             const finalPath = metaPath.startsWith(contextPath) ? metaPath : `${contextPath}${metaPath}`;

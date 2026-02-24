@@ -136,20 +136,43 @@ function findAnchor(table: UI5Element): string {
         if (!lastColumn) {
             return '';
         }
-        if (lastColumn.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAction') {
-            anchor = `DataFieldForAction::${lastColumn.Action}`;
-        } else if (lastColumn.$Type === 'com.sap.vocabularies.UI.v1.DataField') {
-            anchor = `DataField::${lastColumn.Value?.$Path}`;
-        } else if (lastColumn.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation') {
-            anchor = `DataFieldForIntentBasedNavigation::${lastColumn.SemanticObject}::${lastColumn.Action}`;
-        } else if (lastColumn.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation') {
-            const annotationPath = lastColumn.Target?.$AnnotationPath;
-            if (!annotationPath) {
-                return '';
-            }
-            const annotation = annotationPath.split('.').pop();
-            anchor = `DataFieldForAnnotation::${annotation?.split('#').join('::')}`;
-        }
+        anchor = buildColumnAnchor(lastColumn);
     }
     return anchor;
+}
+
+/**
+ * Builds anchor string for different column types
+ * @param column - The column object from metadata
+ * @returns The anchor string for the column
+ */
+function buildColumnAnchor(column: {
+    $Type: string;
+    Value?: { $Path: string };
+    Action?: string;
+    SemanticObject?: string;
+    Target?: { $AnnotationPath: string };
+}): string {
+    if (column.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAction') {
+        return `DataFieldForAction::${column.Action}`;
+    }
+    
+    if (column.$Type === 'com.sap.vocabularies.UI.v1.DataField') {
+        return `DataField::${column.Value?.$Path}`;
+    }
+    
+    if (column.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation') {
+        return `DataFieldForIntentBasedNavigation::${column.SemanticObject}::${column.Action}`;
+    }
+    
+    if (column.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation') {
+        const annotationPath = column.Target?.$AnnotationPath;
+        if (!annotationPath) {
+            return '';
+        }
+        const annotation = annotationPath.split('.').pop();
+        return `DataFieldForAnnotation::${annotation?.split('#').join('::')}`;
+    }
+    
+    return '';
 }
