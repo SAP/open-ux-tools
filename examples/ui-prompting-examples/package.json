@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/ui-prompting-examples",
-    "version": "0.5.3",
+    "version": "0.5.6",
     "description": "This project contains UI storybook stories with exampleS with prompt ui and FPM based building blocks.",
     "license": "Apache-2.0",
     "private": true,
@@ -22,8 +22,8 @@
     "dependencies": {
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/ui-prompting": "workspace:*",
-        "react-markdown": "5.0.2",
-        "sanitize-html": "2.17.0"
+        "react-markdown": "5.0.3",
+        "sanitize-html": "2.17.1"
     },
     "peerDependencies": {
         "react": ">=16.14.0",
@@ -45,8 +45,8 @@
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/react": "16.14.55",
-        "@types/react-dom": "16.9.24",
+        "@types/react": "16.14.69",
+        "@types/react-dom": "16.9.25",
         "@types/sanitize-html": "2.16.0",
         "@types/uuid": "3.4.11",
         "@types/ws": "8.5.12",
@@ -57,7 +57,7 @@
         "eslint-plugin-storybook": "0.6.15",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "npm-run-all2": "6.2.0",
+        "npm-run-all2": "8.0.4",
         "react": "16.14.0",
         "react-dom": "16.14.0",
         "sass": "1.66.1",

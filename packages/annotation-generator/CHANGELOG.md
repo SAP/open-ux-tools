@@ -1,5 +1,46 @@
 # @sap-ux/annotation-generator
 
+## 0.4.29
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/fiori-annotation-api@0.9.22
+
+## 0.4.28
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/fiori-annotation-api@0.9.21
+    - @sap-ux/odata-annotation-core-types@0.5.5
+    - @sap-ux/odata-entity-model@0.3.6
+
+## 0.4.27
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/fiori-annotation-api@0.9.20
+
+## 0.4.26
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.19
+
+## 0.4.25
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/fiori-annotation-api@0.9.18
+
 ## 0.4.24
 
 ### Patch Changes

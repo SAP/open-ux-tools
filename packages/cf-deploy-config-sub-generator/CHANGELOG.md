@@ -1,5 +1,78 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.141
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/deploy-config-generator-shared@0.1.98
+- @sap-ux/fiori-generator-shared@0.13.79
+- @sap-ux/cf-deploy-config-inquirer@0.5.96
+- @sap-ux/cf-deploy-config-writer@0.3.74
+- @sap-ux/inquirer-common@0.11.14
+
+## 0.2.140
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/cf-deploy-config-writer@0.3.73
+    - @sap-ux/fiori-generator-shared@0.13.78
+    - @sap-ux/inquirer-common@0.11.13
+    - @sap-ux/deploy-config-generator-shared@0.1.97
+    - @sap-ux/cf-deploy-config-inquirer@0.5.95
+
+## 0.2.139
+
+### Patch Changes
+
+- @sap-ux/cf-deploy-config-writer@0.3.72
+- @sap-ux/project-access@1.35.7
+- @sap-ux/inquirer-common@0.11.12
+- @sap-ux/fiori-generator-shared@0.13.77
+- @sap-ux/cf-deploy-config-inquirer@0.5.94
+- @sap-ux/deploy-config-generator-shared@0.1.96
+
+## 0.2.138
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+- Updated dependencies [ff634b0]
+- Updated dependencies [d588c26]
+    - @sap-ux/inquirer-common@0.11.11
+    - @sap-ux/feature-toggle@0.3.7
+    - @sap-ux/cf-deploy-config-inquirer@0.5.93
+    - @sap-ux/deploy-config-generator-shared@0.1.95
+    - @sap-ux/fiori-generator-shared@0.13.76
+
+## 0.2.137
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/cf-deploy-config-inquirer@0.5.92
+    - @sap-ux/cf-deploy-config-writer@0.3.71
+    - @sap-ux/deploy-config-generator-shared@0.1.95
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/inquirer-common@0.11.10
+
+## 0.2.136
+
+### Patch Changes
+
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/deploy-config-generator-shared@0.1.94
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/cf-deploy-config-writer@0.3.70
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/cf-deploy-config-inquirer@0.5.91
+
 ## 0.2.135
 
 ### Patch Changes

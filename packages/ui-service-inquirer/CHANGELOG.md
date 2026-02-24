@@ -1,5 +1,69 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.130
+
+### Patch Changes
+
+- Updated dependencies [c043712]
+    - @sap-ux/axios-extension@1.25.16
+    - @sap-ux/abap-deploy-config-inquirer@1.7.8
+    - @sap-ux/odata-service-inquirer@2.18.11
+    - @sap-ux/inquirer-common@0.11.14
+    - @sap-ux/telemetry@0.6.80
+
+## 0.2.129
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.15
+- @sap-ux/inquirer-common@0.11.13
+- @sap-ux/odata-service-inquirer@2.18.10
+- @sap-ux/telemetry@0.6.79
+- @sap-ux/abap-deploy-config-inquirer@1.7.7
+
+## 0.2.128
+
+### Patch Changes
+
+- @sap-ux/abap-deploy-config-inquirer@1.7.6
+- @sap-ux/telemetry@0.6.78
+- @sap-ux/odata-service-inquirer@2.18.9
+- @sap-ux/inquirer-common@0.11.12
+- @sap-ux/axios-extension@1.25.15
+
+## 0.2.127
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+- Updated dependencies [ff634b0]
+    - @sap-ux/inquirer-common@0.11.11
+    - @sap-ux/odata-service-inquirer@2.18.8
+    - @sap-ux/abap-deploy-config-inquirer@1.7.5
+    - @sap-ux/axios-extension@1.25.15
+
+## 0.2.126
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.4
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/odata-service-inquirer@2.18.7
+    - @sap-ux/telemetry@0.6.77
+
+## 0.2.125
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/abap-deploy-config-inquirer@1.7.3
+    - @sap-ux/odata-service-inquirer@2.18.6
+    - @sap-ux/telemetry@0.6.76
+    - @sap-ux/axios-extension@1.25.14
+
 ## 0.2.124
 
 ### Patch Changes

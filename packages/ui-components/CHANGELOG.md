@@ -1,5 +1,24 @@
 # @sap-ux/ui-components
 
+## 1.27.8
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
+## 1.27.7
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
+## 1.27.6
+
+### Patch Changes
+
+- 5deb976: Dropdowns and contextual menus: update header item style in dropdown list
+- d8a39ce: fix(deps): update dependency sanitize-html to v2.17.1
+
 ## 1.27.5
 
 ### Patch Changes

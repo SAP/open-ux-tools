@@ -159,7 +159,7 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'Failed to update system information: System (URL + Client) already exists',
+                message: 'Failed to create the connection information: Connection (URL + Client) already exists',
                 updateSuccess: false
             }
         });
@@ -196,7 +196,7 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'System information updated.',
+                message: 'Connection information updated.',
                 updateSuccess: true
             }
         });
@@ -223,7 +223,7 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'Failed to update system information: System (URL + Client) already exists',
+                message: 'Failed to update the connection information: Connection (URL + Client) already exists',
                 updateSuccess: false
             }
         });
@@ -242,7 +242,7 @@ describe('Test Update System Action', () => {
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: 'Failed to update system information: Validation Error',
+                message: 'Failed to update the connection information: Validation Error',
                 updateSuccess: false
             }
         });
@@ -353,16 +353,19 @@ describe('Test Update System Action', () => {
         jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
         const panelContext = { ...basePanelContext, panelViewType: SystemPanelViewType.Create };
 
-        const invalidSystem = { ...backendSystem, url: 'invalid url' };
+        const invalidSystem = { ...backendSystem, url: 'invalid url', systemType: undefined };
         await expect(
-            updateSystem(panelContext, { type: 'UPDATE_SYSTEM', payload: { system: invalidSystem } })
+            updateSystem(panelContext, {
+                type: 'UPDATE_SYSTEM',
+                payload: { system: invalidSystem as unknown as BackendSystem }
+            })
         ).resolves.toBeUndefined();
 
         expect(panelUtils.validateSystemUrl).toHaveBeenCalledWith('invalid url');
         expect(postMessageMock).toHaveBeenCalledWith({
             type: 'UPDATE_SYSTEM_STATUS',
             payload: {
-                message: "Failed to update system information: The URL 'invalid url' provided is invalid",
+                message: "Failed to create the connection information: The URL 'invalid url' provided is invalid",
                 updateSuccess: false
             }
         });

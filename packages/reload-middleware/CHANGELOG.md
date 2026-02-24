@@ -1,5 +1,17 @@
 # @sap-ux/reload-middleware
 
+## 0.3.16
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+
+## 0.3.15
+
+### Patch Changes
+
+- 97735d2: fix(deps): update dependency portfinder to v1.0.38
+
 ## 0.3.14
 
 ### Patch Changes
