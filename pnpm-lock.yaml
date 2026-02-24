@@ -1441,8 +1441,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       ts-import-plugin:
-        specifier: 1.6.3
-        version: 1.6.3
+        specifier: 3.0.0
+        version: 3.0.0(typescript@5.9.3)
       ts-jest:
         specifier: 29.4.5
         version: 29.4.5(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3)
@@ -32042,10 +32042,12 @@ packages:
     engines: {node: '>=6.10'}
     dev: true
 
-  /ts-import-plugin@1.6.3:
-    resolution: {integrity: sha512-cKzPmZtS1cssMZOnSfsIMdGXWEwA/h6wzKDwwdUQKyC6EBgzuChu3dcS3Wn4wzTzL9rCtz0Xi56aOeaH3lp5cw==}
+  /ts-import-plugin@3.0.0(typescript@5.9.3):
+    resolution: {integrity: sha512-JjFs42+A/TIUbIMxi8pndxwHGpWmwv9bh3Rda0dyqdYRyD41wt85OdITBsBCgrUYK/ChipmPHp6J70u7lkojaQ==}
+    peerDependencies:
+      typescript: '>= 4.8'
     dependencies:
-      tslib: 1.14.1
+      typescript: 5.9.3
     dev: true
 
   /ts-jest@29.4.5(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3):
