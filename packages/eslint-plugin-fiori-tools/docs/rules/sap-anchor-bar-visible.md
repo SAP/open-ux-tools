@@ -1,14 +1,14 @@
 # Disallow Setting `anchorBarVisible` to `false` in Object Page Headers (`sap-anchor-bar-visible`)
 
-Ensures that the `anchorBarVisible` property is not set to `false` in the Object Page header configuration in the `manifest.json` file.
+Ensures that the `anchorBarVisible` property is not set to `false` in the object page header configuration in the `manifest.json` file.
 
 ## Rule Details
 
-This rule checks if the `anchorBarVisible` property is set to `false` in the Object Page header configuration within the `manifest.json` file. Setting this property to `false` should be avoided as it impacts the user experience and navigation within Object Pages.
+This rule checks if the `anchorBarVisible` property is set to `false` in the object page header configuration within the `manifest.json` file. We recommend that you don't set this property to `false`, as it impacts the user experience and navigation within object pages.
 
 ### Why Was This Rule Introduced?
 
-The anchor bar is an important navigation element in Object Pages that helps users navigate between different sections. Setting `anchorBarVisible` to `false` in the manifest can negatively impact user experience. This rule encourages proper configuration of Object Page headers.
+The anchor bar is an important navigation feature in object pages that enables users to quickly jump between different sections. Setting `anchorBarVisible` to `false` in the manifest can negatively impact user experience. This rule ensures the correct configuration of object page headers.
 
 ### Warning Message
 
@@ -66,7 +66,7 @@ The following patterns are considered correct:
 }
 ```
 
-The `anchorBarVisible` property is set to `true`, which is allowed.
+The `anchorBarVisible` property is set to `true`, which is the recommended setting.
 
 #### Correct Manifest Configuration (Property Not Set)
 
@@ -117,7 +117,7 @@ The `anchorBarVisible` property is not configured, which is also acceptable.
 }
 ```
 
-Form Entry Object Pages are allowed to have both `visible: false` and `anchorBarVisible: false` as this is the recommended pattern for data entry pages.
+Form entry object pages are allowed to have both `visible: false` and `anchorBarVisible: false`, as this is the recommended pattern for data entry pages.
 
 ## How to Fix
 

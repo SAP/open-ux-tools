@@ -11,12 +11,12 @@ const rule: FioriRuleDefinition = createFioriRule({
         docs: {
             recommended: true,
             description:
-                'Anchor Bar Visible should not be set to false in manifest settings for Object Page headers (except Form Entry Object Pages)',
-            url: 'https://ui5.sap.com/#/topic/d2ef0099542d44dc868719d908e576d0'
+                'Anchor Bar Visible should not be set to false in manifest settings for object page headers (except form entry object pages)',
+            url: 'https://ui5.sap.com/#/topic/533f7e7f59854cb08ce8074814ae83c5'
         },
         messages: {
             [ANCHOR_BAR_VISIBLE]:
-                'The "anchorBarVisible" property should not be set to false in manifest settings. Remove this property from the Object Page header configuration. Exception: Form Entry Object Pages can have both "visible" and "anchorBarVisible" set to false.'
+                'The "anchorBarVisible" property should not be set to false in manifest settings. Remove this property from the object page header configuration. Exception: Form entry object pages can have both "visible" and "anchorBarVisible" set to false.'
         },
         fixable: 'code'
     },
