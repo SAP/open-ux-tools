@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.3.16
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+
 ## 0.3.15
 
 ### Patch Changes

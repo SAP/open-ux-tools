@@ -48,6 +48,10 @@ function updateTestSnapshots() {
 async function updateUI5VersionFallback() {
     try {
         execSync('pnpm --filter @sap-ux/ui5-info update-fallbacks', { stdio: 'inherit' });
+        // Rebuild @sap-ux/ui5-info so dependent packages get the updated version data
+        // This is necessary because the fallback source was modified after the initial build
+        console.log('  Rebuilding @sap-ux/ui5-info with updated fallbacks...');
+        execSync('pnpm --filter @sap-ux/ui5-info build', { stdio: 'inherit' });
         return true;
     } catch (e) {
         console.error(`  Error updating UI5 version fallbacks: ${e.message}`);

@@ -10,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aplaywright"
     },
-    "version": "0.2.7",
+    "version": "0.2.8",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -41,7 +41,7 @@
         "@types/fs-extra": "11.0.4",
         "@types/folder-hash": "4.0.4",
         "portfinder": "1.0.38",
-        "promisify-child-process": "4.1.2"
+        "promisify-child-process": "5.0.1"
     },
     "devDependencies": {},
     "engines": {

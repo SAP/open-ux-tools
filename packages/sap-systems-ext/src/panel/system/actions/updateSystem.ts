@@ -46,7 +46,7 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
     };
 
     try {
-        await validateSystemName(backendSystem.name, context.backendSystem?.name);
+        await validateSystemName(backendSystem.name, context.backendSystem?.name, context.panelViewType);
         validateSystemUrl(backendSystem.url);
 
         const newPanelMsg = await updateHandler(context, backendSystem, systemExistsInStore);
@@ -56,7 +56,13 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
         }
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        await postSavingError(message, context.postMessage, systemExistsInStore, backendSystem.systemType);
+        await postSavingError(
+            message,
+            context.postMessage,
+            systemExistsInStore,
+            backendSystem.systemType,
+            context.panelViewType
+        );
     }
 }
 
@@ -151,14 +157,18 @@ async function updateHandler(
  * @param postMessage - function to post a message to the webview
  * @param systemExistsInStore - boolean indicating if the system already exists in the store
  * @param systemType - optional system type for telemetry logging
+ * @param panelViewType - the current panel view type
  */
 async function postSavingError(
     errorMsg: string,
     postMessage: (msg: unknown) => void,
     systemExistsInStore: boolean,
-    systemType = 'unknown'
+    systemType = 'unknown',
+    panelViewType?: SystemPanelViewType
 ): Promise<void> {
-    const message = t(systemExistsInStore ? 'error.updateFailure' : 'error.creationFailure', { error: errorMsg });
+    const message = t(panelViewType === SystemPanelViewType.View ? 'error.updateFailure' : 'error.creationFailure', {
+        error: errorMsg
+    });
     postMessage(
         updateSystemStatus({
             message,

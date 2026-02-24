@@ -1,5 +1,29 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.0.64
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+- Updated dependencies [c043712]
+    - @sap-ux/adp-tooling@0.18.74
+    - @sap-ux/project-access@1.35.9
+
+## 0.0.63
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/adp-tooling@0.18.73
+
+## 0.0.62
+
+### Patch Changes
+
+- Updated dependencies [ce9f074]
+    - @sap-ux/adp-tooling@0.18.72
+
 ## 0.0.61
 
 ### Patch Changes

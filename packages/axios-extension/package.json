@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/axios-extension",
-    "version": "1.25.15",
+    "version": "1.25.16",
     "description": "Extension of the Axios module adding convenience methods to interact with SAP systems especially with OData services.",
     "repository": {
         "type": "git",
@@ -46,7 +46,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@types/lodash": "4.14.202",
         "nock": "13.4.0",
-        "supertest": "7.1.4",
+        "supertest": "7.2.2",
         "@types/proxy-from-env": "1.0.1"
     },
     "files": [

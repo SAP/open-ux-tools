@@ -1,5 +1,24 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.6.6
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/fiori-annotation-api@0.9.22
+
+## 9.6.5
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/fiori-annotation-api@0.9.21
+    - @sap-ux/odata-annotation-core@0.2.15
+    - @sap-ux/odata-entity-model@0.3.6
+    - @sap-ux/odata-vocabularies@0.4.26
+
 ## 9.6.4
 
 ### Patch Changes

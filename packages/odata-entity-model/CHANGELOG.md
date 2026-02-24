@@ -1,5 +1,11 @@
 # @sap-ux/odata-entity-model
 
+## 0.3.6
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
 ## 0.3.5
 
 ### Patch Changes
