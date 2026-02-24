@@ -88,11 +88,14 @@ export type PersonalizationMessageId =
     | 'sap-table-personalization-column'
     | 'sap-table-personalization-filter'
     | 'sap-table-personalization-sort'
-    | 'sap-table-personalization-group';
+    | 'sap-table-personalization-group'
+    | 'sap-table-missing-personalization-properties';
+
 export interface TablePersonalization {
     type: typeof TABLE_PERSONALIZATION;
     messageId: PersonalizationMessageId;
     property?: PersonalizationProperty;
+    undefinedProperties?: PersonalizationProperty[];
     pageName: string;
     manifest: ManifestPropertyDiagnosticData;
 }

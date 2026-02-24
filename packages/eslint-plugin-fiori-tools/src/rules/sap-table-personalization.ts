@@ -18,6 +18,7 @@ const TABLE_PERSONALIZATION_COLUMN = 'sap-table-personalization-column';
 const TABLE_PERSONALIZATION_FILTER = 'sap-table-personalization-filter';
 const TABLE_PERSONALIZATION_SORT = 'sap-table-personalization-sort';
 const TABLE_PERSONALIZATION_GROUP = 'sap-table-personalization-group';
+const MISSING_PERSONALIZATION_PROPERTIES = 'sap-table-missing-personalization-properties';
 
 const MessageIdByProperty: {
     [key: string]: PersonalizationMessageId;
@@ -46,7 +47,9 @@ const rule: FioriRuleDefinition = createFioriRule({
             [TABLE_PERSONALIZATION_FILTER]: 'Table data filtering should be enabled.',
             [TABLE_PERSONALIZATION_SORT]: 'Table data sorting should be enabled.',
             [TABLE_PERSONALIZATION_GROUP]:
-                'Table data grouping should be enabled for analytical and responsive type tables.'
+                'Table data grouping should be enabled for analytical and responsive type tables.',
+            [MISSING_PERSONALIZATION_PROPERTIES]:
+                'In case of using an object, omitting a setting is treated as false. {{undefinedPropertiesString}}.'
         },
         fixable: 'code'
     },
@@ -76,9 +79,18 @@ const rule: FioriRuleDefinition = createFioriRule({
     createJsonVisitorHandler: (context, diagnostic, deepestPathResult) => {
         return function report(node: MemberNode): void {
             diagnostic.manifest.loc = node.loc;
+            let undefinedPropertiesString = '';
+            let messageId = MessageIdByProperty[diagnostic.property ?? ''];
+            if (diagnostic.undefinedProperties?.length) {
+                undefinedPropertiesString = `Currently ${diagnostic.undefinedProperties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'}`;
+                messageId = MISSING_PERSONALIZATION_PROPERTIES;
+            }
             return context.report({
                 node,
-                messageId: MessageIdByProperty[diagnostic.property ?? ''],
+                data: {
+                    undefinedPropertiesString
+                },
+                messageId,
                 fix: createJsonFixer({
                     context,
                     deepestPathResult,
@@ -93,14 +105,18 @@ const rule: FioriRuleDefinition = createFioriRule({
 });
 
 /**
- * Checks personalization.group value in Analitical or Responsive table with required minUI5 version.
+ * Determines whether the property value should be checked.
+ * Property 'group' has table type and min UI5 version limitations.
  *
  * @param table - OData V4 table.
  * @param parsedApp - Parsed application.
- * @param pageName - OData V4 page name.
- * @returns TablePersonalization issues collected for 'group' property
+ * @param propertyName - Property name.
+ * @returns true if property has to be enabled.
  */
-function checkGroupProperty(table: Table, parsedApp: ParsedApp, pageName: string): TablePersonalization[] {
+function shouldCheckProperty(table: Table, parsedApp: ParsedApp, propertyName: PersonalizationProperty): boolean {
+    if (propertyName !== 'group') {
+        return true;
+    }
     const minUI5Version = parsedApp.manifest.minUI5Version;
     const tableType = table.configuration.tableType.valueInFile;
     const checkGroupForAnalyticalTable =
@@ -112,21 +128,9 @@ function checkGroupProperty(table: Table, parsedApp: ParsedApp, pageName: string
         minUI5Version &&
         !isLowerThanMinimalUi5Version(minUI5Version, { major: 1, minor: 120 });
     if (checkGroupForAnalyticalTable || checkGroupForResponsiveTable) {
-        return [
-            {
-                type: TABLE_PERSONALIZATION,
-                pageName,
-                property: 'group',
-                messageId: MessageIdByProperty['group'],
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: [...table.configuration.personalization.configurationPath, 'group']
-                }
-            }
-        ];
+        return true;
     }
-    return [];
+    return false;
 }
 
 /**
@@ -146,7 +150,7 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
         // Every table personalization setting is enabled
         return [];
     }
-    if (personalization === false || Object.keys(personalization).length === 0) {
+    if (personalization === false) {
         // Every table personalization setting is disabled
         problems.push({
             type: TABLE_PERSONALIZATION,
@@ -159,13 +163,13 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
             }
         });
     } else {
+        const undefinedProperties: PersonalizationProperty[] = [];
         // Check personalization object properties
         for (const key of PersonalizationProperties) {
             const property = key as PersonalizationProperty;
-            if (personalization[property] === false) {
-                if (property === 'group') {
-                    problems.push(...checkGroupProperty(table, parsedApp, page.targetName));
-                } else {
+            const propertyValue = personalization[property];
+            if (shouldCheckProperty(table, parsedApp, property)) {
+                if (propertyValue === false) {
                     problems.push({
                         type: TABLE_PERSONALIZATION,
                         pageName: page.targetName,
@@ -177,8 +181,23 @@ function checkPersonalizationValue(table: Table, page: FeV4PageType, parsedApp: 
                             propertyPath: [...table.configuration.personalization.configurationPath, property]
                         }
                     });
+                } else if (propertyValue === undefined) {
+                    undefinedProperties.push(property);
                 }
             }
+        }
+        if (undefinedProperties.length) {
+            problems.push({
+                type: TABLE_PERSONALIZATION,
+                pageName: page.targetName,
+                undefinedProperties,
+                messageId: MISSING_PERSONALIZATION_PROPERTIES,
+                manifest: {
+                    uri: parsedApp.manifest.manifestUri,
+                    object: parsedApp.manifestObject,
+                    propertyPath: table.configuration.personalization.configurationPath
+                }
+            });
         }
     }
     return problems;
