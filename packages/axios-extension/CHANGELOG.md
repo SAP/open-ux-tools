@@ -1,5 +1,37 @@
 # @sap-ux/axios-extension
 
+## 1.25.16
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+
+## 1.25.15
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux/feature-toggle@0.3.7
+
+## 1.25.14
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+
+## 1.25.13
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+
+## 1.25.12
+
+### Patch Changes
+
+- bda7356: fix(deps): update dependency qs to v6.14.2 [security]
+
 ## 1.25.11
 
 ### Patch Changes

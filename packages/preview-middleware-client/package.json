@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/preview-middleware-client",
-    "version": "0.18.17",
+    "version": "0.18.22",
     "description": "Client-side coding hosted by the preview middleware",
     "repository": {
         "type": "git",
@@ -35,12 +35,12 @@
         "ui5-tooling-modules": "3.33.0",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
-        "@ui5/cli": "4.0.33",
+        "@ui5/cli": "4.0.44",
         "eslint-plugin-jsdoc": "50.8.0",
-        "npm-run-all2": "6.2.0",
+        "npm-run-all2": "8.0.4",
         "ui5-tooling-transpile": "3.9.2",
         "vscode-languageserver-textdocument": "1.0.11",
-        "@ui5/manifest": "1.82.0"
+        "@ui5/manifest": "1.83.0"
     },
     "browserslist": "defaults"
 }

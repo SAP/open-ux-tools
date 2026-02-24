@@ -32,6 +32,9 @@ const rule: FioriRuleDefinition = createFioriRule({
             }
             if (app.type === 'fe-v4') {
                 for (const page of app.pages) {
+                    if (page.type !== 'object-page') {
+                        continue;
+                    }
                     problems.push(...handlePasteInTableV4(page, parsedApp));
                 }
             }

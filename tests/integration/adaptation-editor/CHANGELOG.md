@@ -1,5 +1,59 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.56
+
+### Patch Changes
+
+- d732237: fix(deps): update dependency jest-dev-server to v10.1.4
+- Updated dependencies [9072d52]
+    - @sap-ux-private/playwright@0.2.8
+    - @sap-ux/project-access@1.35.9
+
+## 0.0.55
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+
+## 0.0.54
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+
+## 0.0.53
+
+### Patch Changes
+
+- 97735d2: fix(deps): update dependency portfinder to v1.0.38
+- Updated dependencies [97735d2]
+    - @sap-ux-private/playwright@0.2.7
+
+## 0.0.52
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-info@0.13.13
+
+## 0.0.51
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+
+## 0.0.50
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+
 ## 0.0.49
 
 ### Patch Changes

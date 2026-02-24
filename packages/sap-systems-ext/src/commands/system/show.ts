@@ -19,14 +19,14 @@ export const showSystemsCommandHandler =
             const backendSystemKey = await getBackendSystemKey(systemService, system);
             const storedBackendSystem = await systemService.read(backendSystemKey);
             if (!storedBackendSystem) {
-                window.showErrorMessage(t('error.systemNotFound', { backendKey: backendSystemKey.getId() }));
+                window.showErrorMessage(t('error.connectionNotFound', { backendKey: backendSystemKey.getId() }));
                 return;
             }
             openSystemPanel(context, backendSystemKey, storedBackendSystem, statusMsg);
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : undefined;
 
-            window.showErrorMessage(errorMessage ?? t('error.viewSystemDetails'));
+            window.showErrorMessage(errorMessage ?? t('error.viewConnectionDetails'));
             logTelemetryFailure();
         }
     };
@@ -58,7 +58,10 @@ async function getBackendSystemKey(
 async function sapSystemDropdownPicker(
     systemService: Service<BackendSystem, BackendSystemKey>
 ): Promise<BackendSystemKey> {
-    const allBackendSystems = await systemService.getAll({ includeSensitiveData: false });
+    const allBackendSystems = await systemService.getAll({
+        includeSensitiveData: false,
+        backendSystemFilter: { connectionType: ['abap_catalog', 'odata_service'] }
+    });
     const quickPickItems = allBackendSystems.map((system) => ({
         label: system.name,
         systemKey: new BackendSystemKey({ url: system.url, client: system.client })

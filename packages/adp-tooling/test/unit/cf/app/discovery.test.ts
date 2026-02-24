@@ -29,7 +29,9 @@ jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
-jest.mock('../../../../src/cf/services/api');
+jest.mock('../../../../src/cf/services/api', () => ({
+    getFDCApps: jest.fn()
+}));
 
 jest.mock('../../../../src/cf/utils/validation', () => ({
     ...jest.requireActual('../../../../src/cf/utils/validation'),
@@ -713,6 +715,118 @@ describe('CF App Discovery', () => {
             const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
 
             expect(result).toEqual([{ url: 'https://backend.example.com', paths: ['/sap/opu/odata'] }]);
+        });
+
+        test('should extract pathRewrite from route target', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [
+                    {
+                        source: '^/resources/com/sap/apm/(.*)$',
+                        destination: 'backend-dest',
+                        target: '/api/$1'
+                    }
+                ]
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([
+                {
+                    url: 'https://backend.example.com',
+                    paths: ['/resources/com/sap/apm'],
+                    pathRewrite: '/api'
+                }
+            ]);
+        });
+
+        test('should remove trailing slashes from paths and pathRewrite', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [
+                    {
+                        source: '^/api/recommendation/v1/RecommendationService/(.*)$',
+                        destination: 'backend-dest',
+                        target: '/api/recommendation/v1/RecommendationService/$1'
+                    }
+                ]
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([
+                {
+                    url: 'https://backend.example.com',
+                    paths: ['/api/recommendation/v1/RecommendationService'],
+                    pathRewrite: '/api/recommendation/v1/RecommendationService'
+                }
+            ]);
+        });
+
+        test('should handle route without target (no pathRewrite)', () => {
+            const serviceKeys: ServiceKeys[] = [
+                {
+                    credentials: {
+                        uaa: {} as any,
+                        uri: 'test-uri',
+                        endpoints: {
+                            'backend-dest': { url: 'https://backend.example.com', destination: 'backend-dest' }
+                        },
+                        'html5-apps-repo': {}
+                    }
+                }
+            ];
+
+            const xsAppContent = {
+                routes: [
+                    {
+                        source: '^/api/(.*)$',
+                        destination: 'backend-dest'
+                    }
+                ]
+            };
+
+            mockExistsSync.mockReturnValue(true);
+            mockReadFileSync.mockReturnValue(JSON.stringify(xsAppContent));
+
+            const result = getBackendUrlsWithPaths(serviceKeys, '/test/base');
+
+            expect(result).toEqual([
+                {
+                    url: 'https://backend.example.com',
+                    paths: ['/api']
+                }
+            ]);
         });
     });
 

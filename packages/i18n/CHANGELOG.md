@@ -1,5 +1,17 @@
 # @sap-ux/i18n
 
+## 0.3.9
+
+### Patch Changes
+
+- fd8de2b: fix(deps): update dependency jsonc-parser to v3.3.1
+
+## 0.3.8
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
 ## 0.3.7
 
 ### Patch Changes

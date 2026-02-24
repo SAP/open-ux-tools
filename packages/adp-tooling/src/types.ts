@@ -1,11 +1,17 @@
 import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { AxiosRequestConfig, KeyUserChangeContent, OperationsType } from '@sap-ux/axios-extension';
+import type {
+    AdaptationProjectType,
+    AxiosRequestConfig,
+    KeyUserChangeContent,
+    OperationsType
+} from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
+import type { SupportedProject } from './source';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -51,6 +57,7 @@ export interface AdpPreviewConfigWithBuildPath {
      * For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.
      */
     cfBuildPath: string;
+
     /**
      * If set to true then certification validation errors are ignored.
      */
@@ -163,11 +170,12 @@ export interface SourceApplication {
     fileType: string;
     bspUrl: string;
     bspName: string;
+    cloudDevAdaptationStatus: string;
 }
 
-export interface FlexUISupportedSystem {
-    isUIFlex: boolean;
-    isOnPremise: boolean;
+export interface FlexUICapability {
+    isUIFlexSupported: boolean;
+    isDtaFolderDeploymentSupported: boolean;
 }
 
 export interface UI5Version {
@@ -766,6 +774,8 @@ export interface CustomConfig {
     adp: {
         environment: OperationsType;
         support: ToolsSupport;
+        projectType?: AdaptationProjectType;
+        supportedProject?: SupportedProject;
     };
 }
 
@@ -835,7 +845,10 @@ export interface InboundChange {
  */
 export interface XsAppRoute {
     source: string;
+    target?: string;
+    destination?: string;
     endpoint?: string;
+    service?: string;
     [key: string]: unknown;
 }
 
