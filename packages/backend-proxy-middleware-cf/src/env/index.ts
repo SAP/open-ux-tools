@@ -3,16 +3,16 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AppRouterEnvOptions } from '@sap-ux/adp-tooling';
-import { getAppRouterEnvOptions, getSpaceGuidFromUi5Yaml, getYamlContent } from '@sap-ux/adp-tooling';
+import { buildVcapServicesFromResources, getSpaceGuidFromUi5Yaml, getYamlContent } from '@sap-ux/adp-tooling';
 
 import type { EffectiveOptions } from '../types';
 
 /**
  * Load and parse env options JSON file.
  *
- * @param rootPath - Project root path.
- * @param envOptionsPath - Path to file (relative to rootPath).
- * @returns Parsed options object.
+ * @param {string} rootPath - Project root path.
+ * @param {string} envOptionsPath - Path to file (relative to rootPath).
+ * @returns {AppRouterEnvOptions} Parsed options object.
  */
 function loadEnvOptionsFromFile(rootPath: string, envOptionsPath: string): AppRouterEnvOptions {
     const resolvedPath = path.resolve(rootPath, envOptionsPath);
@@ -60,24 +60,33 @@ export async function loadAndApplyEnvOptions(
     effectiveOptions: EffectiveOptions,
     logger: ToolsLogger
 ): Promise<void> {
-    const envOptionsPath = effectiveOptions.envOptionsPath;
-    let options: AppRouterEnvOptions = {};
+    const { envOptionsPath, destinations: middlewareDestinations } = effectiveOptions;
+    let options: AppRouterEnvOptions;
+
     if (envOptionsPath) {
-        options = loadEnvOptionsFromFile(rootPath, envOptionsPath);
+        const envOptions = loadEnvOptionsFromFile(rootPath, envOptionsPath);
+        const destinations = envOptions.destinations
+            ? [...envOptions.destinations, ...middlewareDestinations]
+            : middlewareDestinations;
+        options = { ...envOptions, destinations };
     } else {
-        const mtaPath = path.join(path.resolve(rootPath, '..'), 'mta.yaml');
+        const mtaPath = path.resolve(rootPath, '..', 'mta.yaml');
         const spaceGuid = await getSpaceGuidFromUi5Yaml(rootPath, logger);
 
         if (!spaceGuid) {
-            throw new Error('No space GUID (from config or ui5.yaml). Skipping CF env options.');
+            throw new Error('No space GUID (from config or ui5.yaml). Cannot load CF env options.');
         }
 
-        if (fs.existsSync(mtaPath)) {
-            const mtaYaml = getYamlContent(mtaPath);
-            options = await getAppRouterEnvOptions(mtaYaml, spaceGuid, effectiveOptions.destinations, logger);
-        } else {
-            throw new Error(`mta.yaml not found at "${mtaPath}", skipping CF env options.`);
+        if (!fs.existsSync(mtaPath)) {
+            throw new Error(`mta.yaml not found at "${mtaPath}". Cannot load CF env options.`);
         }
+
+        const mtaYaml = getYamlContent(mtaPath);
+        const VCAP_SERVICES = await buildVcapServicesFromResources(mtaYaml.resources, spaceGuid, logger);
+        options = {
+            VCAP_SERVICES,
+            destinations: middlewareDestinations
+        };
     }
 
     applyToProcessEnv(options);

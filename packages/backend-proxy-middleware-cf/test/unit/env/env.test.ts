@@ -13,7 +13,8 @@ jest.mock('node:fs', () => ({
 }));
 
 jest.mock('@sap-ux/adp-tooling', () => ({
-    getAppRouterEnvOptions: jest.fn(),
+    ...jest.requireActual('@sap-ux/adp-tooling'),
+    buildVcapServicesFromResources: jest.fn(),
     getSpaceGuidFromUi5Yaml: jest.fn(),
     getYamlContent: jest.fn()
 }));
@@ -23,13 +24,13 @@ const readFileSyncMock = fs.readFileSync as jest.Mock;
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports -- mock must be set before import
 const adpTooling = require('@sap-ux/adp-tooling') as {
+    buildVcapServicesFromResources: jest.Mock;
     getSpaceGuidFromUi5Yaml: jest.Mock;
     getYamlContent: jest.Mock;
-    getAppRouterEnvOptions: jest.Mock;
 };
+const buildVcapServicesFromResourcesMock = adpTooling.buildVcapServicesFromResources;
 const getSpaceGuidFromUi5YamlMock = adpTooling.getSpaceGuidFromUi5Yaml;
 const getYamlContentMock = adpTooling.getYamlContent;
-const getAppRouterEnvOptionsMock = adpTooling.getAppRouterEnvOptions;
 
 describe('env', () => {
     const logger = { warn: jest.fn(), debug: jest.fn() } as unknown as ToolsLogger;
@@ -71,7 +72,7 @@ describe('env', () => {
                 expect(readFileSyncMock).toHaveBeenCalledWith(path.resolve(rootPath, 'opts.json'), 'utf8');
             });
 
-            test('should load file and apply VCAP_SERVICES to process.env', async () => {
+            test('should load file and merge destinations (file + effectiveOptions, same name wins from effectiveOptions)', async () => {
                 const opts = {
                     VCAP_SERVICES: { xsuaa: [{ name: 'my-xsuaa' }] },
                     destinations: [{ name: 'backend', url: 'http://localhost:8080' }]
@@ -102,7 +103,7 @@ describe('env', () => {
 
         describe('when envOptionsPath is falsy (load from CF)', () => {
             const rootPathCf = '/project/root';
-            const mtaPath = path.join(path.resolve(rootPathCf, '..'), 'mta.yaml');
+            const mtaPath = path.resolve(rootPathCf, '..', 'mta.yaml');
 
             test('throws when getSpaceGuidFromUi5Yaml returns undefined', async () => {
                 getSpaceGuidFromUi5YamlMock.mockResolvedValue(undefined);
@@ -112,7 +113,7 @@ describe('env', () => {
                 } as unknown as EffectiveOptions;
 
                 await expect(loadAndApplyEnvOptions(rootPathCf, effectiveOptions, logger)).rejects.toThrow(
-                    'No space GUID (from config or ui5.yaml). Skipping CF env options.'
+                    'No space GUID (from config or ui5.yaml). Cannot load CF env options.'
                 );
 
                 expect(getSpaceGuidFromUi5YamlMock).toHaveBeenCalledWith(rootPathCf, logger);
@@ -133,18 +134,15 @@ describe('env', () => {
                 expect(existsSyncMock).toHaveBeenCalledWith(mtaPath);
             });
 
-            test('should call getAppRouterEnvOptions and apply result to process.env when spaceGuid and mta exist', async () => {
+            test('should call buildVcapServicesFromResources and apply result to process.env when spaceGuid and mta exist', async () => {
                 const spaceGuid = 'space-guid-123';
                 const mtaYaml = { resources: [] };
-                const cfOptions = {
-                    VCAP_SERVICES: { destination: [{ label: 'destination' }] },
-                    destinations: [{ name: 'backend', url: 'http://localhost:8080' }]
-                };
+                const vcapServices = { destination: [{ label: 'destination' }] };
 
                 getSpaceGuidFromUi5YamlMock.mockResolvedValue(spaceGuid);
                 existsSyncMock.mockReturnValue(true);
                 getYamlContentMock.mockReturnValue(mtaYaml);
-                getAppRouterEnvOptionsMock.mockResolvedValue(cfOptions);
+                buildVcapServicesFromResourcesMock.mockResolvedValue(vcapServices);
 
                 const effectiveOptions = {
                     envOptionsPath: undefined,
@@ -156,14 +154,9 @@ describe('env', () => {
                 await loadAndApplyEnvOptions(rootPathCf, effectiveOptions, logger);
 
                 expect(getYamlContentMock).toHaveBeenCalledWith(mtaPath);
-                expect(getAppRouterEnvOptionsMock).toHaveBeenCalledWith(
-                    mtaYaml,
-                    spaceGuid,
-                    effectiveOptions.destinations,
-                    logger
-                );
-                expect(process.env.VCAP_SERVICES).toBe(JSON.stringify(cfOptions.VCAP_SERVICES));
-                expect(process.env.destinations).toBe(JSON.stringify(cfOptions.destinations));
+                expect(buildVcapServicesFromResourcesMock).toHaveBeenCalledWith(mtaYaml.resources, spaceGuid, logger);
+                expect(process.env.VCAP_SERVICES).toBe(JSON.stringify(vcapServices));
+                expect(process.env.destinations).toBe(JSON.stringify(effectiveOptions.destinations));
 
                 if (beforeVcap !== undefined) {
                     process.env.VCAP_SERVICES = beforeVcap;
