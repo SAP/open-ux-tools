@@ -1,5 +1,17 @@
 # @sap-ux/jest-runner-puppeteer
 
+## 0.2.7
+
+### Patch Changes
+
+- 469c90c: fix(deps): update dependency which to v6
+
+## 0.2.6
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+
 ## 0.2.5
 
 ### Patch Changes

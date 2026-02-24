@@ -1,5 +1,11 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.5.5
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
 ## 0.5.4
 
 ### Patch Changes

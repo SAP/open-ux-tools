@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-application-inquirer",
     "description": "Prompts module that can prompt users for inputs required for UI5 application writing",
-    "version": "0.16.30",
+    "version": "0.16.36",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -34,10 +34,10 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "inquirer-autocomplete-prompt": "2.0.1",
         "lodash": "4.17.23",
-        "semver": "7.7.3"
+        "semver": "7.7.4"
     },
     "devDependencies": {
         "@sap-devx/yeoman-ui-types": "1.14.4",

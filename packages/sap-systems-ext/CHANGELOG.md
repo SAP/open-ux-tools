@@ -1,5 +1,35 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.6
+
+### Patch Changes
+
+- fd8de2b: fix(deps): update dependency jsonc-parser to v3.3.1
+
+## 0.3.5
+
+### Patch Changes
+
+- bdf59e5: fix naming validation when importing
+
+## 0.3.4
+
+### Patch Changes
+
+- 66869b2: text and ui updates
+
+## 0.3.3
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 0.3.2
+
+### Patch Changes
+
+- e5bc3ca: fix(deps): update dependency vscode-uri to v3.1.0
+
 ## 0.3.1
 
 ### Patch Changes
