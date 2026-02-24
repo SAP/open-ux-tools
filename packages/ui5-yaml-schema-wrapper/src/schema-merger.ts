@@ -210,7 +210,7 @@ function resolveExternalRefs(
         }
 
         const refSchema = loadedSchemas.get(fileName)!;
-        const refSchemaPrefix = fileName.replace('-schema.json', '').replace(/-/g, '_');
+        const refSchemaPrefix = fileName.replace('-schema.json', '').replaceAll('-', '_');
 
         // Resolve the JSON path
         if (jsonPath.startsWith('/definitions/')) {
@@ -408,12 +408,15 @@ function processMiddlewareMapping(
         console.log(`Processing ${mapping.middlewareName} (${mapping.schemaFileName})...`);
     }
 
-    const prefix = mapping.schemaFileName.replace('-schema.json', '').replace(/-/g, '_');
+    const prefix = mapping.schemaFileName.replace('-schema.json', '').replaceAll('-', '_');
     let schema: Schema;
 
-    if (!processedSchemas.has(mapping.schemaFileName)) {
-        schema = loadSchema(schemaDir, mapping.schemaFileName);
-        schema = resolveExternalRefs(schema, schemaDir, loadedSchemas, prefix);
+    schema = loadSchema(schemaDir, mapping.schemaFileName);
+    schema = resolveExternalRefs(schema, schemaDir, loadedSchemas, prefix);
+
+    if (processedSchemas.has(mapping.schemaFileName)) {
+        // Schema already processed, skip adding definitions again
+    } else {
         const prefixedSchema = prefixDefinitions(schema, prefix);
 
         if (prefixedSchema.definitions) {
@@ -421,9 +424,6 @@ function processMiddlewareMapping(
         }
 
         processedSchemas.add(mapping.schemaFileName);
-    } else {
-        schema = loadSchema(schemaDir, mapping.schemaFileName);
-        schema = resolveExternalRefs(schema, schemaDir, loadedSchemas, prefix);
     }
 
     const configSchema = buildConfigSchema(schema);
