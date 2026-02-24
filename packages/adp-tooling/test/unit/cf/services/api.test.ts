@@ -505,6 +505,31 @@ describe('CF Services API', () => {
     });
 
     describe('createServices', () => {
+        const mockCfApiResponse = {
+            resources: [
+                {
+                    name: 'test-xsuaa-service',
+                    guid: 'test-guid'
+                }
+            ]
+        };
+
+        const mockServiceKeysResponse = [
+            {
+                credentials: {
+                    clientid: 'test-client-id',
+                    clientsecret: 'test-client-secret',
+                    url: 'test-url',
+                    uaa: {
+                        clientid: 'test-uaa-clientid',
+                        clientsecret: 'test-uaa-clientsecret',
+                        url: 'test-uaa-url'
+                    },
+                    uri: 'test-uri',
+                    endpoints: {}
+                }
+            }
+        ];
         test('should create all required services', async () => {
             const yamlContent: MtaYaml = {
                 '_schema-version': '3.2.0',
@@ -533,30 +558,8 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            mockRequestCfApi.mockResolvedValue({
-                resources: [
-                    {
-                        name: 'test-xsuaa-service',
-                        guid: 'test-guid'
-                    }
-                ]
-            });
-            mockGetServiceKeys.mockResolvedValue([
-                {
-                    credentials: {
-                        clientid: 'test-client-id',
-                        clientsecret: 'test-client-secret',
-                        url: 'test-url',
-                        uaa: {
-                            clientid: 'test-uaa-clientid',
-                            clientsecret: 'test-uaa-clientsecret',
-                            url: 'test-uaa-url'
-                        },
-                        uri: 'test-uri',
-                        endpoints: {}
-                    }
-                }
-            ]);
+            mockRequestCfApi.mockResolvedValue(mockCfApiResponse);
+            mockGetServiceKeys.mockResolvedValue(mockServiceKeysResponse);
 
             await createServices(yamlContent, initialServices, '1234567890', 'test-space-guid', undefined, mockLogger);
 
@@ -603,30 +606,8 @@ describe('CF Services API', () => {
                 stderr: ''
             });
 
-            mockRequestCfApi.mockResolvedValue({
-                resources: [
-                    {
-                        name: 'test-destination-service',
-                        guid: 'test-guid'
-                    }
-                ]
-            });
-            mockGetServiceKeys.mockResolvedValue([
-                {
-                    credentials: {
-                        clientid: 'test-client-id',
-                        clientsecret: 'test-client-secret',
-                        url: 'test-url',
-                        uaa: {
-                            clientid: 'test-uaa-clientid',
-                            clientsecret: 'test-uaa-clientsecret',
-                            url: 'test-uaa-url'
-                        },
-                        uri: 'test-uri',
-                        endpoints: {}
-                    }
-                }
-            ]);
+            mockRequestCfApi.mockResolvedValue(mockCfApiResponse);
+            mockGetServiceKeys.mockResolvedValue(mockServiceKeysResponse);
 
             await createServices(yamlContent, initialServices, '1234567890', 'test-space-guid', undefined, mockLogger);
 
