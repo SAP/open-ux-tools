@@ -8,7 +8,7 @@ Restriction: grouping is available for Analytical tables in applications with mi
 
 ### Why Was This Rule Introduced?
 
-Users should see all table personalization options that are available: dding or removing columns, filtering, sorting, and grouping.
+Users should see all table personalization options that are available: adding or removing columns, filtering, sorting, and grouping.
 
 ### Warning Message
 
