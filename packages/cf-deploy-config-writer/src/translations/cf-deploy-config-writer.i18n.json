@@ -37,7 +37,7 @@
         "targetFolderDoesNotExist": "The target folder does not exist: {{targetFolder}}. Check the folder has the correct permissions.",
         "doesNotContainACapApp": "The target folder does not contain a Node.js CAP project. Please ensure the folder contains a Node.js CAP project.",
         "errorInstallingNodeModules": "An error occurred when installing node modules. Please check the logs.",
-        "errorGeneratingMtaYaml": "An error occurred when creating the mta.yaml file. Please check the logs.",
+        "errorGeneratingMtaYaml": "An error occurred when creating the mta.yaml file. For more information, check the logs.",
         "noUI5AppFound": "No SAP Fiori UI5 application found. Please ensure manifest.json contains a valid 'sap.app.id'."
     },
     "info":{
