@@ -1,0 +1,622 @@
+{
+  "type": "object",
+  "properties": {
+    "backend": {
+      "$ref": "#/definitions/BackendConfig"
+    },
+    "options": {
+      "$ref": "#/definitions/Partial<Options<IncomingMessage,ServerResponse<IncomingMessage>>>"
+    },
+    "debug": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "BackendConfig": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/DestinationBackendConfig"
+        },
+        {
+          "$ref": "#/definitions/LocalBackendConfig"
+        }
+      ]
+    },
+    "DestinationBackendConfig": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "description": "Optional URL pointing to the backend system",
+          "type": "string"
+        },
+        "destination": {
+          "description": "Required if the backend system is available as destination in SAP Business Application Studio.",
+          "type": "string"
+        },
+        "destinationInstance": {
+          "description": "If a destination needs to be read by a specific instance of a destination service then you need to provide the id of the service as optional property `destinationInstance`.",
+          "type": "string"
+        },
+        "path": {
+          "description": "Path that is to be proxied",
+          "type": "string"
+        },
+        "pathReplace": {
+          "description": "If provided then the path will be replaced with this value before forwarding.",
+          "type": "string"
+        },
+        "client": {
+          "description": "sap-client parameter",
+          "type": "string"
+        },
+        "scp": {
+          "description": "If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP",
+          "type": "boolean"
+        },
+        "authenticationType": {
+          "description": "Authentication mechanism to be used. Currently supported: \"ReentranceTicket\"",
+          "enum": [
+            "basic",
+            "oauth2",
+            "oauth2ClientCredential",
+            "reentranceTicket"
+          ],
+          "type": "string"
+        },
+        "apiHub": {
+          "description": "If set to true then the proxy will connect to the SAP API Business Hub",
+          "type": "boolean"
+        },
+        "proxy": {
+          "description": "If set then it will override the proxy settings from node.",
+          "type": "string"
+        },
+        "bsp": {
+          "description": "The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.\nIn that case, we need to redirect the manifest.appdescr request to the local manifest.json in order to overwrite the deployed application with the local one.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "LocalBackendConfig": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "description": "Mandatory URL pointing to the backend system",
+          "type": "string"
+        },
+        "path": {
+          "description": "Path that is to be proxied",
+          "type": "string"
+        },
+        "pathReplace": {
+          "description": "If provided then the path will be replaced with this value before forwarding.",
+          "type": "string"
+        },
+        "client": {
+          "description": "sap-client parameter",
+          "type": "string"
+        },
+        "scp": {
+          "description": "If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP",
+          "type": "boolean"
+        },
+        "authenticationType": {
+          "description": "Authentication mechanism to be used. Currently supported: \"ReentranceTicket\"",
+          "enum": [
+            "basic",
+            "oauth2",
+            "oauth2ClientCredential",
+            "reentranceTicket"
+          ],
+          "type": "string"
+        },
+        "apiHub": {
+          "description": "If set to true then the proxy will connect to the SAP API Business Hub",
+          "type": "boolean"
+        },
+        "proxy": {
+          "description": "If set then it will override the proxy settings from node.",
+          "type": "string"
+        },
+        "bsp": {
+          "description": "The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.\nIn that case, we need to redirect the manifest.appdescr request to the local manifest.json in order to overwrite the deployed application with the local one.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Partial<Options<IncomingMessage,ServerResponse<IncomingMessage>>>": {
+      "type": "object",
+      "properties": {
+        "pathFilter": {
+          "description": "Narrow down requests to proxy or not.\nFilter on {@link http.IncomingMessage.url`pathname`} which is relative to the proxy's \"mounting\" point in the server.\nOr use the {@link http.IncomingMessage`req`}  object for more complex filtering.",
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "pathRewrite": {
+          "description": "Modify request paths before requests are send to the target.",
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "additionalProperties": false
+            }
+          ]
+        },
+        "plugins": {
+          "description": "Access the internal http-proxy server instance to customize behavior",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Plugin<IncomingMessage,ServerResponse<IncomingMessage>>"
+          }
+        },
+        "ejectPlugins": {
+          "description": "Eject pre-configured plugins.\nNOTE: register your own error handlers to prevent server from crashing.",
+          "type": "boolean"
+        },
+        "on": {
+          "description": "Listen to http-proxy events",
+          "$ref": "#/definitions/OnProxyEvent<IncomingMessage,ServerResponse<IncomingMessage>>"
+        },
+        "router": {
+          "description": "Dynamically set the {@link Options.target`options.target`}.",
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/ProxyTargetDetailed"
+                  },
+                  {
+                    "$ref": "#/definitions/Partial<Url>"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "additionalProperties": false
+            }
+          ]
+        },
+        "logger": {
+          "description": "Log information from http-proxy-middleware"
+        },
+        "target": {
+          "description": "URL string to be parsed with the url module.",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ProxyTargetDetailed"
+            },
+            {
+              "$ref": "#/definitions/Partial<Url>"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "forward": {
+          "description": "URL string to be parsed with the url module.",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Partial<Url>"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "agent": {
+          "description": "Object to be passed to http(s).request."
+        },
+        "ssl": {
+          "description": "Object to be passed to https.createServer()."
+        },
+        "ws": {
+          "description": "If you want to proxy websockets.",
+          "type": "boolean"
+        },
+        "xfwd": {
+          "description": "Adds x- forward headers.",
+          "type": "boolean"
+        },
+        "secure": {
+          "description": "Verify SSL certificate.",
+          "type": "boolean"
+        },
+        "toProxy": {
+          "description": "Explicitly specify if we are proxying to another proxy.",
+          "type": "boolean"
+        },
+        "prependPath": {
+          "description": "Specify whether you want to prepend the target's path to the proxy path.",
+          "type": "boolean"
+        },
+        "ignorePath": {
+          "description": "Specify whether you want to ignore the proxy path of the incoming request.",
+          "type": "boolean"
+        },
+        "localAddress": {
+          "description": "Local interface string to bind for outgoing connections.",
+          "type": "string"
+        },
+        "changeOrigin": {
+          "description": "Changes the origin of the host header to the target URL.",
+          "type": "boolean"
+        },
+        "preserveHeaderKeyCase": {
+          "description": "specify whether you want to keep letter case of response header key",
+          "type": "boolean"
+        },
+        "auth": {
+          "description": "Basic authentication i.e. 'user:password' to compute an Authorization header.",
+          "type": "string"
+        },
+        "hostRewrite": {
+          "description": "Rewrites the location hostname on (301 / 302 / 307 / 308) redirects, Default: null.",
+          "type": "string"
+        },
+        "autoRewrite": {
+          "description": "Rewrites the location host/ port on (301 / 302 / 307 / 308) redirects based on requested host/ port.Default: false.",
+          "type": "boolean"
+        },
+        "protocolRewrite": {
+          "description": "Rewrites the location protocol on (301 / 302 / 307 / 308) redirects to 'http' or 'https'.Default: null.",
+          "type": "string"
+        },
+        "cookieDomainRewrite": {
+          "description": "rewrites domain of set-cookie headers.",
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "const": false,
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "cookiePathRewrite": {
+          "description": "rewrites path of set-cookie headers. Default: false",
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "const": false,
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "headers": {
+          "description": "object with extra headers to be added to target requests.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "proxyTimeout": {
+          "description": "Timeout (in milliseconds) when proxy receives no response from target. Default: 120000 (2 minutes)",
+          "type": "number"
+        },
+        "timeout": {
+          "description": "Timeout (in milliseconds) for incoming requests",
+          "type": "number"
+        },
+        "followRedirects": {
+          "description": "Specify whether you want to follow redirects. Default: false",
+          "type": "boolean"
+        },
+        "selfHandleResponse": {
+          "description": "If set to true, none of the webOutgoing passes are called and it's your responsibility to appropriately return the response by listening and acting on the proxyRes event",
+          "type": "boolean"
+        },
+        "buffer": {
+          "description": "Buffer",
+          "$ref": "#/definitions/Stream"
+        },
+        "method": {
+          "description": "Explicitly set the method type of the ProxyReq",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Plugin<IncomingMessage,ServerResponse<IncomingMessage>>": {
+      "type": "object",
+      "additionalProperties": false
+    },
+    "OnProxyEvent<IncomingMessage,ServerResponse<IncomingMessage>>": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "additionalProperties": false
+        },
+        "proxyReq": {
+          "type": "object",
+          "additionalProperties": false
+        },
+        "proxyReqWs": {
+          "type": "object",
+          "additionalProperties": false
+        },
+        "proxyRes": {
+          "type": "object",
+          "additionalProperties": false
+        },
+        "open": {
+          "type": "object",
+          "additionalProperties": false
+        },
+        "close": {
+          "type": "object",
+          "additionalProperties": false
+        },
+        "start": {
+          "type": "object",
+          "additionalProperties": false
+        },
+        "end": {
+          "type": "object",
+          "additionalProperties": false
+        },
+        "econnreset": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ProxyTargetDetailed": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "number"
+        },
+        "protocol": {
+          "type": "string"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "socketPath": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "passphrase": {
+          "type": "string"
+        },
+        "pfx": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "number"
+                }
+              },
+              "properties": {
+                "BYTES_PER_ELEMENT": {
+                  "type": "number"
+                },
+                "buffer": {
+                  "$ref": "#/definitions/ArrayBufferLike"
+                },
+                "byteLength": {
+                  "type": "number"
+                },
+                "byteOffset": {
+                  "type": "number"
+                },
+                "length": {
+                  "type": "number"
+                },
+                "__@toStringTag@26094": {
+                  "type": "string",
+                  "const": "Uint8Array"
+                }
+              }
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "cert": {
+          "type": "string"
+        },
+        "ca": {
+          "type": "string"
+        },
+        "ciphers": {
+          "type": "string"
+        },
+        "secureProtocol": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ArrayBufferLike": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ArrayBuffer"
+        },
+        {
+          "$ref": "#/definitions/SharedArrayBuffer"
+        }
+      ]
+    },
+    "ArrayBuffer": {
+      "type": "object",
+      "properties": {
+        "byteLength": {
+          "type": "number"
+        },
+        "__@toStringTag@26094": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SharedArrayBuffer": {
+      "type": "object",
+      "properties": {
+        "byteLength": {
+          "type": "number"
+        },
+        "__@species@26190": {
+          "$ref": "#/definitions/SharedArrayBuffer"
+        },
+        "__@toStringTag@26094": {
+          "type": "string",
+          "const": "SharedArrayBuffer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Partial<Url>": {
+      "type": "object",
+      "properties": {
+        "auth": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "hash": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "host": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "hostname": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "href": {
+          "type": "string"
+        },
+        "path": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "pathname": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "protocol": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "search": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "slashes": {
+          "type": [
+            "null",
+            "boolean"
+          ]
+        },
+        "port": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "query": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ParsedUrlQuery"
+            },
+            {
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ParsedUrlQuery": {
+      "type": "object",
+      "additionalProperties": false
+    },
+    "Stream": {
+      "type": "object",
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

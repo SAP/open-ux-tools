@@ -280,6 +280,9 @@
       "path": "packages/ui5-test-writer"
     },
     {
+      "path": "packages/ui5-yaml-schema-wrapper"
+    },
+    {
       "path": "packages/xml-odata-annotation-converter"
     },
     {

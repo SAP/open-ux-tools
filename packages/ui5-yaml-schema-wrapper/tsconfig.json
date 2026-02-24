@@ -1,0 +1,30 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "scripts"
+  ],
+  "compilerOptions": {
+    "rootDir": "scripts",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../backend-proxy-middleware"
+    },
+    {
+      "path": "../backend-proxy-middleware-cf"
+    },
+    {
+      "path": "../preview-middleware"
+    },
+    {
+      "path": "../reload-middleware"
+    },
+    {
+      "path": "../serve-static-middleware"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
+}

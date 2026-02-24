@@ -1,0 +1,62 @@
+{
+  "description": "Configuration for Cloud Foundry OAuth middleware.",
+  "type": "object",
+  "properties": {
+    "backends": {
+      "description": "Array of backend destinations.\nEach destination has its own URL and paths.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/BackendDestination"
+      }
+    },
+    "credentials": {
+      "description": "Manual OAuth credentials (optional).\nIf not provided, middleware will attempt to auto-detect from Cloud Foundry ADP project.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "description": "OAuth2 client ID.",
+          "type": "string"
+        },
+        "clientSecret": {
+          "description": "OAuth2 client secret.",
+          "type": "string"
+        },
+        "url": {
+          "description": "Base URL for the OAuth token endpoint.\nThe token endpoint will be constructed as: {url}/oauth/token",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "debug": {
+      "description": "Enable debug logging.",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "BackendDestination": {
+      "description": "Configuration for a single backend destination.",
+      "type": "object",
+      "properties": {
+        "url": {
+          "description": "Destination URL to proxy requests to.",
+          "type": "string"
+        },
+        "paths": {
+          "description": "Array of OData source paths to proxy to this destination.\nEach path represents an OData service that should be proxied to the destination URL.\nRequests matching these paths will have the path prefix removed before forwarding.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pathRewrite": {
+          "description": "Optional path rewriting. When specified, the matched path prefix will be replaced\nwith this value before forwarding to the backend.\nIf not specified, the matched path is simply removed.",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,2063 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/SAP/ui5-tooling/gh-pages/schema/ui5.yaml.json"
+        },
+        {
+            "properties": {
+                "server": {
+                    "properties": {
+                        "customMiddleware": {
+                            "type": "array",
+                            "items": {
+                                "allOf": [
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "preview-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "description": "Middleware configuration.",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "flp": {
+                                                            "$ref": "#/definitions/preview_middleware_Partial<FlpConfig>"
+                                                        },
+                                                        "test": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/preview_middleware_TestConfig"
+                                                            }
+                                                        },
+                                                        "rta": {
+                                                            "deprecated": "use editors.rta instead.",
+                                                            "$ref": "#/definitions/preview_middleware_InternalRtaConfig"
+                                                        },
+                                                        "editors": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "rta": {
+                                                                    "$ref": "#/definitions/preview_middleware_RtaConfig"
+                                                                },
+                                                                "cardGenerator": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "path": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "additionalProperties": false
+                                                                }
+                                                            },
+                                                            "additionalProperties": false
+                                                        },
+                                                        "adp": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithTarget"
+                                                                },
+                                                                {
+                                                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithBuildPath"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "debug": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "fiori-tools-preview"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "description": "Middleware configuration.",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "flp": {
+                                                            "$ref": "#/definitions/preview_middleware_Partial<FlpConfig>"
+                                                        },
+                                                        "test": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/preview_middleware_TestConfig"
+                                                            }
+                                                        },
+                                                        "rta": {
+                                                            "deprecated": "use editors.rta instead.",
+                                                            "$ref": "#/definitions/preview_middleware_InternalRtaConfig"
+                                                        },
+                                                        "editors": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "rta": {
+                                                                    "$ref": "#/definitions/preview_middleware_RtaConfig"
+                                                                },
+                                                                "cardGenerator": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "path": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "additionalProperties": false
+                                                                }
+                                                            },
+                                                            "additionalProperties": false
+                                                        },
+                                                        "adp": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithTarget"
+                                                                },
+                                                                {
+                                                                    "$ref": "#/definitions/preview_middleware_AdpPreviewConfigWithBuildPath"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "debug": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "backend-proxy-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "backend": {
+                                                            "$ref": "#/definitions/backend_proxy_middleware_BackendConfig"
+                                                        },
+                                                        "options": {
+                                                            "$ref": "#/definitions/backend_proxy_middleware_Partial<Options<IncomingMessage,ServerResponse<IncomingMessage>>>"
+                                                        },
+                                                        "debug": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "backend-proxy-middleware-cf"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "description": "Configuration for Cloud Foundry OAuth middleware.",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "backends": {
+                                                            "description": "Array of backend destinations.\nEach destination has its own URL and paths.",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/backend_proxy_middleware_cf_BackendDestination"
+                                                            }
+                                                        },
+                                                        "credentials": {
+                                                            "description": "Manual OAuth credentials (optional).\nIf not provided, middleware will attempt to auto-detect from Cloud Foundry ADP project.",
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "clientId": {
+                                                                    "description": "OAuth2 client ID.",
+                                                                    "type": "string"
+                                                                },
+                                                                "clientSecret": {
+                                                                    "description": "OAuth2 client secret.",
+                                                                    "type": "string"
+                                                                },
+                                                                "url": {
+                                                                    "description": "Base URL for the OAuth token endpoint.\nThe token endpoint will be constructed as: {url}/oauth/token",
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "additionalProperties": false
+                                                        },
+                                                        "debug": {
+                                                            "description": "Enable debug logging.",
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "reload-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "path": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "type": "string"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "https": {
+                                                            "$ref": "#/definitions/reload_middleware_HttpsOptions"
+                                                        },
+                                                        "connectOptions": {
+                                                            "$ref": "#/definitions/reload_middleware_Options"
+                                                        },
+                                                        "port": {
+                                                            "description": "Sets server port number: Defaults to 35729",
+                                                            "type": "number"
+                                                        },
+                                                        "noListen": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "exts": {
+                                                            "description": "File Extensions to watch",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "extraExts": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "exclusions": {
+                                                            "description": "Extensions to not watch",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/reload_middleware_RegExp"
+                                                            }
+                                                        },
+                                                        "applyCSSLive": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "applyImgLive": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "originalPath": {
+                                                            "type": "string"
+                                                        },
+                                                        "overrideURL": {
+                                                            "type": "string"
+                                                        },
+                                                        "usePolling": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "delay": {
+                                                            "description": "ms to delay browser refresh",
+                                                            "type": "number"
+                                                        },
+                                                        "debug": {
+                                                            "description": "Logs debug messages to console",
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "fiori-tools-appreload"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "path": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "type": "string"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "https": {
+                                                            "$ref": "#/definitions/reload_middleware_HttpsOptions"
+                                                        },
+                                                        "connectOptions": {
+                                                            "$ref": "#/definitions/reload_middleware_Options"
+                                                        },
+                                                        "port": {
+                                                            "description": "Sets server port number: Defaults to 35729",
+                                                            "type": "number"
+                                                        },
+                                                        "noListen": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "exts": {
+                                                            "description": "File Extensions to watch",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "extraExts": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "exclusions": {
+                                                            "description": "Extensions to not watch",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/reload_middleware_RegExp"
+                                                            }
+                                                        },
+                                                        "applyCSSLive": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "applyImgLive": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "originalPath": {
+                                                            "type": "string"
+                                                        },
+                                                        "overrideURL": {
+                                                            "type": "string"
+                                                        },
+                                                        "usePolling": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "delay": {
+                                                            "description": "ms to delay browser refresh",
+                                                            "type": "number"
+                                                        },
+                                                        "debug": {
+                                                            "description": "Logs debug messages to console",
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "fiori-tools-servestatic"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "additionalProperties": false,
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "paths": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/serve_static_middleware_PathConfig"
+                                                            }
+                                                        },
+                                                        "acceptRanges": {
+                                                            "description": "Enable or disable accepting ranged requests, defaults to true.\nDisabling this will not send Accept-Ranges and ignore the contents of the Range request header.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "cacheControl": {
+                                                            "description": "Enable or disable setting Cache-Control response header, defaults to true.\nDisabling this will ignore the immutable and maxAge options.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "dotfiles": {
+                                                            "description": "Set how \"dotfiles\" are treated when encountered. A dotfile is a file or directory that begins with a dot (\".\").\nNote this check is done on the path itself without checking if the path actually exists on the disk.\nIf root is specified, only the dotfiles above the root are checked (i.e. the root itself can be within a dotfile when when set to \"deny\").\nThe default value is 'ignore'.\n'allow' No special treatment for dotfiles\n'deny' Send a 403 for any request for a dotfile\n'ignore' Pretend like the dotfile does not exist and call next()",
+                                                            "type": "string"
+                                                        },
+                                                        "etag": {
+                                                            "description": "Enable or disable etag generation, defaults to true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "extensions": {
+                                                            "description": "Set file extension fallbacks. When set, if a file is not found, the given extensions will be added to the file name and search for.\nThe first that exists will be served. Example: ['html', 'htm'].\nThe default value is false.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "const": false,
+                                                                    "type": "boolean"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "fallthrough": {
+                                                            "description": "Let client errors fall-through as unhandled requests, otherwise forward a client error.\nThe default value is true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "immutable": {
+                                                            "description": "Enable or disable the immutable directive in the Cache-Control response header.\nIf enabled, the maxAge option should also be specified to enable caching. The immutable directive will prevent supported clients from making conditional requests during the life of the maxAge option to check if the file has changed.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "index": {
+                                                            "description": "By default this module will send \"index.html\" files in response to a request on a directory.\nTo disable this set false or to supply a new index pass a string or an array in preferred order.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "boolean"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        "lastModified": {
+                                                            "description": "Enable or disable Last-Modified header, defaults to true. Uses the file system's last modified value.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "maxAge": {
+                                                            "description": "Provide a max-age in milliseconds for http caching, defaults to 0. This can also be a string accepted by the ms module.",
+                                                            "type": [
+                                                                "string",
+                                                                "number"
+                                                            ]
+                                                        },
+                                                        "redirect": {
+                                                            "description": "Redirect to trailing \"/\" when the pathname is a dir. Defaults to true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "setHeaders": {
+                                                            "description": "Function to set custom headers on response. Alterations to the headers need to occur synchronously.\nThe function is called as fn(res, path, stat), where the arguments are:\nres the response object\npath the file path that is being sent\nstat the stat object of the file that is being sent",
+                                                            "type": "object",
+                                                            "additionalProperties": false
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "serve-static-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "additionalProperties": false,
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "paths": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/serve_static_middleware_PathConfig"
+                                                            }
+                                                        },
+                                                        "acceptRanges": {
+                                                            "description": "Enable or disable accepting ranged requests, defaults to true.\nDisabling this will not send Accept-Ranges and ignore the contents of the Range request header.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "cacheControl": {
+                                                            "description": "Enable or disable setting Cache-Control response header, defaults to true.\nDisabling this will ignore the immutable and maxAge options.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "dotfiles": {
+                                                            "description": "Set how \"dotfiles\" are treated when encountered. A dotfile is a file or directory that begins with a dot (\".\").\nNote this check is done on the path itself without checking if the path actually exists on the disk.\nIf root is specified, only the dotfiles above the root are checked (i.e. the root itself can be within a dotfile when when set to \"deny\").\nThe default value is 'ignore'.\n'allow' No special treatment for dotfiles\n'deny' Send a 403 for any request for a dotfile\n'ignore' Pretend like the dotfile does not exist and call next()",
+                                                            "type": "string"
+                                                        },
+                                                        "etag": {
+                                                            "description": "Enable or disable etag generation, defaults to true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "extensions": {
+                                                            "description": "Set file extension fallbacks. When set, if a file is not found, the given extensions will be added to the file name and search for.\nThe first that exists will be served. Example: ['html', 'htm'].\nThe default value is false.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "const": false,
+                                                                    "type": "boolean"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "fallthrough": {
+                                                            "description": "Let client errors fall-through as unhandled requests, otherwise forward a client error.\nThe default value is true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "immutable": {
+                                                            "description": "Enable or disable the immutable directive in the Cache-Control response header.\nIf enabled, the maxAge option should also be specified to enable caching. The immutable directive will prevent supported clients from making conditional requests during the life of the maxAge option to check if the file has changed.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "index": {
+                                                            "description": "By default this module will send \"index.html\" files in response to a request on a directory.\nTo disable this set false or to supply a new index pass a string or an array in preferred order.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "boolean"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        "lastModified": {
+                                                            "description": "Enable or disable Last-Modified header, defaults to true. Uses the file system's last modified value.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "maxAge": {
+                                                            "description": "Provide a max-age in milliseconds for http caching, defaults to 0. This can also be a string accepted by the ms module.",
+                                                            "type": [
+                                                                "string",
+                                                                "number"
+                                                            ]
+                                                        },
+                                                        "redirect": {
+                                                            "description": "Redirect to trailing \"/\" when the pathname is a dir. Defaults to true.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "setHeaders": {
+                                                            "description": "Function to set custom headers on response. Alterations to the headers need to occur synchronously.\nThe function is called as fn(res, path, stat), where the arguments are:\nres the response object\npath the file path that is being sent\nstat the stat object of the file that is being sent",
+                                                            "type": "object",
+                                                            "additionalProperties": false
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "ui5-proxy-middleware"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ui5": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "$ref": "#/definitions/ui5_proxy_middleware_UI5ProxyConfigTarget"
+                                                                },
+                                                                {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "$ref": "#/definitions/ui5_proxy_middleware_UI5ProxyConfigTarget"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "proxy": {
+                                                            "type": "string"
+                                                        },
+                                                        "debug": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "secure": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "directLoad": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "version": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "if": {
+                                            "properties": {
+                                                "name": {
+                                                    "const": "fiori-tools-proxy"
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "configuration": {
+                                                    "description": "Configuration for fiori-tools-proxy middleware. This middleware combines UI5 proxy and backend proxy functionality.",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "backend": {
+                                                            "description": "Backend proxy configurations.",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_BackendConfig"
+                                                            }
+                                                        },
+                                                        "ui5": {
+                                                            "description": "UI5 proxy configuration.",
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "paths": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "path": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "url": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "pathReplace": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "path",
+                                                                                    "url"
+                                                                                ],
+                                                                                "additionalProperties": false
+                                                                            }
+                                                                        },
+                                                                        "version": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "directLoad": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "paths"
+                                                                    ],
+                                                                    "additionalProperties": false
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "path": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "version": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "directLoad": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "path",
+                                                                        "url"
+                                                                    ],
+                                                                    "additionalProperties": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        "proxy": {
+                                                            "description": "If set then it will override the proxy settings from node.",
+                                                            "type": "string"
+                                                        },
+                                                        "ignoreCertError": {
+                                                            "deprecated": "Use ignoreCertErrors (plural) instead.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "ignoreCertErrors": {
+                                                            "description": "If set to true, certificate errors will be ignored (e.g., self-signed certificates).",
+                                                            "type": "boolean"
+                                                        },
+                                                        "debug": {
+                                                            "description": "Enable debug logging.",
+                                                            "type": "boolean"
+                                                        },
+                                                        "bsp": {
+                                                            "description": "The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "definitions": {
+                "preview_middleware_Partial<FlpConfig>": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        },
+                        "intent": {
+                            "description": "Intent object consisting of an object and an action.",
+                            "$ref": "#/definitions/preview_middleware_Intent"
+                        },
+                        "libs": {
+                            "description": "Optional: if set to true then a locate-reuse-libs script will be attached to the html",
+                            "type": "boolean"
+                        },
+                        "apps": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/preview_middleware_App"
+                            }
+                        },
+                        "theme": {
+                            "type": "string"
+                        },
+                        "init": {
+                            "description": "Optional: allows to specify a custom init script executed in addition to the default one",
+                            "type": "string"
+                        },
+                        "enhancedHomePage": {
+                            "description": "Optional: if set to true then the new FLP homepage will be enabled",
+                            "type": "boolean"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "preview_middleware_Intent": {
+                    "description": "Intent object consisting of an object and an action.",
+                    "type": "object",
+                    "properties": {
+                        "object": {
+                            "type": "string"
+                        },
+                        "action": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "preview_middleware_App": {
+                    "description": "Configuration for additional applications",
+                    "type": "object",
+                    "properties": {
+                        "target": {
+                            "type": "string"
+                        },
+                        "local": {
+                            "description": "Either a local path to a folder containing the application or the componentId of a remote app",
+                            "type": "string"
+                        },
+                        "componentId": {
+                            "description": "Optional component id if it differs from the manifest (e.g. for adaptation projects)",
+                            "type": "string"
+                        },
+                        "intent": {
+                            "description": "Intent object consisting of an object and an action.",
+                            "$ref": "#/definitions/preview_middleware_Intent"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "preview_middleware_TestConfig": {
+                    "description": "Configration for the virtual test pages endpoints.",
+                    "type": "object",
+                    "properties": {
+                        "framework": {
+                            "enum": [
+                                "OPA5",
+                                "QUnit",
+                                "Testsuite"
+                            ],
+                            "type": "string"
+                        },
+                        "path": {
+                            "description": "Path hosting the main test page",
+                            "type": "string"
+                        },
+                        "init": {
+                            "description": "Path to the init script",
+                            "type": "string"
+                        },
+                        "pattern": {
+                            "description": "Pattern to match the test files",
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "preview_middleware_InternalRtaConfig": {
+                    "type": "object",
+                    "properties": {
+                        "layer": {
+                            "enum": [
+                                "CUSTOMER_BASE",
+                                "VENDOR"
+                            ],
+                            "type": "string"
+                        },
+                        "options": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "baseId": {
+                                    "type": "string"
+                                },
+                                "projectId": {
+                                    "type": "string"
+                                },
+                                "scenario": {
+                                    "type": "string"
+                                },
+                                "appName": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "editors": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/preview_middleware_RtaEditor"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "preview_middleware_RtaEditor": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        },
+                        "developerMode": {
+                            "type": "boolean"
+                        },
+                        "pluginScript": {
+                            "type": "string"
+                        },
+                        "generator": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "preview_middleware_RtaConfig": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "properties": {
+                        "options": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "baseId": {
+                                    "type": "string"
+                                },
+                                "projectId": {
+                                    "type": "string"
+                                },
+                                "scenario": {
+                                    "type": "string"
+                                },
+                                "appName": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "layer": {
+                            "enum": [
+                                "CUSTOMER_BASE",
+                                "VENDOR"
+                            ],
+                            "type": "string"
+                        },
+                        "endpoints": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/preview_middleware_RtaEditor"
+                            }
+                        }
+                    }
+                },
+                "preview_middleware_AdpPreviewConfigWithTarget": {
+                    "description": "Configuration for ADP preview using ABAP target connection.",
+                    "type": "object",
+                    "properties": {
+                        "target": {
+                            "$ref": "#/definitions/preview_middleware_AbapTarget"
+                        },
+                        "ignoreCertErrors": {
+                            "description": "If set to true then certification validation errors are ignored.",
+                            "type": "boolean"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "preview_middleware_AbapTarget": {
+                    "description": "Reduce the options exposed as target configuration.",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/preview_middleware_DestinationAbapTarget"
+                        },
+                        {
+                            "$ref": "#/definitions/preview_middleware_Pick<UrlAbapTarget,\"url\"|\"client\"|\"scp\">"
+                        }
+                    ]
+                },
+                "preview_middleware_DestinationAbapTarget": {
+                    "type": "object",
+                    "properties": {
+                        "destination": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "preview_middleware_Pick<UrlAbapTarget,\"url\"|\"client\"|\"scp\">": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "type": "string"
+                        },
+                        "client": {
+                            "type": "string"
+                        },
+                        "scp": {
+                            "type": "boolean"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "preview_middleware_AdpPreviewConfigWithBuildPath": {
+                    "description": "Configuration for ADP preview using CF build output path.",
+                    "type": "object",
+                    "properties": {
+                        "cfBuildPath": {
+                            "description": "For CF ADP projects: path to build output folder (e.g., 'dist') to serve resources directly.",
+                            "type": "string"
+                        },
+                        "ignoreCertErrors": {
+                            "description": "If set to true then certification validation errors are ignored.",
+                            "type": "boolean"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_BackendConfig": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/backend_proxy_middleware_DestinationBackendConfig"
+                        },
+                        {
+                            "$ref": "#/definitions/backend_proxy_middleware_LocalBackendConfig"
+                        }
+                    ]
+                },
+                "backend_proxy_middleware_DestinationBackendConfig": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "description": "Optional URL pointing to the backend system",
+                            "type": "string"
+                        },
+                        "destination": {
+                            "description": "Required if the backend system is available as destination in SAP Business Application Studio.",
+                            "type": "string"
+                        },
+                        "destinationInstance": {
+                            "description": "If a destination needs to be read by a specific instance of a destination service then you need to provide the id of the service as optional property `destinationInstance`.",
+                            "type": "string"
+                        },
+                        "path": {
+                            "description": "Path that is to be proxied",
+                            "type": "string"
+                        },
+                        "pathReplace": {
+                            "description": "If provided then the path will be replaced with this value before forwarding.",
+                            "type": "string"
+                        },
+                        "client": {
+                            "description": "sap-client parameter",
+                            "type": "string"
+                        },
+                        "scp": {
+                            "description": "If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP",
+                            "type": "boolean"
+                        },
+                        "authenticationType": {
+                            "description": "Authentication mechanism to be used. Currently supported: \"ReentranceTicket\"",
+                            "enum": [
+                                "basic",
+                                "oauth2",
+                                "oauth2ClientCredential",
+                                "reentranceTicket"
+                            ],
+                            "type": "string"
+                        },
+                        "apiHub": {
+                            "description": "If set to true then the proxy will connect to the SAP API Business Hub",
+                            "type": "boolean"
+                        },
+                        "proxy": {
+                            "description": "If set then it will override the proxy settings from node.",
+                            "type": "string"
+                        },
+                        "bsp": {
+                            "description": "The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.\nIn that case, we need to redirect the manifest.appdescr request to the local manifest.json in order to overwrite the deployed application with the local one.",
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_LocalBackendConfig": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "description": "Mandatory URL pointing to the backend system",
+                            "type": "string"
+                        },
+                        "path": {
+                            "description": "Path that is to be proxied",
+                            "type": "string"
+                        },
+                        "pathReplace": {
+                            "description": "If provided then the path will be replaced with this value before forwarding.",
+                            "type": "string"
+                        },
+                        "client": {
+                            "description": "sap-client parameter",
+                            "type": "string"
+                        },
+                        "scp": {
+                            "description": "If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP",
+                            "type": "boolean"
+                        },
+                        "authenticationType": {
+                            "description": "Authentication mechanism to be used. Currently supported: \"ReentranceTicket\"",
+                            "enum": [
+                                "basic",
+                                "oauth2",
+                                "oauth2ClientCredential",
+                                "reentranceTicket"
+                            ],
+                            "type": "string"
+                        },
+                        "apiHub": {
+                            "description": "If set to true then the proxy will connect to the SAP API Business Hub",
+                            "type": "boolean"
+                        },
+                        "proxy": {
+                            "description": "If set then it will override the proxy settings from node.",
+                            "type": "string"
+                        },
+                        "bsp": {
+                            "description": "The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.\nIn that case, we need to redirect the manifest.appdescr request to the local manifest.json in order to overwrite the deployed application with the local one.",
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_Partial<Options<IncomingMessage,ServerResponse<IncomingMessage>>>": {
+                    "type": "object",
+                    "properties": {
+                        "pathFilter": {
+                            "description": "Narrow down requests to proxy or not.\nFilter on {@link http.IncomingMessage.url`pathname`} which is relative to the proxy's \"mounting\" point in the server.\nOr use the {@link http.IncomingMessage`req`}  object for more complex filtering.",
+                            "anyOf": [
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "additionalProperties": false
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "pathRewrite": {
+                            "description": "Modify request paths before requests are send to the target.",
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "additionalProperties": false
+                                },
+                                {
+                                    "type": "object",
+                                    "additionalProperties": false
+                                }
+                            ]
+                        },
+                        "plugins": {
+                            "description": "Access the internal http-proxy server instance to customize behavior",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/backend_proxy_middleware_Plugin<IncomingMessage,ServerResponse<IncomingMessage>>"
+                            }
+                        },
+                        "ejectPlugins": {
+                            "description": "Eject pre-configured plugins.\nNOTE: register your own error handlers to prevent server from crashing.",
+                            "type": "boolean"
+                        },
+                        "on": {
+                            "description": "Listen to http-proxy events",
+                            "$ref": "#/definitions/backend_proxy_middleware_OnProxyEvent<IncomingMessage,ServerResponse<IncomingMessage>>"
+                        },
+                        "router": {
+                            "description": "Dynamically set the {@link Options.target`options.target`}.",
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "anyOf": [
+                                            {
+                                                "$ref": "#/definitions/backend_proxy_middleware_ProxyTargetDetailed"
+                                            },
+                                            {
+                                                "$ref": "#/definitions/backend_proxy_middleware_Partial<Url>"
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "additionalProperties": false
+                                },
+                                {
+                                    "type": "object",
+                                    "additionalProperties": false
+                                }
+                            ]
+                        },
+                        "logger": {
+                            "description": "Log information from http-proxy-middleware"
+                        },
+                        "target": {
+                            "description": "URL string to be parsed with the url module.",
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/backend_proxy_middleware_ProxyTargetDetailed"
+                                },
+                                {
+                                    "$ref": "#/definitions/backend_proxy_middleware_Partial<Url>"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "forward": {
+                            "description": "URL string to be parsed with the url module.",
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/backend_proxy_middleware_Partial<Url>"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "agent": {
+                            "description": "Object to be passed to http(s).request."
+                        },
+                        "ssl": {
+                            "description": "Object to be passed to https.createServer()."
+                        },
+                        "ws": {
+                            "description": "If you want to proxy websockets.",
+                            "type": "boolean"
+                        },
+                        "xfwd": {
+                            "description": "Adds x- forward headers.",
+                            "type": "boolean"
+                        },
+                        "secure": {
+                            "description": "Verify SSL certificate.",
+                            "type": "boolean"
+                        },
+                        "toProxy": {
+                            "description": "Explicitly specify if we are proxying to another proxy.",
+                            "type": "boolean"
+                        },
+                        "prependPath": {
+                            "description": "Specify whether you want to prepend the target's path to the proxy path.",
+                            "type": "boolean"
+                        },
+                        "ignorePath": {
+                            "description": "Specify whether you want to ignore the proxy path of the incoming request.",
+                            "type": "boolean"
+                        },
+                        "localAddress": {
+                            "description": "Local interface string to bind for outgoing connections.",
+                            "type": "string"
+                        },
+                        "changeOrigin": {
+                            "description": "Changes the origin of the host header to the target URL.",
+                            "type": "boolean"
+                        },
+                        "preserveHeaderKeyCase": {
+                            "description": "specify whether you want to keep letter case of response header key",
+                            "type": "boolean"
+                        },
+                        "auth": {
+                            "description": "Basic authentication i.e. 'user:password' to compute an Authorization header.",
+                            "type": "string"
+                        },
+                        "hostRewrite": {
+                            "description": "Rewrites the location hostname on (301 / 302 / 307 / 308) redirects, Default: null.",
+                            "type": "string"
+                        },
+                        "autoRewrite": {
+                            "description": "Rewrites the location host/ port on (301 / 302 / 307 / 308) redirects based on requested host/ port.Default: false.",
+                            "type": "boolean"
+                        },
+                        "protocolRewrite": {
+                            "description": "Rewrites the location protocol on (301 / 302 / 307 / 308) redirects to 'http' or 'https'.Default: null.",
+                            "type": "string"
+                        },
+                        "cookieDomainRewrite": {
+                            "description": "rewrites domain of set-cookie headers.",
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                },
+                                {
+                                    "const": false,
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "cookiePathRewrite": {
+                            "description": "rewrites path of set-cookie headers. Default: false",
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                },
+                                {
+                                    "const": false,
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "headers": {
+                            "description": "object with extra headers to be added to target requests.",
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        },
+                        "proxyTimeout": {
+                            "description": "Timeout (in milliseconds) when proxy receives no response from target. Default: 120000 (2 minutes)",
+                            "type": "number"
+                        },
+                        "timeout": {
+                            "description": "Timeout (in milliseconds) for incoming requests",
+                            "type": "number"
+                        },
+                        "followRedirects": {
+                            "description": "Specify whether you want to follow redirects. Default: false",
+                            "type": "boolean"
+                        },
+                        "selfHandleResponse": {
+                            "description": "If set to true, none of the webOutgoing passes are called and it's your responsibility to appropriately return the response by listening and acting on the proxyRes event",
+                            "type": "boolean"
+                        },
+                        "buffer": {
+                            "description": "Buffer",
+                            "$ref": "#/definitions/backend_proxy_middleware_Stream"
+                        },
+                        "method": {
+                            "description": "Explicitly set the method type of the ProxyReq",
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_Plugin<IncomingMessage,ServerResponse<IncomingMessage>>": {
+                    "type": "object",
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_OnProxyEvent<IncomingMessage,ServerResponse<IncomingMessage>>": {
+                    "type": "object",
+                    "properties": {
+                        "error": {
+                            "type": "object",
+                            "additionalProperties": false
+                        },
+                        "proxyReq": {
+                            "type": "object",
+                            "additionalProperties": false
+                        },
+                        "proxyReqWs": {
+                            "type": "object",
+                            "additionalProperties": false
+                        },
+                        "proxyRes": {
+                            "type": "object",
+                            "additionalProperties": false
+                        },
+                        "open": {
+                            "type": "object",
+                            "additionalProperties": false
+                        },
+                        "close": {
+                            "type": "object",
+                            "additionalProperties": false
+                        },
+                        "start": {
+                            "type": "object",
+                            "additionalProperties": false
+                        },
+                        "end": {
+                            "type": "object",
+                            "additionalProperties": false
+                        },
+                        "econnreset": {
+                            "type": "object",
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_ProxyTargetDetailed": {
+                    "type": "object",
+                    "properties": {
+                        "host": {
+                            "type": "string"
+                        },
+                        "port": {
+                            "type": "number"
+                        },
+                        "protocol": {
+                            "type": "string"
+                        },
+                        "hostname": {
+                            "type": "string"
+                        },
+                        "socketPath": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "passphrase": {
+                            "type": "string"
+                        },
+                        "pfx": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "patternProperties": {
+                                        "^[0-9]+$": {
+                                            "type": "number"
+                                        }
+                                    },
+                                    "properties": {
+                                        "BYTES_PER_ELEMENT": {
+                                            "type": "number"
+                                        },
+                                        "buffer": {
+                                            "$ref": "#/definitions/backend_proxy_middleware_ArrayBufferLike"
+                                        },
+                                        "byteLength": {
+                                            "type": "number"
+                                        },
+                                        "byteOffset": {
+                                            "type": "number"
+                                        },
+                                        "length": {
+                                            "type": "number"
+                                        },
+                                        "__@toStringTag@26094": {
+                                            "type": "string",
+                                            "const": "Uint8Array"
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "cert": {
+                            "type": "string"
+                        },
+                        "ca": {
+                            "type": "string"
+                        },
+                        "ciphers": {
+                            "type": "string"
+                        },
+                        "secureProtocol": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_ArrayBufferLike": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/backend_proxy_middleware_ArrayBuffer"
+                        },
+                        {
+                            "$ref": "#/definitions/backend_proxy_middleware_SharedArrayBuffer"
+                        }
+                    ]
+                },
+                "backend_proxy_middleware_ArrayBuffer": {
+                    "type": "object",
+                    "properties": {
+                        "byteLength": {
+                            "type": "number"
+                        },
+                        "__@toStringTag@26094": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_SharedArrayBuffer": {
+                    "type": "object",
+                    "properties": {
+                        "byteLength": {
+                            "type": "number"
+                        },
+                        "__@species@26190": {
+                            "$ref": "#/definitions/backend_proxy_middleware_SharedArrayBuffer"
+                        },
+                        "__@toStringTag@26094": {
+                            "type": "string",
+                            "const": "SharedArrayBuffer"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_Partial<Url>": {
+                    "type": "object",
+                    "properties": {
+                        "auth": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "hash": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "host": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "hostname": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "href": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "pathname": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "protocol": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "search": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "slashes": {
+                            "type": [
+                                "null",
+                                "boolean"
+                            ]
+                        },
+                        "port": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "query": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/backend_proxy_middleware_ParsedUrlQuery"
+                                },
+                                {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_ParsedUrlQuery": {
+                    "type": "object",
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_Stream": {
+                    "type": "object",
+                    "additionalProperties": false
+                },
+                "backend_proxy_middleware_cf_BackendDestination": {
+                    "description": "Configuration for a single backend destination.",
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "description": "Destination URL to proxy requests to.",
+                            "type": "string"
+                        },
+                        "paths": {
+                            "description": "Array of OData source paths to proxy to this destination.\nEach path represents an OData service that should be proxied to the destination URL.\nRequests matching these paths will have the path prefix removed before forwarding.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "pathRewrite": {
+                            "description": "Optional path rewriting. When specified, the matched path prefix will be replaced\nwith this value before forwarding to the backend.\nIf not specified, the matched path is simply removed.",
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "reload_middleware_HttpsOptions": {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "string"
+                        },
+                        "cert": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "reload_middleware_Options": {
+                    "type": "object",
+                    "properties": {
+                        "ignore": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/reload_middleware_FileMatcher"
+                            }
+                        },
+                        "excludeList": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/reload_middleware_FileMatcher"
+                            }
+                        },
+                        "include": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/reload_middleware_FileMatcher"
+                            }
+                        },
+                        "html": {
+                            "type": "object",
+                            "additionalProperties": false
+                        },
+                        "rules": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/reload_middleware_Rule"
+                            }
+                        },
+                        "disableCompression": {
+                            "type": "boolean"
+                        },
+                        "hostname": {
+                            "type": "string"
+                        },
+                        "port": {
+                            "type": "number"
+                        },
+                        "src": {
+                            "type": "string"
+                        },
+                        "plugins": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "reload_middleware_FileMatcher": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/reload_middleware_RegExp"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "reload_middleware_RegExp": {
+                    "type": "object",
+                    "properties": {
+                        "source": {
+                            "type": "string"
+                        },
+                        "global": {
+                            "type": "boolean"
+                        },
+                        "ignoreCase": {
+                            "type": "boolean"
+                        },
+                        "multiline": {
+                            "type": "boolean"
+                        },
+                        "lastIndex": {
+                            "type": "number"
+                        },
+                        "flags": {
+                            "type": "string"
+                        },
+                        "sticky": {
+                            "type": "boolean"
+                        },
+                        "unicode": {
+                            "type": "boolean"
+                        },
+                        "dotAll": {
+                            "type": "boolean"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "reload_middleware_Rule": {
+                    "type": "object",
+                    "properties": {
+                        "match": {
+                            "$ref": "#/definitions/reload_middleware_RegExp"
+                        },
+                        "fn": {
+                            "type": "object",
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "serve_static_middleware_PathConfig": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        },
+                        "src": {
+                            "type": "string"
+                        },
+                        "keepCacheBusterInUrl": {
+                            "type": "boolean"
+                        },
+                        "acceptRanges": {
+                            "description": "Enable or disable accepting ranged requests, defaults to true.\nDisabling this will not send Accept-Ranges and ignore the contents of the Range request header.",
+                            "type": "boolean"
+                        },
+                        "cacheControl": {
+                            "description": "Enable or disable setting Cache-Control response header, defaults to true.\nDisabling this will ignore the immutable and maxAge options.",
+                            "type": "boolean"
+                        },
+                        "dotfiles": {
+                            "description": "Set how \"dotfiles\" are treated when encountered. A dotfile is a file or directory that begins with a dot (\".\").\nNote this check is done on the path itself without checking if the path actually exists on the disk.\nIf root is specified, only the dotfiles above the root are checked (i.e. the root itself can be within a dotfile when when set to \"deny\").\nThe default value is 'ignore'.\n'allow' No special treatment for dotfiles\n'deny' Send a 403 for any request for a dotfile\n'ignore' Pretend like the dotfile does not exist and call next()",
+                            "type": "string"
+                        },
+                        "etag": {
+                            "description": "Enable or disable etag generation, defaults to true.",
+                            "type": "boolean"
+                        },
+                        "extensions": {
+                            "description": "Set file extension fallbacks. When set, if a file is not found, the given extensions will be added to the file name and search for.\nThe first that exists will be served. Example: ['html', 'htm'].\nThe default value is false.",
+                            "anyOf": [
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                {
+                                    "const": false,
+                                    "type": "boolean"
+                                }
+                            ]
+                        },
+                        "fallthrough": {
+                            "description": "Let client errors fall-through as unhandled requests, otherwise forward a client error.\nThe default value is true.",
+                            "type": "boolean"
+                        },
+                        "immutable": {
+                            "description": "Enable or disable the immutable directive in the Cache-Control response header.\nIf enabled, the maxAge option should also be specified to enable caching. The immutable directive will prevent supported clients from making conditional requests during the life of the maxAge option to check if the file has changed.",
+                            "type": "boolean"
+                        },
+                        "index": {
+                            "description": "By default this module will send \"index.html\" files in response to a request on a directory.\nTo disable this set false or to supply a new index pass a string or an array in preferred order.",
+                            "anyOf": [
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                {
+                                    "type": [
+                                        "string",
+                                        "boolean"
+                                    ]
+                                }
+                            ]
+                        },
+                        "lastModified": {
+                            "description": "Enable or disable Last-Modified header, defaults to true. Uses the file system's last modified value.",
+                            "type": "boolean"
+                        },
+                        "maxAge": {
+                            "description": "Provide a max-age in milliseconds for http caching, defaults to 0. This can also be a string accepted by the ms module.",
+                            "type": [
+                                "string",
+                                "number"
+                            ]
+                        },
+                        "redirect": {
+                            "description": "Redirect to trailing \"/\" when the pathname is a dir. Defaults to true.",
+                            "type": "boolean"
+                        },
+                        "setHeaders": {
+                            "description": "Function to set custom headers on response. Alterations to the headers need to occur synchronously.\nThe function is called as fn(res, path, stat), where the arguments are:\nres the response object\npath the file path that is being sent\nstat the stat object of the file that is being sent",
+                            "type": "object",
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "ui5_proxy_middleware_UI5ProxyConfigTarget": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "anyOf": [
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "type": "string"
+                        },
+                        "pathReplace": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "fiori_tools_proxy_PathConfig": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        },
+                        "url": {
+                            "type": "string"
+                        },
+                        "pathReplace": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "path",
+                        "url"
+                    ],
+                    "additionalProperties": false
+                },
+                "fiori_tools_proxy_UI5ProxyConfig": {
+                    "type": "object",
+                    "properties": {
+                        "paths": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/fiori_tools_proxy_PathConfig"
+                            }
+                        },
+                        "version": {
+                            "type": "string"
+                        },
+                        "directLoad": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "paths"
+                    ],
+                    "additionalProperties": false
+                },
+                "fiori_tools_proxy_FioriToolsProxyConfigUI5": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "url": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "string"
+                        },
+                        "directLoad": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "path",
+                        "url"
+                    ],
+                    "additionalProperties": false
+                },
+                "fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_DestinationBackendConfig": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "description": "Optional URL pointing to the backend system",
+                            "type": "string"
+                        },
+                        "destination": {
+                            "description": "Required if the backend system is available as destination in SAP Business Application Studio.",
+                            "type": "string"
+                        },
+                        "destinationInstance": {
+                            "description": "If a destination needs to be read by a specific instance of a destination service then you need to provide the id of the service as optional property `destinationInstance`.",
+                            "type": "string"
+                        },
+                        "path": {
+                            "description": "Path that is to be proxied",
+                            "type": "string"
+                        },
+                        "pathReplace": {
+                            "description": "If provided then the path will be replaced with this value before forwarding.",
+                            "type": "string"
+                        },
+                        "client": {
+                            "description": "sap-client parameter",
+                            "type": "string"
+                        },
+                        "scp": {
+                            "description": "If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP",
+                            "type": "boolean"
+                        },
+                        "authenticationType": {
+                            "description": "Authentication mechanism to be used. Currently supported: \"ReentranceTicket\"",
+                            "enum": [
+                                "basic",
+                                "oauth2",
+                                "oauth2ClientCredential",
+                                "reentranceTicket"
+                            ],
+                            "type": "string"
+                        },
+                        "apiHub": {
+                            "description": "If set to true then the proxy will connect to the SAP API Business Hub",
+                            "type": "boolean"
+                        },
+                        "proxy": {
+                            "description": "If set then it will override the proxy settings from node.",
+                            "type": "string"
+                        },
+                        "bsp": {
+                            "description": "The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.\nIn that case, we need to redirect the manifest.appdescr request to the local manifest.json in order to overwrite the deployed application with the local one.",
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_LocalBackendConfig": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "description": "Mandatory URL pointing to the backend system",
+                            "type": "string"
+                        },
+                        "path": {
+                            "description": "Path that is to be proxied",
+                            "type": "string"
+                        },
+                        "pathReplace": {
+                            "description": "If provided then the path will be replaced with this value before forwarding.",
+                            "type": "string"
+                        },
+                        "client": {
+                            "description": "sap-client parameter",
+                            "type": "string"
+                        },
+                        "scp": {
+                            "description": "If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP",
+                            "type": "boolean"
+                        },
+                        "authenticationType": {
+                            "description": "Authentication mechanism to be used. Currently supported: \"ReentranceTicket\"",
+                            "enum": [
+                                "basic",
+                                "oauth2",
+                                "oauth2ClientCredential",
+                                "reentranceTicket"
+                            ],
+                            "type": "string"
+                        },
+                        "apiHub": {
+                            "description": "If set to true then the proxy will connect to the SAP API Business Hub",
+                            "type": "boolean"
+                        },
+                        "proxy": {
+                            "description": "If set then it will override the proxy settings from node.",
+                            "type": "string"
+                        },
+                        "bsp": {
+                            "description": "The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.\nIn that case, we need to redirect the manifest.appdescr request to the local manifest.json in order to overwrite the deployed application with the local one.",
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_BackendConfig": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_DestinationBackendConfig"
+                        },
+                        {
+                            "$ref": "#/definitions/fiori_tools_proxy_fiori_tools_proxy_backend_proxy_middleware_LocalBackendConfig"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

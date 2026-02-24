@@ -1,0 +1,126 @@
+# yaml-language-server: $schema=../schema/ux-ui5-tooling-schema.json
+
+specVersion: '3.0'
+metadata:
+  name: sample-fiori-app
+type: application
+framework:
+  name: SAPUI5
+  version: '1.120.0'
+
+server:
+  customMiddleware:
+    # Preview middleware for FLP sandbox and test pages
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: /test/flpSandbox.html
+          intent:
+            object: myapp
+            action: display
+          theme: sap_horizon
+          libs: true
+          apps:
+            - target: /path/to/other-app
+              local: ./other-app
+              intent:
+                object: otherapp
+                action: show
+        test:
+          - framework: OPA5
+            path: /test/integration/opaTests.qunit.html
+            init: /test/integration/opaTests.qunit.js
+            pattern: /test/**/*Journey.{js,ts}
+          - framework: QUnit
+            path: /test/unit/unitTests.qunit.html
+        editors:
+          rta:
+            layer: CUSTOMER_BASE
+            options:
+              baseId: my-base-id
+              projectId: my-project-id
+            endpoints:
+              - path: /preview.html
+                developerMode: false
+        debug: true
+
+    # Combined proxy for UI5 and backend
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        backend:
+          - url: https://my-backend.example.com
+            path: /sap/opu/odata
+            client: '100'
+          - destination: MY_DESTINATION
+            path: /api
+            pathPrefix: /my-app
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '1.120.0'
+        ignoreCertErrors: false
+
+    # Backend proxy middleware
+    - name: backend-proxy-middleware
+      afterMiddleware: compression
+      configuration:
+        backend:
+          url: https://backend.example.com
+          path: /sap/opu/odata/sap/SERVICE_NAME
+          client: '100'
+          authenticationType: basic
+        debug: false
+
+    # Cloud Foundry OAuth proxy
+    - name: backend-proxy-middleware-cf
+      afterMiddleware: compression
+      configuration:
+        backends:
+          - url: https://api.cf.example.com
+            paths:
+              - /api/v1
+              - /api/v2
+            pathRewrite: /new-path
+        credentials:
+          clientId: my-client-id
+          clientSecret: my-client-secret
+          url: https://uaa.cf.example.com
+        debug: false
+
+    # Reload middleware for live reload
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+        debug: false
+
+    # Serve static files
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /resources
+            src: ./resources
+          - path: /images
+            src: ./webapp/images
+        cacheControl: true
+        maxAge: 3600
+
+    # UI5 proxy middleware
+    - name: ui5-proxy-middleware
+      afterMiddleware: compression
+      configuration:
+        ui5:
+          - path: /resources
+            url: https://ui5.sap.com
+          - path: /test-resources
+            url: https://ui5.sap.com
+        version: '1.120.0'
+        directLoad: true
+
