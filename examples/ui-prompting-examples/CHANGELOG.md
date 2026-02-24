@@ -1,5 +1,23 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.5.6
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+- Updated dependencies [4d381b7]
+    - @sap-ux/ui-components@1.27.8
+    - @sap-ux/ui-prompting@0.6.6
+
+## 0.5.5
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux/ui-components@1.27.7
+    - @sap-ux/ui-prompting@0.6.5
+
 ## 0.5.4
 
 ### Patch Changes

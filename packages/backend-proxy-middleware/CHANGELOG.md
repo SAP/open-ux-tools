@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.47
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+- Updated dependencies [c043712]
+    - @sap-ux/axios-extension@1.25.16
+
 ## 0.10.46
 
 ### Patch Changes
