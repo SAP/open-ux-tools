@@ -118,10 +118,14 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             'controlConfiguration',
                             '@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
-                            'personalization',
-                            'group'
+                            'personalization'
                         ],
-                        value: true
+                        value: {
+                            column: true,
+                            filter: true,
+                            group: true,
+                            sort: true
+                        }
                     }
                 ])
             },
@@ -162,10 +166,14 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             'controlConfiguration',
                             '@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
-                            'personalization',
-                            'group'
+                            'personalization'
                         ],
-                        value: true
+                        value: {
+                            column: true,
+                            filter: true,
+                            group: true,
+                            sort: true
+                        }
                     }
                 ])
             },
@@ -206,10 +214,14 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             'controlConfiguration',
                             '@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
-                            'personalization',
-                            'group'
+                            'personalization'
                         ],
-                        value: false
+                        value: {
+                            column: true,
+                            filter: true,
+                            group: false,
+                            sort: true
+                        }
                     }
                 ])
             },
@@ -250,10 +262,14 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             'controlConfiguration',
                             '@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
-                            'personalization',
-                            'group'
+                            'personalization'
                         ],
-                        value: false
+                        value: {
+                            column: true,
+                            filter: true,
+                            group: false,
+                            sort: true
+                        }
                     }
                 ])
             },
@@ -294,10 +310,14 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             'controlConfiguration',
                             '@com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
-                            'personalization',
-                            'group'
+                            'personalization'
                         ],
-                        value: false
+                        value: {
+                            column: true,
+                            filter: true,
+                            group: false,
+                            sort: true
+                        }
                     }
                 ])
             },
@@ -546,15 +566,257 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             'personalization'
                         ],
                         value: {
-                            group: false
+                            column: true,
+                            filter: true,
+                            group: false,
+                            sort: true
                         }
                     }
                 ]),
                 errors: [
                     {
                         messageId: 'sap-table-personalization-group',
-                        line: 128,
+                        line: 130,
                         column: 23
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - list report page - empty object, group is checked, group is undefined',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {}
+                    }
+                ]),
+                errors: [
+                    {
+                        line: 127,
+                        column: 21,
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently column, filter, group, sort are disabled.'
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - list report page - undefined settings, group is not checked, group is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {
+                            group: false,
+                            filter: false
+                        }
+                    }
+                ]),
+                errors: [
+                    {
+                        line: 127,
+                        column: 21,
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently column, sort are disabled.'
+                    },
+                    {
+                        line: 129,
+                        column: 23,
+                        message: 'Table data filtering should be enabled.'
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - list report page - undefined settings, group is checked, group is false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.121.1'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {
+                            column: true,
+                            group: false
+                        }
+                    }
+                ]),
+                errors: [
+                    {
+                        line: 127,
+                        column: 21,
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently filter, sort are disabled.'
+                    },
+                    {
+                        line: 129,
+                        column: 23,
+                        message: 'Table data grouping should be enabled for analytical and responsive type tables.'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
