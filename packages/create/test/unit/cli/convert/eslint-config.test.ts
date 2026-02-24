@@ -59,7 +59,7 @@ describe('Test command convert eslint-config', () => {
         expect(runNpmInstallSpy).toHaveBeenCalledWith(appRoot);
     });
 
-    test('Test create-fiori convert eslint-config <appRoot> --simulate', async () => {
+    test('Test create-fiori convert eslint-config <appRoot>', async () => {
         // Test execution
         const command = new Command('convert');
         addConvertEslintCommand(command);
@@ -193,7 +193,7 @@ describe('Test command convert eslint-config', () => {
         cwdSpy.mockRestore();
     });
 
-    test('Test create-fiori convert eslint-config with simulate and verbose', async () => {
+    test('Test create-fiori convert eslint-config with verbose', async () => {
         // Test execution
         const command = new Command('convert');
         addConvertEslintCommand(command);
