@@ -535,13 +535,13 @@ describe('helper', () => {
         });
 
         test('should return CLOUD_READY when project is Fiori Adaptation and has custom tasks', async () => {
+            const adpCloudProjectBuildTaskName = 'app-variant-bundler-build';
             getAppTypeMock.mockResolvedValue('Fiori Adaptation');
+            const findCustomTaskMock = jest.fn().mockReturnValue({
+                name: adpCloudProjectBuildTaskName
+            });
             mockUi5Config = {
-                getAllCustomTasks: jest.fn().mockReturnValue([
-                    {
-                        name: 'build-app'
-                    }
-                ])
+                findCustomTask: findCustomTaskMock
             } as unknown as UI5Config;
             readUi5YamlMock.mockResolvedValue(mockUi5Config);
 
@@ -549,13 +549,14 @@ describe('helper', () => {
 
             expect(getAppTypeMock).toHaveBeenCalledWith(basePath);
             expect(readUi5YamlMock).toHaveBeenCalledWith(basePath, 'ui5.yaml');
+            expect(findCustomTaskMock).toHaveBeenCalledWith(adpCloudProjectBuildTaskName);
             expect(result).toBe(AdaptationProjectType.CLOUD_READY);
         });
 
-        test('should return ON_PREMISE when project is Fiori Adaptation and does not have custom tasks', async () => {
+        test('should return ON_PREMISE when project is Fiori Adaptation and does not have builder custom task', async () => {
             getAppTypeMock.mockResolvedValue('Fiori Adaptation');
             mockUi5Config = {
-                getAllCustomTasks: jest.fn().mockReturnValue([])
+                findCustomTask: jest.fn().mockReturnValue(undefined)
             } as unknown as UI5Config;
             readUi5YamlMock.mockResolvedValue(mockUi5Config);
 

@@ -825,22 +825,6 @@ export class UI5Config {
     }
 
     /**
-     * Use this method to get the list of all available custom tasks defined in the ui5.yaml.
-     * If there are not custom tasks the method returns an empty array.
-     *
-     * @returns The list of custom tasks.
-     * @memberof UI5Config
-     */
-    public getAllCustomTasks(): Array<CustomTask> {
-        try {
-            const customTaskSequence = this.document.getSequence({ path: 'builder.customTasks' }) as YAMLSeq<YAMLMap>;
-            return customTaskSequence.items.map((item) => item.toJSON());
-        } catch {
-            return [];
-        }
-    }
-
-    /**
      * Update an existing custom middleware or create it. Existing custom middleware be overwritten, not merged.
      * If the custom middleware doesn't exist, it will be added.
      *
