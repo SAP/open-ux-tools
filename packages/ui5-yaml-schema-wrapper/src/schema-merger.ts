@@ -1,22 +1,39 @@
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 /**
  * Merge all individual middleware schemas into the main ux-ui5-tooling-schema.json
  */
 
 interface SchemaDefinition {
-    [key: string]: any;
+    [key: string]: unknown;
+}
+
+interface SchemaProperty {
+    type?: string | string[];
+    description?: string;
+    properties?: Record<string, SchemaProperty>;
+    items?: SchemaProperty | SchemaProperty[];
+    $ref?: string;
+    const?: unknown;
+    enum?: unknown[];
+    allOf?: SchemaProperty[];
+    anyOf?: SchemaProperty[];
+    oneOf?: SchemaProperty[];
+    additionalProperties?: boolean | SchemaProperty;
+    required?: string[];
+    default?: unknown;
+    [key: string]: unknown;
 }
 
 interface Schema {
     $schema?: string;
     description?: string;
-    type?: string;
-    properties?: any;
+    type?: string | string[];
+    properties?: Record<string, SchemaProperty>;
     definitions?: SchemaDefinition;
-    additionalProperties?: boolean;
-    [key: string]: any;
+    additionalProperties?: boolean | SchemaProperty;
+    [key: string]: unknown;
 }
 
 interface MiddlewareSchemaMapping {
@@ -27,6 +44,25 @@ interface MiddlewareSchemaMapping {
     /** Property path in the configuration object (defaults to root) */
     configPath?: string;
 }
+
+/**
+ * Type representing a JSON Schema conditional for middleware configuration.
+ * Using a type alias instead of interface to avoid SonarQube warning about 'then' property.
+ */
+type MiddlewareCondition = {
+    if: {
+        properties: {
+            name: {
+                const: string;
+            };
+        };
+    };
+    then: {
+        properties: {
+            configuration: unknown;
+        };
+    };
+};
 
 /**
  * Get the list of middleware schemas to merge.
@@ -120,12 +156,11 @@ function resolveExternalRefs(
 
         if (refSchema.definitions?.[defName]) {
             extractedKeys.add(newDefName);
-            const defValue = JSON.parse(JSON.stringify(refSchema.definitions[defName])); // Deep clone
+            const defValue = structuredClone(refSchema.definitions[defName]);
 
             // Process the definition to extract any dependencies
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            const processedDef = extractDependentDefs(defValue, refSchema, refSchemaPrefix);
-            extractedDefinitions[newDefName] = processedDef;
+            extractedDefinitions[newDefName] = extractDependentDefs(defValue, refSchema, refSchemaPrefix);
 
             return newDefName;
         }
@@ -134,7 +169,7 @@ function resolveExternalRefs(
     };
 
     // Helper to find and extract dependent definitions
-    const extractDependentDefs = (obj: any, refSchema: Schema, refSchemaPrefix: string): any => {
+    const extractDependentDefs = (obj: unknown, refSchema: Schema, refSchemaPrefix: string): unknown => {
         if (obj === null || typeof obj !== 'object') {
             return obj;
         }
@@ -143,10 +178,10 @@ function resolveExternalRefs(
             return obj.map((item) => extractDependentDefs(item, refSchema, refSchemaPrefix));
         }
 
-        const result: any = {};
-        for (const key in obj) {
-            if (key === '$ref' && typeof obj[key] === 'string') {
-                const ref = obj[key];
+        const result: Record<string, unknown> = {};
+        for (const key in obj as Record<string, unknown>) {
+            if (key === '$ref' && typeof (obj as Record<string, unknown>)[key] === 'string') {
+                const ref = (obj as Record<string, unknown>)[key] as string;
                 // Check if it's an internal reference to the same schema
                 if (ref.startsWith('#/definitions/')) {
                     const depDefName = ref.substring('#/definitions/'.length);
@@ -156,13 +191,53 @@ function resolveExternalRefs(
                     result[key] = ref;
                 }
             } else {
-                result[key] = extractDependentDefs(obj[key], refSchema, refSchemaPrefix);
+                result[key] = extractDependentDefs((obj as Record<string, unknown>)[key], refSchema, refSchemaPrefix);
             }
         }
         return result;
     };
 
-    const resolveRefs = (obj: any): any => {
+    const resolveExternalRef = (ref: string, result: Record<string, unknown>, key: string): boolean => {
+        if (!ref.includes('.json#')) {
+            return false;
+        }
+
+        const [fileName, jsonPath] = ref.split('#');
+
+        // Load the referenced schema if not already loaded
+        if (!loadedSchemas.has(fileName)) {
+            loadedSchemas.set(fileName, loadSchema(schemaDir, fileName));
+        }
+
+        const refSchema = loadedSchemas.get(fileName)!;
+        const refSchemaPrefix = fileName.replace('-schema.json', '').replace(/-/g, '_');
+
+        // Resolve the JSON path
+        if (jsonPath.startsWith('/definitions/')) {
+            const defName = jsonPath.substring('/definitions/'.length);
+            const newDefName = extractDefinition(refSchema, defName, refSchemaPrefix);
+            result[key] = `#/definitions/${newDefName}`;
+            return true;
+        }
+
+        if (jsonPath.startsWith('/properties/')) {
+            const propName = jsonPath.substring('/properties/'.length);
+            if (refSchema.properties?.[propName]) {
+                // Process the property to extract dependent definitions
+                const propSchema = structuredClone(refSchema.properties[propName]);
+                const processedProp = extractDependentDefs(propSchema, refSchema, refSchemaPrefix);
+
+                // Inline the processed property schema
+                delete result[key];
+                Object.assign(result, processedProp);
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    const resolveRefs = (obj: unknown): unknown => {
         if (obj === null || typeof obj !== 'object') {
             return obj;
         }
@@ -171,51 +246,23 @@ function resolveExternalRefs(
             return obj.map(resolveRefs);
         }
 
-        const result: any = {};
-        for (const key in obj) {
-            if (key === '$ref' && typeof obj[key] === 'string') {
-                const ref = obj[key];
+        const result: Record<string, unknown> = {};
+        for (const key in obj as Record<string, unknown>) {
+            if (key === '$ref' && typeof (obj as Record<string, unknown>)[key] === 'string') {
+                const ref = (obj as Record<string, unknown>)[key] as string;
                 // Check if it's an external file reference
-                if (ref.includes('.json#')) {
-                    const [fileName, jsonPath] = ref.split('#');
-
-                    // Load the referenced schema if not already loaded
-                    if (!loadedSchemas.has(fileName)) {
-                        loadedSchemas.set(fileName, loadSchema(schemaDir, fileName));
-                    }
-
-                    const refSchema = loadedSchemas.get(fileName)!;
-                    const refSchemaPrefix = fileName.replace('-schema.json', '').replace(/-/g, '_');
-
-                    // Resolve the JSON path
-                    if (jsonPath.startsWith('/definitions/')) {
-                        const defName = jsonPath.substring('/definitions/'.length);
-                        const newDefName = extractDefinition(refSchema, defName, refSchemaPrefix);
-                        result[key] = `#/definitions/${newDefName}`;
-                        continue;
-                    } else if (jsonPath.startsWith('/properties/')) {
-                        const propName = jsonPath.substring('/properties/'.length);
-                        if (refSchema.properties?.[propName]) {
-                            // Process the property to extract dependent definitions
-                            const propSchema = JSON.parse(JSON.stringify(refSchema.properties[propName]));
-                            const processedProp = extractDependentDefs(propSchema, refSchema, refSchemaPrefix);
-
-                            // Inline the processed property schema
-                            delete result[key];
-                            Object.assign(result, processedProp);
-                            continue;
-                        }
-                    }
+                const resolved = resolveExternalRef(ref, result, key);
+                if (!resolved) {
+                    result[key] = ref;
                 }
-                result[key] = ref;
             } else {
-                result[key] = resolveRefs(obj[key]);
+                result[key] = resolveRefs((obj as Record<string, unknown>)[key]);
             }
         }
         return result;
     };
 
-    const resolvedSchema = resolveRefs(schema);
+    const resolvedSchema = resolveRefs(schema) as Schema;
 
     // Merge extracted definitions with existing definitions
     if (Object.keys(extractedDefinitions).length > 0) {
@@ -251,7 +298,16 @@ function prefixDefinitions(schema: Schema, prefix: string): Schema {
     }
 
     // Update all $ref references in the schema
-    const updateRefs = (obj: any): any => {
+    const updateRefValue = (ref: string): string => {
+        if (!ref.startsWith('#/definitions/')) {
+            return ref;
+        }
+
+        const defName = ref.substring('#/definitions/'.length);
+        return definitionMap[defName] ? `#/definitions/${definitionMap[defName]}` : ref;
+    };
+
+    const updateRefs = (obj: unknown): unknown => {
         if (obj === null || typeof obj !== 'object') {
             return obj;
         }
@@ -260,31 +316,132 @@ function prefixDefinitions(schema: Schema, prefix: string): Schema {
             return obj.map(updateRefs);
         }
 
-        const result: any = {};
-        for (const key in obj) {
-            if (key === '$ref' && typeof obj[key] === 'string') {
-                const ref = obj[key];
-                // Only update internal references (starting with #/definitions/)
-                if (ref.startsWith('#/definitions/')) {
-                    const defName = ref.substring('#/definitions/'.length);
-                    if (definitionMap[defName]) {
-                        result[key] = `#/definitions/${definitionMap[defName]}`;
-                    } else {
-                        result[key] = ref;
-                    }
-                } else {
-                    result[key] = ref;
-                }
+        const result: Record<string, unknown> = {};
+        for (const key in obj as Record<string, unknown>) {
+            if (key === '$ref' && typeof (obj as Record<string, unknown>)[key] === 'string') {
+                result[key] = updateRefValue((obj as Record<string, unknown>)[key] as string);
             } else {
-                result[key] = updateRefs(obj[key]);
+                result[key] = updateRefs((obj as Record<string, unknown>)[key]);
             }
         }
         return result;
     };
 
+    const updatedSchema = updateRefs(schema) as Schema;
+    const updatedDefinitions = updateRefs(prefixedDefinitions) as SchemaDefinition;
+
     return {
-        ...updateRefs(schema),
-        definitions: updateRefs(prefixedDefinitions)
+        ...updatedSchema,
+        definitions: updatedDefinitions
+    };
+}
+
+/**
+ * Update $ref paths to use prefixed definitions.
+ *
+ * @param obj - The object to process
+ * @param prefix - The prefix to add to definition references
+ * @returns The object with updated references
+ */
+function updateRefsToPrefix(obj: unknown, prefix: string): unknown {
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map((item) => updateRefsToPrefix(item, prefix));
+    }
+
+    const result: Record<string, unknown> = {};
+    for (const key in obj as Record<string, unknown>) {
+        if (key === '$ref' && typeof (obj as Record<string, unknown>)[key] === 'string') {
+            const ref = (obj as Record<string, unknown>)[key] as string;
+            if (ref.startsWith('#/definitions/')) {
+                const defName = ref.substring('#/definitions/'.length);
+                result[key] = `#/definitions/${prefix}_${defName}`;
+            } else {
+                result[key] = ref;
+            }
+        } else {
+            result[key] = updateRefsToPrefix((obj as Record<string, unknown>)[key], prefix);
+        }
+    }
+    return result;
+}
+
+/**
+ * Build configuration schema by removing $schema and definitions from root level.
+ *
+ * @param schema - The schema to process
+ * @returns The configuration schema
+ */
+function buildConfigSchema(schema: Schema): Record<string, unknown> {
+    const configSchema: Record<string, unknown> = {};
+    for (const key in schema) {
+        if (key !== '$schema' && key !== 'definitions') {
+            configSchema[key] = schema[key];
+        }
+    }
+    return configSchema;
+}
+
+/**
+ * Process a middleware mapping and return the condition.
+ *
+ * @param mapping - The middleware mapping configuration
+ * @param schemaDir - Directory containing schema files
+ * @param processedSchemas - Set of already processed schema files
+ * @param loadedSchemas - Cache of loaded schemas
+ * @param allDefinitions - Accumulated schema definitions
+ * @param verbose - Whether to log verbose output
+ * @returns The middleware condition for this mapping
+ */
+function processMiddlewareMapping(
+    mapping: MiddlewareSchemaMapping,
+    schemaDir: string,
+    processedSchemas: Set<string>,
+    loadedSchemas: Map<string, Schema>,
+    allDefinitions: SchemaDefinition,
+    verbose: boolean
+): MiddlewareCondition {
+    if (verbose) {
+        console.log(`Processing ${mapping.middlewareName} (${mapping.schemaFileName})...`);
+    }
+
+    const prefix = mapping.schemaFileName.replace('-schema.json', '').replace(/-/g, '_');
+    let schema: Schema;
+
+    if (!processedSchemas.has(mapping.schemaFileName)) {
+        schema = loadSchema(schemaDir, mapping.schemaFileName);
+        schema = resolveExternalRefs(schema, schemaDir, loadedSchemas, prefix);
+        const prefixedSchema = prefixDefinitions(schema, prefix);
+
+        if (prefixedSchema.definitions) {
+            Object.assign(allDefinitions, prefixedSchema.definitions);
+        }
+
+        processedSchemas.add(mapping.schemaFileName);
+    } else {
+        schema = loadSchema(schemaDir, mapping.schemaFileName);
+        schema = resolveExternalRefs(schema, schemaDir, loadedSchemas, prefix);
+    }
+
+    const configSchema = buildConfigSchema(schema);
+    const updatedConfigSchema = updateRefsToPrefix(configSchema, prefix);
+
+    return {
+        if: {
+            properties: {
+                name: {
+                    const: mapping.middlewareName
+                }
+            }
+        },
+        then: {
+            properties: {
+                configuration: updatedConfigSchema
+            }
+        }
     };
 }
 
@@ -301,98 +458,19 @@ export function mergeSchemas(schemaDir: string, verbose: boolean = true): void {
 
     const mappings = getMiddlewareMappings();
     const allDefinitions: SchemaDefinition = {};
-    const middlewareConditions: any[] = [];
-
-    // Track which schemas we've already processed to avoid duplicates
+    const middlewareConditions: MiddlewareCondition[] = [];
     const processedSchemas = new Set<string>();
-
-    // Cache for loaded schemas to avoid reloading
     const loadedSchemas = new Map<string, Schema>();
 
     for (const mapping of mappings) {
-        if (verbose) {
-            console.log(`Processing ${mapping.middlewareName} (${mapping.schemaFileName})...`);
-        }
-
-        // Load and prefix the schema only if we haven't processed this file before
-        let schema: Schema;
-        const prefix = mapping.schemaFileName.replace('-schema.json', '').replace(/-/g, '_');
-
-        if (!processedSchemas.has(mapping.schemaFileName)) {
-            schema = loadSchema(schemaDir, mapping.schemaFileName);
-
-            // Resolve any external file references first
-            schema = resolveExternalRefs(schema, schemaDir, loadedSchemas, prefix);
-
-            const prefixedSchema = prefixDefinitions(schema, prefix);
-
-            // Merge definitions
-            if (prefixedSchema.definitions) {
-                Object.assign(allDefinitions, prefixedSchema.definitions);
-            }
-
-            processedSchemas.add(mapping.schemaFileName);
-        } else {
-            // Schema already processed, just load it to get the root structure
-            schema = loadSchema(schemaDir, mapping.schemaFileName);
-            // Resolve external refs for the config structure
-            schema = resolveExternalRefs(schema, schemaDir, loadedSchemas, prefix);
-        }
-
-        // Build the configuration schema
-        // Remove the $schema and definitions from root level, keep only structure
-        const configSchema: any = {};
-        for (const key in schema) {
-            if (key !== '$schema' && key !== 'definitions') {
-                configSchema[key] = schema[key];
-            }
-        }
-
-        // Update $ref paths to use prefixed definitions
-        const updateRefsToPrefix = (obj: any, prefix: string): any => {
-            if (obj === null || typeof obj !== 'object') {
-                return obj;
-            }
-
-            if (Array.isArray(obj)) {
-                return obj.map((item) => updateRefsToPrefix(item, prefix));
-            }
-
-            const result: any = {};
-            for (const key in obj) {
-                if (key === '$ref' && typeof obj[key] === 'string') {
-                    const ref = obj[key];
-                    if (ref.startsWith('#/definitions/')) {
-                        const defName = ref.substring('#/definitions/'.length);
-                        result[key] = `#/definitions/${prefix}_${defName}`;
-                    } else {
-                        result[key] = ref;
-                    }
-                } else {
-                    result[key] = updateRefsToPrefix(obj[key], prefix);
-                }
-            }
-            return result;
-        };
-
-        const updatedConfigSchema = updateRefsToPrefix(configSchema, prefix);
-
-        // Create condition for this middleware - INLINE the configuration schema
-        const condition: any = {
-            if: {
-                properties: {
-                    name: {
-                        const: mapping.middlewareName
-                    }
-                }
-            },
-            then: {
-                properties: {
-                    configuration: updatedConfigSchema
-                }
-            }
-        };
-
+        const condition = processMiddlewareMapping(
+            mapping,
+            schemaDir,
+            processedSchemas,
+            loadedSchemas,
+            allDefinitions,
+            verbose
+        );
         middlewareConditions.push(condition);
     }
 

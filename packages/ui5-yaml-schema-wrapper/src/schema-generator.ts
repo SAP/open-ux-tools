@@ -1,6 +1,6 @@
 import * as TJS from 'typescript-json-schema';
-import { writeFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
+import { writeFileSync, existsSync } from 'node:fs';
+import { join, dirname } from 'node:path';
 
 /**
  * TypeScript-JSON-Schema settings for generating JSON schemas
@@ -53,7 +53,7 @@ export interface SchemaGenerationResult {
 }
 
 /**
- * Helper to resolve package source paths
+ * Helper to resolve package source paths.
  *
  * @param packageName - The npm package name
  * @param srcPath - The relative path within the package's src directory
@@ -71,30 +71,33 @@ export function resolvePackageSrc(packageName: string, srcPath: string): string 
  *
  * @param schema - The schema object to process.
  */
-function ensureAdditionalPropertiesFalse(schema: any): void {
+function ensureAdditionalPropertiesFalse(schema: unknown): void {
     if (!schema || typeof schema !== 'object') {
         return;
     }
 
+    const schemaObj = schema as Record<string, unknown>;
+
     // If this is an object type with properties, ensure additionalProperties is false
-    if (schema.type === 'object' && schema.properties && schema.additionalProperties !== false) {
-        schema.additionalProperties = false;
+    if (schemaObj.type === 'object' && schemaObj.properties && schemaObj.additionalProperties !== false) {
+        schemaObj.additionalProperties = false;
     }
 
     // Process all nested schemas
-    for (const key in schema) {
-        if (typeof schema[key] === 'object') {
-            if (Array.isArray(schema[key])) {
-                schema[key].forEach((item: any) => ensureAdditionalPropertiesFalse(item));
+    for (const key in schemaObj) {
+        const value = schemaObj[key];
+        if (typeof value === 'object' && value !== null) {
+            if (Array.isArray(value)) {
+                value.forEach((item: unknown) => ensureAdditionalPropertiesFalse(item));
             } else {
-                ensureAdditionalPropertiesFalse(schema[key]);
+                ensureAdditionalPropertiesFalse(value);
             }
         }
     }
 }
 
 /**
- * Get the default schema output directory
+ * Get the default schema output directory.
  *
  * @param baseDir - Base directory (defaults to current working directory)
  * @returns The absolute path to the schema output directory
@@ -104,7 +107,7 @@ export function getSchemaOutputDir(baseDir: string = process.cwd()): string {
 }
 
 /**
- * Get the default middleware configurations
+ * Get the default middleware configurations.
  *
  * @returns Array of middleware schema configurations
  */
@@ -150,7 +153,7 @@ export function getMiddlewareConfigs(): MiddlewareSchemaConfig[] {
 }
 
 /**
- * Generate a JSON schema for a middleware configuration type
+ * Generate a JSON schema for a middleware configuration type.
  *
  * @param config - The middleware schema configuration
  * @param outputDir - Directory to write the schema file to
@@ -223,7 +226,7 @@ export interface GenerationSummary {
 }
 
 /**
- * Generate all middleware schemas
+ * Generate all middleware schemas.
  *
  * @param configs - Array of middleware configurations (defaults to all configured middlewares)
  * @param outputDir - Directory to write schema files to
@@ -269,7 +272,7 @@ export function generateAllSchemas(
 }
 
 /**
- * CLI entry point for generating schemas
+ * CLI entry point for generating schemas.
  *
  * @param baseDir - Base directory for schema output (defaults to current working directory)
  */
