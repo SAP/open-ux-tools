@@ -1,5 +1,12 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.123
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/inquirer-common@0.11.14
+
 ## 0.4.122
 
 ### Patch Changes

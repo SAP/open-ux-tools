@@ -1,5 +1,12 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.6.6
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/fiori-annotation-api@0.9.22
+
 ## 9.6.5
 
 ### Patch Changes

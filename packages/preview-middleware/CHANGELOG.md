@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.23.134
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+- Updated dependencies [fd8de2b]
+- Updated dependencies [c043712]
+    - @sap-ux/i18n@0.3.9
+    - @sap-ux/adp-tooling@0.18.74
+    - @sap-ux/project-access@1.35.9
+    - @sap-ux/system-access@0.6.57
+
 ## 0.23.133
 
 ### Patch Changes

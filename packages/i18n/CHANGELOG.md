@@ -1,5 +1,11 @@
 # @sap-ux/i18n
 
+## 0.3.9
+
+### Patch Changes
+
+- fd8de2b: fix(deps): update dependency jsonc-parser to v3.3.1
+
 ## 0.3.8
 
 ### Patch Changes

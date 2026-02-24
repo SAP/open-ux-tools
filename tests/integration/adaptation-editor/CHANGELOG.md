@@ -1,5 +1,14 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 0.0.56
+
+### Patch Changes
+
+- d732237: fix(deps): update dependency jest-dev-server to v10.1.4
+- Updated dependencies [9072d52]
+    - @sap-ux-private/playwright@0.2.8
+    - @sap-ux/project-access@1.35.9
+
 ## 0.0.55
 
 ### Patch Changes

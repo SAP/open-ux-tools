@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.27.8
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
 ## 1.27.7
 
 ### Patch Changes
