@@ -4,6 +4,7 @@ import { Checkbox, HighContrastSelector, IsFocusVisibleClassName } from '@fluent
 
 import type { UIComponentMessagesProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
+import { COMMON_INPUT_STYLES } from '../UIInput';
 
 export interface UICheckboxProps extends ICheckboxProps, UIComponentMessagesProps {
     CheckboxMinWidth?: number;
@@ -116,7 +117,8 @@ export class UICheckbox extends React.Component<UICheckboxProps, {}> {
             checkbox: {
                 backgroundColor: 'var(--vscode-debugToolBar-background, var(--vscode-editorWidget-background))',
                 borderColor: 'var(--vscode-editorWidget-border)',
-                opacity: props.disabled ? 0.4 : undefined
+                opacity: props.disabled ? 0.4 : undefined,
+                borderRadius: COMMON_INPUT_STYLES.borderRadius
             },
             checkmark: {
                 color: 'var(--vscode-checkbox-foreground, var(--vscode-editorWidget-foreground))'
