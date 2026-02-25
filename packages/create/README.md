@@ -311,6 +311,7 @@ Examples:
 `npx --yes @sap-ux/create@latest convert eslint-config`
 
 Options:
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
 - `-c, --config <string>` - The name of the SAP Fiori tools ESLint plugin configuration to be used. _(default: `recommended`)_
 - `-n, --skip-install` - Skip the `npm install` step.
