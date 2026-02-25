@@ -1,6 +1,6 @@
 {
   "generationParameters": {
-    "generationDate": "Tue Jun 24 2025 22:44:43 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Wed Feb 25 2026 17:24:15 GMT+0000 (Greenwich Mean Time)",
     "generatorPlatform": "CLI",
     "serviceType": "OData URL",
     "metadataFilename": "",
@@ -11,6 +11,7 @@
     "appNamespace": "testNameSpace",
     "ui5Theme": "sap_fiori_3",
     "ui5Version": "1.92.0",
+    "enableEslint": true,
     "showMockDataInfo": true,
     "generatorVersion": "0.0.0",
     "template": "Analytical List Page V4",

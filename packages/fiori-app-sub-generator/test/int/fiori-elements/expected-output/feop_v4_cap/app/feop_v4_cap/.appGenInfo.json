@@ -1,6 +1,6 @@
 {
   "generationParameters": {
-    "generationDate": "Tue Jun 24 2025 22:44:47 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Wed Feb 25 2026 17:24:16 GMT+0000 (Greenwich Mean Time)",
     "generatorPlatform": "CLI",
     "serviceType": "Local CAP",
     "metadataFilename": "",
@@ -11,6 +11,7 @@
     "appNamespace": "testNameSpace",
     "ui5Theme": "sap_fiori_3",
     "ui5Version": "1.90.0",
+    "enableEslint": true,
     "showMockDataInfo": false,
     "generatorVersion": "0.0.0",
     "template": "Form Entry Object Page V4",
