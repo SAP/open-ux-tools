@@ -55,7 +55,7 @@ function getJsonSpec() {
     const lastBrace = output.lastIndexOf('}');
 
     if (firstBrace === -1 || lastBrace === -1) {
-        throw new Error(`No JSON object found in CLI output`);
+        throw new Error('No JSON object found in CLI output');
     }
 
     const jsonString = output.substring(firstBrace, lastBrace + 1);
