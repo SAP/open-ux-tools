@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.23.135
+
+### Patch Changes
+
+- ed1399d: Fix: Change custom column creation in v4 from addXML to appDescr change
+- Updated dependencies [ed1399d]
+    - @sap-ux/adp-tooling@0.18.75
+
 ## 0.23.134
 
 ### Patch Changes
