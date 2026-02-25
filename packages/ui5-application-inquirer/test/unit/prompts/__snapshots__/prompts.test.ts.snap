@@ -135,15 +135,6 @@ exports[`getQuestions getQuestions, no options 1`] = `
   {
     "default": false,
     "guiOptions": {
-      "breadcrumb": "ESLint",
-    },
-    "message": "Add ESLint Configuration to the Project",
-    "name": "enableEslint",
-    "type": "confirm",
-  },
-  {
-    "default": false,
-    "guiOptions": {
       "breadcrumb": "Skip Annotations",
     },
     "message": "Skip Generation of Associated \`annotations.cds\` File",

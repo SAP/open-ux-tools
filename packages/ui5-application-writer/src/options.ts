@@ -35,29 +35,24 @@ export interface FeatureInput {
  * @param input.tmplPath template basepath
  * @param context optional context object to merge with ui5App during template rendering
  */
-async function copyTemplates(
-    name: string,
-    { ui5App, fs, basePath, tmplPath }: FeatureInput,
-    context?: Record<string, any>
-) {
+async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: FeatureInput) {
     let optTmplDirPath = join(tmplPath, 'optional', `${name}`);
     const optionPath = getTemplateVersionPath(ui5App.ui5 as UI5);
     if (name === 'loadReuseLibs') {
         optTmplDirPath = join(optTmplDirPath, optionPath);
     }
     const optTmplFilePaths = await getFilePaths(optTmplDirPath);
-    const templateData = { ...ui5App, ...(context || {}) };
     optTmplFilePaths.forEach((optTmplFilePath) => {
         const relPath = optTmplFilePath.replace(optTmplDirPath, '');
         const outPath = join(basePath, relPath);
         // Extend or add
         if (!fs.exists(outPath)) {
-            fs.copyTpl(optTmplFilePath, outPath, templateData, undefined, {
+            fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
                 globOptions: { dot: true },
                 processDestinationPath: processDestinationPath
             });
         } else {
-            const add = JSON.parse(render(fs.read(optTmplFilePath), templateData, {}));
+            const add = JSON.parse(render(fs.read(optTmplFilePath), ui5App, {}));
             const existingFile = JSON.parse(fs.read(outPath));
             const merged = mergeObjects(existingFile, add);
             fs.writeJSON(outPath, merged);
@@ -69,10 +64,7 @@ async function copyTemplates(
  * Factory functions for applying optional features.
  */
 const factories: { [key: string]: (input: FeatureInput) => Promise<void> } = {
-    eslint: async (input: FeatureInput) => {
-        // Always use 'recommended' profile
-        await copyTemplates('eslint', input, { eslintProfile: 'recommended' });
-    },
+    eslint: async (input: FeatureInput) => await copyTemplates('eslint', input),
     loadReuseLibs: async (input: FeatureInput) => await copyTemplates('loadReuseLibs', input),
     sapux: async (input: FeatureInput) => {
         if (input.ui5App.app.projectType === 'EDMXBackend') {
