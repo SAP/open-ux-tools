@@ -1,10 +1,10 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Fri Dec 19 2025 17:13:54 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Wed Feb 25 2026 16:15:48 GMT+0000 (Greenwich Mean Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
-|**Generation Platform**<br>CLI|
+|**Generation Platform**<br>Visual Studio Code|
 |**Template Used**<br>List Report Page V4|
 |**Service Type**<br>Local CAP|
 |**Service URL**<br>http://localhost:4004/admin/|
@@ -14,7 +14,7 @@
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.98.0|
 |**Enable TypeScript**<br>False|
-|**Add Eslint configuration**<br>False|
+|**Add Eslint configuration**<br>True, see https://www.npmjs.com/package/eslint-plugin-fiori-custom for the eslint rules.|
 |**Main Entity**<br>Books|
 
 ## lrop_v4_cap

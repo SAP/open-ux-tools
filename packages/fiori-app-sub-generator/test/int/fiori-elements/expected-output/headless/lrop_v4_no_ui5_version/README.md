@@ -1,7 +1,7 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Mon Feb 23 2026 15:24:32 GMT+0000 (Coordinated Universal Time)|
+|**Generation Date and Time**<br>Wed Feb 25 2026 16:14:24 GMT+0000 (Greenwich Mean Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>Visual Studio Code|
@@ -12,9 +12,9 @@
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
 |**Namespace**<br>testnamepsace|
 |**UI5 Theme**<br>sap_horizon|
-|**UI5 Version**<br>1.145.0|
+|**UI5 Version**<br>1.144.0|
 |**Enable TypeScript**<br>False|
-|**Add Eslint configuration**<br>False|
+|**Add Eslint configuration**<br>True, see https://www.npmjs.com/package/eslint-plugin-fiori-custom for the eslint rules.|
 |**Main Entity**<br>Travel|
 |**Navigation Entity**<br>_Booking|
 

@@ -1,10 +1,10 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Thu Dec 04 2025 17:05:12 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Wed Feb 25 2026 16:15:49 GMT+0000 (Greenwich Mean Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
-|**Generation Platform**<br>CLI|
+|**Generation Platform**<br>Visual Studio Code|
 |**Template Used**<br>Analytical List Page V2|
 |**Service Type**<br>OData URL|
 |**Service URL**<br>https://sap-ux-mock-services-v2-alp.cfapps.us10.hana.ondemand.com/sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV|
