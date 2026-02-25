@@ -75,33 +75,29 @@ export function hidePrompts(
 ): UI5ApplicationQuestion[] {
     const questions: UI5ApplicationQuestion[] = [];
     const isCapProject = !!capCdsInfo;
-    if (promptOptions ?? isCapProject) {
-        Object.keys(prompts).forEach((key) => {
-            const promptKey = key as keyof typeof promptNames;
-            // Narrow the type as we are only dealing with `hide` options
-            const promptOpt = promptOptions?.[promptKey] as UI5ApplicationCommonPromptOptions | AddDeployPromptOptions;
 
-            const hidePrompt =
-                typeof promptOpt?.hide === 'function' ? promptOpt.hide(isCapProject) : (promptOpt?.hide ?? false);
-            if (
-                !hidePrompt &&
-                // Target directory is determined by the CAP project. `enableEsLint` and `targetFolder` are not available for CAP projects
-                !(
-                    [promptNames.targetFolder, promptNames.enableEslint].includes(promptNames[promptKey]) &&
-                    isCapProject
-                ) &&
-                // `enableTypeScript` and `enableVirtualEndpoints` should not be shown for certain CAP projects i.e CAP Java
-                !(
-                    [promptNames.enableTypeScript, promptNames.enableVirtualEndpoints].includes(
-                        promptNames[promptKey]
-                    ) && (capCdsInfo ? !capCdsInfo?.hasMinCdsVersion : false)
-                )
-            ) {
-                questions.push(prompts[promptKey]);
-            }
-        });
-    } else {
-        questions.push(...Object.values(prompts));
-    }
+    Object.keys(prompts).forEach((key) => {
+        const promptKey = key as keyof typeof promptNames;
+        // Narrow the type as we are only dealing with `hide` options
+        const promptOpt = promptOptions?.[promptKey] as UI5ApplicationCommonPromptOptions | AddDeployPromptOptions;
+
+        const hidePrompt =
+            typeof promptOpt?.hide === 'function' ? promptOpt.hide(isCapProject) : (promptOpt?.hide ?? false);
+        if (
+            !hidePrompt &&
+            // ESLint is now enabled by default in the writer, so hide the prompt
+            !(promptNames[promptKey] === promptNames.enableEslint) &&
+            // Target directory is determined by the CAP project. `targetFolder` is not available for CAP projects
+            !(promptNames[promptKey] === promptNames.targetFolder && isCapProject) &&
+            // `enableTypeScript` and `enableVirtualEndpoints` should not be shown for certain CAP projects i.e CAP Java
+            !(
+                [promptNames.enableTypeScript, promptNames.enableVirtualEndpoints].includes(promptNames[promptKey]) &&
+                (capCdsInfo ? !capCdsInfo?.hasMinCdsVersion : false)
+            )
+        ) {
+            questions.push(prompts[promptKey]);
+        }
+    });
+
     return questions;
 }

@@ -2,7 +2,7 @@
 
 exports[`Setting defaults mergeUi5 resolves correct manifest version for UI5 >= 1.100 1`] = `
 Object {
-  "descriptorVersion": "1.83.0",
+  "descriptorVersion": "1.82.0",
   "framework": "SAPUI5",
   "frameworkUrl": "https://ui5.sap.com",
   "localVersion": "1.199.0",
