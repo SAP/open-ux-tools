@@ -1026,7 +1026,22 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
+
+            // For CAP projects, getSourcePath() returns the webapp path directly
+            // For non-CAP projects, use the original path.resolve() approach
+            const isCAPProject = this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs';
+            let webappPath: string;
+            let projectRoot: string;
+
+            if (isCAPProject) {
+                const projectSourcePath = this.utils.getProject().getSourcePath();
+                webappPath = projectSourcePath;
+                projectRoot = dirname(projectSourcePath);
+            } else {
+                webappPath = await getWebappPath(path.resolve(), this.fs);
+                projectRoot = path.resolve();
+            }
+
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
             const integrationCard = getIntegrationCard(manifests);
@@ -1046,7 +1061,7 @@ export class FlpSandbox {
                 }
             } satisfies ManifestNamespace.EmbedsSettings;
 
-            const appAccess = await createApplicationAccess(path.resolve(), this.fs);
+            const appAccess = await createApplicationAccess(projectRoot, this.fs);
             await appAccess.updateManifestJSON(this.manifest, this.fs);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
         } catch (error) {
@@ -1079,7 +1094,16 @@ export class FlpSandbox {
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
+            // For CAP projects, getSourcePath() returns the webapp path directly
+            // For non-CAP projects, use the original path.resolve() approach
+            const isCAPProject = this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs';
+            let webappPath: string;
+
+            if (isCAPProject) {
+                webappPath = this.utils.getProject().getSourcePath();
+            } else {
+                webappPath = await getWebappPath(path.resolve(), this.fs);
+            }
             const i18nConfig = this.manifest['sap.app'].i18n;
             let i18nPath = 'i18n/i18n.properties';
             let fallbackLocale: string | undefined;
