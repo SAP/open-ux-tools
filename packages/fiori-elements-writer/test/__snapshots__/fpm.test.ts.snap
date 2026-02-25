@@ -7305,5 +7305,155 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 ",
     "state": "modified",
   },
+  "webapp/test/integration/FirstJourney.ts": Object {
+    "contents": "import opaTest from \\"sap/ui/test/opaQunit\\";
+import journeyRunner from \\"./pages/JourneyRunner\\";
+
+QUnit.module(\\"First journey\\");
+
+opaTest(\\"Start application\\", function (Given, When, Then) {
+	Given.iStartMyApp();
+	Then.onTheBookingMain.iSeeThisPage();
+});
+
+opaTest(\\"Teardown\\", function (Given, When, Then) {
+	// Cleanup
+	Given.iTearDownMyApp();
+});
+
+journeyRunner.run();
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration tests for fefpmts</title>
+	<meta charset=\\"utf-8\\">
+
+	<script
+		id=\\"sap-ui-bootstrap\\"
+		src=\\"../../../resources/sap-ui-core.js\\"
+		data-sap-ui-resourceroots='{
+			\\"fefpmts\\": \\"../../\\"
+		}'
+		data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-theme=\\"sap_horizon\\"
+		data-sap-ui-xx-waitForTheme=\\"true\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../../resources/sap/ui/thirdparty/qunit-2.css\\">
+
+	<script src=\\"../../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"../../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+	<script src=\\"opaTests.qunit.ts\\"></script>
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+// https://api.qunitjs.com/config/autostart/
+QUnit.config.autostart = false;
+
+// import all your OPA journeys here
+void Promise.all([
+	import(\\"fefpmts/test/integration/FirstJourney\\")
+]).then(() => {
+	QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/BookingMain.ts": Object {
+    "contents": "import TemplatePage from \\"sap/fe/test/TemplatePage\\";
+
+const CustomPageDefinitions = {
+	actions: {},
+	assertions: {}
+};
+
+export default new TemplatePage(
+	\\"fefpmts::BookingMain\\",
+	CustomPageDefinitions
+);
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.ts": Object {
+    "contents": "import JourneyRunner from \\"sap/fe/test/JourneyRunner\\";
+import BookingMain from \\"./BookingMain\\";
+
+const journeyRunner = new JourneyRunner({
+	launchUrl: sap.ui.require.toUrl(\\"fefpmts\\") + \\"/index.html\\",
+	launchParameters: {},
+	opaConfig: {
+		timeout: 15
+	},
+	pages: {
+		onTheBookingMain: BookingMain
+	}
+});
+
+export default journeyRunner;
+",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=\\"utf-8\\">
+	<title>{{appTitle}} - Test Suite</title>
+	<script
+		id=\\"sap-ui-bootstrap\\"
+		src=\\"../resources/sap-ui-core.js\\"
+		data-sap-ui-testsuite=\\"test-resources/fefpmts/test/testsuite.qunit\\"
+		data-sap-ui-theme=\\"sap_horizon\\"
+		data-sap-ui-resourceroots='{
+			\\"fefpmts\\": \\"../\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-preload=\\"async\\">
+	</script>
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../resources/sap/ui/thirdparty/qunit-2.css\\">
+	<script src=\\"../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+	<script src=\\"testsuite.qunit.js\\" data-sap-ui-module></script>
+</head>
+<body>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.ts": Object {
+    "contents": "/* global QUnit */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+(window as any).suite = function () {
+	\\"use strict\\";
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+	const oSuite = (new (QUnit as any).TestSuite(\\"Test Suite for fefpmts\\"));
+	const sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\\"/\\") + 1);
+
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+	oSuite.addTestPage(sContextPath + \\"integration/opaTests.qunit.html\\");
+
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	return oSuite;
+};
+",
+    "state": "modified",
+  },
 }
 `;

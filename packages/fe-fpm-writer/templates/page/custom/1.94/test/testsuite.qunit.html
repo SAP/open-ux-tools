@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title><%= title %> - Test Suite</title>
+	<script
+		id="sap-ui-bootstrap"
+		src="../resources/sap-ui-core.js"
+		data-sap-ui-testsuite="test-resources/<%= id.split('.').join('/') %>/test/testsuite.qunit"
+		data-sap-ui-theme="sap_horizon"
+		data-sap-ui-resourceroots='{
+			"<%= id %>": "../"
+		}'
+		data-sap-ui-animation="false"
+		data-sap-ui-compatVersion="edge"
+		data-sap-ui-async="true"
+		data-sap-ui-preload="async">
+	</script>
+	<link rel="stylesheet" type="text/css" href="../resources/sap/ui/thirdparty/qunit-2.css">
+	<script src="../resources/sap/ui/thirdparty/qunit-2.js"></script>
+	<script src="../resources/sap/ui/qunit/qunit-junit.js"></script>
+	<script src="testsuite.qunit.js" data-sap-ui-module></script>
+</head>
+<body>
+</body>
+</html>

@@ -181,6 +181,52 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
 
     if (data.typescript) {
         addExtensionTypes(basePath, data.minUI5Version, fs);
+
+        // Generate TypeScript OPA tests
+        const manifest = fs.readJSON(manifestPath) as Manifest;
+        const testConfig = {
+            ...config,
+            entity: config.entity || config.name,
+            id: manifest['sap.app'].id,
+            title: manifest['sap.app'].title || config.name,
+            hash: `${manifest['sap.app'].id.replace(/\./g, '')}-tile`
+        };
+
+        const testBasePath = join(basePath, 'webapp', 'test');
+
+        // Copy test templates
+        copyTpl(
+            fs,
+            join(root, 'test/integration/FirstJourney.ts'),
+            join(testBasePath, 'integration/FirstJourney.ts'),
+            testConfig
+        );
+        copyTpl(
+            fs,
+            join(root, 'test/integration/opaTests.qunit.ts'),
+            join(testBasePath, 'integration/opaTests.qunit.ts'),
+            testConfig
+        );
+        copyTpl(
+            fs,
+            join(root, 'test/integration/opaTests.qunit.html'),
+            join(testBasePath, 'integration/opaTests.qunit.html'),
+            testConfig
+        );
+        copyTpl(
+            fs,
+            join(root, 'test/integration/pages/BookedFlightsMain.ts'),
+            join(testBasePath, `integration/pages/${testConfig.entity}Main.ts`),
+            testConfig
+        );
+        copyTpl(
+            fs,
+            join(root, 'test/integration/pages/JourneyRunner.ts'),
+            join(testBasePath, 'integration/pages/JourneyRunner.ts'),
+            testConfig
+        );
+        copyTpl(fs, join(root, 'test/testsuite.qunit.ts'), join(testBasePath, 'testsuite.qunit.ts'), testConfig);
+        copyTpl(fs, join(root, 'test/testsuite.qunit.html'), join(testBasePath, 'testsuite.qunit.html'), testConfig);
     }
 
     return fs;

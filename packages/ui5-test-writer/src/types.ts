@@ -23,6 +23,7 @@ export type FEV4OPAConfig = {
     htmlTarget: string;
     hideFilterBar: boolean;
     filterBarItems?: string[];
+    typescript?: boolean;
 };
 
 export type FEV4ManifestTarget = {

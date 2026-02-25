@@ -201,7 +201,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -257,6 +257,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -297,6 +300,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"ui5-test-writer/test/employees/test/integration/myOPATest\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -595,7 +608,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -654,6 +667,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -694,6 +710,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"ui5-test-writer/test/employees/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -969,7 +995,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -1025,6 +1051,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -1065,6 +1094,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"ui5-test-writer/test/employees/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -1340,7 +1379,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -1396,6 +1435,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -1436,6 +1478,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"ui5-test-writer/test/employees/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -1688,7 +1740,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -1741,6 +1793,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -1781,6 +1836,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"ui5-test-writer/test/employees/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -2011,7 +2076,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -2051,6 +2116,9 @@ Object {
     </script>
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -2092,6 +2160,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"ui5-test-writer/test/employees/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -2327,7 +2405,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -2371,6 +2449,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -2411,6 +2492,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"ui5-test-writer/test/employees/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -2707,7 +2798,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -2763,6 +2854,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -2803,6 +2897,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"vesc/demo/employee/project2/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -3165,7 +3269,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -3221,6 +3325,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -3261,6 +3368,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"vesc/demo/employee/project2/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -3602,7 +3719,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -3658,6 +3775,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -3698,6 +3818,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"projectservice/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -5416,7 +5546,7 @@ server:
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -5472,6 +5602,9 @@ server:
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -5512,6 +5645,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"project1/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -7078,7 +7221,7 @@ server:
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -7134,6 +7277,9 @@ server:
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -7174,6 +7320,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"project1/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -8867,7 +9023,7 @@ server:
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -8923,6 +9079,9 @@ server:
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -8963,6 +9122,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"project1/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -10662,7 +10831,7 @@ server:
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -10718,6 +10887,9 @@ server:
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -10758,6 +10930,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"project1/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
@@ -11014,7 +11196,7 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -11058,6 +11240,9 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -11098,6 +11283,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"test/ui5-test-writer/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",

@@ -14437,7 +14437,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+], function (opaQunit, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -14491,6 +14491,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -14531,6 +14534,16 @@ sap.ui.require(
   ], function (QUnit) {
     \\"use strict\\";
     QUnit.start();
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+QUnit.config.autostart = false;
+
+sap.ui.require([\\"fewrk2/test/integration/FirstJourney\\"], () => {
+	QUnit.start();
 });
 ",
     "state": "modified",
