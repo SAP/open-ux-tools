@@ -1,5 +1,11 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.7
+
+### Patch Changes
+
+- 89cfeaf: correct error handling and confirmation prompt text
+
 ## 0.3.6
 
 ### Patch Changes

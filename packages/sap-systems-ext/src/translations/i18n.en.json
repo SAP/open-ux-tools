@@ -13,7 +13,7 @@
         "yes": "Yes",
         "no": "No",
         "delete": "Delete [{{- system}}]? Your Fiori application may not run locally anymore.",
-        "overwrite": "A connection with the same name [{{- system}}] already exists. Do you want to overwrite it?"
+        "overwrite": "A connection [{{- system}}] with the same URL and Client already exists. Do you want to overwrite it?"
     },
     "info": {
         "numServices": "This SAP System [{{- system}}] returned {{v2}} OData V2 and {{v4}} OData V4 services.",
@@ -55,7 +55,7 @@
             "gaPromptSubText": "To fix this issue, follow Guided Answers steps."
         },
         "launchAppGen": "Failed to launch the SAP Fiori application generator for [{{- systemName}}].",
-        "catalogRequest": "The V{{version}} request failed with error: {{error}}.",
+        "catalogRequest": "The V{{version}} request failed with error: {{- error}}.",
         "guidedAnswersCmd": "Error executing command to open the Guided Answers extension: {{- error}}",
         "viewConnectionDetails": "An error occurred when executing the command to view the connection details.",
         "noFileSelected": "No file selected for import.",
