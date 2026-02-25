@@ -1,7 +1,7 @@
 {
   "generationParameters": {
-    "generationDate": "Fri Nov 21 2025 14:53:26 GMT+0000 (Greenwich Mean Time)",
-    "generatorPlatform": "CLI",
+    "generationDate": "Wed Feb 25 2026 16:14:28 GMT+0000 (Greenwich Mean Time)",
+    "generatorPlatform": "Visual Studio Code",
     "serviceType": "None",
     "metadataFilename": "",
     "serviceUrl": "N/A",
@@ -11,10 +11,10 @@
     "appNamespace": "",
     "ui5Theme": "sap_fiori_3",
     "ui5Version": "1.82.2",
-    "enableEslint": false,
+    "enableEslint": true,
     "enableTypeScript": false,
     "showMockDataInfo": false,
-    "generatorVersion": "0.8.6",
+    "generatorVersion": "0.11.78",
     "template": "Basic",
     "generatorName": "SAP Fiori Application Generator",
     "entityRelatedConfig": [],
