@@ -9,11 +9,11 @@ test.use({ projectConfig: ADP_FIORI_ELEMENTS_V4 });
 
 test.describe(`@quick-actions @fe-v4 @object-page`, () => {
     test(
-        '1. Add Custom Table Column.',
+        '1. Add Custom Table Column(manifest change).',
         {
             annotation: {
                 type: 'skipUI5Version',
-                description: '<1.130.0'
+                description: '<1.120.0'
             }
         },
         async ({ page, previewFrame, projectCopy, ui5Version }) => {
@@ -30,7 +30,8 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
             await editor.quickActions.waitForObjectPageQuickActionLoaded();
             await editor.quickActions.addCustomTableColumn.click();
 
-            await dialog.fillField('Fragment Name', 'table-column');
+            await dialog.fillField('Column ID', 'testColumnId');
+            await dialog.fillField('Fragment Name', 'TestFragment');
             await dialog.createButton.click();
             await editor.toolbar.saveAndReloadButton.click();
 
@@ -39,28 +40,30 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                 changes: [
                     {
                         fileType: 'change',
-                        changeType: 'addXML',
+                        changeType: 'appdescr_fe_changePageConfiguration',
                         content: {
-                            targetAggregation: 'columns',
-                            index: 3,
-                            fragmentPath: 'fragments/table-column.fragment.xml'
+                            page: 'RootEntityObjectPage',
+                            entityPropertyChange: {
+                                operation: 'UPSERT',
+                                propertyPath:
+                                    'controlConfiguration/toFirstAssociatedEntity/@com.sap.vocabularies.UI.v1.LineItem#tableSection/columns/testColumnId',
+                                propertyValue: {
+                                    header: 'New Column',
+                                    position: {
+                                        anchor: 'DataField::DateProperty',
+                                        placement: 'After'
+                                    },
+                                    template: 'adp.fiori.elements.v4.changes.fragments.TestFragment'
+                                }
+                            }
                         }
                     }
                 ],
                 fragments: {
-                    'table-column.fragment.xml': new RegExp(
-                        `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">\\s*` +
-                            `<!-- viewName: sap.fe.templates.ObjectPage.ObjectPage -->\\s*` +
-                            `<!-- controlType: sap.ui.mdc.Table -->\\s*` +
-                            `<!-- targetAggregation: columns -->\\s*` +
-                            `<table:Column\\s*` +
-                            `id="column-[a-z0-9]+"\\s*` +
-                            `width="10%"\\s*` +
-                            `header="New Column">\\s*` +
-                            `<Text id="text-[a-z0-9]+" text="Sample data"/>\\s*` +
-                            `</table:Column>\\s*` +
-                            `</core:FragmentDefinition>`
-                    )
+                    'TestFragment.fragment.xml': `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
+        <Text id="text-[a-z0-9]+" text="Sample data"/>
+</core:FragmentDefinition>
+`
                 }
             });
 
