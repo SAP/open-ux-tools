@@ -8,7 +8,7 @@ This rule checks if the `anchorBarVisible` property is set to `false` in the obj
 
 ### Why Was This Rule Introduced?
 
-The anchor bar is an important navigation feature in object pages that enables users to quickly jump between different sections. Setting `anchorBarVisible` to `false` in the manifest can negatively impact user experience. This rule ensures the correct configuration of object page headers.
+The anchor bar is an important navigation feature in object pages that enables users to quickly jump between different sections. Setting `anchorBarVisible` to `false` in the `manifest.json` file can negatively impact user experience. This rule ensures the correct configuration of object page headers.
 
 ### Warning Message
 
@@ -42,7 +42,7 @@ The `anchorBarVisible` property is set to `false`, which is not recommended.
 
 The following patterns are considered correct:
 
-#### Correct Manifest Configuration (Property Set to True)
+#### Correct Manifest Configuration (Property Set to `true`)
 
 ```json
 {
