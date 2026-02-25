@@ -1,6 +1,6 @@
 {
   "generationParameters": {
-    "generationDate": "Tue Jun 24 2025 22:44:32 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Wed Feb 25 2026 17:24:23 GMT+0000 (Greenwich Mean Time)",
     "generatorPlatform": "CLI",
     "serviceType": "File",
     "metadataFilename": "",
@@ -11,6 +11,7 @@
     "appNamespace": "",
     "ui5Theme": "sap_horizon",
     "ui5Version": "1.82.2",
+    "enableEslint": true,
     "showMockDataInfo": true,
     "generatorVersion": "0.0.0",
     "template": "Basic V4",

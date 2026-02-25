@@ -1,7 +1,7 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Thu Dec 04 2025 17:05:11 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Wed Feb 25 2026 17:24:20 GMT+0000 (Greenwich Mean Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|
@@ -14,7 +14,7 @@
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.98.0|
 |**Enable TypeScript**<br>False|
-|**Add Eslint configuration**<br>False|
+|**Add Eslint configuration**<br>True, see https://www.npmjs.com/package/eslint-plugin-fiori-custom for the eslint rules.|
 |**Main Entity**<br>SEPMRA_C_PD_Product|
 |**Navigation Entity**<br>to_ProductSalesData|
 
