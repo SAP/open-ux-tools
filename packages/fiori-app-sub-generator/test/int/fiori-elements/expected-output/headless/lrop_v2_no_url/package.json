@@ -12,12 +12,15 @@
   "devDependencies": {
     "@ui5/cli": "^4.0.33",
     "@sap/ux-ui5-tooling": "1",
+    "@sap-ux/eslint-plugin-fiori-tools": "^9.0.0",
+    "eslint": "^9",
     "@sap-ux/ui5-middleware-fe-mockserver": "2"
   },
   "scripts": {
     "start": "echo \\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: `npm run start-mock`.\\\"",
     "start-local": "fiori run --config ./ui5-local.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2nourl-tile\"",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "lint": "eslint ./",
     "start-mock": "fiori run --config ./ui5-mock.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2nourl-tile\"",
     "deploy": "fiori verify",
     "deploy-config": "fiori add deploy-config",
