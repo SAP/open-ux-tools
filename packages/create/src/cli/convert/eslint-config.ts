@@ -61,6 +61,7 @@ async function convertEslintConfig(
                         `\`npm install\` was skipped. Ensure you install the dependencies before executing any linting commands.`
                     );
                 } else {
+                    logger.info(`Executing \`npm install\`.`);
                     runNpmInstallCommand(basePath);
                 }
             });
