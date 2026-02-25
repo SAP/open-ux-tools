@@ -186,7 +186,7 @@ describe('UI5 templates', () => {
             })
         );
         const eslintConfig = fs.read(join(projectDir, 'eslint.config.mjs'));
-        expect(eslintConfig).toContain("fioriTools.configs.recommended");
+        expect(eslintConfig).toContain('fioriTools.configs.recommended');
         return new Promise((resolve) => {
             if (debug) {
                 fs.commit(resolve);

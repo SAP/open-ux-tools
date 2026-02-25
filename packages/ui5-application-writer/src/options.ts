@@ -33,7 +33,6 @@ export interface FeatureInput {
  * @param input.fs reference to the mem-fs instance
  * @param input.basePath project base path
  * @param input.tmplPath template basepath
- * @param context optional context object to merge with ui5App during template rendering
  */
 async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: FeatureInput) {
     let optTmplDirPath = join(tmplPath, 'optional', `${name}`);
