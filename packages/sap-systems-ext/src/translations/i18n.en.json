@@ -6,47 +6,46 @@
         }
     },
     "commands": {
-        "openSystemDetails": "Open System Details",
+        "openSystemDetails": "Open Connection Manager for SAP Systems",
         "quickpickPlaceholder": "Select an SAP system to view details"
     },
     "confirmationPrompt": {
         "yes": "Yes",
         "no": "No",
         "delete": "Delete [{{- system}}]? Your Fiori application may not run locally anymore.",
-        "overwrite": "System already exists with name [{{- system}}]. Do you want to overwrite?"
+        "overwrite": "A connection [{{- system}}] with the same URL and Client already exists. Do you want to overwrite it?"
     },
     "info": {
         "numServices": "This SAP System [{{- system}}] returned {{v2}} OData V2 and {{v4}} OData V4 services.",
-        "refreshingSystems": "Refreshing stored systems view.",
-        "systemInfoUpdated": "System information updated.",
-        "systemDeleted": "System [{{- system}}] deleted.",
-        "systemExported": "System [{{- system}}] exported.",
-        "systemSaved": "System [{{- system}}] saved.",
-        "systemUpdated": "System [{{- system}}] updated.",
+        "refreshingConnections": "Refreshing stored connections view.",
+        "connectionInfoUpdated": "Connection information updated.",
+        "connectionDeleted": "Connection [{{- system}}] deleted.",
+        "connectionExported": "Connection [{{- system}}] exported.",
+        "connectionSaved": "Connection [{{- system}}] saved.",
+        "connectionUpdated": "Connection [{{- system}}] updated.",
         "serviceMetadata": "Service metadata retrieved successfully.",
         "noServiceMetadata": "Service metadata not available.",
         "serviceRequestCheckLogs": "{{- url}} returned service data. Check the debug logs for the full metadata."
     },
     "warn": {
-        "deletionCancelled": "Deletion cancelled for system: [{{- system}}].",
+        "deletionCancelled": "Deletion cancelled for connection: [{{- system}}].",
         "importCancelled": "Import cancelled."
     },
     "error": {
-        "deletingSystem": "Error deleting system: [{{- system}}].",
-        "importConfigFailed": "Failed to import system configuration.",
-        "noSystemsDefined": "No systems defined in configuration file: {{- filePath}}",
-        "incompleteConfig": "System configuration is incomplete. A URL is required.",
-        "loadingSystems": "Failed to load stored systems.",
-        "unknownAction": "Unknown action type: {{- actionType}}",
-        "systemNotFound": "System [{{- backendKey}}] not found in the secure store. Please ensure the system is saved correctly.",
-        "exportFailure": "Failed to export system information: {{- error}}.",
-        "urlMissing": "This saved SAP system is missing a URL and cannot be displayed.",
-        "systemInfo": "Error during processing of system information: {{- error}}",
-        "systemKeyExists": "System (URL + Client) already exists",
-        "systemUpdateFailure": "Failed to update system information: {{- error}}",
+        "deletingConnection": "An error occurred when deleting connection: [{{- system}}].",
+        "importConfigFailed": "Failed to import the connection configuration.",
+        "noConnectionsDefined": "No connections defined in the configuration file: {{- filePath}}",
+        "incompleteConfig": "Connection configuration is incomplete. A URL is required.",
+        "loadingConnections": "Failed to load stored connections.",
+        "connectionNotFound": "Connection [{{- backendKey}}] not found in the secure store. Please ensure the connection is saved correctly.",
+        "exportFailure": "Failed to export connection information: {{- error}}.",
+        "connectionInfo": "An error occurred during processing of the connection information: {{- error}}",
+        "keyExists": "Connection (URL + Client) already exists",
+        "updateFailure": "Failed to update the connection information: {{- error}}",
+        "creationFailure": "Failed to create the connection information: {{- error}}",
         "noServices": "This SAP system failed to return any services.",
         "cert": {
-            "urlValidation": "The system URL is using {{certError}} security certificate.",
+            "urlValidation": "The connection URL uses {{certError}} security certificate.",
             "expired": "an expired",
             "selfSigned": "a self-signed",
             "unknownOrInvalid": "an unknown or invalid",
@@ -56,13 +55,12 @@
             "gaPromptSubText": "To fix this issue, follow Guided Answers steps."
         },
         "launchAppGen": "Failed to launch the SAP Fiori application generator for [{{- systemName}}].",
-        "catalogRequest": "The V{{version}} request failed with error: {{error}}.",
+        "catalogRequest": "The V{{version}} request failed with error: {{- error}}.",
         "guidedAnswersCmd": "Error executing command to open the Guided Answers extension: {{- error}}",
-        "viewSystemDetails": "Error executing command to view system details.",
+        "viewConnectionDetails": "An error occurred when executing the command to view the connection details.",
         "noFileSelected": "No file selected for import.",
         "panelActionDispatch": "Error dispatching panel action: {{- error}}",
         "noneSelected": "No SAP system selected.",
-        "testConnection": "An error occurred when testing the connection: {{- error}}",
         "systemInfoUpdate": "Failed to add the system information to the backend system: {{- error}}",
         "serviceRequest": "An error occurred while requesting the service metadata: {{- error}}"
     },
@@ -72,8 +70,8 @@
     },
     "validation": {
         "provideUrl": "Please provide a valid URL to test the connection.",
-        "systemNameExists": "System name is already in use",
-        "systemUrlInvalid": "The URL '{{- url}}' provided is invalid"
+        "connectionNameExists": "This connection name already exists. Choose a different name.",
+        "urlInvalid": "The URL '{{- url}}' provided is invalid"
     },
     "telemetry": {
         "unknownOs": "Unknown",

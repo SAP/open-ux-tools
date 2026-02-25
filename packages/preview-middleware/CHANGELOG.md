@@ -1,5 +1,77 @@
 # @sap-ux/preview-middleware
 
+## 0.23.134
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+- Updated dependencies [fd8de2b]
+- Updated dependencies [c043712]
+    - @sap-ux/i18n@0.3.9
+    - @sap-ux/adp-tooling@0.18.74
+    - @sap-ux/project-access@1.35.9
+    - @sap-ux/system-access@0.6.57
+
+## 0.23.133
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/i18n@0.3.8
+    - @sap-ux/adp-tooling@0.18.73
+    - @sap-ux/system-access@0.6.56
+
+## 0.23.132
+
+### Patch Changes
+
+- Updated dependencies [ce9f074]
+    - @sap-ux/adp-tooling@0.18.72
+
+## 0.23.131
+
+### Patch Changes
+
+- 34b8293: fix: add cards generator path to CAP index.html
+
+## 0.23.130
+
+### Patch Changes
+
+- @sap-ux/adp-tooling@0.18.71
+- @sap-ux/project-access@1.35.7
+- @sap-ux/system-access@0.6.56
+
+## 0.23.129
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux/adp-tooling@0.18.70
+    - @sap-ux/feature-toggle@0.3.7
+    - @sap-ux/system-access@0.6.56
+
+## 0.23.128
+
+### Patch Changes
+
+- Updated dependencies [cbd340a]
+    - @sap-ux/adp-tooling@0.18.69
+    - @sap-ux/system-access@0.6.55
+
+## 0.23.127
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/adp-tooling@0.18.68
+    - @sap-ux/system-access@0.6.54
+
 ## 0.23.126
 
 ### Patch Changes
