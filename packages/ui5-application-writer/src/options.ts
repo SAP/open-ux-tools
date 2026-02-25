@@ -13,11 +13,7 @@ import { getTemplateVersionPath, processDestinationPath } from './utils';
  * Input required to enable optional features.
  */
 export interface FeatureInput {
-    ui5App: {
-        app: { id: string; baseComponent?: string; projectType?: ProjectType };
-        ui5?: Partial<UI5>;
-        appOptions?: Partial<AppOptions>;
-    };
+    ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType }; ui5?: Partial<UI5> };
     fs: Editor;
     basePath: string;
     tmplPath: string;
@@ -50,12 +46,14 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
                 globOptions: { dot: true },
                 processDestinationPath: processDestinationPath
             });
-        } else {
+        } else if (outPath.endsWith('.json')) {
+            // Only merge JSON files (e.g., package.json)
             const add = JSON.parse(render(fs.read(optTmplFilePath), ui5App, {}));
             const existingFile = JSON.parse(fs.read(outPath));
             const merged = mergeObjects(existingFile, add);
             fs.writeJSON(outPath, merged);
         }
+        // For non-JSON files (like .mjs), skip if file already exists
     });
 }
 
