@@ -2324,7 +2324,7 @@ describe('FE V4 quick actions', () => {
                                             enabled: false,
                                             children: [],
                                             tooltip:
-                                                'Custom columns defined in the manifest.json file are not supported when using a table building block.'
+                                                'Custom columns defined in the manifest.json file are not supported when using the Table building block.'
                                         },
                                         { path: '1', label: "'MySecondTab' table", enabled: true, children: [] }
                                     ]
