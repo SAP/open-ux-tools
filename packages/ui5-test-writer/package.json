@@ -39,7 +39,9 @@
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap/ux-specification": "1.142.1"
+        "@sap/ux-specification": "1.142.1",
+        "@sap-ux/edmx-parser": "0.9.1",
+        "@sap-ux/annotation-converter": "0.10.19"
     },
     "devDependencies": {
         "@types/ejs": "3.1.2",
@@ -48,7 +50,8 @@
         "@types/mem-fs-editor": "7.0.1",
         "rimraf": "6.1.2",
         "fs-extra": "10.0.0",
-        "@sap-ux/jest-file-matchers": "workspace:*"
+        "@sap-ux/jest-file-matchers": "workspace:*",
+        "@sap-ux/vocabularies-types": "0.14.5"
     },
     "engines": {
         "node": ">=20.x"

@@ -309,6 +309,7 @@ function writeJourneys(
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param metadata service metadata
  * @param fs - an optional reference to a mem-fs editor
  * @param log - optional logger instance
  * @returns Reference to a mem-fs-editor
@@ -316,6 +317,7 @@ function writeJourneys(
 export async function generateOPAFiles(
     basePath: string,
     opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
+    metadata?: string,
     fs?: Editor,
     log?: Logger
 ): Promise<Editor> {
@@ -371,7 +373,7 @@ export async function generateOPAFiles(
 
     // Access ux-specification to get feature data for OPA test generation
     const appModel = await getModelFromSpecification(basePath, editor, log);
-    const { listReport, objectPages, fpm } = await getAppFeatures(appModel, editor, log);
+    const { listReport, objectPages, fpm } = await getAppFeatures(appModel, editor, log, metadata);
 
     // Journey files (one for each page in the app)
     const seenTemplates = new Set<string>();

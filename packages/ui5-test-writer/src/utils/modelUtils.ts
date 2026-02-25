@@ -9,7 +9,18 @@ import type {
     TreeModel,
     ApplicationModel
 } from '@sap/ux-specification/dist/types/src/parser';
-import type { AppFeatures, ListReportFeatures, ObjectPageFeatures } from '../types';
+import type {
+    AppFeatures,
+    ListReportFeatures,
+    ObjectPageFeatures,
+    ActionButtonState,
+    ButtonState,
+    ButtonVisibilityResult,
+    ActionButtonsResult
+} from '../types';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
+import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
@@ -21,9 +32,15 @@ export interface AggregationItem extends TreeAggregation {
  * @param appModel - the application model containing page definitions and their respective models
  * @param fs - optional mem-fs editor instance
  * @param log - optional logger instance
+ * @param metadata - optional service metadata for analyzing OData capabilities annotations
  * @returns feature data extracted from the application model
  */
-export async function getAppFeatures(appModel?: ReadAppResult, fs?: Editor, log?: Logger): Promise<AppFeatures> {
+export async function getAppFeatures(
+    appModel?: ReadAppResult,
+    fs?: Editor,
+    log?: Logger,
+    metadata?: string
+): Promise<AppFeatures> {
     const featureData: AppFeatures = {};
     let listReportPage: PageWithModelV4 | null = null;
     let objectPages: PageWithModelV4[] | null = null;
@@ -50,7 +67,12 @@ export async function getAppFeatures(appModel?: ReadAppResult, fs?: Editor, log?
     // attempt to get individual feature data
     try {
         if (listReportPage) {
-            featureData.listReport = getListReportFeatures(listReportPage.model, log);
+            featureData.listReport = getListReportFeatures(
+                listReportPage.model,
+                log,
+                metadata,
+                listReportPage.entitySet
+            );
         }
         if (objectPages) {
             featureData.objectPages = getObjectPageFeatures(objectPages, log);
@@ -132,11 +154,30 @@ function transformTableColumns(columnAggregations: Record<string, any>): Record<
     return columns;
 }
 
-export function getListReportFeatures(pageModel: TreeModel, log?: Logger): ListReportFeatures {
+export function getListReportFeatures(
+    pageModel: TreeModel,
+    log?: Logger,
+    metadata?: string,
+    entitySetName?: string
+): ListReportFeatures {
+    const buttonVisibility = entitySetName ? checkButtonVisibility(metadata ?? '', entitySetName) : undefined;
+    const toolbarActions = getToolBarActionNames(pageModel, log);
     return {
+        createButton: {
+            visible: !!buttonVisibility?.create.visible,
+            enabled: buttonVisibility?.create.enabled,
+            dynamicPath:
+                buttonVisibility?.create.enabled === 'dynamic' ? buttonVisibility.create.dynamicPath : undefined
+        },
+        deleteButton: {
+            visible: !!buttonVisibility?.delete.visible,
+            enabled: buttonVisibility?.delete.enabled,
+            dynamicPath:
+                buttonVisibility?.delete.enabled === 'dynamic' ? buttonVisibility.delete.dynamicPath : undefined
+        },
         filterBarItems: getFilterFieldNames(pageModel, log),
         tableColumns: getTableColumnData(pageModel, log),
-        toolBarActions: getToolBarActionNames(pageModel, log)
+        toolBarActions: checkActionButtonStates(metadata ?? '', entitySetName ?? '', toolbarActions).actions
     };
 }
 
@@ -372,4 +413,293 @@ export function getTableColumns(pageModel: TreeModel): TreeAggregations {
     const columns = tableAggregations['columns'];
     const columnAggregations = getAggregations(columns);
     return columnAggregations;
+}
+
+/**
+ * Checks the visibility and enabled state of create and delete buttons for a given entity set
+ * by analyzing OData Capabilities annotations in the metadata.
+ *
+ * @param metadataXml The OData metadata XML content as a string
+ * @param entitySetName The name of the entity set to check
+ * @returns ButtonVisibilityResult containing the state of create and delete buttons
+ * @throws {Error} If metadata cannot be parsed or entity set is not found
+ */
+export function checkButtonVisibility(metadataXml: string, entitySetName: string): ButtonVisibilityResult {
+    try {
+        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
+        const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+
+        if (!entitySet) {
+            throw new Error(`Entity set '${entitySetName}' not found in metadata`);
+        }
+
+        const insertRestrictions = entitySet.annotations?.Capabilities?.InsertRestrictions as
+            | Record<string, any>
+            | undefined;
+        const deleteRestrictions = entitySet.annotations?.Capabilities?.DeleteRestrictions as
+            | Record<string, any>
+            | undefined;
+
+        return {
+            create: analyzeRestriction(insertRestrictions, 'Insertable'),
+            delete: analyzeRestriction(deleteRestrictions, 'Deletable')
+        };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error(`Failed to analyze button visibility: ${errorMessage}`);
+    }
+}
+
+/**
+ * Analyzes a capability restriction annotation to determine button state.
+ *
+ * @param restriction The restriction annotation object (InsertRestrictions or DeleteRestrictions)
+ * @param propertyName The property name to check ('Insertable' or 'Deletable')
+ * @returns ButtonState for the button
+ */
+function analyzeRestriction(
+    restriction: Record<string, any> | undefined,
+    propertyName: 'Insertable' | 'Deletable'
+): ButtonState {
+    const defaultState: ButtonState = { visible: true, enabled: true };
+
+    if (!restriction) {
+        return defaultState;
+    }
+
+    const value = restriction[propertyName];
+
+    if (value === undefined || value === null) {
+        return defaultState;
+    }
+
+    if (typeof value === 'boolean') {
+        return { visible: value, enabled: value };
+    }
+
+    if (typeof value === 'object' && value !== null) {
+        const path: string = value.$Path ?? value.path;
+        if (path) {
+            return { visible: true, enabled: 'dynamic', dynamicPath: path };
+        }
+    }
+
+    return defaultState;
+}
+
+/**
+ * Checks the state of action buttons defined in UI.LineItem annotations for a given entity set.
+ *
+ * @param metadataXml The OData metadata XML content as a string
+ * @param entitySetName The name of the entity set to check
+ * @param actionNames Optional list of action names to filter (e.g., ['Check', 'deductDiscount']). If not provided, returns all actions.
+ * @returns ActionButtonsResult containing the list of action buttons and their states
+ * @throws {Error} If metadata cannot be parsed or entity set is not found
+ */
+export function checkActionButtonStates(
+    metadataXml: string,
+    entitySetName: string,
+    actionNames?: string[]
+): ActionButtonsResult {
+    try {
+        const convertedMetadata: ConvertedMetadata = convert(parse(metadataXml));
+        const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
+
+        if (!entitySet) {
+            throw new Error(`Entity set '${entitySetName}' not found in metadata`);
+        }
+
+        const entityType = entitySet.entityType;
+        if (!entityType) {
+            throw new Error(`Entity type not found for entity set '${entitySetName}'`);
+        }
+
+        const lineItemAnnotation = entityType.annotations?.UI?.LineItem as any[] | undefined;
+
+        if (!lineItemAnnotation || !Array.isArray(lineItemAnnotation)) {
+            return { actions: [], entityType: entityType.name };
+        }
+
+        const dataFieldForActions = lineItemAnnotation.filter(
+            (item) => item.$Type === 'com.sap.vocabularies.UI.v1.DataFieldForAction'
+        );
+
+        const actions: ActionButtonState[] = actionNames
+            ? findActionStates(dataFieldForActions, actionNames, convertedMetadata, entityType.name)
+            : extractAllActionStates(dataFieldForActions, convertedMetadata, entityType.name);
+
+        return { actions, entityType: entityType.name };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error(`Failed to analyze action button states: ${errorMessage}`);
+    }
+}
+
+/**
+ * Finds action states for a specific list of action names.
+ *
+ * @param dataFieldForActions List of DataFieldForAction items from UI.LineItem
+ * @param actionNames List of action names to find
+ * @param metadata The converted metadata
+ * @param entityTypeName The entity type name
+ * @returns List of action button states for the specified actions
+ */
+function findActionStates(
+    dataFieldForActions: any[],
+    actionNames: string[],
+    metadata: ConvertedMetadata,
+    entityTypeName: string
+): ActionButtonState[] {
+    const actionStates: ActionButtonState[] = [];
+
+    for (const actionName of actionNames) {
+        const item = dataFieldForActions.find((dfa) => {
+            const actionMethod = extractActionMethodName(dfa.Action || '');
+            return actionMethod === actionName || dfa.Label === actionName;
+        });
+
+        if (item) {
+            actionStates.push(buildActionButtonState(item, metadata, entityTypeName));
+        }
+    }
+
+    return actionStates;
+}
+
+/**
+ * Extracts action states for all DataFieldForAction items.
+ *
+ * @param dataFieldForActions List of DataFieldForAction items from UI.LineItem
+ * @param metadata The converted metadata
+ * @param entityTypeName The entity type name
+ * @returns List of all action button states
+ */
+function extractAllActionStates(
+    dataFieldForActions: any[],
+    metadata: ConvertedMetadata,
+    entityTypeName: string
+): ActionButtonState[] {
+    return dataFieldForActions.map((item) => buildActionButtonState(item, metadata, entityTypeName));
+}
+
+/**
+ * Builds an ActionButtonState object from a DataFieldForAction item.
+ *
+ * @param item The DataFieldForAction item
+ * @param metadata The converted metadata
+ * @param entityTypeName The entity type name
+ * @returns ActionButtonState for the action
+ */
+function buildActionButtonState(item: any, metadata: ConvertedMetadata, entityTypeName: string): ActionButtonState {
+    const actionMethod = extractActionMethodName(item.Action || '');
+    const operationAvailable = findOperationAvailableAnnotation(metadata, entityTypeName, actionMethod);
+    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable);
+
+    return {
+        label: item.Label || '',
+        action: item.Action || '',
+        visible: true,
+        enabled,
+        dynamicPath,
+        invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined
+    };
+}
+
+/**
+ * Analyzes Core.OperationAvailable annotation to determine action availability.
+ *
+ * @param operationAvailable The OperationAvailable annotation value
+ * @returns Object containing enabled state and optional dynamic path
+ */
+function analyzeOperationAvailability(operationAvailable: any): {
+    enabled: boolean | 'dynamic';
+    dynamicPath?: string;
+} {
+    if (operationAvailable === undefined) {
+        return { enabled: true };
+    }
+
+    if (typeof operationAvailable === 'boolean') {
+        return { enabled: operationAvailable };
+    }
+
+    if (typeof operationAvailable === 'object' && operationAvailable !== null) {
+        const path: string = operationAvailable.$Path ?? operationAvailable.path;
+        if (path) {
+            return { enabled: 'dynamic', dynamicPath: path };
+        }
+    }
+
+    return { enabled: true };
+}
+
+/**
+ * Extracts the action method name from a fully qualified action string.
+ *
+ * @param actionName The fully qualified action name
+ * @returns The action method name
+ */
+function extractActionMethodName(actionName: string): string {
+    const match = actionName.match(/\.([^.()]+)\(/);
+    if (match?.[1]) {
+        return match[1];
+    }
+
+    const lastDotIndex = actionName.lastIndexOf('.');
+    const parenIndex = actionName.indexOf('(');
+    if (lastDotIndex !== -1 && parenIndex !== -1) {
+        return actionName.substring(lastDotIndex + 1, parenIndex);
+    }
+
+    return actionName;
+}
+
+/**
+ * Finds the Core.OperationAvailable annotation for a specific action.
+ *
+ * @param metadata The converted metadata
+ * @param entityTypeName The entity type name
+ * @param actionMethodName The action method name
+ * @returns The OperationAvailable annotation value or undefined if not found
+ */
+function findOperationAvailableAnnotation(
+    metadata: ConvertedMetadata,
+    entityTypeName: string,
+    actionMethodName: string
+): any {
+    if (metadata.actions) {
+        const action = metadata.actions.find(
+            (a) => a.name === actionMethodName || a.fullyQualifiedName?.includes(`.${actionMethodName}(`)
+        );
+        if (action?.annotations?.Core?.OperationAvailable !== undefined) {
+            return action.annotations.Core.OperationAvailable;
+        }
+    }
+
+    if (metadata.entityContainer?.annotations) {
+        const annotations = metadata.entityContainer.annotations as any;
+        const matchingKey = Object.keys(annotations).find((key) => key.includes(actionMethodName));
+        if (matchingKey && annotations[matchingKey]?.Core?.OperationAvailable !== undefined) {
+            return annotations[matchingKey].Core.OperationAvailable;
+        }
+    }
+
+    return undefined;
+}
+
+/**
+ * Extracts the enum member value from an annotation.
+ *
+ * @param enumValue The enum value object
+ * @returns The extracted enum value string
+ */
+function extractEnumMemberValue(enumValue: any): string | undefined {
+    if (typeof enumValue === 'string') {
+        return enumValue;
+    }
+    if (enumValue?.$EnumMember) {
+        const parts = enumValue.$EnumMember.split('/');
+        return parts[1] ?? enumValue.$EnumMember;
+    }
+    return undefined;
 }

@@ -24,8 +24,19 @@ sap.ui.define([
 
         opaTest("Check table columns and actions", function (Given, When, Then) {
             <%_ if (listReportFeatures.toolBarActions && listReportFeatures.toolBarActions.length > 0) { -%>
+                <%_ if (listReportFeatures.createButton.visible) { _%>
+                Then.onThe<%- startLR%>.onTable().iCheckCreate({ visible: true });
+                // Then.onthe<%- startLR%>.onTable().iPressCreate();
+                <%_ } _%>
+                <%_ if (listReportFeatures.deleteButton.visible) { _%>
+                // Then.onthe<%- startLR%>.onTable().iPressDelete();
+                Then.onThe<%- startLR%>.onTable().iCheckDelete({ visible: true });
+                <%_ } _%>
                 <%_ listReportFeatures.toolBarActions.forEach(function(item) { _%>
-            Then.onThe<%- startLR%>.onTable().iCheckAction("<%- item %>");
+                    <%_ if (item.visible) { _%>
+                    // Then.onThe<%- startLR%>.onTable().iPressAction("<%- item.label %>");
+                    Then.onThe<%- startLR%>.onTable().iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+                    <%_ } _%>
                 <%_ }); -%>
             <%_ } -%>
             <%_ if (listReportFeatures.tableColumns && Object.keys(listReportFeatures.tableColumns).length > 0) { _%>

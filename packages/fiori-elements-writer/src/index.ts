@@ -275,7 +275,7 @@ async function generate<T extends {}>(
             },
             feApp.app.flpAppId
         );
-        await generateOPAFiles(basePath, opaConfig, fs, log);
+        await generateOPAFiles(basePath, opaConfig, data.service.metadata, fs, log);
     }
     return fs;
 }
