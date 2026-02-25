@@ -20,7 +20,8 @@ export function addi18nResourceBundle(): void {
 export async function initI18nProjectValidators(): Promise<void> {
     await i18n.init({
         lng: 'en',
-        fallbackLng: 'en'
+        fallbackLng: 'en',
+        showSupportNotice: false
     });
     addi18nResourceBundle();
 }
