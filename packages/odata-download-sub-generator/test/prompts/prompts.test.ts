@@ -582,33 +582,6 @@ describe('Test prompts', () => {
             }
         });
 
-        it.each([
-            { skipValue: ['skipDownload'], expected: false, desc: 'not show when skipDataDownload is selected' },
-            { skipValue: [], expected: true, desc: 'show when skipDataDownload is not selected' }
-        ])('should $desc', async ({ skipValue, expected }) => {
-            const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
-            (promptHelpers.createEntityChoices as jest.Mock).mockReturnValue({
-                choices: mockChoices,
-                entitySetsFlat: {}
-            });
-
-            const result = await getODataDownloaderPrompts();
-            const appConfig = result.answers.application;
-            appConfig.servicePath = '/test/service';
-            appConfig.referencedEntities = { listEntity: createListEntity() };
-            appConfig.relatedEntityChoices.choices = mockChoices;
-
-            const freshEntityPrompt = result.questions.find(
-                (q: any) => q.name === promptNames.relatedEntitySelection
-            ) as CheckBoxQuestion;
-
-            const whenFn = freshEntityPrompt.when;
-            if (typeof whenFn === 'function') {
-                const shouldShow = await whenFn({ [promptNames.skipDataDownload]: skipValue });
-                expect(shouldShow).toBe(expected);
-            }
-        });
-
         it('should validate and update checked state', async () => {
             const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
             (entitySelectionPrompt.choices as any) = mockChoices;
@@ -886,17 +859,6 @@ describe('Test prompts', () => {
                 expect(await whenFn({})).toBe(false);
             });
 
-            it.each([
-                { skipValue: undefined, expected: true, desc: 'true when choices are available' },
-                { skipValue: ['skipDownload'], expected: false, desc: 'false when skipDataDownload is selected' },
-                { skipValue: [], expected: true, desc: 'true when skipDataDownload is empty array' }
-            ])('should return $desc', async ({ skipValue, expected }) => {
-                const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
-                const { whenFn } = await setupWhenTest(mockChoices);
-                const answers = skipValue !== undefined ? { [promptNames.skipDataDownload]: skipValue } : {};
-                expect(await whenFn(answers)).toBe(expected);
-            });
-
             it('should load entity choices when service path changes', async () => {
                 const mockChoices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
                 const { whenFn, appConfig } = await setupWhenTest(mockChoices);
@@ -1010,55 +972,7 @@ describe('Test prompts', () => {
         });
 
         describe('when function', () => {
-            it('should not show when skipDataDownload is selected', async () => {
-                const result = await getODataDownloaderPrompts();
-                const appConfig = result.answers.application;
-                appConfig.referencedEntities = {
-                    listEntity: {
-                        entitySetName: 'TestSet',
-                        semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
-                        entityPath: 'TestSet',
-                        entityType: undefined
-                    }
-                };
-
-                const freshKeyPrompts = result.questions.filter((q: any) =>
-                    q.name?.startsWith('entityKeyIdx:')
-                ) as InputQuestion[];
-                const keyPrompt = freshKeyPrompts[0];
-
-                const whenFn = keyPrompt.when;
-                if (typeof whenFn === 'function') {
-                    const shouldShow = await whenFn({ [promptNames.skipDataDownload]: ['skipDownload'] });
-                    expect(shouldShow).toBe(false);
-                }
-            });
-
-            it('should show when skipDataDownload is not selected and semantic key exists', async () => {
-                const result = await getODataDownloaderPrompts();
-                const appConfig = result.answers.application;
-                appConfig.referencedEntities = {
-                    listEntity: {
-                        entitySetName: 'TestSet',
-                        semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
-                        entityPath: 'TestSet',
-                        entityType: undefined
-                    }
-                };
-
-                const freshKeyPrompts = result.questions.filter((q: any) =>
-                    q.name?.startsWith('entityKeyIdx:')
-                ) as InputQuestion[];
-                const keyPrompt = freshKeyPrompts[0];
-
-                const whenFn = keyPrompt.when;
-                if (typeof whenFn === 'function') {
-                    const shouldShow = await whenFn({ [promptNames.skipDataDownload]: [] });
-                    expect(shouldShow).toBe(true);
-                }
-            });
-
-            it('should show when skipDataDownload is undefined and semantic key exists', async () => {
+            it('should show when semantic key exists', async () => {
                 const result = await getODataDownloaderPrompts();
                 const appConfig = result.answers.application;
                 appConfig.referencedEntities = {
@@ -1108,34 +1022,182 @@ describe('Test prompts', () => {
             });
         });
 
-        it('should validate key value with invalid characters', () => {
+        describe('validateKeysAndFetchData behavior', () => {
+            // Note: These tests use fake timers because validateKeysAndFetchData calls debouncedGetData,
+            // which has a 1000ms debounce delay via setTimeout before calling getData
+
+            it('should call getData when keys exist but no entity choices exist', async () => {
+                jest.useFakeTimers();
+                const mockQueryResult = { odataQueryResult: [{ id: 1 }] };
+                (promptHelpers.getData as jest.Mock).mockResolvedValue(mockQueryResult);
+
+                const result = await getODataDownloaderPrompts();
+                const appConfig = result.answers.application;
+                appConfig.referencedEntities = {
+                    listEntity: {
+                        entitySetName: 'TestSet',
+                        semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                        entityPath: 'TestSet',
+                        entityType: undefined
+                    }
+                };
+                // Ensure no entity choices
+                appConfig.relatedEntityChoices.choices = [];
+
+                const freshKeyPrompts = result.questions.filter((q: any) =>
+                    q.name?.startsWith('entityKeyIdx:')
+                ) as InputQuestion[];
+                const keyPrompt = freshKeyPrompts[0];
+
+                const validatePromise = keyPrompt.validate!('123', {
+                    'entityKeyIdx:0': '123',
+                    [promptNames.skipDataDownload]: []
+                });
+
+                jest.advanceTimersByTime(1000);
+                const validateResult = await validatePromise;
+
+                expect(validateResult).toBe(true);
+                expect(promptHelpers.getData).toHaveBeenCalled();
+                expect(result.answers.odataQueryResult.odata).toEqual(mockQueryResult.odataQueryResult);
+
+                jest.useRealTimers();
+            });
+
+            it('should not call getData when skipDownload is set', async () => {
+                jest.useFakeTimers();
+                (promptHelpers.getData as jest.Mock).mockClear();
+
+                const result = await getODataDownloaderPrompts();
+                const appConfig = result.answers.application;
+                appConfig.referencedEntities = {
+                    listEntity: {
+                        entitySetName: 'TestSet',
+                        semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                        entityPath: 'TestSet',
+                        entityType: undefined
+                    }
+                };
+                // Ensure no entity choices
+                appConfig.relatedEntityChoices.choices = [];
+
+                const freshKeyPrompts = result.questions.filter((q: any) =>
+                    q.name?.startsWith('entityKeyIdx:')
+                ) as InputQuestion[];
+                const keyPrompt = freshKeyPrompts[0];
+
+                const validatePromise = keyPrompt.validate!('123', {
+                    'entityKeyIdx:0': '123',
+                    [promptNames.skipDataDownload]: ['skipDownload']
+                });
+
+                jest.advanceTimersByTime(1000);
+                const validateResult = await validatePromise;
+
+                expect(validateResult).toBe(true);
+                expect(promptHelpers.getData).not.toHaveBeenCalled();
+
+                jest.useRealTimers();
+            });
+
+            it('should not call getData from key prompt when entity choices exist', async () => {
+                jest.useFakeTimers();
+                (promptHelpers.getData as jest.Mock).mockClear();
+
+                const result = await getODataDownloaderPrompts();
+                const appConfig = result.answers.application;
+                appConfig.referencedEntities = {
+                    listEntity: {
+                        entitySetName: 'TestSet',
+                        semanticKeys: [{ name: 'TravelID', type: 'Edm.String', value: undefined }],
+                        entityPath: 'TestSet',
+                        entityType: undefined
+                    }
+                };
+                // Set entity choices - getData should not be called from key prompt
+                appConfig.relatedEntityChoices.choices = [createMockChoice('Entity1', 'to_Entity1', 'Entity1Set')];
+
+                const freshKeyPrompts = result.questions.filter((q: any) =>
+                    q.name?.startsWith('entityKeyIdx:')
+                ) as InputQuestion[];
+                const keyPrompt = freshKeyPrompts[0];
+
+                const validatePromise = keyPrompt.validate!('123', {
+                    'entityKeyIdx:0': '123',
+                    [promptNames.skipDataDownload]: []
+                });
+
+                jest.advanceTimersByTime(1000);
+                const validateResult = await validatePromise;
+
+                expect(validateResult).toBe(true);
+                // getData should NOT be called from key prompt when entity choices exist
+                // (it will be called from entity selection prompt instead)
+                expect(promptHelpers.getData).not.toHaveBeenCalled();
+
+                jest.useRealTimers();
+            });
+        });
+
+        it('should validate key value with invalid characters', async () => {
             const keyPrompt = keyPrompts[0];
             // The validation checks if the entire value is in the invalidEntityKeyFilterChars array
             // which contains ['.'], so we need to pass '.' as the value
-            const result = keyPrompt.validate!('.');
+            const result = await keyPrompt.validate!('.');
 
             expect(typeof result).toBe('string');
         });
 
-        it('should validate key value successfully', () => {
+        it('should validate key value successfully', async () => {
             const keyPrompt = keyPrompts[0];
-            const result = keyPrompt.validate!('validValue');
+            const result = await keyPrompt.validate!('validValue');
 
             expect(result).toBe(true);
         });
 
-        it('should validate range values', () => {
+        it('should validate range values', async () => {
             const keyPrompt = keyPrompts[0];
-            const result = keyPrompt.validate!('1-10');
+            const result = await keyPrompt.validate!('1-10');
 
             expect(result).toBe(true);
         });
 
-        it('should reject invalid range specification', () => {
+        it('should reject invalid range specification', async () => {
             const keyPrompt = keyPrompts[0];
-            const result = keyPrompt.validate!('1-10-20');
+            const result = await keyPrompt.validate!('1-10-20');
 
             expect(result).toBe("Invalid range specified, only the lowest and highest values allowed. e.g. '1-10'");
+        });
+
+        it('should not validate UUIDs as ranges', async () => {
+            // UUIDs contain multiple dashes but should not be rejected as invalid ranges
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
+                prompts: [],
+                answers: {}
+            });
+
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+
+            appConfig.referencedEntities = {
+                listEntity: {
+                    entitySetName: 'TestSet',
+                    semanticKeys: [{ name: 'TravelUUID', type: 'Edm.UUID', value: undefined }],
+                    entityPath: 'TestSet',
+                    entityType: undefined
+                }
+            };
+
+            const newKeyPrompts = result.questions.filter((q: any) =>
+                q.name?.startsWith('entityKeyIdx:')
+            ) as InputQuestion[];
+            const keyPrompt = newKeyPrompts[0];
+
+            // UUID with multiple dashes should pass validation
+            const validateResult = await keyPrompt.validate!('550e8400-e29b-41d4-a716-446655440000');
+
+            expect(validateResult).toBe(true);
         });
 
         it('should validate boolean values', async () => {
@@ -1164,7 +1226,7 @@ describe('Test prompts', () => {
                 q.name?.startsWith('entityKeyIdx:')
             ) as InputQuestion[];
             const keyPrompt = newKeyPrompts[0];
-            const validateResult = keyPrompt.validate!('true');
+            const validateResult = await keyPrompt.validate!('true');
 
             expect(validateResult).toBe(true);
             expect(appConfig.referencedEntities?.listEntity.semanticKeys[0].value).toBe(true);
@@ -1194,7 +1256,7 @@ describe('Test prompts', () => {
                 q.name?.startsWith('entityKeyIdx:')
             ) as InputQuestion[];
             const keyPrompt = newKeyPrompts[0];
-            const validateResult = keyPrompt.validate!('notABoolean');
+            const validateResult = await keyPrompt.validate!('notABoolean');
 
             expect(typeof validateResult).toBe('string');
         });

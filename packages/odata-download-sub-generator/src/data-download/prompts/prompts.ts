@@ -37,6 +37,39 @@ export const promptNames = {
 
 const invalidEntityKeyFilterChars = ['.'];
 
+/**
+ * Validates entity key input and fetches OData if valid.
+ *
+ * @param answers - The current answers object
+ * @param odataServiceAnswers - The OData service answers
+ * @param appConfig - The application configuration
+ * @returns Validation result or fetched data
+ */
+async function validateKeysAndFetchData(
+    answers: Answers,
+    odataServiceAnswers: Partial<OdataServiceAnswers>,
+    appConfig: AppConfig
+): Promise<string | { odataQueryResult: [] }> {
+    const hasKeyInput = Object.entries(answers).find(
+        ([key, value]) => key.startsWith('entityKeyIdx:') && !!value?.trim()
+    );
+    if (!hasKeyInput) {
+        return t('prompts.skipDataDownload.validation.keyRequired');
+    }
+
+    let entitySelections: SelectedEntityAnswer[] = [];
+    // Prevents previous answers from being used when the app is switched and the new app has no entity selections (no nav props)
+    if (appConfig.relatedEntityChoices?.choices?.length) {
+        entitySelections = answers[promptNames.relatedEntitySelection];
+    }
+
+    const result = await debouncedGetData(odataServiceAnswers, appConfig, entitySelections);
+    if (typeof result === 'string') {
+        return result;
+    }
+    return result;
+}
+
 export type SelectedEntityAnswer = {
     fullPath: string;
     entity: {
@@ -92,9 +125,8 @@ export async function getODataDownloaderPrompts(): Promise<{
         }
     };
     const servicePaths: string[] = [];
-    const keyPrompts: InputQuestion[] = getKeyPrompts(5, appConfig);
 
-    const appSelectionQuestion = getAppSelectionPrompt(appConfig, servicePaths, keyPrompts);
+    const appSelectionQuestion = getAppSelectionPrompt(appConfig, servicePaths);
 
     const systemSelectionQuestions = await getSystemSelectionQuestions(
         {
@@ -126,6 +158,8 @@ export async function getODataDownloaderPrompts(): Promise<{
 
     const resetSelectionPrompt = getResetSelectionPrompt(appConfig, appConfig.relatedEntityChoices);
 
+    const keyPrompts: InputQuestion[] = getKeyPrompts(5, appConfig, systemSelectionQuestions.answers, odataQueryResult);
+
     const relatedEntitySelectionQuestion: CheckBoxQuestion = getEntitySelectionPrompt(
         appConfig.relatedEntityChoices,
         systemSelectionQuestions.answers,
@@ -153,14 +187,9 @@ export async function getODataDownloaderPrompts(): Promise<{
  *
  * @param appConfig - The application configuration reference
  * @param servicePaths - Array to store service paths
- * @param keyPrompts - Array to store key prompts
  * @returns The app selection input question
  */
-function getAppSelectionPrompt(
-    appConfig: AppConfig,
-    servicePaths: string[],
-    keyPrompts: InputQuestion<Answers>[]
-): InputQuestion {
+function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[]): InputQuestion {
     return {
         type: 'input',
         guiType: 'folder-browser',
@@ -178,7 +207,6 @@ function getAppSelectionPrompt(
             }
             // Selected app has changed reset local state
             servicePaths.length = 0;
-            keyPrompts.length = 0;
             resetAppConfig(appConfig);
             // validate application exists at path
             let appAccess;
@@ -244,8 +272,7 @@ function getEntitySelectionPrompt(
 ): CheckBoxQuestion<Answers> {
     let result: { odataQueryResult: [] } | string;
     return {
-        when: async (answers): Promise<boolean> =>
-            relatedEntityChoices.choices.length > 0 && !answers?.[promptNames.skipDataDownload]?.[0],
+        when: async (_answers): Promise<boolean> => relatedEntityChoices.choices.length > 0,
         name: promptNames.relatedEntitySelection,
         type: 'checkbox',
         guiOptions: {
@@ -263,18 +290,8 @@ function getEntitySelectionPrompt(
                     selectedEntityChoice.checked = true;
                 }
             });
-            if (answers) {
-                const hasKeyInput = Object.entries(answers).find(
-                    ([key, value]) => key.startsWith('entityKeyIdx:') && !!value?.trim()
-                );
-                if (!hasKeyInput) {
-                    return t('prompts.skipDataDownload.validation.keyRequired');
-                }
-                result = await debouncedGetData(
-                    odataServiceAnswers,
-                    appConfig,
-                    answers[promptNames.relatedEntitySelection]
-                );
+            if (answers && !answers[promptNames.skipDataDownload]?.[0]) {
+                result = await validateKeysAndFetchData(answers, odataServiceAnswers, appConfig);
                 if (typeof result === 'string') {
                     return result;
                 }
@@ -316,7 +333,7 @@ function getResetSelectionPrompt(
     let previousSystemName;
     let previousReset;
     const toggleSelectionPrompt = {
-        when: (answers) => {
+        when: () => {
             // System was changed, rebuild choices even if service path is the same, otherwise if service is different
             if (previousSystemName !== appConfig.systemName?.value || appConfig.servicePath !== previousServicePath) {
                 if (appConfig.referencedEntities?.listEntity) {
@@ -332,7 +349,7 @@ function getResetSelectionPrompt(
                 previousServicePath = appConfig.servicePath;
                 previousSystemName = appConfig.systemName?.value;
             }
-            return relatedEntityChoices.choices.length > 0 && !answers?.[promptNames.skipDataDownload]?.[0];
+            return relatedEntityChoices.choices.length > 0;
         },
         name: promptNames.toggleSelection,
         type: 'confirm',
@@ -361,16 +378,31 @@ function getResetSelectionPrompt(
  *
  * @param size - The number of key prompts to generate
  * @param appConfig - The application configuration
+ * @param odataServiceAnswers - The OData service answers
+ * @param odataQueryResult - Object to store query results
+ * @param odataQueryResult.odata - The OData query results array
  * @returns Array of input questions for key entry
  */
-function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
+function getKeyPrompts(
+    size: number,
+    appConfig: AppConfig,
+    odataServiceAnswers: Partial<OdataServiceAnswers>,
+    odataQueryResult: { odata: undefined | [] }
+): InputQuestion[] {
     const questions: InputQuestion[] = [];
-
+    let result: { odataQueryResult: [] } | string;
+    let lastKeyPart = 0;
     const getEntityKeyInputPrompt = (keypart: number): InputQuestion =>
         ({
-            when: async (answers) =>
-                !answers?.[promptNames.skipDataDownload]?.[0] &&
-                !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name,
+            when: async () => {
+                /* !answers?.[promptNames.skipDataDownload]?.[0] && */
+                const showPrompt = !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name;
+                // Store the index of the last shown prompt so we can run the query on this one only
+                if (showPrompt && keypart > lastKeyPart) {
+                    lastKeyPart = keypart;
+                }
+                return showPrompt;
+            },
             name: `entityKeyIdx:${keypart}`,
             message: () =>
                 t('prompts.entityKey.message', {
@@ -380,7 +412,7 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
             guiOptions: {
                 hint: t('prompts.entityKey.hint')
             },
-            validate: (keyValue: string): boolean | string => {
+            validate: async (keyValue: string, answers: Answers): Promise<boolean | string> => {
                 if (invalidEntityKeyFilterChars.includes(keyValue)) {
                     return t('prompts.entityKey.validation.invalidKeyValueChars', {
                         chars: invalidEntityKeyFilterChars.join()
@@ -390,14 +422,6 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
                 // Clear key values
                 if (!keyValue && keyRef) {
                     delete keyRef.value;
-                }
-
-                const filterAndParts = keyValue.split(',');
-                for (const filterPart of filterAndParts) {
-                    const filterRangeParts = filterPart.split('-');
-                    if (filterRangeParts.length > 2) {
-                        return t('prompts.entityKey.validation.invalidRangeSpecified');
-                    }
                 }
 
                 if (keyRef) {
@@ -410,6 +434,32 @@ function getKeyPrompts(size: number, appConfig: AppConfig): InputQuestion[] {
                     } else {
                         keyRef.value = keyValue.trim();
                     }
+                }
+
+                const filterAndParts = keyValue.split(',');
+                // Dont validate as range if its a UUID, its not supported
+                if (keyRef?.type !== 'Edm.UUID') {
+                    for (const filterPart of filterAndParts) {
+                        const filterRangeParts = filterPart.split('-');
+                        if (filterRangeParts.length > 2) {
+                            return t('prompts.entityKey.validation.invalidRangeSpecified');
+                        }
+                    }
+                }
+
+                // In case there are no entities we can also trigger the data request from the last key input
+                if (
+                    answers &&
+                    !appConfig.relatedEntityChoices?.choices?.length &&
+                    keypart === lastKeyPart &&
+                    !answers[promptNames.skipDataDownload]?.[0] &&
+                    !!appConfig.referencedEntities?.listEntity.semanticKeys[keypart]?.name
+                ) {
+                    result = await validateKeysAndFetchData(answers, odataServiceAnswers, appConfig);
+                    if (typeof result === 'string') {
+                        return result;
+                    }
+                    odataQueryResult.odata = result.odataQueryResult;
                 }
                 return true;
             }
