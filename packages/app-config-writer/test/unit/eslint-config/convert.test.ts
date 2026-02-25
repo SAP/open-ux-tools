@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { readFileSync, copyFileSync, mkdtempSync, rmSync } from 'node:fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { convertEslintConfig } from '../../../src';
 import type { EslintRcJson } from '../../../src/eslint-config/convert';
@@ -12,6 +12,23 @@ import type { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 
 jest.mock('cross-spawn');
+jest.mock('node:fs', () => {
+    const actual = jest.requireActual('node:fs');
+    return {
+        ...actual,
+        copyFileSync: jest.fn(),
+        mkdtempSync: jest.fn(),
+        rmSync: jest.fn(),
+        readFileSync: jest.fn((path: string, encoding?: string) => {
+            // If reading from temp directory, return mock eslint.config.mjs
+            if (path.includes('eslint-migration-') && path.endsWith('eslint.config.mjs')) {
+                return 'export default [];\n';
+            }
+            // Otherwise use actual readFileSync
+            return actual.readFileSync(path, encoding);
+        })
+    };
+});
 
 describe('convertEslintConfig', () => {
     const loggerMock: ToolsLogger = {
@@ -72,6 +89,11 @@ describe('convertEslintConfig', () => {
             }
             return Promise.resolve();
         });
+
+        // Mock temp directory operations
+        (mkdtempSync as jest.Mock).mockReturnValue('/tmp/eslint-migration-test');
+        (copyFileSync as jest.Mock).mockImplementation(() => {});
+        (rmSync as jest.Mock).mockImplementation(() => {});
 
         const mockChildProcess = new EventEmitter() as ChildProcess;
         spawnMock.mockReturnValue(mockChildProcess);
@@ -294,7 +316,7 @@ describe('convertEslintConfig', () => {
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
             expect(spawnMock).toHaveBeenCalledWith('npx', ['--yes', '@eslint/migrate-config', '.eslintrc.json'], {
-                cwd: basePath,
+                cwd: '/tmp/eslint-migration-test',
                 shell: false,
                 stdio: 'inherit'
             });

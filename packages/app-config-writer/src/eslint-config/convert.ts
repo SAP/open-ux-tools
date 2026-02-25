@@ -5,6 +5,8 @@ import { join } from 'node:path';
 import { FileName, hasDependency, type Package } from '@sap-ux/project-access';
 import { isLowerThanMinimalVersion } from '../common/package-json';
 import crossSpawn from 'cross-spawn';
+import { copyFileSync, existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 
 /**
  * Partial type definition of an eslint configuration file (.eslintrc.json) that is relevant for the conversion.
@@ -61,7 +63,7 @@ export async function convertEslintConfig(
     fs.commit(() => {
         logger?.debug(`Write in-memory changes to disk before running migration command.`);
     });
-    await runMigrationCommand(basePath);
+    await runMigrationCommand(basePath, fs);
     await updatePackageJson(basePath, fs);
 
     return fs;
@@ -155,12 +157,43 @@ async function addFioriToolsToExistingConfig(
 
 /**
  * Runs the eslint migration command to convert the existing eslint configuration to flat config format.
- * The command is executed as a child process and the function waits for the process to finish.
+ * The command is executed in a temporary directory to avoid modifying the project files directly.
+ *
+ * @param basePath - base path to be used for the conversion
+ * @param fs - file system reference
+ * @returns a promise that resolves when the migration command finishes successfully, or rejects if the command fails
+ */
+async function runMigrationCommand(basePath: string, fs: Editor): Promise<void> {
+    const tempDir = mkdtempSync(join(tmpdir(), 'eslint-migration-'));
+
+    try {
+        // 1. Copy necessary files to temp directory
+        const eslintrcPath = join(basePath, '.eslintrc.json');
+        copyFileSync(eslintrcPath, join(tempDir, '.eslintrc.json'));
+        const eslintignorePath = join(basePath, '.eslintignore');
+        if (existsSync(eslintignorePath)) {
+            copyFileSync(eslintignorePath, join(tempDir, '.eslintignore'));
+        }
+
+        // 2. Run migration in temp directory
+        await spawnMigrationCommand(tempDir);
+
+        // 3. Write migrated config to mem-fs
+        const migratedConfigPath = join(basePath, 'eslint.config.mjs');
+        const migratedContent = readFileSync(join(tempDir, 'eslint.config.mjs'), 'utf-8');
+        fs.write(migratedConfigPath, migratedContent);
+    } finally {
+        rmSync(tempDir, { recursive: true, force: true });
+    }
+}
+
+/**
+ * Spawns the eslint migration command using cross-spawn to convert the eslint configuration to flat config format.
  *
  * @param basePath - base path to be used for the conversion
  * @returns a promise that resolves when the migration command finishes successfully, or rejects if the command fails
  */
-async function runMigrationCommand(basePath: string): Promise<void> {
+async function spawnMigrationCommand(basePath: string): Promise<void> {
     return new Promise((resolve, reject) => {
         const child = crossSpawn('npx', ['--yes', packageName.ESLINT_MIGRATE_CONFIG, '.eslintrc.json'], {
             cwd: basePath,

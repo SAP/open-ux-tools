@@ -59,21 +59,7 @@ describe('Test command convert eslint-config', () => {
         expect(runNpmInstallSpy).toHaveBeenCalledWith(appRoot);
     });
 
-    test('Test create-fiori convert eslint-config <appRoot>', async () => {
-        // Test execution
-        const command = new Command('convert');
-        addConvertEslintCommand(command);
-        await command.parseAsync(getArgv(['eslint-config', appRoot]));
-
-        // Result check
-        expect(logLevelSpy).not.toHaveBeenCalled();
-        expect(loggerMock.warn).not.toHaveBeenCalled();
-        expect(loggerMock.error).not.toHaveBeenCalled();
-        expect(fsMock.commit).toHaveBeenCalled();
-        expect(runNpmInstallSpy).toHaveBeenCalled();
-    });
-
-    test('Test create-fiori convert eslint-config --verbose', async () => {
+    test('Test create-fiori convert eslint-config --verbose without path', async () => {
         // Test execution
         const command = new Command('convert');
         addConvertEslintCommand(command);
@@ -193,16 +179,56 @@ describe('Test command convert eslint-config', () => {
         cwdSpy.mockRestore();
     });
 
-    test('Test create-fiori convert eslint-config with verbose', async () => {
+    test('Test create-fiori convert eslint-config <appRoot> --simulate', async () => {
         // Test execution
         const command = new Command('convert');
         addConvertEslintCommand(command);
-        await command.parseAsync(getArgv(['eslint-config', appRoot, '--verbose']));
+        await command.parseAsync(getArgv(['eslint-config', appRoot, '--simulate']));
+
+        // Result check
+        expect(logLevelSpy).toHaveBeenCalled(); // simulate should set verbose
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled(); // simulate should not commit
+        expect(runNpmInstallSpy).not.toHaveBeenCalled(); // simulate should not run npm install
+    });
+
+    test('Test create-fiori convert eslint-config <appRoot> --simulate --config strict', async () => {
+        // Test execution
+        const command = new Command('convert');
+        addConvertEslintCommand(command);
+        await command.parseAsync(getArgv(['eslint-config', appRoot, '--simulate', '--config', 'strict']));
 
         // Result check
         expect(logLevelSpy).toHaveBeenCalled();
         expect(loggerMock.debug).toHaveBeenCalled();
-        expect(fsMock.commit).toHaveBeenCalled();
-        expect(runNpmInstallSpy).toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
+        expect(runNpmInstallSpy).not.toHaveBeenCalled();
+        expect(appConfigWriter.convertEslintConfig).toHaveBeenCalledWith(
+            appRoot,
+            expect.objectContaining({ config: 'strict' })
+        );
+    });
+
+    test('Test create-fiori convert eslint-config --simulate with error', async () => {
+        // Mock setup - simulate an error
+        const errorMessage = 'Test error during simulated conversion';
+        jest.spyOn(appConfigWriter, 'convertEslintConfig').mockRejectedValue(new Error(errorMessage));
+
+        // Test execution
+        const command = new Command('convert');
+        addConvertEslintCommand(command);
+        await command.parseAsync(getArgv(['eslint-config', appRoot, '--simulate']));
+
+        // Result check
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            expect.stringContaining('Error while executing convert eslint-config')
+        );
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
+        expect(loggerMock.debug).toHaveBeenCalledWith(expect.any(Error));
+        expect(fsMock.commit).not.toHaveBeenCalled();
+        expect(runNpmInstallSpy).not.toHaveBeenCalled();
     });
 });
