@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { readFileSync, copyFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { convertEslintConfig } from '../../../src';
 import type { EslintRcJson } from '../../../src/eslint-config/convert';
@@ -16,7 +16,7 @@ jest.mock('node:fs', () => {
     const actual = jest.requireActual('node:fs');
     return {
         ...actual,
-        copyFileSync: jest.fn(),
+        writeFileSync: jest.fn(),
         mkdtempSync: jest.fn(),
         rmSync: jest.fn(),
         readFileSync: jest.fn((path: string, encoding?: string) => {
@@ -92,7 +92,7 @@ describe('convertEslintConfig', () => {
 
         // Mock temp directory operations
         (mkdtempSync as jest.Mock).mockReturnValue('/tmp/eslint-migration-test');
-        (copyFileSync as jest.Mock).mockImplementation(() => {});
+        (writeFileSync as jest.Mock).mockImplementation(() => {});
         (rmSync as jest.Mock).mockImplementation(() => {});
 
         const mockChildProcess = new EventEmitter() as ChildProcess;

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { FileName, hasDependency, type Package } from '@sap-ux/project-access';
 import { isLowerThanMinimalVersion } from '../common/package-json';
 import crossSpawn from 'cross-spawn';
-import { copyFileSync, existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 
 /**
@@ -165,10 +165,13 @@ async function runMigrationCommand(basePath: string, fs: Editor): Promise<void> 
     try {
         // 1. Copy necessary files to temp directory
         const eslintrcPath = join(basePath, '.eslintrc.json');
-        copyFileSync(eslintrcPath, join(tempDir, '.eslintrc.json'));
+        // Read from mem-fs (which has the modified content) and write to temp directory
+        const eslintrcContent = fs.read(eslintrcPath);
+        writeFileSync(join(tempDir, '.eslintrc.json'), eslintrcContent, 'utf-8');
+
         const eslintignorePath = join(basePath, '.eslintignore');
         if (existsSync(eslintignorePath)) {
-            copyFileSync(eslintignorePath, join(tempDir, '.eslintignore'));
+            writeFileSync(join(tempDir, '.eslintignore'), readFileSync(eslintignorePath, 'utf-8'), 'utf-8');
         }
 
         // 2. Run migration in temp directory
