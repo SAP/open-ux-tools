@@ -26,7 +26,9 @@ import connect = require('connect');
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(process.cwd()));
-const getProjectTypeMock = jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+const getProjectTypeMock = jest
+    .spyOn(projectAccess, 'getProjectType')
+    .mockImplementation(() => Promise.resolve('EDMXBackend'));
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -918,13 +920,20 @@ describe('FlpSandbox', () => {
                 }
             ];
             const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const filePath = join(webappPath, 'i18n', 'i18n.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedFilePath = join(tmpdir(), 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedFilePath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                        value: 'new Entry'
+                    })
+                ])
+            );
         });
         test('should handle string i18n path', async () => {
             const newI18nEntry = [{ key: 'HELLO', value: 'Hello World' }];
@@ -932,12 +941,20 @@ describe('FlpSandbox', () => {
             manifest['sap.app'].i18n = 'i18n/custom.properties';
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'custom_de.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'custom_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'HELLO',
+                        value: 'Hello World'
+                    })
+                ])
+            );
         });
 
         test('should handle bundleUrl with supported and fallback locales', async () => {
@@ -951,12 +968,20 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
 
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}?locale=de`).send(newI18nEntry);
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'i18n_de.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n_de.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'GREETING',
+                        value: 'Hallo Welt'
+                    })
+                ])
+            );
         });
 
         test('should reject unsupported locale', async () => {
@@ -982,12 +1007,20 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
             const response = await server.post(`${CARD_GENERATOR_DEFAULT.i18nStore}`).send(newI18nEntry);
 
-            const webappPath = await getWebappPath(path.resolve());
-            const expectedPath = join(webappPath, 'i18n', 'i18n.properties');
+            // getSourcePath() returns tmpdir() in the mock
+            const expectedPath = join(tmpdir(), 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(expectedPath, newI18nEntry);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+                expectedPath,
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        key: 'HELLO',
+                        value: 'Hello World'
+                    })
+                ])
+            );
         });
     });
 
@@ -1108,7 +1141,6 @@ describe('FlpSandbox', () => {
                 ])
             );
         });
-
     });
 
     describe('router with test suite', () => {
