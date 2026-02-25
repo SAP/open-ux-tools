@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.15.14
+
+### Patch Changes
+
+- fb0afb5: fix: make generate readme script more robust
+
 ## 0.15.13
 
 ### Patch Changes
