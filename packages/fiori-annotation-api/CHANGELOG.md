@@ -1,5 +1,28 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.9.22
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/cds-odata-annotation-converter@0.7.8
+
+## 0.9.21
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/cds-annotation-parser@0.2.31
+    - @sap-ux/cds-odata-annotation-converter@0.7.8
+    - @sap-ux/odata-annotation-core-types@0.5.5
+    - @sap-ux/odata-annotation-core@0.2.15
+    - @sap-ux/odata-entity-model@0.3.6
+    - @sap-ux/odata-vocabularies@0.4.26
+    - @sap-ux/xml-odata-annotation-converter@0.4.9
+
 ## 0.9.20
 
 ### Patch Changes

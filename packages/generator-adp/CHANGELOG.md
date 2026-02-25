@@ -1,5 +1,44 @@
 # @sap-ux/generator-adp
 
+## 0.9.10
+
+### Patch Changes
+
+- Updated dependencies [c043712]
+- Updated dependencies [b96de78]
+    - @sap-ux/adp-tooling@0.18.74
+    - @sap-ux/axios-extension@1.25.16
+    - @sap-ux/project-input-validator@0.6.62
+    - @sap-ux/project-access@1.35.9
+    - @sap-ux/fiori-generator-shared@0.13.79
+    - @sap-ux/odata-service-writer@0.29.26
+    - @sap-ux/system-access@0.6.57
+    - @sap-ux/inquirer-common@0.11.14
+    - @sap-ux/telemetry@0.6.80
+
+## 0.9.9
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/adp-tooling@0.18.73
+    - @sap-ux/axios-extension@1.25.15
+    - @sap-ux/fiori-generator-shared@0.13.78
+    - @sap-ux/inquirer-common@0.11.13
+    - @sap-ux/odata-service-writer@0.29.25
+    - @sap-ux/project-input-validator@0.6.61
+    - @sap-ux/system-access@0.6.56
+    - @sap-ux/telemetry@0.6.79
+
+## 0.9.8
+
+### Patch Changes
+
+- ce9f074: chore: bump adaptation project for cf dependency versions
+- Updated dependencies [ce9f074]
+    - @sap-ux/adp-tooling@0.18.72
+
 ## 0.9.7
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # sap-ux-sap-systems-ext
 
+## 0.3.7
+
+### Patch Changes
+
+- 89cfeaf: correct error handling and confirmation prompt text
+
+## 0.3.6
+
+### Patch Changes
+
+- fd8de2b: fix(deps): update dependency jsonc-parser to v3.3.1
+
+## 0.3.5
+
+### Patch Changes
+
+- bdf59e5: fix naming validation when importing
+
 ## 0.3.4
 
 ### Patch Changes

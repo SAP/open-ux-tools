@@ -1,5 +1,11 @@
 # @sap-ux-private/playwright
 
+## 0.2.8
+
+### Patch Changes
+
+- 9072d52: fix(deps): update dependency promisify-child-process to v5
+
 ## 0.2.7
 
 ### Patch Changes
