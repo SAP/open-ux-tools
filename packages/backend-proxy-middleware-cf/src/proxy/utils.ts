@@ -7,10 +7,10 @@ import type { MimeInfo, RouteEntry } from '../types';
 /**
  * Replaces oldUrl with newUrl in text (regex-safe).
  *
- * @param {string} text - Full text to replace in.
- * @param {string} oldUrl - URL to replace (will be escaped for regex).
- * @param {string} newUrl - Replacement URL.
- * @returns {string} Text with URLs replaced.
+ * @param text - Full text to replace in.
+ * @param oldUrl - URL to replace (will be escaped for regex).
+ * @param newUrl - Replacement URL.
+ * @returns Text with URLs replaced.
  */
 export function replaceUrl(text: string, oldUrl: string, newUrl: string): string {
     const escaped = oldUrl.replaceAll(/[-/\\^$*+?.()|[\]{}]/g, String.raw`\$&`);
@@ -21,8 +21,8 @@ export function replaceUrl(text: string, oldUrl: string, newUrl: string): string
 /**
  * Returns a path filter that accepts pathnames matching any custom route pattern or any destination route regex.
  *
- * @param {string[]} customRoutes - Route path patterns (e.g. '/', '/login/callback').
- * @param {RouteEntry[]} routes - Route entries with compiled regex.
+ * @param customRoutes - Route path patterns (e.g. '/', '/login/callback').
+ * @param routes - Route entries with compiled regex.
  * @returns Filter function (pathname) => boolean.
  */
 export function createPathFilter(customRoutes: string[], routes: RouteEntry[]): (pathname: string) => boolean {
@@ -46,9 +46,9 @@ export function getRequestOrigin(req: IncomingMessage & { baseUrl?: string }): s
 /**
  * Get mime type, charset and content-type header value from pathname and optional Content-Type header.
  *
- * @param {string} pathname - Request path (used when no ctValue).
- * @param {string | undefined} ctValue - Content-Type header value.
- * @returns {MimeInfo} MimeInfo object.
+ * @param pathname - Request path (used when no ctValue).
+ * @param ctValue - Content-Type header value.
+ * @returns MimeInfo object.
  */
 export function getMimeInfo(pathname: string, ctValue: string | undefined): MimeInfo {
     if (ctValue) {

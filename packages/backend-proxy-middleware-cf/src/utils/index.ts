@@ -5,9 +5,9 @@ import type { ToolsLogger } from '@sap-ux/logger';
 /**
  * Returns the next free port starting from basePort.
  *
- * @param {number} basePort - Base port to start searching from.
- * @param {ToolsLogger | undefined} logger - Optional logger to warn if portfinder fails and basePort is used.
- * @returns {Promise<number>} A free port number.
+ * @param basePort - Base port to start searching from.
+ * @param logger - Optional logger to warn if portfinder fails and basePort is used.
+ * @returns A free port number.
  */
 export async function nextFreePort(basePort: number, logger?: ToolsLogger): Promise<number> {
     try {

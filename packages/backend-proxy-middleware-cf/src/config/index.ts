@@ -10,8 +10,8 @@ export const DEFAULT_REWRITE_CONTENT_TYPES = [
 /**
  * Merge user configuration with defaults.
  *
- * @param {BackendProxyMiddlewareCfConfig} configuration - Configuration from ui5.yaml.
- * @returns {EffectiveOptions} Effective options with all defaults applied.
+ * @param configuration - Configuration from ui5.yaml.
+ * @returns Effective options with all defaults applied.
  */
 export function mergeEffectiveOptions(configuration: BackendProxyMiddlewareCfConfig): EffectiveOptions {
     return {

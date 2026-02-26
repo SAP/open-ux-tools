@@ -12,6 +12,7 @@ import { createPathFilter, getMimeInfo, getRequestOrigin, replaceUrl } from './u
  */
 interface ProxyReqRequest extends IncomingMessage {
     'ui5-middleware-index'?: { url: string };
+    /** Set by cds-plugin-ui5; baseUrl/originalUrl used for redirect and x-forwarded-path. */
     'ui5-patched-router'?: { baseUrl?: string; originalUrl?: string };
 }
 
@@ -28,11 +29,11 @@ interface ProxyReqResponse extends ServerResponse {
 /**
  * Create the response interceptor for the proxy (content-type + URL rewriting).
  *
- * @param {RouteEntry[]} routes - Route entries with regex and destination URLs.
- * @param {EffectiveOptions} effectiveOptions - Merged options (rewriteContent, rewriteContentTypes, debug).
- * @param {string} baseUri - Base URI of the approuter (for debug log).
- * @param {ToolsLogger} logger - Logger instance.
- * @returns {ReturnType<typeof responseInterceptor>} The interceptor function to pass to responseInterceptor().
+ * @param routes - Route entries with regex and destination URLs.
+ * @param effectiveOptions - Merged options (rewriteContent, rewriteContentTypes, debug).
+ * @param baseUri - Base URI of the approuter (for debug log).
+ * @param logger - Logger instance.
+ * @returns The interceptor function to pass to responseInterceptor().
  */
 export function createResponseInterceptor(
     routes: RouteEntry[],
@@ -77,9 +78,9 @@ export function createResponseInterceptor(
  * Create the proxy middleware that forwards matching requests to the approuter.
  * Paths are proxied if they match any customRoute (e.g. welcome, login callback) or any destination route.
  *
- * @param {CreateProxyOptions} options - customRoutes, routes, baseUri, effectiveOptions.
- * @param {ToolsLogger} logger - Logger instance.
- * @returns {RequestHandler} Express request handler (the proxy middleware).
+ * @param options - customRoutes, routes, baseUri, effectiveOptions.
+ * @param logger - Logger instance.
+ * @returns Express request handler (the proxy middleware).
  */
 export function createProxy(options: CreateProxyOptions, logger: ToolsLogger): RequestHandler {
     const { customRoutes, routes, baseUri, effectiveOptions } = options;

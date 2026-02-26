@@ -7,8 +7,8 @@ import type { BuildRouteEntriesOptions, PrepareXsappConfigOptions, RouteEntry, X
  * Load xs-app.json and prepare it for the approuter (filter routes, set auth, optionally append auth route).
  * Mutates and returns the config; does not build RouteEntry[].
  *
- * @param {PrepareXsappConfigOptions} options - rootPath, xsappJsonPath, effectiveOptions, sourcePath.
- * @returns {XsappConfig} The loaded and mutated XsappConfig.
+ * @param options - rootPath, xsappJsonPath, effectiveOptions, sourcePath.
+ * @returns The loaded and mutated XsappConfig.
  */
 export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): XsappConfig {
     const { rootPath, xsappJsonPath, effectiveOptions, sourcePath } = options;
@@ -21,9 +21,9 @@ export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): X
     xsappConfig.authenticationMethod = effectiveOptions.authenticationMethod;
 
     const xsappRoutes = xsappConfig.routes ?? [];
-    /* eslint-disable @typescript-eslint/prefer-nullish-coalescing -- boolean OR for route inclusion */
     xsappConfig.routes = xsappRoutes.filter((route) => {
         return (
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- boolean OR for route inclusion
             (effectiveOptions.allowLocalDir || !route.localDir) && (effectiveOptions.allowServices || !route.service)
         );
     });
@@ -56,8 +56,8 @@ export function loadAndPrepareXsappConfig(options: PrepareXsappConfigOptions): X
  * Build the list of route entries (compiled regex + resolved destination URLs) from a prepared xsappConfig.
  * Does not read files or mutate xsappConfig.
  *
- * @param {BuildRouteEntriesOptions} options - xsappConfig, effectiveOptions, logger.
- * @returns {RouteEntry[]} Route entries for the proxy.
+ * @param options - xsappConfig, effectiveOptions, logger.
+ * @returns Route entries for the proxy.
  */
 export function buildRouteEntries(options: BuildRouteEntriesOptions): RouteEntry[] {
     const { xsappConfig, effectiveOptions, logger } = options;

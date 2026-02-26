@@ -10,9 +10,9 @@ import type { EffectiveOptions } from '../types';
 /**
  * Load and parse env options JSON file.
  *
- * @param {string} rootPath - Project root path.
- * @param {string} envOptionsPath - Path to file (relative to rootPath).
- * @returns {AppRouterEnvOptions} Parsed options object.
+ * @param rootPath - Project root path.
+ * @param envOptionsPath - Path to file (relative to rootPath).
+ * @returns Parsed options object.
  */
 function loadEnvOptionsFromFile(rootPath: string, envOptionsPath: string): AppRouterEnvOptions {
     const resolvedPath = path.resolve(rootPath, envOptionsPath);
@@ -32,7 +32,7 @@ function loadEnvOptionsFromFile(rootPath: string, envOptionsPath: string): AppRo
 /**
  * Apply options to process.env with JSON-stringified destinations and VCAP_SERVICES.
  *
- * @param {AppRouterEnvOptions} options - Env options to apply.
+ * @param options - Env options to apply.
  */
 function applyToProcessEnv(options: AppRouterEnvOptions): void {
     const envOptions = {
@@ -40,7 +40,7 @@ function applyToProcessEnv(options: AppRouterEnvOptions): void {
         ...(options.destinations ? { destinations: JSON.stringify(options.destinations) } : {}),
         ...(options.VCAP_SERVICES ? { VCAP_SERVICES: JSON.stringify(options.VCAP_SERVICES) } : {})
     };
-    process.env = Object.assign(process.env, envOptions);
+    process.env = { ...process.env, ...envOptions } as Record<string, string>;
 }
 
 /**
@@ -50,10 +50,10 @@ function applyToProcessEnv(options: AppRouterEnvOptions): void {
  * above rootPath and fetches VCAP_SERVICES from CF. effectiveOptions.destinations is applied so
  * middleware config takes precedence over file/env.
  *
- * @param {string} rootPath - Project root path.
- * @param {EffectiveOptions} effectiveOptions - Merged config; envOptionsPath and destinations are used.
- * @param {ToolsLogger} logger - Logger for CF path.
- * @returns {Promise<void>} Promise resolving when env options are loaded and applied.
+ * @param rootPath - Project root path.
+ * @param effectiveOptions - Merged config; envOptionsPath and destinations are used.
+ * @param logger - Logger for CF path.
+ * @returns Promise resolving when env options are loaded and applied.
  */
 export async function loadAndApplyEnvOptions(
     rootPath: string,

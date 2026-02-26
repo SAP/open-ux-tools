@@ -1,12 +1,14 @@
+[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/backend-proxy-middleware-cf/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware-cf)
+
 # `@sap-ux/backend-proxy-middleware-cf`
 
-UI5 server middleware that uses `@sap/approuter` to make destinations configured in SAP Cloud Foundry or SAP XS Advanced available for local development. Requests to destination routes are proxied to a local approuter instance via `http-proxy-middleware`.
+UI5 server middleware that uses `@sap/approuter` to make destinations configured in SAP Business Technology Platform (BTP) available for local development. Requests to destination routes are proxied to a local approuter instance via `http-proxy-middleware`.
 
 > **⚠️ Experimental**: This middleware is currently experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions if needed.
 
 ## Prerequisites
 
-- [@ui5/cli](https://ui5.github.io/cli/) 3.0 or later (specVersion 3.0 in `ui5.yaml`)
+- [@ui5/cli](https://ui5.github.io/cli/) 4.0 or later (specVersion 4.0 and later in `ui5.yaml`)
 
 ## Install
 
@@ -21,8 +23,8 @@ pnpm add -D @sap-ux/backend-proxy-middleware-cf
 | `debug` | `boolean` | `false` | Verbose logging |
 | `port` | `number` | `5000` | Port for the local approuter |
 | `xsappJsonPath` | `string` | `"./xs-app.json"` | Path to the CF-style approuter config (e.g. `xs-app.json`). Destination route sources should match the pattern `/[^/]*\/(.*\/)?[^/]*/` (e.g. `"^/backend/(.*)$"`). |
-| `envOptionsPath` | `string` | — | Path (relative to project root) to a JSON file. Each top-level key is set on `process.env` (objects/arrays are JSON-stringified) so the approuter can read credentials and services. The key `destinations` is skipped so the middleware's `destinations` config takes precedence. |
-| `destinations` | `array` or `string` | `[]` | List of `{ name, url }` destinations (names must match routes in `xs-app.json`). Or use `"$env:VAR"` to read a JSON string from `process.env[VAR]` (e.g. from a `.env` file). |
+| `envOptionsPath` | `string` | — | Path (relative to project root) to a JSON file. Each top-level key is set on `process.env` (objects/arrays are JSON-stringified) so the approuter can read credentials and services. |
+| `destinations` | `array` or `string` | `[]` | List of `{ name, url }` destinations (names must match routes in `xs-app.json`). |
 | `allowServices` | `boolean` | `false` | Allow BTP services referenced in `xs-app.json` (requires authenticated BTP session). |
 | `authenticationMethod` | `"none"` \| `"route"` | `"none"` | Authentication for routes |
 | `allowLocalDir` | `boolean` | `false` | Allow approuter to serve static assets (usually ui5-server serves them). |
@@ -44,18 +46,18 @@ server:
       configuration:
         authenticationMethod: "none"
         debug: true
-        port: 1091
-        xsappJsonPath: "xs-app.json"
+        port: 5000
+        xsappJsonPath: "./xs-app.json"
         destinations:
           - name: "backend"
             url: "https://your-backend.example/path"
 ```
 
-2. Place `xs-app.json` at the path you set in `xsappJsonPath` (e.g. project root). Define routes with a `source` regex and `destination` name that matches an entry in `destinations`.
+2. Point your path to the location of xs-app.json.
 
 ### Env options file (VCAP_SERVICES, credentials)
 
-To run the approuter with BTP-style credentials (e.g. XSUAA, destinations, HTML5 app repo), point `envOptionsPath` to a JSON file. Each top-level key is applied to `process.env` so the approuter can find them; object and array values are stored as JSON strings. The key `destinations` in the file is ignored so that the middleware's `destinations` from ui5.yaml are used.
+To run the approuter with BTP-style credentials (e.g. XSUAA, destinations), point `envOptionsPath` to a JSON file. Each top-level key is applied to `process.env` so the approuter can find them; object and array values are stored as JSON strings. The key `destinations` in the file is ignored so that the middleware's `destinations` from ui5.yaml are used.
 
 Example shape (minimal):
 
@@ -68,22 +70,7 @@ Example shape (minimal):
 }
 ```
 
-You can export a real `VCAP_SERVICES` (and optionally other keys) from your BTP app and save it to a file (e.g. `.env-options.json`); do not commit secrets. In ui5.yaml set `envOptionsPath: ".env-options.json"`.
-
-### Destinations from .env
-
-In `.env`:
-
-```properties
-xsapp_dest = [{"name": "backend", "url": "https://your-backend.example"}]
-```
-
-In `ui5.yaml`:
-
-```yaml
-configuration:
-  destinations: "$env:xsapp_dest"
-```
+You can export a real `VCAP_SERVICES` (and optionally other keys) from your BTP app and save it to a file (e.g. `./default-env.json`); do not commit secrets. In ui5.yaml set `envOptionsPath: "./default-env.json"`.
 
 ## How it works
 

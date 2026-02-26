@@ -33,10 +33,7 @@ export interface BackendProxyMiddlewareCfConfig {
     xsappJsonPath: string;
     /** Path to the environment options file (relative to project root) */
     envOptionsPath?: string;
-    /**
-     * Destinations: array of { name, url } or "$env:VAR" to read JSON from process.env[VAR] (e.g. from .env).
-     * Destination names must match routes in xs-app.json.
-     */
+    /** Destinations: array of { name, url } (e.g. from default-env.json). Destination names must match routes in xs-app.json. */
     destinations?: ApprouterDestination[] | string;
     /** Allow BTP services configured in xs-app.json (requires authenticated BTP session) */
     allowServices?: boolean;

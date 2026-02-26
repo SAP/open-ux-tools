@@ -21,9 +21,9 @@ export interface LoadedExtensions {
 /**
  * Create a wrapper that injects parameters as 4th argument for approuter extension handlers.
  *
- * @param {ExtensionHandler} middleware - Original handler (req, res, next, params).
- * @param {Record<string, string> | undefined} params - Parameters to inject (from extension config).
- * @returns {ExtensionHandler} Wrapper function with ≤3 args so approuter invokes it.
+ * @param middleware - Original handler (req, res, next, params).
+ * @param params - Parameters to inject (from extension config).
+ * @returns Wrapper function with ≤3 args so approuter invokes it.
  */
 function createParametersInjector(
     middleware: ExtensionHandler,
@@ -38,37 +38,58 @@ function createParametersInjector(
 /**
  * Load and prepare extension modules for the approuter.
  *
- * @param {string} rootPath - Project root path for resolving module paths.
- * @param {ApprouterExtension[] | undefined} extensions - Extension configs from effectiveOptions.
- * @param {ToolsLogger} logger - Logger instance.
- * @returns {LoadedExtensions} Loaded extension modules and list of extension routes (paths) they register.
+ * @param rootPath - Project root path for resolving module paths.
+ * @param extensions - Extension configs from effectiveOptions.
+ * @param logger - Logger instance.
+ * @returns Loaded extension modules and list of extension routes (paths) they register.
  */
 export function loadExtensions(
     rootPath: string,
     extensions: ApprouterExtension[] | undefined,
     logger: ToolsLogger
 ): LoadedExtensions {
-    const routes: string[] = [];
     const modules = (extensions ?? [])
-        .map((extension) => toExtensionModule(extension, rootPath, routes, logger))
+        .map((extension) => toExtensionModule(extension, rootPath, logger))
         .filter((e): e is ExtensionModule => e != null);
+    const routes = modules.flatMap(getExtensionRoutes);
 
     return { modules, routes };
 }
 
 /**
- * Convert an extension to an extension module.
+ * Collect route paths registered by an extension module via insertMiddleware.
  *
- * @param {ApprouterExtension} extension - The extension to convert.
- * @param {string} rootPath - The root path of the project.
- * @param {string[]} routes - The routes to add to the extension module.
- * @param {ToolsLogger} logger - The logger to use.
- * @returns {ExtensionModule | undefined} The extension module.
+ * @param extensionModule - The extension module to inspect.
+ * @returns Array of path strings from insertMiddleware entries that define a path.
+ */
+export function getExtensionRoutes(extensionModule: ExtensionModule): string[] {
+    const insertMiddleware = extensionModule.insertMiddleware;
+    if (!insertMiddleware) {
+        return [];
+    }
+    const paths: string[] = [];
+    for (const type of Object.keys(insertMiddleware)) {
+        for (const entry of insertMiddleware[type]) {
+            if (typeof entry !== 'function' && entry.path) {
+                paths.push(entry.path);
+            }
+        }
+    }
+    return paths;
+}
+
+/**
+ * Convert an extension config to a loaded extension module with parameter-injected handlers.
+ * Does not mutate any shared state; use getExtensionRoutes to obtain paths from the returned module.
+ *
+ * @param extension - The extension to convert.
+ * @param rootPath - The root path of the project for resolving the module.
+ * @param logger - The logger to use.
+ * @returns The extension module, or undefined if the module cannot be resolved.
  */
 export function toExtensionModule(
     extension: ApprouterExtension,
     rootPath: string,
-    routes: string[],
     logger: ToolsLogger
 ): ExtensionModule | undefined {
     try {
@@ -85,9 +106,6 @@ export function toExtensionModule(
             insertMiddleware[type] = insertMiddleware[type].map((module) => {
                 if (typeof module === 'function') {
                     return createParametersInjector(module, extension.parameters);
-                }
-                if (module.path) {
-                    routes.push(module.path);
                 }
                 module.handler = createParametersInjector(module.handler, extension.parameters);
                 return module;

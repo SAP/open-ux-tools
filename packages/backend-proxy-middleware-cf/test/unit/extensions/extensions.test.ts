@@ -2,7 +2,7 @@ import path from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { loadExtensions, toExtensionModule } from '../../../src/extensions';
+import { getExtensionRoutes, loadExtensions, toExtensionModule } from '../../../src/extensions';
 
 describe('extensions', () => {
     const logger = { warn: jest.fn() } as unknown as ToolsLogger;
@@ -34,42 +34,52 @@ describe('extensions', () => {
         });
     });
 
+    describe('getExtensionRoutes', () => {
+        test('returns empty array when insertMiddleware is missing', () => {
+            const result = toExtensionModule({ module: './mock-extension-no-insert.cjs' }, fixturesDir, logger);
+            expect(result).toBeDefined();
+            expect(getExtensionRoutes(result!)).toEqual([]);
+        });
+
+        test('returns paths from insertMiddleware', () => {
+            const result = toExtensionModule(
+                { module: './mock-extension.cjs', parameters: { key: 'value' } },
+                fixturesDir,
+                logger
+            );
+            expect(result).toBeDefined();
+            expect(getExtensionRoutes(result!)).toContain('/custom-route');
+        });
+    });
+
     describe('toExtensionModule', () => {
         test('returns module unchanged when insertMiddleware is missing', () => {
-            const routes: string[] = [];
-            const result = toExtensionModule({ module: './mock-extension-no-insert.cjs' }, fixturesDir, routes, logger);
+            const result = toExtensionModule({ module: './mock-extension-no-insert.cjs' }, fixturesDir, logger);
 
             expect(result).toBeDefined();
             expect(result!.insertMiddleware).toBeUndefined();
-            expect(routes).toHaveLength(0);
         });
 
         test('returns undefined and warns when module cannot be resolved', () => {
-            const routes: string[] = [];
-            const result = toExtensionModule({ module: './does-not-exist-abc' }, rootPath, routes, logger);
+            const result = toExtensionModule({ module: './does-not-exist-abc' }, rootPath, logger);
             expect(result).toBeUndefined();
             expect(logger.warn).toHaveBeenCalled();
         });
 
-        test('returns module with wrapped handlers and pushes path to routes', () => {
-            const routes: string[] = [];
+        test('returns module with wrapped handlers', () => {
             const result = toExtensionModule(
                 { module: './mock-extension.cjs', parameters: { key: 'value' } },
                 fixturesDir,
-                routes,
                 logger
             );
             expect(result).toBeDefined();
             expect(result!.insertMiddleware).toBeDefined();
-            expect(routes).toContain('/custom-route');
         });
 
         test('wrapped handler injects parameters and invokes original (createParametersInjector)', () => {
-            const routes: string[] = [];
             const result = toExtensionModule(
                 { module: './mock-extension-with-params.cjs', parameters: { foo: 'bar' } },
                 fixturesDir,
-                routes,
                 logger
             );
             const beforeRequest = result!.insertMiddleware!.beforeRequest!;

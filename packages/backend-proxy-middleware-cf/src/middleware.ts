@@ -24,7 +24,7 @@ dotenv.config();
  * @param params - Middleware parameters from UI5 (options, middlewareUtil).
  * @param params.options - Options containing configuration from ui5.yaml.
  * @param params.middlewareUtil - UI5 middleware utilities (getProject, etc.).
- * @returns {Promise<RequestHandler>} Promise resolving to the proxy request handler.
+ * @returns Promise resolving to the proxy request handler.
  */
 async function backendProxyMiddlewareCf({
     options,
