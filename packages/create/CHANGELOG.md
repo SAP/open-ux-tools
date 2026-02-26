@@ -1,5 +1,21 @@
 # @sap-ux/create
 
+## 0.15.15
+
+### Patch Changes
+
+- Updated dependencies [ed1399d]
+    - @sap-ux/adp-tooling@0.18.75
+    - @sap-ux/preview-middleware@0.23.135
+    - @sap-ux/flp-config-inquirer@0.4.134
+    - @sap-ux/app-config-writer@0.6.107
+
+## 0.15.14
+
+### Patch Changes
+
+- fb0afb5: fix: make generate readme script more robust
+
 ## 0.15.13
 
 ### Patch Changes
