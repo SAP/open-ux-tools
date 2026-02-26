@@ -331,12 +331,11 @@ describe('ui5-test-writer', () => {
 
         it('generates tests for v4 application with sub object page', async () => {
             readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
-            const projectDir = prepareTestFiles('test.sample.mdsk.v4');
+            const projectDir = prepareTestFiles('LROPv4');
             fs = await generateOPAFiles(projectDir, {}, fs);
 
             const bookingObjPageJourneyContent =
-                fs.dump()['test/test-output/test.sample.mdsk.v4/webapp/test/integration/BookingObjectPageJourney.js']
-                    .contents;
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::FlightDate" }');
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::BookingDate" }');
             expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "FieldGroup::Names" }');
