@@ -1,9 +1,8 @@
-import { getControlById, isA } from '../../../utils/core';
+import { getControlById } from '../../../utils/core';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { getV4AppComponent, getPageName, getReference } from '../../../utils/fe-v4';
-import TableAPI from 'sap/fe/macros/table/TableAPI';
+import { getV4AppComponent, getPageName, getReference, isMacroTable } from '../../../utils/fe-v4';
 import UI5Element from 'sap/ui/core/Element';
 
 export async function executeToggleAction(
@@ -79,18 +78,13 @@ export function generateRoutePattern(sourceRoutePattern: string, navProperty: st
     return parts.join('');
 }
 
-export type MacroTable = TableAPI & {
-    metaPath: string;
-    contextPath: string;
-};
-
 /**
  * Get LineItem annotation - tries to use design-time helper if available, falls back to local implementation.
  *
  * @param table - table control
  * @returns LineItem annotation string
  */
-function getLineItemAnnotation(table: MacroTable): string | undefined {
+export function getLineItemAnnotation(table: UI5Element): string | undefined {
     try {
         const helper = sap.ui.require('sap/fe/macros/table/designtime/Table.designtime.helper');
         if (helper && typeof helper.getLineItemAnnotation === 'function') {
@@ -108,15 +102,10 @@ function getLineItemAnnotation(table: MacroTable): string | undefined {
  * @param table - table control
  * @returns string
  */
-
-export function getActionsPropertyPath(table: UI5Element): string | undefined {
+export function getPropertyPath(table: UI5Element, property: 'actions' | 'columns' = 'actions'): string | undefined {
     const macroTable = table.getParent();
     const configPath = '';
-    if (
-        macroTable &&
-        (isA<MacroTable>('sap.fe.macros.Table', macroTable) ||
-            isA<MacroTable>('sap.fe.macros.table.TableAPI', macroTable))
-    ) {
+    if (isMacroTable(macroTable)) {
         const lineItemAnnotation = getLineItemAnnotation(macroTable);
 
         const navigationPath = macroTable.metaPath.split(macroTable.getProperty('contextPath'))[1];
@@ -128,7 +117,7 @@ export function getActionsPropertyPath(table: UI5Element): string | undefined {
                 'controlConfiguration/',
                 navigationPath.split('@')[0],
                 lineItemAnnotation,
-                '/actions/'
+                `/${property}/`
             );
         } else {
             let contextString = macroTable.metaPath;
@@ -140,7 +129,14 @@ export function getActionsPropertyPath(table: UI5Element): string | undefined {
             if (secondSlash >= 0) {
                 contextString = contextString.substring(0, secondSlash);
             }
-            return configPath.concat('controlConfiguration/', '/', contextString, '/', lineItemAnnotation, '/actions/');
+            return configPath.concat(
+                'controlConfiguration/',
+                '/',
+                contextString,
+                '/',
+                lineItemAnnotation,
+                `/${property}/`
+            );
         }
     }
     return undefined;
@@ -152,23 +148,27 @@ export function getActionsPropertyPath(table: UI5Element): string | undefined {
  * @param table - The table control
  * @returns The line item annotation used to define the table
  */
-function getLineItemAnnotationForTable(table: MacroTable): string | undefined {
-    const presentation = table.getModel()?.getMetaModel()?.getObject(table.metaPath);
-
+function getLineItemAnnotationForTable(macroTable: UI5Element): string | undefined {
     let lineItemAnnotation: string | undefined = '';
-    // default line item annotation
-    if (!presentation.Visualizations && !presentation.PresentationVariant) {
-        lineItemAnnotation = table.metaPath.split('/').pop();
-    } else if (presentation.Visualizations) {
-        lineItemAnnotation = presentation.Visualizations[0].$AnnotationPath;
-    } else if (presentation.PresentationVariant) {
-        if (presentation.PresentationVariant.Visualizations) {
-            lineItemAnnotation = presentation.PresentationVariant.Visualizations[0].$AnnotationPath;
-        } else {
-            const contextPath = table.metaPath.startsWith('/') ? table.metaPath.split('@')[0] : table.contextPath;
-            const pathForLineItems = contextPath + presentation.PresentationVariant.$Path;
-            const presentationVariantType = table.getModel()?.getMetaModel()?.getObject(pathForLineItems);
-            lineItemAnnotation = presentationVariantType.Visualizations[0].$AnnotationPath;
+    if (isMacroTable(macroTable)) {
+        const presentation = macroTable.getModel()?.getMetaModel()?.getObject(macroTable.metaPath);
+
+        // default line item annotation
+        if (!presentation.Visualizations && !presentation.PresentationVariant) {
+            lineItemAnnotation = macroTable.metaPath.split('/').pop();
+        } else if (presentation.Visualizations) {
+            lineItemAnnotation = presentation.Visualizations[0].$AnnotationPath;
+        } else if (presentation.PresentationVariant) {
+            if (presentation.PresentationVariant.Visualizations) {
+                lineItemAnnotation = presentation.PresentationVariant.Visualizations[0].$AnnotationPath;
+            } else {
+                const contextPath = macroTable.metaPath.startsWith('/')
+                    ? macroTable.metaPath.split('@')[0]
+                    : macroTable.contextPath;
+                const pathForLineItems = contextPath + presentation.PresentationVariant.$Path;
+                const presentationVariantType = macroTable.getModel()?.getMetaModel()?.getObject(pathForLineItems);
+                lineItemAnnotation = presentationVariantType.Visualizations[0].$AnnotationPath;
+            }
         }
     }
     return lineItemAnnotation;
