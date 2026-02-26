@@ -14,6 +14,12 @@
             labelSpanS="4"
             singleContainerFullSize="false">
             <f:content>
+                <Label visible="{/isCustomColumnFragment}" text="{i18n>ADP_ADD_CUSTOM_FRAGMENT_DIALOG_COLUMN_ID_LABEL}" required="true" />
+                <Input 
+                    value="{/id}"
+                    visible="{/isCustomColumnFragment}"
+                    liveChange="onIdInputChange">
+                </Input>
                 <Label text="{i18n>ADP_ADD_FRAGMENT_DIALOG_FRAGMENT_NAME_LABEL}" required="true" />
                 <Input 
                     id="bbFragmentName"

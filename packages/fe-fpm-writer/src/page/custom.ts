@@ -1,4 +1,4 @@
-import { join, relative } from 'node:path';
+import { join, relative, dirname } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -36,8 +36,20 @@ import { i18nNamespaces, translate } from '../i18n';
 export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): InternalCustomPage {
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
+    // Check if folder was explicitly provided before setCommonDefaults modifies the data object
+    const folderWasProvided = !!data.folder;
+
     // set common defaults
     const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
+
+    // Override folder to use ext/view for custom pages (consistency with Page Map)
+    // Only override if no custom folder was explicitly provided
+    if (!folderWasProvided) {
+        config.folder = 'ext/view';
+        config.ns = `${manifest['sap.app'].id}.ext.view`;
+        config.path = join(dirname(manifestPath), 'ext/view');
+    }
+
     // currently the custom page template is always the same
     config.template = 'sap.fe.core.fpm';
     config.settings = initializeTargetSettings(data);
