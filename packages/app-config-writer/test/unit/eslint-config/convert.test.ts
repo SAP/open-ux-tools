@@ -142,7 +142,9 @@ describe('convertEslintConfig', () => {
                 fail('Error should have been thrown');
             } catch (error) {
                 expect(error.message).toContain('The prerequisites are not met');
-                expect(errorMock).toHaveBeenCalledWith(expect.stringContaining('No .eslintrc.json or .eslintrc found at path'));
+                expect(errorMock).toHaveBeenCalledWith(
+                    expect.stringContaining('No .eslintrc.json or .eslintrc found at path')
+                );
             }
         });
 
