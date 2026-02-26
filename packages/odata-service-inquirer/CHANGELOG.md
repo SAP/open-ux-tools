@@ -1,5 +1,149 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.18.12
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/project-input-validator@0.6.63
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/store@1.5.8
+    - @sap-ux/telemetry@0.6.81
+
+## 2.18.11
+
+### Patch Changes
+
+- Updated dependencies [c043712]
+- Updated dependencies [b96de78]
+    - @sap-ux/axios-extension@1.25.16
+    - @sap-ux/project-input-validator@0.6.62
+    - @sap-ux/project-access@1.35.9
+    - @sap-ux/fiori-generator-shared@0.13.79
+    - @sap-ux/inquirer-common@0.11.14
+    - @sap-ux/telemetry@0.6.80
+
+## 2.18.10
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/axios-extension@1.25.15
+    - @sap-ux/fiori-generator-shared@0.13.78
+    - @sap-ux/inquirer-common@0.11.13
+    - @sap-ux/project-input-validator@0.6.61
+    - @sap-ux/telemetry@0.6.79
+
+## 2.18.9
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/telemetry@0.6.78
+- @sap-ux/inquirer-common@0.11.12
+- @sap-ux/axios-extension@1.25.15
+- @sap-ux/fiori-generator-shared@0.13.77
+- @sap-ux/project-input-validator@0.6.60
+
+## 2.18.8
+
+### Patch Changes
+
+- ff634b0: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.8
+- Updated dependencies [ff634b0]
+    - @sap-ux/inquirer-common@0.11.11
+    - @sap-ux/axios-extension@1.25.15
+    - @sap-ux/fiori-generator-shared@0.13.76
+
+## 2.18.7
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/fiori-generator-shared@0.13.76
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/project-input-validator@0.6.59
+    - @sap-ux/store@1.5.7
+    - @sap-ux/telemetry@0.6.77
+
+## 2.18.6
+
+### Patch Changes
+
+- Updated dependencies [c94cc8e]
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/fiori-generator-shared@0.13.75
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/telemetry@0.6.76
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/project-input-validator@0.6.58
+
+## 2.18.5
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+- Updated dependencies [d57cc47]
+    - @sap-ux/axios-extension@1.25.14
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/inquirer-common@0.11.8
+    - @sap-ux/fiori-generator-shared@0.13.74
+    - @sap-ux/project-input-validator@0.6.57
+    - @sap-ux/telemetry@0.6.75
+
+## 2.18.4
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+    - @sap-ux/fiori-generator-shared@0.13.73
+    - @sap-ux/inquirer-common@0.11.7
+    - @sap-ux/nodejs-utils@0.2.15
+    - @sap-ux/telemetry@0.6.74
+
+## 2.18.3
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+    - @sap-ux/axios-extension@1.25.12
+    - @sap-ux/fiori-generator-shared@0.13.72
+    - @sap-ux/project-access@1.35.4
+    - @sap-ux/telemetry@0.6.73
+    - @sap-ux/inquirer-common@0.11.6
+    - @sap-ux/project-input-validator@0.6.56
+
+## 2.18.2
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/fiori-generator-shared@0.13.71
+    - @sap-ux/telemetry@0.6.72
+    - @sap-ux/inquirer-common@0.11.5
+
+## 2.18.1
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/axios-extension@1.25.11
+    - @sap-ux/fiori-generator-shared@0.13.70
+    - @sap-ux/inquirer-common@0.11.4
+    - @sap-ux/project-input-validator@0.6.55
+    - @sap-ux/telemetry@0.6.71
+
 ## 2.18.0
 
 ### Minor Changes

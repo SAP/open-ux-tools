@@ -1,5 +1,62 @@
 # @sap-ux/system-access
 
+## 0.6.58
+
+### Patch Changes
+
+- Updated dependencies [6c993f3]
+    - @sap-ux/store@1.5.8
+
+## 0.6.57
+
+### Patch Changes
+
+- Updated dependencies [c043712]
+    - @sap-ux/axios-extension@1.25.16
+
+## 0.6.56
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+    - @sap-ux/axios-extension@1.25.15
+
+## 0.6.55
+
+### Patch Changes
+
+- Updated dependencies [cbd340a]
+    - @sap-ux/store@1.5.7
+
+## 0.6.54
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/axios-extension@1.25.14
+
+## 0.6.53
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+
+## 0.6.52
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+    - @sap-ux/axios-extension@1.25.12
+
+## 0.6.51
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+
 ## 0.6.50
 
 ### Patch Changes

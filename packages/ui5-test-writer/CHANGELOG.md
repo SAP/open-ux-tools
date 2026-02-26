@@ -1,5 +1,81 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.77
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/ui5-application-writer@1.7.14
+
+## 0.7.76
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/ui5-application-writer@1.7.13
+
+## 0.7.75
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/ui5-application-writer@1.7.13
+
+## 0.7.74
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/ui5-application-writer@1.7.12
+
+## 0.7.73
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+
+## 0.7.72
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/ui5-application-writer@1.7.11
+
+## 0.7.71
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-application-writer@1.7.10
+
+## 0.7.70
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/ui5-application-writer@1.7.9
+
+## 0.7.69
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/ui5-application-writer@1.7.9
+
+## 0.7.68
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/ui5-application-writer@1.7.8
+
 ## 0.7.67
 
 ### Patch Changes

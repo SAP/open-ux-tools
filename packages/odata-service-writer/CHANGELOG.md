@@ -1,5 +1,90 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.27
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/mockserver-config-writer@0.9.58
+    - @sap-ux/ui5-config@0.29.19
+
+## 0.29.26
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/mockserver-config-writer@0.9.57
+
+## 0.29.25
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/mockserver-config-writer@0.9.56
+
+## 0.29.24
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+    - @sap-ux/mockserver-config-writer@0.9.55
+    - @sap-ux/project-access@1.35.7
+
+## 0.29.23
+
+### Patch Changes
+
+- ff634b0: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.8
+
+## 0.29.22
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/mockserver-config-writer@0.9.54
+    - @sap-ux/ui5-config@0.29.18
+
+## 0.29.21
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-config@0.29.18
+    - @sap-ux/mockserver-config-writer@0.9.53
+
+## 0.29.20
+
+### Patch Changes
+
+- d57cc47: Update fast-xml-parser
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/mockserver-config-writer@0.9.52
+
+## 0.29.19
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/mockserver-config-writer@0.9.51
+    - @sap-ux/project-access@1.35.4
+
+## 0.29.18
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/mockserver-config-writer@0.9.50
+
 ## 0.29.17
 
 ### Patch Changes

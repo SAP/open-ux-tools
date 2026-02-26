@@ -1,5 +1,99 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.82
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.58
+- @sap-ux/ui5-config@0.29.19
+
+## 0.2.81
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/system-access@0.6.57
+
+## 0.2.80
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/system-access@0.6.56
+
+## 0.2.79
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+    - @sap-ux/project-access@1.35.7
+    - @sap-ux/system-access@0.6.56
+
+## 0.2.78
+
+### Patch Changes
+
+- Updated dependencies [d588c26]
+    - @sap-ux/system-access@0.6.56
+
+## 0.2.77
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.55
+- @sap-ux/ui5-config@0.29.18
+
+## 0.2.76
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-config@0.29.18
+    - @sap-ux/system-access@0.6.54
+
+## 0.2.75
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/system-access@0.6.54
+
+## 0.2.74
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.53
+
+## 0.2.73
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/system-access@0.6.52
+    - @sap-ux/project-access@1.35.4
+
+## 0.2.72
+
+### Patch Changes
+
+- @sap-ux/system-access@0.6.51
+- @sap-ux/ui5-config@0.29.16
+
+## 0.2.71
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/system-access@0.6.50
+
 ## 0.2.70
 
 ### Patch Changes

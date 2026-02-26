@@ -1,5 +1,94 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.6.74
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/project-input-validator@0.6.63
+    - @sap-ux/inquirer-common@0.11.15
+
+## 0.6.73
+
+### Patch Changes
+
+- Updated dependencies [b96de78]
+    - @sap-ux/project-input-validator@0.6.62
+    - @sap-ux/inquirer-common@0.11.14
+
+## 0.6.72
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.13
+- @sap-ux/project-input-validator@0.6.61
+
+## 0.6.71
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.12
+- @sap-ux/project-input-validator@0.6.60
+
+## 0.6.70
+
+### Patch Changes
+
+- Updated dependencies [ff634b0]
+    - @sap-ux/inquirer-common@0.11.11
+
+## 0.6.69
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/inquirer-common@0.11.10
+    - @sap-ux/project-input-validator@0.6.59
+
+## 0.6.68
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/ui5-info@0.13.13
+    - @sap-ux/project-input-validator@0.6.58
+
+## 0.6.67
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.8
+- @sap-ux/project-input-validator@0.6.57
+
+## 0.6.66
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.7
+
+## 0.6.65
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.6
+- @sap-ux/project-input-validator@0.6.56
+
+## 0.6.64
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.5
+
+## 0.6.63
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.4
+- @sap-ux/project-input-validator@0.6.55
+
 ## 0.6.62
 
 ### Patch Changes
