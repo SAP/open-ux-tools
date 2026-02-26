@@ -109,7 +109,7 @@
             "settings": {
               "navigation": {},
               "contextPath": "/Travel",
-              "viewName": "testNameSpace.fpmv4.ext.main.Main"
+              "viewName": "testNameSpace.fpmv4.ext.view.Main"
             }
           }
         }

@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.18.75
+
+### Patch Changes
+
+- ed1399d: Fix: Change custom column creation in v4 from addXML to appDescr change
+
 ## 0.18.74
 
 ### Patch Changes

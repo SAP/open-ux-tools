@@ -2,7 +2,7 @@
 
 exports[`Test FPM features using a pre-generated Fiori Custom Page app generate building blocks generateBuildingBlock:Table in custom page 1`] = `
 Object {
-  "js/webapp/ext/main/Main.controller.js": Object {
+  "js/webapp/ext/view/Main.controller.js": Object {
     "contents": "sap.ui.define(
     [
         'sap/fe/core/PageController'
@@ -10,11 +10,11 @@ Object {
     function(PageController) {
         'use strict';
 
-        return PageController.extend('sap.fe.demo.customPageAppJs.ext.main.Main', {
+        return PageController.extend('sap.fe.demo.customPageAppJs.ext.view.Main', {
             /**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf sap.fe.demo.customPageAppJs.ext.main.Main
+             * @memberOf sap.fe.demo.customPageAppJs.ext.view.Main
              */
             //  onInit: function () {
             //
@@ -23,7 +23,7 @@ Object {
             /**
              * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
              * (NOT before the first rendering! onInit() is used for that one!).
-             * @memberOf sap.fe.demo.customPageAppJs.ext.main.Main
+             * @memberOf sap.fe.demo.customPageAppJs.ext.view.Main
              */
             //  onBeforeRendering: function() {
             //
@@ -32,7 +32,7 @@ Object {
             /**
              * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
              * This hook is the same one that SAPUI5 controls get after being rendered.
-             * @memberOf sap.fe.demo.customPageAppJs.ext.main.Main
+             * @memberOf sap.fe.demo.customPageAppJs.ext.view.Main
              */
             //  onAfterRendering: function() {
             //
@@ -40,7 +40,7 @@ Object {
 
             /**
              * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-             * @memberOf sap.fe.demo.customPageAppJs.ext.main.Main
+             * @memberOf sap.fe.demo.customPageAppJs.ext.view.Main
              */
             //  onExit: function() {
             //
@@ -51,8 +51,8 @@ Object {
 ",
     "state": "modified",
   },
-  "js/webapp/ext/main/Main.view.xml": Object {
-    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"sap.fe.demo.customPageAppJs.ext.main.Main\\">
+  "js/webapp/ext/view/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"sap.fe.demo.customPageAppJs.ext.view.Main\\">
     <Page id=\\"Main\\" title=\\"Main\\">
         <content>
             <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"@com.sap.vocabularies.UI.v1.SelectionFields\\"/>
@@ -173,7 +173,7 @@ Object {
                     \\"name\\": \\"sap.fe.core.fpm\\",
                     \\"options\\": {
                         \\"settings\\": {
-                            \\"viewName\\": \\"sap.fe.demo.customPageAppJs.ext.main.Main\\",
+                            \\"viewName\\": \\"sap.fe.demo.customPageAppJs.ext.view.Main\\",
                             \\"contextPath\\": \\"/BookedFlights\\"
                         }
                     }
@@ -212,18 +212,18 @@ export default class Component extends BaseComponent {
 }",
     "state": "modified",
   },
-  "ts/webapp/ext/main/Main.controller.ts": Object {
+  "ts/webapp/ext/view/Main.controller.ts": Object {
     "contents": "import Controller from \\"sap/fe/core/PageController\\";
 
 /**
- * @namespace sap.fe.demo.customPageAppTs.ext.main.Main.controller
+ * @namespace sap.fe.demo.customPageAppTs.ext.view.Main.controller
  */
 export default class Main extends Controller {
 
     /**
      * Called when a controller is instantiated and its View controls (if available) are already created.
      * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-     * @memberOf sap.fe.demo.customPageAppTs.ext.main.Main
+     * @memberOf sap.fe.demo.customPageAppTs.ext.view.Main
      */
     // public onInit(): void {
     //
@@ -232,7 +232,7 @@ export default class Main extends Controller {
     /**
      * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
      * (NOT before the first rendering! onInit() is used for that one!).
-     * @memberOf sap.fe.demo.customPageAppTs.ext.main.Main
+     * @memberOf sap.fe.demo.customPageAppTs.ext.view.Main
      */
     // public  onBeforeRendering(): void {
     //
@@ -241,7 +241,7 @@ export default class Main extends Controller {
     /**
      * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
      * This hook is the same one that SAPUI5 controls get after being rendered.
-     * @memberOf sap.fe.demo.customPageAppTs.ext.main.Main
+     * @memberOf sap.fe.demo.customPageAppTs.ext.view.Main
      */
     // public  onAfterRendering(): void {
     //
@@ -249,7 +249,7 @@ export default class Main extends Controller {
 
     /**
      * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-     * @memberOf sap.fe.demo.customPageAppTs.ext.main.Main
+     * @memberOf sap.fe.demo.customPageAppTs.ext.view.Main
      */
     // public onExit(): void {
     //
@@ -257,8 +257,8 @@ export default class Main extends Controller {
 }",
     "state": "modified",
   },
-  "ts/webapp/ext/main/Main.view.xml": Object {
-    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"sap.fe.demo.customPageAppTs.ext.main.Main\\">
+  "ts/webapp/ext/view/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"sap.fe.demo.customPageAppTs.ext.view.Main\\">
     <Page id=\\"Main\\" title=\\"Main\\">
         <content>
             <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"@com.sap.vocabularies.UI.v1.SelectionFields\\"/>
@@ -379,7 +379,7 @@ export default class Main extends Controller {
                     \\"name\\": \\"sap.fe.core.fpm\\",
                     \\"options\\": {
                         \\"settings\\": {
-                            \\"viewName\\": \\"sap.fe.demo.customPageAppTs.ext.main.Main\\",
+                            \\"viewName\\": \\"sap.fe.demo.customPageAppTs.ext.view.Main\\",
                             \\"contextPath\\": \\"/BookedFlights\\"
                         }
                     }
