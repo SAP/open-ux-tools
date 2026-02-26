@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.23
+
+### Patch Changes
+
+- d475c7f: feat: export TypeScript types for external consumption
+
 ## 1.6.22
 
 ### Patch Changes
