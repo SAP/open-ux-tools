@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.7.17
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
 ## 0.7.16
 
 ### Patch Changes

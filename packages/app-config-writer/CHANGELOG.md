@@ -1,5 +1,15 @@
 # @sap-ux/app-config-writer
 
+## 0.6.108
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/ui5-application-writer@1.7.14
+    - @sap-ux/store@1.5.8
+    - @sap-ux/ui5-config@0.29.19
+
 ## 0.6.107
 
 ### Patch Changes

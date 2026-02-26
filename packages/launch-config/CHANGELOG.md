@@ -1,5 +1,12 @@
 # @sap-ux/launch-config
 
+## 0.10.70
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/ui5-config@0.29.19
+
 ## 0.10.69
 
 ### Patch Changes

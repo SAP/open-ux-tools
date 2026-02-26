@@ -1,5 +1,15 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.135
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/ui5-library-inquirer@0.6.74
+    - @sap-ux/ui5-library-writer@0.6.63
+
 ## 0.1.134
 
 ### Patch Changes

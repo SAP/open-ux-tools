@@ -1,5 +1,17 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.140
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/deploy-config-generator-shared@0.1.99
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/flp-config-inquirer@0.4.135
+    - @sap-ux/app-config-writer@0.6.108
+    - @sap-ux/inquirer-common@0.11.15
+
 ## 0.3.139
 
 ### Patch Changes
