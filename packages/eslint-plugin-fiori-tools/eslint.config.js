@@ -1,8 +1,7 @@
 const base = require('../../eslint.config.js');
 const { default: eslintPlugin } = require('eslint-plugin-eslint-plugin');
 
-const tseslint = require('typescript-eslint');
-const tsParser = tseslint.parser;
+const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     {

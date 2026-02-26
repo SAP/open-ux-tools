@@ -3,8 +3,7 @@ const reactPlugin = require('eslint-plugin-react');
 const globals = require('globals');
 // const storybook = require('eslint-plugin-storybook/dist/configs/flat/recommended');
 
-const tseslint = require('typescript-eslint');
-const tsParser = tseslint.parser;
+const { tsParser } = require('typescript-eslint');
 
 module.exports = [
     { ignores: ['stories', 'storybook', 'test'] },

@@ -1,5 +1,4 @@
-const tseslint = require('typescript-eslint');
-const tsParser = tseslint.parser;
+const { tsParser } = require('typescript-eslint');
 const fioriTools = require('@sap-ux/eslint-plugin-fiori-tools');
 
 module.exports = [
