@@ -43,7 +43,7 @@ export function BasicAuthCreds({
                 <UITextInput
                     name="systemUsername"
                     id="sysUser"
-                    defaultValue={username}
+                    value={username}
                     onChange={(e) => {
                         setUsername((e.target as HTMLInputElement).value);
                         setIsDetailsUpdated(true);
@@ -55,7 +55,7 @@ export function BasicAuthCreds({
                 <UITextInput
                     name="systemPassword"
                     id="sysPass"
-                    defaultValue={password}
+                    value={password}
                     type={`password`}
                     canRevealPassword={false}
                     onChange={(e) => {

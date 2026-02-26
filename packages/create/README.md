@@ -68,7 +68,7 @@ Command group for adding features to existing SAP Fiori applications. A subcomma
 
 Usage: `npx --yes @sap-ux/create@latest add [subcommand] [options]`
 
-The available subcommands are: `mockserver-config`, `smartlinks-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config` and `adp-cf-config`
+The available subcommands are: `mockserver-config`, `smartlinks-config`, `eslint-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config` and `adp-cf-config`
 
 
 --------------------------------
@@ -100,6 +100,21 @@ Example:
 Options:
 - `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
 - `-v, --verbose` - Show verbose information.
+
+--------------------------------
+
+## [`add eslint-config`](#add-eslint-config)
+
+Add an `eslint` configuration to a project including the SAP Fiori tools lint plugin (`@sap-ux/eslint-plugin-fiori-tools`).
+
+Example:
+
+`npx --yes @sap-ux/create@latest add eslint-config`
+
+Options:
+- `-s, --simulate` - Simulate only. Do not write to the config file. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
+- `-c, --config <string>` _(required)_ - The name of the SAP Fiori tools eslint plugin configuration to be used (default is `recommended`).
 
 --------------------------------
 

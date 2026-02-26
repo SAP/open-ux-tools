@@ -1,5 +1,67 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.74
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+
+## 0.3.73
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+
+## 0.3.72
+
+### Patch Changes
+
+- Updated dependencies [d92cd35]
+    - @sap-ux/ui5-config@0.29.19
+    - @sap-ux/project-access@1.35.7
+
+## 0.3.71
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+    - @sap-ux/ui5-config@0.29.18
+
+## 0.3.70
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/nodejs-utils@0.2.16
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/ui5-config@0.29.18
+
+## 0.3.69
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+
+## 0.3.68
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/nodejs-utils@0.2.15
+
+## 0.3.67
+
+### Patch Changes
+
+- Updated dependencies [e7f58d7]
+    - @sap-ux/ui5-config@0.29.17
+    - @sap-ux/project-access@1.35.4
+
 ## 0.3.66
 
 ### Patch Changes

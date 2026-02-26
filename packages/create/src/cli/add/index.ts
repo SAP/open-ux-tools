@@ -11,6 +11,7 @@ import { addComponentUsagesCommand } from './component-usages';
 import { addDeployConfigCommand } from './deploy-config';
 import { addAddVariantsConfigCommand } from './variants-config';
 import { addAdaptationProjectCFConfigCommand } from './adp-cf-config';
+import { addAddEslintConfigCommand } from './eslint-config';
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
  *
@@ -20,6 +21,7 @@ export function getAddCommands(): Command {
     const addCommands = new Command('add');
     addAddMockserverConfigCommand(addCommands);
     addAddSmartLinksConfigCommand(addCommands);
+    addAddEslintConfigCommand(addCommands);
     addAddCdsPluginUi5Command(addCommands);
     addInboundNavigationConfigCommand(addCommands);
     addCardsEditorConfigCommand(addCommands);

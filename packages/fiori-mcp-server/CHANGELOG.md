@@ -1,5 +1,50 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.6.34
+
+### Patch Changes
+
+- 94d370f: fix(deps): update dependency @langchain/mcp-adapters to v1.1.3
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.33
+
+### Patch Changes
+
+- ff634b0: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.8
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.32
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/store@1.5.7
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.31
+
+### Patch Changes
+
+- 1371f6b: fix(deps): update dependency @langchain/core to v1.1.26
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.30
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/fiori-docs-embeddings@0.4.15
+
+## 0.6.29
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+    - @sap-ux/fiori-docs-embeddings@0.4.14
+
 ## 0.6.28
 
 ### Patch Changes

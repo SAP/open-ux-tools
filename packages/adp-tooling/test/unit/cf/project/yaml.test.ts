@@ -920,7 +920,7 @@ describe('YAML Project Functions', () => {
                             {
                                 path: '/resources/my/reusable/lib',
                                 src: './.adp/reuse/myreusablelib',
-                                fallthrough: false
+                                fallthrough: true
                             },
                             {
                                 path: '/changes/test_variant_id',
@@ -967,7 +967,7 @@ describe('YAML Project Functions', () => {
                             {
                                 path: '/resources/my/reusable/lib',
                                 src: './.adp/reuse/myreusablelib',
-                                fallthrough: false
+                                fallthrough: true
                             },
                             {
                                 path: '/changes/customer_app_variant',

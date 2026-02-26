@@ -29,6 +29,7 @@ jobs:
             - name: Create changeset
               uses: mscharley/dependency-changesets-action@v1.2.2
               with:
+                  token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'
                   commit-message: 'chore: add changeset for dependency update'
 
@@ -59,6 +60,9 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install --frozen-lockfile
 
+            - name: Build project
+              run: pnpm build
+
             - name: Run update script (fixtures & fallbacks)
               run: node scripts/update-ui5manifest-version.js
 
@@ -77,11 +81,12 @@ jobs:
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
                   git add -u || true # Add updated files, but don't fail if no files were changed
-                  git commit -m "chore: update manifest version test fixtures & ui5 version fallbacks"
-                  git push
+                  git commit -m "chore: update manifest version test fixtures & ui5 version fallbacks" --no-verify
+                  git push --no-verify
 
             - name: Create changeset
               uses: mscharley/dependency-changesets-action@v1.2.2
               with:
+                  token: ${{ secrets.ACCESS_PAT }}
                   author-email: 'github-actions[bot]@users.noreply.github.com'
                   commit-message: 'chore: add changeset for @ui5/manifest update'

@@ -63,6 +63,7 @@ import { generateCdm } from './cdm';
 import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -1165,7 +1166,7 @@ export class FlpSandbox {
             return;
         }
 
-        configureRta(this.rta, layer, variant.id, adp.isCloudProject);
+        configureRta(this.rta, layer, variant.id, adp.projectType === AdaptationProjectType.CLOUD_READY);
         const descriptor = adp.descriptor;
         const { name, manifest } = descriptor;
         await this.init(manifest, name, adp.resources, adp);

@@ -1,5 +1,56 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.10.47
+
+### Patch Changes
+
+- c043712: fix(deps): update dependency supertest to v7.2.2
+- Updated dependencies [c043712]
+    - @sap-ux/axios-extension@1.25.16
+
+## 0.10.46
+
+### Patch Changes
+
+- @sap-ux/axios-extension@1.25.15
+
+## 0.10.45
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/store@1.5.7
+
+## 0.10.44
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/axios-extension@1.25.14
+
+## 0.10.43
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/axios-extension@1.25.13
+
+## 0.10.42
+
+### Patch Changes
+
+- Updated dependencies [bda7356]
+    - @sap-ux/axios-extension@1.25.12
+
+## 0.10.41
+
+### Patch Changes
+
+- Updated dependencies [9f94937]
+    - @sap-ux/store@1.5.6
+
 ## 0.10.40
 
 ### Patch Changes

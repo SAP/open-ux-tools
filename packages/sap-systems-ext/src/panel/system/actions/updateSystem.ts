@@ -11,7 +11,7 @@ import {
     compareSystems,
     shouldStoreSystemInfo
 } from '../../../utils';
-import { getSystemInfo, updateSystemStatus, validateSystemName } from '../utils';
+import { getSystemInfo, updateSystemStatus, validateSystemName, validateSystemUrl } from '../utils';
 import {
     SystemAction,
     SystemActionStatus,
@@ -46,7 +46,9 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
     };
 
     try {
-        await validateSystemName(backendSystem.name, context.backendSystem?.name);
+        await validateSystemName(backendSystem.name, context.backendSystem?.name, context.panelViewType);
+        validateSystemUrl(backendSystem.url);
+
         const newPanelMsg = await updateHandler(context, backendSystem, systemExistsInStore);
         await saveSystem(backendSystem, systemExistsInStore, context.panelViewType);
         if (newPanelMsg) {
@@ -54,7 +56,13 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
         }
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        await postSavingError(message, context.postMessage, systemExistsInStore, backendSystem.systemType);
+        await postSavingError(
+            message,
+            context.postMessage,
+            systemExistsInStore,
+            backendSystem.systemType,
+            context.panelViewType
+        );
     }
 }
 
@@ -106,10 +114,10 @@ async function updateHandler(
     // Scenario 1: User is creating a new system or importing a system
     if (panelViewType === SystemPanelViewType.Create || panelViewType === SystemPanelViewType.Import) {
         if (systemExistsInStore) {
-            throw t('error.systemKeyExists');
+            throw t('error.keyExists');
         }
         context.disposePanel();
-        newPanelMsg = t('info.systemSaved', { system: newSystem.name });
+        newPanelMsg = t('info.connectionSaved', { system: newSystem.name });
     }
 
     // Scenario 2: User is updating an existing system
@@ -120,12 +128,12 @@ async function updateHandler(
             context.updateBackendSystem(newSystem);
             await context.postMessage(
                 updateSystemStatus({
-                    message: t('info.systemInfoUpdated'),
+                    message: t('info.connectionInfoUpdated'),
                     updateSuccess: true
                 })
             );
         } else {
-            throw t('error.systemKeyExists');
+            throw t('error.keyExists');
         }
     }
 
@@ -136,7 +144,7 @@ async function updateHandler(
         context.disposePanel();
         const systemService = await getBackendSystemService();
         await systemService.delete(context.backendSystem);
-        newPanelMsg = t('info.systemUpdated', { system: newSystem.name });
+        newPanelMsg = t('info.connectionUpdated', { system: newSystem.name });
     }
 
     return newPanelMsg;
@@ -149,16 +157,21 @@ async function updateHandler(
  * @param postMessage - function to post a message to the webview
  * @param systemExistsInStore - boolean indicating if the system already exists in the store
  * @param systemType - optional system type for telemetry logging
+ * @param panelViewType - the current panel view type
  */
 async function postSavingError(
     errorMsg: string,
     postMessage: (msg: unknown) => void,
     systemExistsInStore: boolean,
-    systemType = 'unknown'
+    systemType = 'unknown',
+    panelViewType?: SystemPanelViewType
 ): Promise<void> {
+    const message = t(panelViewType === SystemPanelViewType.View ? 'error.updateFailure' : 'error.creationFailure', {
+        error: errorMsg
+    });
     postMessage(
         updateSystemStatus({
-            message: t('error.systemUpdateFailure', { error: errorMsg }),
+            message,
             updateSuccess: false
         })
     );
@@ -187,14 +200,14 @@ async function saveSystem(
     // ensure the user display name is set to the username
     const newBackendSystem: BackendSystem = {
         ...backendSystem,
-        userDisplayName: backendSystem.username,
-        connectionType: 'abap_catalog' // can be hardcoded until we support adding more types
+        userDisplayName: backendSystem.username
     };
     const systemService = await getBackendSystemService();
     await systemService.write(newBackendSystem, {
         force: systemExistsInStore
     });
-    const i18nKey = systemPanelViewType === SystemPanelViewType.Create ? 'info.systemSaved' : 'info.systemUpdated';
+    const i18nKey =
+        systemPanelViewType === SystemPanelViewType.Create ? 'info.connectionSaved' : 'info.connectionUpdated';
 
     window.showInformationMessage(t(i18nKey, geti18nOpts(backendSystem.name)));
 

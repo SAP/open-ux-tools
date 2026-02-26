@@ -1,5 +1,74 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.42.16
+
+### Patch Changes
+
+- 18c6932: fix: generate custom page files in ext/view folder
+
+    When creating a custom page application via app-gen in CAP projects, the Main.controller.js and Main.view.xml files are now correctly generated in the webapp/ext/view/ folder instead of webapp/ext/[pageName]/ (e.g., ext/main). This aligns the behavior with Page Map and follows Fiori extension folder structure conventions.
+
+## 0.42.15
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/fiori-annotation-api@0.9.22
+
+## 0.42.14
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+- Updated dependencies [cc1c422]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/fiori-annotation-api@0.9.21
+
+## 0.42.13
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/fiori-annotation-api@0.9.20
+
+## 0.42.12
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+    - @sap-ux/fiori-annotation-api@0.9.19
+
+## 0.42.11
+
+### Patch Changes
+
+- bb310dc: fix(deps): update dependency semver to v7.7.4
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/project-access@1.35.6
+    - @sap-ux/fiori-annotation-api@0.9.18
+
+## 0.42.10
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/fiori-annotation-api@0.9.17
+
+## 0.42.9
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@0.9.16
+
+## 0.42.8
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/fiori-annotation-api@0.9.15
+
 ## 0.42.7
 
 ### Patch Changes
