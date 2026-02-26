@@ -394,6 +394,12 @@ describe('Test entity prompts', () => {
             severity: Severity.information
         });
 
+        // Test ResponsiveTable info message
+        expect((tableType.additionalMessages as Function)('ResponsiveTable')).toEqual({
+            message: t('prompts.tableType.responsiveTableInfo'),
+            severity: Severity.information
+        });
+
         // Test tableType validation with valid value
         const tableTypeValidateResult = (tableType.validate as Function)('ResponsiveTable');
         expect(tableTypeValidateResult).toBe(true);
