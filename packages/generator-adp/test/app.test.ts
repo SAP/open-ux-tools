@@ -19,6 +19,7 @@ import {
     AppRouterType,
     FlexLayer,
     SourceManifest,
+    SupportedProject,
     SystemLookup,
     createServices,
     fetchPublicVersions,
@@ -27,13 +28,15 @@ import {
     getModuleNames,
     getMtaServices,
     getProviderConfig,
+    getSupportedProject,
     hasApprouter,
     isCfInstalled,
     isLoggedInCf,
     loadApps,
     loadCfConfig,
     storeCredentials,
-    validateUI5VersionExists
+    validateUI5VersionExists,
+    getServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
 import {
     type AbapServiceProvider,
@@ -66,6 +69,7 @@ import {
     workspaceChoices
 } from '../src/utils/workspace';
 import { CFServicesPrompter } from '../src/app/questions/cf-services';
+import { get } from 'node:http';
 
 jest.mock('@sap-ux/feature-toggle', () => ({
     ...jest.requireActual('@sap-ux/feature-toggle'),
@@ -137,19 +141,22 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getApprouterType: jest.fn(),
     hasApprouter: jest.fn(),
     createServices: jest.fn(),
-    storeCredentials: jest.fn()
+    storeCredentials: jest.fn(),
+    getServiceInstanceKeys: jest.fn(),
+    getSupportedProject: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
     ...jest.requireActual('../src/utils/deps.ts'),
-    getPackageInfo: jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' })
+    getPackageInfo: jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' }),
+    installDependencies: jest.fn().mockResolvedValue(undefined)
 }));
 
 jest.mock('../src/utils/appWizardCache.ts');
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
+    sendTelemetry: jest.fn().mockResolvedValue(undefined),
     TelemetryHelper: {
         createTelemetryData: jest.fn().mockReturnValue({
             OperatingSystem: 'testOS',
@@ -157,7 +164,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
         })
     },
     isExtensionInstalled: jest.fn(),
-    getHostEnvironment: jest.fn(),
+    getHostEnvironment: jest.fn().mockReturnValue('cli'),
     isCli: jest.fn(),
     getDefaultTargetFolder: jest.fn().mockReturnValue(undefined)
 }));
@@ -196,7 +203,8 @@ const apps: SourceApplication[] = [
         fileType: 'descriptor',
         id: 'sap.ui.demoapps.f1',
         registrationIds: ['F0303'],
-        title: 'App One'
+        title: 'App One',
+        cloudDevAdaptationStatus: ''
     }
 ];
 
@@ -349,6 +357,8 @@ const mockSystemService = {
     read: jest.fn(),
     write: jest.fn()
 };
+const getServiceInstanceKeysMock = getServiceInstanceKeys as jest.MockedFunction<typeof getServiceInstanceKeys>;
+const getSupportedProjectMock = getSupportedProject as jest.MockedFunction<typeof getSupportedProject>;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -474,7 +484,9 @@ describe('Adaptation Project Generator Integration Test', () => {
         it('should call composeWith for FLP and Deploy sub-generators and generate a cloud project successfully', async () => {
             mockIsAppStudio.mockReturnValue(false);
             existsInWorkspaceMock.mockReturnValue(false);
-            jest.spyOn(ConfigPrompter.prototype, 'isCloud', 'get').mockReturnValue(true);
+            jest.spyOn(ConfigPrompter.prototype, 'projectType', 'get').mockReturnValue(
+                AdaptationProjectType.CLOUD_READY
+            );
             jest.spyOn(ConfigPrompter.prototype, 'baseAppInbounds', 'get').mockReturnValue(inbounds);
             jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
 
@@ -484,7 +496,12 @@ describe('Adaptation Project Generator Integration Test', () => {
             const runContext = yeomanTest
                 .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
                 .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                .withPrompts({ ...answers, addDeployConfig: true, addFlpConfig: true });
+                .withPrompts({
+                    ...answers,
+                    addDeployConfig: true,
+                    addFlpConfig: true,
+                    projectType: AdaptationProjectType.CLOUD_READY
+                });
 
             await expect(runContext.run()).resolves.not.toThrow();
 
@@ -497,7 +514,8 @@ describe('Adaptation Project Generator Integration Test', () => {
                         Name: 'SystemA',
                         Client: '010',
                         Url: 'urlA'
-                    }
+                    },
+                    projectType: AdaptationProjectType.CLOUD_READY
                 },
                 expect.any(Function),
                 expect.any(Object),
@@ -552,11 +570,14 @@ describe('Adaptation Project Generator Integration Test', () => {
         it('should generate an onPremise adaptation project successfully', async () => {
             mockIsAppStudio.mockReturnValue(false);
             storeCredentialsMock.mockResolvedValue(undefined);
+            jest.spyOn(ConfigPrompter.prototype, 'projectType', 'get').mockReturnValue(
+                AdaptationProjectType.ON_PREMISE
+            );
 
             const runContext = yeomanTest
                 .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
                 .withOptions({ shouldInstallDeps: true, vscode: vscodeMock } as AdpGeneratorOptions)
-                .withPrompts(answers);
+                .withPrompts({ ...answers, projectType: AdaptationProjectType.ON_PREMISE });
 
             await expect(runContext.run()).resolves.not.toThrow();
 
@@ -682,6 +703,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             // NOTE: This test uses .withArguments() which bypasses the normal yeoman prompting lifecycle and goes directly to the writing phase.
             // This can cause race conditions with other tests that use the same output directory, as the generator doesn't go through the standard prompting -> writing flow.
             // This test must be the last test in the file. Other tests below it must use a different output directory.
+            getSupportedProjectMock.mockResolvedValue(SupportedProject.ON_PREM);
             const jsonInput: JsonInput = {
                 system: 'urlA',
                 username: 'user1',
@@ -691,7 +713,8 @@ describe('Adaptation Project Generator Integration Test', () => {
                 projectName: 'my.app',
                 namespace: 'customer.my.app',
                 applicationTitle: 'My app title',
-                targetFolder: testOutputDir
+                targetFolder: testOutputDir,
+                projectType: AdaptationProjectType.ON_PREMISE
             };
             const jsonInputString = JSON.stringify(jsonInput);
 
@@ -731,6 +754,31 @@ describe('Adaptation Project Generator Integration Test', () => {
             const mtaYamlSource = join(__dirname, 'fixtures', 'mta-project', 'mta.yaml');
             const mtaYamlTarget = join(cfTestOutputDir, 'mta.yaml');
             fs.copyFileSync(mtaYamlSource, mtaYamlTarget);
+
+            getServiceInstanceKeysMock.mockResolvedValue({
+                serviceKeys: [
+                    {
+                        credentials: {
+                            uaa: {
+                                clientid: 'test-client-id',
+                                clientsecret: 'test-client-secret',
+                                url: 'https://test-uaa.example.com'
+                            },
+                            uri: 'https://example.com',
+                            endpoints: {
+                                backend: {
+                                    url: 'https://backend.example.com',
+                                    destination: 'test-backend-destination'
+                                }
+                            }
+                        }
+                    }
+                ],
+                serviceInstance: {
+                    name: 'test-service-instance',
+                    guid: 'test-service-instance-guid'
+                }
+            });
 
             mockIsAppStudio.mockReturnValue(true);
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);

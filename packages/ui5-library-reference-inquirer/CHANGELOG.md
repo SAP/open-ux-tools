@@ -1,5 +1,110 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.124
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/inquirer-common@0.11.15
+
+## 0.4.123
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.9
+- @sap-ux/inquirer-common@0.11.14
+
+## 0.4.122
+
+### Patch Changes
+
+- Updated dependencies [0ecc5f1]
+    - @sap-ux/project-access@1.35.8
+    - @sap-ux/inquirer-common@0.11.13
+
+## 0.4.121
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.7
+- @sap-ux/inquirer-common@0.11.12
+
+## 0.4.120
+
+### Patch Changes
+
+- Updated dependencies [ff634b0]
+    - @sap-ux/inquirer-common@0.11.11
+
+## 0.4.119
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/inquirer-common@0.11.10
+
+## 0.4.118
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+- Updated dependencies [e5bc3ca]
+    - @sap-ux/inquirer-common@0.11.9
+    - @sap-ux/project-access@1.35.6
+
+## 0.4.117
+
+### Patch Changes
+
+- Updated dependencies [d57cc47]
+    - @sap-ux/project-access@1.35.5
+    - @sap-ux/inquirer-common@0.11.8
+
+## 0.4.116
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.7
+
+## 0.4.115
+
+### Patch Changes
+
+- @sap-ux/project-access@1.35.4
+- @sap-ux/inquirer-common@0.11.6
+
+## 0.4.114
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.5
+
+## 0.4.113
+
+### Patch Changes
+
+- Updated dependencies [346f09c]
+    - @sap-ux/project-access@1.35.3
+    - @sap-ux/inquirer-common@0.11.4
+
+## 0.4.112
+
+### Patch Changes
+
+- Updated dependencies [d2b772d]
+    - @sap-ux/project-access@1.35.2
+    - @sap-ux/inquirer-common@0.11.3
+
+## 0.4.111
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/project-access@1.35.1
+
 ## 0.4.110
 
 ### Patch Changes

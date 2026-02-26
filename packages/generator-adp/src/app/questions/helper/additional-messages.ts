@@ -2,7 +2,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import type { FlexUISupportedSystem, SourceApplication } from '@sap-ux/adp-tooling';
+import type { FlexUICapability, SourceApplication } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../utils/i18n';
 
@@ -16,54 +16,49 @@ interface SupportFlags {
 /**
  * Evaluates a system's deployment and flexibility capabilities to generate relevant messages based on the system's characteristics.
  *
- * @param {FlexUISupportedSystem | undefined} flexUISystem - An optional object containing flags indicating if the system
+ * @param {FlexUICapability | undefined} flexUICapability - An optional object containing flags indicating if the system
  *                                                           is on-premise and whether UI Flex is enabled.
- * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
+ * @param {AdaptationProjectType|undefined} projectType - The project type.
  * @returns {IMessageSeverity | undefined} An object containing a message and its severity level.
  */
 export const getSystemAdditionalMessages = (
-    flexUISystem: FlexUISupportedSystem | undefined,
-    isCloudProject: boolean
+    flexUICapability?: FlexUICapability,
+    projectType?: AdaptationProjectType
 ): IMessageSeverity | undefined => {
-    const isOnPremise = flexUISystem?.isOnPremise;
-    const isUIFlex = flexUISystem?.isUIFlex;
+    if (!flexUICapability || !projectType) {
+        return undefined;
+    }
 
-    if (isCloudProject) {
+    if (projectType === AdaptationProjectType.CLOUD_READY) {
         return {
             message: `${t('prompts.projectTypeLabel')}: ${AdaptationProjectType.CLOUD_READY}`,
             severity: Severity.information
         };
     }
 
-    if (!flexUISystem) {
-        return undefined;
+    const { isDtaFolderDeploymentSupported, isUIFlexSupported } = flexUICapability;
+
+    if (isUIFlexSupported) {
+        return isDtaFolderDeploymentSupported
+            ? {
+                  message: `${t('prompts.projectTypeLabel')}: ${AdaptationProjectType.ON_PREMISE}`,
+                  severity: Severity.information
+              }
+            : {
+                  message: t('error.notDeployableSystemError'),
+                  severity: Severity.error
+              };
     }
 
-    if (!isOnPremise) {
-        if (!isUIFlex) {
-            return {
-                message: t('error.notDeployableNotFlexEnabledSystemError'),
-                severity: Severity.warning
-            };
-        } else {
-            return {
-                message: t('error.notDeployableSystemError'),
-                severity: Severity.error
-            };
-        }
-    }
-
-    if (isOnPremise && !isUIFlex) {
-        return {
-            message: t('error.notFlexEnabledError'),
-            severity: Severity.warning
-        };
-    }
-
-    return {
-        message: `${t('prompts.projectTypeLabel')}: ${AdaptationProjectType.ON_PREMISE}`,
-        severity: Severity.information
-    };
+    return isDtaFolderDeploymentSupported
+        ? {
+              message: t('error.notFlexEnabledError'),
+              severity: Severity.warning
+          }
+        : {
+              message: t('error.notDeployableNotFlexEnabledSystemError'),
+              severity: Severity.warning
+          };
 };
 
 /**

@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-proxy-middleware"
     },
-    "version": "1.6.15",
+    "version": "1.6.22",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -41,7 +41,7 @@
         "dotenv": "16.6.1",
         "http-proxy-middleware": "3.0.5",
         "https-proxy-agent": "5.0.1",
-        "i18next": "25.8.0",
+        "i18next": "25.8.12",
         "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
@@ -51,7 +51,7 @@
         "@types/proxy-from-env": "1.0.1",
         "express": "4.22.1",
         "nock": "13.4.0",
-        "supertest": "7.1.4",
+        "supertest": "7.2.2",
         "yaml": "2.2.2"
     },
     "engines": {

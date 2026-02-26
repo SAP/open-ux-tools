@@ -1,5 +1,47 @@
 # @sap-ux/control-property-editor
 
+## 0.7.17
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
+## 0.7.16
+
+### Patch Changes
+
+- e19516b: fix(deps): update dependency ts-import-plugin to v3
+
+## 0.7.15
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
+## 0.7.14
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+
+## 0.7.13
+
+### Patch Changes
+
+- d588c26: fix(deps): update dependency rimraf to v6.1.3
+
+## 0.7.12
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 0.7.11
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 0.7.10
 
 ### Patch Changes

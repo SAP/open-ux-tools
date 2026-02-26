@@ -1,5 +1,99 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.97
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/inquirer-common@0.11.15
+
+## 0.5.96
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.14
+
+## 0.5.95
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.13
+
+## 0.5.94
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.12
+
+## 0.5.93
+
+### Patch Changes
+
+- Updated dependencies [ff634b0]
+    - @sap-ux/inquirer-common@0.11.11
+
+## 0.5.92
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+- Updated dependencies [cbd340a]
+    - @sap-ux/inquirer-common@0.11.10
+
+## 0.5.91
+
+### Patch Changes
+
+- Updated dependencies [bb310dc]
+    - @sap-ux/inquirer-common@0.11.9
+
+## 0.5.90
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.8
+
+## 0.5.89
+
+### Patch Changes
+
+- Updated dependencies [dd2131c]
+    - @sap-ux/btp-utils@1.1.9
+    - @sap-ux/inquirer-common@0.11.7
+
+## 0.5.88
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.6
+
+## 0.5.87
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.5
+
+## 0.5.86
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.4
+
+## 0.5.85
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.11.3
+
+## 0.5.84
+
+### Patch Changes
+
+- Updated dependencies [2fc459c]
+    - @sap-ux/inquirer-common@0.11.2
+    - @sap-ux/btp-utils@1.1.8
+
 ## 0.5.83
 
 ### Patch Changes

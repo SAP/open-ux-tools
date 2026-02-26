@@ -1,5 +1,41 @@
 # @sap-ux/sap-systems-ext-webapp
 
+## 0.1.4
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+
+## 0.1.3
+
+### Patch Changes
+
+- 4d381b7: fix(deps): update dependencies [react]
+
+## 0.1.2
+
+### Patch Changes
+
+- 66869b2: text and ui updates
+
+## 0.1.1
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 0.1.0
+
+### Minor Changes
+
+- 9f94937: support adding full service urls as a new connection type
+
+## 0.0.12
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 0.0.11
 
 ### Patch Changes

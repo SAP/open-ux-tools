@@ -75,7 +75,7 @@ function createNewPanel(
         url: systemConfig.url,
         client: systemConfig.client,
         systemType: 'OnPrem',
-        connectionType: 'abap_catalog',
+        connectionType: systemConfig.connectionType ?? 'abap_catalog', // default to abap_catalog for backward compatibility
         username: existingSystem?.username,
         password: existingSystem?.password
     });
@@ -94,7 +94,7 @@ function createNewPanel(
  * Prompts the user to select a configuration file and parses it to extract the system configuration.
  *
  * @returns - the import system configuration
- * @throws - an error if no file is selected or if the configuration is incomplete
+ * @throws {Error} - an error if no file is selected or if the configuration is incomplete
  */
 async function getImportSystemConfig(): Promise<SystemConfig> {
     const [systemFileUri] =
@@ -141,7 +141,7 @@ function readConfig(filePath: string): SystemConfig | undefined {
     const [systemConfig] = (JSON.parse(raw) as SystemConfigFile).systems ?? [];
 
     if (!systemConfig) {
-        throw new Error(t('error.noSystemsDefined', { filePath }));
+        throw new Error(t('error.noConnectionsDefined', { filePath }));
     }
     return systemConfig;
 }
