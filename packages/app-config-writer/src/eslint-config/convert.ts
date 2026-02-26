@@ -82,7 +82,7 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
     }
     if (!hasDependency(packageJson, packageName.ESLINT)) {
         logger?.error(
-            `Did not find ESLint dependency in package.json at path '${packageJsonPath}. You might want to use the \`add eslint-config\` command instead.'`
+            `Did not find ESLint dependency in package.json at path '${packageJsonPath}'. You might want to use the \`add eslint-config\` command instead.'`
         );
         return false;
     }
