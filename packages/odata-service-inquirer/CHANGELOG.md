@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.18.12
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/project-input-validator@0.6.63
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/store@1.5.8
+    - @sap-ux/telemetry@0.6.81
+
 ## 2.18.11
 
 ### Patch Changes

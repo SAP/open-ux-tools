@@ -21,7 +21,8 @@ describe('i18n', () => {
             lng: 'en',
             fallbackLng: 'en',
             defaultNS: 'adp-tooling',
-            ns: ['adp-tooling']
+            ns: ['adp-tooling'],
+            showSupportNotice: false
         });
     });
 

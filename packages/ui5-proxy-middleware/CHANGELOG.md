@@ -1,5 +1,12 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.6.22
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/ui5-config@0.29.19
+
 ## 1.6.21
 
 ### Patch Changes

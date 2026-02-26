@@ -1,5 +1,16 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.131
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.9
+    - @sap-ux/odata-service-inquirer@2.18.12
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/telemetry@0.6.81
+
 ## 0.2.130
 
 ### Patch Changes
