@@ -2813,13 +2813,13 @@ opaTest(\\"Should see the initial page of the app\\", function () {
 		data-sap-ui-theme=\\"sap_belize\\"
 		data-sap-ui-resourceroots='{
 			\\"nods1\\": \\"../../\\",
-			\\"integration\\": \\"./\\"
+			\\"nods1.test\\": \\"../\\"
 		}'
 		data-sap-ui-animation=\\"false\\"
 		data-sap-ui-compatVersion=\\"edge\\"
 		data-sap-ui-async=\\"true\\"
 		data-sap-ui-preload=\\"async\\"
-		data-sap-ui-oninit=\\"module:integration/opaTests.qunit\\">
+		data-sap-ui-oninit=\\"module:nods1/test/integration/opaTests.qunit\\">
 	</script>
 	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 	<script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
@@ -2953,10 +2953,10 @@ QUnit.test(\\"I should test the View1 controller\\", function (assert: Assert) {
 		src=\\"../../resources/sap-ui-core.js\\"
 		data-sap-ui-resourceroots='{
 			\\"nods1\\": \\"../../\\",
-			\\"unit\\": \\".\\"
+			\\"nods1.test\\": \\"../\\"
 		}'
 		data-sap-ui-async=\\"true\\"
-		data-sap-ui-oninit=\\"module:unit/unitTests.qunit\\">
+		data-sap-ui-oninit=\\"module:nods1/test/unit/unitTests.qunit\\">
 	</script>
 	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 	<script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
@@ -2980,7 +2980,7 @@ QUnit.config.autostart = false;
 
 // import all your QUnit tests here
 void Promise.all([
-import(\\"unit/controller/View1Page.controller\\")
+import(\\"nods1/test/unit/controller/View1Page.controller\\")
 ]).then(() => {
 	QUnit.start();
 });",
@@ -3687,13 +3687,13 @@ opaTest(\\"Should see the initial page of the app\\", function () {
 		data-sap-ui-theme=\\"sap_horizon\\"
 		data-sap-ui-resourceroots='{
 			\\"nods1\\": \\"../../\\",
-			\\"integration\\": \\"./\\"
+			\\"nods1.test\\": \\"../\\"
 		}'
 		data-sap-ui-animation=\\"false\\"
 		data-sap-ui-compatVersion=\\"edge\\"
 		data-sap-ui-async=\\"true\\"
 		data-sap-ui-preload=\\"async\\"
-		data-sap-ui-oninit=\\"module:integration/opaTests.qunit\\">
+		data-sap-ui-oninit=\\"module:nods1/test/integration/opaTests.qunit\\">
 	</script>
 	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 	<script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
@@ -3827,10 +3827,10 @@ QUnit.test(\\"I should test the View1 controller\\", function (assert: Assert) {
 		src=\\"../../resources/sap-ui-core.js\\"
 		data-sap-ui-resourceroots='{
 			\\"nods1\\": \\"../../\\",
-			\\"unit\\": \\".\\"
+			\\"nods1.test\\": \\"../\\"
 		}'
 		data-sap-ui-async=\\"true\\"
-		data-sap-ui-oninit=\\"module:unit/unitTests.qunit\\">
+		data-sap-ui-oninit=\\"module:nods1/test/unit/unitTests.qunit\\">
 	</script>
 	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 	<script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
@@ -3854,7 +3854,7 @@ QUnit.config.autostart = false;
 
 // import all your QUnit tests here
 void Promise.all([
-import(\\"unit/controller/View1Page.controller\\")
+import(\\"nods1/test/unit/controller/View1Page.controller\\")
 ]).then(() => {
 	QUnit.start();
 });",

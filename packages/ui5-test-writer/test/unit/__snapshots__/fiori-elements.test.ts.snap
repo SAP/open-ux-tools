@@ -351,7 +351,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees/test') + '/index.html',
         pages: {
 			onTheEmployeesList: EmployeesList,
 			onTheEmployeesObjectPage: EmployeesObjectPage
@@ -749,7 +749,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees/test') + '/index.html',
         pages: {
 			onTheEmployeesList: EmployeesList,
 			onTheEmployeesObjectPage: EmployeesObjectPage
@@ -1121,7 +1121,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees/test') + '/index.html',
         pages: {
 			onTheEmployeesList: EmployeesList,
 			onTheEmployeesObjectPage: EmployeesObjectPage
@@ -1493,7 +1493,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees/test') + '/index.html',
         pages: {
 			onTheEmployeesList: EmployeesList,
 			onTheEmployeesObjectPage: EmployeesObjectPage
@@ -1818,7 +1818,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees/test') + '/index.html',
         pages: {
 			onTheEmployeesList: EmployeesList
         },
@@ -2130,7 +2130,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees/test') + '/index.html',
         pages: {
 			onTheEmployeesObjectPage: EmployeesObjectPage
         },
@@ -2450,7 +2450,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees/test') + '/index.html',
         pages: {
 			onTheEmployeesObjectPage: EmployeesObjectPage
         },
@@ -2866,7 +2866,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('vesc/demo/employee/project2') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('vesc/demo/employee/project2/test') + '/index.html',
         pages: {
 			onTheEmployeesList: EmployeesList,
 			onTheEmployeesObjectPage: EmployeesObjectPage,
@@ -3325,7 +3325,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('vesc/demo/employee/project2') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('vesc/demo/employee/project2/test') + '/index.html',
         pages: {
 			onTheEmployeesList: EmployeesList,
 			onTheEmployeesObjectPage: EmployeesObjectPage,
@@ -3778,7 +3778,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('projectservice') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('projectservice/test') + '/index.html',
         pages: {
 			onTheEmployeesListTarget: EmployeesListTarget,
 			onTheEmployeesObjectPageTarget: EmployeesObjectPageTarget,
@@ -5536,7 +5536,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('project1/test') + '/index.html',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage
@@ -7199,7 +7199,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('project1/test') + '/index.html',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage
@@ -8989,7 +8989,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('project1/test') + '/index.html',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage
@@ -10785,7 +10785,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('project1') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('project1/test') + '/index.html',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage
@@ -11145,7 +11145,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('test/ui5-test-writer') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('test/ui5-test-writer/test') + '/index.html',
         pages: {
 			onTheEmployeesObjectPage: EmployeesObjectPage
         },
