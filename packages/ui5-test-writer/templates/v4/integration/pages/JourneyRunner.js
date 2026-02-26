@@ -5,7 +5,7 @@ sap.ui.define([
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('<%- appPath %>') + '/<%- htmlTarget %>',
+        launchUrl: sap.ui.require.toUrl('<%- appPath %>/test') + '/<%- htmlTarget %>',
         pages: {
 <%- pages.map((page) => {return '\t\t\tonThe' + page.targetKey + ': ' + page.targetKey}).join(',\n')%>
         },
