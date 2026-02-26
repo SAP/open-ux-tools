@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { UI5, Ui5App, AppOptions } from './types';
+import type { UI5, Ui5App } from './types';
 import { getFilePaths } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
