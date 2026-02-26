@@ -12,7 +12,9 @@ import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../.
  * @param params Input parameters for listing systems.
  * @returns Systems list execution output.
  */
-export default async function (params: ExecuteFunctionalityInput): Promise<ExecuteFunctionalityOutput> {
+export default async function executeListSystems(
+    params: ExecuteFunctionalityInput
+): Promise<ExecuteFunctionalityOutput> {
     try {
         const toolsLogger = new ToolsLogger();
         const systemLookup = new SystemLookup(toolsLogger);
