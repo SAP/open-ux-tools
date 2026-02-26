@@ -21,9 +21,7 @@ export function mergeWithDefaults(ui5App: Ui5App): {
     ui5App.app = mergeApp(ui5App.app);
     ui5App.appOptions = ui5App.appOptions || {};
     // Enable eslint by default for all projects
-    if (ui5App.appOptions.eslint === undefined) {
-        ui5App.appOptions.eslint = true;
-    }
+    ui5App.appOptions.eslint ??= true;
     ui5App.ui5 = mergeUi5(ui5App.ui5 || {}, ui5App.appOptions);
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = ui5App.app.projectType === 'EDMXBackend';
