@@ -1,5 +1,17 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.194
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/ui-service-inquirer@0.2.131
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/system-access@0.6.58
+    - @sap-ux/telemetry@0.6.81
+
 ## 0.1.193
 
 ### Patch Changes

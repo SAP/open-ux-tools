@@ -1,5 +1,14 @@
 # @sap-ux/environment-check
 
+## 0.18.98
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/store@1.5.8
+    - @sap-ux/ui5-config@0.29.19
+
 ## 0.18.97
 
 ### Patch Changes

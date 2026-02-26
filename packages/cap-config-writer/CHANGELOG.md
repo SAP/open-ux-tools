@@ -1,5 +1,13 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.72
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/fiori-generator-shared@0.13.80
+
 ## 0.12.71
 
 ### Patch Changes

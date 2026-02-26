@@ -1,5 +1,17 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.7.9
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/store@1.5.8
+    - @sap-ux/system-access@0.6.58
+    - @sap-ux/ui5-config@0.29.19
+
 ## 1.7.8
 
 ### Patch Changes
