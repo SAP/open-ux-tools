@@ -80,15 +80,27 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
         logger?.error(`No package.json found at path '${packageJsonPath}'`);
         return false;
     }
-    if (!hasDependency(packageJson, 'eslint')) {
+    if (!hasDependency(packageJson, packageName.ESLINT)) {
         logger?.error(
             `Did not find ESLint dependency in package.json at path '${packageJsonPath}. You might want to use the \`add eslint-config\` command instead.'`
         );
         return false;
     }
-    if (!isLowerThanMinimalVersion(packageJson, 'eslint', '9.0.0')) {
+    if (!isLowerThanMinimalVersion(packageJson, packageName.ESLINT, '9.0.0')) {
         logger?.error(
             `ESLint version is already 9.0.0 or higher in this project. Found ESLint dependency with version '${packageJson.devDependencies?.eslint}' in package.json at path '${packageJsonPath}'`
+        );
+        return false;
+    }
+    if (hasDependency(packageJson, packageName.ESLINT_PLUGIN_FIORI_CUSTOM)) {
+        logger?.error(
+            `Found ${packageName.ESLINT_PLUGIN_FIORI_CUSTOM} dependency in package.json at path '${packageJsonPath}'. This plugin is not compatible with ESLint version 9. Please remove the dependency and any usage of this plugin in the eslint configuration before running the conversion. You can use the \`add eslint-config\` command after that to add the compatible SAP Fiori tools eslint plugin and create a new eslint.config.mjs file with the flat config.`
+        );
+        return false;
+    }
+    if (!hasDependency(packageJson, packageName.ESLINT_PLUGIN_FIORI_TOOLS)) {
+        logger?.error(
+            `No ${packageName.ESLINT_PLUGIN_FIORI_TOOLS} dependency found in package.json at path '${packageJsonPath}'.`
         );
         return false;
     }

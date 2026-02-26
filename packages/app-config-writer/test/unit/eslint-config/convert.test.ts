@@ -128,13 +128,55 @@ describe('convertEslintConfig', () => {
             }
         });
 
+        test('should fail when eslint-plugin-fiori-custom dependency exists', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            // Add eslint-plugin-fiori-custom to package.json in memory
+            const packageJsonPath = join(basePath, 'package.json');
+            const packageJson = fs.readJSON(packageJsonPath) as Package;
+            packageJson.devDependencies!['eslint-plugin-fiori-custom'] = '^1.0.0';
+            fs.writeJSON(packageJsonPath, packageJson);
+
+            try {
+                await convertEslintConfig(basePath, { logger: loggerMock, fs });
+                fail('Error should have been thrown');
+            } catch (error) {
+                expect(error.message).toContain('The prerequisites are not met');
+                expect(errorMock).toHaveBeenCalledWith(
+                    expect.stringContaining('Found eslint-plugin-fiori-custom dependency')
+                );
+                expect(errorMock).toHaveBeenCalledWith(
+                    expect.stringContaining('This plugin is not compatible with ESLint version 9')
+                );
+            }
+        });
+
+        test('should fail when @sap-ux/eslint-plugin-fiori-tools dependency does not exist', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            // Remove @sap-ux/eslint-plugin-fiori-tools from package.json in memory
+            const packageJsonPath = join(basePath, 'package.json');
+            const packageJson = fs.readJSON(packageJsonPath) as Package;
+            delete packageJson.devDependencies!['@sap-ux/eslint-plugin-fiori-tools'];
+            fs.writeJSON(packageJsonPath, packageJson);
+
+            try {
+                await convertEslintConfig(basePath, { logger: loggerMock, fs });
+                fail('Error should have been thrown');
+            } catch (error) {
+                expect(error.message).toContain('The prerequisites are not met');
+                expect(errorMock).toHaveBeenCalledWith(
+                    expect.stringContaining('No @sap-ux/eslint-plugin-fiori-tools dependency found')
+                );
+            }
+        });
+
         test('should fail when .eslintrc.json does not exist', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/missing-config');
-            // Add eslint to package.json in memory
+            // Add eslint and fiori-tools plugin to package.json in memory
             const packageJsonPath = join(basePath, 'package.json');
             const packageJson = fs.readJSON(packageJsonPath) as Package;
             packageJson.devDependencies = packageJson.devDependencies ?? {};
             packageJson.devDependencies.eslint = '^8.0.0';
+            packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = '^0.6.2';
             fs.writeJSON(packageJsonPath, packageJson);
 
             try {
@@ -146,6 +188,25 @@ describe('convertEslintConfig', () => {
                     expect.stringContaining('No .eslintrc.json or .eslintrc found at path')
                 );
             }
+        });
+
+        test('should succeed when .eslintrc exists instead of .eslintrc.json', async () => {
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            // Remove .eslintrc.json and create .eslintrc
+            const eslintrcJsonPath = join(basePath, '.eslintrc.json');
+            const eslintrcPath = join(basePath, '.eslintrc');
+            const eslintConfig = fs.readJSON(eslintrcJsonPath) as EslintRcJson;
+            fs.delete(eslintrcJsonPath);
+            fs.writeJSON(eslintrcPath, eslintConfig);
+
+            const result = await convertEslintConfig(basePath, { logger: loggerMock, fs });
+
+            expect(result).toBeDefined();
+            expect(spawnMock).toHaveBeenCalledWith('npx', ['--yes', '@eslint/migrate-config', '.eslintrc'], {
+                cwd: '/tmp/eslint-migration-test',
+                shell: false,
+                stdio: 'inherit'
+            });
         });
 
         test('should fail when eslint version is already 9.0.0 or higher', async () => {
@@ -384,19 +445,6 @@ describe('convertEslintConfig', () => {
             expect(packageJson.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']).toBe('^9.0.0');
         });
 
-        test('should remove eslint-plugin-fiori-custom from devDependencies', async () => {
-            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
-            // Add eslint-plugin-fiori-custom to package.json
-            const packageJsonPath = join(basePath, 'package.json');
-            const packageJson = fs.readJSON(packageJsonPath) as Package;
-            packageJson.devDependencies!['eslint-plugin-fiori-custom'] = '^1.0.0';
-            fs.writeJSON(packageJsonPath, packageJson);
-
-            await convertEslintConfig(basePath, { logger: loggerMock, fs });
-
-            const updatedPackageJson = fs.readJSON(packageJsonPath) as Package;
-            expect(updatedPackageJson.devDependencies?.['eslint-plugin-fiori-custom']).toBeUndefined();
-        });
 
         test('should preserve existing devDependencies', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
@@ -425,7 +473,10 @@ describe('convertEslintConfig', () => {
             const packageJsonPath = join(basePath, 'package.json');
             const packageJson = fs.readJSON(packageJsonPath) as Package;
             delete packageJson.devDependencies;
-            packageJson.devDependencies = { eslint: '^8.0.0' };
+            packageJson.devDependencies = {
+                eslint: '^8.0.0',
+                '@sap-ux/eslint-plugin-fiori-tools': '^0.6.2'
+            };
             fs.writeJSON(packageJsonPath, packageJson);
 
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
