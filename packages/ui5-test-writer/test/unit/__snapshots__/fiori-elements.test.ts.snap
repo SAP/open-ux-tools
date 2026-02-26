@@ -209,9 +209,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheEmployeesList.iSeeThisPage();
-
         });
 
 
@@ -603,12 +601,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheEmployeesList.iSeeThisPage();
-
-
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
-
         });
 
 
@@ -977,9 +970,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheEmployeesList.iSeeThisPage();
-
         });
 
 
@@ -1348,9 +1339,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheEmployeesList.iSeeThisPage();
-
         });
 
 
@@ -1696,9 +1685,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheEmployeesList.iSeeThisPage();
-
         });
 
 
@@ -2019,6 +2006,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
+            Then.onThe.iSeeThisPage();
         });
 
 
@@ -2335,9 +2323,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
-
+            Then.onThe.iSeeThisPage();
         });
 
 
@@ -2715,9 +2701,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheEmployeesList.iSeeThisPage();
-
         });
 
 
@@ -3173,9 +3157,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheEmployeesList.iSeeThisPage();
-
         });
 
 
@@ -3610,9 +3592,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheEmployeesListTarget.iSeeThisPage();
-
         });
 
 
@@ -5424,9 +5404,7 @@ server:
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -7086,9 +7064,7 @@ server:
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -8875,9 +8851,7 @@ server:
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -10670,9 +10644,7 @@ server:
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
             Then.onTheTravelList.iSeeThisPage();
-
         });
 
 
@@ -11022,9 +10994,7 @@ Object {
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
-
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
-
+            Then.onThe.iSeeThisPage();
         });
 
 
