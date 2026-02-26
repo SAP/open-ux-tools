@@ -84,7 +84,16 @@ export class MockMta implements Partial<MtaInterface> {
         throw new Error('Method not implemented.');
     }
     save(): Promise<void> {
-        fs.writeFileSync(this.mtaPath, dump(this.contents));
+        fs.writeFileSync(
+            this.mtaPath,
+            dump(this.contents, {
+                indent: 2,
+                lineWidth: -1,
+                noRefs: true,
+                quotingType: '"',
+                forceQuotes: false
+            })
+        );
         return Promise.resolve();
     }
     clean(): Promise<void> {

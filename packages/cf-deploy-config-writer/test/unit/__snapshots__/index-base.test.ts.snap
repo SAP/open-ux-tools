@@ -49,41 +49,41 @@ archive.zip
 `;
 
 exports[`CF Writer Base Generate Base Config - App Frontend Generate deployment configs - app frontend 2`] = `
-"_schema-version: \\"3.2\\"
+"_schema-version: '3.2'
 ID: appfrontend
 description: MyManagedDescription
 version: 0.0.1
-modules:
-- name: appfrontend-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: appfrontend-app-front
-    parameters:
-      content-target: true
-  - name: appfrontend-uaa
-  parameters:
-    config:
-      destinations:
-      - name: ui5
-        url: https://ui5.sap.com
-resources:
-- name: appfrontend-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: appfrontend-xsuaa-service
-    service-plan: application
-- name: appfrontend-app-front
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: app-front
-    service-name: appfrontend-app-front-service
-    service-plan: developer
 parameters:
-  deploy_mode: html5-repo
   enable-parallel-deployments: true
+  deploy_mode: html5-repo
+modules:
+  - name: appfrontend-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: appfrontend-app-front
+        parameters:
+          content-target: true
+      - name: appfrontend-uaa
+    parameters:
+      config:
+        destinations:
+          - name: ui5
+            url: 'https://ui5.sap.com'
+resources:
+  - name: appfrontend-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: appfrontend-xsuaa-service
+      service-plan: application
+  - name: appfrontend-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-name: appfrontend-app-front-service
+      service-plan: developer
 "
 `;
 
@@ -136,76 +136,76 @@ archive.zip
 `;
 
 exports[`CF Writer Base Generate Base Config - Managed Generate deployment configs - managed 2`] = `
-"_schema-version: \\"3.2\\"
+"_schema-version: '3.2'
 ID: managed
 description: MyManagedDescription
 version: 0.0.1
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
 modules:
-- name: managed-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: managed-destination-service
+  - name: managed-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: managed-destination-service
+        parameters:
+          content-target: true
+      - name: managed-repo-host
+        parameters:
+          service-key:
+            name: managed-repo-host-key
+      - name: managed-uaa
+        parameters:
+          service-key:
+            name: managed-uaa-key
     parameters:
-      content-target: true
-  - name: managed-repo-host
-    parameters:
-      service-key:
-        name: managed-repo-host-key
-  - name: managed-uaa
-    parameters:
-      service-key:
-        name: managed-uaa-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: managed_html_repo_host
-          ServiceInstanceName: managed-html5-service
-          ServiceKeyName: managed-repo-host-key
-          sap.cloud.service: managed
-        - Authentication: OAuth2UserTokenExchange
-          Name: managed_uaa
-          ServiceInstanceName: managed-xsuaa-service
-          ServiceKeyName: managed-uaa-key
-          sap.cloud.service: managed
-        existing_destinations_policy: update
-  build-parameters:
-    no-source: true
-resources:
-- name: managed-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
+      content:
         instance:
           destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
+            - Name: managed_html_repo_host
+              ServiceInstanceName: managed-html5-service
+              ServiceKeyName: managed-repo-host-key
+              sap.cloud.service: managed
+            - Authentication: OAuth2UserTokenExchange
+              Name: managed_uaa
+              ServiceInstanceName: managed-xsuaa-service
+              ServiceKeyName: managed-uaa-key
+              sap.cloud.service: managed
           existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: managed-destination-service
-    service-plan: lite
-- name: managed-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: managed-xsuaa-service
-    service-plan: application
-- name: managed-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: managed-html5-service
-    service-plan: app-host
-parameters:
-  deploy_mode: html5-repo
-  enable-parallel-deployments: true
+    build-parameters:
+      no-source: true
+resources:
+  - name: managed-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: managed-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: 'https://ui5.sap.com'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: managed-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: managed-xsuaa-service
+      service-plan: application
+  - name: managed-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: managed-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
 "
 `;
 
@@ -300,70 +300,70 @@ archive.zip
 `;
 
 exports[`CF Writer Base Generate Base Config - Standalone Generate deployment configs - standalone with ABAP service provider 2`] = `
-"_schema-version: \\"3.2\\"
+"_schema-version: '3.2'
 ID: standalonewithabapserviceprovider
 description: Generated by Fiori Tools
 version: 0.0.1
-modules:
-- name: standalonewithabapserviceprovider-router
-  type: approuter.nodejs
-  path: router
-  requires:
-  - name: standalonewithabapserviceprovider-html5-repo-runtime
-  - name: standalonewithabapserviceprovider-uaa
-  - name: standalonewithabapserviceprovider-destination-service
-    group: destinations
-    properties:
-      forwardAuthToken: false
-      name: ui5
-      url: https://ui5.sap.com
-  - name: standalonewithabapservic-abap-Y11_00.0035
-  parameters:
-    disk-quota: 256M
-    memory: 256M
-resources:
-- name: standalonewithabapserviceprovider-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      tenant-mode: dedicated
-      xsappname: standalonewithabapserviceprovider-\${space-guid}
-    service: xsuaa
-    service-plan: application
-- name: standalonewithabapserviceprovider-html5-repo-runtime
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-plan: app-runtime
-- name: standalonewithabapserviceprovider-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: false
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: standalonewithabapserviceprovider-destination-service
-    service-plan: lite
-- name: standalonewithabapservic-abap-Y11_00.0035
-  type: org.cloudfoundry.existing-service
-  parameters:
-    protocol:
-    - ODataV2
-    service: abap-haas
-    service-name: Y11_00.0035
-    service-plan: 16_abap_64_db
 parameters:
-  deploy_mode: html5-repo
   enable-parallel-deployments: true
+  deploy_mode: html5-repo
+modules:
+  - name: standalonewithabapserviceprovider-router
+    type: approuter.nodejs
+    path: router
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: standalonewithabapserviceprovider-html5-repo-runtime
+      - name: standalonewithabapserviceprovider-uaa
+      - name: standalonewithabapserviceprovider-destination-service
+        group: destinations
+        properties:
+          name: ui5
+          url: 'https://ui5.sap.com'
+          forwardAuthToken: false
+      - name: standalonewithabapservic-abap-Y11_00.0035
+resources:
+  - name: standalonewithabapserviceprovider-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: application
+      service: xsuaa
+      config:
+        xsappname: 'standalonewithabapserviceprovider-\${space-guid}'
+        tenant-mode: dedicated
+  - name: standalonewithabapserviceprovider-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: app-runtime
+      service: html5-apps-repo
+  - name: standalonewithabapserviceprovider-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: standalonewithabapserviceprovider-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: false
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: 'https://ui5.sap.com'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: standalonewithabapservic-abap-Y11_00.0035
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: Y11_00.0035
+      protocol:
+        - ODataV2
+      service: abap-haas
+      service-plan: 16_abap_64_db
 "
 `;
 
@@ -450,66 +450,66 @@ archive.zip
 `;
 
 exports[`CF Writer Base Generate Base Config - Standalone Generate deployment configs - standalone with connectivity service 2`] = `
-"_schema-version: \\"3.2\\"
+"_schema-version: '3.2'
 ID: standalone-with-connectivity-service
 description: Generated by Fiori Tools
 version: 0.0.1
-modules:
-- name: standalone-with-connectivity-service-router
-  type: approuter.nodejs
-  path: router
-  requires:
-  - name: standalone-with-connectivity-service-html5-repo-runtime
-  - name: standalone-with-connectivity-service-uaa
-  - name: standalone-with-connectivity-service-destination-service
-    group: destinations
-    properties:
-      forwardAuthToken: false
-      name: ui5
-      url: https://ui5.sap.com
-  - name: standalone-with-connectivity-service-connectivity
-  parameters:
-    disk-quota: 256M
-    memory: 256M
-resources:
-- name: standalone-with-connectivity-service-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      tenant-mode: dedicated
-      xsappname: standalone-with-connectivity-service-\${space-guid}
-    service: xsuaa
-    service-plan: application
-- name: standalone-with-connectivity-service-html5-repo-runtime
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-plan: app-runtime
-- name: standalone-with-connectivity-service-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: false
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: standalone-with-connectivity-service-destination-service
-    service-plan: lite
-- name: standalone-with-connectivity-service-connectivity
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: connectivity
-    service-plan: lite
 parameters:
-  deploy_mode: html5-repo
   enable-parallel-deployments: true
+  deploy_mode: html5-repo
+modules:
+  - name: standalone-with-connectivity-service-router
+    type: approuter.nodejs
+    path: router
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: standalone-with-connectivity-service-html5-repo-runtime
+      - name: standalone-with-connectivity-service-uaa
+      - name: standalone-with-connectivity-service-destination-service
+        group: destinations
+        properties:
+          name: ui5
+          url: 'https://ui5.sap.com'
+          forwardAuthToken: false
+      - name: standalone-with-connectivity-service-connectivity
+resources:
+  - name: standalone-with-connectivity-service-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: application
+      service: xsuaa
+      config:
+        xsappname: 'standalone-with-connectivity-service-\${space-guid}'
+        tenant-mode: dedicated
+  - name: standalone-with-connectivity-service-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: app-runtime
+      service: html5-apps-repo
+  - name: standalone-with-connectivity-service-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: standalone-with-connectivity-service-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: false
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: 'https://ui5.sap.com'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: standalone-with-connectivity-service-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite
 "
 `;
