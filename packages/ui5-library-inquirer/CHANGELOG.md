@@ -1,5 +1,14 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.6.74
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/project-input-validator@0.6.63
+    - @sap-ux/inquirer-common@0.11.15
+
 ## 0.6.73
 
 ### Patch Changes

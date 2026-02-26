@@ -1,5 +1,12 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.42.17
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/fiori-annotation-api@0.9.23
+
 ## 0.42.16
 
 ### Patch Changes
