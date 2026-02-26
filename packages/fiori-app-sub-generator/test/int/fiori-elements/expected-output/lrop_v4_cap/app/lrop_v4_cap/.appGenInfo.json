@@ -11,7 +11,7 @@
     "appNamespace": "testNameSpace",
     "ui5Theme": "sap_fiori_3",
     "ui5Version": "1.98.0",
-    "enableEslint": false,
+    "enableEslint": true,
     "showMockDataInfo": false,
     "generatorVersion": "0.0.0",
     "template": "List Report Page V4",
