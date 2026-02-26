@@ -1,5 +1,6 @@
 const base = require('../../../eslint.config.js');
-const tsParser = require('@typescript-eslint/parser');
+const tseslint = require('typescript-eslint');
+const tsParser = tseslint.parser;
 
 module.exports = [
     {

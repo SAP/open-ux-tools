@@ -2,7 +2,8 @@ const base = require('../../eslint.config.js');
 const reactPlugin = require('eslint-plugin-react');
 const globals = require('globals');
 // const storybookPlugin = require('eslint-plugin-storybook');
-const tsParser = require('@typescript-eslint/parser');
+const tseslint = require('typescript-eslint');
+const tsParser = tseslint.parser;
 const { parser } = require('typescript-eslint');
 
 module.exports = [
