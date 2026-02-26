@@ -33,12 +33,13 @@ export function SystemMain(): ReactElement {
         addNewSapSystem,
         guidedAnswerLink,
         setName,
-        setType,
+        setSystemType,
         setUrl,
         setClient,
         setUsername,
         setPassword,
         setAuthenticationType,
+        setConnectionType,
         setIsDetailsUpdated,
         setIsDetailsValid,
         resetStatus
@@ -50,11 +51,15 @@ export function SystemMain(): ReactElement {
                 <div className="system-info-status">{t('systemStatus.infoError')}</div>
             ) : (
                 <div>
-                    {addNewSapSystem && <SystemTypes setType={setType} setAuthenticationType={setAuthenticationType} />}
+                    {addNewSapSystem && (
+                        <SystemTypes setSystemType={setSystemType} setAuthenticationType={setAuthenticationType} />
+                    )}
 
                     <SystemInfo
                         systemInfo={systemInfo}
+                        addNewSapSystem={addNewSapSystem}
                         setName={setName}
+                        setConnectionType={setConnectionType}
                         setUrl={setUrl}
                         setClient={setClient}
                         setUsername={setUsername}

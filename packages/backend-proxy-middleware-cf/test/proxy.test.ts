@@ -30,7 +30,9 @@ describe('proxy', () => {
 
     describe('createProxyOptions', () => {
         test('creates proxy options with correct target', () => {
-            const options = createProxyOptions(targetUrl, logger);
+            const matchedPath = '/api';
+            const pathRewrite = undefined;
+            const options = createProxyOptions(targetUrl, matchedPath, pathRewrite, logger);
 
             expect(options.target).toBe(targetUrl);
             expect(options.changeOrigin).toBe(true);
@@ -39,46 +41,54 @@ describe('proxy', () => {
             expect(options.on?.error).toBeDefined();
         });
 
-        test('pathRewrite uses originalUrl when available', () => {
-            const options = createProxyOptions(targetUrl, logger);
-            const pathRewrite = options.pathRewrite as Function;
+        test('pathRewrite strips matched path prefix', () => {
+            const matchedPath = '/resources/com/sap/apm';
+            const pathRewriteValue = '/api';
+            const options = createProxyOptions(targetUrl, matchedPath, pathRewriteValue, logger);
+            const pathRewriteFn = options.pathRewrite as Function;
 
             const req = {
-                originalUrl: '/sap/opu/odata/srv/EntitySet',
-                url: '/srv/EntitySet'
+                originalUrl: '/resources/com/sap/apm/v1/service',
+                url: '/v1/service'
             };
 
-            const result = pathRewrite('/srv/EntitySet', req);
-            expect(result).toBe('/sap/opu/odata/srv/EntitySet');
+            const result = pathRewriteFn('/v1/service', req);
+            expect(result).toBe('/api/v1/service');
         });
 
         test('pathRewrite uses req.url when originalUrl is not available', () => {
-            const options = createProxyOptions(targetUrl, logger);
-            const pathRewrite = options.pathRewrite as Function;
+            const matchedPath = '/api';
+            const pathRewriteValue = undefined;
+            const options = createProxyOptions(targetUrl, matchedPath, pathRewriteValue, logger);
+            const pathRewriteFn = options.pathRewrite as Function;
 
             const req = {
-                url: '/srv/EntitySet'
+                url: '/api/srv/EntitySet'
             };
 
-            const result = pathRewrite('/srv/EntitySet', req);
+            const result = pathRewriteFn('/srv/EntitySet', req);
             expect(result).toBe('/srv/EntitySet');
         });
 
         test('pathRewrite preserves query string', () => {
-            const options = createProxyOptions(targetUrl, logger);
-            const pathRewrite = options.pathRewrite as Function;
+            const matchedPath = '/resources/com/sap/apm';
+            const pathRewriteValue = '/api';
+            const options = createProxyOptions(targetUrl, matchedPath, pathRewriteValue, logger);
+            const pathRewriteFn = options.pathRewrite as Function;
 
             const req = {
-                originalUrl: '/sap/opu/odata/srv/EntitySet?$top=10&$skip=0',
+                originalUrl: '/resources/com/sap/apm/srv/EntitySet?$top=10&$skip=0',
                 url: '/srv/EntitySet?$top=10&$skip=0'
             };
 
-            const result = pathRewrite('/srv/EntitySet?$top=10&$skip=0', req);
-            expect(result).toBe('/sap/opu/odata/srv/EntitySet?$top=10&$skip=0');
+            const result = pathRewriteFn('/srv/EntitySet?$top=10&$skip=0', req);
+            expect(result).toBe('/api/srv/EntitySet?$top=10&$skip=0');
         });
 
         test('error handler logs error and calls next if available', () => {
-            const options = createProxyOptions(targetUrl, logger);
+            const matchedPath = '/api';
+            const pathRewriteValue = undefined;
+            const options = createProxyOptions(targetUrl, matchedPath, pathRewriteValue, logger);
             const errorHandler = options.on?.error as Function;
 
             const error = new Error('Proxy error');
@@ -95,7 +105,9 @@ describe('proxy', () => {
         });
 
         test('error handler does not throw if next is not available', () => {
-            const options = createProxyOptions(targetUrl, logger);
+            const matchedPath = '/api';
+            const pathRewriteValue = undefined;
+            const options = createProxyOptions(targetUrl, matchedPath, pathRewriteValue, logger);
             const errorHandler = options.on?.error as Function;
 
             const error = new Error('Proxy error');
@@ -107,6 +119,36 @@ describe('proxy', () => {
 
             expect(() => errorHandler(error, req, res, targetUrl)).not.toThrow();
         });
+
+        test('pathRewrite without pathRewrite parameter only strips matched prefix', () => {
+            const matchedPath = '/resources/com/sap/apm';
+            const pathRewriteValue = undefined;
+            const options = createProxyOptions(targetUrl, matchedPath, pathRewriteValue, logger);
+            const pathRewriteFn = options.pathRewrite as Function;
+
+            const req = {
+                originalUrl: '/resources/com/sap/apm/v1/service',
+                url: '/v1/service'
+            };
+
+            const result = pathRewriteFn('/v1/service', req);
+            expect(result).toBe('/v1/service');
+        });
+
+        test('pathRewrite removes trailing slash from pathRewrite parameter', () => {
+            const matchedPath = '/resources/com/sap/apm';
+            const pathRewriteValue = '/api/';
+            const options = createProxyOptions(targetUrl, matchedPath, pathRewriteValue, logger);
+            const pathRewriteFn = options.pathRewrite as Function;
+
+            const req = {
+                originalUrl: '/resources/com/sap/apm/v1/service',
+                url: '/v1/service'
+            };
+
+            const result = pathRewriteFn('/v1/service', req);
+            expect(result).toBe('/api/v1/service');
+        });
     });
 
     describe('registerProxyRoute', () => {
@@ -114,8 +156,9 @@ describe('proxy', () => {
             const router = Router();
             const path = '/sap/opu/odata';
             const destinationUrl = '/backend.example';
+            const pathRewriteValue = undefined;
 
-            registerProxyRoute(path, destinationUrl, mockTokenProvider, logger, router);
+            registerProxyRoute(path, destinationUrl, pathRewriteValue, mockTokenProvider, logger, router);
 
             expect(mockTokenProvider.createTokenMiddleware).toHaveBeenCalled();
             expect(router.stack.length).toBeGreaterThan(0);
@@ -124,19 +167,27 @@ describe('proxy', () => {
 
     describe('setupProxyRoutes', () => {
         test('sets up multiple proxy routes', () => {
-            const paths = ['/sap/opu/odata', '/sap/bc/ui5_ui5', '/api'];
-            const destinationUrl = '/backend.example';
+            const backends = [
+                {
+                    url: '/backend.example',
+                    paths: ['/sap/opu/odata', '/sap/bc/ui5_ui5', '/api']
+                }
+            ];
 
-            const router = setupProxyRoutes(paths, destinationUrl, mockTokenProvider, logger);
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             expect(typeof router).toBe('function');
             expect(router.use).toBeDefined();
-            expect(mockTokenProvider.createTokenMiddleware).toHaveBeenCalledTimes(paths.length);
+            expect(mockTokenProvider.createTokenMiddleware).toHaveBeenCalledTimes(backends[0].paths.length);
         });
 
         test('throws error when route registration fails', () => {
-            const paths = ['/sap/opu/odata'];
-            const destinationUrl = '/backend.example';
+            const backends = [
+                {
+                    url: '/backend.example',
+                    paths: ['/sap/opu/odata']
+                }
+            ];
             const failingTokenProvider = {
                 createTokenMiddleware: jest.fn().mockImplementation(() => {
                     throw new Error('Token middleware creation failed');
@@ -144,19 +195,43 @@ describe('proxy', () => {
             } as unknown as OAuthTokenProvider;
 
             expect(() => {
-                setupProxyRoutes(paths, destinationUrl, failingTokenProvider, logger);
+                setupProxyRoutes(backends, failingTokenProvider, logger);
             }).toThrow('Failed to register proxy for /sap/opu/odata');
         });
 
         test('handles empty paths array', () => {
-            const paths: string[] = [];
-            const destinationUrl = '/backend.example';
+            const backends = [
+                {
+                    url: '/backend.example',
+                    paths: []
+                }
+            ];
 
-            const router = setupProxyRoutes(paths, destinationUrl, mockTokenProvider, logger);
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             expect(typeof router).toBe('function');
             expect(router.use).toBeDefined();
             expect(router.stack.length).toBe(0);
+        });
+
+        test('sets up routes for multiple backends', () => {
+            const backends = [
+                {
+                    url: '/backend1.example',
+                    paths: ['/sap/opu/odata', '/sap/bc/ui5_ui5']
+                },
+                {
+                    url: '/backend2.example',
+                    paths: ['/api/v1', '/api/v2']
+                }
+            ];
+
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
+
+            expect(typeof router).toBe('function');
+            expect(router.use).toBeDefined();
+            const totalPaths = backends[0].paths.length + backends[1].paths.length;
+            expect(mockTokenProvider.createTokenMiddleware).toHaveBeenCalledTimes(totalPaths);
         });
     });
 
@@ -165,13 +240,20 @@ describe('proxy', () => {
         const destinationUrl = 'https://backend.example';
 
         test('proxies request with token middleware', async () => {
-            const router = setupProxyRoutes([path], destinationUrl, mockTokenProvider, logger);
+            const backends = [
+                {
+                    url: destinationUrl,
+                    paths: [path]
+                }
+            ];
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             const app = express();
             app.use(router);
 
+            // After path stripping, backend receives /EntitySet (path prefix /sap/opu/odata is stripped)
             nock(destinationUrl)
-                .get(`${path}/EntitySet`)
+                .get('/EntitySet')
                 .matchHeader('authorization', 'Bearer mock-token')
                 .reply(200, { value: [] });
 
@@ -183,12 +265,19 @@ describe('proxy', () => {
         });
 
         test('proxies request with query parameters', async () => {
-            const router = setupProxyRoutes([path], destinationUrl, mockTokenProvider, logger);
+            const backends = [
+                {
+                    url: destinationUrl,
+                    paths: [path]
+                }
+            ];
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             const app = express();
             app.use(router);
 
-            nock(destinationUrl).get(`${path}/EntitySet`).query({ $top: '10', $skip: '0' }).reply(200, { value: [] });
+            // After path stripping, backend receives /EntitySet with query params
+            nock(destinationUrl).get('/EntitySet').query({ $top: '10', $skip: '0' }).reply(200, { value: [] });
 
             const server = supertest(app);
             const response = await server.get(`${path}/EntitySet?$top=10&$skip=0`);
@@ -197,7 +286,13 @@ describe('proxy', () => {
         });
 
         test('handles non-proxied paths', async () => {
-            const router = setupProxyRoutes([path], destinationUrl, mockTokenProvider, logger);
+            const backends = [
+                {
+                    url: destinationUrl,
+                    paths: [path]
+                }
+            ];
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
 
             const app = express();
             app.use(router);
@@ -206,6 +301,32 @@ describe('proxy', () => {
             const response = await server.get('/not/proxied/path');
 
             expect(response.status).toBe(404);
+        });
+
+        test('proxies request with pathRewrite', async () => {
+            const backends = [
+                {
+                    url: destinationUrl,
+                    paths: ['/resources/com/sap/apm'],
+                    pathRewrite: '/api'
+                }
+            ];
+            const router = setupProxyRoutes(backends, mockTokenProvider, logger);
+
+            const app = express();
+            app.use(router);
+
+            // After path rewriting, /resources/com/sap/apm/v1/service becomes /api/v1/service
+            nock(destinationUrl)
+                .get('/api/v1/service')
+                .matchHeader('authorization', 'Bearer mock-token')
+                .reply(200, { success: true });
+
+            const server = supertest(app);
+            const response = await server.get('/resources/com/sap/apm/v1/service');
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({ success: true });
         });
     });
 });

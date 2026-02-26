@@ -1,0 +1,92 @@
+name: Renovate PR Automation
+
+# This workflow automates Renovate PR follow-up tasks:
+# - For general dependency updates: Creates changesets automatically
+# - For @ui5/manifest updates: Runs manifest-specific updates (fixtures, fallbacks, custom changeset)
+
+on:
+    pull_request_target:
+        types: [opened, synchronize, reopened]
+        branches: [main]
+
+jobs:
+    # Job 1: Create changeset for general Renovate dependency PRs (NOT @ui5/manifest)
+    create-changeset:
+        name: Create Dependency Changeset
+        runs-on: ubuntu-latest
+        # All Renovate PRs EXCEPT @ui5/manifest (which has custom handling)
+        if: |
+            github.actor == 'renovate[bot]' &&
+            !contains(github.event.pull_request.title, '@ui5/manifest')
+        steps:
+            - name: Checkout PR branch
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.head_ref }}
+                  fetch-depth: 0
+                  token: ${{ secrets.ACCESS_PAT }}
+
+            - name: Create changeset
+              uses: mscharley/dependency-changesets-action@v1.2.2
+              with:
+                  token: ${{ secrets.ACCESS_PAT }}
+                  author-email: 'github-actions[bot]@users.noreply.github.com'
+                  commit-message: 'chore: add changeset for dependency update'
+
+    # Job 2: Run manifest-specific updates (only for @ui5/manifest PRs)
+    update-manifest-fixtures:
+        name: Update @ui5/manifest Fixtures & Changeset
+        runs-on: ubuntu-latest
+        if: |
+            github.actor == 'renovate[bot]' &&
+            contains(github.event.pull_request.title, '@ui5/manifest')
+        steps:
+            - name: Checkout PR branch
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.head_ref }}
+                  fetch-depth: 0
+                  token: ${{ secrets.ACCESS_PAT }}
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4.2.0
+
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
+                  cache: 'pnpm'
+
+            - name: Install pnpm modules
+              run: pnpm install --frozen-lockfile
+
+            - name: Build project
+              run: pnpm build
+
+            - name: Run update script (fixtures & fallbacks)
+              run: node scripts/update-ui5manifest-version.js
+
+            - name: Check for changes
+              id: check-changes
+              run: |
+                  if [[ -n $(git status --porcelain) ]]; then
+                    echo "has_changes=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "has_changes=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Commit fixture updates
+              if: steps.check-changes.outputs.has_changes == 'true'
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add -u || true # Add updated files, but don't fail if no files were changed
+                  git commit -m "chore: update manifest version test fixtures & ui5 version fallbacks" --no-verify
+                  git push --no-verify
+
+            - name: Create changeset
+              uses: mscharley/dependency-changesets-action@v1.2.2
+              with:
+                  token: ${{ secrets.ACCESS_PAT }}
+                  author-email: 'github-actions[bot]@users.noreply.github.com'
+                  commit-message: 'chore: add changeset for @ui5/manifest update'
