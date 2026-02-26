@@ -522,8 +522,7 @@ describe('Generate v4 apps', () => {
             project: {
                 ...baseTestProject(testDir),
                 name: testProjectName,
-                targetFolder: join(testDir, testProjectName, capAppFolder),
-                enableEslint: false
+                targetFolder: join(testDir, testProjectName, capAppFolder)
             } as Project,
             service: {
                 version: OdataVersion.v4,
