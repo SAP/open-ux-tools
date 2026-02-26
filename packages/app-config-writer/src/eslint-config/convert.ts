@@ -92,8 +92,8 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
         );
         return false;
     }
-    if (!fs.exists(join(basePath, '.eslintrc.json'))) {
-        logger?.error(`No .eslintrc.json found at path '${join(basePath, '.eslintrc.json')}'`);
+    if (!fs.exists(join(basePath, '.eslintrc.json')) && !fs.exists(join(basePath, '.eslintrc'))) {
+        logger?.error(`No .eslintrc.json or .eslintrc found at path '${basePath}'`);
         return false;
     }
     return true;
@@ -114,13 +114,13 @@ async function addFioriToolsToExistingConfig(
     config = 'recommended',
     logger?: ToolsLogger
 ): Promise<void> {
-    const eslintrcPath = join(basePath, '.eslintrc.json');
-    const eslintConfig = fs.readJSON(eslintrcPath) as EslintRcJson | undefined;
+    const eslintrcJsonPath = join(basePath, '.eslintrc.json');
+    const eslintrcPath = join(basePath, '.eslintrc');
+    const configPath = fs.exists(eslintrcJsonPath) ? eslintrcJsonPath : eslintrcPath;
+    const eslintConfig = fs.readJSON(configPath) as EslintRcJson | undefined;
 
     if (!eslintConfig || typeof eslintConfig !== 'object') {
-        throw new Error(
-            `Existing .eslintrc.json at path '${join(basePath, '.eslintrc.json')}' is not a valid JSON object.`
-        );
+        throw new Error(`Existing eslint config at path '${configPath}' is not a valid JSON object.`);
     }
 
     eslintConfig.plugins ??= [];
@@ -147,8 +147,8 @@ async function addFioriToolsToExistingConfig(
         }
     }
 
-    fs.writeJSON(eslintrcPath, eslintConfig);
-    logger?.debug(`Applied SAP Fiori tools settings to ${eslintrcPath}`);
+    fs.writeJSON(configPath, eslintConfig);
+    logger?.debug(`Applied SAP Fiori tools settings to ${configPath}`);
 }
 
 /**
@@ -164,10 +164,14 @@ async function runMigrationCommand(basePath: string, fs: Editor): Promise<void> 
 
     try {
         // 1. Copy necessary files to temp directory
-        const eslintrcPath = join(basePath, '.eslintrc.json');
+        const eslintrcJsonPath = join(basePath, '.eslintrc.json');
+        const eslintrcPath = join(basePath, '.eslintrc');
+        const configPath = fs.exists(eslintrcJsonPath) ? eslintrcJsonPath : eslintrcPath;
+        const configFileName = fs.exists(eslintrcJsonPath) ? '.eslintrc.json' : '.eslintrc';
+
         // Read from mem-fs (which has the modified content) and write to temp directory
-        const eslintrcContent = fs.read(eslintrcPath);
-        writeFileSync(join(tempDir, '.eslintrc.json'), eslintrcContent, 'utf-8');
+        const eslintrcContent = fs.read(configPath);
+        writeFileSync(join(tempDir, configFileName), eslintrcContent, 'utf-8');
 
         const eslintignorePath = join(basePath, '.eslintignore');
         if (existsSync(eslintignorePath)) {
@@ -175,7 +179,7 @@ async function runMigrationCommand(basePath: string, fs: Editor): Promise<void> 
         }
 
         // 2. Run migration in temp directory
-        await spawnMigrationCommand(tempDir);
+        await spawnMigrationCommand(tempDir, configFileName);
 
         // 3. Write migrated config to mem-fs
         const migratedConfigPath = join(basePath, 'eslint.config.mjs');
@@ -190,11 +194,12 @@ async function runMigrationCommand(basePath: string, fs: Editor): Promise<void> 
  * Spawns the eslint migration command using cross-spawn to convert the eslint configuration to flat config format.
  *
  * @param basePath - base path to be used for the conversion
+ * @param configFileName - the name of the config file to migrate
  * @returns a promise that resolves when the migration command finishes successfully, or rejects if the command fails
  */
-async function spawnMigrationCommand(basePath: string): Promise<void> {
+async function spawnMigrationCommand(basePath: string, configFileName: string): Promise<void> {
     return new Promise((resolve, reject) => {
-        const child = crossSpawn('npx', ['--yes', packageName.ESLINT_MIGRATE_CONFIG, '.eslintrc.json'], {
+        const child = crossSpawn('npx', ['--yes', packageName.ESLINT_MIGRATE_CONFIG, configFileName], {
             cwd: basePath,
             shell: false,
             stdio: 'inherit'
