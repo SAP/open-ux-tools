@@ -62,7 +62,7 @@ function isOptionalString(value: unknown): value is string | undefined {
  * @returns {boolean} True if the value is undefined or a valid array of key user changes.
  */
 function isOptionalKeyUserChanges(value: unknown): boolean {
-    if (typeof value === 'undefined') {
+    if (value === undefined) {
         return true;
     }
     if (!Array.isArray(value)) {
@@ -72,6 +72,6 @@ function isOptionalKeyUserChanges(value: unknown): boolean {
         (item) =>
             isPlainObject(item) &&
             isPlainObject(item.content) &&
-            (typeof item.texts === 'undefined' || isPlainObject(item.texts))
+            (item.texts === undefined || isPlainObject(item.texts))
     );
 }
