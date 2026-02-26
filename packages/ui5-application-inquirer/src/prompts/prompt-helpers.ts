@@ -86,7 +86,7 @@ export function hidePrompts(
         if (
             !hidePrompt &&
             // ESLint is now enabled by default in the writer, so hide the prompt
-            !(promptNames[promptKey] === promptNames.enableEslint) &&
+            promptNames[promptKey] !== promptNames.enableEslint &&
             // Target directory is determined by the CAP project. `targetFolder` is not available for CAP projects
             !(promptNames[promptKey] === promptNames.targetFolder && isCapProject) &&
             // `enableTypeScript` and `enableVirtualEndpoints` should not be shown for certain CAP projects i.e CAP Java
