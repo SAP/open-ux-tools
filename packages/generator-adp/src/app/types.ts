@@ -3,7 +3,7 @@ import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-ty
 
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
-import type { AdaptationDescriptor, AdaptationProjectType } from '@sap-ux/axios-extension';
+import type { AdaptationDescriptor, AdaptationProjectType, KeyUserChangeContent } from '@sap-ux/axios-extension';
 import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
@@ -295,6 +295,7 @@ export interface JsonInput {
     projectName?: string;
     namespace?: string;
     projectType?: AdaptationProjectType;
+    keyUserChanges?: KeyUserChangeContent[];
 }
 
 export enum SystemType {
