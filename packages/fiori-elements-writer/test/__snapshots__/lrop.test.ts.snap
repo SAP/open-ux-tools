@@ -15,6 +15,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felrop2\\",
@@ -30,12 +39,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop2-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop2-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop2-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -3649,6 +3661,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felrop2\\",
@@ -3664,12 +3685,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop2-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop2-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop2-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -10794,6 +10818,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felrop1\\",
@@ -10809,12 +10842,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop1-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop1-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop1-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -14490,6 +14526,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felrop194\\",
@@ -14505,12 +14550,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop194-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop194-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop194-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -18186,6 +18234,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_add_test_virtual_endpoints\\",
@@ -18201,12 +18258,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flp.html#app-preview\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flp.html#app-preview\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flp.html#app-preview\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -19434,6 +19494,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_addtests\\",
@@ -19449,12 +19518,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtests-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtests-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtests-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -23333,6 +23405,15 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_addtests_cds 1`] = `
 Object {
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_addtests_cds\\",
@@ -23347,7 +23428,9 @@ Object {
   \\"dependencies\\": {},
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
-    \\"@sap/ux-ui5-tooling\\": \\"1\\"
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\"
   },
   \\"scripts\\": {
     \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\"
@@ -25103,6 +25186,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_annotation_reuse_lib\\",
@@ -25118,12 +25210,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4annotationreuselib-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4annotationreuselib-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4annotationreuselib-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -26487,6 +26582,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felropui5\\",
@@ -26502,12 +26606,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felropui5-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felropui5-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felropui5-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -30183,6 +30290,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felropui5\\",
@@ -30198,12 +30314,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felropui5-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felropui5-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felropui5-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -33880,6 +33999,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felrop3\\",
@@ -33895,12 +34023,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop3-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop3-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop3-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -37516,6 +37647,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felrop4\\",
@@ -37531,12 +37671,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flp.html#app-preview\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flp.html#app-preview\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flp.html#app-preview\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -40574,6 +40717,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lropv2_set_toolsid\\",
@@ -40589,12 +40741,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV2settoolsId-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV2settoolsId-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV2settoolsId-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -44209,6 +44364,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lropv2_set_toolsid_only\\",
@@ -44224,12 +44388,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV2settoolsIdonly-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV2settoolsIdonly-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV2settoolsIdonly-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
@@ -58344,6 +58511,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
@@ -58358,12 +58534,15 @@ archive.zip
   \\"dependencies\\": {},
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
-    \\"@sap/ux-ui5-tooling\\": \\"1\\"
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: \`npm run start-mock\`.\\\\\\\\\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv2ts-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: \`npm run start-mock\`.\\\\\\\\\\\\\\"\\",
@@ -58809,6 +58988,15 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "eslint.config.mjs": Object {
+    "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
+
+export default [
+    ...fioriTools.configs.recommended
+];
+",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
@@ -58824,12 +59012,15 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.33\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^9.0.0\\",
+    \\"eslint\\": \\"^9\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv2ts-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv2ts-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv2ts-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",

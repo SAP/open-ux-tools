@@ -174,4 +174,45 @@ describe('UI5 templates', () => {
             }
         });
     });
+
+    it('option: `eslint` enabled generates config with recommended profile', async () => {
+        const projectDir = join(outputDir, 'testapp_eslint_enabled');
+        const fs = await generate(
+            projectDir,
+            Object.assign({}, baseAppConfig, {
+                appOptions: {
+                    eslint: true
+                }
+            })
+        );
+        const eslintConfig = fs.read(join(projectDir, 'eslint.config.mjs'));
+        expect(eslintConfig).toContain('fioriTools.configs.recommended');
+        return new Promise((resolve) => {
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+
+    it('option: `eslint` disabled should not generate config', async () => {
+        const projectDir = join(outputDir, 'testapp_no_eslint');
+        const fs = await generate(
+            projectDir,
+            Object.assign({}, baseAppConfig, {
+                appOptions: {
+                    eslint: false
+                }
+            })
+        );
+        expect(fs.exists(join(projectDir, 'eslint.config.mjs'))).toBe(false);
+        return new Promise((resolve) => {
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
 });

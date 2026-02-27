@@ -31,7 +31,7 @@ describe('Test headless', () => {
             floorplan: 'basic',
             project: {
                 description: 'An SAP Fiori application.',
-                enableEslint: false,
+                enableEslint: true,
                 enableTypeScript: false,
                 flpAppId: '',
                 localUI5Version: '1.88.1',

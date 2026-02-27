@@ -229,7 +229,7 @@ export interface ReadonlyState {
 }
 
 export const defaultPromptValues = {
-    [ui5AppInquirerPromptNames.enableEslint]: false,
+    [ui5AppInquirerPromptNames.enableEslint]: true,
     [ui5AppInquirerPromptNames.skipAnnotations]: false,
     [ui5AppInquirerPromptNames.enableTypeScript]: false
 };
