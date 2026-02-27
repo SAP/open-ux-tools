@@ -2,4 +2,4 @@
 '@sap-ux/odata-service-inquirer': minor
 ---
 
-Display an info message when the Responsive Table is selected.
+Display an info message when the responsive table is selected.
