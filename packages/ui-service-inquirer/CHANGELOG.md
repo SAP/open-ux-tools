@@ -1,5 +1,13 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.132
+
+### Patch Changes
+
+- ae0bf31: use hidenewsystem prompt option for ui service generator
+- Updated dependencies [0e2d686]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.10
+
 ## 0.2.131
 
 ### Patch Changes
