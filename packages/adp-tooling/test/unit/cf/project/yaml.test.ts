@@ -940,7 +940,7 @@ describe('YAML Project Functions', () => {
                                 fallthrough: true
                             },
                             {
-                                path: '/test_variant_id',
+                                path: '/test_variant_id/i18n',
                                 src: './webapp/i18n',
                                 fallthrough: true
                             }
@@ -992,7 +992,7 @@ describe('YAML Project Functions', () => {
                                 fallthrough: true
                             },
                             {
-                                path: '/customer_app_variant',
+                                path: '/customer_app_variant/i18n',
                                 src: './webapp/i18n',
                                 fallthrough: true
                             }
@@ -1027,7 +1027,7 @@ describe('YAML Project Functions', () => {
                                 fallthrough: true
                             },
                             {
-                                path: '/customer_app_variant',
+                                path: '/customer_app_variant/i18n',
                                 src: './webapp/i18n',
                                 fallthrough: true
                             }
