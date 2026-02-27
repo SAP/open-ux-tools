@@ -23,7 +23,7 @@
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.10.19",
+        "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/cds-odata-annotation-converter": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",

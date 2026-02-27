@@ -58,7 +58,7 @@
         "@sap/ux-specification": "1.142.0",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
-        "@sap-ux/annotation-converter": "0.10.19",
+        "@sap-ux/annotation-converter": "0.10.21",
         "@sap-ux/vocabularies-types": "0.14.5",
         "@sap-ux/edmx-parser": "0.9.8",
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
