@@ -1,5 +1,6 @@
 import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser';
+import type { Element } from '@sap-ux/odata-annotation-core';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const FLEX_ENABLED = 'sap-flex-enabled';
 export const COPY_TO_CLIPBOARD = 'sap-copy-to-clipboard';
@@ -8,6 +9,7 @@ export const ENABLE_PASTE = 'sap-enable-paste';
 export const CREATION_MODE_FOR_TABLE = 'sap-creation-mode-for-table';
 export const STATE_PRESERVATION_MODE = 'sap-state-preservation-mode';
 export const TABLE_COLUMN_VERTICAL_ALIGNMENT = 'sap-table-column-vertical-alignment';
+export const NO_DATA_FIELD_INTENT_BASED_NAVIGATION = 'sap-no-data-field-intent-based-navigation';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -84,6 +86,18 @@ export interface TableColumnVerticalAlignment {
     manifest: ManifestPropertyDiagnosticData;
 }
 
+export interface NoDataFieldIntentBasedNavigation {
+    type: typeof NO_DATA_FIELD_INTENT_BASED_NAVIGATION;
+    manifest: ManifestPropertyDiagnosticData;
+    pageName: string;
+    annotation: {
+        file: string;
+        annotationPath: string;
+        reference: AnnotationReference;
+        reportedElements: Element[];
+    };
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | FlexEnabled
@@ -92,4 +106,5 @@ export type Diagnostic =
     | EnableExport
     | EnablePaste
     | StatePreservationMode
-    | TableColumnVerticalAlignment;
+    | TableColumnVerticalAlignment
+    | NoDataFieldIntentBasedNavigation;
