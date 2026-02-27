@@ -84,9 +84,7 @@ export type ObjectPageFeatureData = {
     navigationParents?: ObjectPageNavigationParents;
     headerTitle?: string;
     headerDescription?: string;
-    headerSections?: {
-        facetId?: string;
-    }[];
+    headerSections?: HeaderSectionFeatureData[];
 };
 
 export type ListReportFeatureData = {

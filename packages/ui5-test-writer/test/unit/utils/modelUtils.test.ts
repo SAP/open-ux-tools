@@ -6,7 +6,6 @@ import type {
 } from '@sap/ux-specification/dist/types/src/parser';
 import {
     getListReportPage,
-    getObjectPages,
     getAggregations,
     getSelectionFieldItems,
     getFilterFields,
@@ -65,58 +64,6 @@ describe('Test getListReportPage()', () => {
         const result = getListReportPage(applicationModel);
         expect(result?.pageKey).toBe('firstLR');
         expect(result?.page).toEqual(firstListReport);
-    });
-});
-
-describe('Test getObjectPages()', () => {
-    test('should return empty object when no pages exist', () => {
-        const applicationModel = {
-            pages: {},
-            model: {}
-        } as unknown as ApplicationModel;
-        const result = getObjectPages(applicationModel);
-        expect(result).toEqual({});
-    });
-
-    test('should return empty object when no ObjectPage pages exist', () => {
-        const applicationModel = {
-            pages: {
-                listReport: { pageType: 'ListReport' }
-            },
-            model: {}
-        } as unknown as ApplicationModel;
-        const result = getObjectPages(applicationModel);
-        expect(result).toEqual({});
-    });
-
-    test('should return single ObjectPage when it exists', () => {
-        const objectPage = { pageType: 'ObjectPage', name: 'test' };
-        const applicationModel = {
-            pages: {
-                objectPage
-            },
-            model: {}
-        } as unknown as ApplicationModel;
-        const result = getObjectPages(applicationModel);
-        expect(result).toEqual({ objectPage });
-        expect(result.objectPage).toBe(objectPage);
-    });
-
-    test('should return all ObjectPages when multiple exist', () => {
-        const objectPage1 = { pageType: 'ObjectPage', name: 'first' };
-        const objectPage2 = { pageType: 'ObjectPage', name: 'second' };
-        const applicationModel = {
-            pages: {
-                objectPage1,
-                objectPage2,
-                listReport: { pageType: 'ListReport' }
-            },
-            model: {}
-        } as unknown as ApplicationModel;
-        const result = getObjectPages(applicationModel);
-        expect(Object.keys(result)).toHaveLength(2);
-        expect(result.objectPage1).toBe(objectPage1);
-        expect(result.objectPage2).toBe(objectPage2);
     });
 });
 
@@ -498,23 +445,6 @@ describe('Test edge cases for better branch coverage', () => {
         expect(result?.page.name).toBe('lr');
     });
 
-    test('getObjectPages should only return ObjectPage types', () => {
-        const applicationModel = {
-            pages: {
-                lr: { pageType: 'ListReport' },
-                op1: { pageType: 'ObjectPage', name: 'op1' },
-                custom: { pageType: 'CustomPage' },
-                op2: { pageType: 'ObjectPage', name: 'op2' }
-            },
-            model: {}
-        } as unknown as ApplicationModel;
-        const result = getObjectPages(applicationModel);
-        expect(Object.keys(result)).toHaveLength(2);
-        expect(result.op1).toBeDefined();
-        expect(result.op2).toBeDefined();
-        expect(result.lr).toBeUndefined();
-    });
-
     test('getFilterFields should handle deeply nested missing properties', () => {
         const mockPageModel = {
             root: {
@@ -563,23 +493,6 @@ describe('Test edge cases for better branch coverage', () => {
         expect(result[0]).toBe('Z Field');
         expect(result[1]).toBe('A Field');
         expect(result[2]).toBe('M Field');
-    });
-
-    test('getObjectPages should handle pages with additional properties', () => {
-        const op1 = {
-            pageType: 'ObjectPage',
-            name: 'op1',
-            model: { root: {} },
-            navigation: {}
-        };
-        const applicationModel = {
-            pages: {
-                objectPage1: op1
-            },
-            model: {}
-        } as unknown as ApplicationModel;
-        const result = getObjectPages(applicationModel);
-        expect(result.objectPage1).toBe(op1);
     });
 
     test('getListReportPage should return null for empty pages object', () => {
