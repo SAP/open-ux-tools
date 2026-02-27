@@ -52,7 +52,14 @@ export class FioriFunctionalityServer {
         this.server = new Server(
             {
                 name: 'fiori-mcp',
-                version: packageJson.version
+                version: packageJson.version,
+                icons: [
+                    {
+                        src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/src/assets/MCP-SERVER-plain.svg',
+                        mimeType: 'image/svg+xml'
+                    }
+                ],
+                title: 'SAP Fiori MCP Server'
             },
             {
                 capabilities: {
