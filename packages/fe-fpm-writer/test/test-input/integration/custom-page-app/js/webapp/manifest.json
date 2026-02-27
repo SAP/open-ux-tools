@@ -107,7 +107,7 @@
                     "name": "sap.fe.core.fpm",
                     "options": {
                         "settings": {
-                            "viewName": "sap.fe.demo.customPageAppJs.ext.main.Main",
+                            "viewName": "sap.fe.demo.customPageAppJs.ext.view.Main",
                             "contextPath": "/BookedFlights"
                         }
                     }

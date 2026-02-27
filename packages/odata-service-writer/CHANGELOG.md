@@ -1,5 +1,14 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.27
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/mockserver-config-writer@0.9.58
+    - @sap-ux/ui5-config@0.29.19
+
 ## 0.29.26
 
 ### Patch Changes

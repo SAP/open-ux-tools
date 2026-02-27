@@ -18,6 +18,18 @@ export const customFragmentConfig = {
     }
 };
 
+export const customColumnFragmentConfig = {
+    path: 'v4/mdc-custom-column-config.xml',
+    getData: (): { ids: Record<string, string> } => {
+        const uuid = randomBytes(4).toString('hex');
+        return {
+            ids: {
+                text: `text-${uuid}`
+            }
+        };
+    }
+};
+
 /**
  * Checks if the given object has a 'template' property of type string.
  *
@@ -29,6 +41,37 @@ export function hasTemplate(obj: unknown): obj is { template: string } {
 }
 
 /**
+ * Gets config based on change property path.
+ *
+ * @param change - The AppDescriptorV4Change object containing change details.
+ * @returns The configuration object or undefined if no matching config is found.
+ */
+function getConfig(
+    change: AppDescriptorV4Change
+): { path: string; getData: () => { ids: Record<string, string> } } | undefined {
+    const propertyPath = change.content.entityPropertyChange.propertyPath;
+
+    const isCustomSectionPropertyPath = propertyPath.startsWith('content/body/sections/');
+    // Pattern matches:
+    // - controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/columns/columnId
+    // - controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem#qualifier/columns/columnId
+    // - controlConfiguration/navigationPath/@com.sap.vocabularies.UI.v1.LineItem/columns/columnId
+    // - controlConfiguration/navigationPath/@com.sap.vocabularies.UI.v1.LineItem#qualifier/columns/columnId
+    // Safe: propertyPath comes from AppDescriptorV4Change which is validated manifest content.
+    // The pattern is bounded: fixed prefix "controlConfiguration/", optional navigation segment,
+    // annotation term, optional qualifier, "/columns/", and column ID - no nested quantifiers.
+    const isCustomColumnPropertyPath =
+        /^controlConfiguration\/(?:[^/@]+\/)?@[^/]+\.LineItem(?:#[^/]+)?\/columns\/[^/]+$/.test(propertyPath);
+
+    if (isCustomSectionPropertyPath) {
+        return customFragmentConfig;
+    } else if (isCustomColumnPropertyPath) {
+        return customColumnFragmentConfig;
+    }
+    return undefined;
+}
+
+/**
  * Adds a custom XML fragment file based on the provided AppDescriptorV4Change and template configuration.
  *
  * @param basePath - The base path where the fragment should be created.
@@ -36,16 +79,10 @@ export function hasTemplate(obj: unknown): obj is { template: string } {
  * @param fs - The mem-fs-editor instance for file operations.
  * @param logger - The logger instance for logging information and errors.
  */
-export function addCustomSectionFragment(
-    basePath: string,
-    change: AppDescriptorV4Change,
-    fs: Editor,
-    logger: Logger
-): void {
+export function addCustomFragment(basePath: string, change: AppDescriptorV4Change, fs: Editor, logger: Logger): void {
     const propertyValue = change.content.entityPropertyChange.propertyValue;
-    const isCustomSectionPropertyPath =
-        change.content.entityPropertyChange.propertyPath.startsWith('content/body/sections/');
-    if (isCustomSectionPropertyPath && hasTemplate(propertyValue)) {
+    const config = getConfig(change);
+    if (hasTemplate(propertyValue) && config) {
         const { template } = propertyValue;
         const path = getFragmentPathFromTemplate(template, change);
         try {
@@ -54,9 +91,17 @@ export function addCustomSectionFragment(
             }
             const fragmentPath = `${path}.fragment.xml`;
             const fullPath = join(basePath, fragmentPath);
-            const fragmentTemplatePath = join(__dirname, '../../templates/rta', customFragmentConfig.path);
+            const fragmentTemplatePath = join(__dirname, '../../templates/rta', config.path);
             const text = fs.read(fragmentTemplatePath);
-            const template = render(text, customFragmentConfig.getData());
+            // Safe: Template files are from our own codebase (templates/rta/), config.path is from getConfig()
+            // which only returns predefined paths (customFragmentConfig or customColumnFragmentConfig).
+            // Template data comes from controlled config.getData() which only generates UUIDs for IDs.
+            const template = render(text, {
+                viewName: undefined,
+                controlType: undefined,
+                targetAggregation: undefined,
+                ...config.getData()
+            });
             fs.write(fullPath, template);
             logger.info(`XML Fragment "${fragmentPath}" was created`);
         } catch (error) {
