@@ -12,7 +12,8 @@ import {
     getServiceInstanceKeys,
     addServeStaticMiddleware,
     addBackendProxyMiddleware,
-    getCfUi5AppInfo
+    getCfUi5AppInfo,
+    getProjectNameForXsSecurity
 } from '../cf';
 import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
@@ -41,10 +42,12 @@ export async function generateCf(
         fs = create(createStorage());
     }
 
+    const timestamp = Date.now().toString();
+
     const fullConfig = setDefaults(config);
     const { app, cf, ui5, project } = fullConfig;
 
-    await adjustMtaYaml(
+    const yamlContent = await adjustMtaYaml(
         {
             projectPath: basePath,
             adpProjectName: project.name,
@@ -54,6 +57,7 @@ export async function generateCf(
             serviceKeys: cf.serviceInfo?.serviceKeys
         },
         fs,
+        timestamp,
         config.options?.templatePathOverwrite,
         logger
     );
@@ -65,6 +69,7 @@ export async function generateCf(
     const variant = getCfVariant(fullConfig);
     fillDescriptorContent(variant.content as Content[], app.appType, ui5.version, app.i18nModels);
 
+    fullConfig.project.xsSecurityAppName = getProjectNameForXsSecurity(yamlContent, timestamp);
     await writeCfTemplates(basePath, variant, fullConfig, fs);
     await writeCfUI5Yaml(fullConfig.project.folder, fullConfig, fs);
 
