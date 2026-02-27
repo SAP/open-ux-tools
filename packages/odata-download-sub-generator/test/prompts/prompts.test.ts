@@ -1,7 +1,8 @@
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { ApplicationAccess, createApplicationAccess, ServiceSpecification } from '@sap-ux/project-access';
+import type { ServiceSpecification } from '@sap-ux/project-access';
+import { ApplicationAccess, createApplicationAccess } from '@sap-ux/project-access';
 import {
     getODataDownloaderPrompts,
     promptNames,
