@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.23.137
+
+### Patch Changes
+
+- b68b558: Fix card generator endpoints using wrong paths for CAP projects.
+
 ## 0.23.136
 
 ### Patch Changes
