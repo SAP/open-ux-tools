@@ -88,7 +88,6 @@ export interface TableColumnVerticalAlignment {
 
 export interface NoDataFieldIntentBasedNavigation {
     type: typeof NO_DATA_FIELD_INTENT_BASED_NAVIGATION;
-    manifest: ManifestPropertyDiagnosticData;
     pageName: string;
     annotation: {
         file: string;

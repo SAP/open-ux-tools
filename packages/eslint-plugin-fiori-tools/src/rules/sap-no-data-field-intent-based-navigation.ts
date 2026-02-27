@@ -7,7 +7,6 @@ import { NO_DATA_FIELD_INTENT_BASED_NAVIGATION } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
 import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4';
 import { type ParsedApp, type ParsedService } from '../project-context/parser';
-import type { MemberNode } from '@humanwhocodes/momoa';
 
 /**
  *
@@ -63,11 +62,6 @@ function checkTablesInPage(
             problems.push({
                 type: NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
                 pageName: page.targetName,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: table.path ?? []
-                },
                 annotation: {
                     file: table.annotation.annotation.top.uri,
                     annotationPath: table.annotation.annotationPath,
@@ -114,13 +108,6 @@ const rule: FioriRuleDefinition = createFioriRule({
 
         return problems;
     },
-    createJsonVisitorHandler: (context) =>
-        function report(node: MemberNode): void {
-            context.report({
-                node,
-                messageId: 'no-data-field-intent-based-navigation-manifest'
-            });
-        },
     createAnnotations(context, validationResult) {
         if (validationResult.length === 0) {
             return {};
