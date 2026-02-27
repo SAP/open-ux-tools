@@ -80,4 +80,59 @@ describe('isJsonInput', () => {
         }
         expect(isJsonInput(new JsonInput())).toBe(false);
     });
+
+    describe('keyUserChanges validation', () => {
+        it('should return true when keyUserChanges is undefined', () => {
+            const input = { system: 'system', application: 'application' };
+            expect(isJsonInput(input)).toBe(true);
+        });
+
+        it('should return true when keyUserChanges is a valid array', () => {
+            const input = {
+                system: 'system',
+                application: 'application',
+                keyUserChanges: [
+                    { content: { fileName: 'change1' } },
+                    { content: { fileName: 'change2' }, texts: { i18n: 'text' } }
+                ]
+            };
+            expect(isJsonInput(input)).toBe(true);
+        });
+
+        it('should return true when keyUserChanges is an empty array', () => {
+            const input = {
+                system: 'system',
+                application: 'application',
+                keyUserChanges: []
+            };
+            expect(isJsonInput(input)).toBe(true);
+        });
+
+        it('should return false when keyUserChanges is not an array', () => {
+            const input = {
+                system: 'system',
+                application: 'application',
+                keyUserChanges: 'not an array'
+            };
+            expect(isJsonInput(input)).toBe(false);
+        });
+
+        it('should return false when keyUserChanges item is missing content', () => {
+            const input = {
+                system: 'system',
+                application: 'application',
+                keyUserChanges: [{ texts: {} }]
+            };
+            expect(isJsonInput(input)).toBe(false);
+        });
+
+        it('should return false when keyUserChanges item content is not an object', () => {
+            const input = {
+                system: 'system',
+                application: 'application',
+                keyUserChanges: [{ content: 'not an object' }]
+            };
+            expect(isJsonInput(input)).toBe(false);
+        });
+    });
 });
