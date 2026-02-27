@@ -1,5 +1,21 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.18.13
+
+### Patch Changes
+
+- ca2566b: Update fast-xml-parser
+
+    Issue: #37278
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/axios-extension@1.25.17
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/inquirer-common@0.11.16
+    - @sap-ux/fiori-generator-shared@0.13.81
+    - @sap-ux/project-input-validator@0.6.64
+    - @sap-ux/telemetry@0.6.82
+
 ## 2.18.12
 
 ### Patch Changes
