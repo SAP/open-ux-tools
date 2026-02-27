@@ -1,0 +1,348 @@
+{
+    "Booking": [
+        {
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Prepare_Booking": {},
+            "@odata.etag": "W/\"SADL-202511180935146753530C~20251118093514.6753530\"",
+            "AirlineID": "AA",
+            "AirlineName": "Airline Alpha",
+            "BookingDate": "2025-11-20",
+            "BookingID": "20",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba02d3b",
+            "ConnectionID": "400",
+            "CurrencyCode": "EUR",
+            "CustomerID": "20",
+            "CustomerName": "Customer A",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "FlightDate": "2026-01-17",
+            "FlightPrice": 5484,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBooking": "2025-11-18T09:35:14.675353Z",
+            "SAP__Messages": [],
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__CreateByAssociationControl": {
+                "_BookSupplement": true
+            },
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            },
+            "__FieldControl": {
+                "ConnectionID": 1
+            },
+            "__OperationControl": {
+                "Prepare_Booking": true
+            }
+        },
+        {
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Prepare_Booking": {},
+            "@odata.etag": "W/\"SADL-202511180935146753530C~20251118093514.6753530\"",
+            "AirlineID": "BB",
+            "AirlineName": "Airline Beta",
+            "BookingDate": "2025-11-20",
+            "BookingID": "10",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+            "ConnectionID": "400",
+            "CurrencyCode": "EUR",
+            "CustomerID": "10",
+            "CustomerName": "Customer B",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "FlightDate": "2026-01-17",
+            "FlightPrice": 5484,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBooking": "2025-11-18T09:35:14.675353Z",
+            "SAP__Messages": [],
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__CreateByAssociationControl": {
+                "_BookSupplement": true
+            },
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            },
+            "__FieldControl": {
+                "ConnectionID": 1
+            },
+            "__OperationControl": {
+                "Prepare_Booking": true
+            }
+        }
+    ],
+    "BookingSupplement": [
+        {
+            "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
+            "BookingID": "20",
+            "BookingSupplementID": "21",
+            "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba08d3b",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba02d3b",
+            "CurrencyCode": "EUR",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
+            "Price": 2.3,
+            "SAP__Messages": [],
+            "SupplementDescription": "Hot Chocolate",
+            "SupplementID": "BV-0009",
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            }
+        },
+        {
+            "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
+            "BookingID": "20",
+            "BookingSupplementID": "22",
+            "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba0ad3b",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba02d3b",
+            "CurrencyCode": "EUR",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
+            "Price": 2.3,
+            "SAP__Messages": [],
+            "SupplementDescription": "Hot Chocolate",
+            "SupplementID": "BV-0009",
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            }
+        },
+        {
+            "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
+            "BookingID": "20",
+            "BookingSupplementID": "23",
+            "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba0cd3b",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba02d3b",
+            "CurrencyCode": "EUR",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
+            "Price": 2.3,
+            "SAP__Messages": [],
+            "SupplementDescription": "Hot Chocolate",
+            "SupplementID": "BV-0009",
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            }
+        },
+        {
+            "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
+            "BookingID": "10",
+            "BookingSupplementID": "11",
+            "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba04d3b",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+            "CurrencyCode": "EUR",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
+            "Price": 2.3,
+            "SAP__Messages": [],
+            "SupplementDescription": "Hot Chocolate",
+            "SupplementID": "BV-0009",
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            }
+        },
+        {
+            "@odata.etag": "W/\"SADL-202510301720435370500C~20251030172043.5370500\"",
+            "BookingID": "10",
+            "BookingSupplementID": "12",
+            "BookingSupplementUUID": "42010aef-83ee-1fd0-adb6-987a1ba06d3b",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+            "CurrencyCode": "EUR",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBookSup": "2025-10-30T17:20:43.53705Z",
+            "Price": 2.3,
+            "SAP__Messages": [],
+            "SupplementDescription": "Hot Chocolate",
+            "SupplementID": "BV-0009",
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            }
+        },
+        {
+            "@odata.etag": "W/\"SADL-202510301741410114340C~20251030174141.0114340\"",
+            "BookingID": "10",
+            "BookingSupplementID": "0",
+            "BookingSupplementUUID": "42010aef-83f3-1fd0-adb6-f1d1799f0228",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+            "CurrencyCode": "EUR",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBookSup": "2025-10-30T17:41:41.011434Z",
+            "Price": 0,
+            "SAP__Messages": [],
+            "SupplementDescription": "Tomato Juice",
+            "SupplementID": "BV-0001",
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            }
+        },
+        {
+            "@odata.etag": "W/\"SADL-202510301741410114340C~20251030174141.0114340\"",
+            "BookingID": "10",
+            "BookingSupplementID": "0",
+            "BookingSupplementUUID": "42010aef-83f3-1fd0-adb6-f1d1799ee228",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+            "CurrencyCode": "EUR",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBookSup": "2025-10-30T17:41:41.011434Z",
+            "Price": 0,
+            "SAP__Messages": [],
+            "SupplementDescription": "Tomato Juice",
+            "SupplementID": "BV-0001",
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            }
+        },
+        {
+            "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+            "BookingID": "10",
+            "BookingSupplementID": "0",
+            "BookingSupplementUUID": "42010aef-83ee-1fe0-bcd6-942b4dfd8d04",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+            "CurrencyCode": "",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBookSup": "2026-01-27T07:55:39.126448Z",
+            "Price": 44,
+            "SAP__Messages": [],
+            "SupplementDescription": "Tomato Juice",
+            "SupplementID": "BV-0001",
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            }
+        },
+        {
+            "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+            "BookingID": "10",
+            "BookingSupplementID": "0",
+            "BookingSupplementUUID": "42010aef-83ee-1fe0-bcd6-92ce85900d04",
+            "BookingUUID": "42010aef-83ee-1fd0-adb6-987a1ba00d3b",
+            "CurrencyCode": "EUR",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtBookSup": "2026-01-27T07:55:39.126448Z",
+            "Price": 55,
+            "SAP__Messages": [],
+            "SupplementDescription": "Tomato Juice",
+            "SupplementID": "BV-0001",
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            }
+        }
+    ],
+    "Travel": [
+        {
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Check": {},
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.Edit": {},
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.deductDiscount": {},
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.dummyAction": {},
+            "#com.sap.gateway.srvd.m2_sd_travel_mduu.v0001.setToBooked": {},
+            "@odata.etag": "W/\"SADL-202601270755391264480C~20260127075539.1264480\"",
+            "AgencyID": "70012",
+            "AgencyName": "Travel Agency Inc.",
+            "BeginDate": "2026-11-20",
+            "BookingFee": 4,
+            "Confirmed": false,
+            "CreationDateTime": null,
+            "CreationDateTimeTimezone": "",
+            "CurrencyCode": "EUR",
+            "CustomerID": "12",
+            "CustomerName": "Customer C",
+            "DraftEntityCreationDateTime": null,
+            "DraftEntityLastChangeDateTime": null,
+            "EndDate": "2026-12-31",
+            "HasActiveEntity": false,
+            "HasDraftEntity": false,
+            "IsActiveEntity": true,
+            "LastChangedAtTravel": "2026-01-27T07:55:39.126448Z",
+            "Memo": "test",
+            "SAP__Messages": [],
+            "Status": "N",
+            "TotalPrice": 11038.5,
+            "TravelCode": 0,
+            "TravelID": "150",
+            "TravelUUID": "42010aef-83ee-1fd0-adb6-987a1b9fed3b",
+            "__CreateByAssociationControl": {
+                "_Booking": true
+            },
+            "__EntityControl": {
+                "Deletable": true,
+                "Updatable": true
+            },
+            "__FieldControl": {
+                "BookingFee": 3
+            },
+            "__OperationControl": {
+                "Check": true,
+                "Edit": true,
+                "deductDiscount": true,
+                "dummyAction": true,
+                "setToBooked": true,
+                "setToNew": false
+            }
+        }
+    ]
+}

@@ -3143,6 +3143,88 @@ importers:
         specifier: 8.0.4
         version: 8.0.4
 
+  packages/odata-download-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.16.9
+        version: 1.16.9
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.19
+        version: 0.10.19
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/mockserver-config-writer':
+        specifier: workspace:*
+        version: link:../mockserver-config-writer
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      '@sap-ux/vocabularies-types':
+        specifier: 0.14.5
+        version: 0.14.5
+      '@sap/ux-specification':
+        specifier: 1.142.1
+        version: 1.142.1(typescript@5.9.3)
+      '@vscode-logging/logger':
+        specifier: 2.0.8
+        version: 2.0.8
+      deepmerge:
+        specifier: 4.3.1
+        version: 4.3.1
+      i18next:
+        specifier: 25.8.12
+        version: 25.8.12(typescript@5.9.3)
+      inquirer:
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.19.130)
+      odata-query:
+        specifier: 8.0.5
+        version: 8.0.5
+      prettify-xml:
+        specifier: 1.2.0
+        version: 1.2.0
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/yeoman-generator':
+        specifier: 5.2.14
+        version: 5.2.14
+      rimraf:
+        specifier: 6.1.2
+        version: 6.1.2
+
   packages/odata-entity-model:
     devDependencies:
       '@sap-ux/odata-annotation-core-types':
@@ -6308,7 +6390,7 @@ packages:
       '@azure/core-util': 1.13.1
       '@azure/logger': 1.3.0
       '@azure/storage-blob': 12.29.1
-      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.25.0(ws@8.19.0)(zod@4.3.6)
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
@@ -9156,8 +9238,8 @@ packages:
         optional: true
     dev: true
 
-  /@fal-ai/client@1.9.3:
-    resolution: {integrity: sha512-YMqNRoL4ObdSmuP6bMOX0TS2ok2O3oNqn1VBYcZgQyuEk2d7FpwTWl9B6J4KhJernq2lqooS+4nypCLS4rWatw==}
+  /@fal-ai/client@1.9.4:
+    resolution: {integrity: sha512-mDjF2QDq+oficSSxzmErNkseQeRXnvUBEhJy39n4PPe7jRPZeSqM2SNb27SW50rDtCtay+stwFU8zRZehlt1Qg==}
     engines: {node: '>=18.0.0'}
     requiresBuild: true
     dependencies:
@@ -9852,8 +9934,8 @@ packages:
         optional: true
     dependencies:
       '@types/node': 18.19.130
-      chardet: 2.1.0
-      iconv-lite: 0.7.0
+      chardet: 2.1.1
+      iconv-lite: 0.7.2
 
   /@inquirer/external-editor@2.0.3(@types/node@20.0.0):
     resolution: {integrity: sha512-LgyI7Agbda74/cL5MvA88iDpvdXI2KuMBCGRkbCl2Dg1vzHeOgs+s0SDcXV7b+WZJrv2+ERpWSM65Fpi9VfY3w==}
@@ -11235,7 +11317,7 @@ packages:
       '@octokit/graphql': 4.8.0
       '@octokit/request': 5.6.3
       '@octokit/request-error': 2.1.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.41.0
       before-after-hook: 2.2.2
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
@@ -11335,7 +11417,7 @@ packages:
         optional: true
     dependencies:
       debug: 4.4.3
-      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.25.0(ws@8.19.0)(zod@4.3.6)
       zod: 4.3.6
     optionalDependencies:
       '@modelcontextprotocol/sdk': 1.26.0(zod@4.3.6)
@@ -11352,7 +11434,7 @@ packages:
     dependencies:
       '@openai/agents-core': 0.4.15(ws@8.19.0)(zod@4.3.6)
       debug: 4.4.3
-      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.25.0(ws@8.19.0)(zod@4.3.6)
       zod: 4.3.6
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -11386,7 +11468,7 @@ packages:
       '@openai/agents-openai': 0.4.15(ws@8.19.0)(zod@4.3.6)
       '@openai/agents-realtime': 0.4.15(zod@4.3.6)
       debug: 4.4.3
-      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.25.0(ws@8.19.0)(zod@4.3.6)
       zod: 4.3.6
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -11474,8 +11556,8 @@ packages:
     dev: true
     optional: true
 
-  /@opencode-ai/sdk@1.2.10:
-    resolution: {integrity: sha512-SyXcVqry2hitPVvQtvXOhqsWyFhSycG/+LTLYXrcq8AFmd9FR7dyBSDB3f5Ol6IPkYOegk8P2Eg2kKPNSNiKGw==}
+  /@opencode-ai/sdk@1.2.15:
+    resolution: {integrity: sha512-NUJNlyBCdZ4R0EBLjJziEQOp2XbRPJosaMcTcWSWO5XJPKGUpz0u8ql+5cR8K+v2RJ+hp2NobtNwpjEYfe6BRQ==}
     dev: true
 
   /@opentelemetry/api-logs@0.212.0:
@@ -12509,6 +12591,12 @@ packages:
       - '@sap-ux/odata-annotation-core-types'
       - '@sap-ux/project-access'
       - typescript
+    dev: false
+
+  /@sap-ux/edmx-parser@0.9.1:
+    resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
+    dependencies:
+      xml-js: 1.6.11
     dev: false
 
   /@sap-ux/edmx-parser@0.9.8:
@@ -15366,7 +15454,7 @@ packages:
       '@types/ejs': 3.1.2
       '@types/inquirer': 8.2.6
       '@types/mem-fs-editor': 7.0.1
-      '@types/node': 18.11.9
+      '@types/node': 20.0.0
       '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
     dev: true
@@ -16925,13 +17013,6 @@ packages:
     dependencies:
       type-fest: 0.21.3
 
-  /ansi-escapes@7.1.1:
-    resolution: {integrity: sha512-Zhl0ErHcSRUaVfGUeUdDuLgpkEo8KIFjB4Y9uAc46ScOpdDiU1Dbyplh7qWJeJ/ZHpbyMSM26+X3BySgnIz40Q==}
-    engines: {node: '>=18'}
-    dependencies:
-      environment: 1.1.0
-    dev: true
-
   /ansi-escapes@7.3.0:
     resolution: {integrity: sha512-BvU8nYgGQBxcmMuEeUEmNTvrMVjJNSH7RgW24vXexN4Ven6qCvy4TntnvlnwnMLTVlcRQQdbRY8NKnaIoeWDNg==}
     engines: {node: '>=18'}
@@ -18053,7 +18134,7 @@ packages:
       fs-minipass: 3.0.2
       glob: 10.5.0
       lru-cache: 10.4.3
-      minipass: 7.1.2
+      minipass: 7.1.3
       minipass-collect: 2.0.1
       minipass-flush: 1.0.5
       minipass-pipeline: 1.2.4
@@ -18191,12 +18272,8 @@ packages:
     resolution: {integrity: sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==}
     dev: false
 
-  /chardet@2.1.0:
-    resolution: {integrity: sha512-bNFETTG/pM5ryzQ9Ad0lJOTa6HWD/YsScAR3EnCPZRPlQh77JocYktSHOUHelyhm8IARL+o4c4F1bP5KVOjiRA==}
-
   /chardet@2.1.1:
     resolution: {integrity: sha512-PsezH1rqdV9VvyNhxxOW32/d75r01NY7TQCmOqomRo15ZSOKbpTFVsfjghxo6JloQUCGnH4k1LGu0R4yCLlWQQ==}
-    dev: true
 
   /charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
@@ -22057,7 +22134,7 @@ packages:
       foreground-child: 3.3.1
       jackspeak: 3.4.3
       minimatch: 9.0.5
-      minipass: 7.1.2
+      minipass: 7.1.3
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
@@ -22810,18 +22887,11 @@ packages:
     dependencies:
       safer-buffer: 2.1.2
 
-  /iconv-lite@0.7.0:
-    resolution: {integrity: sha512-cf6L2Ds3h57VVmkZe+Pn+5APsT7FpqJtEhhieDCvrE2MK5Qk9MyffgQyuxQTm6BChfeZNtcOLHp9IcWRVcIcBQ==}
-    engines: {node: '>=0.10.0'}
-    dependencies:
-      safer-buffer: 2.1.2
-
   /iconv-lite@0.7.2:
     resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
     engines: {node: '>=0.10.0'}
     dependencies:
       safer-buffer: 2.1.2
-    dev: true
 
   /icss-utils@5.1.0(postcss@8.4.31):
     resolution: {integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==}
@@ -24834,7 +24904,7 @@ packages:
       chalk: 4.1.2
       console-table-printer: 2.15.0
       p-queue: 6.6.2
-      semver: 7.7.3
+      semver: 7.7.4
       uuid: 10.0.0
     dev: true
 
@@ -25689,7 +25759,7 @@ packages:
     resolution: {integrity: sha512-j7U11C5HXigVuutxebFadoYBbd7VSdZWggSe64NVdvWNBqGAiXPL2QVCehjmw7lY1oF9gOllYbORh+hiNgfPgQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
     dependencies:
-      minipass: 7.1.2
+      minipass: 7.1.3
       minipass-sized: 1.0.3
       minizlib: 3.1.0
     optionalDependencies:
@@ -25733,6 +25803,7 @@ packages:
   /minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
+    dev: true
 
   /minipass@7.1.3:
     resolution: {integrity: sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==}
@@ -26462,7 +26533,7 @@ packages:
       '@npmcli/redact': 3.2.2
       jsonparse: 1.3.1
       make-fetch-happen: 14.0.3
-      minipass: 7.1.2
+      minipass: 7.1.3
       minipass-fetch: 4.0.1
       minizlib: 3.1.0
       npm-package-arg: 12.0.2
@@ -26738,6 +26809,12 @@ packages:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
     dev: true
 
+  /odata-query@8.0.5:
+    resolution: {integrity: sha512-uteX6kmx4Y8LkEjdLuhXagI2GXQbJHvmfbI6z4PKcGj7vv5bLM6cX3vrBQsLr2JQStk0MUouRtkcja4pQhFKhg==}
+    dependencies:
+      tslib: 2.8.1
+    dev: false
+
   /on-finished@2.3.0:
     resolution: {integrity: sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==}
     engines: {node: '>= 0.8'}
@@ -26880,8 +26957,8 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-  /openai@6.22.0(ws@8.19.0)(zod@4.3.6):
-    resolution: {integrity: sha512-7Yvy17F33Bi9RutWbsaYt5hJEEJ/krRPOrwan+f9aCPuMat1WVsb2VNSII5W1EksKT6fF69TG/xj4XzodK3JZw==}
+  /openai@6.25.0(ws@8.19.0)(zod@4.3.6):
+    resolution: {integrity: sha512-mEh6VZ2ds2AGGokWARo18aPISI1OhlgdEIC1ewhkZr8pSIT31dec0ecr9Nhxx0JlybyOgoAT1sWeKtwPZzJyww==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -27437,14 +27514,14 @@ packages:
     engines: {node: '>=16 || 14 >=14.18'}
     dependencies:
       lru-cache: 10.4.3
-      minipass: 7.1.2
+      minipass: 7.1.3
 
   /path-scurry@2.0.0:
     resolution: {integrity: sha512-ypGJsmGtdXUOeM5u93TyeIEfEhM6s+ljAhrk5vAvSx8uyY/02OvrZnA0YNGUrPXfpJMgI1ODd3nwz8Npx4O4cg==}
     engines: {node: 20 || >=22}
     dependencies:
       lru-cache: 11.2.5
-      minipass: 7.1.2
+      minipass: 7.1.3
     dev: true
 
   /path-scurry@2.0.2:
@@ -27966,7 +28043,7 @@ packages:
     dev: true
 
   /prettify-xml@1.2.0:
-    resolution: {integrity: sha1-Rtzx7oqNi3PbMLfgbvJtyc8/bxg=}
+    resolution: {integrity: sha512-kuoTbmC+QQUfx45PrdkVzJqrNEp2lhK++WGyiqBx6JrCvZUQDgeYjdV3h53n7p+37s1Iwx6GjAQ7fcIgD8kkLQ==}
     dev: false
 
   /pretty-bytes@5.6.0:
@@ -28115,7 +28192,7 @@ packages:
       '@inquirer/select': 5.0.4(@types/node@20.0.0)
       '@modelcontextprotocol/sdk': 1.26.0(zod@4.3.6)
       '@openai/agents': 0.4.15(ws@8.19.0)(zod@4.3.6)
-      '@opencode-ai/sdk': 1.2.10
+      '@opencode-ai/sdk': 1.2.15
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 2.5.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/exporter-trace-otlp-http': 0.212.0(@opentelemetry/api@1.9.0)
@@ -28166,7 +28243,7 @@ packages:
       mathjs: 15.1.1
       minimatch: 10.2.2
       nunjucks: 3.2.4(chokidar@5.0.0)
-      openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
+      openai: 6.25.0(ws@8.19.0)(zod@4.3.6)
       opener: 1.5.2
       ora: 9.3.0
       pem: 1.14.8
@@ -28199,7 +28276,7 @@ packages:
       '@azure/identity': 4.13.0
       '@azure/msal-node': 5.0.4
       '@azure/openai-assistants': 1.0.0-beta.6
-      '@fal-ai/client': 1.9.3
+      '@fal-ai/client': 1.9.4
       '@huggingface/transformers': 3.8.1
       '@ibm-cloud/watsonx-ai': 1.7.8
       '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@1.1.26)
@@ -29512,6 +29589,15 @@ packages:
       glob: 10.5.0
     dev: true
 
+  /rimraf@6.1.2:
+    resolution: {integrity: sha512-cFCkPslJv7BAXJsYlK1dZsbP8/ZNLkCAQ0bi1hf5EKX2QHegmDFEFA6QhuYJlk7UDdc+02JjO80YSOrWPpw06g==}
+    engines: {node: 20 || >=22}
+    hasBin: true
+    dependencies:
+      glob: 13.0.6
+      package-json-from-dist: 1.0.1
+    dev: true
+
   /rimraf@6.1.3:
     resolution: {integrity: sha512-LKg+Cr2ZF61fkcaK1UdkH2yEBBKnYjTyWzTJT6KNPcSPaiT7HSdhtMXQuN5wkTX0Xu72KQ1l8S42rlmexS2hSA==}
     engines: {node: 20 || >=22}
@@ -30105,11 +30191,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dev: true
-
-  /semver@7.7.3:
-    resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
-    engines: {node: '>=10'}
-    hasBin: true
 
   /semver@7.7.4:
     resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
@@ -30747,7 +30828,7 @@ packages:
     resolution: {integrity: sha512-S7iGNosepx9RadX82oimUkvr0Ct7IjJbEbs4mJcTxst8um95J3sDYU1RBEOvdu6oL1Wek2ODI5i4MAw+dZ6cAQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
     dependencies:
-      minipass: 7.1.2
+      minipass: 7.1.3
     dev: true
 
   /ssri@8.0.1:
@@ -31368,7 +31449,7 @@ packages:
     resolution: {integrity: sha512-lk+vH+MccxNqgVqSnkMVKx4VLJfnLjDBGzH16JVZjKE2DoxP57s6/vt6JmXV5I3jBcfGrxNrYtC+mPtU7WJztA==}
     engines: {node: '>=18'}
     dependencies:
-      ansi-escapes: 7.1.1
+      ansi-escapes: 7.3.0
       supports-hyperlinks: 3.2.0
     dev: true
 
@@ -33471,7 +33552,7 @@ packages:
     dependencies:
       chalk: 4.1.2
       dargs: 7.0.0
-      debug: 4.3.7
+      debug: 4.4.3
       execa: 5.1.1
       github-username: 6.0.0
       lodash: 4.17.23
@@ -33480,7 +33561,7 @@ packages:
       pacote: 15.2.0
       read-pkg-up: 7.0.1
       run-async: 2.4.1
-      semver: 7.7.3
+      semver: 7.7.4
       shelljs: 0.8.5
       sort-keys: 4.2.0
       text-table: 0.2.0

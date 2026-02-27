@@ -1,0 +1,47 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators",
+    "noImplicitAny": false
+  },
+  "references": [
+    {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../mockserver-config-writer"
+    },
+    {
+      "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../odata-service-writer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
+}
