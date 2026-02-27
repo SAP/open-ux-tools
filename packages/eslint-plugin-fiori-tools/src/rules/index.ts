@@ -8,7 +8,8 @@ import {
     ENABLE_EXPORT,
     ENABLE_PASTE,
     STATE_PRESERVATION_MODE,
-    TABLE_COLUMN_VERTICAL_ALIGNMENT
+    TABLE_COLUMN_VERTICAL_ALIGNMENT,
+    NO_DATA_FIELD_INTENT_BASED_NAVIGATION
 } from '../language/diagnostics';
 
 // Import all rules
@@ -69,6 +70,7 @@ import copyToClipboard from './sap-copy-to-clipboard';
 import enableExport from './sap-enable-export';
 import enablePaste from './sap-enable-paste';
 import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment';
+import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-navigation';
 
 import type { Rule } from 'eslint';
 
@@ -128,5 +130,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [ENABLE_PASTE]: enablePaste,
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
     [STATE_PRESERVATION_MODE]: statePreservationMode,
-    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment
+    [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
+    [NO_DATA_FIELD_INTENT_BASED_NAVIGATION]: noDataFieldIntentBasedNavigation
 };

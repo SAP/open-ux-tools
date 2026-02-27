@@ -272,7 +272,8 @@ export const configs: Record<string, Linter.Config[]> = {
                 '@sap-ux/fiori-tools/sap-enable-paste': 'warn',
                 '@sap-ux/fiori-tools/sap-creation-mode-for-table': 'warn',
                 '@sap-ux/fiori-tools/sap-state-preservation-mode': 'warn',
-                '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn'
+                '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn',
+                '@sap-ux/fiori-tools/sap-no-data-field-intent-based-navigation': 'warn'
             }
         }
     ]
