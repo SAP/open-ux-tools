@@ -180,6 +180,8 @@ const testConfig: Linter.Config[] = [
         },
 
         rules: {
+            // Disable sap-no-global-define for test files so that eslint-disable comments in generated test files are recognized
+            '@sap-ux/fiori-tools/sap-no-global-define': 'off',
             '@sap-ux/fiori-tools/sap-opa5-autowait-true': 'warn'
         }
     }
