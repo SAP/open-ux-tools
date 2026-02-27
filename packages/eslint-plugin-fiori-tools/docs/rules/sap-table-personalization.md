@@ -14,7 +14,7 @@ Users should see all table personalization options that are available: adding or
 
 The following patterns are considered warnings:
 
-#### Incorrect Manifest File
+### Incorrect `personalization` Values
 
 ```json
 {
@@ -24,9 +24,22 @@ The following patterns are considered warnings:
 }
 ```
 
-Setting `personalization` property to false disables every table personalization setting.
+Setting `personalization` property to false disables every table personalization setting, so it is the same as defining all  `personalization` properties to `false`:
 
-#### Incorrect Value for `personalization` Properties
+```json
+{
+  "tableSettings": {
+    "personalization": {
+      "column" : false,
+      "sort" : false,
+      "filter" : false, 
+      "group": false
+    }
+  }
+}
+```
+
+If the value "object" is used, omitting a setting is treated as `false`.
 
 ```json
 {
@@ -36,11 +49,24 @@ Setting `personalization` property to false disables every table personalization
 }
 ```
 
-If the value "object" is used, omitting a setting is treated as `false`.
+If you don't define all properties as `true`, all properties omitted will be switched off, like `filter` and `group` are also `false` in this example:
+
+```json
+{
+  "tableSettings": {
+    "personalization": {
+      "column": true,
+      "sort": false
+    }
+  }
+}
+```
+
+
 
 The following patterns are considered correct:
 
-#### Correct Manifest File
+### Correct `personalization` definition
 
 ```json
 {
@@ -51,8 +77,6 @@ The following patterns are considered correct:
 ```
 
 The `personalization` property is correctly set to `true`, every table setting is enabled.
-
-#### Correct Manifest File
 
 ```json
 {
@@ -73,6 +97,7 @@ Omitting table personalization from the `manifest.json` table settings is also c
 ## How to Fix
 
 To fix the warning, ensure that either the `personalization` property is set to `true` or not defined in the table settings.
+You can use the quick fix provided by the plugin, it sets `personalization` property to `true`.
 
 ## Bug Report
 
