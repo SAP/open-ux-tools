@@ -1,5 +1,13 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.99
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/fiori-generator-shared@0.13.80
+
 ## 0.1.98
 
 ### Patch Changes

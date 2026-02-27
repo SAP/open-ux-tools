@@ -28,7 +28,8 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
                 }
                 return value;
             }
-        }
+        },
+        showSupportNotice: false
     });
     i18n.addResourceBundle('en', odataServiceInquirerNamespace, translations);
     // add other bundles that are used in consumed modules

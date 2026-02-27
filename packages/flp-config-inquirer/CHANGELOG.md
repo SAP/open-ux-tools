@@ -1,5 +1,23 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.135
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/project-input-validator@0.6.63
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/adp-tooling@0.18.76
+
+## 0.4.134
+
+### Patch Changes
+
+- Updated dependencies [ed1399d]
+    - @sap-ux/adp-tooling@0.18.75
+
 ## 0.4.133
 
 ### Patch Changes

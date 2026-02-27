@@ -1,5 +1,12 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.80
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/telemetry@0.6.81
+
 ## 0.13.79
 
 ### Patch Changes
