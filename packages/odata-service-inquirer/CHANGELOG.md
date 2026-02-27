@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.19.0
+
+### Minor Changes
+
+- 698fd9e: Display an info message when the responsive table is selected.
+
 ## 2.18.13
 
 ### Patch Changes
