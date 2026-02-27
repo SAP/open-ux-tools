@@ -5,8 +5,9 @@ import type { FioriRuleDefinition } from '../types';
 import type { NoDataFieldIntentBasedNavigation } from '../language/diagnostics';
 import { NO_DATA_FIELD_INTENT_BASED_NAVIGATION } from '../language/diagnostics';
 import { getRecordType } from '../project-context/linker/annotations';
-import type { FeV4ObjectPage, FeV4ListReport, Table } from '../project-context/linker/fe-v4';
-import { type ParsedApp, type ParsedService } from '../project-context/parser';
+import type { FeV4ObjectPage, FeV4ListReport, Table as FeV4Table } from '../project-context/linker/fe-v4';
+import type { FeV2ListReport, FeV2ObjectPage, Table as FeV2Table } from '../project-context/linker/fe-v2';
+import { type ParsedService } from '../project-context/parser';
 
 /**
  *
@@ -14,7 +15,7 @@ import { type ParsedApp, type ParsedService } from '../project-context/parser';
  * @param aliasInfo
  * @returns
  */
-function getWithIntentBasedNavDataFields(table: Table, aliasInfo: AliasInformation): Element[] {
+function getIntentBasedNavDataFields(table: FeV2Table | FeV4Table, aliasInfo: AliasInformation): Element[] {
     if (!table.annotation) {
         return [];
     }
@@ -41,13 +42,11 @@ function getWithIntentBasedNavDataFields(table: Table, aliasInfo: AliasInformati
 /**
  *
  * @param page
- * @param parsedApp
  * @param parsedService
  * @param problems
  */
 function checkTablesInPage(
-    page: FeV4ObjectPage | FeV4ListReport,
-    parsedApp: ParsedApp,
+    page: FeV4ObjectPage | FeV4ListReport | FeV2ListReport | FeV2ObjectPage,
     parsedService: ParsedService,
     problems: NoDataFieldIntentBasedNavigation[]
 ): void {
@@ -57,7 +56,7 @@ function checkTablesInPage(
         }
         const aliasInfo = parsedService.artifacts.aliasInfo[table.annotation.annotation.top.uri];
 
-        const itentBasedNavigationDataFields = getWithIntentBasedNavDataFields(table, aliasInfo);
+        const itentBasedNavigationDataFields = getIntentBasedNavDataFields(table, aliasInfo);
         if (itentBasedNavigationDataFields.length) {
             problems.push({
                 type: NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
@@ -83,26 +82,21 @@ const rule: FioriRuleDefinition = createFioriRule({
             url: ''
         },
         messages: {
-            ['no-data-field-intent-based-navigation-manifest']: 'test manifest warning.',
-            ['no-data-field-intent-based-navigation']: 'test annotations warning.'
-        },
-        fixable: 'code'
+            ['no-data-field-intent-based-navigation']:
+                'DataFieldForIntentBasedNavigation annotation as well as the DataFieldWithIntentBasedNavigation should not be used. Please use a semantic link navigation instead.'
+        }
     },
     check(context) {
         const problems: NoDataFieldIntentBasedNavigation[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
-            if (app.type !== 'fe-v4') {
-                continue;
-            }
             for (const page of app.pages) {
                 const parsedApp = context.sourceCode.projectContext.index.apps[appKey];
                 const parsedService = context.sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
                 if (!parsedService) {
                     continue;
                 }
-
-                checkTablesInPage(page, parsedApp, parsedService, problems);
+                checkTablesInPage(page, parsedService, problems);
             }
         }
 
