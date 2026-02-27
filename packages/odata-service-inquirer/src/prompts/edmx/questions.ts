@@ -336,13 +336,21 @@ function getTableLayoutQuestions(
                 defaultTableType = undefined;
                 return prevAnswers.tableType;
             },
-            additionalMessages: () => {
-                if (defaultTableType === 'AnalyticalTable') {
+            additionalMessages: (selectedTableType: TableType) => {
+                // Show responsive table info whenever ResponsiveTable is selected
+                if (selectedTableType === 'ResponsiveTable') {
+                    return {
+                        message: t('prompts.tableType.responsiveTableInfo'),
+                        severity: Severity.information
+                    };
+                }
+                // Show default type info when the default is selected
+                if (defaultTableType === 'AnalyticalTable' && selectedTableType === 'AnalyticalTable') {
                     return {
                         message: t('prompts.tableType.analyticalTableDefault'),
                         severity: Severity.information
                     };
-                } else if (defaultTableType === 'TreeTable') {
+                } else if (defaultTableType === 'TreeTable' && selectedTableType === 'TreeTable') {
                     return {
                         message: t('prompts.tableType.treeTableDefault'),
                         severity: Severity.information
