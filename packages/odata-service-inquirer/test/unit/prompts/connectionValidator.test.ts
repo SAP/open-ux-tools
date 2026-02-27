@@ -515,7 +515,9 @@ describe('ConnectionValidator', () => {
         const listServicesV2Mock = jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices');
         const listServicesV4Mock = jest.spyOn(axiosExtension.V4CatalogService.prototype, 'listServices');
         // Mock the service method on ServiceProvider to verify it's called with the right path
-        const serviceMock = jest.fn().mockReturnValue({} as ODataService);
+        // and the get method to ensure the service request is made
+        const getMock = jest.fn().mockResolvedValue({});
+        const serviceMock = jest.fn().mockReturnValue({ get: getMock } as unknown as ODataService);
         jest.spyOn(ServiceProvider.prototype, 'service').mockImplementation(serviceMock);
 
         const connectValidator = new ConnectionValidator();
@@ -544,6 +546,8 @@ describe('ConnectionValidator', () => {
         expect(listServicesV4Mock).not.toHaveBeenCalled();
         // Instead, the service method should be called with the URL path (trailing slash added by the implementation)
         expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/TEST_SERVICE/');
+        // Verify the service request is made by calling get('')
+        expect(getMock).toHaveBeenCalledWith('');
         expect(connectValidator.validity).toEqual({
             authenticated: true,
             reachable: true,

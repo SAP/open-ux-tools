@@ -569,15 +569,12 @@ export class ConnectionValidator {
         } else if (connectType === 'odata_service' && url) {
             // System (backend system or destination) that uses a service for auth since catalog may not be accessible
             // No need to validate service version here as it will be validated by the service prompt
-            // Here we only validate connectivity by handling request errors
-            try {
-                LoggerHelper.logger.debug(`Using service request: ${url} to validate authentication.`);
-                this._odataService = (this._serviceProvider as AbapServiceProvider).service<ODataService>(
-                    `${url?.pathname}`
-                );
-            } catch (error) {
-                throw error;
-            }
+            // Here we only validate connectivity by throwing and handling request errors
+            LoggerHelper.logger.debug(`Using service request: ${url} to validate authentication.`);
+            this._odataService = (this._serviceProvider as AbapServiceProvider).service<ODataService>(
+                `${url?.pathname}`
+            );
+            await this._odataService.get('');
         }
     }
 
