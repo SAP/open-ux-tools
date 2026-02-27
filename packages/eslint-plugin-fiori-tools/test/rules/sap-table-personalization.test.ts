@@ -133,12 +133,60 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
         ),
         createValidTest(
             {
-                name: 'V4 - list report page - ResponsiveTable + minUI5=1.120 - group is true',
+                name: 'V4 - list report page - ResponsiveTable + minUI5=1.120=exact boundary - group is true',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
                         path: ['sap.ui5', 'dependencies', 'minUI5Version'],
-                        value: '1.120.1'
+                        value: '1.120.0'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'ResponsiveTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {
+                            column: true,
+                            filter: true,
+                            group: true,
+                            sort: true
+                        }
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V4 - list report page - ResponsiveTable + minUI5=1.122 - group is true',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.122.5'
                     },
                     {
                         path: [
@@ -186,7 +234,7 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
                         path: ['sap.ui5', 'dependencies', 'minUI5Version'],
-                        value: '1.108.1'
+                        value: '1.110.1'
                     },
                     {
                         path: [
@@ -229,12 +277,12 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
         ),
         createValidTest(
             {
-                name: 'V4 - list report page - AnalyticalTable + minUI5=1.107 - group is false',
+                name: 'V4 - list report page - AnalyticalTable + minUI5=1.100 - group is false',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
                     {
                         path: ['sap.ui5', 'dependencies', 'minUI5Version'],
-                        value: '1.107.1'
+                        value: '1.100.1'
                     },
                     {
                         path: [
@@ -268,6 +316,54 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                             column: true,
                             filter: true,
                             group: false,
+                            sort: true
+                        }
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V4 - list report page - AnalyticalTable + minUI5=1.108= exact boundary - group is true',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.108.0'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'type'
+                        ],
+                        value: 'AnalyticalTable'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {
+                            column: true,
+                            filter: true,
+                            group: true,
                             sort: true
                         }
                     }
@@ -736,6 +832,64 @@ ruleTester.run(TEST_NAME, tablePersonalizationRule, {
                         column: 21,
                         message:
                             'In case of using an object, omitting a setting is treated as false. Currently column, sort are disabled.'
+                    },
+                    {
+                        line: 129,
+                        column: 23,
+                        message: 'Table data filtering should be enabled.'
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - list report page - single undefined property, group is not checked',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'personalization'
+                        ],
+                        value: {
+                            group: false,
+                            filter: false,
+                            sort: true
+                        }
+                    }
+                ]),
+                errors: [
+                    {
+                        line: 127,
+                        column: 21,
+                        message:
+                            'In case of using an object, omitting a setting is treated as false. Currently column is disabled.'
                     },
                     {
                         line: 129,
