@@ -316,15 +316,13 @@ export async function generateOPAFiles(
     const LROP = findLROP(config.pages, manifest);
 
     // Access ux-specification to get feature data for OPA test generation
-    const { filterBarItems, tableColumns } = await getFeatureData(basePath, editor, log);
+    const { listReport, objectPages } = await getFeatureData(basePath, editor, log);
 
     const journeyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
-        hideFilterBar: config.hideFilterBar,
-        filterBarItems: filterBarItems,
-        tableColumns: tableColumns
+        hideFilterBar: config.hideFilterBar
     };
 
     editor.copyTpl(
@@ -336,6 +334,39 @@ export async function generateOPAFiles(
             globOptions: { dot: true }
         }
     );
+
+    if (listReport) {
+        editor.copyTpl(
+            join(rootV4TemplateDirPath, 'integration/ListReportJourney.js'),
+            join(testOutDirPath, 'integration/ListReportJourney.js'),
+            {
+                hideFilterBar: config.hideFilterBar,
+                ...listReport
+            },
+            undefined,
+            {
+                globOptions: { dot: true }
+            }
+        );
+    }
+
+    if (objectPages && objectPages.length > 0) {
+        objectPages.forEach((objectPage) => {
+            editor.copyTpl(
+                join(rootV4TemplateDirPath, 'integration/ObjectPageJourney.js'),
+                join(testOutDirPath, `integration/${objectPage.name}Journey.js`),
+                {
+                    hideFilterBar: config.hideFilterBar,
+                    ...objectPage
+                },
+                undefined,
+                {
+                    globOptions: { dot: true }
+                }
+            );
+        });
+    }
+
     // Journey Runner
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'pages', 'JourneyRunner.js'),

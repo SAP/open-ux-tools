@@ -1,6 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page';
 import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type {
@@ -9,10 +10,40 @@ import type {
     TreeModel,
     ApplicationModel
 } from '@sap/ux-specification/dist/types/src/parser';
-import type { FeatureData } from '../types';
+import type { FeatureData, ObjectPageFeatureData, ListReportFeatureData } from '../types';
+import { getObjectPageFeatureData } from './objectPageUtils';
 
 export interface AggregationItem extends TreeAggregation {
     description: string;
+    schema: {
+        keys: { name: string; value: string }[];
+    };
+}
+
+export interface FieldItem extends AggregationItem {
+    name: string;
+}
+
+export interface SectionItem extends AggregationItem {
+    title?: string;
+    custom?: boolean;
+    name?: string;
+    schema: {
+        keys: { name: string; value: string }[];
+        dataType?: string;
+    };
+}
+
+export interface HeaderSectionItem extends SectionItem {
+    properties: {
+        stashed: {
+            freeText: string | boolean;
+        };
+    };
+}
+
+export interface PageWithModelV4WithProperties extends PageWithModelV4 {
+    routePattern?: string;
 }
 
 /**
@@ -25,7 +56,8 @@ export interface AggregationItem extends TreeAggregation {
  */
 export async function getFeatureData(basePath: string, fs?: Editor, log?: Logger): Promise<FeatureData> {
     const featureData: FeatureData = {};
-    let listReportPage: PageWithModelV4 | null = null;
+    let listReportPageFeatureData: ListReportFeatureData | null = null;
+    let objectPageFeatureData: ObjectPageFeatureData[] = [];
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
@@ -33,7 +65,12 @@ export async function getFeatureData(basePath: string, fs?: Editor, log?: Logger
         const appAccess = await createApplicationAccess(basePath, { fs: fs });
         const specification = await appAccess.getSpecification<Specification>();
         const appResult: ReadAppResult = await specification.readApp({ app: appAccess, fs: fs });
-        listReportPage = appResult.applicationModel ? getListReportPage(appResult.applicationModel) : listReportPage;
+        listReportPageFeatureData = appResult.applicationModel
+            ? getListReportPageFeatureData(appResult.applicationModel, log)
+            : listReportPageFeatureData;
+        objectPageFeatureData = appResult.applicationModel
+            ? await getObjectPageFeatureData(appResult.applicationModel, log)
+            : objectPageFeatureData;
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -42,15 +79,35 @@ export async function getFeatureData(basePath: string, fs?: Editor, log?: Logger
         return featureData;
     }
 
-    if (!listReportPage) {
+    if (!listReportPageFeatureData) {
         log?.warn('List Report page not found in application model. Dynamic tests will not be generated.');
         return featureData;
     }
 
-    // attempt to get individual feature data
-    featureData.filterBarItems = getFilterFieldNames(listReportPage.model, log);
-    featureData.tableColumns = getTableColumnData(listReportPage.model, log);
+    // list report page feature data
+    featureData.listReport = listReportPageFeatureData;
 
+    // object page feature data
+    featureData.objectPages = objectPageFeatureData;
+
+    return featureData;
+}
+
+/**
+ * Extracts feature data for the List Report page from the application model.
+ *
+ * @param applicationModel - the application model containing page definitions
+ * @param log - optional logger instance
+ * @returns a record of List Report feature data
+ */
+function getListReportPageFeatureData(applicationModel: ApplicationModel, log?: Logger): ListReportFeatureData {
+    const featureData: ListReportFeatureData = {};
+    const listReportPage = getListReportPage(applicationModel);
+    featureData.name = listReportPage?.pageKey;
+    if (listReportPage?.page?.model) {
+        featureData.filterBarItems = getFilterFieldNames(listReportPage.page.model, log);
+        featureData.tableColumns = getTableColumnData(listReportPage.page.model, log);
+    }
     return featureData;
 }
 
@@ -148,36 +205,25 @@ function getTableColumnData(
 }
 
 /**
- * Retrieves all List Report definitions from the given application model.
+ * Retrieves List Report definition from the given application model.
+ * Only a single List Report page is expected, so the first match is returned.
  *
  * @param applicationModel - The application model containing page definitions.
- * @returns An array of List Report definitions.
+ * @returns An object containing the key and page definition of the List Report, or null if not found.
  */
-export function getListReportPage<T = ApplicationModel['pages'][string]>(applicationModel: ApplicationModel): T | null {
+export function getListReportPage(
+    applicationModel: ApplicationModel
+): { pageKey: string; page: PageWithModelV4 } | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        if (page.pageType === 'ListReport') {
-            return page as T;
+        if (page.pageType === PageTypeV4.ListReport) {
+            return {
+                pageKey,
+                page
+            };
         }
     }
     return null;
-}
-
-/**
- * Retrieves all Object Page definitions from the given application model.
- *
- * @param applicationModel - The application model containing page definitions.
- * @returns An array of Object Page definitions.
- */
-export function getObjectPages<T = ApplicationModel['pages'][string]>(applicationModel: ApplicationModel): T[] {
-    const objectPages: T[] = [];
-    for (const pageKey in applicationModel.pages) {
-        const page = applicationModel.pages[pageKey];
-        if (page.pageType === 'ObjectPage') {
-            objectPages.push(page as T);
-        }
-    }
-    return objectPages;
 }
 
 /**

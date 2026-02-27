@@ -73,7 +73,41 @@ export interface FFOPAConfig {
     ui5Theme?: string;
 }
 
-export type FeatureData = {
+export type ObjectPageNavigationParents = {
+    parentLRName?: string;
+    parentOPName?: string;
+    parentOPTableSection?: string;
+};
+
+export type ObjectPageFeatureData = {
+    name?: string;
+    navigationParents?: ObjectPageNavigationParents;
+    headerTitle?: string;
+    headerDescription?: string;
+    headerSections?: HeaderSectionFeatureData[];
+};
+
+export type ListReportFeatureData = {
+    name?: string;
     filterBarItems?: string[];
     tableColumns?: Record<string, Record<string, string | number | boolean>>;
+};
+
+export type FeatureData = {
+    listReport?: ListReportFeatureData;
+    objectPages?: ObjectPageFeatureData[];
+};
+
+export type HeaderSectionFeatureData = {
+    facetId?: string;
+    title?: string;
+    custom?: boolean;
+    collection?: boolean;
+    microChart?: boolean;
+    form?: boolean;
+    stashed?: boolean | string;
+    fields?: {
+        fieldGroupQualifier?: string;
+        field?: string;
+    }[];
 };

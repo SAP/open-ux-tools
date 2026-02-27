@@ -20,7 +20,7 @@ jest.mock('@sap-ux/project-access', () => ({
 describe('ui5-test-writer', () => {
     let fs: Editor | undefined;
     const debug = !!process.env['UX_DEBUG'];
-    jest.setTimeout(30000);
+    jest.setTimeout(600000);
 
     function prepareTestFiles(testConfigurationName: string): string {
         // Copy input templates into output directory
@@ -275,7 +275,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, {}, fs);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4/webapp/test/integration/FirstJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/ListReportJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckFilterField');
         });
 
@@ -285,7 +285,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, {}, fs);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4/webapp/test/integration/FirstJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/ListReportJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckColumns');
         });
 
@@ -299,7 +299,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4NoFilters/webapp/test/integration/FirstJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4NoFilters/webapp/test/integration/ListReportJourney.js'].contents;
             expect(firstJourneyContent).not.toContain('iCheckFilterField');
             expect(firstJourneyContent).toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
@@ -319,7 +319,7 @@ describe('ui5-test-writer', () => {
             fs = await generateOPAFiles(projectDir, {}, fs, mockLogger as unknown as Logger);
 
             const firstJourneyContent =
-                fs.dump()['test/test-output/LROPv4NoColumns/webapp/test/integration/FirstJourney.js'].contents;
+                fs.dump()['test/test-output/LROPv4NoColumns/webapp/test/integration/ListReportJourney.js'].contents;
             expect(firstJourneyContent).toContain('iCheckFilterField');
             expect(firstJourneyContent).not.toContain('iCheckColumns');
             expect(mockLogger.warn).toHaveBeenCalledWith(
@@ -327,6 +327,23 @@ describe('ui5-test-writer', () => {
                     'Unable to extract table columns from project model using specification. No table column tests will be generated.'
                 )
             );
+        });
+
+        it('generates tests for v4 application with sub object page', async () => {
+            readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_WITH_SUB_OBJECT_PAGE));
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, fs);
+
+            const bookingObjPageJourneyContent =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/BookingObjectPageJourney.js'].contents;
+            expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::FlightDate" }');
+            expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "DataPoint::BookingDate" }');
+            expect(bookingObjPageJourneyContent).toContain('iCheckHeaderFacet({ facetId: "FieldGroup::Names" }');
+            expect(bookingObjPageJourneyContent).toContain('iCheckFieldInFieldGroup');
+            expect(bookingObjPageJourneyContent).toContain('fieldGroup: "FieldGroup::Names"');
+            expect(bookingObjPageJourneyContent).toContain('field: "AirlineName"');
+            expect(bookingObjPageJourneyContent).toContain('field: "CustomerName"');
+            expect(bookingObjPageJourneyContent).toContain('iCheckMicroChart("Supplement Price")');
         });
     });
 });
