@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.19.1
+
+### Patch Changes
+
+- bda1120: Adds support for connection path option to system selection for authentication
+
 ## 2.19.0
 
 ### Minor Changes
