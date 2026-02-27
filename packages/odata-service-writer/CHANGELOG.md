@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-writer
 
+## 0.29.28
+
+### Patch Changes
+
+- ca2566b: Update fast-xml-parser
+
+    Issue: #37278
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/mockserver-config-writer@0.9.59
+
 ## 0.29.27
 
 ### Patch Changes
