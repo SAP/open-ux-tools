@@ -43,7 +43,7 @@
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "i18next": "25.8.12",
-        "@sap-devx/yeoman-ui-types": "1.14.4"
+        "@sap-devx/yeoman-ui-types": "1.22.0"
     },
     "devDependencies": {
         "@types/mem-fs": "1.1.2",

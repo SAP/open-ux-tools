@@ -27,7 +27,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-devx/yeoman-ui-types": "1.22.0",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
