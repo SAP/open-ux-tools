@@ -85,7 +85,8 @@ export async function connectWithBackendSystem(
                 systemAuthType: 'reentranceTicket',
                 connectType: connectPath ? 'odata_service' : undefined // Assumption that if a connection path is provided its an odata service endpoint
             });
-        } else if (backendSystem.serviceKeys) { // Legacy backend system support
+        } else if (backendSystem.serviceKeys) {
+            // Legacy backend system support
             connectValResult = await connectionValidator.validateServiceInfo(
                 backendSystem.serviceKeys as ServiceInfo,
                 convertODataVersionType(requiredOdataVersion)
