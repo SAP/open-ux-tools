@@ -38,7 +38,7 @@ export type AppConfig = {
     /**
      * If the system url + client read from the backend config is available from the system store the matching name will be used to pre-select
      */
-    systemName?: { value?: string };
+    systemName?: { value?: string; connectPath?: string }; // todo: type from osi
     relatedEntityChoices: {
         choices: CheckboxChoiceOptions<Answers>[];
         entitySetsFlat: EntitySetsFlat;

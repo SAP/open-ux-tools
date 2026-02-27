@@ -9,6 +9,7 @@ import {
 import type { Logger } from '@sap-ux/logger';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
+import type { ApplicationAccess } from '@sap-ux/project-access';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
 import { t } from '../../utils/i18n';
@@ -118,7 +119,7 @@ export async function getODataDownloaderPrompts(): Promise<{
         appAccess: undefined,
         referencedEntities: undefined,
         servicePath: undefined,
-        systemName: { value: undefined },
+        systemName: { value: undefined, connectPath: undefined },
         relatedEntityChoices: {
             choices: [],
             entitySetsFlat: {}
@@ -171,7 +172,7 @@ export async function getODataDownloaderPrompts(): Promise<{
         appSelectionQuestion,
         ...(systemSelectionQuestions.prompts as Question[]),
         getUpdateMainServiceMetadataPrompt(systemSelectionQuestions.answers, appConfig),
-        getSkipDataDownloadPrompt(systemSelectionQuestions.answers),
+        getSkipDataDownloadPrompt(systemSelectionQuestions.answers, appConfig),
         ...keyPrompts,
         resetSelectionPrompt,
         relatedEntitySelectionQuestion
@@ -209,7 +210,7 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[]): In
             servicePaths.length = 0;
             resetAppConfig(appConfig);
             // validate application exists at path
-            let appAccess;
+            let appAccess: ApplicationAccess;
             try {
                 appAccess = await createApplicationAccess(appPath);
             } catch (error: unknown) {
@@ -222,6 +223,14 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[]): In
                 );
                 return `${t('prompts.appSelection.validation.selectedPathDoesNotContainValidApp')}${t('texts.seeLogForDetails')}`;
             }
+            // currently only the main service is supported
+            const mainService = appAccess.app.services[appAccess.app.mainService ?? 'mainService'];
+            if (!mainService?.odataVersion?.startsWith('4.')) {
+                return t('prompts.appSelection.validation.appMainServiceOdataVersionNotSupported', {
+                    serviceOdataVersion: mainService.odataVersion
+                });
+            }
+
             const specResult = await getSpecification(appAccess);
 
             if (typeof specResult === 'string') {
@@ -231,10 +240,7 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[]): In
             appConfig.appAccess = appAccess;
             appConfig.specification = specResult;
 
-            const { servicePath, systemName } = await getServiceDetails(
-                appAccess.app.appRoot,
-                appAccess.app.services[appAccess.app.mainService ?? 'mainService']
-            );
+            const { servicePath, systemName } = await getServiceDetails(appAccess.app.appRoot, mainService);
 
             if (servicePath) {
                 appConfig.servicePath = servicePath;
@@ -243,6 +249,7 @@ function getAppSelectionPrompt(appConfig: AppConfig, servicePaths: string[]): In
 
             if (appConfig.systemName) {
                 appConfig.systemName.value = systemName;
+                appConfig.systemName.connectPath = servicePath;
             }
             return true;
         }
@@ -476,12 +483,13 @@ function getKeyPrompts(
  * Gets the confirm download prompt that triggers data fetch.
  *
  * @param odataServiceAnswers - The OData service answers
+ * @param appConfig
  * @returns The confirm download question
  */
-function getSkipDataDownloadPrompt(odataServiceAnswers: Partial<OdataServiceAnswers>): Question {
+function getSkipDataDownloadPrompt(odataServiceAnswers: Partial<OdataServiceAnswers>, appConfig: AppConfig): Question {
     return {
         when: () => {
-            return !!odataServiceAnswers.metadata;
+            return !!odataServiceAnswers.metadata && !!appConfig.servicePath; // Only show when we have a valid app with service metadata
         },
         name: promptNames.skipDataDownload,
         type: 'checkbox',

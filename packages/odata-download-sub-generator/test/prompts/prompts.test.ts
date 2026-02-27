@@ -1,7 +1,7 @@
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { CheckBoxQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { createApplicationAccess } from '@sap-ux/project-access';
+import { ApplicationAccess, createApplicationAccess, ServiceSpecification } from '@sap-ux/project-access';
 import {
     getODataDownloaderPrompts,
     promptNames,
@@ -52,7 +52,7 @@ describe('Test prompts', () => {
     describe('getODataDownloaderPrompts', () => {
         it('should return questions and answers structure', async () => {
             // Mock dependencies
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
@@ -69,7 +69,7 @@ describe('Test prompts', () => {
         });
 
         it('should include all required prompts', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [
                     { name: 'datasourceType', type: 'list' },
@@ -122,7 +122,7 @@ describe('Test prompts', () => {
         });
 
         it('should generate 5 key prompts', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
@@ -140,7 +140,7 @@ describe('Test prompts', () => {
         let appSelectionPrompt: InputQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
@@ -163,7 +163,7 @@ describe('Test prompts', () => {
             const mockAppAccess = {
                 app: {
                     appRoot: '/test/app',
-                    services: { mainService: { uri: '/service' } },
+                    services: { mainService: { uri: '/service', odataVersion: '4.01' } },
                     mainService: 'mainService'
                 }
             };
@@ -182,11 +182,29 @@ describe('Test prompts', () => {
             expect(createApplicationAccess).toHaveBeenCalledWith('/test/app');
         });
 
+        it('should return error message for OData v2 service', async () => {
+            const mockAppAccess = {
+                app: {
+                    appRoot: '/test/app',
+                    services: { mainService: { uri: '/service', odataVersion: '2.0' } } as ServiceSpecification,
+                    mainService: 'mainService'
+                }
+            };
+
+            (createApplicationAccess as jest.Mock).mockResolvedValue(mockAppAccess);
+
+            const result = await appSelectionPrompt.validate!('/test/app');
+
+            expect(result).toBe(
+                "The selected apps main service odata version is '2.0'. Please select an app with a main service odata version '4'."
+            );
+        });
+
         it('should configure appConfig correctly after successful validation', async () => {
             const mockAppAccess = {
                 app: {
                     appRoot: '/test/app',
-                    services: { mainService: { uri: '/service' } },
+                    services: { mainService: { uri: '/service', odataVersion: '4.0' } },
                     mainService: 'mainService'
                 }
             };
@@ -249,7 +267,7 @@ describe('Test prompts', () => {
             const mockAppAccess = {
                 app: {
                     appRoot: '/test/app',
-                    services: { mainService: {} }
+                    services: { mainService: { odataVersion: '4.0' } }
                 }
             };
 
@@ -300,7 +318,7 @@ describe('Test prompts', () => {
             const mockAppAccess1 = {
                 app: {
                     appRoot: '/test/app1',
-                    services: { mainService: { uri: '/service1' } },
+                    services: { mainService: { uri: '/service1', odataVersion: '4.0' } },
                     mainService: 'mainService'
                 }
             };
@@ -336,7 +354,7 @@ describe('Test prompts', () => {
             const mockAppAccess2 = {
                 app: {
                     appRoot: '/test/app2',
-                    services: { mainService: { uri: '/service2' } },
+                    services: { mainService: { uri: '/service2', odataVersion: '4.0' } },
                     mainService: 'mainService'
                 }
             };
@@ -365,7 +383,7 @@ describe('Test prompts', () => {
             const mockAppAccess = {
                 app: {
                     appRoot: '/test/app',
-                    services: { mainService: { uri: '/service' } },
+                    services: { mainService: { uri: '/service', odataVersion: '4.0' } },
                     mainService: 'mainService'
                 }
             };
@@ -412,7 +430,7 @@ describe('Test prompts', () => {
             const mockAppAccess1 = {
                 app: {
                     appRoot: '/test/app1',
-                    services: { mainService: { uri: '/service1' } },
+                    services: { mainService: { uri: '/service1', odataVersion: '4.0' } },
                     mainService: 'mainService'
                 }
             };
@@ -454,7 +472,7 @@ describe('Test prompts', () => {
             const mockAppAccess1 = {
                 app: {
                     appRoot: '/test/app1',
-                    services: { mainService: { uri: '/service1' } },
+                    services: { mainService: { uri: '/service1', odataVersion: '4.0' } },
                     mainService: 'mainService'
                 }
             };
@@ -486,7 +504,7 @@ describe('Test prompts', () => {
             const mockAppAccess2 = {
                 app: {
                     appRoot: '/test/app2',
-                    services: { mainService: { uri: '/service2' } },
+                    services: { mainService: { uri: '/service2', odataVersion: '4.0' } },
                     mainService: 'mainService'
                 }
             };
@@ -509,7 +527,7 @@ describe('Test prompts', () => {
             const mockAppAccess = {
                 app: {
                     appRoot: '/test/app',
-                    services: { mainService: { uri: '/service' } },
+                    services: { mainService: { uri: '/service', odataVersion: '4.0' } },
                     mainService: 'mainService'
                 }
             };
@@ -553,7 +571,7 @@ describe('Test prompts', () => {
         let entitySelectionPrompt: CheckBoxQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
@@ -712,7 +730,7 @@ describe('Test prompts', () => {
         let resetPrompt: ConfirmQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
@@ -950,7 +968,7 @@ describe('Test prompts', () => {
         let keyPrompts: InputQuestion[];
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
@@ -1171,7 +1189,7 @@ describe('Test prompts', () => {
 
         it('should not validate UUIDs as ranges', async () => {
             // UUIDs contain multiple dashes but should not be rejected as invalid ranges
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
@@ -1202,7 +1220,7 @@ describe('Test prompts', () => {
 
         it('should validate boolean values', async () => {
             // Create a mock app config with a boolean key
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
@@ -1233,7 +1251,7 @@ describe('Test prompts', () => {
         });
 
         it('should reject invalid boolean values', async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
@@ -1266,7 +1284,7 @@ describe('Test prompts', () => {
         let skipDownloadPrompt: CheckBoxQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: { metadata: '<metadata></metadata>' }
@@ -1285,11 +1303,19 @@ describe('Test prompts', () => {
             expect(skipDownloadPrompt.default).toBe(false);
         });
 
-        it('should show when metadata is available', async () => {
-            const whenFn = skipDownloadPrompt.when;
+        it('should show when metadata is available and service path has a value', async () => {
+            const result = await getODataDownloaderPrompts();
+            const appConfig = result.answers.application;
+            appConfig.servicePath = '/test/service';
+
+            const prompt = result.questions.find(
+                (q: any) => q.name === promptNames.skipDataDownload
+            ) as CheckBoxQuestion;
+
+            const whenFn = prompt.when;
             if (typeof whenFn === 'function') {
                 const shouldShow = whenFn({});
-                expect(shouldShow).toBe(true);
+                expect(shouldShow).toBeTruthy();
             }
         });
 
@@ -1323,7 +1349,7 @@ describe('Test prompts', () => {
         let updateMetadataPrompt: ConfirmQuestion;
 
         beforeEach(async () => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
             (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
                 prompts: [],
                 answers: {}
