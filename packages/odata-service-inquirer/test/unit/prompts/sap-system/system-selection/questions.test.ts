@@ -257,7 +257,12 @@ describe('Test system selection prompts', () => {
             } as SystemSelectionAnswerType)
         ).toBe(true);
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
-        expect(connectWithDestinationSpy).toHaveBeenCalledWith(destination1, connectionValidatorMock, undefined);
+        expect(connectWithDestinationSpy).toHaveBeenCalledWith(
+            destination1,
+            connectionValidatorMock,
+            undefined,
+            undefined
+        );
         connectWithDestinationSpy.mockClear();
         // valid partial url destination selection, prompt state should not be updated yet, since the service path is not provided
         const partialUrlDest = {
@@ -386,6 +391,7 @@ describe('Test system selection prompts', () => {
             { url: backendSystemBasic.url, client: backendSystemBasic.client },
             connectionValidatorMock,
             undefined,
+            undefined,
             undefined
         );
         connectWithBackendSystemSpy.mockClear();
@@ -408,6 +414,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             { url: backendSystemBasic.url, client: backendSystemBasic.client },
             connectionValidatorMock,
+            undefined,
             undefined,
             undefined
         );
@@ -460,6 +467,7 @@ describe('Test system selection prompts', () => {
             { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
             connectionValidatorMock,
             undefined,
+            undefined,
             undefined
         );
         connectWithBackendSystemSpy.mockClear();
@@ -475,6 +483,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
             connectionValidatorMock,
+            undefined,
             undefined,
             undefined
         );
@@ -511,7 +520,8 @@ describe('Test system selection prompts', () => {
             { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
             connectionValidatorMock,
             undefined,
-            cachedConnectedSystem
+            cachedConnectedSystem,
+            undefined
         );
     });
 
@@ -536,6 +546,7 @@ describe('Test system selection prompts', () => {
             { url: backendSystemServiceKeys.url, client: backendSystemServiceKeys.client },
             connectionValidatorMock,
             undefined,
+            undefined,
             undefined
         );
         connectWithBackendSystemSpy.mockClear();
@@ -551,6 +562,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             { url: backendSystemServiceKeys.url, client: backendSystemServiceKeys.client },
             connectionValidatorMock,
+            undefined,
             undefined,
             undefined
         );
@@ -586,7 +598,8 @@ describe('Test system selection prompts', () => {
             { url: backendSystemServiceKeys.url, client: backendSystemServiceKeys.client },
             connectionValidatorMock,
             undefined,
-            cachedConnectedSystem
+            cachedConnectedSystem,
+            undefined
         );
     });
 
@@ -634,6 +647,7 @@ describe('Test system selection prompts', () => {
             { url: backendSystemBasic.url, client: backendSystemBasic.client },
             connectionValidatorMock,
             undefined,
+            undefined,
             undefined
         );
         connectWithBackendSystemSpy.mockClear();
@@ -645,6 +659,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             { url: backendSystemBasic.url, client: backendSystemBasic.client },
             connectionValidatorMock,
+            undefined,
             undefined,
             undefined
         );
@@ -699,6 +714,100 @@ describe('Test system selection prompts', () => {
                 type: 'backendSystem'
             }
         });
+    });
+
+    test('Should use connectUrl from defaultChoice when validating system selection', async () => {
+        mockIsAppStudio = false;
+        const connectValidator = new ConnectionValidator();
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+
+        backendSystems.push(backendSystemReentrance);
+
+        // Test with connectPath in defaultChoice object
+        const connectPath = '/sap/opu/odata/sap/TEST_SERVICE';
+        const defaultChoiceWithConnectPath = {
+            value: backendSystemReentrance.name,
+            connectPath
+        };
+
+        systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemReentrance);
+        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator, {
+            [promptNames.systemSelection]: { defaultChoice: defaultChoiceWithConnectPath }
+        });
+
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+
+        // The default function should be called to set the connectPath
+        const defaultIndex = (systemSelectionPrompt as Question).default();
+        expect(defaultIndex).toBeGreaterThan(-1);
+
+        // Validate should use the connectPath when connecting
+        validateUrlResultMock = true;
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemReentrance
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
+
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
+            connectionValidatorMock,
+            undefined,
+            undefined,
+            connectPath
+        );
+        connectWithBackendSystemSpy.mockClear();
+    });
+
+    test('Should use connectUrl from defaultChoice for CLI system validation prompt', async () => {
+        mockIsAppStudio = false;
+        const connectValidator = new ConnectionValidator();
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+
+        backendSystems.push(backendSystemReentrance);
+
+        const connectPath = '/sap/opu/odata/sap/ANOTHER_SERVICE';
+        const defaultChoiceWithConnectPath = {
+            value: backendSystemReentrance.name,
+            connectPath
+        };
+
+        systemServiceMock.read = jest.fn().mockResolvedValue(backendSystemReentrance);
+        validateUrlResultMock = true;
+
+        const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator, {
+            [promptNames.systemSelection]: { defaultChoice: defaultChoiceWithConnectPath }
+        });
+
+        // Call default to set the connectPath
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        (systemSelectionPrompt as Question).default();
+
+        // Find the CLI validation prompt
+        const validateSystemSelectionCliPrompt = systemConnectionQuestions.find(
+            (question) => question.name === 'systemSelectionCli'
+        );
+
+        const answers = {
+            [promptNames.systemSelection]: {
+                type: 'backendSystem',
+                system: backendSystemReentrance
+            }
+        };
+
+        // The CLI when function should use connectPath
+        await expect((validateSystemSelectionCliPrompt!.when as Function)(answers)).resolves.toBe(false);
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            { url: backendSystemReentrance.url, client: backendSystemReentrance.client },
+            connectionValidatorMock,
+            undefined,
+            undefined,
+            connectPath
+        );
+        connectWithBackendSystemSpy.mockClear();
     });
 
     test('Should provide only one choice for the system selection based on onlyDefaultChoice option and defaultChoice', async () => {
