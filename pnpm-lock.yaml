@@ -118,8 +118,8 @@ importers:
         specifier: 6.1.3
         version: 6.1.3
       ts-jest:
-        specifier: 29.4.5
-        version: 29.4.5(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3)
+        specifier: 29.4.6
+        version: 29.4.6(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -1446,8 +1446,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0(typescript@5.9.3)
       ts-jest:
-        specifier: 29.4.5
-        version: 29.4.5(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3)
+        specifier: 29.4.6
+        version: 29.4.6(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3)
       uuid:
         specifier: 11.0.5
         version: 11.0.5
@@ -1464,8 +1464,8 @@ importers:
         specifier: 6.1.3
         version: 6.1.3
       ts-jest:
-        specifier: 29.4.5
-        version: 29.4.5(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3)
+        specifier: 29.4.6
+        version: 29.4.6(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3)
 
   packages/create:
     dependencies:
@@ -24834,7 +24834,7 @@ packages:
       chalk: 4.1.2
       console-table-printer: 2.15.0
       p-queue: 6.6.2
-      semver: 7.7.3
+      semver: 7.7.4
       uuid: 10.0.0
     dev: true
 
@@ -31672,8 +31672,8 @@ packages:
       typescript: 5.9.3
     dev: true
 
-  /ts-jest@29.4.5(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3):
-    resolution: {integrity: sha512-HO3GyiWn2qvTQA4kTgjDcXiMwYQt68a1Y8+JuLRVpdIzm+UOLSHgl/XqR4c6nzJkq5rOkjc02O2I7P7l/Yof0Q==}
+  /ts-jest@29.4.6(@babel/core@7.29.0)(babel-jest@30.2.0)(esbuild@0.27.2)(jest@30.2.0)(typescript@5.9.3):
+    resolution: {integrity: sha512-fSpWtOO/1AjSNQguk43hb/JCo16oJDnMJf3CdEGNkqsEX3t0KX96xvyX1D7PfLCpVoKu4MfVrqUkFyblYoY4lA==}
     engines: {node: ^14.15.0 || ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
