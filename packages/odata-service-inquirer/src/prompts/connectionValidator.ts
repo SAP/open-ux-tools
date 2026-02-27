@@ -65,7 +65,7 @@ interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
 }
 // System specific authentication mechanism, used to determine the connection auth type
 export type SystemAuthType = 'serviceKey' | 'reentranceTicket' | 'basic' | 'unknown';
-// Systems (stored backends configs or destinations) can connect using either the specified full url (host + an odata path used) or catalog requests
+// Systems (stored backends configs or destinations) can connect using either the specified path or catalog requests
 export type ConnectionType = 'abap_catalog' | 'odata_path';
 
 /**
