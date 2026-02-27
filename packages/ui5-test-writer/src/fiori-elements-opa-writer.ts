@@ -371,9 +371,7 @@ export async function generateOPAFiles(
         hideFilterBar: config.hideFilterBar
     };
 
-    // Access ux-specification to get feature data for OPA test generation
-    const appModel = await getModelFromSpecification(basePath, editor, log);
-    const { listReport, objectPages, fpm } = await getAppFeatures(appModel, editor, log, metadata);
+    const { listReport, objectPages, fpm } = await getAppFeatures(basePath, editor, log, metadata);
 
     // Journey files (one for each page in the app)
     const seenTemplates = new Set<string>();

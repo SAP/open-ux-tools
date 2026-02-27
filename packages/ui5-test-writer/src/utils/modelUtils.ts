@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
-import type { ReadAppResult, Specification } from '@sap/ux-specification/dist/types/src';
+import { PageTypeV4, type ReadAppResult, type Specification } from '@sap/ux-specification/dist/types/src';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type {
     TreeAggregation,
@@ -29,14 +29,13 @@ export interface AggregationItem extends TreeAggregation {
 /**
  * Gets feature data from the application model using ux-specification.
  *
- * @param appModel - the application model containing page definitions and their respective models
  * @param fs - optional mem-fs editor instance
  * @param log - optional logger instance
  * @param metadata - optional service metadata for analyzing OData capabilities annotations
  * @returns feature data extracted from the application model
  */
 export async function getAppFeatures(
-    appModel?: ReadAppResult,
+    basePath: string,
     fs?: Editor,
     log?: Logger,
     metadata?: string
@@ -48,6 +47,8 @@ export async function getAppFeatures(
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
     try {
+        const appModel = await getModelFromSpecification(basePath, fs, log);
+
         listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
         objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
         fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel, log) : fpmPage;
@@ -154,30 +155,84 @@ function transformTableColumns(columnAggregations: Record<string, any>): Record<
     return columns;
 }
 
+/**
+ * Builds a button state object from button visibility result.
+ *
+ * @param buttonState - The button state from visibility check
+ * @returns Button state object with visible, enabled, and optional dynamicPath properties
+ */
+function buildButtonState(buttonState?: ButtonState): {
+    visible: boolean;
+    enabled?: boolean | 'dynamic';
+    dynamicPath?: string;
+} {
+    return {
+        visible: !!buttonState?.visible,
+        enabled: buttonState?.enabled,
+        dynamicPath: buttonState?.enabled === 'dynamic' ? buttonState.dynamicPath : undefined
+    };
+}
+
+/**
+ * Safely checks button visibility with error handling.
+ *
+ * @param metadata - The OData metadata XML content
+ * @param entitySetName - The name of the entity set
+ * @param log - Optional logger instance
+ * @returns Button visibility result or undefined if error occurs
+ */
+function safeCheckButtonVisibility(
+    metadata: string,
+    entitySetName: string,
+    log?: Logger
+): ButtonVisibilityResult | undefined {
+    try {
+        return checkButtonVisibility(metadata, entitySetName);
+    } catch (error) {
+        log?.debug(`Failed to check button visibility: ${error instanceof Error ? error.message : String(error)}`);
+        return undefined;
+    }
+}
+
+/**
+ * Safely checks action button states with error handling.
+ *
+ * @param metadata - The OData metadata XML content
+ * @param entitySetName - The name of the entity set
+ * @param actionNames - List of action names to check
+ * @param log - Optional logger instance
+ * @returns Array of action button states or empty array if error occurs
+ */
+function safeCheckActionButtonStates(
+    metadata: string,
+    entitySetName: string,
+    actionNames: string[],
+    log?: Logger
+): ActionButtonState[] {
+    try {
+        return checkActionButtonStates(metadata, entitySetName, actionNames).actions;
+    } catch (error) {
+        log?.debug(`Failed to check action button states: ${error instanceof Error ? error.message : String(error)}`);
+        return [];
+    }
+}
+
 export function getListReportFeatures(
     pageModel: TreeModel,
     log?: Logger,
     metadata?: string,
     entitySetName?: string
 ): ListReportFeatures {
-    const buttonVisibility = entitySetName ? checkButtonVisibility(metadata ?? '', entitySetName) : undefined;
+    const hasMetadata = metadata && entitySetName;
+    const buttonVisibility = hasMetadata ? safeCheckButtonVisibility(metadata, entitySetName, log) : undefined;
     const toolbarActions = getToolBarActionNames(pageModel, log);
+
     return {
-        createButton: {
-            visible: !!buttonVisibility?.create.visible,
-            enabled: buttonVisibility?.create.enabled,
-            dynamicPath:
-                buttonVisibility?.create.enabled === 'dynamic' ? buttonVisibility.create.dynamicPath : undefined
-        },
-        deleteButton: {
-            visible: !!buttonVisibility?.delete.visible,
-            enabled: buttonVisibility?.delete.enabled,
-            dynamicPath:
-                buttonVisibility?.delete.enabled === 'dynamic' ? buttonVisibility.delete.dynamicPath : undefined
-        },
+        createButton: buildButtonState(buttonVisibility?.create),
+        deleteButton: buildButtonState(buttonVisibility?.delete),
         filterBarItems: getFilterFieldNames(pageModel, log),
         tableColumns: getTableColumnData(pageModel, log),
-        toolBarActions: checkActionButtonStates(metadata ?? '', entitySetName ?? '', toolbarActions).actions
+        toolBarActions: hasMetadata ? safeCheckActionButtonStates(metadata, entitySetName, toolbarActions, log) : []
     };
 }
 
@@ -280,11 +335,12 @@ function getTableColumnData(
  * @param applicationModel - The application model containing page definitions.
  * @returns An array of List Report definitions.
  */
-export function getListReportPage<T = ApplicationModel['pages'][string]>(applicationModel: ApplicationModel): T | null {
+export function getListReportPage(applicationModel: ApplicationModel): PageWithModelV4 | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        if (page.pageType === 'ListReport') {
-            return page as T;
+        if (page.pageType === PageTypeV4.ListReport) {
+            page.name = pageKey; // store page key as name for later identification
+            return page;
         }
     }
     return null;
@@ -296,15 +352,13 @@ export function getListReportPage<T = ApplicationModel['pages'][string]>(applica
  * @param applicationModel - The application model containing page definitions.
  * @returns An array of List Report definitions.
  */
-export function getFPMPage<T = ApplicationModel['pages'][string]>(
-    applicationModel: ApplicationModel,
-    log?: Logger
-): T | null {
+export function getFPMPage(applicationModel: ApplicationModel, log?: Logger): PageWithModelV4 | null {
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
         log?.warn('pageType:' + page.pageType);
-        if (page.pageType === 'FPMCustomPage') {
-            return page as T;
+        if (page.pageType === PageTypeV4.FPMCustomPage) {
+            page.name = pageKey; // store page key as name for later identification
+            return page;
         }
     }
     return null;
@@ -316,13 +370,13 @@ export function getFPMPage<T = ApplicationModel['pages'][string]>(
  * @param applicationModel - The application model containing page definitions.
  * @returns An array of Object Page definitions.
  */
-export function getObjectPages<T = ApplicationModel['pages'][string]>(applicationModel: ApplicationModel): T[] {
-    const objectPages: T[] = [];
+export function getObjectPages(applicationModel: ApplicationModel): PageWithModelV4[] {
+    const objectPages: PageWithModelV4[] = [];
     for (const pageKey in applicationModel.pages) {
         const page = applicationModel.pages[pageKey];
-        if (page.pageType === 'ObjectPage') {
+        if (page.pageType === PageTypeV4.ObjectPage) {
             page.name = pageKey; // store page key as name for later identification
-            objectPages.push(page as T);
+            objectPages.push(page);
         }
     }
     return objectPages;
@@ -342,33 +396,38 @@ export function getAggregations(node: TreeAggregation): TreeAggregations {
 }
 
 /**
+ * Extracts item descriptions from tree aggregations.
+ *
+ * @param aggregations - The tree aggregations containing item definitions
+ * @returns An array of item descriptions
+ */
+function extractItemDescriptions(aggregations: TreeAggregations): string[] {
+    if (aggregations && typeof aggregations === 'object') {
+        return Object.keys(aggregations).map(
+            (key) => (aggregations[key as keyof TreeAggregation] as unknown as AggregationItem).description
+        );
+    }
+    return [];
+}
+
+/**
  * Retrieves selection field items from the given selection fields aggregation.
  *
  * @param selectionFieldsAgg - The selection fields aggregation containing field definitions.
  * @returns An array of selection field descriptions.
  */
 export function getSelectionFieldItems(selectionFieldsAgg: TreeAggregations): string[] {
-    if (selectionFieldsAgg && typeof selectionFieldsAgg === 'object') {
-        const items: string[] = [];
-        for (const itemKey in selectionFieldsAgg) {
-            items.push(
-                (selectionFieldsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem).description
-            );
-        }
-        return items;
-    }
-    return [];
+    return extractItemDescriptions(selectionFieldsAgg);
 }
 
+/**
+ * Retrieves toolbar action items from the given toolbar actions aggregation.
+ *
+ * @param toolBarActionsAgg - The toolbar actions aggregation containing action definitions.
+ * @returns An array of toolbar action descriptions.
+ */
 export function getToolBarActionItems(toolBarActionsAgg: TreeAggregations): string[] {
-    if (toolBarActionsAgg && typeof toolBarActionsAgg === 'object') {
-        const items: string[] = [];
-        for (const itemKey in toolBarActionsAgg) {
-            items.push((toolBarActionsAgg[itemKey as keyof TreeAggregation] as unknown as AggregationItem).description);
-        }
-        return items;
-    }
-    return [];
+    return extractItemDescriptions(toolBarActionsAgg);
 }
 
 /**
