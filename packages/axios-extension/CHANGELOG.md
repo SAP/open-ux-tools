@@ -1,5 +1,13 @@
 # @sap-ux/axios-extension
 
+## 1.25.17
+
+### Patch Changes
+
+- ca2566b: Update fast-xml-parser
+
+    Issue: #37278
+
 ## 1.25.16
 
 ### Patch Changes
