@@ -136,15 +136,15 @@ describe('ConnectionValidator', () => {
         expect(validatorReentrance.validity).toEqual({});
     });
 
-    test('should allow non-origin urls for isSystem when connectType is odata_service', async () => {
+    test('should allow non-origin urls for isSystem when connectType is odata_path', async () => {
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
         const serviceUrl = 'https://example.com/sap/opu/odata/sap/TEST_SERVICE';
         const validator = new ConnectionValidator();
 
-        // With connectType: 'odata_service', non-origin paths should be allowed for system URLs
+        // With connectType: 'odata_path', non-origin paths should be allowed for system URLs
         const result = await validator.validateUrl(serviceUrl, {
             isSystem: true,
-            connectType: 'odata_service'
+            connectType: 'odata_path'
         });
         expect(result).toBe(true);
         expect(validator.validity).toEqual({
@@ -154,15 +154,15 @@ describe('ConnectionValidator', () => {
         });
     });
 
-    test('should allow non-origin urls for reentranceTicket when connectType is odata_service', async () => {
+    test('should allow non-origin urls for reentranceTicket when connectType is odata_path', async () => {
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
         const serviceUrl = 'https://example.com/sap/opu/odata/sap/TEST_SERVICE';
         const validator = new ConnectionValidator();
         validator.systemAuthType = 'reentranceTicket';
 
-        // With connectType: 'odata_service', non-origin paths should be allowed
+        // With connectType: 'odata_path', non-origin paths should be allowed
         const result = await validator.validateUrl(serviceUrl, {
-            connectType: 'odata_service'
+            connectType: 'odata_path'
         });
         expect(result).toBe(true);
         expect(validator.validity).toEqual({
@@ -510,7 +510,7 @@ describe('ConnectionValidator', () => {
         });
     });
 
-    test('should validate auth with connectType odata_service using service endpoint instead of catalog', async () => {
+    test('should validate auth with connectType odata_path using service endpoint instead of catalog', async () => {
         const createProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
         const listServicesV2Mock = jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices');
         const listServicesV4Mock = jest.spyOn(axiosExtension.V4CatalogService.prototype, 'listServices');
@@ -525,7 +525,7 @@ describe('ConnectionValidator', () => {
         const result = await connectValidator.validateAuth(serviceUrl, 'user1', 'pword1', {
             isSystem: true,
             sapClient: '999',
-            connectType: 'odata_service'
+            connectType: 'odata_path'
         });
 
         expect(result).toEqual({ valResult: true });
@@ -541,7 +541,7 @@ describe('ConnectionValidator', () => {
                 }
             })
         );
-        // When connectType is 'odata_service', catalog listServices should NOT be called
+        // When connectType is 'odata_path', catalog listServices should NOT be called
         expect(listServicesV2Mock).not.toHaveBeenCalled();
         expect(listServicesV4Mock).not.toHaveBeenCalled();
         // Instead, the service method should be called with the URL path (trailing slash added by the implementation)

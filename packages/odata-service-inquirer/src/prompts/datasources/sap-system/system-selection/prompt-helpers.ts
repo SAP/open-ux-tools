@@ -83,7 +83,7 @@ export async function connectWithBackendSystem(
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion),
                 systemAuthType: 'reentranceTicket',
-                connectType: connectPath ? 'odata_service' : undefined // Assumption that if a connection path is provided its an odata service endpoint
+                connectType: connectPath ? 'odata_path' : undefined // Assumption that if a connection path is provided its an odata service endpoint
             });
         } else if (backendSystem.serviceKeys) {
             // Legacy backend system support
@@ -101,7 +101,7 @@ export async function connectWithBackendSystem(
                     isSystem: true,
                     odataVersion: convertODataVersionType(requiredOdataVersion),
                     sapClient: backendSystem.client,
-                    connectType: connectPath ? 'odata_service' : undefined // Assumption that if a connection path is provided its an odata service endpoint
+                    connectType: connectPath ? 'odata_path' : undefined // Assumption that if a connection path is provided its an odata service endpoint
                 }
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.

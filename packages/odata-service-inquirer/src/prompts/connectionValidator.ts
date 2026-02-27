@@ -65,8 +65,8 @@ interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
 }
 // System specific authentication mechanism, used to determine the connection auth type
 export type SystemAuthType = 'serviceKey' | 'reentranceTicket' | 'basic' | 'unknown';
-// Systems (stored backends configs or destinations) can connect using either the specified full url or catalog requests
-export type ConnectionType = 'abap_catalog' | 'odata_service';
+// Systems (stored backends configs or destinations) can connect using either the specified full url (host + an odata path used) or catalog requests
+export type ConnectionType = 'abap_catalog' | 'odata_path';
 
 /**
  * Class that can be used to determine the connectivity using a service url, system url, or service info (UAA Key details) or reentrance ticket.
@@ -354,7 +354,7 @@ export class ConnectionValidator {
             if (isSystem) {
                 await this.createSystemConnection({ axiosConfig, url, odataVersion, connectType });
                 // For systems (dest or backend systems) using a service endpoint for auth skip this call
-                if (connectType !== 'odata_service') {
+                if (connectType !== 'odata_path') {
                     const systemInfo = await (this.serviceProvider as AbapServiceProvider).getSystemInfo();
                     this._connectedUserName = systemInfo?.userName;
                     this._connectedSystemName = systemInfo?.systemID;
@@ -566,7 +566,7 @@ export class ConnectionValidator {
             } catch (error) {
                 await this.handleCatalogError(error, v4Requested);
             }
-        } else if (connectType === 'odata_service' && url) {
+        } else if (connectType === 'odata_path' && url) {
             // System (backend system or destination) that uses a service for auth since catalog may not be accessible
             // No need to validate service version here as it will be validated by the service prompt
             // Here we only validate connectivity by throwing and handling request errors
@@ -859,11 +859,11 @@ export class ConnectionValidator {
             if (url.origin === 'null') {
                 return t('errors.invalidUrl', { input: serviceUrl });
             }
-            // Unless connection type is explicitly `odata_service`, dont allow non origin URLs in for re-entrance tickets and system URL's as the error handling would become complex to analyize. If connectType is `odata_service` only the origin will be used to auth and store backend connections.
+            // Unless connection type is explicitly `odata_path`, dont allow non origin URLs in for re-entrance tickets and system URL's as the error handling would become complex to analyize. If connectType is `odata_path` only the origin will be used to auth and store backend connections.
             // The connection may succeed but later we will get auth errors since axios-extension does not validate this.
             // The new system name would also include the additional paths which would not make sense and would cause an issue when storing the system.
             if (
-                connectType !== 'odata_service' &&
+                connectType !== 'odata_path' &&
                 (this.systemAuthType === 'reentranceTicket' || isSystem) &&
                 !(url.pathname.length === 0 || url.pathname === '/')
             ) {
