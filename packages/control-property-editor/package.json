@@ -56,7 +56,7 @@
         "ts-jest": "29.4.5",
         "postcss-modules": "6.0.1",
         "ejs": "3.1.10",
-        "@ui5/fs": "3.0.4",
+        "@ui5/fs": "4.0.5",
         "esbuild-plugin-alias": "0.2.1",
         "esbuild-plugin-copy": "2.1.1",
         "@esbuild-plugins/node-modules-polyfill": "0.2.2",
