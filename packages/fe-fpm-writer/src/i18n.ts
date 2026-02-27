@@ -21,7 +21,8 @@ export async function initI18n(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         defaultNS: i18nNamespaces.buildingBlock,
-        ns: [i18nNamespaces.buildingBlock]
+        ns: [i18nNamespaces.buildingBlock],
+        showSupportNotice: false
     });
 }
 

@@ -220,7 +220,6 @@ describe('AddActionFragment', () => {
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                 }
             );
-            //addFragment.model = getTestModel();
             beginBtnSetEnabledMock = jest.fn().mockReturnValue({ rerender: jest.fn() });
             addFragment.dialog = {
                 getBeginButton: jest.fn().mockReturnValue({ setEnabled: beginBtnSetEnabledMock }),

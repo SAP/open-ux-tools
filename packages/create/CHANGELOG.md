@@ -1,5 +1,46 @@
 # @sap-ux/create
 
+## 0.15.17
+
+### Patch Changes
+
+- Updated dependencies [b68b558]
+    - @sap-ux/preview-middleware@0.23.137
+    - @sap-ux/app-config-writer@0.6.108
+
+## 0.15.16
+
+### Patch Changes
+
+- Updated dependencies [6c993f3]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.9
+    - @sap-ux/mockserver-config-writer@0.9.58
+    - @sap-ux/odata-service-writer@0.29.27
+    - @sap-ux/flp-config-inquirer@0.4.135
+    - @sap-ux/app-config-writer@0.6.108
+    - @sap-ux/cap-config-writer@0.12.72
+    - @sap-ux/adp-tooling@0.18.76
+    - @sap-ux/preview-middleware@0.23.136
+    - @sap-ux/system-access@0.6.58
+    - @sap-ux/ui5-config@0.29.19
+    - @sap-ux/abap-deploy-config-writer@0.2.82
+
+## 0.15.15
+
+### Patch Changes
+
+- Updated dependencies [ed1399d]
+    - @sap-ux/adp-tooling@0.18.75
+    - @sap-ux/preview-middleware@0.23.135
+    - @sap-ux/flp-config-inquirer@0.4.134
+    - @sap-ux/app-config-writer@0.6.107
+
+## 0.15.14
+
+### Patch Changes
+
+- fb0afb5: fix: make generate readme script more robust
+
 ## 0.15.13
 
 ### Patch Changes

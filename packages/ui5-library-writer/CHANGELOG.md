@@ -1,5 +1,12 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.63
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+    - @sap-ux/ui5-config@0.29.19
+
 ## 0.6.62
 
 ### Patch Changes

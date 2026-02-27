@@ -1,5 +1,30 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.11.79
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/ui5-application-inquirer@0.16.37
+    - @sap-ux/fiori-freestyle-writer@2.5.61
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/odata-service-inquirer@2.18.12
+    - @sap-ux/fiori-elements-writer@2.8.80
+    - @sap-ux/odata-service-writer@0.29.27
+    - @sap-ux/cap-config-writer@0.12.72
+    - @sap-ux/launch-config@0.10.70
+    - @sap-ux/store@1.5.8
+    - @sap-ux/telemetry@0.6.81
+    - @sap-ux/annotation-generator@0.4.30
+
+## 0.11.78
+
+### Patch Changes
+
+- @sap-ux/fiori-elements-writer@2.8.79
+- @sap-ux/odata-service-inquirer@2.18.11
+
 ## 0.11.77
 
 ### Patch Changes

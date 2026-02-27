@@ -19,7 +19,7 @@ import { AdpPreview } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import { addXmlFragment, tryFixChange, addControllerExtension } from '../../../src/preview/change-handler';
-import { addCustomSectionFragment } from '../../../src/preview/descriptor-change-handler';
+import { addCustomFragment } from '../../../src/preview/descriptor-change-handler';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 interface GetFragmentsResponse {
@@ -52,7 +52,7 @@ jest.mock('../../../src/preview/change-handler', () => ({
 
 jest.mock('../../../src/preview/descriptor-change-handler', () => ({
     ...jest.requireActual('../../../src/preview/descriptor-change-handler'),
-    addCustomSectionFragment: jest.fn()
+    addCustomFragment: jest.fn()
 }));
 
 jest.mock('@sap-ux/store', () => {
@@ -75,7 +75,7 @@ const renderFileMock = renderFile as jest.Mock;
 const tryFixChangeMock = tryFixChange as jest.Mock;
 const addXmlFragmentMock = addXmlFragment as jest.Mock;
 const addControllerExtensionMock = addControllerExtension as jest.Mock;
-const addCustomFragmentMock = addCustomSectionFragment as jest.Mock;
+const addCustomFragmentMock = addCustomFragment as jest.Mock;
 
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
@@ -583,11 +583,12 @@ describe('AdaptationProject', () => {
                 'write',
                 {
                     changeType: 'appdescr_fe_changePageConfiguration',
+                    projectId: 'adp.v1',
                     content: {
                         entityPropertyChange: {
                             propertyPath: 'content/body/sections/test',
                             propertyValue: {
-                                template: 'adp.v1.changes.fragment.test'
+                                template: 'adp.v1.changes.fragments.test'
                             }
                         }
                     }
@@ -600,11 +601,12 @@ describe('AdaptationProject', () => {
                 '/adp.project/webapp',
                 {
                     changeType: 'appdescr_fe_changePageConfiguration',
+                    projectId: 'adp.v1',
                     content: {
                         entityPropertyChange: {
                             propertyPath: 'content/body/sections/test',
                             propertyValue: {
-                                template: 'adp.v1.changes.fragment.test'
+                                template: 'adp.v1.changes.fragments.test'
                             }
                         }
                     }
