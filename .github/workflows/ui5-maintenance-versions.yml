@@ -25,7 +25,7 @@ jobs:
                   path: ~/.pnpm-store
                   key: ubuntu-latest-build-cache-pnpm-modules-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
-                      ubuntu-latest-build-$cache-pnpm-modules-20.x-
+                      ubuntu-latest-build-cache-pnpm-modules-20.x-
             - name: Use Node.js 20.x
               uses: actions/setup-node@v6
               with:
@@ -39,7 +39,9 @@ jobs:
               uses: actions/cache/restore@v4
               with:
                   path: tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions
+                  key: ui5-versions-latest
+                  restore-keys: |
+                      ui5-versions-latest
             - name: List previously cached UI5 maintenance versions
               id: previous-ui5-versions
               run: |
@@ -54,8 +56,13 @@ jobs:
                   cd tests/integration/adaptation-editor && pnpm exec node version.js
                   cat versions.json
                   echo "versions=$(cat versions.json)" >> $GITHUB_OUTPUT
-            - name: Cache ui5-versions modules
+            - name: Output UI5 versions
+              id: output-ui5-versions  
+              run: |
+                  echo "ui5_versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
+            - name: Save UI5 versions to cache
               uses: actions/cache/save@v4
               with:
                   path: tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions-${{fromJson(steps.current-ui5-versions.outputs.versions)[0]}}
+                  key: ui5-versions-latest
+                  enableCrossOsArchive: true
