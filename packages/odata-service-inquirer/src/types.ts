@@ -325,7 +325,7 @@ export type SystemSelectionPromptOptions = {
      * Set as string literal types `NewSystemChoice` or `CfAbapEnvServiceChoice` to specify the default choice to create a new system connection config in VSCode
      * or to select the Cloud Foundry Abap environments service discovery choice in BAS respectively.
      * Supported as object reference `{ value: }` to allow binding to runtime variables of other prompts or as string.
-     * `{ connectPath }`, if specified this path is appended to the default choice system path and will be used to authenticate as a service ($metadata) endpoint instead of a catalog request
+     * `{ connectPath }`, if specified this path is appended to the default choice system path and will be used to authenticate instead of a making catalog request
      */
     defaultChoice?: string | { value?: string; connectPath?: string };
     /**
