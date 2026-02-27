@@ -27,7 +27,6 @@ export type ConfigurationProperty<T> = {
 export interface ConfigurationBase<T extends string, Configuration extends object = {}> {
     type: T;
     annotation?: unknown;
-    path?: string[];
     configuration: {
         [K in keyof Configuration]: Configuration[K] extends object
             ? {

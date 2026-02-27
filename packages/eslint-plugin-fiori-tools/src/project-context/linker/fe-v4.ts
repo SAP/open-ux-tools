@@ -76,7 +76,6 @@ const tableTypeValues = ['ResponsiveTable', 'GridTable', 'AnalyticalTable', 'Tre
  */
 function createTable(configurationKey: string, pathToPage: string[], table?: TableNode): Table | OrphanTable {
     const base: Omit<Table, 'type' | 'children'> = {
-        path: [...pathToPage, 'options', 'settings', 'controlConfiguration', configurationKey],
         configuration: {
             tableType: {
                 configurationPath: [
