@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 9.6.8
+
+### Patch Changes
+
+- 562469f: Update the readme with .mjs example for configuration
+
 ## 9.6.7
 
 ### Patch Changes

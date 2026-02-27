@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.15.18
+
+### Patch Changes
+
+- Updated dependencies [0e2d686]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.10
+
 ## 0.15.17
 
 ### Patch Changes

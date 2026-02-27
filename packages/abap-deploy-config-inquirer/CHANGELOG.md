@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.7.10
+
+### Patch Changes
+
+- 0e2d686: Improve package validation message for $TMP with lowercase warning
+
 ## 1.7.9
 
 ### Patch Changes
