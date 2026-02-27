@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.18.76
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/project-input-validator@0.6.63
+    - @sap-ux/odata-service-writer@0.29.27
+    - @sap-ux/inquirer-common@0.11.15
+    - @sap-ux/store@1.5.8
+    - @sap-ux/system-access@0.6.58
+    - @sap-ux/ui5-config@0.29.19
+
 ## 0.18.75
 
 ### Patch Changes
