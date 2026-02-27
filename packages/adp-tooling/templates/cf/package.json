@@ -13,7 +13,7 @@
 		"zip": "cd dist && npx bestzip ../<%= module %>.zip *",
 		"clean": "npx rimraf <%= module %>.zip dist",
 		"build-ui5": "npm explore @ui5/task-adaptation -- npm run rollup",
-		"build-mta": "rimraf resources mta_archives && mbt build --mtar archive --source ../",
+		"build-mta": "rimraf ../resources ../mta_archives && mbt build --mtar archive --source ../",
 		"deploy": "cf deploy ../mta_archives/archive.mtar"
 	},
 	"repository": {

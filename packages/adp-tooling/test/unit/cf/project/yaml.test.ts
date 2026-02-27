@@ -328,6 +328,7 @@ describe('YAML Project Functions', () => {
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -360,6 +361,7 @@ describe('YAML Project Functions', () => {
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -397,6 +399,7 @@ describe('YAML Project Functions', () => {
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -432,6 +435,7 @@ describe('YAML Project Functions', () => {
                         businessService
                     },
                     mockMemFs,
+                    '1234567890',
                     undefined,
                     mockLogger
                 )
@@ -480,6 +484,7 @@ describe('YAML Project Functions', () => {
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -531,6 +536,7 @@ describe('YAML Project Functions', () => {
                     serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -578,6 +584,7 @@ describe('YAML Project Functions', () => {
                     serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -627,6 +634,7 @@ describe('YAML Project Functions', () => {
                     serviceKeys: mockServiceKeys as unknown as ServiceKeys[]
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -668,6 +676,7 @@ describe('YAML Project Functions', () => {
                     serviceKeys: mockServiceKeys
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -726,6 +735,7 @@ describe('YAML Project Functions', () => {
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -785,6 +795,7 @@ describe('YAML Project Functions', () => {
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -844,6 +855,7 @@ describe('YAML Project Functions', () => {
                     businessService
                 },
                 mockMemFs,
+                '1234567890',
                 undefined,
                 mockLogger
             );
@@ -926,6 +938,11 @@ describe('YAML Project Functions', () => {
                                 path: '/changes/test_variant_id',
                                 src: './webapp/changes',
                                 fallthrough: true
+                            },
+                            {
+                                path: '/test_variant_id',
+                                src: './webapp/i18n',
+                                fallthrough: true
                             }
                         ]
                     }
@@ -973,6 +990,11 @@ describe('YAML Project Functions', () => {
                                 path: '/changes/customer_app_variant',
                                 src: './webapp/changes',
                                 fallthrough: true
+                            },
+                            {
+                                path: '/customer_app_variant',
+                                src: './webapp/i18n',
+                                fallthrough: true
                             }
                         ]
                     }
@@ -1002,6 +1024,11 @@ describe('YAML Project Functions', () => {
                             {
                                 path: '/changes/customer_app_variant',
                                 src: './webapp/changes',
+                                fallthrough: true
+                            },
+                            {
+                                path: '/customer_app_variant',
+                                src: './webapp/i18n',
                                 fallthrough: true
                             }
                         ]
