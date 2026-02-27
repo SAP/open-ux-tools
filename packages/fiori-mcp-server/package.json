@@ -55,7 +55,7 @@
         "esbuild": "0.27.2",
         "@modelcontextprotocol/sdk": "1.26.0",
         "@sap-ux/axios-extension": "workspace:*",
-        "@sap/ux-specification": "1.142.0",
+        "@sap/ux-specification": "1.142.2",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.19",
