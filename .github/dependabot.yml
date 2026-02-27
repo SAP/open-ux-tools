@@ -7,7 +7,7 @@ updates:
       schedule:
           interval: 'weekly'
 
-    - package-ecosystem: 'pnpm'
+    - package-ecosystem: 'npm'
       directory: '/'
       open-pull-requests-limit: 5
       schedule:
