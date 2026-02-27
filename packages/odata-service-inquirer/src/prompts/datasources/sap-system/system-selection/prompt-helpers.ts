@@ -41,13 +41,15 @@ export type SystemSelectionAnswerType = {
  * @param connectionValidator the connection validator to use for the connection
  * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
  * @param cachedConnectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
+ * @param connectPath if specified will be used as the authentication path, typically a service path
  * @returns the validation result of the backend system connection
  */
 export async function connectWithBackendSystem(
     backendKey: BackendSystemKey,
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion,
-    cachedConnectedSystem?: ConnectedSystem
+    cachedConnectedSystem?: ConnectedSystem,
+    connectPath?: string
 ): Promise<ValidationResult> {
     // Create a new connection with the selected system
     PromptState.resetConnectedSystem();
@@ -62,21 +64,28 @@ export async function connectWithBackendSystem(
         if (cachedConnectedSystem && cachedConnectedSystem.backendSystem?.url === backendSystem.url) {
             connectionValidator.setConnectedSystem(cachedConnectedSystem);
         }
+        // If an alternative connection path is specified use this instead of the just the origin (this will imply service auth instead of catalog)
+        const backendSystemUrl = new URL(backendSystem.url);
+        let connectUrl = backendSystemUrl.origin;
+        if (connectPath) {
+            connectUrl = new URL(connectPath, backendSystemUrl.origin).toString();
+        }
         // Assumption: non-BAS systems are BackendSystems
         if (backendSystem.authenticationType === 'reentranceTicket') {
             // Since we previously allowed paths in the stored backend system URLs for Cloud systems, we need to strip them (only use origin in the validator).
-            const backendSystemUrl = new URL(backendSystem.url);
             if (backendSystemUrl.pathname !== '/') {
                 LoggerHelper.logger.warn(
                     t('warnings.storedSystemUrlPathNotSupported', { systemUrl: backendSystem.url })
                 );
             }
-            connectValResult = await connectionValidator.validateUrl(backendSystemUrl.origin, {
+
+            connectValResult = await connectionValidator.validateUrl(connectUrl, {
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion),
-                systemAuthType: 'reentranceTicket'
+                systemAuthType: 'reentranceTicket',
+                connectType: connectPath ? 'odata_service' : undefined // Assumption that if a connection path is provided its an odata service endpoint
             });
-        } else if (backendSystem.serviceKeys) {
+        } else if (backendSystem.serviceKeys) { // Legacy backend system support
             connectValResult = await connectionValidator.validateServiceInfo(
                 backendSystem.serviceKeys as ServiceInfo,
                 convertODataVersionType(requiredOdataVersion)
@@ -84,13 +93,14 @@ export async function connectWithBackendSystem(
         } else if (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) {
             let errorType;
             ({ valResult: connectValResult, errorType } = await connectionValidator.validateAuth(
-                backendSystem.url,
+                connectUrl,
                 backendSystem.username,
                 backendSystem.password,
                 {
                     isSystem: true,
                     odataVersion: convertODataVersionType(requiredOdataVersion),
-                    sapClient: backendSystem.client
+                    sapClient: backendSystem.client,
+                    connectType: connectPath ? 'odata_service' : undefined // Assumption that if a connection path is provided its an odata service endpoint
                 }
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
@@ -133,6 +143,7 @@ export async function connectWithDestination(
     addServicePath?: string
 ): Promise<ValidationResult> {
     PromptState.resetConnectedSystem();
+
     const { valResult: connectValResult, errorType } = await connectionValidator.validateDestination(
         destination,
         convertODataVersionType(requiredOdataVersion),

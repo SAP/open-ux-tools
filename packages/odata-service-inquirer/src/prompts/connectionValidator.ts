@@ -65,6 +65,9 @@ interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
 }
 // System specific authentication mechanism, used to determine the connection auth type
 export type SystemAuthType = 'serviceKey' | 'reentranceTicket' | 'basic' | 'unknown';
+// Systems (stored backends configs or destinations) can connect using either the specified full url or catalog requests
+export type ConnectionType = 'abap_catalog' | 'odata_service';
+
 /**
  * Class that can be used to determine the connectivity using a service url, system url, or service info (UAA Key details) or reentrance ticket.
  * This will determine if if the service/catalog is reachable, authentication is required and generates ting messages to guide the user.
@@ -307,6 +310,7 @@ export class ConnectionValidator {
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
+     * @param options.connectType if specified will determine how a system is authenticated, catalog or metadata request
      * @returns the status code or error returned by the connection attempt
      * @throws an error if the connection attempt fails and the error is a 500 on App Studio or a non-axios error is caught
      */
@@ -317,8 +321,14 @@ export class ConnectionValidator {
         {
             ignoreCertError = false,
             isSystem = false,
-            odataVersion
-        }: { ignoreCertError?: boolean; isSystem?: boolean; odataVersion?: ODataVersion } = {}
+            odataVersion,
+            connectType
+        }: {
+            ignoreCertError?: boolean;
+            isSystem?: boolean;
+            odataVersion?: ODataVersion;
+            connectType?: ConnectionType;
+        } = {}
     ): Promise<number | string> {
         const isBAS = isAppStudio();
         try {
@@ -342,10 +352,13 @@ export class ConnectionValidator {
             );
 
             if (isSystem) {
-                await this.createSystemConnection({ axiosConfig, url, odataVersion });
-                const systemInfo = await (this.serviceProvider as AbapServiceProvider).getSystemInfo();
-                this._connectedUserName = systemInfo?.userName;
-                this._connectedSystemName = systemInfo?.systemID;
+                await this.createSystemConnection({ axiosConfig, url, odataVersion, connectType });
+                // For systems (dest or backend systems) using a service endpoint for auth skip this call
+                if (connectType !== 'odata_service') {
+                    const systemInfo = await (this.serviceProvider as AbapServiceProvider).getSystemInfo();
+                    this._connectedUserName = systemInfo?.userName;
+                    this._connectedSystemName = systemInfo?.systemID;
+                }
             } else {
                 // Full service URL
                 await this.createOdataServiceConnection(axiosConfig, url.pathname);
@@ -492,6 +505,7 @@ export class ConnectionValidator {
      * @param connectConfig.serviceInfo the service info
      * @param connectConfig.odataVersion the odata version to restrict the catalog requests if only a specific version is required
      * @param connectConfig.destination the destination to connect with
+     * @param connectConfig.connectType Override the default connection approach if specified
      * @throws an error if the connection attempt fails, callers should handle the error
      */
     private async createSystemConnection({
@@ -499,13 +513,15 @@ export class ConnectionValidator {
         url,
         serviceInfo,
         destination,
-        odataVersion
+        odataVersion,
+        connectType = `abap_catalog`
     }: {
         axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
         url?: URL;
         serviceInfo?: ServiceInfo;
         destination?: Destination;
         odataVersion?: ODataVersion;
+        connectType?: ConnectionType;
     }): Promise<void> {
         this.resetConnectionState(true);
 
@@ -532,22 +548,36 @@ export class ConnectionValidator {
             LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
         }
 
-        if (!odataVersion || odataVersion === ODataVersion.v2) {
-            this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
-        }
-        if (!odataVersion || odataVersion === ODataVersion.v4) {
-            this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
-        }
-        let v4Requested = false;
-        try {
-            if (this._catalogV2) {
-                await this._catalogV2?.listServices();
-            } else if (this._catalogV4) {
-                v4Requested = true;
-                await this._catalogV4?.listServices();
+        if (connectType === 'abap_catalog') {
+            if (!odataVersion || odataVersion === ODataVersion.v2) {
+                this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
             }
-        } catch (error) {
-            await this.handleCatalogError(error, v4Requested);
+            if (!odataVersion || odataVersion === ODataVersion.v4) {
+                this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
+            }
+            let v4Requested = false;
+            try {
+                if (this._catalogV2) {
+                    await this._catalogV2?.listServices();
+                } else if (this._catalogV4) {
+                    v4Requested = true;
+                    await this._catalogV4?.listServices();
+                }
+            } catch (error) {
+                await this.handleCatalogError(error, v4Requested);
+            }
+        } else if (connectType === 'odata_service' && url) {
+            // System (backend system or destination) that uses a service for auth since catalog may not be accessible
+            // No need to validate service version here as it will be validated by the service prompt
+            // Here we only validate connectivity by handling request errors
+            try {
+                LoggerHelper.logger.debug(`Using service request: ${url} to validate authentication.`);
+                this._odataService = (this._serviceProvider as AbapServiceProvider).service<ODataService>(
+                    `${url?.pathname}`
+                );
+            } catch (error) {
+                throw error;
+            }
         }
     }
 
@@ -627,7 +657,7 @@ export class ConnectionValidator {
         if (this.systemAuthType === 'reentranceTicket' && url) {
             return createForAbapOnCloud({
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
-                url: new URL(url.pathname, url.origin).toString(),
+                url: url.origin,
                 logger: LoggerHelper.logger
             });
         }
@@ -700,10 +730,13 @@ export class ConnectionValidator {
             // So while we actually dont know we assume its basic for now since thats the only supported mechanism
             this.systemAuthType = destination.Authentication === Authentication.NO_AUTHENTICATION ? 'basic' : 'unknown';
             // Since a destination may be a system or a service connection, we need to determine the connection request (catalog or service)
-            if (isFullUrlDestination(destination) || isPartialUrlDestination(destination)) {
+            if (isFullUrlDestination(destination) || isPartialUrlDestination(destination) || servicePath) {
                 return await this.validateOdataServiceDestination(destination, servicePath);
             } else {
-                await this.createSystemConnection({ destination, odataVersion });
+                await this.createSystemConnection({
+                    destination,
+                    odataVersion
+                });
             }
             return {
                 valResult: this.getValidationResultFromStatusCode(200)
@@ -783,17 +816,17 @@ export class ConnectionValidator {
     }
 
     /**
-     * Validates an odata service url format as well as its reachability. Note if this function returns true, this is only an indication that the system is reachable
+     * Validates a url format as well as its reachability. Note if this function returns true, this is only an indication that the url or host is reachable
      * not that a connection has been established. The connection may require separate authentication or other steps (it may be reachable but a cert error was returned).
      *
      * @param serviceUrl the url to validate, may be a system or service url.
-     *     Note that if systemAuthType is specified, the url will be treated as a system url (only the origin will be considered)
      * @param options options for the connection validation
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.forceReValidation force re-validation of the url
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url, this value is retained for subsequent calls
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @param options.systemAuthType the system auth type used to create system connections, if not specified or `isSystem` is false or undefined, `basic` is assumed
+     * @param options.connectType if specified will be used to determine the endpoint used for authentication
      * @returns true if the url is reachable, false if not, or an error message string
      */
     public async validateUrl(
@@ -803,13 +836,15 @@ export class ConnectionValidator {
             forceReValidation = false,
             isSystem = false,
             odataVersion,
-            systemAuthType
+            systemAuthType,
+            connectType
         }: {
             ignoreCertError?: boolean;
             forceReValidation?: boolean;
             isSystem?: boolean;
             odataVersion?: ODataVersion;
             systemAuthType?: SystemAuthType;
+            connectType?: ConnectionType;
         } = {}
     ): Promise<ValidationResult> {
         if (this.isEmptyString(serviceUrl)) {
@@ -827,10 +862,11 @@ export class ConnectionValidator {
             if (url.origin === 'null') {
                 return t('errors.invalidUrl', { input: serviceUrl });
             }
-            // Dont allow non origin URLs in for re-entrance tickets and system URL's as the error handling would become complex to analyize.
+            // Unless connection type is explicitly `odata_service`, dont allow non origin URLs in for re-entrance tickets and system URL's as the error handling would become complex to analyize. If connectType is `odata_service` only the origin will be used to auth and store backend connections.
             // The connection may succeed but later we will get auth errors since axios-extension does not validate this.
-            // The new system name would also include the additional paths which would not make sense and would cause the issue when storing the system.
+            // The new system name would also include the additional paths which would not make sense and would cause an issue when storing the system.
             if (
+                connectType !== 'odata_service' &&
                 (this.systemAuthType === 'reentranceTicket' || isSystem) &&
                 !(url.pathname.length === 0 || url.pathname === '/')
             ) {
@@ -847,11 +883,12 @@ export class ConnectionValidator {
                 // New URL so reset the validity
                 this.resetValidity();
             }
-            // Ignore path if a system url
+
             const status = await this.checkUrl(url, undefined, undefined, {
                 ignoreCertError,
                 isSystem,
-                odataVersion
+                odataVersion,
+                connectType
             });
             LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${serviceUrl}`);
             this.validity.urlFormat = true;
@@ -1019,6 +1056,7 @@ export class ConnectionValidator {
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
      * @param options.sapClient the sap client to use for the connection
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
+     * @param options.connectType if specified this will determine how a connection is authenticated, catalog or service metadata, overiding the default approach
      * @returns true if the authentication is successful, false if not, or an error message string
      */
     public async validateAuth(
@@ -1029,12 +1067,14 @@ export class ConnectionValidator {
             ignoreCertError = false,
             sapClient,
             odataVersion,
-            isSystem = false
+            isSystem = false,
+            connectType
         }: {
             ignoreCertError?: boolean;
             odataVersion?: ODataVersion;
             sapClient?: string;
             isSystem?: boolean;
+            connectType?: ConnectionType;
         } = {}
     ): Promise<{ valResult: ValidationResult; errorType?: ERROR_TYPE }> {
         if (!url) {
@@ -1050,7 +1090,8 @@ export class ConnectionValidator {
             const status = await this.checkUrl(urlObject, username, password, {
                 ignoreCertError: ignoreCertError,
                 isSystem,
-                odataVersion
+                odataVersion,
+                connectType
             });
             LoggerHelper.logger.debug(`ConnectionValidator.validateAuth() - status: ${status}; url: ${url}`);
             // Since an exception was not thrown, this is a valid url

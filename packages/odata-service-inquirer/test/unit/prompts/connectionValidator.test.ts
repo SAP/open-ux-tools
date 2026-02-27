@@ -136,6 +136,42 @@ describe('ConnectionValidator', () => {
         expect(validatorReentrance.validity).toEqual({});
     });
 
+    test('should allow non-origin urls for isSystem when connectType is odata_service', async () => {
+        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        const serviceUrl = 'https://example.com/sap/opu/odata/sap/TEST_SERVICE';
+        const validator = new ConnectionValidator();
+
+        // With connectType: 'odata_service', non-origin paths should be allowed for system URLs
+        const result = await validator.validateUrl(serviceUrl, {
+            isSystem: true,
+            connectType: 'odata_service'
+        });
+        expect(result).toBe(true);
+        expect(validator.validity).toEqual({
+            urlFormat: true,
+            reachable: true,
+            authenticated: true
+        });
+    });
+
+    test('should allow non-origin urls for reentranceTicket when connectType is odata_service', async () => {
+        jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
+        const serviceUrl = 'https://example.com/sap/opu/odata/sap/TEST_SERVICE';
+        const validator = new ConnectionValidator();
+        validator.systemAuthType = 'reentranceTicket';
+
+        // With connectType: 'odata_service', non-origin paths should be allowed
+        const result = await validator.validateUrl(serviceUrl, {
+            connectType: 'odata_service'
+        });
+        expect(result).toBe(true);
+        expect(validator.validity).toEqual({
+            urlFormat: true,
+            reachable: true,
+            authenticated: true
+        });
+    });
+
     test('should handle url not found error', async () => {
         const axiosError = new AxiosError('', 'ENOTFOUND');
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(axiosError);
@@ -467,6 +503,47 @@ describe('ConnectionValidator', () => {
             },
             logger: expect.any(ToolsLogger)
         });
+        expect(connectValidator.validity).toEqual({
+            authenticated: true,
+            reachable: true,
+            urlFormat: true
+        });
+    });
+
+    test('should validate auth with connectType odata_service using service endpoint instead of catalog', async () => {
+        const createProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
+        const listServicesV2Mock = jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices');
+        const listServicesV4Mock = jest.spyOn(axiosExtension.V4CatalogService.prototype, 'listServices');
+        // Mock the service method on ServiceProvider to verify it's called with the right path
+        const serviceMock = jest.fn().mockReturnValue({} as ODataService);
+        jest.spyOn(ServiceProvider.prototype, 'service').mockImplementation(serviceMock);
+
+        const connectValidator = new ConnectionValidator();
+        const serviceUrl = 'https://example.com:1234/sap/opu/odata/sap/TEST_SERVICE';
+        const result = await connectValidator.validateAuth(serviceUrl, 'user1', 'pword1', {
+            isSystem: true,
+            sapClient: '999',
+            connectType: 'odata_service'
+        });
+
+        expect(result).toEqual({ valResult: true });
+        expect(createProviderSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                auth: {
+                    password: 'pword1',
+                    username: 'user1'
+                },
+                baseURL: 'https://example.com:1234',
+                params: {
+                    'sap-client': '999'
+                }
+            })
+        );
+        // When connectType is 'odata_service', catalog listServices should NOT be called
+        expect(listServicesV2Mock).not.toHaveBeenCalled();
+        expect(listServicesV4Mock).not.toHaveBeenCalled();
+        // Instead, the service method should be called with the URL path (trailing slash added by the implementation)
+        expect(serviceMock).toHaveBeenCalledWith('/sap/opu/odata/sap/TEST_SERVICE/');
         expect(connectValidator.validity).toEqual({
             authenticated: true,
             reachable: true,
