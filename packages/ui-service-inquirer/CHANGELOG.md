@@ -1,5 +1,31 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.134
+
+### Patch Changes
+
+- Updated dependencies [698fd9e]
+    - @sap-ux/odata-service-inquirer@2.19.0
+
+## 0.2.133
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/odata-service-inquirer@2.18.13
+    - @sap-ux/axios-extension@1.25.17
+    - @sap-ux/inquirer-common@0.11.16
+    - @sap-ux/abap-deploy-config-inquirer@1.7.11
+    - @sap-ux/telemetry@0.6.82
+
+## 0.2.132
+
+### Patch Changes
+
+- ae0bf31: use hidenewsystem prompt option for ui service generator
+- Updated dependencies [0e2d686]
+    - @sap-ux/abap-deploy-config-inquirer@1.7.10
+
 ## 0.2.131
 
 ### Patch Changes
