@@ -27,6 +27,13 @@ jest.mock('@sap/cf-tools', () => ({
     apiGetInstanceCredentials: jest.fn()
 }));
 
+jest.mock('@sap/mta-lib', () => {
+    return {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        Mta: require('./mockMta').MockMta
+    };
+});
+
 let hasSyncMock: jest.SpyInstance;
 
 describe('CF Writer Base', () => {
