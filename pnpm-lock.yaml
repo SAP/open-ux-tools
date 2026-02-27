@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@sap-ux/vocabularies-types': 0.14.5
   '@storybook/manager-api>store2': 2.14.4
   '@sap-ux/ui5-config>axios': ^1.13.5
   '@sap/service-provider-apis>axios': ^1.13.5
@@ -1857,8 +1858,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.14.5
+        version: 0.14.5
       '@types/semver':
         specifier: 7.7.1
         version: 7.7.1
@@ -12456,7 +12457,7 @@ packages:
   /@sap-ux/annotation-converter@0.10.9:
     resolution: {integrity: sha512-3FZsUB9G/PhxyMuYs6tIcXEvStQl5NXHwLLyy94UGNAwYCYxwrST7UgiirlVCY9Krb03wb8RdPCldTEyyO5iEg==}
     dependencies:
-      '@sap-ux/vocabularies-types': 0.13.2
+      '@sap-ux/vocabularies-types': 0.14.5
     dev: true
 
   /@sap-ux/cds-annotation-parser@0.2.24:
@@ -12544,7 +12545,7 @@ packages:
       '@sap-ux/fiori-annotation-api': 0.8.2(typescript@5.9.3)
       '@sap-ux/logger': 0.8.0
       '@sap-ux/project-access': 1.33.0
-      '@sap-ux/vocabularies-types': 0.13.2
+      '@sap-ux/vocabularies-types': 0.14.5
       '@xmldom/xmldom': 0.8.10
       ejs: 3.1.10
       i18next: 25.3.0(typescript@5.9.3)
@@ -12598,7 +12599,7 @@ packages:
       '@sap-ux/odata-entity-model': 0.3.3
       '@sap-ux/odata-vocabularies': 0.4.21
       '@sap-ux/project-access': 1.33.0
-      '@sap-ux/vocabularies-types': 0.13.2
+      '@sap-ux/vocabularies-types': 0.14.5
       '@sap-ux/xml-odata-annotation-converter': 0.4.4
       '@sap/ux-cds-compiler-facade': 1.19.0(@sap-ux/odata-annotation-core-types@0.5.2)(@sap-ux/odata-annotation-core@0.2.11)(@sap-ux/project-access@1.33.0)
       '@xml-tools/ast': 5.0.5
@@ -12793,16 +12794,6 @@ packages:
       - supports-color
     dev: true
 
-  /@sap-ux/vocabularies-types@0.13.1:
-    resolution: {integrity: sha512-1FUwupX3jF/oNiRbHRx9JlydVgtuSvqpJJFORrh7cnQ71pCmKRvZL8cVkqMF+TQ0/WL3/TJBiGzYSsoQO5xRUQ==}
-    engines: {node: '>=18.x'}
-    dev: false
-
-  /@sap-ux/vocabularies-types@0.13.2:
-    resolution: {integrity: sha512-lPFiWVXyA4yUBeQBJePxnqXZ/bMKk6vR3GoLtW/5ayBcQAJxWTpeyK8QX91sR+AajDmzkCF/8ND2ewi8SewySg==}
-    engines: {node: '>=18.x'}
-    dev: true
-
   /@sap-ux/vocabularies-types@0.14.5:
     resolution: {integrity: sha512-66Q7Q4zVVSirPopU7oRw0ZDtUiOhAF2DuKy70uJl2wRfQ2WXLbrezEkHRxVdiVpQYm5n5qTkr6sX/I+/WXQjXQ==}
     engines: {node: '>=18.x'}
@@ -12947,7 +12938,7 @@ packages:
     engines: {node: '>=20.0.0 <21.0.0 || >=22.0.0 <23.0.0 || >=24.0.0 <25.0.0 || >=26.0.0', yarn: '>=1.22.19 < 2'}
     dependencies:
       '@sap-ux/fe-fpm-writer': 0.40.2(typescript@5.9.3)
-      '@sap-ux/vocabularies-types': 0.13.2
+      '@sap-ux/vocabularies-types': 0.14.5
     transitivePeerDependencies:
       - debug
       - typescript
@@ -27976,7 +27967,7 @@ packages:
     dev: true
 
   /prettify-xml@1.2.0:
-    resolution: {integrity: sha1-Rtzx7oqNi3PbMLfgbvJtyc8/bxg=}
+    resolution: {integrity: sha512-kuoTbmC+QQUfx45PrdkVzJqrNEp2lhK++WGyiqBx6JrCvZUQDgeYjdV3h53n7p+37s1Iwx6GjAQ7fcIgD8kkLQ==}
     dev: false
 
   /pretty-bytes@5.6.0:

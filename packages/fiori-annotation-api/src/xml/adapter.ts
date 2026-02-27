@@ -29,9 +29,17 @@ import {
     createElementNode,
     Edm,
     Edmx,
-    createReference
+    createReference,
+    TEXT_TYPE,
+    Location
 } from '@sap-ux/odata-annotation-core-types';
-import { getAliasInformation, getAllNamespacesAndReferences } from '@sap-ux/odata-annotation-core';
+import {
+    getAliasInformation,
+    getAllNamespacesAndReferences,
+    getElementAttributeValue,
+    isElementWithName,
+    parseIdentifier
+} from '@sap-ux/odata-annotation-core';
 
 import type { Project } from '@sap-ux/project-access';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
@@ -63,6 +71,8 @@ import type { Comment } from './comments';
 import { collectUsedNamespaces } from './references';
 import { collectComments } from './comments';
 import { getNodeFromPointer } from './pointer';
+import type { ValueListReference } from '../types/adapter';
+import { pathToFileURL } from 'node:url';
 
 /**
  * XML Annotation Service Adapter.
@@ -73,10 +83,19 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     public splitAnnotationSupport = false;
     public fileCache: Map<string, string>;
 
+    private readonly externalServices = new Map<
+        string,
+        { annotations: AnnotationFile; metadata: MetadataElement[]; localFilePath: string }
+    >();
+
+    /**
+     * Mapping from targets to value list references
+     */
+    private readonly valueListReferences = new Map<string, ValueListReference[]>();
     private readonly documents = new Map<string, Document>();
     private metadata: MetadataElement[] = [];
 
-    private setFileCache(fileCache: Map<string, string>) {
+    private setFileCache(fileCache: Map<string, string>): void {
         this.fileCache = fileCache;
     }
 
@@ -87,9 +106,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
      * @returns Compiled XML service.
      */
     public get compiledService(): CompiledService {
-        if (!this._compiledService) {
-            this._compiledService = this._getCompiledService();
-        }
+        this._compiledService ??= this._getCompiledService();
         return this._compiledService;
     }
     private set compiledService(v: CompiledService) {
@@ -123,19 +140,22 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         this._compiledService = undefined;
         this.setFileCache(fileCache);
         const { ast: metadataDocument, comments: metadataComments } = parseFile(fileCache, this.service.metadataFile);
+        const metadataAnnotations = convertDocument(this.service.metadataFile.uri, metadataDocument);
         this.documents.set(this.service.metadataFile.uri, {
             uri: this.service.metadataFile.uri,
             comments: metadataComments,
             ast: metadataDocument,
-            annotationFile: convertDocument(this.service.metadataFile.uri, metadataDocument),
+            annotationFile: metadataAnnotations,
             usedNamespaces: new Set()
         });
 
+        this.collectValueListReferences(metadataAnnotations);
         for (const file of this.service.annotationFiles) {
             const { ast, comments } = parseFile(fileCache, file, false);
             const annotationFile = convertDocument(file.uri, ast);
             const usedNamespaces = new Set<string>();
             collectUsedNamespaces(annotationFile, usedNamespaces);
+            this.collectValueListReferences(annotationFile);
             this.documents.set(file.uri, {
                 uri: file.uri,
                 comments,
@@ -151,6 +171,53 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             isCds: false
         });
         this.metadataService.import(this.metadata, this.service.metadataFile.uri);
+    }
+
+    /**
+     * Refreshes internal data structures from the provided external service data.
+     *
+     * @param uri - URI of the external service metadata.
+     * @param data - Content of the external service metadata file.
+     * @param localFilePath - Local file path of the external service metadata file.
+     */
+    public syncExternalService(uri: string, data: string, localFilePath: string): void {
+        const { ast: metadataDocument, comments: metadataComments } = parseWithoutCache(data, true);
+        const metadataAnnotations = convertDocument(uri, metadataDocument);
+        this.documents.set(uri, {
+            uri,
+            comments: metadataComments,
+            ast: metadataDocument,
+            annotationFile: metadataAnnotations,
+            usedNamespaces: new Set()
+        });
+
+        const metadata = convertMetadataDocument(uri, metadataDocument);
+        this.externalServices.set(uri, { annotations: metadataAnnotations, metadata, localFilePath });
+        this.metadataService.importServiceMetadata(metadata, uri, uri);
+    }
+
+    /**
+     * @returns Returns compiled data of all external services.
+     */
+    public getExternalServices(): {
+        uri: string;
+        metadataService: MetadataService;
+        compiledService: CompiledService;
+        localFileUri: string;
+    }[] {
+        return Array.from(this.externalServices.entries()).map(([uri, { annotations, metadata, localFilePath }]) => {
+            // Assume same OData version as main service
+            return {
+                uri,
+                localFileUri: pathToFileURL(localFilePath).toString(),
+                metadataService: this.metadataService,
+                compiledService: {
+                    odataVersion: this.service.odataVersion,
+                    metadata,
+                    annotationFiles: [annotations]
+                }
+            };
+        });
     }
 
     /**
@@ -272,6 +339,15 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
      */
     public serializeTarget(target: Target): string {
         return serializeTarget(target);
+    }
+
+    /**
+     * Returns a map of value list references.
+     *
+     * @returns Map of value list references.
+     */
+    public getValueListReferences(): Map<string, ValueListReference[]> {
+        return this.valueListReferences;
     }
 
     private getUniqueNamespace(metadataNamespace: string): string {
@@ -656,6 +732,59 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             }
         }
     }
+
+    private getValueListReferencesForTarget(target: string): ValueListReference[] {
+        const cachedValue = this.valueListReferences.get(target);
+        if (cachedValue) {
+            return cachedValue;
+        }
+        const references: ValueListReference[] = [];
+        this.valueListReferences.set(target, references);
+        return references;
+    }
+
+    private collectValueListReferences(annotationFile: AnnotationFile): void {
+        const namespaces = annotationFile.references.map((ref) => ({ alias: ref.alias, name: ref.name }));
+
+        for (const target of annotationFile.targets) {
+            for (const annotation of target.terms) {
+                const term = getElementAttributeValue(annotation, Edm.Term);
+                const parsedTerm = parseIdentifier(term);
+
+                if (parsedTerm.name !== 'ValueListReferences') {
+                    continue;
+                }
+                const namespace = namespaces.find(
+                    (ns) => ns.alias === parsedTerm.namespaceOrAlias || ns.name === parsedTerm.namespaceOrAlias
+                )?.name;
+
+                if (namespace !== 'com.sap.vocabularies.Common.v1') {
+                    continue;
+                }
+
+                const collection = annotation.content.find((element) => isElementWithName(element, Edm.Collection));
+                if (isElementWithName(collection, Edm.Collection) && annotation.range) {
+                    const references = collection.content
+                        .map((reference): string | undefined => {
+                            if (isElementWithName(reference, Edm.String)) {
+                                const value = reference.content[0];
+                                if (value.type === TEXT_TYPE) {
+                                    return value.text;
+                                }
+                            }
+                            return undefined;
+                        })
+                        .filter((value): value is string => typeof value === 'string');
+                    const valueListReferences = this.getValueListReferencesForTarget(target.name);
+                    valueListReferences.push({
+                        annotation,
+                        uris: references,
+                        location: Location.create(annotationFile.uri, annotation.range)
+                    });
+                }
+            }
+        }
+    }
 }
 
 function throwIf(condition: boolean, message: string): void {
@@ -722,11 +851,16 @@ function parseFile(
     if (typeof content !== 'string') {
         throw new Error(`File ${file.uri} not found in cache!`);
     }
+    return parseWithoutCache(content, ignoreComments);
+}
+
+function parseWithoutCache(content: string, ignoreComments = true): { ast: XMLDocument; comments: Comment[] } {
     const { cst, tokenVector } = parse(content);
     const comments = ignoreComments ? [] : collectComments(tokenVector);
     const ast = buildAst(cst as DocumentCstNode, tokenVector);
     return { ast, comments };
 }
+
 type Node = AnyNode | ElementChild[];
 
 function convertPointer(annotationFile: AnnotationFile, pointer: string): string {
