@@ -34,6 +34,7 @@
         "@sapui5/types": "1.120.5",
         "ui5-tooling-modules": "3.33.0",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@ui5/cli": "4.0.44",
         "eslint-plugin-jsdoc": "50.8.0",
@@ -42,5 +43,5 @@
         "vscode-languageserver-textdocument": "1.0.11",
         "@ui5/manifest": "1.83.0"
     },
-    "browserslist": "defaults"
+    "browserslist": ["defaults"]
 }

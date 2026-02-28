@@ -195,7 +195,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -266,7 +266,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -331,7 +331,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -379,7 +379,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -427,7 +427,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -475,7 +475,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -508,6 +508,53 @@ Object {
 `;
 
 exports[`FlpSandbox init minimal manifest 1`] = `
+Object {
+  "apps": Object {
+    "app-preview": Object {
+      "additionalInformation": "SAPUI5.Component=my.id",
+      "applicationType": "URL",
+      "description": "",
+      "title": "my.id",
+      "url": "..",
+    },
+  },
+  "basePath": "..",
+  "enableCardGenerator": false,
+  "enhancedHomePage": false,
+  "init": undefined,
+  "locateReuseLibsScript": true,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.id": "..",
+      "open.ux.preview.client": "../preview/client",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
+exports[`FlpSandbox init minimal manifest with CAPNodejs project type 1`] = `
 Object {
   "apps": Object {
     "app-preview": Object {
@@ -571,7 +618,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -621,7 +668,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2076,7 +2123,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2206,7 +2253,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2678,7 +2725,7 @@ Object {
   "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
-  "locateReuseLibsScript": false,
+  "locateReuseLibsScript": true,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
