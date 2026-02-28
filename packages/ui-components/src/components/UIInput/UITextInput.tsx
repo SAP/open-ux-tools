@@ -68,8 +68,8 @@ export class UITextInput extends React.Component<UITextInputProps> {
      */
     private getFocusBorder(messageInfo: InputValidationMessageInfo): string {
         let color = COLOR_STYLES.focus.borderColor;
-        if (this.props.errorMessage && messageInfo.style.borderColor) {
-            color = `var(${messageInfo.style.borderColor})`;
+        if (this.props.errorMessage && messageInfo.style.message.borderColor) {
+            color = `var(${messageInfo.style.message.borderColor})`;
         }
         return `1px ${COLOR_STYLES.regular.borderStyle} ${color}`;
     }
@@ -133,7 +133,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                     },
                     // Error message
                     props.hasErrorMessage && {
-                        borderColor: messageInfo.style.borderColor
+                        borderColor: messageInfo.style.message.borderColor
                     },
                     props.focused && {
                         selectors: {
@@ -213,7 +213,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         ]
                     }
                 },
-                errorMessage: [messageInfo.style],
+                errorMessage: [messageInfo.style.message],
                 icon: [
                     {
                         bottom: 2
