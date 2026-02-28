@@ -3,10 +3,54 @@ import * as path from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n';
+import type { CfServiceOffering, CfAPIResponse, BusinessServiceResource, AppRouterType, MtaYaml } from '../../types';
+import { getServiceKeyCredentialsWithTags } from '../services/api';
+import { requestCfApi } from '../services/cli';
 import { getRouterType } from './yaml';
 import { getYamlContent } from './yaml-loader';
-import { requestCfApi } from '../services/cli';
-import type { CfServiceOffering, CfAPIResponse, BusinessServiceResource, AppRouterType } from '../../types';
+
+const EXCLUDED_SERVICES_VCAP = new Set(['html5-apps-repo', 'portal']);
+
+/**
+ * Builds VCAP_SERVICES by resolving MTA resources to service key credentials.
+ *
+ * @param {MtaYaml['resources']} resources - MTA YAML resources.
+ * @param {string} spaceGuid - The space GUID.
+ * @param {ToolsLogger} logger - Optional logger.
+ * @returns {Promise<Record<string, unknown>>} VCAP_SERVICES keyed by service name.
+ */
+export async function buildVcapServicesFromResources(
+    resources: MtaYaml['resources'],
+    spaceGuid: string,
+    logger?: ToolsLogger
+): Promise<Record<string, unknown>> {
+    const vcapServices: Record<string, unknown> = {};
+    for (const resource of resources ?? []) {
+        const serviceName = resource.parameters?.service;
+        const serviceInstanceName = resource.parameters?.['service-name'];
+        const servicePlan = resource.parameters?.['service-plan'];
+
+        if (!serviceName || !serviceInstanceName || EXCLUDED_SERVICES_VCAP.has(serviceName)) {
+            continue;
+        }
+
+        const data = await getServiceKeyCredentialsWithTags(
+            spaceGuid,
+            serviceName,
+            serviceInstanceName,
+            servicePlan ?? '',
+            logger
+        );
+
+        if (!data?.credentials) {
+            throw new Error(`Credentials and tags for service '${serviceName}' ('${serviceInstanceName}') not found`);
+        }
+
+        vcapServices[serviceName] = [data];
+    }
+
+    return vcapServices;
+}
 
 /**
  * Get the approuter type.

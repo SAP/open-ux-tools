@@ -1,29 +1,42 @@
 [![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/backend-proxy-middleware-cf/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware-cf)
 
-# [`@sap-ux/backend-proxy-middleware-cf`](https://github.com/SAP/open-ux-tools/tree/main/packages/backend-proxy-middleware-cf)
+# `@sap-ux/backend-proxy-middleware-cf`
 
-The `@sap-ux/backend-proxy-middleware-cf` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for proxying requests to Cloud Foundry destinations with OAuth2 authentication. It supports proxying multiple OData source paths to a single destination URL with automatic OAuth token management.
+UI5 server middleware that uses `@sap/approuter` to make destinations configured in SAP Business Technology Platform (BTP) available for local development. Requests to destination routes are proxied to a local approuter instance via `http-proxy-middleware`.
 
 > **⚠️ Experimental**: This middleware is currently experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions if needed.
 
-It can be used either with the `ui5 serve` or the `fiori run` commands.
+## Prerequisites
 
-## [Configuration Options](#configuration-options)
+- [@ui5/cli](https://ui5.github.io/cli/) 4.0 or later (specVersion 4.0 and later in `ui5.yaml`)
 
-| Option              | Value Type | Requirement Type | Default Value | Description                                                                                                      |
-| ------------------- | ---------- | ---------------- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `url`               | `string`   | **required**     | `undefined`   | Destination URL to proxy requests to.                                                                           |
-| `paths`             | `string[]` | **required**     | `[]`          | Array of OData source paths to proxy to this destination. Each path represents an OData service that should be proxied. Requests matching these paths will have the path prefix removed before forwarding. |
-| `pathRewrite`       | `string`   | optional         | `undefined`   | Optional path rewriting. When specified, the matched path prefix will be replaced with this value before forwarding to the backend. If not specified, the matched path is simply removed. Example: path `/resources/lib/api` with pathRewrite `/api` transforms `/resources/lib/api/v1/Service` to `/api/v1/Service`. |
-| `credentials`       | object     | optional         | `undefined`    | Manual OAuth credentials. If not provided, middleware attempts to auto-detect from Cloud Foundry ADP project.   |
-| `credentials.clientId` | `string` | mandatory (if credentials provided) | `undefined` | OAuth2 client ID.                                                                                                |
-| `credentials.clientSecret` | `string` | mandatory (if credentials provided) | `undefined` | OAuth2 client secret.                                                                                            |
-| `credentials.url`    | `string`   | mandatory (if credentials provided) | `undefined` | Base URL for the OAuth service. The token endpoint will be constructed as `{url}/oauth/token`.                   |
-| `debug`             | `boolean`  | optional         | `false`        | Enable debug logging for troubleshooting.                                                                        |
+## Install
 
-## [Usage](#usage)
+```bash
+pnpm add -D @sap-ux/backend-proxy-middleware-cf
+```
 
-### [Basic Configuration](#basic-configuration)
+## Configuration (ui5.yaml)
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `debug` | `boolean` | `false` | Verbose logging |
+| `port` | `number` | `5000` | Port for the local approuter |
+| `xsappJsonPath` | `string` | `"./xs-app.json"` | Path to the CF-style approuter config (e.g. `xs-app.json`). Destination route sources should match the pattern `/[^/]*\/(.*\/)?[^/]*/` (e.g. `"^/backend/(.*)$"`). |
+| `envOptionsPath` | `string` | — | Path (relative to project root) to a JSON file. Each top-level key is set on `process.env` (objects/arrays are JSON-stringified) so the approuter can read credentials and services. |
+| `destinations` | `array` or `string` | `[]` | List of `{ name, url }` destinations (names must match routes in `xs-app.json`). |
+| `allowServices` | `boolean` | `false` | Allow BTP services referenced in `xs-app.json` (requires authenticated BTP session). |
+| `authenticationMethod` | `"none"` \| `"route"` | `"none"` | Authentication for routes |
+| `allowLocalDir` | `boolean` | `false` | Allow approuter to serve static assets (usually ui5-server serves them). |
+| `rewriteContent` | `boolean` | `true` | Replace proxied URLs in response body with the server URL |
+| `rewriteContentTypes` | `string[]` | `["text/html", "application/json", "application/atom+xml", "application/xml"]` | Content types to rewrite when `rewriteContent` is true |
+| `extensions` | `array` | `[]` | Approuter extensions: `{ module: string, parameters?: Record<string, string> }`. Parameters are passed as the 4th argument to extension handlers. |
+| `appendAuthRoute` | `boolean` | `false` | Add a route for HTML pages to trigger XSUAA login when `authenticationMethod` is not `"none"`. |
+| `disableWelcomeFile` | `boolean` | `false` | Disable welcome file handling from `xs-app.json`. |
+
+## Usage
+
+1. Add the middleware in `ui5.yaml`:
 
 ```yaml
 server:
@@ -31,182 +44,56 @@ server:
     - name: backend-proxy-middleware-cf
       afterMiddleware: compression
       configuration:
-        backends:
-          - url: https://your-backend-service
-            paths:
-              - /odata/v4/visitorservice
-              - /odata
+        authenticationMethod: "none"
+        debug: true
+        port: 5000
+        xsappJsonPath: "./xs-app.json"
+        destinations:
+          - name: "backend"
+            url: "https://your-backend.example/path"
 ```
 
-### [Automatic Detection (Recommended)](#automatic-detection-recommended)
+2. Point your path to the location of xs-app.json.
 
-For Cloud Foundry adaptation projects, the middleware automatically detects the project configuration from `ui5.yaml` and extracts OAuth credentials from service keys. You only need to provide the `url` and `paths`:
+### Env options file (VCAP_SERVICES, credentials)
+
+To run the approuter with BTP-style credentials (e.g. XSUAA, destinations), point `envOptionsPath` to a JSON file. Each top-level key is applied to `process.env` so the approuter can find them; object and array values are stored as JSON strings. The key `destinations` in the file is ignored so that the middleware's `destinations` from ui5.yaml are used.
+
+Example shape (minimal):
+
+```json
+{
+  "VCAP_SERVICES": {
+    "xsuaa": [{ "label": "xsuaa", "credentials": { "clientid": "...", "clientsecret": "...", "url": "..." } }],
+    "destination": [{ "label": "destination", "credentials": { ... } }]
+  }
+}
+```
+
+You can export a real `VCAP_SERVICES` (and optionally other keys) from your BTP app and save it to a file (e.g. `./default-env.json`); do not commit secrets. In ui5.yaml set `envOptionsPath: "./default-env.json"`.
+
+## How it works
+
+The middleware starts a local `@sap/approuter` process with your `xs-app.json` and destinations. The UI5 server proxies requests that match approuter routes (e.g. login callback, welcome file, destination routes) to `http://localhost:<port>`. Response content can be rewritten so that backend URLs in the body are replaced with the server URL for the relevant content types.
+
+## Extensions
+
+You can plug in approuter extensions and pass parameters:
 
 ```yaml
-server:
-  customMiddleware:
-    - name: backend-proxy-middleware-cf
-      afterMiddleware: compression
-      configuration:
-        backends:
-          - url: https://your-backend-service
-            paths:
-              - /odata/v4/visitorservice
-              - /odata
+configuration:
+  extensions:
+    - module: ./approuter-local-ext.js
+      parameters:
+        userId: "user@example.com"
 ```
 
-The middleware will:
-
-1. Read the `app-variant-bundler-build` custom task from `ui5.yaml`
-2. Extract `serviceInstanceName` and `serviceInstanceGuid`
-3. Retrieve service keys using `@sap-ux/adp-tooling`
-4. Extract UAA credentials and construct the token endpoint
-5. Automatically add Bearer tokens to proxied requests
-
-### [Manual Credentials](#manual-credentials)
-
-For custom setups or when auto-detection is not available, you can provide OAuth credentials manually:
-
-```yaml
-server:
-  customMiddleware:
-    - name: backend-proxy-middleware-cf
-      afterMiddleware: compression
-      configuration:
-        backends: 
-          - url: https://your-backend-service
-            paths:
-              - /odata/v4/visitorservice
-              - /odata
-            credentials:
-              clientId: "sb-your-service-instance!b123|your-app!b456"
-              clientSecret: "your-client-secret"
-              url: "https://example.authentication"
-            debug: true
-```
-
-The `credentials.url` should be the base URL of the UAA service (without `/oauth/token`). The middleware will automatically construct the full token endpoint.
-
-### Multiple OData Sources
-
-You can proxy multiple OData paths to the same destination:
-
-```yaml
-server:
-  customMiddleware:
-    - name: backend-proxy-middleware-cf
-      afterMiddleware: compression
-      configuration:
-        backends:
-          - url: https://your-backend-service
-            paths:
-              - /odata/v4/service1
-              - /odata/v4/service2
-              - /odata/v2/legacy
-```
-
-### Path Rewriting with pathRewrite
-
-When your application requests resources with a specific path prefix (e.g., from a UI5 library), but the backend API expects a different path structure, use `pathRewrite`:
-
-```yaml
-server:
-  customMiddleware:
-    - name: backend-proxy-middleware-cf
-      afterMiddleware: compression
-      configuration:
-        backends:
-          - url: https://my-backend.example.com
-            paths:
-              - /resources/my/app/ui/api/example
-            pathRewrite: /api/example
-```
-
-**How it works:**
-- **Request from app:** `/resources/my/app/ui/api/example/v1/ExampleService/$metadata`
-- **Matched path:** `/resources/my/app/ui/api/example`
-- **Path rewriting:** `/api/example`
-- **Forwarded to backend:** `/api/example/v1/ExampleService/$metadata`
-
-Without `pathRewrite`, the matched path prefix is simply removed:
-- **Request:** `/odata/v4/service/EntitySet`
-- **Matched path:** `/odata`
-- **Forwarded:** `/v4/service/EntitySet`
-
-### Multiple Backend Services
-
-You can proxy multiple backend services:
-
-```yaml
-server:
-  customMiddleware:
-    - name: backend-proxy-middleware-cf
-      afterMiddleware: compression
-      configuration:
-        backends:
-          - url: https://your-backend-service1
-            paths:
-              - /odata/v4/service1
-              - /odata/v4/service2
-              - /odata/v2/legacy
-          - url: https://your-backend-service2
-            paths:
-              - /odata/v4/service1
-              - /odata/v4/service2
-              - /odata/v2/legacy
-```
-
-### With Debug Logging
-
-Enable debug logging to troubleshoot issues:
-
-```yaml
-server:
-  customMiddleware:
-    - name: backend-proxy-middleware-cf
-      afterMiddleware: compression
-      configuration:
-        backends:
-        - url: https://your-backend-service.cfapps.eu12.hana.ondemand.com
-          paths:
-            - /odata
-          debug: true
-```
-
-## How It Works
-
-1. **Proxy Setup**: Creates HTTP proxy middleware for each configured path, proxying to the destination URL.
-2. **Path Rewriting**: Removes the matched path prefix before forwarding requests (e.g., `/odata/v4/service` → `/service`).
-3. **OAuth Detection**: For automatic mode, checks if the project is a CF ADP project by reading `ui5.yaml` and looking for the `app-variant-bundler-build` custom task.
-4. **Credentials**: Extracts `serviceInstanceName` and `serviceInstanceGuid` from the custom task configuration.
-5. **Service Keys**: Retrieves service keys using `@sap-ux/adp-tooling`, which communicates with Cloud Foundry CLI.
-6. **Token Endpoint**: Constructs the token endpoint from the UAA base URL as `{url}/oauth/token`.
-7. **Token Management**: Requests OAuth tokens using client credentials flow.
-8. **Caching**: Caches tokens in memory and refreshes them automatically 60 seconds before expiry.
-9. **Request Proxying**: Adds `Authorization: Bearer <token>` header to proxied requests before forwarding.
-
-## Error Handling
-
-- If `url` is not provided, the middleware will be inactive and log a warning.
-- If no paths are configured, the middleware will be inactive and log a warning.
-- If auto-detection fails and no manual credentials are provided, the middleware will proxy requests without OAuth tokens (may fail if backend requires authentication).
-- If token request fails, an error is logged but the request may still proceed (depending on the backend's authentication requirements).
-- All errors are logged for debugging purposes.
-
-## Security Considerations
-
-- Credentials are never logged in production mode.
-- Tokens are cached in memory only and never persisted to disk.
-- Token refresh happens automatically 60 seconds before expiry to avoid using expired tokens.
-- Service keys are obtained securely through Cloud Foundry CLI.
-- The middleware only proxies requests matching any of the configured path prefixes.
-- If no paths are configured, the middleware will be inactive and log a warning.
+In the extension, parameters are available as the 4th argument: `function (req, res, next, params)`.
 
 ## Keywords
 
-- OAuth2 Middleware
-- Cloud Foundry ADP
-- Bearer Token
-- Fiori tools
-- SAP UI5
-- Proxy Middleware
+- UI5 middleware
+- Cloud Foundry
+- Approuter
+- Destination proxy
+- SAP BTP
