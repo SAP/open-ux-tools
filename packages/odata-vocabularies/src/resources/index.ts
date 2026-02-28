@@ -26,6 +26,7 @@ import UI from './com.sap.vocabularies.UI.v1';
 import HTML5 from './com.sap.vocabularies.HTML5.v1';
 import ObjectModel from './com.sap.cds.vocabularies.ObjectModel';
 import AnalyticsDetails from './com.sap.cds.vocabularies.AnalyticsDetails';
+import AsyncAPI from './com.sap.vocabularies.AsyncAPI.v1';
 
 export type CdsVocabularyNamespace =
     | 'com.sap.cds.vocabularies.ObjectModel'
@@ -46,7 +47,8 @@ export type SapVocabularyNamespace =
     | 'com.sap.vocabularies.PersonalData.v1'
     | 'com.sap.vocabularies.Session.v1'
     | 'com.sap.vocabularies.UI.v1'
-    | 'com.sap.vocabularies.HTML5.v1';
+    | 'com.sap.vocabularies.HTML5.v1'
+    | 'com.sap.vocabularies.AsyncAPI.v1';
 
 export type SapVocabularyAlias =
     | 'Analytics'
@@ -63,7 +65,8 @@ export type SapVocabularyAlias =
     | 'PersonalData'
     | 'Session'
     | 'UI'
-    | 'HTML5';
+    | 'HTML5'
+    | 'AsyncAPI';
 
 export type OasisVocabularyNamespace =
     | 'Org.OData.Aggregation.V1'
@@ -110,6 +113,7 @@ export const NAMESPACE_TO_ALIAS: Map<VocabularyNamespace, VocabularyAlias> = new
     ['com.sap.vocabularies.DataIntegration.v1', 'DataIntegration'],
     ['com.sap.vocabularies.DirectEdit.v1', 'DirectEdit'],
     ['com.sap.vocabularies.Graph.v1', 'Graph'],
+    ['com.sap.vocabularies.AsyncAPI.v1', 'AsyncAPI'],
     ['com.sap.vocabularies.Hierarchy.v1', 'Hierarchy'],
     ['com.sap.vocabularies.ODM.v1', 'ODM'],
     ['com.sap.vocabularies.PDF.v1', 'PDF'],
@@ -139,6 +143,7 @@ export const ALIAS_TO_NAMESPACE: Map<VocabularyAlias, VocabularyNamespace> = new
     ['DataIntegration', 'com.sap.vocabularies.DataIntegration.v1'],
     ['DirectEdit', 'com.sap.vocabularies.DirectEdit.v1'],
     ['Graph', 'com.sap.vocabularies.Graph.v1'],
+    ['AsyncAPI', 'com.sap.vocabularies.AsyncAPI.v1'],
     ['Hierarchy', 'com.sap.vocabularies.Hierarchy.v1'],
     ['ODM', 'com.sap.vocabularies.ODM.v1'],
     ['PDF', 'com.sap.vocabularies.PDF.v1'],
@@ -168,6 +173,7 @@ const vocabularies: Record<string, CSDL> = {
     'com.sap.vocabularies.DataIntegration.v1': DataIntegration,
     'com.sap.vocabularies.DirectEdit.v1': DirectEdit,
     'com.sap.vocabularies.Graph.v1': Graph,
+    'com.sap.vocabularies.AsyncAPI.v1': AsyncAPI,
     'com.sap.vocabularies.Hierarchy.v1': Hierarchy,
     'com.sap.vocabularies.ODM.v1': ODM,
     'com.sap.vocabularies.PDF.v1': PDF,

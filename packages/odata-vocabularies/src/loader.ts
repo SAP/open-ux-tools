@@ -69,7 +69,8 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'com.sap.vocabularies.UI.v1',
     'com.sap.vocabularies.HTML5.v1',
     'com.sap.cds.vocabularies.ObjectModel',
-    'com.sap.cds.vocabularies.AnalyticsDetails'
+    'com.sap.cds.vocabularies.AnalyticsDetails',
+    'com.sap.vocabularies.AsyncAPI.v1'
 ]);
 
 const vocabulariesInformationStatic: Map<string, VocabulariesInformation> = new Map();
