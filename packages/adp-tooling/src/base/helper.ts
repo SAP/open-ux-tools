@@ -16,6 +16,8 @@ import {
 
 import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
 
+const ADP_CLOUD_PROJECT_BUILD_TASK_NAME = 'app-variant-bundler-build';
+
 /**
  * Get the app descriptor variant.
  *
@@ -184,7 +186,8 @@ export async function getExistingAdpProjectType(basePath: string): Promise<Adapt
         }
         const yamlPath = join(basePath, FileName.Ui5Yaml);
         const ui5Config = await readUi5Config(basePath, yamlPath);
-        return ui5Config.hasBuilderKey() ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
+        const cloudProjectBuildTask = ui5Config.findCustomTask(ADP_CLOUD_PROJECT_BUILD_TASK_NAME);
+        return cloudProjectBuildTask ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
     } catch {
         // Expected: Project may not be an ADP project or configuration files may be missing/invalid
         // Returning undefined allows callers to handle non-ADP projects gracefully
