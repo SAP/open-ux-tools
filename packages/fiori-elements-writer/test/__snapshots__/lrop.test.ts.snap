@@ -19009,7 +19009,8 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_add_test_virtual_endpoints\\": \\"../../\\"
+                \\"lrop_v4_add_test_virtual_endpoints\\": \\"../../\\",
+                \\"lrop_v4_add_test_virtual_endpoints.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -19092,7 +19093,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_add_test_virtual_endpoints') + '/test/flp.html#app-preview',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_add_test_virtual_endpoints/test/test') + '/flp.html#app-preview',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -22921,7 +22922,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests\\": \\"../../\\"
+                \\"lrop_v4_addtests\\": \\"../../\\",
+                \\"lrop_v4_addtests.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -23004,7 +23006,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/test/flpSandbox.html#lropv4addtests-tile',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests/test/test') + '/flpSandbox.html#lropv4addtests-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -23766,7 +23768,8 @@ appDescription=A Fiori application.",
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -23849,7 +23852,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html#lropv4addtestscds-tile',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds/test/test') + '/flpSandbox.html#lropv4addtestscds-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -24678,7 +24681,8 @@ appDescription=A Fiori application.",
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -24761,7 +24765,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html#lropv4addtestscds-tile',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds/test/test') + '/flpSandbox.html#lropv4addtestscds-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -26062,7 +26066,8 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\"
+                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\",
+                \\"lrop_v4_annotation_reuse_lib.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -26145,7 +26150,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/test/flpSandbox.html#lropv4annotationreuselib-tile',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib/test/test') + '/flpSandbox.html#lropv4annotationreuselib-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,

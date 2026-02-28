@@ -91,7 +91,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
             
             // import all your QUnit tests here
             void Promise.all([
-                import("unit/controller/view-testPage.controller")
+                import("test-app-typescript/test/unit/controller/view-testPage.controller")
             ]).then(() => {
                 QUnit.start();
         });`)
@@ -111,10 +111,10 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
                         src="../../resources/sap-ui-core.js"
                         data-sap-ui-resourceroots='{
                                 "${opaConfig.appId}": "../../",
-                                "unit": "."
+                                "${opaConfig.appId}.test": "../"
                         }'
                         data-sap-ui-async="true"
-                        data-sap-ui-oninit="module:unit/unitTests.qunit">
+                        data-sap-ui-oninit="module:${opaConfig.appId}/test/unit/unitTests.qunit">
                 </script>
                 <link rel="stylesheet" type="text/css" href="../../resources/sap/ui/thirdparty/qunit-2.css">
                 <script src="../../resources/sap/ui/thirdparty/qunit-2.js"></script>
@@ -255,13 +255,13 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
                         data-sap-ui-theme=""
                         data-sap-ui-resourceroots='{
                                 "${opaConfig.appId}": "../../",
-                                "integration": "./"
+                                "${opaConfig.appId}.test": "../"
                         }'
                         data-sap-ui-animation="false"
                         data-sap-ui-compatVersion="edge"
                         data-sap-ui-async="true"
                         data-sap-ui-preload="async"
-                        data-sap-ui-oninit="module:integration/opaTests.qunit">
+                        data-sap-ui-oninit="module:${opaConfig.appId}/test/integration/opaTests.qunit">
                 </script>
                 <link rel="stylesheet" type="text/css" href="../../resources/sap/ui/thirdparty/qunit-2.css">
                 <script src="../../resources/sap/ui/thirdparty/qunit-2.js"></script>
@@ -576,7 +576,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
                         src="../../resources/sap-ui-core.js"
                         data-sap-ui-resource-roots='{
                                 "test-app-typescript": "../../",
-                                "unit": "."
+                                "test-app-typescript.test": "../"
                         }'
                         data-sap-ui-async="true"
                         data-sap-ui-compat-version="edge">
@@ -624,7 +624,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
                         data-sap-ui-theme=""
                         data-sap-ui-resource-roots='{
                                 "test-app-typescript": "../../",
-                                "integration": "./"
+                                "test-app-typescript.test": "../"
                         }'
                         data-sap-ui-animation-mode="none"
                         data-sap-ui-compat-version="edge"
