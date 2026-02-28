@@ -3,6 +3,7 @@ export const GENERATE_FIORI_UI_APPLICATION_CAP_ID = 'generate-fiori-ui-applicati
 export const ADD_PAGE = 'add-page';
 export const DELETE_PAGE = 'delete-page';
 export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID = 'create-controller-extension';
+export const ADP_CONTROLLER_EXTENSION_FUNCTIONALITY_ID = 'adp-controller-extension';
 export const EXTENSION_FILE_NAME_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 
 // Telemetry event names

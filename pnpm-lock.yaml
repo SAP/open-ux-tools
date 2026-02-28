@@ -2459,6 +2459,9 @@ importers:
       '@lancedb/lancedb':
         specifier: 0.22.0
         version: 0.22.0(apache-arrow@18.1.0)
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/fiori-docs-embeddings':
         specifier: workspace:*
         version: link:../fiori-docs-embeddings
