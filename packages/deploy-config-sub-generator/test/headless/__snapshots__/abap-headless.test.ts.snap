@@ -117,7 +117,7 @@ builder:
       configuration:
         target:
           destination: Dest2
-          url: https://mock.url.dest2.com
+          url: https://mock.s4hana.url.dest2.com
           authenticationType: reentranceTicket # SAML support for vscode
         app:
           name: MY_UI5_ABAP_REPO
