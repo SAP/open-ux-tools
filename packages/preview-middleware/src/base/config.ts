@@ -256,13 +256,13 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
     return [
         { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
         {
+            connector: 'LocalStorageConnector',
+            layers: ['USER']
+        },
+        {
             applyConnector: localConnectorPath,
             writeConnector: localConnectorPath,
             custom: true
-        },
-        {
-            connector: 'LocalStorageConnector',
-            layers: ['CUSTOMER', 'USER']
         }
     ];
 }

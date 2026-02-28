@@ -112,6 +112,7 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         isProductiveSystem?: boolean;
         isVariantAdaptationEnabled?: boolean;
         isVariantSharingEnabled?: boolean;
+        isAnnotationChangeEnabled?: boolean;
     }
 
     interface Storage {
