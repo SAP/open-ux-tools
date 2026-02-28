@@ -1,2 +1,2 @@
-export * from './UIComboBox';
+export * from './ComboBoxEditable';
 export * from './DropdownEditable';
