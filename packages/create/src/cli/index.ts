@@ -133,7 +133,7 @@ function parseOption(opt: Option) {
     return {
         name: opt.flags,
         description: opt.description,
-        required: opt.required,
+        required: opt.mandatory === true, // Only true for .requiredOption() not for required values (.option('<value>'))
         ...(opt.defaultValue !== undefined && { defaultValue: opt.defaultValue })
     };
 }

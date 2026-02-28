@@ -5,6 +5,7 @@ import * as appConfigWriter from '@sap-ux/app-config-writer';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as logger from '../../../../src/tracing/logger';
 import * as projectAccess from '@sap-ux/project-access';
+import * as common from '../../../../src/common';
 import { addAddEslintConfigCommand } from '../../../../src/cli/add/eslint-config';
 
 jest.mock('prompts');
@@ -15,6 +16,7 @@ describe('Test command add eslint-config', () => {
     let fsMock: Editor;
     let logLevelSpy: jest.SpyInstance;
     let getProjectTypeSpy: jest.SpyInstance;
+    let runNpmInstallSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -37,6 +39,7 @@ describe('Test command add eslint-config', () => {
         } as Partial<Editor> as Editor;
         jest.spyOn(appConfigWriter, 'generateEslintConfig').mockResolvedValue(fsMock);
         getProjectTypeSpy = jest.spyOn(projectAccess, 'getProjectType').mockResolvedValue('CAPNodejs');
+        runNpmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => undefined);
     });
 
     test('Test create-fiori add eslint-config <appRoot>', async () => {
@@ -52,6 +55,7 @@ describe('Test command add eslint-config', () => {
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
+        expect(runNpmInstallSpy).toHaveBeenCalledWith(appRoot);
     });
 
     test('Test create-fiori add eslint-config <appRoot> --simulate', async () => {
@@ -110,13 +114,46 @@ describe('Test command add eslint-config', () => {
 
             // Result check
             expect(getProjectTypeSpy).toHaveBeenCalledWith(appRoot);
-            expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('Eslint configuration written'));
+            expect(loggerMock.info).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    "ESlint configuration written. Ensure you install the new dependency by executing 'npm install'."
+                )
+            );
             // Should not show CAP-specific messages
             const infoMockCalls = (loggerMock.info as jest.Mock).mock.calls;
             const hasCapMessage = infoMockCalls.some((call) =>
                 call[0].includes('npm run lint --workspaces --if-present')
             );
             expect(hasCapMessage).toBe(false);
+            expect(fsMock.commit).toHaveBeenCalled();
+        });
+    });
+
+    describe('npm install behavior', () => {
+        test('Test --skip-install option skips npm install', async () => {
+            // Test execution
+            const command = new Command('add');
+            addAddEslintConfigCommand(command);
+            await command.parseAsync(getArgv(['eslint-config', appRoot, '--skip-install']));
+
+            // Result check
+            expect(runNpmInstallSpy).not.toHaveBeenCalled();
+            expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('`npm install` will be skipped'));
+            expect(loggerMock.info).toHaveBeenCalledWith(
+                expect.stringContaining('Please make sure to install the dependencies')
+            );
+            expect(fsMock.commit).toHaveBeenCalled();
+        });
+
+        test('Test -n option (short form) skips npm install', async () => {
+            // Test execution
+            const command = new Command('add');
+            addAddEslintConfigCommand(command);
+            await command.parseAsync(getArgv(['eslint-config', appRoot, '-n']));
+
+            // Result check
+            expect(runNpmInstallSpy).not.toHaveBeenCalled();
+            expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('`npm install` will be skipped'));
             expect(fsMock.commit).toHaveBeenCalled();
         });
     });

@@ -804,6 +804,9 @@ importers:
       chalk:
         specifier: 4.1.2
         version: 4.1.2
+      cross-spawn:
+        specifier: 7.0.6
+        version: 7.0.6
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -826,6 +829,9 @@ importers:
       '@sap-ux/preview-middleware':
         specifier: workspace:*
         version: link:../preview-middleware
+      '@types/cross-spawn':
+        specifier: 6.0.6
+        version: 6.0.6
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -12862,7 +12868,7 @@ packages:
     resolution: {integrity: sha512-NBtcVKipYrw9uCiWwH2QVfaVeJC3OV6spAE29TsUKjGzqUrSzMkFi8FtsikvDDDThtysjmcvWN8SDvkK3eQxmg==}
     engines: {node: '>=8.0.0'}
     dependencies:
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       fs-extra: 8.1.0
       mta-local: 1.0.8
       temp-dir: 2.0.0
@@ -14707,6 +14713,12 @@ packages:
 
   /@types/cors@2.8.19:
     resolution: {integrity: sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg==}
+    dependencies:
+      '@types/node': 20.0.0
+    dev: true
+
+  /@types/cross-spawn@6.0.6:
+    resolution: {integrity: sha512-fXRhhUkG4H3TQk5dBhQ7m/JDdSNHKwR2BBia62lhwEIq9xGiQKLxd6LymNhn47SjXhsUEPmxi+PKw2OkW4LLjA==}
     dependencies:
       '@types/node': 20.0.0
     dev: true
