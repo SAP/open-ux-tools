@@ -25,7 +25,7 @@ import {
     loadApps,
     loadCfConfig,
     storeCredentials,
-    getServiceInstanceKeys
+    getOrCreateServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
 import {
     getDefaultTargetFolder,
@@ -638,7 +638,7 @@ export default class extends Generator {
         const backendUrls = this.cfPrompter.backendUrls;
         const oauthPaths = this.cfPrompter.oauthPaths;
 
-        const serviceInfo = await getServiceInstanceKeys(
+        const serviceInfo = await getOrCreateServiceInstanceKeys(
             {
                 names: [this.cfServicesAnswers.businessService ?? '']
             },
@@ -659,7 +659,8 @@ export default class extends Generator {
             publicVersions,
             packageJson: getPackageInfo(),
             toolsId: this.toolsId,
-            serviceInfo
+            serviceInfo,
+            spaceGuid: this.cfConfig.space.GUID
         });
 
         if (config.options) {
