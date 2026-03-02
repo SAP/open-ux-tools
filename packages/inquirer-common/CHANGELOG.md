@@ -1,5 +1,25 @@
 # @sap-ux/inquirer-common
 
+## 0.11.16
+
+### Patch Changes
+
+- Updated dependencies [ca2566b]
+    - @sap-ux/odata-service-writer@0.29.28
+    - @sap-ux/project-access@1.35.10
+    - @sap-ux/fiori-generator-shared@0.13.81
+    - @sap-ux/telemetry@0.6.82
+
+## 0.11.15
+
+### Patch Changes
+
+- 6c993f3: fix: turn off i18next support notice
+- Updated dependencies [6c993f3]
+    - @sap-ux/fiori-generator-shared@0.13.80
+    - @sap-ux/odata-service-writer@0.29.27
+    - @sap-ux/telemetry@0.6.81
+
 ## 0.11.14
 
 ### Patch Changes

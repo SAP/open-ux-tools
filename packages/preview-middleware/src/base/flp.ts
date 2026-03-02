@@ -8,7 +8,7 @@ import type http from 'node:http';
 import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
-import path, { dirname, join, posix } from 'node:path';
+import { dirname, join, posix } from 'node:path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
@@ -1026,7 +1026,11 @@ export class FlpSandbox {
                 fileName?: string;
                 manifests: MultiCardsPayload[];
             };
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
+
+            // getSourcePath() returns the webapp path directly for all project types
+            const webappPath = this.utils.getProject().getSourcePath();
+            const projectRoot = dirname(webappPath);
+
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
             const integrationCard = getIntegrationCard(manifests);
@@ -1046,7 +1050,7 @@ export class FlpSandbox {
                 }
             } satisfies ManifestNamespace.EmbedsSettings;
 
-            const appAccess = await createApplicationAccess(path.resolve(), this.fs);
+            const appAccess = await createApplicationAccess(projectRoot, this.fs);
             await appAccess.updateManifestJSON(this.manifest, this.fs);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
         } catch (error) {
@@ -1079,7 +1083,9 @@ export class FlpSandbox {
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
+            // getSourcePath() returns the webapp path directly for all project types
+            const webappPath = this.utils.getProject().getSourcePath();
+
             const i18nConfig = this.manifest['sap.app'].i18n;
             let i18nPath = 'i18n/i18n.properties';
             let fallbackLocale: string | undefined;

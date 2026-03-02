@@ -21,6 +21,7 @@ export async function initI18nFioriAppSubGenerator(): Promise<void> {
         fallbackLng: 'en',
         defaultNS: fioriAppSubGeneratorNs,
         ns: [fioriAppSubGeneratorNs],
+        showSupportNotice: false,
         interpolation: {
             format: function odataVersionFormatter(odataVersion: OdataVersion) {
                 return odataVersion ? ` V${odataVersion}` : '';
