@@ -57,6 +57,10 @@ export class FioriFunctionalityServer {
                     {
                         src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/src/assets/MCP-SERVER-plain.svg',
                         mimeType: 'image/svg+xml'
+                    },
+                    {
+                        src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/src/assets/MCP-SERVER-plain.png',
+                        mimeType: 'image/png'
                     }
                 ],
                 title: 'SAP Fiori MCP Server'
