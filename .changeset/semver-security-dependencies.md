@@ -75,7 +75,6 @@ chore: update third-party dependencies to use semver ranges for security patch p
 
 - Updated axios, fast-xml-parser, semver, lodash, ejs, i18next, dotenv, chalk, commander, ajv, mem-fs, mem-fs-editor, and prompts to use caret (^) version ranges
 - Added pnpm overrides for transitive dependency security patches (form-data, tar-fs, rollup, axios, fast-xml-parser, semver)
-- Updated dependabot.yml to group security-critical dependency updates
-- Documented CVE reference table and semver categorization strategy in docs/version-overrides.md
+
 
 This change allows downstream consumers of @sap-ux packages to automatically receive security patches for these dependencies when running npm/pnpm update.

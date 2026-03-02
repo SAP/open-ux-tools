@@ -14,16 +14,3 @@ updates:
           interval: 'weekly'
       allow:
           - dependency-type: 'all'
-      groups:
-          security-critical:
-              patterns:
-                  - 'axios'
-                  - 'lodash'
-                  - 'fast-xml-parser'
-                  - 'semver'
-                  - 'ejs'
-                  - 'tar'
-                  - 'tar-fs'
-                  - 'minimatch'
-                  - 'path-to-regexp'
-                  - 'http-proxy-middleware'
