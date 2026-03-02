@@ -25,8 +25,8 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "chalk": "4.1.2",
-        "lodash": "4.17.23",
+        "chalk": "^4.1.2",
+        "lodash": "^4.17.21",
         "winston": "3.11.0",
         "winston-transport": "4.7.0"
     },

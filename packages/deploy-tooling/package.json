@@ -45,12 +45,12 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
-        "axios": "1.13.5",
-        "commander": "9.4.0",
-        "dotenv": "16.6.1",
-        "prompts": "2.4.2",
+        "axios": "^1.13.5",
+        "commander": "^9.4.0",
+        "dotenv": "^16.6.0",
+        "prompts": "^2.4.2",
         "adm-zip": "0.5.10",
-        "chalk": "4.1.2"
+        "chalk": "^4.1.2"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",

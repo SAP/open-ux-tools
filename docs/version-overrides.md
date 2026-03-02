@@ -2,6 +2,48 @@
 
 This document lists the version overrides for vulnerable (nested) dependencies and the reason.
 
+## Semver Strategy for Security Patch Propagation
+
+The monorepo uses a structured approach to dependency versioning that allows downstream consumers to automatically receive security patches:
+
+### Dependency Categorization
+
+**Category A: Caret (^) Ranges** - Well-maintained packages following semver strictly:
+- `axios` - HTTP client with active security maintenance
+- `fast-xml-parser` - XML parser with regular CVE patches
+- `semver` - Core npm ecosystem package
+- `lodash` - Stable utility library
+- `ejs` - Template engine with security updates
+- `i18next` - Internationalization framework
+- `mem-fs` / `mem-fs-editor` - File system abstractions
+
+**Category B: Security Floor (>=) Ranges** - Transitive dependencies with CVE patterns:
+- `minimatch` - ReDoS vulnerabilities, floor >=3.1.3
+- `tar` / `tar-fs` - Path traversal CVEs
+- `form-data` - Weak boundary generation
+- `rollup` - Path traversal vulnerability
+
+**Category C: Exact Versions** - Packages requiring version lock:
+- `mta-local` - API breaking changes
+- `yeoman-generator` - Major API compatibility
+- `@sap/*` packages - Internal API contracts
+
+### CVE Reference Table (Last 2 Years)
+
+| Package | CVEs | Severity | Safe Version |
+|---------|------|----------|--------------|
+| axios | CVE-2025-27152, CVE-2024-39338, CVE-2025-58754 | High | >=1.13.5 |
+| fast-xml-parser | CVE-2026-25896, CVE-2024-41818 | Critical/High | >=5.4.1 |
+| tar | CVE-2026-26960, CVE-2026-24842 | High | >=7.5.9 |
+| tar-fs | CVE-2025-59343, CVE-2024-12905 | High | >=3.0.9 |
+| path-to-regexp | CVE-2024-52798, CVE-2024-45296 | High | >=0.1.12 |
+| minimatch | CVE-2026-27903, CVE-2022-3517 | High | >=3.1.3 |
+| semver | CVE-2022-25883 | High | >=7.6.0 |
+| ejs | CVE-2024-33883, CVE-2022-29078 | Mod/Crit | >=3.1.10 |
+| rollup | GHSA-mw96-cpmx-2vgc | High | >=4.59.0 |
+
+---
+
 ## mta-local
 
 - the sap cloud mta lib is not being maintained and not updating to a newer version of mta-local

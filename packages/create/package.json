@@ -49,12 +49,12 @@
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap/cf-tools": "3.3.0",
         "@sap-ux/axios-extension": "workspace:*",
-        "chalk": "4.1.2",
-        "commander": "9.4.0",
+        "chalk": "^4.1.2",
+        "commander": "^9.4.0",
         "diff": "5.2.2",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
-        "prompts": "2.4.2"
+        "mem-fs": "^2.1.0",
+        "mem-fs-editor": "^9.4.0",
+        "prompts": "^2.4.2"
     },
     "devDependencies": {
         "@sap-ux/inquirer-common": "workspace:*",

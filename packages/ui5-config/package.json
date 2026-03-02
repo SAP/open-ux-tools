@@ -32,11 +32,11 @@
     ],
     "dependencies": {
         "@sap-ux/yaml": "workspace:*",
-        "ajv": "8.18.0",
+        "ajv": "^8.18.0",
         "js-yaml": "4.1.1",
-        "lodash": "4.17.23",
-        "semver": "7.7.4",
-        "axios": "1.13.5"
+        "lodash": "^4.17.21",
+        "semver": "^7.6.0",
+        "axios": "^1.13.5"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",

@@ -19,6 +19,13 @@ overrides:
   tar@<7.5.9: '>=7.5.9'
   get-uri>basic-ftp: '=5.2.0'
   '@puppeteer/browsers>proxy-agent': '>=6.5.0'
+  form-data@>=4.0.0 <4.0.4: '>=4.0.4'
+  axios@<1.13.5: '>=1.13.5'
+  fast-xml-parser@<5.4.1: '>=5.4.1'
+  semver@<7.6.0: '>=7.6.0'
+  tar-fs@>=3.0.0 <3.0.9: '>=3.0.9'
+  tar-fs@>=2.0.0 <2.1.3: '>=2.1.3'
+  rollup@>=4.0.0 <4.59.0: '>=4.59.0'
 
 importers:
 
@@ -225,7 +232,7 @@ importers:
         specifier: 5.2.11
         version: 5.2.11
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
 
   examples/ui-prompting-examples:
@@ -397,7 +404,7 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
@@ -410,7 +417,7 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
 
   packages/abap-deploy-config-sub-generator:
@@ -452,7 +459,7 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
     devDependencies:
       '@sap-ux/store':
@@ -474,7 +481,7 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       memfs:
         specifier: 3.4.13
@@ -504,13 +511,13 @@ importers:
         specifier: '>=4.17.23'
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@types/fs-extra':
@@ -571,7 +578,7 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
@@ -662,13 +669,13 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
@@ -677,13 +684,13 @@ importers:
         specifier: 4.1.1
         version: 4.1.1
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       prompts:
-        specifier: 2.4.2
+        specifier: ^2.4.2
         version: 2.4.2
       sanitize-filename:
         specifier: 1.6.3
@@ -726,7 +733,7 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       dotenv:
-        specifier: 16.6.1
+        specifier: ^16.6.0
         version: 16.6.1
       express:
         specifier: 4.22.1
@@ -762,7 +769,7 @@ importers:
         specifier: 0.14.5
         version: 0.14.5
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@types/mem-fs':
@@ -772,7 +779,7 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       npm-run-all2:
         specifier: 8.0.4
@@ -802,25 +809,25 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       chalk:
-        specifier: 4.1.2
+        specifier: ^4.1.2
         version: 4.1.2
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       prompts:
-        specifier: 2.4.2
+        specifier: ^2.4.2
         version: 2.4.2
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/preview-middleware':
@@ -842,7 +849,7 @@ importers:
         specifier: 7.7.1
         version: 7.7.1
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       nock:
         specifier: 13.4.0
@@ -863,13 +870,13 @@ importers:
         specifier: 0.8.10
         version: 0.8.10
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       detect-content-type:
         specifier: 1.2.0
         version: 1.2.0
       fast-xml-parser:
-        specifier: 5.4.1
+        specifier: ^5.4.1
         version: 5.4.1
       http-proxy-agent:
         specifier: 7.0.2
@@ -927,10 +934,10 @@ importers:
         specifier: workspace:*
         version: link:../store
       chalk:
-        specifier: 4.1.2
+        specifier: ^4.1.2
         version: 4.1.2
       dotenv:
-        specifier: 16.6.1
+        specifier: ^16.6.0
         version: 16.6.1
       http-proxy-middleware:
         specifier: 3.0.5
@@ -939,10 +946,10 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       prompts:
-        specifier: 2.4.2
+        specifier: ^2.4.2
         version: 2.4.2
       proxy-from-env:
         specifier: 1.1.0
@@ -994,7 +1001,7 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       http-proxy-middleware:
         specifier: 3.0.5
@@ -1034,7 +1041,7 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
     devDependencies:
       '@sap-ux/logger':
@@ -1059,16 +1066,16 @@ importers:
         specifier: workspace:*
         version: link:../yaml
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
       xml-js:
         specifier: 1.6.11
@@ -1124,7 +1131,7 @@ importers:
         specifier: 1.19.0
         version: 1.19.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
     devDependencies:
       '@sap-ux/odata-annotation-core-types':
@@ -1149,7 +1156,7 @@ importers:
         specifier: workspace:*
         version: link:../logger
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
@@ -1207,7 +1214,7 @@ importers:
         specifier: 1.2.3
         version: 1.2.3
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
@@ -1280,25 +1287,25 @@ importers:
         specifier: 1.7.4
         version: 1.7.4
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       hasbin:
         specifier: 1.2.3
         version: 1.2.3
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       mta:
         specifier: ^1.0.8
         version: 1.0.8
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@types/ejs':
@@ -1389,7 +1396,7 @@ importers:
         specifier: 1.20.4
         version: 1.20.4
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       esbuild-plugin-alias:
         specifier: 0.2.1
@@ -1404,7 +1411,7 @@ importers:
         specifier: 2.0.9
         version: 2.0.9(@types/express@4.17.21)
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       jest-scss-transform:
         specifier: 1.0.4
@@ -1518,22 +1525,22 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       chalk:
-        specifier: 4.1.2
+        specifier: ^4.1.2
         version: 4.1.2
       commander:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0
       diff:
         specifier: 5.2.2
         version: 5.2.2
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       prompts:
-        specifier: 2.4.2
+        specifier: ^2.4.2
         version: 2.4.2
     devDependencies:
       '@sap-ux/inquirer-common':
@@ -1576,7 +1583,7 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
@@ -1634,13 +1641,13 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       dotenv:
-        specifier: 16.6.1
+        specifier: ^16.6.0
         version: 16.6.1
       hasbin:
         specifier: 1.2.3
         version: 1.2.3
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
@@ -1731,19 +1738,19 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       chalk:
-        specifier: 4.1.2
+        specifier: ^4.1.2
         version: 4.1.2
       commander:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0
       dotenv:
-        specifier: 16.6.1
+        specifier: ^16.6.0
         version: 16.6.1
       prompts:
-        specifier: 2.4.2
+        specifier: ^2.4.2
         version: 2.4.2
     devDependencies:
       '@sap-ux/store':
@@ -1783,13 +1790,13 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       glob-gitignore:
         specifier: 1.0.14
         version: 1.0.14
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       ignore:
         specifier: 5.2.4
@@ -1798,7 +1805,7 @@ importers:
         specifier: 1.2.8
         version: 1.2.8
       prompts:
-        specifier: 2.4.2
+        specifier: ^2.4.2
         version: 2.4.2
       yamljs:
         specifier: 0.3.0
@@ -1886,7 +1893,7 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
       synckit:
         specifier: 0.11.11
@@ -1935,19 +1942,19 @@ importers:
         specifier: 0.8.10
         version: 0.8.10
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
       xml-formatter:
         specifier: 2.6.1
@@ -2041,10 +2048,10 @@ importers:
         specifier: 1.0.11
         version: 1.0.11
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       vscode-languageserver-textdocument:
         specifier: 1.0.11
@@ -2126,7 +2133,7 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
@@ -2135,10 +2142,10 @@ importers:
         specifier: '>=4.17.23'
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       uuid:
         specifier: 11.0.5
@@ -2226,7 +2233,7 @@ importers:
         specifier: 2.17.2
         version: 2.17.2
       fast-xml-parser:
-        specifier: 5.4.1
+        specifier: ^5.4.1
         version: 5.4.1
       gray-matter:
         specifier: ^4.0.3
@@ -2274,25 +2281,25 @@ importers:
         specifier: workspace:*
         version: link:../ui5-test-writer
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       read-pkg-up:
         specifier: 7.0.1
         version: 7.0.1
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
@@ -2347,25 +2354,25 @@ importers:
         specifier: workspace:*
         version: link:../ui5-test-writer
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       read-pkg-up:
         specifier: 7.0.1
         version: 7.0.1
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
@@ -2408,22 +2415,22 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       logform:
         specifier: 2.4.0
         version: 2.4.0
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       os-name:
         specifier: 4.0.1
         version: 4.0.1
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/axios-extension':
@@ -2469,10 +2476,10 @@ importers:
         specifier: 2.17.2
         version: 2.17.2
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@langchain/core':
@@ -2554,7 +2561,7 @@ importers:
         specifier: 0.27.2
         version: 0.27.2
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       npm-run-all2:
         specifier: 8.0.4
@@ -2575,10 +2582,10 @@ importers:
   packages/fiori-tools-settings:
     dependencies:
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@types/mem-fs':
@@ -2612,7 +2619,7 @@ importers:
         specifier: workspace:*
         version: link:../project-input-validator
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
@@ -2661,7 +2668,7 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
@@ -2704,7 +2711,7 @@ importers:
         specifier: '>=4.17.23'
         version: 4.17.23
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       memfs:
         specifier: 3.4.13
@@ -2767,7 +2774,7 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       uuid:
         specifier: 10.0.0
@@ -2837,10 +2844,10 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       npm-run-all2:
         specifier: 8.0.4
@@ -2888,10 +2895,10 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       chalk:
-        specifier: 4.1.2
+        specifier: ^4.1.2
         version: 4.1.2
       figures:
         specifier: 3.2.0
@@ -2900,7 +2907,7 @@ importers:
         specifier: 0.1.3
         version: 0.1.3
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
@@ -2909,7 +2916,7 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-devx/yeoman-ui-types':
@@ -2953,7 +2960,7 @@ importers:
   packages/jest-file-matchers:
     dependencies:
       chalk:
-        specifier: 4.1.2
+        specifier: ^4.1.2
         version: 4.1.2
       dir-compare:
         specifier: 5.0.0
@@ -2975,7 +2982,7 @@ importers:
         version: 6.1.3
     devDependencies:
       chalk:
-        specifier: 4.1.2
+        specifier: ^4.1.2
         version: 4.1.2
       jest-environment-node:
         specifier: 30.2.0
@@ -2999,16 +3006,16 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       jsonc-parser:
         specifier: 3.3.1
         version: 3.3.1
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       yargs-parser:
         specifier: 21.1.1
@@ -3030,7 +3037,7 @@ importers:
   packages/logger:
     dependencies:
       chalk:
-        specifier: 4.1.2
+        specifier: ^4.1.2
         version: 4.1.2
       lodash:
         specifier: '>=4.17.23'
@@ -3067,13 +3074,13 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@types/mem-fs':
@@ -3086,7 +3093,7 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
       prompts:
-        specifier: 2.4.2
+        specifier: ^2.4.2
         version: 2.4.2
 
   packages/nodejs-utils:
@@ -3101,7 +3108,7 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/logger':
@@ -3197,7 +3204,7 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       axios-logger:
         specifier: 2.8.1
@@ -3206,10 +3213,10 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       fast-xml-parser:
-        specifier: 5.4.1
+        specifier: ^5.4.1
         version: 5.4.1
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
@@ -3267,25 +3274,25 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       fast-xml-parser:
-        specifier: 5.4.1
+        specifier: ^5.4.1
         version: 5.4.1
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       prettify-xml:
         specifier: 1.2.0
         version: 1.2.0
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/axios-extension':
@@ -3326,7 +3333,7 @@ importers:
         specifier: 2.7.1
         version: 2.7.1
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       npm-run-all2:
         specifier: 8.0.4
@@ -3398,13 +3405,13 @@ importers:
         specifier: 3.13.3
         version: 3.13.3
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       qrcode:
         specifier: 1.5.4
@@ -3456,7 +3463,7 @@ importers:
         specifier: 2.4.1
         version: 2.4.1
       dotenv:
-        specifier: 16.6.1
+        specifier: ^16.6.0
         version: 16.6.1
       express:
         specifier: 4.22.1
@@ -3517,7 +3524,7 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       fast-xml-parser:
-        specifier: 5.4.1
+        specifier: ^5.4.1
         version: 5.4.1
       findit2:
         specifier: 2.2.3
@@ -3526,13 +3533,13 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/logger':
@@ -3563,7 +3570,7 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       validate-npm-package-name:
         specifier: 7.0.2
@@ -3616,7 +3623,7 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       express:
         specifier: 4.22.1
@@ -3685,7 +3692,7 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       inquirer:
         specifier: 8.2.7
@@ -3746,7 +3753,7 @@ importers:
         specifier: '>=4.17.23'
         version: 4.17.23
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       memfs:
         specifier: 3.4.13
@@ -3812,7 +3819,7 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       jsonc-parser:
         specifier: 3.3.1
@@ -3881,7 +3888,7 @@ importers:
         specifier: 0.2.1
         version: 0.2.1
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       jest-scss-transform:
         specifier: 1.0.4
@@ -3933,7 +3940,7 @@ importers:
         specifier: workspace:*
         version: link:../logger
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       pluralize:
         specifier: 8.0.0
@@ -3980,7 +3987,7 @@ importers:
         specifier: workspace:*
         version: link:../store
       prompts:
-        specifier: 2.4.2
+        specifier: ^2.4.2
         version: 2.4.2
     devDependencies:
       '@sap-ux/project-access':
@@ -4020,7 +4027,7 @@ importers:
         specifier: 2.9.8
         version: 2.9.8
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       performance-now:
         specifier: 2.1.0
@@ -4030,7 +4037,7 @@ importers:
         version: 2.3.3
     devDependencies:
       dotenv:
-        specifier: 16.6.1
+        specifier: ^16.6.0
         version: 16.6.1
       jest-extended:
         specifier: 6.0.0
@@ -4326,7 +4333,7 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
@@ -4405,7 +4412,7 @@ importers:
         specifier: workspace:*
         version: link:../ui-service-inquirer
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
@@ -4445,10 +4452,10 @@ importers:
         specifier: 6.0.0
         version: 6.0.0(jest@30.2.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(ts-node@10.9.2(@swc/core@1.15.11(@swc/helpers@0.5.18))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       rimraf:
         specifier: 6.1.3
@@ -4475,7 +4482,7 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
@@ -4484,7 +4491,7 @@ importers:
         specifier: '>=4.17.23'
         version: 4.17.23
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-devx/yeoman-ui-types':
@@ -4518,22 +4525,22 @@ importers:
         specifier: 1.83.0
         version: 1.83.0
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
@@ -4570,7 +4577,7 @@ importers:
         specifier: workspace:*
         version: link:../yaml
       ajv:
-        specifier: 8.18.0
+        specifier: ^8.18.0
         version: 8.18.0
       axios:
         specifier: ^1.13.5
@@ -4582,7 +4589,7 @@ importers:
         specifier: '>=4.17.23'
         version: 4.17.23
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/store':
@@ -4604,10 +4611,10 @@ importers:
         specifier: workspace:*
         version: link:../logger
       axios:
-        specifier: 1.13.5
+        specifier: ^1.13.5
         version: 1.13.5(debug@4.4.3)
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@types/semver':
@@ -4635,7 +4642,7 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
@@ -4660,7 +4667,7 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
     devDependencies:
       '@sap-devx/yeoman-ui-types':
@@ -4697,7 +4704,7 @@ importers:
         specifier: workspace:*
         version: link:../ui5-library-reference-writer
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
@@ -4746,10 +4753,10 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@types/fs-extra':
@@ -4789,7 +4796,7 @@ importers:
         specifier: workspace:*
         version: link:../ui5-library-writer
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       yeoman-generator:
         specifier: 5.10.0
@@ -4820,7 +4827,7 @@ importers:
         specifier: 6.0.0
         version: 6.0.0(jest@30.2.0(@types/node@22.19.10)(babel-plugin-macros@3.1.0)(esbuild-register@3.6.0(esbuild@0.27.2))(ts-node@10.9.2(@swc/core@1.15.11(@swc/helpers@0.5.18))(@types/node@22.19.10)(typescript@5.9.3)))(typescript@5.9.3)
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       rimraf:
         specifier: 6.1.3
@@ -4838,22 +4845,22 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       lodash:
         specifier: '>=4.17.23'
         version: 4.17.23
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@sap-ux/eslint-plugin-fiori-tools':
@@ -4890,7 +4897,7 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       dotenv:
-        specifier: 16.6.1
+        specifier: ^16.6.0
         version: 16.6.1
       http-proxy-middleware:
         specifier: 3.0.5
@@ -4899,7 +4906,7 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       proxy-from-env:
         specifier: 1.1.0
@@ -4945,16 +4952,16 @@ importers:
         specifier: 1.142.1
         version: 1.142.1(typescript@5.9.3)
       ejs:
-        specifier: 3.1.10
+        specifier: ^3.1.10
         version: 3.1.10
       i18next:
-        specifier: 25.8.12
+        specifier: ^25.8.0
         version: 25.8.12(typescript@5.9.3)
       mem-fs:
-        specifier: 2.1.0
+        specifier: ^2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
+        specifier: ^9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@sap-ux/jest-file-matchers':
@@ -5083,7 +5090,7 @@ importers:
         specifier: 1.0.38
         version: 1.0.38
       semver:
-        specifier: 7.7.4
+        specifier: ^7.6.0
         version: 7.7.4
     devDependencies:
       '@types/adm-zip':
@@ -8003,7 +8010,7 @@ packages:
     resolution: {integrity: sha512-PIR4/OHZ79romx0BVVll/PkwWpJ7e5lsqFa3gFfcrFPWwLXLV39JVUzQV9RKjWerE7B845Hqjj9VYlQeieZ2dA==}
     engines: {node: '>=16.0.0 || 14 >= 14.17'}
     peerDependencies:
-      rollup: ^2.68.0||^3.0.0||^4.0.0
+      rollup: '>=4.59.0'
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -8012,7 +8019,7 @@ packages:
     resolution: {integrity: sha512-2+DEJbNBoPROPkgTDNe8/1YXWcqxbN5DTjASVIOx8HS+pITXushyNiBV56RB08zuptzz8gT3YfkqriTBVycepg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+      rollup: '>=4.59.0'
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -8021,7 +8028,7 @@ packages:
     resolution: {integrity: sha512-EGI2te5ENk1coGeADSIwZ7G2Q8CJS2sF120T7jLw4xFw9n7wIOXHo+kIYRAoVpJAN+kmqZSoO3Fp4JtoNF4ReA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+      rollup: '>=4.59.0'
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -8030,7 +8037,7 @@ packages:
     resolution: {integrity: sha512-J4RZarRvQAm5IF0/LwUUg+obsm+xZhYnbMXmXROyoSE1ATJe3oXSb9L5MMppdxP2ylNSjv6zFBwKYjcKMucVfA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+      rollup: '>=4.59.0'
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -8039,7 +8046,7 @@ packages:
     resolution: {integrity: sha512-XHeJC5Bgvs8LfukDwWZp7yeqin6ns8RTl2B9avbejt6tZqsqvVoWI7ZTQrcNsfKEDWBTnTxM8nMDkO2IFFbd0A==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^2.0.0||^3.0.0||^4.0.0
+      rollup: '>=4.59.0'
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -8048,103 +8055,103 @@ packages:
     resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+      rollup: '>=4.59.0'
     peerDependenciesMeta:
       rollup:
         optional: true
 
-  '@rollup/rollup-android-arm-eabi@4.57.1':
-    resolution: {integrity: sha512-A6ehUVSiSaaliTxai040ZpZ2zTevHYbvu/lDoeAteHI8QnaosIzm4qwtezfRg1jOYaUmnzLX1AOD6Z+UJjtifg==}
+  '@rollup/rollup-android-arm-eabi@4.59.0':
+    resolution: {integrity: sha512-upnNBkA6ZH2VKGcBj9Fyl9IGNPULcjXRlg0LLeaioQWueH30p6IXtJEbKAgvyv+mJaMxSm1l6xwDXYjpEMiLMg==}
     cpu: [arm]
     os: [android]
 
-  '@rollup/rollup-android-arm64@4.57.1':
-    resolution: {integrity: sha512-dQaAddCY9YgkFHZcFNS/606Exo8vcLHwArFZ7vxXq4rigo2bb494/xKMMwRRQW6ug7Js6yXmBZhSBRuBvCCQ3w==}
+  '@rollup/rollup-android-arm64@4.59.0':
+    resolution: {integrity: sha512-hZ+Zxj3SySm4A/DylsDKZAeVg0mvi++0PYVceVyX7hemkw7OreKdCvW2oQ3T1FMZvCaQXqOTHb8qmBShoqk69Q==}
     cpu: [arm64]
     os: [android]
 
-  '@rollup/rollup-darwin-arm64@4.57.1':
-    resolution: {integrity: sha512-crNPrwJOrRxagUYeMn/DZwqN88SDmwaJ8Cvi/TN1HnWBU7GwknckyosC2gd0IqYRsHDEnXf328o9/HC6OkPgOg==}
+  '@rollup/rollup-darwin-arm64@4.59.0':
+    resolution: {integrity: sha512-W2Psnbh1J8ZJw0xKAd8zdNgF9HRLkdWwwdWqubSVk0pUuQkoHnv7rx4GiF9rT4t5DIZGAsConRE3AxCdJ4m8rg==}
     cpu: [arm64]
     os: [darwin]
 
-  '@rollup/rollup-darwin-x64@4.57.1':
-    resolution: {integrity: sha512-Ji8g8ChVbKrhFtig5QBV7iMaJrGtpHelkB3lsaKzadFBe58gmjfGXAOfI5FV0lYMH8wiqsxKQ1C9B0YTRXVy4w==}
+  '@rollup/rollup-darwin-x64@4.59.0':
+    resolution: {integrity: sha512-ZW2KkwlS4lwTv7ZVsYDiARfFCnSGhzYPdiOU4IM2fDbL+QGlyAbjgSFuqNRbSthybLbIJ915UtZBtmuLrQAT/w==}
     cpu: [x64]
     os: [darwin]
 
-  '@rollup/rollup-freebsd-arm64@4.57.1':
-    resolution: {integrity: sha512-R+/WwhsjmwodAcz65guCGFRkMb4gKWTcIeLy60JJQbXrJ97BOXHxnkPFrP+YwFlaS0m+uWJTstrUA9o+UchFug==}
+  '@rollup/rollup-freebsd-arm64@4.59.0':
+    resolution: {integrity: sha512-EsKaJ5ytAu9jI3lonzn3BgG8iRBjV4LxZexygcQbpiU0wU0ATxhNVEpXKfUa0pS05gTcSDMKpn3Sx+QB9RlTTA==}
     cpu: [arm64]
     os: [freebsd]
 
-  '@rollup/rollup-freebsd-x64@4.57.1':
-    resolution: {integrity: sha512-IEQTCHeiTOnAUC3IDQdzRAGj3jOAYNr9kBguI7MQAAZK3caezRrg0GxAb6Hchg4lxdZEI5Oq3iov/w/hnFWY9Q==}
+  '@rollup/rollup-freebsd-x64@4.59.0':
+    resolution: {integrity: sha512-d3DuZi2KzTMjImrxoHIAODUZYoUUMsuUiY4SRRcJy6NJoZ6iIqWnJu9IScV9jXysyGMVuW+KNzZvBLOcpdl3Vg==}
     cpu: [x64]
     os: [freebsd]
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.57.1':
-    resolution: {integrity: sha512-F8sWbhZ7tyuEfsmOxwc2giKDQzN3+kuBLPwwZGyVkLlKGdV1nvnNwYD0fKQ8+XS6hp9nY7B+ZeK01EBUE7aHaw==}
+  '@rollup/rollup-linux-arm-gnueabihf@4.59.0':
+    resolution: {integrity: sha512-t4ONHboXi/3E0rT6OZl1pKbl2Vgxf9vJfWgmUoCEVQVxhW6Cw/c8I6hbbu7DAvgp82RKiH7TpLwxnJeKv2pbsw==}
     cpu: [arm]
     os: [linux]
     libc: [glibc]
 
-  '@rollup/rollup-linux-arm-musleabihf@4.57.1':
-    resolution: {integrity: sha512-rGfNUfn0GIeXtBP1wL5MnzSj98+PZe/AXaGBCRmT0ts80lU5CATYGxXukeTX39XBKsxzFpEeK+Mrp9faXOlmrw==}
+  '@rollup/rollup-linux-arm-musleabihf@4.59.0':
+    resolution: {integrity: sha512-CikFT7aYPA2ufMD086cVORBYGHffBo4K8MQ4uPS/ZnY54GKj36i196u8U+aDVT2LX4eSMbyHtyOh7D7Zvk2VvA==}
     cpu: [arm]
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-arm64-gnu@4.57.1':
-    resolution: {integrity: sha512-MMtej3YHWeg/0klK2Qodf3yrNzz6CGjo2UntLvk2RSPlhzgLvYEB3frRvbEF2wRKh1Z2fDIg9KRPe1fawv7C+g==}
+  '@rollup/rollup-linux-arm64-gnu@4.59.0':
+    resolution: {integrity: sha512-jYgUGk5aLd1nUb1CtQ8E+t5JhLc9x5WdBKew9ZgAXg7DBk0ZHErLHdXM24rfX+bKrFe+Xp5YuJo54I5HFjGDAA==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@rollup/rollup-linux-arm64-musl@4.57.1':
-    resolution: {integrity: sha512-1a/qhaaOXhqXGpMFMET9VqwZakkljWHLmZOX48R0I/YLbhdxr1m4gtG1Hq7++VhVUmf+L3sTAf9op4JlhQ5u1Q==}
+  '@rollup/rollup-linux-arm64-musl@4.59.0':
+    resolution: {integrity: sha512-peZRVEdnFWZ5Bh2KeumKG9ty7aCXzzEsHShOZEFiCQlDEepP1dpUl/SrUNXNg13UmZl+gzVDPsiCwnV1uI0RUA==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-loong64-gnu@4.57.1':
-    resolution: {integrity: sha512-QWO6RQTZ/cqYtJMtxhkRkidoNGXc7ERPbZN7dVW5SdURuLeVU7lwKMpo18XdcmpWYd0qsP1bwKPf7DNSUinhvA==}
+  '@rollup/rollup-linux-loong64-gnu@4.59.0':
+    resolution: {integrity: sha512-gbUSW/97f7+r4gHy3Jlup8zDG190AuodsWnNiXErp9mT90iCy9NKKU0Xwx5k8VlRAIV2uU9CsMnEFg/xXaOfXg==}
     cpu: [loong64]
     os: [linux]
     libc: [glibc]
 
-  '@rollup/rollup-linux-loong64-musl@4.57.1':
-    resolution: {integrity: sha512-xpObYIf+8gprgWaPP32xiN5RVTi/s5FCR+XMXSKmhfoJjrpRAjCuuqQXyxUa/eJTdAE6eJ+KDKaoEqjZQxh3Gw==}
+  '@rollup/rollup-linux-loong64-musl@4.59.0':
+    resolution: {integrity: sha512-yTRONe79E+o0FWFijasoTjtzG9EBedFXJMl888NBEDCDV9I2wGbFFfJQQe63OijbFCUZqxpHz1GzpbtSFikJ4Q==}
     cpu: [loong64]
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-ppc64-gnu@4.57.1':
-    resolution: {integrity: sha512-4BrCgrpZo4hvzMDKRqEaW1zeecScDCR+2nZ86ATLhAoJ5FQ+lbHVD3ttKe74/c7tNT9c6F2viwB3ufwp01Oh2w==}
+  '@rollup/rollup-linux-ppc64-gnu@4.59.0':
+    resolution: {integrity: sha512-sw1o3tfyk12k3OEpRddF68a1unZ5VCN7zoTNtSn2KndUE+ea3m3ROOKRCZxEpmT9nsGnogpFP9x6mnLTCaoLkA==}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
 
-  '@rollup/rollup-linux-ppc64-musl@4.57.1':
-    resolution: {integrity: sha512-NOlUuzesGauESAyEYFSe3QTUguL+lvrN1HtwEEsU2rOwdUDeTMJdO5dUYl/2hKf9jWydJrO9OL/XSSf65R5+Xw==}
+  '@rollup/rollup-linux-ppc64-musl@4.59.0':
+    resolution: {integrity: sha512-+2kLtQ4xT3AiIxkzFVFXfsmlZiG5FXYW7ZyIIvGA7Bdeuh9Z0aN4hVyXS/G1E9bTP/vqszNIN/pUKCk/BTHsKA==}
     cpu: [ppc64]
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-riscv64-gnu@4.57.1':
-    resolution: {integrity: sha512-ptA88htVp0AwUUqhVghwDIKlvJMD/fmL/wrQj99PRHFRAG6Z5nbWoWG4o81Nt9FT+IuqUQi+L31ZKAFeJ5Is+A==}
+  '@rollup/rollup-linux-riscv64-gnu@4.59.0':
+    resolution: {integrity: sha512-NDYMpsXYJJaj+I7UdwIuHHNxXZ/b/N2hR15NyH3m2qAtb/hHPA4g4SuuvrdxetTdndfj9b1WOmy73kcPRoERUg==}
     cpu: [riscv64]
     os: [linux]
     libc: [glibc]
 
-  '@rollup/rollup-linux-riscv64-musl@4.57.1':
-    resolution: {integrity: sha512-S51t7aMMTNdmAMPpBg7OOsTdn4tySRQvklmL3RpDRyknk87+Sp3xaumlatU+ppQ+5raY7sSTcC2beGgvhENfuw==}
+  '@rollup/rollup-linux-riscv64-musl@4.59.0':
+    resolution: {integrity: sha512-nLckB8WOqHIf1bhymk+oHxvM9D3tyPndZH8i8+35p/1YiVoVswPid2yLzgX7ZJP0KQvnkhM4H6QZ5m0LzbyIAg==}
     cpu: [riscv64]
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-linux-s390x-gnu@4.57.1':
-    resolution: {integrity: sha512-Bl00OFnVFkL82FHbEqy3k5CUCKH6OEJL54KCyx2oqsmZnFTR8IoNqBF+mjQVcRCT5sB6yOvK8A37LNm/kPJiZg==}
+  '@rollup/rollup-linux-s390x-gnu@4.59.0':
+    resolution: {integrity: sha512-oF87Ie3uAIvORFBpwnCvUzdeYUqi2wY6jRFWJAy1qus/udHFYIkplYRW+wo+GRUP4sKzYdmE1Y3+rY5Gc4ZO+w==}
     cpu: [s390x]
     os: [linux]
     libc: [glibc]
@@ -8155,39 +8162,45 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@rollup/rollup-linux-x64-musl@4.57.1':
-    resolution: {integrity: sha512-HFps0JeGtuOR2convgRRkHCekD7j+gdAuXM+/i6kGzQtFhlCtQkpwtNzkNj6QhCDp7DRJ7+qC/1Vg2jt5iSOFw==}
+  '@rollup/rollup-linux-x64-gnu@4.59.0':
+    resolution: {integrity: sha512-3AHmtQq/ppNuUspKAlvA8HtLybkDflkMuLK4DPo77DfthRb71V84/c4MlWJXixZz4uruIH4uaa07IqoAkG64fg==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@rollup/rollup-linux-x64-musl@4.59.0':
+    resolution: {integrity: sha512-2UdiwS/9cTAx7qIUZB/fWtToJwvt0Vbo0zmnYt7ED35KPg13Q0ym1g442THLC7VyI6JfYTP4PiSOWyoMdV2/xg==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@rollup/rollup-openbsd-x64@4.57.1':
-    resolution: {integrity: sha512-H+hXEv9gdVQuDTgnqD+SQffoWoc0Of59AStSzTEj/feWTBAnSfSD3+Dql1ZruJQxmykT/JVY0dE8Ka7z0DH1hw==}
+  '@rollup/rollup-openbsd-x64@4.59.0':
+    resolution: {integrity: sha512-M3bLRAVk6GOwFlPTIxVBSYKUaqfLrn8l0psKinkCFxl4lQvOSz8ZrKDz2gxcBwHFpci0B6rttydI4IpS4IS/jQ==}
     cpu: [x64]
     os: [openbsd]
 
-  '@rollup/rollup-openharmony-arm64@4.57.1':
-    resolution: {integrity: sha512-4wYoDpNg6o/oPximyc/NG+mYUejZrCU2q+2w6YZqrAs2UcNUChIZXjtafAiiZSUc7On8v5NyNj34Kzj/Ltk6dQ==}
+  '@rollup/rollup-openharmony-arm64@4.59.0':
+    resolution: {integrity: sha512-tt9KBJqaqp5i5HUZzoafHZX8b5Q2Fe7UjYERADll83O4fGqJ49O1FsL6LpdzVFQcpwvnyd0i+K/VSwu/o/nWlA==}
     cpu: [arm64]
     os: [openharmony]
 
-  '@rollup/rollup-win32-arm64-msvc@4.57.1':
-    resolution: {integrity: sha512-O54mtsV/6LW3P8qdTcamQmuC990HDfR71lo44oZMZlXU4tzLrbvTii87Ni9opq60ds0YzuAlEr/GNwuNluZyMQ==}
+  '@rollup/rollup-win32-arm64-msvc@4.59.0':
+    resolution: {integrity: sha512-V5B6mG7OrGTwnxaNUzZTDTjDS7F75PO1ae6MJYdiMu60sq0CqN5CVeVsbhPxalupvTX8gXVSU9gq+Rx1/hvu6A==}
     cpu: [arm64]
     os: [win32]
 
-  '@rollup/rollup-win32-ia32-msvc@4.57.1':
-    resolution: {integrity: sha512-P3dLS+IerxCT/7D2q2FYcRdWRl22dNbrbBEtxdWhXrfIMPP9lQhb5h4Du04mdl5Woq05jVCDPCMF7Ub0NAjIew==}
+  '@rollup/rollup-win32-ia32-msvc@4.59.0':
+    resolution: {integrity: sha512-UKFMHPuM9R0iBegwzKF4y0C4J9u8C6MEJgFuXTBerMk7EJ92GFVFYBfOZaSGLu6COf7FxpQNqhNS4c4icUPqxA==}
     cpu: [ia32]
     os: [win32]
 
-  '@rollup/rollup-win32-x64-gnu@4.57.1':
-    resolution: {integrity: sha512-VMBH2eOOaKGtIJYleXsi2B8CPVADrh+TyNxJ4mWPnKfLB/DBUmzW+5m1xUrcwWoMfSLagIRpjUFeW5CO5hyciQ==}
+  '@rollup/rollup-win32-x64-gnu@4.59.0':
+    resolution: {integrity: sha512-laBkYlSS1n2L8fSo1thDNGrCTQMmxjYY5G0WFWjFFYZkKPjsMBsgJfGf4TLxXrF6RyhI60L8TMOjBMvXiTcxeA==}
     cpu: [x64]
     os: [win32]
 
-  '@rollup/rollup-win32-x64-msvc@4.57.1':
-    resolution: {integrity: sha512-mxRFDdHIWRxg3UfIIAwCm6NzvxG0jDX/wBN6KsQFTvKFqqg9vTrWUE68qEjHt19A5wwx5X5aUi2zuZT7YR0jrA==}
+  '@rollup/rollup-win32-x64-msvc@4.59.0':
+    resolution: {integrity: sha512-2HRCml6OztYXyJXAvdDXPKcawukWY2GpR5/nxKp4iBgiO3wcoEGkAaqctIbZcNB6KlUQBIqt8VYkNSj2397EfA==}
     cpu: [x64]
     os: [win32]
 
@@ -14549,10 +14562,6 @@ packages:
     resolution: {integrity: sha512-enIvLvRAFZYXJzkCYG5RKmPfrFArdLv+R+lbQ53BmIMLIry74bjKzX6iHAm8WYamJkhSSEabrWN5D97XnKObjQ==}
     engines: {node: 20 || >=22}
 
-  minimatch@10.1.2:
-    resolution: {integrity: sha512-fu656aJ0n2kcXwsnwnv9g24tkU5uSmOlTjd6WyyaKm2Z+h1qmY6bAjrcaIxF/BslFqbZ8UBtbJi7KgQOZD2PTw==}
-    engines: {node: 20 || >=22}
-
   minimatch@10.2.4:
     resolution: {integrity: sha512-oRjTw/97aTBN0RHbYCdtF1MQfvusSIBQM0IZEgzl6426+8jSC0nF1a/GmnVLpfB9yyr6g6FTqWqiZVbxrtaCIg==}
     engines: {node: 18 || 20 || >=22}
@@ -14560,19 +14569,23 @@ packages:
   minimatch@3.0.5:
     resolution: {integrity: sha512-tUpxzX0VAzJHjLu0xUfFv1gwVp9ba3IOuRAVH2EGuRW8a5emA2FlACLqiT/lDVtS1W+TGNwqz3sWaNyLgDJWuw==}
 
-  minimatch@3.1.2:
-    resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
+  minimatch@3.1.5:
+    resolution: {integrity: sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==}
 
-  minimatch@5.1.6:
-    resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
+  minimatch@5.1.9:
+    resolution: {integrity: sha512-7o1wEA2RyMP7Iu7GNba9vc0RWWGACJOCZBJX2GJWip0ikV+wcOsgVuY9uE8CPiyQhkGFSlhuSkZPavN7u1c2Fw==}
     engines: {node: '>=10'}
 
-  minimatch@7.4.6:
-    resolution: {integrity: sha512-sBz8G/YjVniEz6lKPNpKxXwazJe4c19fEfV2GDMX6AjFz+MX9uDWIZW8XreVhkFW3fkIdTv/gxWr/Kks5FFAVw==}
+  minimatch@7.4.9:
+    resolution: {integrity: sha512-Brg/fp/iAVDOQoHxkuN5bEYhyQlZhxddI78yWsCbeEwTHXQjlNLtiJDUsp1GIptVqMI7/gkJMz4vVAc01mpoBw==}
     engines: {node: '>=10'}
 
   minimatch@9.0.5:
     resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
+    engines: {node: '>=16 || 14 >=14.17'}
+
+  minimatch@9.0.9:
+    resolution: {integrity: sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==}
     engines: {node: '>=16 || 14 >=14.17'}
 
   minimist@1.2.8:
@@ -16407,7 +16420,7 @@ packages:
     resolution: {integrity: sha512-pOLi+Gdll3JekwuFjXO3fTq+L9lzMQGcSq7M5gIjExcl3Gu1hd4XXuf5o3+LuSBsaULQH7DiNbsqPd1chVpQGQ==}
     engines: {node: '>=10.7.0'}
     peerDependencies:
-      axios: '*'
+      axios: '>=1.13.5'
 
   retry@0.12.0:
     resolution: {integrity: sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow==}
@@ -16455,13 +16468,13 @@ packages:
   rollup-plugin-polyfill-node@0.13.0:
     resolution: {integrity: sha512-FYEvpCaD5jGtyBuBFcQImEGmTxDTPbiHjJdrYIp+mFIwgXiXabxvKUK7ZT9P31ozu2Tqm9llYQMRWsfvTMTAOw==}
     peerDependencies:
-      rollup: ^1.20.0 || ^2.0.0 || ^3.0.0 || ^4.0.0
+      rollup: '>=4.59.0'
 
   rollup-pluginutils@2.8.2:
     resolution: {integrity: sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==}
 
-  rollup@4.57.1:
-    resolution: {integrity: sha512-oQL6lgK3e2QZeQ7gcgIkS2YZPg5slw37hYufJ3edKlfQSGGm8ICoxswK15ntSzF/a8+h7ekRy7k7oWc3BQ7y8A==}
+  rollup@4.59.0:
+    resolution: {integrity: sha512-2oMpl67a3zCH9H79LeMcbDhXW/UmWG/y2zuqnF2jQq5uq9TbM9TVyXvA4+t+ne2IIkBdrLpAaRQAvo7YI/Yyeg==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
@@ -16724,19 +16737,6 @@ packages:
 
   semver-compare@1.0.0:
     resolution: {integrity: sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==}
-
-  semver@5.7.2:
-    resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
-    hasBin: true
-
-  semver@6.3.1:
-    resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
-    hasBin: true
-
-  semver@7.5.4:
-    resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
-    engines: {node: '>=10'}
-    hasBin: true
 
   semver@7.7.2:
     resolution: {integrity: sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==}
@@ -19588,7 +19588,7 @@ snapshots:
       debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
-      semver: 6.3.1
+      semver: 7.7.4
     transitivePeerDependencies:
       - supports-color
 
@@ -19598,7 +19598,7 @@ snapshots:
       '@nicolo-ribaudo/eslint-scope-5-internals': 5.1.1-v1
       eslint: 9.39.1
       eslint-visitor-keys: 2.1.0
-      semver: 6.3.1
+      semver: 7.7.4
 
   '@babel/generator@7.29.1':
     dependencies:
@@ -19618,7 +19618,7 @@ snapshots:
       '@babel/helper-validator-option': 7.27.1
       browserslist: 4.28.1
       lru-cache: 5.1.1
-      semver: 6.3.1
+      semver: 7.7.4
 
   '@babel/helper-create-class-features-plugin@7.28.6(@babel/core@7.29.0)':
     dependencies:
@@ -19629,7 +19629,7 @@ snapshots:
       '@babel/helper-replace-supers': 7.28.6(@babel/core@7.29.0)
       '@babel/helper-skip-transparent-expression-wrappers': 7.27.1
       '@babel/traverse': 7.29.0
-      semver: 6.3.1
+      semver: 7.7.4
     transitivePeerDependencies:
       - supports-color
 
@@ -19638,7 +19638,7 @@ snapshots:
       '@babel/core': 7.29.0
       '@babel/helper-annotate-as-pure': 7.27.3
       regexpu-core: 6.4.0
-      semver: 6.3.1
+      semver: 7.7.4
 
   '@babel/helper-define-map@7.18.6':
     dependencies:
@@ -20320,7 +20320,7 @@ snapshots:
       babel-plugin-polyfill-corejs3: 0.14.0(@babel/core@7.29.0)
       babel-plugin-polyfill-regenerator: 0.6.6(@babel/core@7.29.0)
       core-js-compat: 3.48.0
-      semver: 6.3.1
+      semver: 7.7.4
     transitivePeerDependencies:
       - supports-color
 
@@ -20792,7 +20792,7 @@ snapshots:
     dependencies:
       '@eslint/object-schema': 2.1.7
       debug: 4.4.3
-      minimatch: 3.1.2
+      minimatch: 3.1.5
     transitivePeerDependencies:
       - supports-color
 
@@ -20818,14 +20818,14 @@ snapshots:
 
   '@eslint/eslintrc@3.3.3':
     dependencies:
-      ajv: 6.12.6
+      ajv: 6.14.0
       debug: 4.4.3
       espree: 10.4.0
       globals: 14.0.0
       ignore: 5.2.4
       import-fresh: 3.3.1
       js-yaml: 4.1.1
-      minimatch: 3.1.2
+      minimatch: 3.1.5
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
@@ -22022,7 +22022,7 @@ snapshots:
     dependencies:
       '@npmcli/name-from-folder': 1.0.1
       glob: 8.1.0
-      minimatch: 5.1.6
+      minimatch: 5.1.9
       read-package-json-fast: 2.0.3
 
   '@npmcli/map-workspaces@4.0.2':
@@ -22030,7 +22030,7 @@ snapshots:
       '@npmcli/name-from-folder': 3.0.0
       '@npmcli/package-json': 6.2.0
       glob: 10.5.0
-      minimatch: 9.0.5
+      minimatch: 9.0.9
 
   '@npmcli/metavuln-calculator@2.0.0':
     dependencies:
@@ -22631,9 +22631,9 @@ snapshots:
       react: 16.14.0
       react-redux: 7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
 
-  '@rollup/plugin-commonjs@28.0.9(rollup@4.57.1)':
+  '@rollup/plugin-commonjs@28.0.9(rollup@4.59.0)':
     dependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.57.1)
+      '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
       commondir: 1.0.1
       estree-walker: 2.0.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -22641,118 +22641,121 @@ snapshots:
       magic-string: 0.30.21
       picomatch: 4.0.3
     optionalDependencies:
-      rollup: 4.57.1
+      rollup: 4.59.0
 
-  '@rollup/plugin-inject@5.0.5(rollup@4.57.1)':
+  '@rollup/plugin-inject@5.0.5(rollup@4.59.0)':
     dependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.57.1)
+      '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
       estree-walker: 2.0.2
       magic-string: 0.30.21
     optionalDependencies:
-      rollup: 4.57.1
+      rollup: 4.59.0
 
-  '@rollup/plugin-json@6.1.0(rollup@4.57.1)':
+  '@rollup/plugin-json@6.1.0(rollup@4.59.0)':
     dependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.57.1)
+      '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
     optionalDependencies:
-      rollup: 4.57.1
+      rollup: 4.59.0
 
-  '@rollup/plugin-replace@6.0.3(rollup@4.57.1)':
+  '@rollup/plugin-replace@6.0.3(rollup@4.59.0)':
     dependencies:
-      '@rollup/pluginutils': 5.3.0(rollup@4.57.1)
+      '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
       magic-string: 0.30.21
     optionalDependencies:
-      rollup: 4.57.1
+      rollup: 4.59.0
 
-  '@rollup/plugin-terser@0.4.4(rollup@4.57.1)':
+  '@rollup/plugin-terser@0.4.4(rollup@4.59.0)':
     dependencies:
       serialize-javascript: 6.0.2
       smob: 1.5.0
       terser: 5.46.0
     optionalDependencies:
-      rollup: 4.57.1
+      rollup: 4.59.0
 
-  '@rollup/pluginutils@5.3.0(rollup@4.57.1)':
+  '@rollup/pluginutils@5.3.0(rollup@4.59.0)':
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
       picomatch: 4.0.3
     optionalDependencies:
-      rollup: 4.57.1
+      rollup: 4.59.0
 
-  '@rollup/rollup-android-arm-eabi@4.57.1':
+  '@rollup/rollup-android-arm-eabi@4.59.0':
     optional: true
 
-  '@rollup/rollup-android-arm64@4.57.1':
+  '@rollup/rollup-android-arm64@4.59.0':
     optional: true
 
-  '@rollup/rollup-darwin-arm64@4.57.1':
+  '@rollup/rollup-darwin-arm64@4.59.0':
     optional: true
 
-  '@rollup/rollup-darwin-x64@4.57.1':
+  '@rollup/rollup-darwin-x64@4.59.0':
     optional: true
 
-  '@rollup/rollup-freebsd-arm64@4.57.1':
+  '@rollup/rollup-freebsd-arm64@4.59.0':
     optional: true
 
-  '@rollup/rollup-freebsd-x64@4.57.1':
+  '@rollup/rollup-freebsd-x64@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.57.1':
+  '@rollup/rollup-linux-arm-gnueabihf@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-arm-musleabihf@4.57.1':
+  '@rollup/rollup-linux-arm-musleabihf@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-arm64-gnu@4.57.1':
+  '@rollup/rollup-linux-arm64-gnu@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-arm64-musl@4.57.1':
+  '@rollup/rollup-linux-arm64-musl@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-loong64-gnu@4.57.1':
+  '@rollup/rollup-linux-loong64-gnu@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-loong64-musl@4.57.1':
+  '@rollup/rollup-linux-loong64-musl@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-ppc64-gnu@4.57.1':
+  '@rollup/rollup-linux-ppc64-gnu@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-ppc64-musl@4.57.1':
+  '@rollup/rollup-linux-ppc64-musl@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-riscv64-gnu@4.57.1':
+  '@rollup/rollup-linux-riscv64-gnu@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-riscv64-musl@4.57.1':
+  '@rollup/rollup-linux-riscv64-musl@4.59.0':
     optional: true
 
-  '@rollup/rollup-linux-s390x-gnu@4.57.1':
+  '@rollup/rollup-linux-s390x-gnu@4.59.0':
     optional: true
 
   '@rollup/rollup-linux-x64-gnu@4.57.1':
     optional: true
 
-  '@rollup/rollup-linux-x64-musl@4.57.1':
+  '@rollup/rollup-linux-x64-gnu@4.59.0':
     optional: true
 
-  '@rollup/rollup-openbsd-x64@4.57.1':
+  '@rollup/rollup-linux-x64-musl@4.59.0':
     optional: true
 
-  '@rollup/rollup-openharmony-arm64@4.57.1':
+  '@rollup/rollup-openbsd-x64@4.59.0':
     optional: true
 
-  '@rollup/rollup-win32-arm64-msvc@4.57.1':
+  '@rollup/rollup-openharmony-arm64@4.59.0':
     optional: true
 
-  '@rollup/rollup-win32-ia32-msvc@4.57.1':
+  '@rollup/rollup-win32-arm64-msvc@4.59.0':
     optional: true
 
-  '@rollup/rollup-win32-x64-gnu@4.57.1':
+  '@rollup/rollup-win32-ia32-msvc@4.59.0':
     optional: true
 
-  '@rollup/rollup-win32-x64-msvc@4.57.1':
+  '@rollup/rollup-win32-x64-gnu@4.59.0':
+    optional: true
+
+  '@rollup/rollup-win32-x64-msvc@4.59.0':
     optional: true
 
   '@rtsao/scc@1.1.0': {}
@@ -22953,7 +22956,7 @@ snapshots:
       i18next: 25.3.0(typescript@5.9.3)
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
+      semver: 7.7.4
       xml-formatter: 2.6.1
       xpath: 0.0.33
     transitivePeerDependencies:
@@ -22972,7 +22975,7 @@ snapshots:
       i18next: 25.3.0(typescript@5.9.3)
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
+      semver: 7.7.4
       xml-formatter: 2.6.1
       xpath: 0.0.33
     transitivePeerDependencies:
@@ -23105,7 +23108,7 @@ snapshots:
       json-parse-even-better-errors: 4.0.0
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
+      semver: 7.7.4
     transitivePeerDependencies:
       - debug
 
@@ -23118,7 +23121,7 @@ snapshots:
       json-parse-even-better-errors: 4.0.0
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
+      semver: 7.7.4
     transitivePeerDependencies:
       - debug
 
@@ -23144,7 +23147,7 @@ snapshots:
       axios: 1.13.5(debug@4.4.3)
       js-yaml: 4.1.1
       lodash: 4.17.23
-      semver: 7.5.4
+      semver: 7.7.4
     transitivePeerDependencies:
       - debug
 
@@ -23155,7 +23158,7 @@ snapshots:
       axios: 1.13.5(debug@4.4.3)
       js-yaml: 4.1.1
       lodash: 4.17.23
-      semver: 7.5.4
+      semver: 7.7.4
     transitivePeerDependencies:
       - debug
 
@@ -24333,12 +24336,12 @@ snapshots:
   '@tufjs/models@1.0.4':
     dependencies:
       '@tufjs/canonical-json': 1.0.0
-      minimatch: 9.0.5
+      minimatch: 9.0.9
 
   '@tufjs/models@3.0.1':
     dependencies:
       '@tufjs/canonical-json': 2.0.0
-      minimatch: 9.0.5
+      minimatch: 9.0.9
 
   '@tybys/wasm-util@0.10.1':
     dependencies:
@@ -25030,7 +25033,7 @@ snapshots:
       debug: 4.4.3
       fast-glob: 3.3.3
       is-glob: 4.0.3
-      minimatch: 9.0.5
+      minimatch: 9.0.9
       semver: 7.7.4
       ts-api-utils: 2.4.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -25044,7 +25047,7 @@ snapshots:
       '@typescript-eslint/types': 8.49.0
       '@typescript-eslint/visitor-keys': 8.49.0
       debug: 4.4.3
-      minimatch: 9.0.5
+      minimatch: 9.0.9
       semver: 7.7.4
       tinyglobby: 0.2.15
       ts-api-utils: 2.4.0(typescript@5.9.3)
@@ -25059,7 +25062,7 @@ snapshots:
       '@typescript-eslint/types': 8.55.0
       '@typescript-eslint/visitor-keys': 8.55.0
       debug: 4.4.3
-      minimatch: 9.0.5
+      minimatch: 9.0.9
       semver: 7.7.4
       tinyglobby: 0.2.15
       ts-api-utils: 2.4.0(typescript@5.9.3)
@@ -25225,7 +25228,7 @@ snapshots:
       globby: 13.2.2
       graceful-fs: 4.2.11
       micromatch: 4.0.8
-      minimatch: 9.0.5
+      minimatch: 9.0.9
       pretty-hrtime: 1.0.3
       random-int: 3.1.0
 
@@ -25237,7 +25240,7 @@ snapshots:
       globby: 14.1.0
       graceful-fs: 4.2.11
       micromatch: 4.0.8
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       pretty-hrtime: 1.0.3
       random-int: 3.1.0
 
@@ -25791,9 +25794,9 @@ snapshots:
     optionalDependencies:
       ajv: 8.18.0
 
-  ajv-keywords@3.5.2(ajv@6.12.6):
+  ajv-keywords@3.5.2(ajv@6.14.0):
     dependencies:
-      ajv: 6.12.6
+      ajv: 6.14.0
 
   ajv-keywords@5.1.0(ajv@8.18.0):
     dependencies:
@@ -26077,7 +26080,7 @@ snapshots:
 
   async-listener@0.6.10:
     dependencies:
-      semver: 5.7.2
+      semver: 7.7.4
       shimmer: 1.2.1
 
   async-retry@1.3.3:
@@ -26180,7 +26183,7 @@ snapshots:
       '@babel/compat-data': 7.29.0
       '@babel/core': 7.29.0
       '@babel/helper-define-polyfill-provider': 0.6.6(@babel/core@7.29.0)
-      semver: 6.3.1
+      semver: 7.7.4
     transitivePeerDependencies:
       - supports-color
 
@@ -26857,7 +26860,7 @@ snapshots:
     dependencies:
       async-hook-jl: 1.7.6
       emitter-listener: 1.1.2
-      semver: 5.7.2
+      semver: 7.7.4
 
   clsx@1.2.1: {}
 
@@ -27626,7 +27629,7 @@ snapshots:
       react-dom: 16.14.0(react@16.14.0)
       react-is: 16.13.1
       react-test-renderer: 16.14.0(react@16.14.0)
-      semver: 5.7.2
+      semver: 7.7.4
 
   enzyme-adapter-utils@1.14.2(react@16.14.0):
     dependencies:
@@ -27637,7 +27640,7 @@ snapshots:
       object.fromentries: 2.0.8
       prop-types: 15.8.1
       react: 16.14.0
-      semver: 6.3.1
+      semver: 7.7.4
 
   enzyme-shallow-equal@1.0.7:
     dependencies:
@@ -27967,11 +27970,11 @@ snapshots:
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
-      minimatch: 3.1.2
+      minimatch: 3.1.5
       object.fromentries: 2.0.8
       object.groupby: 1.0.3
       object.values: 1.2.1
-      semver: 6.3.1
+      semver: 7.7.4
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
     transitivePeerDependencies:
@@ -28042,13 +28045,13 @@ snapshots:
       estraverse: 5.3.0
       hasown: 2.0.2
       jsx-ast-utils: 3.3.5
-      minimatch: 3.1.2
+      minimatch: 3.1.5
       object.entries: 1.1.9
       object.fromentries: 2.0.8
       object.values: 1.2.1
       prop-types: 15.8.1
       resolve: 2.0.0-next.5
-      semver: 6.3.1
+      semver: 7.7.4
       string.prototype.matchall: 4.0.12
       string.prototype.repeat: 1.0.0
 
@@ -28126,7 +28129,7 @@ snapshots:
       is-glob: 4.0.3
       json-stable-stringify-without-jsonify: 1.0.1
       lodash.merge: 4.6.2
-      minimatch: 3.1.2
+      minimatch: 3.1.5
       natural-compare: 1.4.0
       optionator: 0.9.4
     transitivePeerDependencies:
@@ -28451,7 +28454,7 @@ snapshots:
 
   filelist@1.0.4:
     dependencies:
-      minimatch: 5.1.6
+      minimatch: 5.1.9
 
   filename-reserved-regex@2.0.0: {}
 
@@ -28591,7 +28594,7 @@ snapshots:
   folder-hash@4.0.4:
     dependencies:
       debug: 4.4.3
-      minimatch: 5.1.6
+      minimatch: 5.1.9
     transitivePeerDependencies:
       - supports-color
 
@@ -28895,7 +28898,7 @@ snapshots:
     dependencies:
       foreground-child: 3.3.1
       jackspeak: 3.4.3
-      minimatch: 9.0.5
+      minimatch: 9.0.9
       minipass: 7.1.2
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
@@ -28904,14 +28907,14 @@ snapshots:
     dependencies:
       foreground-child: 3.3.1
       jackspeak: 4.2.3
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       minipass: 7.1.2
       package-json-from-dist: 1.0.1
       path-scurry: 2.0.1
 
   glob@13.0.1:
     dependencies:
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       minipass: 7.1.2
       path-scurry: 2.0.1
 
@@ -28926,7 +28929,7 @@ snapshots:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.1.2
+      minimatch: 3.1.5
       once: 1.4.0
       path-is-absolute: 1.0.1
 
@@ -28935,7 +28938,7 @@ snapshots:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 5.1.6
+      minimatch: 5.1.9
       once: 1.4.0
 
   global-agent@3.0.0:
@@ -29415,11 +29418,11 @@ snapshots:
 
   ignore-walk@6.0.5:
     dependencies:
-      minimatch: 9.0.5
+      minimatch: 9.0.9
 
   ignore-walk@7.0.0:
     dependencies:
-      minimatch: 9.0.5
+      minimatch: 9.0.9
 
   ignore@5.2.4: {}
 
@@ -30950,7 +30953,7 @@ snapshots:
 
   make-dir@3.1.0:
     dependencies:
-      semver: 6.3.1
+      semver: 7.7.4
 
   make-dir@4.0.0:
     dependencies:
@@ -31216,10 +31219,6 @@ snapshots:
     dependencies:
       '@isaacs/brace-expansion': 5.0.1
 
-  minimatch@10.1.2:
-    dependencies:
-      '@isaacs/brace-expansion': 5.0.1
-
   minimatch@10.2.4:
     dependencies:
       brace-expansion: 5.0.3
@@ -31228,19 +31227,23 @@ snapshots:
     dependencies:
       brace-expansion: 1.1.12
 
-  minimatch@3.1.2:
+  minimatch@3.1.5:
     dependencies:
       brace-expansion: 1.1.12
 
-  minimatch@5.1.6:
+  minimatch@5.1.9:
     dependencies:
       brace-expansion: 2.0.2
 
-  minimatch@7.4.6:
+  minimatch@7.4.9:
     dependencies:
       brace-expansion: 2.0.2
 
   minimatch@9.0.5:
+    dependencies:
+      brace-expansion: 2.0.2
+
+  minimatch@9.0.9:
     dependencies:
       brace-expansion: 2.0.2
 
@@ -31644,7 +31647,7 @@ snapshots:
     dependencies:
       hosted-git-info: 2.8.9
       resolve: 1.22.11
-      semver: 5.7.2
+      semver: 7.7.4
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@5.0.0:
@@ -32366,7 +32369,7 @@ snapshots:
 
   parse-semver@1.1.1:
     dependencies:
-      semver: 5.7.2
+      semver: 7.7.4
 
   parse-srcset@1.0.2: {}
 
@@ -33487,7 +33490,7 @@ snapshots:
 
   readdir-glob@1.1.3:
     dependencies:
-      minimatch: 5.1.6
+      minimatch: 5.1.9
 
   readdir-scoped-modules@1.1.0:
     dependencies:
@@ -33768,44 +33771,44 @@ snapshots:
     dependencies:
       rollup-plugin-inject: 3.0.2
 
-  rollup-plugin-polyfill-node@0.13.0(rollup@4.57.1):
+  rollup-plugin-polyfill-node@0.13.0(rollup@4.59.0):
     dependencies:
-      '@rollup/plugin-inject': 5.0.5(rollup@4.57.1)
-      rollup: 4.57.1
+      '@rollup/plugin-inject': 5.0.5(rollup@4.59.0)
+      rollup: 4.59.0
 
   rollup-pluginutils@2.8.2:
     dependencies:
       estree-walker: 0.6.1
 
-  rollup@4.57.1:
+  rollup@4.59.0:
     dependencies:
       '@types/estree': 1.0.8
     optionalDependencies:
-      '@rollup/rollup-android-arm-eabi': 4.57.1
-      '@rollup/rollup-android-arm64': 4.57.1
-      '@rollup/rollup-darwin-arm64': 4.57.1
-      '@rollup/rollup-darwin-x64': 4.57.1
-      '@rollup/rollup-freebsd-arm64': 4.57.1
-      '@rollup/rollup-freebsd-x64': 4.57.1
-      '@rollup/rollup-linux-arm-gnueabihf': 4.57.1
-      '@rollup/rollup-linux-arm-musleabihf': 4.57.1
-      '@rollup/rollup-linux-arm64-gnu': 4.57.1
-      '@rollup/rollup-linux-arm64-musl': 4.57.1
-      '@rollup/rollup-linux-loong64-gnu': 4.57.1
-      '@rollup/rollup-linux-loong64-musl': 4.57.1
-      '@rollup/rollup-linux-ppc64-gnu': 4.57.1
-      '@rollup/rollup-linux-ppc64-musl': 4.57.1
-      '@rollup/rollup-linux-riscv64-gnu': 4.57.1
-      '@rollup/rollup-linux-riscv64-musl': 4.57.1
-      '@rollup/rollup-linux-s390x-gnu': 4.57.1
-      '@rollup/rollup-linux-x64-gnu': 4.57.1
-      '@rollup/rollup-linux-x64-musl': 4.57.1
-      '@rollup/rollup-openbsd-x64': 4.57.1
-      '@rollup/rollup-openharmony-arm64': 4.57.1
-      '@rollup/rollup-win32-arm64-msvc': 4.57.1
-      '@rollup/rollup-win32-ia32-msvc': 4.57.1
-      '@rollup/rollup-win32-x64-gnu': 4.57.1
-      '@rollup/rollup-win32-x64-msvc': 4.57.1
+      '@rollup/rollup-android-arm-eabi': 4.59.0
+      '@rollup/rollup-android-arm64': 4.59.0
+      '@rollup/rollup-darwin-arm64': 4.59.0
+      '@rollup/rollup-darwin-x64': 4.59.0
+      '@rollup/rollup-freebsd-arm64': 4.59.0
+      '@rollup/rollup-freebsd-x64': 4.59.0
+      '@rollup/rollup-linux-arm-gnueabihf': 4.59.0
+      '@rollup/rollup-linux-arm-musleabihf': 4.59.0
+      '@rollup/rollup-linux-arm64-gnu': 4.59.0
+      '@rollup/rollup-linux-arm64-musl': 4.59.0
+      '@rollup/rollup-linux-loong64-gnu': 4.59.0
+      '@rollup/rollup-linux-loong64-musl': 4.59.0
+      '@rollup/rollup-linux-ppc64-gnu': 4.59.0
+      '@rollup/rollup-linux-ppc64-musl': 4.59.0
+      '@rollup/rollup-linux-riscv64-gnu': 4.59.0
+      '@rollup/rollup-linux-riscv64-musl': 4.59.0
+      '@rollup/rollup-linux-s390x-gnu': 4.59.0
+      '@rollup/rollup-linux-x64-gnu': 4.59.0
+      '@rollup/rollup-linux-x64-musl': 4.59.0
+      '@rollup/rollup-openbsd-x64': 4.59.0
+      '@rollup/rollup-openharmony-arm64': 4.59.0
+      '@rollup/rollup-win32-arm64-msvc': 4.59.0
+      '@rollup/rollup-win32-ia32-msvc': 4.59.0
+      '@rollup/rollup-win32-x64-gnu': 4.59.0
+      '@rollup/rollup-win32-x64-msvc': 4.59.0
       fsevents: 2.3.3
 
   router@2.0.0:
@@ -34016,8 +34019,8 @@ snapshots:
   schema-utils@3.3.0:
     dependencies:
       '@types/json-schema': 7.0.15
-      ajv: 6.12.6
-      ajv-keywords: 3.5.2(ajv@6.12.6)
+      ajv: 6.14.0
+      ajv-keywords: 3.5.2(ajv@6.14.0)
 
   schema-utils@4.3.3:
     dependencies:
@@ -34060,14 +34063,6 @@ snapshots:
 
   semver-compare@1.0.0:
     optional: true
-
-  semver@5.7.2: {}
-
-  semver@6.3.1: {}
-
-  semver@7.5.4:
-    dependencies:
-      lru-cache: 6.0.0
 
   semver@7.7.2: {}
 
@@ -34963,7 +34958,7 @@ snapshots:
     dependencies:
       '@istanbuljs/schema': 0.1.3
       glob: 10.5.0
-      minimatch: 9.0.5
+      minimatch: 9.0.9
 
   text-decoder@1.2.3:
     dependencies:
@@ -35332,12 +35327,12 @@ snapshots:
     dependencies:
       '@javascript-obfuscator/escodegen': 2.4.0
       '@prettier/sync': 0.6.1(prettier@3.6.2)
-      '@rollup/plugin-commonjs': 28.0.9(rollup@4.57.1)
-      '@rollup/plugin-inject': 5.0.5(rollup@4.57.1)
-      '@rollup/plugin-json': 6.1.0(rollup@4.57.1)
-      '@rollup/plugin-replace': 6.0.3(rollup@4.57.1)
-      '@rollup/plugin-terser': 0.4.4(rollup@4.57.1)
-      '@rollup/pluginutils': 5.3.0(rollup@4.57.1)
+      '@rollup/plugin-commonjs': 28.0.9(rollup@4.59.0)
+      '@rollup/plugin-inject': 5.0.5(rollup@4.59.0)
+      '@rollup/plugin-json': 6.1.0(rollup@4.59.0)
+      '@rollup/plugin-replace': 6.0.3(rollup@4.59.0)
+      '@rollup/plugin-terser': 0.4.4(rollup@4.59.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
       '@typescript-eslint/typescript-estree': 8.55.0(typescript@5.9.3)
       '@ui5/project': 4.0.11(@ui5/builder@4.1.4)
       chokidar: 4.0.3
@@ -35347,9 +35342,9 @@ snapshots:
       handlebars: 4.7.8
       ignore-walk: 7.0.0
       js-yaml: 4.1.1
-      minimatch: 7.4.6
-      rollup: 4.57.1
-      rollup-plugin-polyfill-node: 0.13.0(rollup@4.57.1)
+      minimatch: 7.4.9
+      rollup: 4.59.0
+      rollup-plugin-polyfill-node: 0.13.0(rollup@4.59.0)
       sanitize-filename: 1.6.3
       semver: 7.7.4
     transitivePeerDependencies:

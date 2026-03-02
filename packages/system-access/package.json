@@ -38,7 +38,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "prompts": "2.4.2"
+        "prompts": "^2.4.2"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
