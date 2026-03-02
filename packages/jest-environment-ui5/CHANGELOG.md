@@ -1,5 +1,17 @@
 # Change Log
 
+## 5.3.17
+
+### Patch Changes
+
+- 88c68c9: fix(deps): update dependency @ui5/cli to v4.0.44
+
+## 5.3.16
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 5.3.15
 
 ### Patch Changes

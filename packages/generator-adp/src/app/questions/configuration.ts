@@ -1,11 +1,8 @@
-import type {
-    ConfigAnswers,
-    FlexUISupportedSystem,
-    SourceApplication,
-    SystemLookup,
-    UI5Version
-} from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, FlexUICapability, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
 import {
+    getFlexUICapability,
+    getSupportedProject,
+    SupportedProject,
     checkSystemVersionPattern,
     fetchPublicVersions,
     FlexLayer,
@@ -14,7 +11,6 @@ import {
     getConfiguredProvider,
     getEndpointNames,
     getFioriId,
-    getFlexUISupportedSystem,
     getRelevantVersions,
     getSystemUI5Version,
     isAppSupported,
@@ -24,7 +20,7 @@ import {
     loadApps,
     SourceManifest
 } from '@sap-ux/adp-tooling';
-import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type {
     ConfirmQuestion,
@@ -51,9 +47,9 @@ import type {
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
-import { configPromptNames } from '../types';
+import { configPromptNames, SystemType } from '../types';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
-import { getApplicationChoices } from './helper/choices';
+import { getApplicationChoices, getProjectTypeChoices } from './helper/choices';
 import {
     showApplicationQuestion,
     showCredentialQuestion,
@@ -64,6 +60,7 @@ import {
 import { getExtProjectMessage } from './helper/message';
 import { validateExtensibilityExtension } from './helper/validators';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
@@ -98,11 +95,24 @@ export class ConfigPrompter {
     /**
      * Cached UI flexibility information from the system.
      */
-    private flexUISystem: FlexUISupportedSystem | undefined;
+    private flexUICapability?: FlexUICapability;
+
     /**
-     * Flag indicating if the project is a cloud project.
+     * The supported project type for the system.
      */
-    private isCloudProject: boolean | undefined;
+    private supportedProject?: SupportedProject;
+
+    /**
+     * The selected project type by the user. For a mixed system only
+     * the user may select from a cloudReady or an OnPremise project types.
+     */
+    private selectedProjectType?: AdaptationProjectType;
+
+    /**
+     * The system type for the selected system.
+     */
+    private selectedSystemType?: SystemType;
+
     /**
      * Flag indicating whether the selected application is supported.
      */
@@ -114,7 +124,7 @@ export class ConfigPrompter {
     /**
      * System additional message.
      */
-    private systemAdditionalMessage: IMessageSeverity | undefined;
+    private systemAdditionalMessage?: IMessageSeverity;
     /**
      * Indicates whether views are loaded synchronously.
      */
@@ -162,12 +172,17 @@ export class ConfigPrompter {
     }
 
     /**
-     * Returns flag indicating if the project is a cloud project.
-     *
-     * @returns Whether system is cloud-ready.
+     * @returns {AdaptationProjectType | undefined} The project type.
      */
-    public get isCloud(): boolean {
-        return !!this.isCloudProject;
+    public get projectType(): AdaptationProjectType | undefined {
+        return this.selectedProjectType;
+    }
+
+    /**
+     * @returns {SystemType | undefined} The system type.
+     */
+    public get systemType(): SystemType | undefined {
+        return this.selectedSystemType;
     }
 
     /**
@@ -248,6 +263,9 @@ export class ConfigPrompter {
             [configPromptNames.storeCredentials]: this.getStoreCredentialsPrompt(
                 promptOptions?.[configPromptNames.storeCredentials]
             ),
+            [configPromptNames.projectType]: this.getProjectTypeListPrompt(
+                promptOptions?.[configPromptNames.projectType]
+            ),
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
@@ -292,7 +310,10 @@ export class ConfigPrompter {
             default: '',
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
             additionalMessages: () => {
-                this.systemAdditionalMessage = getSystemAdditionalMessages(this.flexUISystem, this.isCloud);
+                this.systemAdditionalMessage = getSystemAdditionalMessages(
+                    this.flexUICapability,
+                    this.selectedProjectType
+                );
                 return this.systemAdditionalMessage;
             }
         };
@@ -364,7 +385,10 @@ export class ConfigPrompter {
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
             additionalMessages: () => {
                 if (!this.systemAdditionalMessage) {
-                    this.systemAdditionalMessage = getSystemAdditionalMessages(this.flexUISystem, this.isCloud);
+                    this.systemAdditionalMessage = getSystemAdditionalMessages(
+                        this.flexUICapability,
+                        this.selectedProjectType
+                    );
                     return this.systemAdditionalMessage;
                 }
                 return undefined;
@@ -397,6 +421,49 @@ export class ConfigPrompter {
                         severity: Severity.warning
                     };
                 }
+            }
+        };
+    }
+
+    /**
+     * Creates the project type prompt configuration.
+     *
+     * @param {ApplicationPromptOptions | undefined} options - The prompt options.
+     * @returns {ListQuestion<ConfigAnswers>} The project type prompt configuration.
+     */
+    private getProjectTypeListPrompt(options?: ApplicationPromptOptions): ListQuestion<ConfigAnswers> {
+        return {
+            type: 'list',
+            name: configPromptNames.projectType,
+            message: t('prompts.projectTypeListLabel'),
+            guiOptions: {
+                mandatory: true,
+                breadcrumb: true,
+                applyDefaultWhenDirty: true
+            },
+            choices: getProjectTypeChoices,
+            default: options?.default,
+            // We include the system in the validation to avoid prompt appearance
+            // after pressing start over from the template wizard. This is needed
+            // because the prompter is cached adn we do not want to reset cached data, because
+            // back/forward navigation will be affected if we do so.
+            when: ({ system }: ConfigAnswers) =>
+                !!system && this.supportedProject === SupportedProject.CLOUD_READY_AND_ON_PREM,
+            validate: async (projectType: AdaptationProjectType) => {
+                this.selectedProjectType = projectType;
+
+                const isInternalUsage = isInternalFeaturesSettingEnabled();
+                if (this.selectedProjectType === AdaptationProjectType.CLOUD_READY && isInternalUsage) {
+                    return t('error.cloudSystemsForInternalUsers');
+                }
+
+                try {
+                    this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
+                } catch (error) {
+                    return error.message;
+                }
+
+                return true;
             }
         };
     }
@@ -533,13 +600,13 @@ export class ConfigPrompter {
                 applyDefaultWhenDirty: true
             },
             when: (answers: ConfigAnswers) =>
-                showExtensionProjectQuestion(
-                    answers,
-                    this.flexUISystem,
-                    this.isCloudProject,
-                    this.isApplicationSupported,
-                    this.containsSyncViews
-                ),
+                showExtensionProjectQuestion({
+                    projectType: this.selectedProjectType,
+                    isApplicationSelected: !!answers.application,
+                    isApplicationSupported: this.isApplicationSupported,
+                    hasSyncViews: this.containsSyncViews,
+                    flexUICapability: this.flexUICapability
+                }),
             validate: (value: boolean) =>
                 validateExtensibilityExtension({
                     value,
@@ -569,7 +636,7 @@ export class ConfigPrompter {
             validationResult === t('error.appDoesNotSupportManifest') ||
             validationResult === t('error.appDoesNotSupportFlexibility');
 
-        if (isAppStudio() && isKnownUnsupported && !this.isCloud) {
+        if (isAppStudio() && isKnownUnsupported && this.selectedProjectType !== AdaptationProjectType.CLOUD_READY) {
             this.logger.error(validationResult);
             this.appValidationErrorMessage = validationResult;
             this.isApplicationSupported = false;
@@ -581,7 +648,7 @@ export class ConfigPrompter {
             return validationResult;
         }
 
-        if (this.isCloud) {
+        if (this.selectedProjectType === AdaptationProjectType.CLOUD_READY) {
             try {
                 this.baseApplicationInbounds = await getBaseAppInbounds(app.id, this.provider);
             } catch (error) {
@@ -630,7 +697,7 @@ export class ConfigPrompter {
             }
 
             this.telemetryCollector.startTiming('applicationListLoadingTime');
-            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
             this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
             this.telemetryCollector.endTiming('applicationListLoadingTime');
             this.isLoginSuccessful = true;
@@ -664,22 +731,27 @@ export class ConfigPrompter {
 
         try {
             this.targetApps = [];
-            this.flexUISystem = undefined;
-            this.isCloudProject = undefined;
+            this.flexUICapability = undefined;
+            this.selectedProjectType = undefined;
+            this.selectedSystemType = undefined;
+            this.supportedProject = undefined;
             this.abapProvider = await getConfiguredProvider(options, this.logger);
             this.isAuthRequired = await this.systemLookup.getSystemRequiresAuth(system);
-            if (!this.isAuthRequired) {
-                const validationResult = await this.handleSystemDataValidation();
 
-                if (typeof validationResult === 'string') {
-                    return validationResult;
-                }
-
-                this.telemetryCollector.startTiming('applicationListLoadingTime');
-                this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
-                this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
-                this.telemetryCollector.endTiming('applicationListLoadingTime');
+            if (this.isAuthRequired) {
+                return true;
             }
+
+            const validationResult = await this.handleSystemDataValidation();
+
+            if (typeof validationResult === 'string') {
+                return validationResult;
+            }
+
+            this.telemetryCollector.startTiming('applicationListLoadingTime');
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.selectedProjectType);
+            this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
+            this.telemetryCollector.endTiming('applicationListLoadingTime');
 
             return true;
         } catch (e) {
@@ -726,16 +798,32 @@ export class ConfigPrompter {
     }
 
     /**
-     * Fetches system data including cloud project and UI flexibility information.
+     * Fetches the system type, supported project type and the UI flexibility information.
      *
      * @returns A promise that resolves when system data is fetched.
      */
     private async loadSystemData(): Promise<void> {
         try {
-            this.isCloudProject = await this.abapProvider.isAbapCloud();
-            this.flexUISystem = await getFlexUISupportedSystem(this.abapProvider, this.isCustomerBase);
-        } catch (e) {
-            this.handleSystemError(e);
+            // Do not include the ato settings retreival in the parallel calls because we need to first login
+            // before executing any other call. A provider works like this - with the first api call it authenticates the user.
+            this.selectedSystemType = (await this.provider.isAbapCloud()) ? SystemType.CLOUD_READY : SystemType.ON_PREM;
+
+            const [supportedProject, flexUICapability] = await Promise.all([
+                getSupportedProject(this.abapProvider),
+                getFlexUICapability(this.abapProvider, this.isCustomerBase)
+            ]);
+
+            this.supportedProject = supportedProject;
+            this.flexUICapability = flexUICapability;
+
+            // Set selected project type based on the supported project.
+            if (this.supportedProject === SupportedProject.CLOUD_READY) {
+                this.selectedProjectType = AdaptationProjectType.CLOUD_READY;
+            } else if (this.supportedProject === SupportedProject.ON_PREM) {
+                this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
+            }
+        } catch (error) {
+            this.handleSystemError(error);
         }
     }
 
@@ -767,7 +855,7 @@ export class ConfigPrompter {
             await this.loadSystemData();
             await this.loadUI5Versions();
 
-            if (!this.isCustomerBase && this.isCloudProject) {
+            if (!this.isCustomerBase && this.selectedProjectType === AdaptationProjectType.CLOUD_READY) {
                 return t('error.cloudSystemsForInternalUsers');
             }
 
@@ -792,9 +880,11 @@ export class ConfigPrompter {
 
             if (error.response?.status === 405 || error.response?.status === 404) {
                 // Handle the case where the API is not available and continue to standard onPremise flow
-                this.isCloudProject = false;
+                this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
                 return;
             }
+
+            throw error;
         }
     }
 

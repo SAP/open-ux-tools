@@ -1,5 +1,17 @@
 # @sap-ux/store
 
+## 1.5.7
+
+### Patch Changes
+
+- cbd340a: fix(deps): update dependency i18next to v25.8.12
+
+## 1.5.6
+
+### Patch Changes
+
+- 9f94937: support adding full service urls as a new connection type
+
 ## 1.5.5
 
 ### Patch Changes

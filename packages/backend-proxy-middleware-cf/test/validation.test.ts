@@ -30,8 +30,12 @@ describe('validation', () => {
     describe('validateConfig', () => {
         test('validates successfully with valid config', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '/backend.example',
-                paths: ['/sap/opu/odata']
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: ['/sap/opu/odata']
+                    }
+                ]
             };
 
             await expect(validateConfig(config, logger)).resolves.not.toThrow();
@@ -41,51 +45,113 @@ describe('validation', () => {
 
         test('throws error when url is empty string', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '',
-                paths: ['/sap/opu/odata']
+                backends: [
+                    {
+                        url: '',
+                        paths: ['/sap/opu/odata']
+                    }
+                ]
             };
 
             await expect(validateConfig(config, logger)).rejects.toThrow(
-                'Backend proxy middleware (CF) requires url configuration.'
+                'Backend proxy middleware (CF) requires url for each backend.'
             );
         });
 
-        test('throws error when paths is missing', async () => {
-            const config = {
-                url: '/backend.example'
-            } as CfOAuthMiddlewareConfig;
+        test('throws error when backends array is missing', async () => {
+            const config = {} as CfOAuthMiddlewareConfig;
 
             await expect(validateConfig(config, logger)).rejects.toThrow(
-                'Backend proxy middleware (CF) has no paths configured.'
+                'Backend proxy middleware (CF) requires "backends" array configuration.'
+            );
+        });
+
+        test('throws error when backends is not an array', async () => {
+            const config = {
+                backends: 'not-an-array'
+            } as unknown as CfOAuthMiddlewareConfig;
+
+            await expect(validateConfig(config, logger)).rejects.toThrow(
+                'Backend proxy middleware (CF) requires "backends" array configuration.'
+            );
+        });
+
+        test('throws error when backends array is empty', async () => {
+            const config: CfOAuthMiddlewareConfig = {
+                backends: []
+            };
+
+            await expect(validateConfig(config, logger)).rejects.toThrow(
+                'Backend proxy middleware (CF) requires "backends" array configuration.'
+            );
+        });
+
+        test('throws error when backend missing url property', async () => {
+            const config = {
+                backends: [
+                    {
+                        paths: ['/sap/opu/odata']
+                    }
+                ]
+            } as unknown as CfOAuthMiddlewareConfig;
+
+            await expect(validateConfig(config, logger)).rejects.toThrow(
+                'Backend proxy middleware (CF) requires url for each backend.'
+            );
+        });
+
+        test('throws error when backend missing paths property', async () => {
+            const config = {
+                backends: [
+                    {
+                        url: '/backend.example'
+                    }
+                ]
+            } as unknown as CfOAuthMiddlewareConfig;
+
+            await expect(validateConfig(config, logger)).rejects.toThrow(
+                'Backend proxy middleware (CF) has no paths configured for URL: /backend.example'
             );
         });
 
         test('throws error when paths is empty array', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '/backend.example',
-                paths: []
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: []
+                    }
+                ]
             };
 
             await expect(validateConfig(config, logger)).rejects.toThrow(
-                'Backend proxy middleware (CF) has no paths configured.'
+                'Backend proxy middleware (CF) has no paths configured for URL: /backend.example'
             );
         });
 
         test('throws error when paths is not an array', async () => {
             const config = {
-                url: '/backend.example',
-                paths: 'not-an-array'
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: 'not-an-array'
+                    }
+                ]
             } as unknown as CfOAuthMiddlewareConfig;
 
             await expect(validateConfig(config, logger)).rejects.toThrow(
-                'Backend proxy middleware (CF) has no paths configured.'
+                'Backend proxy middleware (CF) has no paths configured for URL: /backend.example'
             );
         });
 
         test('throws error when user is not logged in to CF', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '/backend.example',
-                paths: ['/sap/opu/odata']
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: ['/sap/opu/odata']
+                    }
+                ]
             };
             mockIsLoggedInCf.mockResolvedValue(false);
 
@@ -94,11 +160,51 @@ describe('validation', () => {
 
         test('validates successfully with multiple paths', async () => {
             const config: CfOAuthMiddlewareConfig = {
-                url: '/backend.example',
-                paths: ['/sap/opu/odata', '/sap/bc/ui5_ui5', '/api']
+                backends: [
+                    {
+                        url: '/backend.example',
+                        paths: ['/sap/opu/odata', '/sap/bc/ui5_ui5', '/api']
+                    }
+                ]
             };
 
             await expect(validateConfig(config, logger)).resolves.not.toThrow();
+        });
+
+        test('validates successfully with multiple backends', async () => {
+            const config: CfOAuthMiddlewareConfig = {
+                backends: [
+                    {
+                        url: '/backend1.example',
+                        paths: ['/sap/opu/odata']
+                    },
+                    {
+                        url: '/backend2.example',
+                        paths: ['/api/v1', '/api/v2']
+                    }
+                ]
+            };
+
+            await expect(validateConfig(config, logger)).resolves.not.toThrow();
+        });
+
+        test('throws error when one of multiple backends is invalid', async () => {
+            const config: CfOAuthMiddlewareConfig = {
+                backends: [
+                    {
+                        url: '/backend1.example',
+                        paths: ['/sap/opu/odata']
+                    },
+                    {
+                        url: '/backend2.example',
+                        paths: []
+                    }
+                ]
+            };
+
+            await expect(validateConfig(config, logger)).rejects.toThrow(
+                'Backend proxy middleware (CF) has no paths configured for URL: /backend2.example'
+            );
         });
     });
 });

@@ -3,6 +3,7 @@
 
 $menu-background: var(--vscode-menu-background, var(--vscode-input-background));
 $menu-color: var(--vscode-editorSuggestWidget-foreground);
+$menu-header-color: var(--vscode-editorSuggestWidget-highlightForeground);
 $menu-border-color: var(--vscode-focusBorder);
 $menu-border-radius: 2px;
 
@@ -31,6 +32,5 @@ $menu-item-border-offset: -1px;
 $menu-item-disabled-opacity: 0.4;
 $menu-item-divider-color: var(--vscode-editorWidget-border);
 $menu-item-header-font-size: 11px;
-$menu-item-header-color: $menu-color;
+$menu-item-header-color: $menu-header-color;
 $menu-item-header-font-weight: bold;
-$menu-item-header-text-transform: uppercase;

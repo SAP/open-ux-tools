@@ -8,6 +8,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import {
     getBusinessServiceInfo,
     getFDCApps,
+    getCfUi5AppInfo,
     getFDCRequestArguments,
     createServiceInstance,
     getServiceNameByTags,
@@ -221,6 +222,93 @@ describe('CF Services API', () => {
         });
     });
 
+    describe('getCfUi5AppInfo', () => {
+        test('should return ui5AppInfo successfully', async () => {
+            const config: CfConfig = {
+                org: { GUID: 'test-org-guid', Name: 'test-org' },
+                space: { GUID: 'test-space-guid', Name: 'test-space' },
+                url: 'test.cf.com',
+                token: 'test-token'
+            };
+            const appId = 'test-app-id';
+            const appHostIds = ['host-1', 'host-2'];
+            const mockUi5AppInfo = {
+                appId: 'test-app-id',
+                appVersion: '1.0.0',
+                ui5Version: '1.96.0'
+            };
+
+            mockIsAppStudio.mockReturnValue(false);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockCfGetAvailableOrgs.mockResolvedValue([{ label: 'test-org', guid: 'test-org-guid' }]);
+            mockAxios.get.mockResolvedValue({
+                data: mockUi5AppInfo,
+                status: 200
+            });
+
+            const result = await getCfUi5AppInfo(appId, appHostIds, config, mockLogger);
+
+            expect(result).toEqual(mockUi5AppInfo);
+            expect(mockAxios.get).toHaveBeenCalledWith(
+                'https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.test.cf.com/api/business-service/ui5appinfo?appId=test-app-id&appHostId=host-1&appHostId=host-2',
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        'Authorization': 'Bearer test-token'
+                    } as Record<string, string>)
+                } as Record<string, unknown>)
+            );
+            expect(mockLogger.log).toHaveBeenCalledWith(
+                'Fetching ui5AppInfo.json from FDC: https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.test.cf.com/api/business-service/ui5appinfo?appId=test-app-id&appHostId=host-1&appHostId=host-2'
+            );
+            expect(mockLogger.log).toHaveBeenCalledWith('Successfully retrieved ui5AppInfo.json from FDC');
+        });
+
+        test('should handle non-200 response status', async () => {
+            const config: CfConfig = {
+                org: { GUID: 'test-org-guid', Name: 'test-org' },
+                space: { GUID: 'test-space-guid', Name: 'test-space' },
+                url: 'test.cf.com',
+                token: 'test-token'
+            };
+            const appId = 'test-app-id';
+            const appHostIds = ['host-1'];
+
+            mockIsAppStudio.mockReturnValue(false);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockCfGetAvailableOrgs.mockResolvedValue([{ label: 'test-org', guid: 'test-org-guid' }]);
+            mockAxios.get.mockResolvedValue({
+                data: {},
+                status: 404
+            });
+
+            await expect(getCfUi5AppInfo(appId, appHostIds, config, mockLogger)).rejects.toThrow(
+                t('error.failedToConnectToFDCService', { status: 404 })
+            );
+        });
+
+        test('should handle axios error', async () => {
+            const errorMsg = 'Network error';
+            const config: CfConfig = {
+                org: { GUID: 'test-org-guid', Name: 'test-org' },
+                space: { GUID: 'test-space-guid', Name: 'test-space' },
+                url: 'test.cf.com',
+                token: 'test-token'
+            };
+            const appId = 'test-app-id';
+            const appHostIds = ['host-1'];
+
+            mockIsAppStudio.mockReturnValue(false);
+            mockIsLoggedInCf.mockResolvedValue(true);
+            mockCfGetAvailableOrgs.mockResolvedValue([{ label: 'test-org', guid: 'test-org-guid' }]);
+            mockAxios.get.mockRejectedValue(new Error(errorMsg));
+
+            await expect(getCfUi5AppInfo(appId, appHostIds, config, mockLogger)).rejects.toThrow(
+                `Failed to get ui5AppInfo.json from FDC: ${errorMsg}`
+            );
+            expect(mockLogger.error).toHaveBeenCalledWith(expect.stringContaining('Getting ui5AppInfo.json failed'));
+        });
+    });
+
     describe('getFDCRequestArguments', () => {
         test('should return correct arguments for public cloud in BAS environment', () => {
             const config: CfConfig = {
@@ -254,9 +342,7 @@ describe('CF Services API', () => {
 
             const result = getFDCRequestArguments(config);
 
-            expect(result.url).toBe(
-                'https://ui5-flexibility-design-and-configuration.cert.cfapps.eu10.hana.ondemand.com'
-            );
+            expect(result.url).toBe('https://ui5-flexibility-design-and-configuration.cfapps.eu10.hana.ondemand.com');
             expect(result.options.withCredentials).toBe(true);
             expect(result.options.headers!['Content-Type']).toBe('application/json');
             expect(result.options.headers!['Authorization']).toBe('Bearer test-token');

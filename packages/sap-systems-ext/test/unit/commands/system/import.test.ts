@@ -75,7 +75,7 @@ describe('Test the import system command handler', () => {
         const handler = importSystemCommandHandler(mockContext);
         await handler();
 
-        expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to import system configuration.');
+        expect(showErrorMessageSpy).toHaveBeenCalledWith('Failed to import the connection configuration.');
     });
 
     it('should show error message that config is incomplete and missing system url', async () => {
@@ -87,7 +87,7 @@ describe('Test the import system command handler', () => {
         const handler = importSystemCommandHandler(mockContext);
         await handler();
 
-        expect(showErrorMessageSpy).toHaveBeenCalledWith('System configuration is incomplete. A URL is required.');
+        expect(showErrorMessageSpy).toHaveBeenCalledWith('Connection configuration is incomplete. A URL is required.');
     });
 
     it('should show error message that config is does not contain any system configs', async () => {
@@ -101,7 +101,7 @@ describe('Test the import system command handler', () => {
 
         expect(showErrorMessageSpy).toHaveBeenCalledWith(
             expect.stringContaining(
-                `No systems defined in configuration file: ${join(
+                `No connections defined in the configuration file: ${join(
                     __dirname,
                     '../../../fixtures/import/invalid-test.json'
                 )}`
@@ -150,5 +150,37 @@ describe('Test the import system command handler', () => {
         expect(getOrCreateNewPanelSpy).toHaveReturnedWith(
             expect.objectContaining({ systemPanelViewType: SystemPanelViewType.View })
         );
+    });
+
+    it('should import a system with odata_service connection type', async () => {
+        jest.spyOn(vsCodeWindow, 'showOpenDialog').mockResolvedValue([
+            { path: join(__dirname, '../../../fixtures/import/valid-odata-service-test.json') } as vscodeMod.Uri
+        ]);
+        systemServiceReadMock.mockResolvedValue(undefined);
+
+        const handler = importSystemCommandHandler(mockContext);
+        await handler();
+
+        expect(getOrCreateNewPanelSpy).toHaveBeenCalledWith(
+            'https://odata.service.test.url.com/sap/opu/odata/sap/SERVICE_NAME',
+            expect.any(Function)
+        );
+    });
+
+    it('should default to abap_catalog connection type when not specified', async () => {
+        jest.spyOn(vsCodeWindow, 'showOpenDialog').mockResolvedValue([
+            { path: join(__dirname, '../../../fixtures/import/existing-test.json') } as vscodeMod.Uri
+        ]);
+        systemServiceReadMock.mockResolvedValue(undefined);
+
+        const handler = importSystemCommandHandler(mockContext);
+        await handler();
+
+        expect(getOrCreateNewPanelSpy).toHaveBeenCalled();
+        const createPanelFn = getOrCreateNewPanelSpy.mock.calls[0][1];
+        const panel = createPanelFn();
+
+        // Access the backendSystem property through the protected/private API
+        expect((panel as any).backendSystem?.connectionType).toBe('abap_catalog');
     });
 });

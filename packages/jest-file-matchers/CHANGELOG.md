@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.9
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+
 ## 0.2.8
 
 ### Patch Changes

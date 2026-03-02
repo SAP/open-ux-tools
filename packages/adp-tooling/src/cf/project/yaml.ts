@@ -4,6 +4,7 @@ import yaml from 'js-yaml';
 import type { Editor } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { UI5Config } from '@sap-ux/ui5-config';
 
 import type {
     MtaModule,
@@ -12,11 +13,15 @@ import type {
     MtaResource,
     MtaRequire,
     CfUI5Yaml,
-    MtaYaml
+    MtaYaml,
+    ServiceKeys
 } from '../../types';
 import { AppRouterType } from '../../types';
 import { createServices } from '../services/api';
 import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader';
+import { getBackendUrlsWithPaths, getServiceKeyDestinations } from '../app/discovery';
+import { getVariant } from '../../base/helper';
+import { getReusableLibraryPaths } from './ui5-app-info';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
@@ -28,6 +33,7 @@ interface AdjustMtaYamlParams {
     appRouterType: AppRouterType;
     businessSolutionName: string;
     businessService: string;
+    serviceKeys?: ServiceKeys[];
 }
 
 /**
@@ -141,18 +147,29 @@ function adjustMtaYamlStandaloneApprouter(yamlContent: MtaYaml, projectName: str
  * @param {string} businessSolution - The business solution.
  * @param {string} businessService - The business service.
  * @param {string} timestamp - The timestamp.
+ * @param {ServiceKeys[]} serviceKeys - The service keys (optional).
  */
 function adjustMtaYamlManagedApprouter(
     yamlContent: MtaYaml,
     projectName: string,
     businessSolution: string,
     businessService: string,
-    timestamp: string
+    timestamp: string,
+    serviceKeys?: ServiceKeys[]
 ): void {
     const projectNameForXsSecurity = getProjectNameForXsSecurity(yamlContent, timestamp);
     const appRouterName = `${projectName}-destination-content`;
     let appRouter = yamlContent.modules?.find((module: MtaModule) => module.name === appRouterName);
     if (appRouter == null) {
+        const endpointDestinations = serviceKeys
+            ? getServiceKeyDestinations(serviceKeys).map((endpoint) => ({
+                  Name: endpoint.name,
+                  URL: endpoint.url,
+                  Authentication: 'OAuth2UserTokenExchange',
+                  ServiceInstanceName: businessService,
+                  ServiceKeyName: `${businessService}-key`
+              }))
+            : [];
         businessSolution = businessSolution.split('.').join('_');
         appRouter = {
             name: appRouterName,
@@ -214,7 +231,9 @@ function adjustMtaYamlManagedApprouter(
                                 Authentication: 'OAuth2UserTokenExchange',
                                 ServiceInstanceName: `${businessService}`,
                                 ServiceKeyName: `${businessService}-key`
-                            }
+                            },
+                            // Add endpoint destinations from service keys
+                            ...endpointDestinations
                         ],
                         existing_destinations_policy: 'update'
                     }
@@ -419,7 +438,14 @@ function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, busin
  * @returns {Promise<void>} The promise.
  */
 export async function adjustMtaYaml(
-    { projectPath, adpProjectName, appRouterType, businessSolutionName, businessService }: AdjustMtaYamlParams,
+    {
+        projectPath,
+        adpProjectName,
+        appRouterType,
+        businessSolutionName,
+        businessService,
+        serviceKeys
+    }: AdjustMtaYamlParams,
     memFs: Editor,
     templatePathOverwrite?: string,
     logger?: ToolsLogger
@@ -449,7 +475,14 @@ export async function adjustMtaYaml(
     if (isStandaloneApprouter) {
         adjustMtaYamlStandaloneApprouter(yamlContent, mtaProjectName, businessService);
     } else {
-        adjustMtaYamlManagedApprouter(yamlContent, mtaProjectName, businessSolutionName, businessService, timestamp);
+        adjustMtaYamlManagedApprouter(
+            yamlContent,
+            mtaProjectName,
+            businessSolutionName,
+            businessService,
+            timestamp,
+            serviceKeys
+        );
     }
     adjustMtaYamlUDeployer(yamlContent, mtaProjectName, adpProjectName);
     adjustMtaYamlResources(yamlContent, mtaProjectName, timestamp, !isStandaloneApprouter);
@@ -458,8 +491,94 @@ export async function adjustMtaYaml(
     adjustMtaYamlFlpModule(yamlContent, mtaProjectName, businessService);
     await createServices(yamlContent, initialServices, timestamp, templatePathOverwrite, logger);
 
-    const updatedYamlContent = yaml.dump(yamlContent);
+    const updatedYamlContent = yaml.dump(yamlContent, {
+        lineWidth: -1 // Disable line wrapping to keep URLs on single lines
+    });
 
     memFs.write(mtaYamlPath, updatedYamlContent);
     logger?.debug(`Adjusted MTA YAML for project ${projectPath}`);
+}
+
+/**
+ * Add fiori-tools-servestatic configuration to ui5.yaml and removes previously added configuration.
+ *
+ * @param basePath - path to application root
+ * @param ui5Config - UI5 configuration object
+ * @param logger - logger instance
+ */
+export async function addServeStaticMiddleware(
+    basePath: string,
+    ui5Config: UI5Config,
+    logger?: ToolsLogger
+): Promise<void> {
+    try {
+        if (ui5Config.findCustomMiddleware('fiori-tools-servestatic')) {
+            ui5Config.removeCustomMiddleware('fiori-tools-servestatic');
+        }
+
+        const paths: Array<{ path: string; src: string; fallthrough: boolean }> = [];
+
+        // Add reusable library paths from ui5AppInfo.json if it exists
+        paths.push(...getReusableLibraryPaths(basePath, logger));
+
+        const variant = await getVariant(basePath);
+        paths.push({
+            path: `/changes/${variant.id.replaceAll('.', '_')}`,
+            src: './webapp/changes',
+            fallthrough: true
+        });
+
+        ui5Config.addCustomMiddleware([
+            {
+                name: 'fiori-tools-servestatic',
+                beforeMiddleware: 'compression',
+                configuration: {
+                    paths
+                }
+            }
+        ]);
+    } catch (error) {
+        logger?.warn(`Could not add fiori-tools-servestatic configuration: ${(error as Error).message}`);
+        throw error;
+    }
+}
+
+/**
+ * Add backend-proxy-middleware-cf configuration to ui5.yaml.
+ *
+ * @param basePath - path to application root
+ * @param ui5Config - UI5 configuration object
+ * @param serviceKeys - service keys from Cloud Foundry
+ * @param logger - logger instance
+ */
+export function addBackendProxyMiddleware(
+    basePath: string,
+    ui5Config: UI5Config,
+    serviceKeys: ServiceKeys[],
+    logger?: ToolsLogger
+): void {
+    try {
+        if (ui5Config.findCustomMiddleware('backend-proxy-middleware-cf')) {
+            ui5Config.removeCustomMiddleware('backend-proxy-middleware-cf');
+        }
+
+        const urlsWithPaths = getBackendUrlsWithPaths(serviceKeys, basePath);
+
+        if (urlsWithPaths.length === 0) {
+            logger?.info('No backend URLs with paths found. Skipping backend-proxy-middleware-cf configuration.');
+            return;
+        }
+
+        ui5Config.addCustomMiddleware([
+            {
+                name: 'backend-proxy-middleware-cf',
+                afterMiddleware: 'compression',
+                configuration: {
+                    backends: urlsWithPaths
+                }
+            }
+        ]);
+    } catch (error) {
+        logger?.warn(`Could not add backend-proxy-middleware-cf configuration: ${(error as Error).message}`);
+    }
 }

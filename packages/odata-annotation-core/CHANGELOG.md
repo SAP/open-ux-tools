@@ -1,5 +1,21 @@
 # @sap-ux/odata-annotation-core
 
+## 0.2.15
+
+### Patch Changes
+
+- cc1c422: fix(deps): update dependency npm-run-all2 to v8
+- Updated dependencies [cc1c422]
+    - @sap-ux/odata-annotation-core-types@0.5.5
+
+## 0.2.14
+
+### Patch Changes
+
+- 3795bb2: Add Node.js engine requirement (>=20.x)
+- Updated dependencies [3795bb2]
+    - @sap-ux/odata-annotation-core-types@0.5.4
+
 ## 0.2.13
 
 ### Patch Changes
